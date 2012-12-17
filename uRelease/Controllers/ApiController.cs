@@ -80,7 +80,7 @@ namespace uRelease.Controllers
                                };
 
                 // /rest/issue/byproject/{project}?{filter}
-                var issues = versionCache.GetOrAdd(version.Value, key => GetYouTrackResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
+                var issues = versionCache.GetOrAdd(version.Value, key => GetResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
                 var issueView = new List<IssueView>();
                 var activityView = new List<ActivityView>();
 
@@ -127,10 +127,10 @@ namespace uRelease.Controllers
 
         private static RestResponse<VersionBundle> GetVersionBundle()
         {
-            return GetYouTrackResponse<VersionBundle>(VersionBundleUrl);
+            return GetResponse<VersionBundle>(VersionBundleUrl);
         }
 
-        private static RestResponse<T> GetYouTrackResponse<T>(string restUri)
+        private static RestResponse<T> GetResponse<T>(string restUri)
             where T : new()
         {
             var ctor = new DefaultUriConstructor("http", "issues.umbraco.org", 80, "");
