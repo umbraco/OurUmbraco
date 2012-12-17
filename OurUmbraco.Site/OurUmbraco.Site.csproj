@@ -651,7 +651,6 @@
     <Content Include="css\wiki\pin.png" />
     <Content Include="css\wiki\pin_current.png" />
     <Content Include="default.aspx" />
-    <Content Include="Global.asax" />
     <Content Include="Hiccup.aspx" />
     <Content Include="HTMLPage.html" />
     <Content Include="images\add-your-projects.png" />
@@ -3477,9 +3476,6 @@
   <ItemGroup>
     <Content Include="packages.config" />
     <Content Include="bin\umbracoForms.lic" />
-    <Content Include="macroScripts\UpdateMembers.cshtml">
-      <SubType>Code</SubType>
-    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -3574,6 +3570,10 @@
     </VisualStudio>
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(SolutionDir)\dependencies\legacy\*.dll" "$(SolutionDir)OurUmbraco.Site\bin\legacy\" /s /y
+XCOPY "$(SolutionDir)\dependencies\*.lic" "$(SolutionDir)OurUmbraco.Site\bin\" /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
