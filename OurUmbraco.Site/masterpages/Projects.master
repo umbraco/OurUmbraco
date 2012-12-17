@@ -1,0 +1,105 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+  <script id="listing-result" type="text/x-jquery-tmpl">
+        <li class="clearfix">
+            <div class="deliPackage">
+            
+            <div class="brief">
+              <a href="{{= NiceUrl}}" class="packageIcon" style="background:url({{= DefaultScreenShot}}) no-repeat top left;">Package</a>
+              
+              <h3><a href="{{= NiceUrl}}">
+                  {{= Name}}
+              </a></h3>
+
+              <div class="category">{{= CategoryName}}</div>
+
+
+              <div class='commercialIndicator {{= ListingType}}'>{{= ListingType}}</div>
+            </div>
+
+            <div class="hiLite">
+                
+                <p><a href="{{= NiceUrl}}">{{= Description}}</a></p>
+                
+            </div>
+
+            <div class="popularity">
+                <div class="karma">
+                    {{= Karma}}    
+                    <small>Karma</small>
+                </div>
+                <div class="downloads">
+                    {{= Downloads}}    
+                    <small>Downloads</small>
+                </div>
+            </div>
+        </div>
+</li>
+  </script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+<h2 class="sectionTitle">Welcome to Projects. The home for Umbraco packages, add-ons and extensions</h2>
+<div id="body" class="subpage">  
+
+<%-- div style="margin-top: 25px">
+<umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+</div>
+
+<h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1 --%>
+<div class="options">
+   <%if(umbraco.library.IsLoggedOn()){ %>
+      <a class="act add" href="/member/profile/projects">Create a new project</a>
+  <% } %>
+</div>
+
+<div class="deliLeft">
+    <div class="deliNav">
+        <umbraco:Macro Alias="Deli-ProjectCategories" runat="server"></umbraco:Macro>
+    </div>
+    <div class="deliNav paid">
+        <h3>Top Paid Packages</h3>
+        <umbraco:Macro Alias="Deli-TopPaid" runat="server"></umbraco:Macro>
+    </div>
+    <div class="deliNav hqPicks">
+        <h3>HQ Picks</h3>
+        <umbraco:Macro PickedProjects="[#hQPicks]" Alias="Deli-HQPickedProjects" runat="server"></umbraco:Macro>
+    </div>
+    <div class="deliNav deliHelp">
+        <h3>About Projects</h3>
+        <ul>
+            <li><a href="/wiki/deli/deli-getting-started/">List your package</a><br /><small>Both free and commercial</small></li>
+            <li><a href="/wiki/deli/deli-member-faq/">FAQ</a><br /><small>For purchasers</small></li>
+            <li><a href="/wiki/deli/umbraco-deli-package-license-agreement-standard/">Standard Commercial License</a><br /><small>For packages</small></li>
+            <li><a href="http://umbraco.com/contact/send-us-an-email">More Questions?</a><br /><small>Need more?  Contact us here</small></li>
+        </ul>
+    </div>
+</div>
+
+<div class="deliRightWrapper">    
+  
+<div class="deliRight">
+    <div class="deliFeatureBox clearfix">
+        <umbraco:Macro projectId="[#featuredProject]" FeatureImage="[#featuredProjectImage]" Alias="Deli-FeatureProject" runat="server"></umbraco:Macro>
+    </div>
+    <div class="deliPromoArea projectWidgets">
+    
+        <umbraco:Macro MaxPageSize="8" paged="0" ListingType="[@pplt]" Alias="Deli-PopularProjects" runat="server"></umbraco:Macro>
+        <umbraco:Macro MaxPageSize="4" paged="0" ListingType="[@nplt]" Alias="Deli-NewestProjects" runat="server"></umbraco:Macro>
+
+    </div>
+    <div class="deliNotificationToList"><a href="/wiki/deli/deli-getting-started/">Win friends, Influence people. Add your Umbraco package to Projects. Get Started Today &gt;</a></div>
+    <div class="deliPromoBox deliTags">
+        <h2>Browse by Tag</h2>
+        <umbraco:Macro ID="Macro1" Alias="Deli-TagCloud" runat="server"></umbraco:Macro>
+    </div>
+</div>
+   
+</div>
+</div>
+  
+
+</div>
+</asp:Content>

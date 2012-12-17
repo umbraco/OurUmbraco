@@ -1,0 +1,18 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Wiki.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+  <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>  
+
+<div style="padding-top: 25px;"> 
+  <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>  
+</div>
+
+<umbraco:Macro Alias="Wiki-PageEditor" runat="server"></umbraco:Macro>
+  
+
+<umbraco:Macro Alias="Wiki-RelatedContent" keywords="[#keywords]" runat="server"></umbraco:Macro>    
+  
+<asp:ContentPlaceHolder Id="Content" runat="server"/>
+
+  
+</asp:Content>

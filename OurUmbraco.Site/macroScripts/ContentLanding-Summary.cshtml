@@ -1,0 +1,10 @@
+﻿<ul class="projectGroups">
+  @foreach(var item in Model.Children.Where("Visible")){
+    <li>
+    <div style="background-image: url('@item.ContentIcon');">
+        <h3><a href="@item.Url">@item.Name</a></h3>
+        <p>@item.Abstract</p>
+      </div>
+    </li> 
+   }
+</ul>

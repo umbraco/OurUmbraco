@@ -1,0 +1,25 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<currencies standard="EUR">
+    <currency symbol="EUR" name="Euro" rate="1" culture="de-DE">
+    	<levels>
+    		<level>00</level>
+    		<level>49</level>
+    		<level>99</level>
+    	</levels>
+    </currency>
+    <currency symbol="USD" name="US Dollars" rate="1.3636" culture="en-US">
+    	<levels>
+    		<level>0</level>
+    		<level>9</level>
+    	</levels>
+    </currency>
+    
+    <currency symbol="DKK" name="Danske kroner" rate="7.44335333" culture="da-DK">
+		<levels>
+    		<level>00</level>
+    		<level>49</level>
+    		<level>99</level>
+    	</levels>
+    </currency>
+    
+</currencies>

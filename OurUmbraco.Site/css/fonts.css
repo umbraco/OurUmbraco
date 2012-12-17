@@ -1,0 +1,203 @@
+/*FONTS */
+
+body{font-family: Arial, Helvetica, sans-serif; font-size: 13px;}
+
+h1, h2, h3, h4, h5, p{font-family: Arial, Helvetica, sans-serif; color: #333;}
+a{color: #1A6AB3;}
+
+p{font-size: 13px; margin-top: 7px; margin-bottom: 15px; color: #333; line-height: 18px}
+small{font-size: 11px; color: #5b5b5b;}
+
+em{color: #332e2e;}
+h1{font-size: 28px; font-weight: bold;  margin-bottom: 7px;}
+h2{font-size: 18px; font-weight: bold; margin-top: 0px; margin-bottom: 3px;}
+h3{font-size: 14px; font-weight: bold;}
+h4{font-size: 12px; font-weight: bold; }
+h5{font-size: 11px; font-weight: bold; }
+
+/*
+code, pre {
+background-color:#F2F2F2;
+border:1px solid #E3E3E3;
+border-left: 4px solid #e3e3e3;
+display:block !Important;
+font-family:monospace;
+font-size:12px;
+line-height:1.4em;
+margin:0 6em 1em 1em;
+padding: 0.5em;
+max-width: 650px;
+overflow: auto;
+}
+code pre{padding: 0px; border: none}
+#documentation code{display: inline !Important;}
+*/
+
+code, pre {
+  padding: 0 3px 2px;
+  font-family: Menlo, Monaco, "Courier New", monospace;
+  font-size: 12px;
+  color: #333333;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+}
+
+code {
+  padding: 3px 4px;
+  color: #d14;
+  background-color: #f7f7f9;
+  border: 1px solid #e1e1e8;
+}
+
+pre {
+  display: block;
+  padding: 8.5px;
+  margin: 0 0 9px;
+  font-size: 12px;
+  line-height: 18px;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  border-radius: 4px;
+  white-space: pre;
+  white-space: pre-wrap;
+  word-break: break-all;
+  word-wrap: break-word;
+}
+
+pre.prettyprint {
+  margin-bottom: 18px;
+}
+
+pre code {
+  padding: 0;
+  color: inherit;
+  background-color: transparent;
+  border: 0;
+}
+
+.pre-scrollable {
+  max-height: 340px;
+  overflow-y: scroll;
+}
+
+
+#toc{float: right; margin-top: 40px; width: 250px; border: 1px solid #efefef; background: #fff; padding: 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;}
+
+#toc ul{
+  padding: 0px;
+  list-style: none; margin: 0px !Important; padding-top: 5px; display: none;}
+
+#toc ul li{list-style: none; margin: 0px; padding: 3px;}
+
+#toc a{color: #666; font-size: 11px; margin-top; 0px !Important; margin-bottm: 0px !Important; 
+  padding: 0px; text-weight: normal}
+
+#toc li{margin-left: 0px;}
+#toc li.H2{margin-left: 10px;}
+#toc li.H3{margin-left: 20px;}
+#toc li.H4{margin-left: 30px;}
+#toc li.H5{margin-left: 40px;}
+
+#toc a.toggle{display: block; color }
+
+a.act{padding: 2px; padding-left: 20px; color: #252525; background: no-repeat center left;}
+
+
+a.topics{background-image: url(img/ico/balloons.png);}
+a.yourtopics{background-image: url(img/ico/balloon-smiley.png);}
+
+a.edit{background-image: url(img/ico/pencil-small.png);}
+a.delete{background-image: url(img/ico/cross-small.png);}
+a.move{background-image: url(img/ico/document-tree.png);}
+
+a.subscribe{background-image: url(img/ico/mail--plus.png);}
+a.UnSubscribeTopic, a.UnSubscribeForum{background-image: url(img/ico/mail--delete.png);}
+a.upload{background-image: url(img/ico/document--plus.png);}
+#options a.history{background-image: url(img/ico/clock-history.png);}
+
+a.blockMember { background-image: url(img/ico/minus-small-circle.png); }
+a.unblockMember { background-image: url(img/ico/tick-small.png); }
+
+
+.options{padding: 3px !Important;}
+
+a.add{background: #8ECA56 2px 2px url(img/ico/plus-button.png) no-repeat; padding: 3px 3px 3px 25px;
+border: 1px solid #618A3B; color: #fff; text-decoration: none; margin-top: 2px;
+    -webkit-border-radius: 3px; /* Safari prototype */
+  -moz-border-radius: 3px; /* Gecko browsers */
+  border-radius: 3px; /* Everything else - limited support at the moment */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

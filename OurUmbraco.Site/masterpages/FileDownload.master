@@ -1,0 +1,6 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+ <umbraco:Macro Alias="FileDownloadProxy" runat="server"></umbraco:Macro>
+ <% our.mapR.mapr.uPowersEventHandler.triggerDownloadEvent(); %>
+</asp:Content>

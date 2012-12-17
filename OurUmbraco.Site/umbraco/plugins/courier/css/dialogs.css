@@ -1,0 +1,17 @@
+﻿#providerItemsSelector .item 
+{
+    padding-left:10px;
+}
+
+#itemList
+{
+    height:230px;
+    overflow:scroll;
+    overflow-x: hidden;
+    width:350px;
+}
+
+#itemList .item
+{
+     padding-left:10px;
+}

@@ -1,0 +1,21 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Dialogs.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="head" runat="server">
+
+	<script type="text/javascript" src="/scripts/powers/uPowers.js?v=2"></script>
+		
+
+		<script type="text/javascript">
+		  jQuery(document).ready(function(){
+			jQuery("span.toggle").click(function(){
+				jQuery(this).siblings().filter("ul").toggle();				
+			});
+		  });
+		</script>
+
+</asp:Content>
+
+
+<asp:Content ContentPlaceHolderId="body" runat="server">
+	<umbraco:Macro Alias="Wiki-MoveDialog" runat="server"></umbraco:Macro>
+</asp:Content>

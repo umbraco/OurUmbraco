@@ -1,0 +1,187 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>
+    </ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{2040BDAF-A804-462F-8D5F-CA0DF141BF89}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>uDocumentation</RootNamespace>
+    <AssemblyName>uDocumentation</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <UseIISExpress>false</UseIISExpress>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <IISExpressSSLPort />
+    <IISExpressAnonymousAuthentication />
+    <IISExpressWindowsAuthentication />
+    <IISExpressUseClassicPipelineMode />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\dependencies\4.11.2\businesslogic.dll</HintPath>
+    </Reference>
+    <Reference Include="ICSharpCode.SharpZipLib">
+      <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
+    </Reference>
+    <Reference Include="interfaces">
+      <HintPath>..\dependencies\4.11.2\interfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.NET.1.4\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
+    <Reference Include="MarkdownSharp">
+      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="umbraco">
+      <HintPath>..\dependencies\4.11.2\umbraco.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-license.png" />
+    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-search.png" />
+    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-start.png" />
+    <Content Include="usercontrols\DocumentationBreadcrumb.ascx" />
+    <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Busineslogic\ConventionExtensions.cs" />
+    <Compile Include="Busineslogic\DefaultVersion.cs" />
+    <Compile Include="Busineslogic\Events.cs" />
+    <Compile Include="Busineslogic\GithubSourcePull\ZipDownloader.cs" />
+    <Compile Include="Busineslogic\MarkdownLogic.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SearchForMarkdown.cs" />
+    <Compile Include="usercontrols\DocumentationBreadcrumb.ascx.cs">
+      <DependentUpon>DocumentationBreadcrumb.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="usercontrols\DocumentationBreadcrumb.ascx.designer.cs">
+      <DependentUpon>DocumentationBreadcrumb.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="usercontrols\DocumentationShowMarkdown.ascx.cs">
+      <DependentUpon>DocumentationShowMarkdown.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="usercontrols\DocumentationShowMarkdown.ascx.designer.cs">
+      <DependentUpon>DocumentationShowMarkdown.ascx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Documentation\v480\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="masterpages\DocumentationMainpage.master" />
+    <Content Include="masterpages\DocumentationSubpage.master" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Documentation\v501\BestPractices\index.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\Applications.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\Dashboards.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\Editors.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\index.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\Macros.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\MenuItems.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\ParameterEditors.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\PluginsAndPackages.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\PropertyEditors.md" />
+    <None Include="Documentation\v501\Concepts\BackOffice\Trees.md" />
+    <None Include="Documentation\v501\Concepts\index.md" />
+    <None Include="Documentation\v501\GettingStarted\index.md" />
+    <None Include="Documentation\v501\GettingStarted\InstallWebMatrix.md" />
+    <None Include="Documentation\v501\Glossary\index.md" />
+    <None Include="Documentation\v501\index.md" />
+    <None Include="Documentation\v501\Links\index.md" />
+    <None Include="Documentation\v501\Reference\index.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\index.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListAllPages.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListAncestorsFromCurrentPage.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildMediaItemsFromMediaFolder.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPageFromCurrentPage.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromChosenNode.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageByContentType.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByDateDesc.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByName.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByPropAlias.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromSiteRoot.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListDescendantsFromCurrentPage.md" />
+    <None Include="Documentation\v501\Reference\MacroPartials\Samples\Twitter.md" />
+    <None Include="Documentation\v501\Reference\Partials\DynamicModel.md" />
+    <None Include="Documentation\v501\Reference\Partials\index.md" />
+    <None Include="Documentation\v501\Reference\Partials\RenderViewPage.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\index.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.Field.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetContentById.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDictionaryItem.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDictionaryItemForLanguage.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDynamicContentById.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetEntityById.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetMediaUrl.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetPrevalueModel.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetUrl.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.RenderMacro.md" />
+    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.Truncate.md" />
+    <None Include="Documentation\v501\Reference\Razor\index.md" />
+    <None Include="Documentation\v501\Reference\Templating\index.md" />
+    <Content Include="githubpull.config">
+      <SubType>Designer</SubType>
+    </Content>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <ProjectExtensions />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

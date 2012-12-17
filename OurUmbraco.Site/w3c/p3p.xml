@@ -1,0 +1,45 @@
+<POLICIES xmlns="http://www.w3.org/2002/01/P3Pv1" xml:lang="en" >
+<POLICY name = "anything-policy"
+  discuri = "http://our.umbraco.org/policy.xml">
+  <ENTITY>
+    <DATA-GROUP>
+      <DATA ref="#business.name">Umbraco i/s</DATA>
+      <DATA ref="#business.contact-info.online.email">
+        privacy@umbraco.org</DATA>
+    </DATA-GROUP>
+  </ENTITY>
+  <ACCESS><none/></ACCESS>
+  <STATEMENT>
+    <PURPOSE>
+      <current/><admin/><develop/><tailoring/>
+      <pseudo-analysis/><pseudo-decision/><individual-analysis/>
+      <individual-decision/><contact/><historical/><telemarketing/>
+      <other-purpose>Any other purpose we want</other-purpose>
+    </PURPOSE>
+    <RECIPIENT>
+       <ours/><delivery/><same/><other-recipient/><unrelated/><public/>
+    </RECIPIENT>
+    <RETENTION><indefinitely/></RETENTION>
+    <DATA-GROUP>
+      <DATA ref="#dynamic.miscdata">
+        <CATEGORIES>
+          <physical/><online/><uniqueid/><purchase/><financial/>
+          <computer/><navigation/><interactive/><demographic/>
+          <content/><state/><political/><health/><preference/>
+          <location/><government/>
+          <other-category>Any other type of data</other-category>
+        </CATEGORIES>
+      </DATA>
+      <DATA ref="#dynamic.cookies">
+        <CATEGORIES>
+          <physical/><online/><uniqueid/><purchase/><financial/>
+          <computer/><navigation/><interactive/><demographic/>
+          <content/><state/><political/><health/><preference/>
+          <location/><government/>
+          <other-category>Any other type of data</other-category>
+        </CATEGORIES>
+      </DATA>
+    </DATA-GROUP>
+  </STATEMENT>
+</POLICY>
+</POLICIES>

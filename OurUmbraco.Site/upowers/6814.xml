@@ -1,0 +1,26 @@
+<karma>
+  <summaries>
+    <summary>
+      <alias>comment</alias>
+      <memberId>6814</memberId>
+      <performed>2</performed>
+      <received>0</received>
+    </summary>
+  </summaries>
+  <histories>
+    <history>
+      <id>23660</id>
+      <alias>comment</alias>
+      <memberId>6814</memberId>
+      <performed>1</performed>
+      <received>0</received>
+    </history>
+    <history>
+      <id>23664</id>
+      <alias>comment</alias>
+      <memberId>6814</memberId>
+      <performed>1</performed>
+      <received>0</received>
+    </history>
+  </histories>
+</karma>

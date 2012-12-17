@@ -1,0 +1,93 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+  
+  
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />
+  <!-- release scripts -->
+  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
+  <script src="/Scripts/humane.js" type="text/javascript"></script>
+  <script src="/Scripts/app.js?v=2" type="text/javascript"></script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage wrapper">
+    <div style="margin-top: 25px;">
+      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <h1><umbraco:Item field="alternativeHeadline" useIfEmpty="pageName" runat="server"></umbraco:Item></h1>
+    
+
+    <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+    
+   <h2 id="loading" data-bind="visible: versions().length == 0">Loading...</h2> 
+  <div class="releaseTable" data-bind="visible: currentReleases().length > 0">
+    <h2>Current:</h2>
+    <div class="releaseHeaders">
+      <div class="header version">Version</div>
+      <div class="header changes">Changes</div>
+      <div class="header releaseDate">Release Date</div>
+    </div>
+    <div class="released" data-bind="template: { name: 'version-template', foreach: currentReleases}"></div>
+  </div>
+  <div class="releaseTable"  data-bind="visible: inProgressReleases().length > 0">
+    <h2>In Progress:</h2>
+    <div class="releaseHeaders">
+      <div class="header version">Version</div>
+      <div class="header changes">Changes</div>
+      <div class="header releaseDate">Release Date</div>
+    </div>
+    <div class="inprogress" data-bind="template: { name: 'version-template', foreach: inProgressReleases}"></div>
+  </div>
+  <div class="releaseTable"  data-bind="visible: futureReleases().length > 0">
+    <h2>Planned:</h2>
+    <div class="releaseHeaders">
+      <div class="header version">Version</div>
+      <div class="header changes">Changes</div>
+      <div class="header releaseDate">Release Date</div>
+    </div>
+    <div class="future" data-bind="template: { name: 'version-template', foreach: futureReleases}"></div>
+  </div>
+</div>
+  
+<script type="text/html" id="version-template">
+    <div class="releaseRow" data-bind="attr: { id: id }">
+      <div class="version">
+        <h2>
+          <a data-bind="visible: $.inArray(version(), hasPageArray) > -1, text: 'v'+ version(), attr: { href: '/contribute/releases/' + id().substring(1) }"></a>
+          <span data-bind="visible: $.inArray(version(), hasPageArray) == -1, text: version"></span>
+        </h2>
+        <p data-bind="visible: (releaseDescription().length > 0)"><span data-bind="html: releaseDescription"></span></p> 
+      </div>
+      <div class="changes">
+        <div class="progress" data-bind="visible: percentComplete() > 0 || percentComplete() > 0">
+          <span data-bind="attr: { id: id, title: percentComplete() }">0</span>%
+        </div>
+        <div class="changesDetail">
+            Features: <span data-bind="text:featureIssues().length"></span><br/>
+            Issues: <span data-bind="text:issueIssues().length"></span><br/>
+            <span class="breakingChange">Breaking Changes: <span data-bind="text:breakingIssues().length"></span></span>
+        </div>
+      </div>
+      <div class="releaseDate">
+           <span data-bind="text:new Date(releaseDate()).format('MMMM dd, yyyy')"></span>
+      </div>        
+    </div>
+</script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
+  <script type="text/javascript">
+    var hasPageArray = [<umbraco:Macro ReleasesNode="50346" Alias="Releases-GetAllReleases" runat="server"></umbraco:Macro>];
+    $(function () {
+                            
+      // Apply bindings
+      ko.applyBindings(viewModel);
+      // Load data
+      loadData('all');
+    
+    });
+
+    </script>
+</asp:Content>

@@ -1,0 +1,12 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Deli.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="TitleArea" runat="server">
+</asp:Content>
+
+<asp:content ContentPlaceHolderId="DeliRight" runat="server">
+  <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+  <h1 class="deliCatHead">Popular packages</h1>
+  <div class="deliPromoBox clearfix">
+  <umbraco:Macro MaxPageSize="20" paged="1" ListingType="[@pplt]" PageNumber="[@page]" viewAll="[@ViewAll]" Alias="Deli-PopularProjects" runat="server"></umbraco:Macro>
+</div>
+</asp:content>

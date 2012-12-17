@@ -1,0 +1,13 @@
+<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+
+</asp:Content>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+
+<div id="body" class="subpage wrapper">
+  <umbraco:macro Alias="Deli-ProjectLicenseConfiguration" runat="server"></umbraco:Macro>
+</div>
+
+</asp:content>

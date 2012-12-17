@@ -1,0 +1,33 @@
+/* GENERAL STYLES */
+body,html{padding: 10px !Important; margin: 0px !Important; padding: 10px; background: white; background-image: none !Important;}
+#closeHandle{display: none !Important;}
+
+#header{font-size: 14px; font-weight: bold; color: rgb(153, 153, 153); margin-bottom: 7px;}
+
+#header img{display: none !Important;}
+img.gradient{display: none !Important;}
+#theForm{margin-top: -15px; width: 100%; position: relative;}
+#Table1{width: auto !Important; width: 100%; display: block; margin: 0px;}
+
+#profileInfo{font-size: 10px; position: absolute; right: 10px; top: 10px; color: #999;}
+.propertyPane{padding: 10px;}
+
+a{color: black;}
+
+body {
+   margin: 2px
+}
+
+.repoBox{display: block; clear: both; padding: 10px; border-bottom: 1px solid #ccc; margin-bottom: 15px;}
+.noborder{border: none !Important;} 
+h4{margin-top: 0px; margin-bottom: 15px; font-size: 15px;}
+.gradient{background-repeat: no-repeat;}
+
+
+
+
+
+
+
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

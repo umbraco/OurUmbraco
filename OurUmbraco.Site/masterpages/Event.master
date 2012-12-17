@@ -1,0 +1,77 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+	<script type="text/javascript" src="/scripts/events/eventmap.js"></script>
+	
+	<script type="text/javascript">
+		jQuery(document).ready(function(){
+			loadMapWithMarker("googlemap","<umbraco:Item field="latitude" runat="server"/>","<umbraco:Item field="longitude" runat="server"/>");
+		});
+	</script>
+</asp:Content>
+
+
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage">	
+<div style="margin-top: 25px;">
+	<umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+</div>
+
+<h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
+
+
+<h2><umbraco:Item field="start" formatAsDateWithTime="true" formatAsDateWithTimeSeparator=" - " runat="server" /></h2>
+
+
+<div style="float: right; width: 260px;">
+	
+	<umbraco:Macro Alias="Events-EventOptions" runat="server"></umbraco:Macro>		
+	
+	<div class="box">
+		<h4>Time</h4>
+		<dl class="summary">
+		<dt><strong>Starting:</strong></dt>
+		<dd><umbraco:Item field="start" formatAsDateWithTime="true" formatAsDateWithTimeSeparator=" - " runat="server" /></dd>
+		<dt><strong>Ending:</strong></dt>
+		<dd><umbraco:Item field="end" formatAsDateWithTime="true" formatAsDateWithTimeSeparator=" - " runat="server" /></dd>
+		</dl>
+	</div>	
+	
+	<div class="box">
+		<h4>Location</h4>
+		<div style="padding-left: 10px;">
+		<p><umbraco:Item field="venue" runat="server"></umbraco:Item></p>
+
+		<div id="googlemap" style="width: 220px; height: 230px;"></div>
+		</div>
+	</div>
+
+
+	
+</div>
+
+<div style="float: left; width: 630px;">
+<p>
+	<umbraco:Item field="description" stripParagraph="true" runat="server"></umbraco:Item>
+</p>
+
+<div class="divider"></div>
+
+<umbraco:Macro Alias="Events-ShowEvent" runat="server"></umbraco:Macro>
+
+<% if( umbraco.presentation.nodeFactory.Node.GetCurrent().Children.Count > 0 ){ %>
+<div class="divider"></div>
+<div id="forum" style="width:690px;">
+<umbraco:Macro Alias="Forum-overview" runat="server"></umbraco:Macro>
+</div>
+<%
+}
+%>
+</div>
+
+</div>	
+	
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA0NU1XDEzOML2eyLWhmJ9LBSxfxjTTu64lrS209cfOxNPw1orBxShNTRVj48sdN3ldWVic17nG0GLeA" type="text/javascript"></script>
+
+</asp:content>

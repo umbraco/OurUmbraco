@@ -1,0 +1,24 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="main" runat="server">
+
+<div id="body" class="subpage">
+<div id="forum">
+
+<asp:ContentPlaceHolder Id="Main" runat="server">
+<div style="padding-top: 25px">
+<umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro> 	
+</div>
+
+<h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
+<small><umbraco:Item field="forumDescription" recursive="true" runat="server"></umbraco:Item></small>
+
+<umbraco:Macro Alias="Forum-overview" runat="server"></umbraco:Macro>
+
+<umbraco:Macro Alias="Forum-topicsList" runat="server"></umbraco:Macro>
+
+</asp:ContentPlaceHolder>
+</div>
+
+</div>
+</asp:Content>

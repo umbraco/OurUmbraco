@@ -1,0 +1,10 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+ <html>
+   <body>
+     <umbraco:Macro Alias="TestWikiFile" runat="server"></umbraco:Macro>
+   </body>
+   
+  </html>
+</asp:Content>

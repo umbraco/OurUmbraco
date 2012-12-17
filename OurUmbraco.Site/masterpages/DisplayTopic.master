@@ -1,0 +1,12 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Forum.master" AutoEventWireup="true" %>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+	<div style="padding: 35px 0px 25px 0px">
+	<umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+	</div>
+	<h1>wqrjwq</h1>
+        <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
+	<umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
+
+	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
+</asp:content>

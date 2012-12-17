@@ -1,0 +1,35 @@
+﻿@using System.Xml.XPath;
+@using System.Xml;
+
+@{
+    //Fetch RSS XML
+    XmlTextReader rssFeed= new XmlTextReader("https://groups.google.com/group/umbraco-dev/feed/rss_v2_0_topics.xml");
+    
+    //Create new XML document
+    XmlDocument doc = new XmlDocument();
+    
+    //Load in our remote XML into our XML document
+    doc.Load(rssFeed);
+    
+    //Select our nodes we want with some xPath
+    XmlNodeList rssItems = doc.SelectNodes("//item");
+  
+}
+<div id="forum">
+<table class="forumList" cellspacing="0">
+  <tbody>
+    @{
+        //For each item node we can then ouput what we want
+        foreach (XmlNode node in rssItems)
+        {
+    <tr>
+      <th class="title">
+        <a href="@node["link"].InnerText">@node["title"].InnerText</a>
+        <small>Started by @node["author"].InnerText on @String.Format("{0:dddd, MMMM d, yyyy}",DateTime.Parse(node["pubDate"].InnerText.Remove(node["pubDate"].InnerText.IndexOf(" UT"))))</small>   
+      </th>
+    </tr>
+    }
+      }
+ </tbody>
+</table>
+</div>

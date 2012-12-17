@@ -1,0 +1,11 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
+
+
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+
+<div id="body">
+<umbraco:Macro Alias="Member-profile" runat="server"></umbraco:Macro>
+</div>
+	
+</asp:content>

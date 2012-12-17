@@ -1,0 +1,1 @@
+﻿@foreach(var release in Library.NodeById(Parameter.ReleasesNode).Children.Where("Visible")){<text>'@release.VersionTag'@(release.Id != Model.Children.Where("Visible").Last().Id?(","):"")</text>}

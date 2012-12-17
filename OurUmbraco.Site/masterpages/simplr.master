@@ -1,0 +1,78 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+<!DOCTYPE html>
+<html style="height: 100%; margin: 0px; padding: 0px; border: none; overflow: hidden;">
+<head>
+  <title>our.umbraco.org/now</title>
+  
+  <script src="/Scripts/mapr/jQuery-1.6.4.js" type="text/javascript"></script>
+  <script src="/Scripts/mapr/jquery.signalR.js" type="text/javascript"></script>
+  <script src="/Scripts/mapr/mapR.js" type="text/javascript"></script>
+  <script src="/signalr/hubs" type="text/javascript"></script>
+   
+  <script type="text/javascript" src="http://www.google.com/jsapi?key=ABQIAAAA0NU1XDEzOML2eyLWhmJ9LBSxfxjTTu64lrS209cfOxNPw1orBxShNTRVj48sdN3ldWVic17nG0GLeA"></script>
+  <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?sensor=false"></script>
+  <script type="text/javascript" src="/scripts/mapr/infobubble.js"></script>
+  
+  <style type="text/css">
+    
+    html, body{height:100%;margin:0;padding:0; font-family: Helvetica Neue, Helvetica, arial;}
+    #header{height:38px; border-bottom: 2px solid #83b850; background: #8ECA56 url(/css/img/top_logo.png) no-repeat 20px center; color: #fff; text-align: right; padding: 20px 7px 0px 0px; font-size: 12px;}
+    
+    .makr{padding-left: 40px;}
+    .makr img{position: absolute; top: 7px; left: 7px;}
+    .makr div{width: 150px !Important; margin-top: -10px}
+    .makr h3{margin: 0px; padding: 0px; font-weight: normal; margin-top: -2px; line-height: 12px}
+    .makr h3 a{color: #000; font-size: 11px; text-decoration: none;}
+    .makr a:hover{text-decoration: underline;}
+    .makr small{color: #666; font-size: 11px; line-height: 12px;}
+    .wml-info-window-content{background: #fff!Important;}
+    .makr p{color: #999; font-size: 11px;}
+    
+    .makr .t{position: absolute; top: 5px; right: 3px; font-size: 9px; color: #666}
+    
+  </style>
+  
+  
+  <script type="text/javascript">
+    jQuery(document).ready(function(){
+      
+      var mapHeight = jQuery(window).height() - 60;
+      jQuery("#map_canvas").height(mapHeight);
+      loadMap();
+    });
+    
+    
+    jQuery(window).resize(function() {
+      var mapHeight = jQuery(window).height() - 60;
+      jQuery("#map_canvas").height(mapHeight);
+    });
+    
+    
+  </script>
+  
+  
+</head>
+  
+  <body style="height: 100%; margin: 0px; padding: 0px; border: none; overflow: hidden;">
+  <div id="wrapper">
+    <div id="header">
+      <input type="checkbox" name="noSound" id="noSound"> <label for="noSound"> Turn off sound</label>
+    </div>
+    
+    <div id="map_canvas" style="width: 100%; height: 100%"></div>
+  </div>
+    
+    <script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-120590-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
+</asp:Content>

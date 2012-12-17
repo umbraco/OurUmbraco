@@ -1,0 +1,33 @@
+<karma>
+  <summaries>
+    <summary>
+      <alias>project</alias>
+      <memberId>8732</memberId>
+      <performed>0</performed>
+      <received>15</received>
+    </summary>
+  </summaries>
+  <histories>
+    <history>
+      <id>8733</id>
+      <alias>project</alias>
+      <memberId>8732</memberId>
+      <performed>0</performed>
+      <received>5</received>
+    </history>
+    <history>
+      <id>8733</id>
+      <alias>project</alias>
+      <memberId>8732</memberId>
+      <performed>0</performed>
+      <received>5</received>
+    </history>
+    <history>
+      <id>8733</id>
+      <alias>project</alias>
+      <memberId>8732</memberId>
+      <performed>0</performed>
+      <received>5</received>
+    </history>
+  </histories>
+</karma>

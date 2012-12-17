@@ -1,0 +1,104 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />
+  <!-- release scripts -->
+  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
+  <script src="/Scripts/humane.js" type="text/javascript"></script>
+  <script src="/Scripts/app.js?v=2" type="text/javascript"></script>
+</asp:Content>
+  
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+  <div id="body" class="subpage wrapper">
+    <div style="margin-top: 25px;">
+      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <h1>Umbraco <umbraco:Item field="pageName" runat="server" /> <small>Status: <umbraco:Item field="status" runat="server" /></small></h1>
+<h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
+<!-- ko foreach: versions -->
+<div class="version" data-bind="css: { released: released() }, attr: { id: id }">
+          <h3>
+          <span data-bind="text: (released()?'100':percentComplete()) + '% Complete' "></span>
+            <span data-bind="text: percentInProgress() + '% In Progress' "></span>  
+        </h3>
+        <!-- Progress Bar -->    
+        <div class="progressbar">
+          <div class="bar bar1 rl" data-bind="style: { width: (released()?'100':percentComplete()) + '%' }, visible: percentComplete()  > 0 || released(), css: { rr: percentInProgress() == 0 }">&nbsp;</div>
+            <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
+        </div>
+  <h3 data-bind="visible: !released()">Target release date: <span data-bind="text:new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
+  <h3 data-bind="visible: released()"><a href="http://umbraco.codeplex.com/releases">Download it now!</a></h3>
+  <h3>Summary:</h3>
+  <p><span data-bind="html: releaseDescription"></span></p>
+  <div class="panel-wrapper">
+    <div class="panel-left">
+
+
+        <!-- Columns for statuses -->
+        <div class="statuses group">
+            <div class="status features">
+                <h3>Features</h3>
+                <p data-bind="visible: featureIssues().length == 0">No items to display</p>
+                <ul data-bind="template: { name: 'issue-template', foreach: featureIssues}"></ul>                
+            </div>
+            <div class="status breaking">
+                <h3>Breaking Changes</h3>
+                <p data-bind="visible: breakingIssues().length == 0">No items to display</p>
+                <ul data-bind="template: { name: 'issue-template', foreach: breakingIssues}"></ul>
+            </div>
+            <div class="status issues">
+                <h3>Issues &amp; Tasks</h3>
+                <p data-bind="visible: issueIssues().length == 0">No items to display</p>
+                <ul data-bind="template: { name: 'issue-template', foreach: issueIssues}"></ul>
+            </div>
+        </div>
+        
+      <%--
+        <h3 class="activityStream">Activity stream</h3>
+        <ul data-bind="foreach: activities">
+            <li><strong data-bind="text: date.prettyDate()"></strong> <a data-bind="text: username, attr: { href: 'http://issues.umbraco.org/user/' + username() }" target="_blank"></a> updated the issue <a data-bind="text: id, attr: { href: 'http://issues.umbraco.org/issues/' + id() }" target="_blank"></a>. 
+                <ul data-bind="foreach: changes">
+                    <li><strong data-bind="text: fieldName"></strong> was updated <!-- ko if: oldValue() -->from <strong data-bind="text: oldValue"></strong><!-- /ko --> to <strong data-bind="text: newValue"></strong></li>
+                </ul>
+            </li>
+        </ul>
+      
+      --%>
+          
+          
+          
+          </div>
+          <div class="panel-right">
+            <h3 style="margin-bottom:0;">Feature Proposals</h3>
+            <p style="margin:0 0 10px 0;padding:0;"><strong>Open for your comments</strong></p>
+            <umbraco:Macro Alias="RFC-topicList" runat="server"></umbraco:Macro>
+          </div>
+    </div>
+</div>
+<!-- /ko -->
+  </div>
+<script type="text/html" id="issue-template">
+    <li data-bind="attr: { 'class': state().replace(/\s/g, '') }">
+        <a data-bind="text: id() +' '+ title(), attr: { href: 'http://issues.umbraco.org/issue/' + id() }" target="_blank"></a>
+    </li>
+</script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
+  <script type="text/javascript">
+    var currentVersions= [];
+    var inProgressVersions = [];
+    var futureVersions= [];
+    $(function () {
+
+      // Apply bindings
+      ko.applyBindings(viewModel);
+      // Load data
+      loadData('<umbraco:Item field="versionTag" runat="server" />');
+    
+    });
+
+    </script>
+</asp:Content>

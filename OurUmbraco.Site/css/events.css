@@ -1,0 +1,32 @@
+.eventInfo *{font-size: 11px}
+.eventInfo strong a{font-size: 12px}
+.eventInfo ul{margin: 0px; padding-left: 0px;}
+.eventInfo li{padding-left: 5px; margin-left: 0px;}
+
+a.signUpButton{margin: auto; margin-top: 5px; margin-bottom: 5px; text-align: center; text-decoration: none; display: block; padding: 5px; width: 120px; color: #fff; font-size: 12px; background: #8ECA56; border: 1px solid #6AAE30; }
+a.eventcancel{background: #AE3035 !Important; border-color: #6F1B1F }
+a.eventwaiting{background: #EFB34A !Important; border-color: #DF8D00;}
+
+ul.avatarList{list-style: none; margin: 0px; padding: 0px;}
+ul.avatarList li{padding: 0px; margin: 0px;}
+ul.avatarList li a{margin: 0px 0px 10px 10px; display: block; width: 48px; height: 48px; overflow: hidden; border: 1px solid #999; text-decoration: none; float: left;}
+ul.avatarList li img{border: none; width: 48px; height: 48px;}
+
+.datepicker{font-size: 1em}
+.datepicker input{font-size: 1.5em; margin:0.5em 0;border:1px solid #bbb;}
+.datepicker input.hour{width: 30px;}
+.datepicker input.minute{width: 30px;}
+
+table.list{padding-left: 10px; font-size: 11px;}
+table.list thead td{border-bottom: 1px solid #ccc;}
+table.list td{padding: 3px;}
+
+/* css for timepicker */
+.ui-timepicker-div .ui-widget-header{ margin-bottom: 8px; }
+.ui-timepicker-div dl{ text-align: left; }
+.ui-timepicker-div dl dt{ height: 25px; }
+.ui-timepicker-div dl dd{ margin: -25px 20px 10px 65px; height:0.5em !important; }
+.ui-timepicker-div td { font-size: 90%; }
+#ui-datepicker-div {clip:auto;}
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

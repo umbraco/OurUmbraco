@@ -1,0 +1,113 @@
+﻿@using System.Diagnostics
+@using System.Globalization
+@using umbraco.cms.businesslogic.member;
+
+@{
+    //DISABLE
+    return;
+    
+    var i = 0;
+    var stopWatchAll = new Stopwatch();
+    var stopWatch = new Stopwatch();
+
+    var skip = 0;
+    IEnumerable<Member> members;
+    int.TryParse(HttpContext.Current.Request.QueryString["skip"], out skip);
+    
+    i = skip;
+    members = Member.GetAll.OrderBy(x => x.Text).Skip(skip).Take(1000);
+    
+    stopWatchAll.Start();
+}
+
+<h1><a href="@(library.NiceUrl(Model.Id))?skip=@(skip + 1000)">Next 1000</a></h1>
+<h2><i>Done @skip</i></h2>
+@foreach (var mem in members)
+{
+    i++;
+    
+    <h1>@mem.Text</h1>
+
+    stopWatch.Start();
+    mem.Text = GetUniqueString();
+    <h2>Now: @mem.Text</h2>
+    
+    var email = string.Format("member{0}@non-existing-mail-provider.none", i);
+
+    mem.Email = email;
+    mem.LoginName = email;
+    SetPropertyValue(mem, "companyInvoiceEmail", email);
+
+    SetPropertyValue(mem, "ip", "127.0.0.1");
+    SetPropertyValue(mem, "latitude", "0");
+    SetPropertyValue(mem, "longitude", "0");
+    SetPropertyValue(mem, "umbracoDotComID", "0");
+
+    SetPropertyValue(mem, "location");
+    SetPropertyValue(mem, "company");
+    SetPropertyValue(mem, "companyAddress");
+    SetPropertyValue(mem, "companyCountry");
+    SetPropertyValue(mem, "profileText");
+    SetPropertyValue(mem, "twitter");
+    SetPropertyValue(mem, "flickr");
+    SetPropertyValue(mem, "github");
+
+    SetPropertyValue(mem, "billingContactEmail", email);
+    SetPropertyValue(mem, "supportContactEmail", email);
+    SetPropertyValue(mem, "vendorDescription");
+    SetPropertyValue(mem, "vendorLogo");
+    SetPropertyValue(mem, "vendorUrl");
+    SetPropertyValue(mem, "vendorSupportUrl");
+    SetPropertyValue(mem, "vendorSupportUrl");
+    SetPropertyValue(mem, "vendorCountry");
+    SetPropertyValue(mem, "baseCurrency");
+    SetPropertyValue(mem, "iban");
+    SetPropertyValue(mem, "swift");
+    SetPropertyValue(mem, "bsb");
+    SetPropertyValue(mem, "bankAccountNumber");
+    SetPropertyValue(mem, "payPalAccount");
+    SetPropertyValue(mem, "taxId");
+    SetPropertyValue(mem, "vatNumber");
+    SetPropertyValue(mem, "economicId");
+    SetPropertyValue(mem, "companyVATNumber");
+    SetPropertyValue(mem, "companyCountry");
+
+    stopWatch.Stop();
+
+    <h3>Time elapsed: @(stopWatch.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture))ms</h3>
+
+    stopWatch.Reset();
+}
+
+@{
+    stopWatchAll.Stop();
+    <h4>Total time elapsed: @(stopWatchAll.Elapsed.TotalMilliseconds.ToString(CultureInfo.InvariantCulture))ms</h4>
+
+    stopWatchAll.Reset();
+}
+
+@functions
+{
+    static string GetUniqueString()
+    {
+        var guid = Guid.NewGuid();
+        var guidString = Convert.ToBase64String(guid.ToByteArray());
+        guidString = guidString.Replace("=", "");
+        guidString = guidString.Replace("+", "");
+        return guidString;
+    }
+
+    private static void SetPropertyValue(Member member, string propertyName, string value = "")
+    {
+        if (member.getProperty(propertyName) == null)
+            return;
+
+        if (string.IsNullOrWhiteSpace(member.getProperty(propertyName).Value.ToString()))
+            return;
+
+        if (string.IsNullOrWhiteSpace(value))
+            value = GetUniqueString();
+
+        member.getProperty(propertyName).Value = value;
+    }
+}

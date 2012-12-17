@@ -1,0 +1,28 @@
+#fmConfigForm label {
+		clear:left;
+		float:left;
+		padding-bottom: 4px;
+	}
+
+
+#fmConfigForm input {
+		clear:left;
+		display:inline;
+		float:left;
+		width:300px;
+		margin-bottom: 8px;
+	}
+
+
+#fmConfigForm div { width: auto; }
+
+#fmConfigForm div.container { border: 1px solid #dddddd; padding: 5px; margin: 3px; }
+
+#fmConfigForm .instance { border: 1px solid #cccccc; }
+#fmConfigForm .instanceHeader, .containerHeader { width: inherit; background: #dddddd; padding: 8px; }
+#fmConfigForm div.title { float:left; font-weight: bold; }
+#fmConfigForm div.navigation { float: right; }
+#fmConfigForm div.items { padding: 8px; margin: 3px; }
+#fmConfigForm img:hover { cursor: hand; }
+#fmConfigForm .submit { width: 150px; }
+#fmConfigForm a { text-decoration: none; }

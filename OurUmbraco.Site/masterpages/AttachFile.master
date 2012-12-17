@@ -1,0 +1,15 @@
+﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+
+<div id="body" class="subPage">
+
+<h1>Attach file to page</h1>
+
+<umbraco:Macro Alias="wiki-attachfile" runat="server"></umbraco:Macro>
+<umbraco:Macro Alias="Wiki-attachedfiles" runat="server"></umbraco:Macro>
+
+	
+</div>
+
+</asp:content>

@@ -1,0 +1,29 @@
+﻿@using  umbraco.presentation.nodeFactory
+@using System.Xml
+@{
+  var packageGuid = "7fc3e288-2be1-493f-a965-2ca6a3c8c78b";
+  var files = umbraco.library.GetXmlNodeByXPath("descendant::* [@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = translate('" + packageGuid.ToString() + "','ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')]");
+  files.MoveNext();
+
+  if (files.Current is IHasXmlNode)
+                {
+                    Node node = new Node(((IHasXmlNode)files.Current).GetNode());
+                    string fileId = node.GetProperty("file").Value;
+                    int _id;
+
+                    if (int.TryParse(fileId, out _id))
+                    {
+                       
+                        
+                        uWiki.Businesslogic.WikiFile wf = new uWiki.Businesslogic.WikiFile(_id);
+                        <p>
+@wf.Path
+                     @wf.Version.Version
+                     @wf.Id
+</p>
+                    }
+                } 
+  }
+
+
+

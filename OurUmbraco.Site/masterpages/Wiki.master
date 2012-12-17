@@ -1,0 +1,78 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="main" runat="server">
+
+
+<div id="wiki" class="subpage">
+
+<div id="body">
+<asp:ContentPlaceHolder Id="Main" runat="server">
+<div style="margin-top: 25px;">
+<umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+</div>
+
+
+<h1>The umbraco documentation wiki</h1>
+ 
+<div class="options">
+  <p style="text-align: left;">
+  The umbraco documentation wiki is community driven documentation effort for <a href="http://umbraco.org">Umbraco</a>. Content is both submitted 
+  by <a href="/wiki/about/core-team">The core team</a>, the <a href="/wiki/about/mvps">MVPs</a>, the <a href="/wiki/about/umbraco-corporation">umbraco corporation</a> 
+  and ofcourse anyone else in the community 
+  who wishes to contribute.
+</p>
+</div>
+  
+<ul class="projectGroups">
+  <li>
+    <div style="background-image: url('/images/wiki/it.png');">
+        <h3><a href="/wiki/recommendations/recommended-reading-for-it-administrators">Recommended reading for IT admin</a></h3>
+        <p>Minimum requirements, How to install on Windows 7, Handling folder permissions, Use Windows Platform Installer</p>
+      </div>
+    </li>  
+  
+    <li>
+      <div style="background-image: url('/images/wiki/editor.png');">
+        <h3><a href="/wiki/recommendations/recommended-reading-for-content-editors">Recommended reading for editors</a></h3>
+        <p>How to add new buttons to TinyMCE, How do I move documents, how to rollback changes</p>
+      </div>
+    </li>
+  
+     <li>
+      <div style="background-image: url('/images/wiki/webdev.png');">
+        <h3><a href="/wiki/recommendations/recommended-reading-for-web-developers">Recommended reading for web developers</a></h3>
+        <p>What is XSLT? how do I migrate my html? what about css?, how do I create forms?</p>
+      </div>
+    </li>
+    
+     <li>
+      <div style="background-image: url('/images/wiki/netdev.png');">
+        <h3><a href="/wiki/recommendations/recommended-reading-for-net-developers">Recommended reading for .net programmers</a></h3>
+        <p>The Umbraco API, the Event Model, how to extend the backend, how to integrate 3rd party data</p>
+      </div>
+    </li>
+  
+    <li>
+      <div style="background-image: url('/images/wiki/package.png');">
+        <h3><a href="/wiki/recommendations/recommended-reading-for-package-developers">Package developers</a></h3>
+        <p>How redistribute, how to write good documentation, the package format etc, installation actions</p>
+      </div>
+    </li>
+</ul>
+
+<br style="clear: both"/>
+
+
+<div class="divider"></div>
+
+<h2>Table of contents</h2>
+<umbraco:Macro Alias="Wiki-subjects" runat="server"></umbraco:Macro>
+
+
+
+</asp:ContentPlaceHolder>
+</div>
+
+</div>
+
+</asp:Content>

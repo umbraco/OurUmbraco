@@ -1,0 +1,1 @@
+﻿@foreach(var release in Model.Children.Where("Visible")){<text>@if(Parameter.Status.Contains(release.Status.Trim())){<text>'@release.VersionTag',</text>}</text>}

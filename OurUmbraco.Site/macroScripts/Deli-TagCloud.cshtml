@@ -1,0 +1,33 @@
+﻿@using Marketplace.Interfaces
+@using Marketplace.Providers
+
+@{
+    var tagsProvider = (IProjectTagProvider)MarketplaceProviderManager.Providers["TagProvider"];
+    var tags = tagsProvider.GetAllTags(false).OrderBy(x => x.Count).Take(50).OrderBy(x => x.Text);
+    max = tags.Max(x => x.LiveCount);
+}
+
+@functions{
+
+    public int max { get; set; }    
+    public string weight(int liveCount)
+    {
+        double perc = ((double)liveCount / (double)max) * 100;
+        
+        if(perc >= 99)return "weight1";
+        if(perc >= 70)return "weight2";
+        if(perc >= 40)return "weight3";
+        if(perc >= 20)return "weight4";
+        return "weight5";
+        
+               
+    }
+} 
+
+
+
+<div id="tagCloud">
+@foreach (var t in tags) { 
+    <a href="/projects/tag/@t.Text#projectList" class="@weight(t.LiveCount)">@t.Text</a>
+}
+</div>

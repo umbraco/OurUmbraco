@@ -1,0 +1,194 @@
+body {
+		background: #fff;
+		font-family: Helvetica;
+		margin: 0;
+		padding: 0;
+		-webkit-user-select: none;
+		-webkit-text-size-adjust: none;
+		}
+		
+		
+div#header + h1, ul + h1 {
+			color: rgb(76,86,108);
+			font: bold 18px Helvetica;
+			text-shadow: #fff 0 1px 0;
+			margin: 15px 0 0 10px;  
+			}
+			
+			
+p {
+			color: rgb(76,86,108);
+			font: medium Helvetica;
+			text-align: center;
+			text-shadow: white 0 1px 0;
+			margin: 0 10px 17px 0;
+			text-align: left;
+			}
+
+div#header {
+			background: #8ECA56;
+			border-bottom: 1px solid #6AAE30;
+			padding: 10px;
+			margin: 0 0 0 -10px;
+			min-height: 44px;
+			-webkit-box-sizing: border-box;
+			}
+
+
+				div#header h1 {
+					color: #fff;
+					font: bold 20px/30px Helvetica;
+					text-shadow: #6AAE30 0 -1px 0;
+					text-align: center;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
+					width: 49%;
+					padding: 5px 0;
+					margin: 2px 0 0 -24%;
+					position: absolute;
+					top: 0;
+					left: 50%;
+					}
+
+					div#header a {
+						color: #FFF;
+						background: none;
+						font: bold 12px/30px Helvetica;
+						border-width: 0 5px;
+						margin: 0;
+						padding: 0 3px;
+						width: auto;
+						height: 30px;
+						text-shadow: #6AAE30 0 -1px 0;
+						text-overflow: ellipsis;
+						text-decoration: none;
+						white-space: nowrap;
+						position: absolute;
+						overflow: hidden;
+						top: 7px;
+						right: 6px;
+						-webkit-border-image: url(../images/toolButton.png) 0 5 0 5;
+						}
+
+						div#header #backButton {
+							left: 6px;
+							right: auto;
+							padding: 0;
+							max-width: 55px;
+							border-width: 0 8px 0 14px;
+							-webkit-border-image: url(../images/backButton.png) 0 8 0 14;
+							}
+
+
+						.Action {
+							border-width: 0 5px;
+							-webkit-border-image: url(../images/actionButton.png) 0 5 0 5;
+						}
+
+
+						
+						div#header ul {
+							margin-top: 15px;
+						}
+						
+						div#header p {
+							color: rgb(60,70,80);
+							font-weight: bold;
+							font-size: 13px;
+							text-align: center;
+							clear: both;
+							position: absolute;
+							top: 4px;
+							left: 35px;
+							right: 35px;
+							margin: 0;
+							text-shadow: #C0CBDB 0 1px 0;
+							text-overflow: ellipsis;
+							white-space: nowrap;
+							overflow: hidden;
+						}
+						
+						div.pre {
+							height: 60px;
+							}
+
+
+							div.pre h1 {
+								top: 18px !important;
+								}
+								
+							div.pre a {
+								top: 25px !important;
+								right: 6px;
+								}
+								
+							div.pre a#Backbutton {
+								left: 6px !important;
+							}
+							
+							
+							
+			small {
+					color: #369;
+					text-align: right;
+					text-overflow: ellipsis;
+					white-space: nowrap;
+					overflow: hidden;
+					display: block;
+					padding: 0px;
+					}
+					
+					
+					small.counter {
+						font-size: medium !important;
+						line-height: 13px !important;
+						font-weight: bold;
+						background: rgb(154,159,170);
+						color: #fff;
+						-webkit-border-radius: 4px;
+						padding: 4px 10px 5px 10px;
+						display: inline !important;
+						width: auto;
+						margin-top: 2px;
+					}
+					
+					
+
+
+h2{font-size: large;}
+#content{margin: 10px;}
+.memberBadge{width: 32px; height: 32px; float: left; margin: 17px 15px 10px 15px; background: center center no-repeat; border: 1px solid #999;}
+.body{background: #efefef; font-size: medium; color: #000; padding: 15px; margin-top: 10px; text-align: left; -webkit-border-radius: 4px;}
+
+#search{border-bottom: #999 1px solid; padding: 5px; background: #ccc; text-align: center; margin: auto; height: 35px; vertical-align: top}
+#search input.field{width: 60%; font-size: medium; font-weight: bold; background: #fff; height: 22px;}
+#bt_search{width: 20px; height: 20px; padding: 5px; border: none; margin-bottom: -11px}
+
+.newTopic, .reply{text-align: center; padding: 10px; }
+.newTopic a, .reply a{margin: auto; width: 75%; background: #8ECA56; border: 1px solid #6AAE30; display: block; padding: 5px; color: #fff; text-decoration: none; -webkit-border-radius: 8px;}
+.backUp{text-align: center; display: block; margin: 15px; background: #ccc; border: 1px solid #999; text-decoration: none; -webkit-border-radius: 8px; padding: 5px; color: #999; text-decoration: none;}
+
+.list{display: block; background: #efefef; -webkit-border-radius: 4px; margin: 0; padding: 0;}
+.list li{display: block; border-bottom: 1px solid #fff; padding: 10px;}
+
+.list li a{color: #000; font-size: medium; font-weight: bold; text-decoration: none; display: block; padding-right: 40px;}
+.list li a span{font-size: small; color: #369; font-weight: normal;} 
+.list li small.counter{float: right;}
+
+
+#newTopicForm .form, #replyForm .form{background: #fff; -webkit-border-radius: 4px; border: 1px solid #999; padding: 10px;}
+#newTopicForm input[type="text"], #newTopicForm textarea, #replyForm textarea{width: 90%; background: #fff; border: 0; background: #fff; font-size: medium; font-weight: bold;}
+
+#newTopicForm a, #replyForm a{float: left; text-align: center; background: #8ECA56; border: 1px solid #6AAE30; display: block; padding: 5px; color: #fff; text-decoration: none; -webkit-border-radius: 8px; width: 33%; margin: 10px;}
+#newTopicForm a.cancelButton, #replyForm a.cancelButton{background: #FFF6BF; border-color: #FFD324; color: #514721;} 
+
+.notification{background: #FFF6BF; border-color: #FFD324; color: #514721;padding:5px;} 
+
+
+
+
+
+
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

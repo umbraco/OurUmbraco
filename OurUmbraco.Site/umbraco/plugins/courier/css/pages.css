@@ -1,0 +1,56 @@
+﻿#prodiderContents
+{
+    padding-top:10px;
+    
+}
+
+.providerContentsDetails
+{
+    margin-bottom:10px;
+    background-color:#EEE;
+    border: 1px solid #DDD;
+}
+
+.providerContentsDetails .providerName
+{
+    padding:5px;
+    font-size:14px;
+}
+
+#addProviderContents
+{
+    margin-top:10px;
+    padding:5px;
+    font-size:14px;
+    text-align: right;
+}
+
+.providerItems .selectedItem
+{
+    margin:5px;
+    padding:3px;
+    background-color:#CDCDCD;
+    border: 1px solid #BCBCBC;
+}
+
+.providerName .itemCount
+{
+    cursor:pointer;
+}
+
+.hiddenItems
+{
+    display:none;
+}
+
+.deleteItem
+{
+    cursor:pointer;
+    float:right;
+}
+
+.addItems
+{
+    cursor:pointer;
+    float:right;
+}

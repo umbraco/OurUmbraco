@@ -1,0 +1,194 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <link rel="stylesheet" type="text/css" href="/css/poll/Nibble.Umb.Poll.css" />
+  
+  
+           <script type="text/javascript">
+  
+$(document).ready(function() {
+
+var firstchoice= ""
+var secondchoice = "";
+var thirdchoice = "";
+  
+$(".firstchoice5points select").change(function(){
+
+    if(firstchoice != ""){
+        $(".firstchoice5points select option[value='"+firstchoice+"']").clone().appendTo('.secondchoice3points  select');
+        $(".firstchoice5points select option[value='"+firstchoice+"']").clone().appendTo('.thirdchoice1point select');
+      
+    }
+    firstchoice = $(this).val();
+   
+    if(firstchoice != ""){
+      $(".secondchoice3points  select option[value='"+firstchoice+"']").remove();
+      $(".thirdchoice1point  select option[value='"+firstchoice+"']").remove();
+     }
+});
+
+$(".secondchoice3points select").change(function(){
+
+    if(secondchoice != ""){
+        $(".secondchoice3points select option[value='"+secondchoice+"']").clone().appendTo('.firstchoice5points  select');
+        $(".secondchoice3points select option[value='"+secondchoice+"']").clone().appendTo('.thirdchoice1point  select');
+       
+    }
+
+    secondchoice = $(this).val();
+    if(secondchoice != ""){
+      $(".firstchoice5points select option[value='"+secondchoice+"']").remove();
+      $(".thirdchoice1point select option[value='"+secondchoice+"']").remove();
+    }
+});
+
+  
+$(".thirdchoice1point select").change(function(){
+
+    if(thirdchoice != ""){
+        $(".thirdchoice1point select option[value='"+thirdchoice+"']").clone().appendTo('.firstchoice5points  select');
+        $(".thirdchoice1point select option[value='"+thirdchoice+"']").clone().appendTo('.secondchoice3points select');
+      
+    }
+
+    thirdchoice = $(this).val();
+    if(thirdchoice != ""){
+      $(".firstchoice5points select option[value='"+thirdchoice+"']").remove();
+      $(".secondchoice3points select option[value='"+thirdchoice+"']").remove();
+    }
+});
+
+  
+});
+           
+           
+           
+
+         </script>
+</asp:Content>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage">
+<h1>Umbraco MVP 2011</h1>
+<umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+<p>
+It's time to find the 2011 <a href="http://umbraco.com/follow-us/blog-archive/2011/3/8/what-is-an-umbraco-mvp">Umbraco MVPs</a> and to make sure that the selection reflects who's most helpful, it's 100% based on votes from 
+the worlds most friendly community.</p>
+<h3>Here's how it works</h3>
+<p>The short-list below is the twenty people who've collected most karma from Our Umbraco the last twelve months. Congratulations to all who made this list 
+and a massive THANK YOU for your big effort in making the Umbraco community what it is!</p>
+  
+  <p>
+    <ul style="float:left;width:130px;" class="forumTopics summary">
+       <li><img alt="Topic author image" src="/media/avatar/5119.jpg"><a href="/member/5119">Chriztian Steinmeier</a></li>
+        <li><img alt="Topic author image" src="/media/avatar/5870.jpg"><a href="/member/5870">Daniel Bardi</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/1199.jpg"><a href="/member/1199">Darren Ferguson</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/1173.jpg"><a href="/member/1173">Dirk De Grave</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/1172.jpg"><a href="/member/1172">Douglas Robar</a></li>
+     </ul>
+    
+    
+   
+ 
+  
+  
+    
+    <ul style="float:left;width:130px;" class="forumTopics summary">
+      <li><img alt="Topic author image" src="/media/avatar/1713.jpg"><a href="/member/1713">Hendy Racher</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/1203.jpg"><a href="/member/1203">Ismail Mayat</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/2224.jpg"><a href="/member/2224">Jan Skovgaard</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/4297.jpg"><a href="/member/4297">Jeroen Breuer</a></li>
+      <li><img alt="Topic author image" src="/media/avatar/5050.jpg"><a href="/member/5050">Kim Andersen</a></li>
+  </ul>
+    
+    <ul style="float:left;width:130px;" class="forumTopics summary">
+
+     <li><img alt="Topic author image" src="/media/avatar/3042.jpg"><a href="/member/3042">Lee Kelleher</a></li>
+     <li><img alt="Topic author image" src="/media/avatar/3188.jpg"><a href="/member/3188">Lee Messenger</a></li>
+    <li><img alt="Topic author image" src="/media/avatar/5518.jpg"><a href="/member/5518">Matt Brailsford</a></li>
+   <li><img alt="Topic author image" src="/media/avatar/2368.jpg"><a href="/member/2368">Morten Christensen</a></li>
+     <li><img alt="Topic author image" src="/media/avatar/5640.jpg"><a href="/member/5640">Rich Green</a></li>
+      
+  
+  </ul>
+    
+    <ul style="float:left;width:130px;" class="forumTopics summary">
+   <li><img alt="Topic author image" src="/media/avatar/2798.jpg"><a href="/member/2798">Richard Soeteman</a></li>
+  <li><img alt="Topic author image" src="/media/avatar/7142.jpg"><a href="/member/7142">Sascha Wolter</a></li>
+   <li><img alt="Topic author image" src="/media/avatar/4576.jpg"><a href="/member/4576">Sebastiaan Janssen</a></li>
+   <li><img alt="Topic author image" src="/media/avatar/5853.jpg"><a href="/member/5853">Stefan Kip</a></li>
+    <li><img alt="Topic author image" src="/media/avatar/6296.jpg"><a href="/member/6296">Tim Payne</a></li>
+  </ul>
+    
+  
+  </p>
+  
+  <br style="clear:both;"/>
+<p>
+The five people with most votes from 15 March until 15 April 2011 will become 2011 MVPs. You can pick 3 people (your first choice gets 5 points, second 3 points and third 1 point) .You can only vote once and cannot change your vote.
+  The 2011 MVPs will be announced at <a href="http://umbraco.com/codegarden-2011">CodeGarden 11</a>.
+
+  </p>
+
+     <%
+  
+      if(DateTime.Now > new DateTime(2011, 4, 15, 23, 59, 59))
+  {
+    %>
+        <p>Voting has now finished for the Umbraco MVP awards.<br/>
+          The MVPs will be announced at this years <a href="http://codegarden11.com/">CodeGarden</a> in Copenhagen.</p>
+      
+    <%
+  }
+  else
+  
+  {
+      if(umbraco.cms.businesslogic.member.Member.GetCurrentMember() == null || umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id == null){
+     %>
+    
+       <p><strong>You need to <a href="http://our.umbraco.org/member/login?redirectUrl=http://our.umbraco.org/UmbracoMVP2011">log in</a> before casting your vote.</strong></p>
+       
+    <%}else{
+       
+
+       // Umbraco.Forms.Data.Storage.RecordStorage s = new Umbraco.Forms.Data.Storage.RecordStorage();
+       //var all = s.GetAllRecords(new Guid("12c58e28-ca9e-4e05-9849-8ae8ed555109"));
+
+       //var voted = all.Find(r => r.MemberKey.ToString() == umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id.ToString());
+         
+          System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
+           System.Data.SqlClient.SqlCommand comm = new System.Data.SqlClient.SqlCommand(
+               "SELECT 1 FROM UFRecords where form = '12C58E28-CA9E-4E05-9849-8AE8ED555109' and memberkey = @memberkey",
+               conn);
+            comm.Parameters.AddWithValue("@memberkey",umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id);
+
+            conn.Open();
+            bool membervoted = false;
+            System.Data.SqlClient.SqlDataReader rdr = comm.ExecuteReader();
+
+            while (rdr.Read())
+            {
+                membervoted = true;
+            }
+            conn.Close();
+  
+         
+         if (membervoted == false)
+         {
+      %> 
+      
+         
+
+         
+         
+        <umbraco:Macro FormGuid="12c58e28-ca9e-4e05-9849-8ae8ed555109" Alias="umbracoContour.RenderForm" runat="server"></umbraco:Macro>
+
+
+       <% }else{ %>
+         
+         <p><strong>Thanks for your vote.</strong></p>
+         
+         <% }}} %>
+
+</div>
+</asp:content>

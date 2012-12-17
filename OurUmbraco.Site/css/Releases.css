@@ -1,0 +1,314 @@
+.panel-wrapper{
+  overflow:hidden;
+}
+
+.panel-left{
+  float:left;
+  width:600px;
+}
+
+.panel-right{
+ float:right;
+ width:300px;
+ padding:10px 0 30px 40px; 
+}
+
+.progressbar {
+    position: relative;
+    border: solid 1px #aeaeae;
+    background-color: #fff;
+    padding: 5px;
+    height: 30px;
+    margin:5px 0;
+    
+    -ms-border-raidus:5px;
+    -moz-border-raidus:5px;
+    -o-border-raidus:5px;
+    -webkit-border-raidus:5px;
+    border-radius:5px;
+}
+
+.bar 
+{
+    float: left;
+    height: 30px;
+    -webkit-animation: barWidth 1s cubic-bezier(.93,1.67,.48,.66);
+    -moz-animation: barWidth 1s cubic-bezier(.93,1.67,.48,.66);
+}
+
+/* Animate the bars */
+@keyframes barWidth{from { width: 0%; }}
+@-webkit-keyframes barWidth{from { width: 0%; }}
+@-moz-keyframes barWidth{from { width: 0%; }}
+@-o-keyframes barWidth{from { width: 0%; }}
+@-ms-keyframes barWidth {from { width: 0%; }}
+
+.rl
+{    
+    /*
+    -ms-border-raidus:5px;
+    -moz-border-raidus:5px;
+    -o-border-raidus:5px;
+    */
+    -webkit-border-top-left-radius:5px;
+    -webkit-border-bottom-left-radius:5px;
+    border-top-left-radius:5px;
+    border-bottom-left-radius:5px;
+}
+
+.rr
+{
+    /*
+    -ms-border-raidus:5px;
+    -moz-border-raidus:5px;
+    -o-border-raidus:5px;
+    */
+    -webkit-border-top-right-radius:5px;
+    -webkit-border-bottom-right-radius:5px;
+    border-top-right-radius:5px;
+    border-bottom-right-radius:5px;
+}
+
+.progressbar-small{ 
+    height:10px;
+    padding: 2px;
+    -ms-border-raidus:3px;
+    -moz-border-raidus:3px;
+    -o-border-raidus:3px;
+    -webkit-border-raidus:3px;
+    border-radius:3px;}
+
+.progressbar-small .bar{ height:10px;}
+
+.progressbar-small .rl
+{    
+    /*
+    -ms-border-raidus:3px;
+    -moz-border-raidus:3px;
+    -o-border-raidus:3px;
+    */
+    -webkit-border-top-left-radius:3px;
+    -webkit-border-bottom-left-radius:3px;
+    border-top-left-radius:3px;
+    border-bottom-left-radius:3px;
+}
+
+.progressbar-small .rr
+{
+    /*
+    -ms-border-raidus:3px;
+    -moz-border-raidus:3px;
+    -o-border-raidus:3px;
+    */
+    -webkit-border-top-right-radius:3px;
+    -webkit-border-bottom-right-radius:3px;
+    border-top-right-radius:3px;
+    border-bottom-right-radius:3px;
+}
+
+.bar1  { background-color: #72BD51; }
+.bar2  { background-color: #f36f21; }
+
+
+
+.status ul{
+  list-style:none;
+  padding:0;
+}
+
+.status li{
+  padding:3px 5px;
+}
+
+.status li{
+  padding-left:20px;
+}
+
+.Fixed{background: url(img/ico/tick.png) no-repeat 0px 3px;}
+.InProgress{background: url(img/ico/clock_select_remain.png) no-repeat 0px 3px;}
+.Open{background: none;}
+
+
+.status li a,
+.Open a{
+   color:#999; 
+}
+
+.Fixed a{
+   color:#333 !important; 
+}
+
+.InProgress a{
+  color:#72BD51 !important;
+}
+
+.rfcTopic{
+  padding:5px 5px 5px 50px;
+  background: no-repeat 5px 15px url(forum/forum.gif);
+  border-bottom: #efefef 1px solid;
+}
+
+.solved{background-image: url(forum/solved.gif);}
+
+.rfcOptions{padding:10px 5px;}
+  
+.addRfc{background-image: url(forum/comment_add.png) !important;}
+
+
+.releaseListing{ margin-bottom:25px;}
+
+.releaseListing .version{
+  padding:7px 5px 7px 55px;
+  -moz-border-radius: 5px; -webkit-border-radius: 5px;
+  border-radius: 5px;
+  min-height: 35px;
+}
+
+
+.future .version{
+  background: no-repeat 10px 10px url(img/box_planning.png);
+}
+
+.releaseListing .future .version
+{
+  border-bottom: #efefef 1px solid;
+}
+
+.released .version{
+ background: no-repeat 10px 10px url(img/box_released.png);
+
+}
+
+.plannedreleases .version{
+ background: no-repeat 10px 10px url(img/box_released.png);
+}
+
+.plannedreleases .progressDivider{
+ background: no-repeat center url(img/roadmap-divider.png);
+ height:20px;
+}
+
+.inprogress .version{
+ background: no-repeat 10px 10px url(img/box_open.png);
+}
+
+.beta .version{
+ background: no-repeat 10px 10px url(img/box_closed.png);
+}
+
+.releaseTable{
+  margin-bottom:50px;
+}
+
+.releaseTable .releaseHeaders,
+.releaseTable .releaseRow{
+  overflow: hidden;
+  border-bottom:1px solid #efefef;
+}
+
+.releaseTable .releaseHeaders div{
+  font-size:11px;
+  color:#252525;
+}
+
+.releaseTable .releaseHeaders div,
+.releaseTable .releaseRow div{
+  float:left;
+}
+
+.releaseTable .releaseHeaders{
+  border-bottom:1px solid #ccc;
+  color:#252525;
+}
+
+.releaseHeaders .version{
+  width:455px;
+  padding:3px 10px 3px 55px !important;
+  background:none;
+}
+
+.releaseRow .version{
+  padding:10px 10px 10px 55px;
+  width:455px;
+  background-position: 10px 15px;
+  min-height: 49px;
+}
+
+.plannedreleases .version h2,
+.releaseRow .version h2{
+  color:#5b5b5b;
+}
+
+.plannedreleases .version h2 a,
+.releaseRow .version a{
+  text-decoration: none;
+  color:#252525;
+}
+
+.plannedreleases .version h2 a:hover,
+.releaseRow .version a:hover{
+  text-decoration: underline;
+  color:#5b5b5b;
+}
+
+.releaseRow .version p{
+  margin:0 0 7px 0;
+  font-size: 11px;
+  line-height: 13px;
+  color:#5b5b5b;
+}
+
+.releaseRow .changes{
+  padding:10px;
+  width:300px;
+}
+
+.releaseRow .changesDetail{
+  font-size: 11px;
+  line-height: 15px;
+  color:#5b5b5b;
+}
+
+.releaseRow .breakingChange{
+  color:#7d0000;
+}
+
+.releaseHeaders .changes{
+  width:300px;
+  padding:3px 10px !important;
+  background:none;
+}
+
+.releaseRow .releaseDate{
+  padding:10px;
+  width:120px;
+  font-size:11px;
+  color:#5b5b5b;
+}
+
+.releaseHeaders .releaseDate{
+  width:120px;
+  padding:3px 10px !important;
+  background:none;
+}
+
+.changes .progress{
+  font-size:50px;
+  line-height:47px;
+  color:#252525;
+  font-weight:bold;
+  padding-right:5px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

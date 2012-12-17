@@ -1,0 +1,69 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+  
+  
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />
+  <!-- release scripts -->
+  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
+  <script src="/Scripts/humane.js" type="text/javascript"></script>
+  <script src="/Scripts/app.js?v=2" type="text/javascript"></script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage wrapper">
+    <div style="margin-top: 25px;">
+      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <h1><umbraco:Item field="alternativeHeadline" useIfEmpty="pageName" runat="server"></umbraco:Item></h1>
+    
+
+    <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+    
+   <h2 id="loading" data-bind="visible: versions().length == 0">Loading...</h2> 
+  <div class="releaseListing" data-bind="visible: currentReleases().length > 0">
+    <h2>Current Release:</h2>
+    <div class="released" data-bind="template: { name: 'version-template', foreach: currentReleases}"></div>
+  </div>
+  <div class="releaseListing"  data-bind="visible: inProgressReleases().length > 0">
+    <h2>In Progress Release:</h2>
+    <div class="inprogress" data-bind="template: { name: 'version-template', foreach: inProgressReleases}"></div>
+  </div>
+  <div class="releaseListing"  data-bind="visible: futureReleases().length > 0">
+    <h2>Future Releases:</h2>
+    <div class="future" data-bind="template: { name: 'version-template', foreach: futureReleases}"></div>
+  </div>
+</div>
+  
+<script type="text/html" id="version-template">
+    <div class="version" data-bind="attr: { id: id }">
+      <h2><a data-bind="text: 'v'+ version(), attr: { href: '/contribute/releases/' + id().substring(1) }"><span data-bind="text: version"></span></a><span data-bind="visible: released()"> - released!</span><span data-bind="visible: !released()"> <small><span data-bind="text: 'Features: ' + featureIssues().length"></span>
+        <span data-bind="text: ' Issues: ' + issueIssues().length"></span><span data-bind="text: ' Breaking Changes: ' + breakingIssues().length"></span></small></span></h2>    
+          <div class="progressbar progressbar-small" data-bind="visible: percentInProgress() > 0 || percentComplete() > 0">
+            <div class="bar bar1 rl" data-bind="style: { width: percentComplete() + '%' }, visible: percentComplete() > 0, css: { rr: percentInProgress() == 0 }">&nbsp;</div>
+            <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
+        </div>
+        <span data-bind="visible: !released()">Target release date: <em><span data-bind="text:new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span></em></span>
+        <span data-bind="visible: released()"><em><a href="http://umbraco.codeplex.com/releases">Download it now!</a></em><br/></span>
+        <p data-bind="visible: (releaseDescription().length > 0)">Summary: <em><span data-bind="html: releaseDescription"></span></em></p> 
+    </div>
+</script>
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
+  <script type="text/javascript">
+    var currentVersions= [<umbraco:Macro Status="Released" Alias="Releases-ReleaseList" runat="server"></umbraco:Macro>];
+    var inProgressVersions = [<umbraco:Macro Alias="Releases-ReleaseList" Status="Alpha,Beta,RC" runat="server"></umbraco:Macro>];
+    var futureVersions= [<umbraco:Macro Alias="Releases-ReleaseList" Status="Planning" runat="server"></umbraco:Macro>];
+    $(function () {
+      
+      // Apply bindings
+      ko.applyBindings(viewModel);
+      // Load data
+      loadData('<umbraco:Macro ReleasesNode="49470" Alias="Releases-GetAllReleases" runat="server"></umbraco:Macro>');
+    
+    });
+
+    </script>
+</asp:Content>
