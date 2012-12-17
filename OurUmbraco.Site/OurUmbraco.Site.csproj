@@ -106,10 +106,6 @@
     <Reference Include="itextsharp">
       <HintPath>..\dependencies\Our\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=1.2.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\log4net.dll</HintPath>
-    </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
@@ -176,9 +172,6 @@
     </Reference>
     <Reference Include="OurkarmaTest">
       <HintPath>..\dependencies\Our\OurkarmaTest.dll</HintPath>
-    </Reference>
-    <Reference Include="PackageActionsContrib">
-      <HintPath>..\dependencies\Our\PackageActionsContrib.dll</HintPath>
     </Reference>
     <Reference Include="ProjectForumMover">
       <HintPath>..\dependencies\Our\ProjectForumMover.dll</HintPath>
@@ -250,12 +243,6 @@
     <Reference Include="uComponents.Core">
       <HintPath>..\dependencies\Our\uComponents.Core.dll</HintPath>
     </Reference>
-    <Reference Include="UmbImport">
-      <HintPath>..\dependencies\Our\UmbImport.dll</HintPath>
-    </Reference>
-    <Reference Include="UmbImportLibrary">
-      <HintPath>..\dependencies\Our\UmbImportLibrary.dll</HintPath>
-    </Reference>
     <Reference Include="umbraco, Version=1.0.4731.28387, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
@@ -275,15 +262,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\umbraco.editorControls.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Forms.Core">
-      <HintPath>..\dependencies\Our\Umbraco.Forms.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Umbraco.Forms.UI">
-      <HintPath>..\dependencies\Our\Umbraco.Forms.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Umbraco.Licensing">
-      <HintPath>..\dependencies\Our\Umbraco.Licensing.dll</HintPath>
-    </Reference>
     <Reference Include="umbraco.MacroEngines">
       <HintPath>..\dependencies\4.9.1\umbraco.MacroEngines.dll</HintPath>
     </Reference>
@@ -293,9 +271,6 @@
     <Reference Include="umbraco.providers, Version=1.0.4731.28386, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\umbraco.providers.dll</HintPath>
-    </Reference>
-    <Reference Include="Umbraco.Shop">
-      <HintPath>..\dependencies\Our\Umbraco.Shop.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Support">
       <HintPath>..\dependencies\Our\Umbraco.Support.dll</HintPath>
@@ -3372,16 +3347,6 @@
     <Content Include="usercontrols\our.umbraco.org\testoptimize.ascx" />
     <Content Include="usercontrols\our.umbraco.org\YAF_MemberImport.ascx" />
     <Content Include="usercontrols\poll\Poll.ascx" />
-    <Content Include="usercontrols\UmbImportControls\BaseTypes\ImportStepBase.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\ConfirmSelectedOptions.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\ContentImport\SelectUmbracoTypeAndLocation.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\Importing.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\Intro.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\MapProperties.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\MemberImport\SelectMembertype.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\SelectDataSource.ascx" />
-    <Content Include="usercontrols\UmbImportControls\ImportSteps\SelectDataSourceType.ascx" />
-    <Content Include="usercontrols\UmbImportControls\UmbImport.ascx" />
     <Content Include="usercontrols\umbracoContour\EditForm.ascx" />
     <Content Include="usercontrols\umbracoContour\Installer.ascx" />
     <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
@@ -3475,7 +3440,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="bin\umbracoForms.lic" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -3540,6 +3504,7 @@
   <ItemGroup>
     <Folder Include="App_Code\" />
     <Folder Include="App_Plugins\" />
+    <Folder Include="bin\" />
     <Folder Include="css\img\Cached\" />
     <Folder Include="usercontrols\Deli\Admin\" />
     <Folder Include="Views\Partials\" />
@@ -3571,8 +3536,7 @@
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(SolutionDir)\dependencies\legacy\*.dll" "$(SolutionDir)OurUmbraco.Site\bin\legacy\" /s /y
-XCOPY "$(SolutionDir)\dependencies\*.lic" "$(SolutionDir)OurUmbraco.Site\bin\" /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(SolutionDir)\dependencies\legacy\*.dll" "$(SolutionDir)OurUmbraco.Site\bin\legacy\" /s /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
