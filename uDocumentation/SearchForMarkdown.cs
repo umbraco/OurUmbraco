@@ -16,6 +16,13 @@ namespace uDocumentation
         public bool Execute(string url)
         {
             bool succes = false;
+
+            // Added because in 4.7.1 for some inexplicable reason, the trailing slash 
+            // is being stripped before we get the url in the NotFoundHandler
+            url = HttpContext.Current.Items["UmbPage"].ToString();
+            if (url.StartsWith("/"))
+                url = url.Substring(1);
+
             url = url.Replace(".aspx", string.Empty);
 
 
@@ -107,7 +114,7 @@ namespace uDocumentation
             }
         }
 
-        private static string[] ImgExts = ".jpg,.jpeg,.png,.bmp".Split(',');
+        private static string[] ImgExts = ".jpg,.jpeg,.gif,.png,.bmp".Split(',');
         private bool IsImage(string url)
         {
             foreach (var imgExt in ImgExts)
