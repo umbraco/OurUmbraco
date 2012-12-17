@@ -20,6 +20,8 @@
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
     <TargetFrameworkProfile />
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -127,9 +129,6 @@
     <Reference Include="Marketplace">
       <HintPath>..\dependencies\Marketplace.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.BusinessLogic">
-      <HintPath>..\dependencies\Marketplace.BusinessLogic.dll</HintPath>
-    </Reference>
     <Reference Include="Marketplace.Data">
       <HintPath>..\dependencies\Marketplace.Data.dll</HintPath>
     </Reference>
@@ -141,9 +140,6 @@
     </Reference>
     <Reference Include="Marketplace.Umbraco">
       <HintPath>..\dependencies\Marketplace.Umbraco.dll</HintPath>
-    </Reference>
-    <Reference Include="MarketPlace.Webservices">
-      <HintPath>..\dependencies\MarketPlace.Webservices.dll</HintPath>
     </Reference>
     <Reference Include="MemberTools">
       <HintPath>..\dependencies\Our\MemberTools.dll</HintPath>
@@ -3577,6 +3573,7 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
+  <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
