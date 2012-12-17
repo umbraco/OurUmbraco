@@ -16,8 +16,8 @@ using Examine;
 using Examine.Providers;
 using Examine.SearchCriteria;
 using Lucene.Net.Search;
-using Marketplace.Interfaces;
-using Marketplace.Providers;
+//using Marketplace.Interfaces;
+//using Marketplace.Providers;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using umbraco.presentation;
@@ -93,37 +93,37 @@ namespace uSearch.Library
 
         void indexer_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
         {
-            try
-            {
-                if (e.Fields["nodeTypeAlias"] == "Project")
-                {
-                    var projectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-                    var project = projectsProvider.GetListing(e.NodeId, true);
+            //try
+            //{
+            //    if (e.Fields["nodeTypeAlias"] == "Project")
+            //    {
+            //        var projectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+            //        var project = projectsProvider.GetListing(e.NodeId, true);
 
-                    if (project != null)
-                    {
-                        // add downloads
-                        e.Fields["downloads"] = project.Downloads.ToString();
+            //        if (project != null)
+            //        {
+            //            // add downloads
+            //            e.Fields["downloads"] = project.Downloads.ToString();
 
-                        // add karma
-                        e.Fields["karma"] = project.Karma.ToString();
+            //            // add karma
+            //            e.Fields["karma"] = project.Karma.ToString();
 
-                        // add unique id (needed by repo)
-                        e.Fields["uniqueId"] = project.ProjectGuid.ToString();
+            //            // add unique id (needed by repo)
+            //            e.Fields["uniqueId"] = project.ProjectGuid.ToString();
 
-                        // add category
-                        e.Fields["categoryId"] = project.CategoryId.ToString();
-                        e.Fields["category"] = Marketplace.library.GetCategoryName(project.Id);
+            //            // add category
+            //            e.Fields["categoryId"] = project.CategoryId.ToString();
+            //            e.Fields["category"] = Marketplace.library.GetCategoryName(project.Id);
 
-                        Log.Add(LogTypes.Debug, e.NodeId, "Done adding karma/download data to project index");
-                    }
+            //            Log.Add(LogTypes.Debug, e.NodeId, "Done adding karma/download data to project index");
+            //        }
 
-                }
-            }
-            catch (Exception ee)
-            {
-                Log.Add(LogTypes.Debug, e.NodeId, string.Format("Error adding data to project index: {0}", ee));
-            }
+            //    }
+            //}
+            //catch (Exception ee)
+            //{
+            //    Log.Add(LogTypes.Debug, e.NodeId, string.Format("Error adding data to project index: {0}", ee));
+            //}
         }
     }
 
