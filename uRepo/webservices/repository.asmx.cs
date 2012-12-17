@@ -39,20 +39,22 @@ namespace uRepo.webservices
         {
             return uRepo.Packages.Categories(false, false);
         }
-        
+
         public List<Package> Packages(string repositoryGuid, int categoryId)
         {
             return uRepo.Packages.GetPackagesByCategory(categoryId);
         }
 
         [WebMethod]
-        public List<Package> Modules() {
-          return uRepo.Packages.GetPackagesByProperty("isModule", "1");
+        public List<Package> Modules()
+        {
+            return uRepo.Packages.GetPackagesByProperty("isModule", "1");
         }
 
         [WebMethod]
-        public List<Category> ModulesCategorized() {
-          return uRepo.Packages.GetPackagesByPropertyCategorized("isModule", "1");
+        public List<Category> ModulesCategorized()
+        {
+            return uRepo.Packages.GetPackagesByPropertyCategorized("isModule", "1");
         }
 
         [WebMethod]
@@ -60,11 +62,11 @@ namespace uRepo.webservices
         {
             return uRepo.Packages.GetPackagesByCategory("Nitros");
         }
-        
+
         [WebMethod]
         public List<Category> NitrosCategorized()
         {
-            return uRepo.Packages.GetSubCategories("Nitros", true);            
+            return uRepo.Packages.GetSubCategories("Nitros", true);
         }
 
         [WebMethod]
@@ -81,7 +83,7 @@ namespace uRepo.webservices
                 return string.Empty;
             }
         }
-        
+
         [WebMethod]
         public byte[] fetchPackage(string packageGuid)
         {
@@ -121,15 +123,24 @@ namespace uRepo.webservices
             uWiki.Businesslogic.WikiFile wf = uRepo.Packages.PackageFileByGuid(new Guid(packageGuid));
 
 
-            if(wf != null){
+            if (wf != null)
+            {
+
 
                 //if the package doesn't care about the umbraco version needed... 
                 if (wf.Version.Version == "nan")
                     return wf.ToByteArray();
-                
+
+
                 //if v45
                 if (version == "v45")
                 {
+                    int v = 0;
+                    if (int.TryParse(wf.Version.Version.Replace("v", ""), out v))
+                        if (v >= 45)
+                            return wf.ToByteArray();
+
+
                     if (wf.Version.Version == "v47" || wf.Version.Version == "v45")
                         return wf.ToByteArray();
                     else if (wf.Version.Version != version && wf.Version.Version != "nan")
@@ -139,7 +150,7 @@ namespace uRepo.webservices
                     }
                 }
             }
-            
+
             return new byte[0];
 
             /*
@@ -164,7 +175,7 @@ namespace uRepo.webservices
             Package pack = PackageByGuid(packageGuid);
             umbraco.cms.businesslogic.member.Member mem = new umbraco.cms.businesslogic.member.Member(new Guid(memberKey));
             umbraco.cms.businesslogic.contentitem.ContentItem packageNode = packageContentItem(packageGuid);
-            
+
 
             if (pack.Protected && Access.HasAccess(packageNode.Id, packageNode.Path, System.Web.Security.Membership.GetUser(mem.Id)))
             {
@@ -203,7 +214,7 @@ namespace uRepo.webservices
         [WebMethod]
         public Package PackageByGuid(string packageGuid)
         {
-            return uRepo.Packages.GetPackageByGuid(new Guid(packageGuid));            
+            return uRepo.Packages.GetPackageByGuid(new Guid(packageGuid));
         }
 
         private static umbraco.cms.businesslogic.contentitem.ContentItem packageContentItem(string guid)
@@ -259,5 +270,5 @@ namespace uRepo.webservices
         }
     }
 
-    
+
 }

@@ -4,17 +4,19 @@ using System.Linq;
 using System.Web;
 using umbraco.BusinessLogic;
 using System.Xml.Linq;
-using Examine.LuceneEngine.Providers;
-using Examine;
-using System.Text.RegularExpressions;
 
+using Examine;
+using Examine.LuceneEngine;
+using Examine.LuceneEngine.Providers;
+
+using System.Text.RegularExpressions;
 using uDocumentation.Busineslogic;
 
 namespace our
 {
     public class DocumentationIndexer : ApplicationBase
     {
-       
+
         public DocumentationIndexer()
         {
             uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader.OnCreate += new EventHandler<CreateEventArgs>(ZipDownloader_OnCreate);
@@ -26,21 +28,22 @@ namespace our
         {
             Log.Add(LogTypes.Debug, -1, "Deleting " + e.FilePath);
 
-
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["DocumentationIndexer"];
-            indexer.DeleteFromIndex(GetKey(e.FilePath));
+
+            indexer.DeleteFromIndex(GetKey(e.FilePath).ToString());
         }
-        
+
         void ZipDownloader_OnUpdate(object sender, UpdateEventArgs e)
         {
-            Log.Add(LogTypes.Debug, -1, "Updating " + e.FilePath);
 
 
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["DocumentationIndexer"];
             var data = createDataSet(e.FilePath);
             var key = GetKey(e.FilePath);
+            var xml = data.ToExamineXml(key, "documentation");
 
-            var xml = ToExamineXml(data, key, "Documentation");
+            Log.Add(LogTypes.Debug, -1, "Updating " + e.FilePath + " key: " + key.ToString());
+
             indexer.ReIndexNode(xml, "documents");
         }
 
@@ -51,35 +54,23 @@ namespace our
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["DocumentationIndexer"];
             var data = createDataSet(e.FilePath);
             var key = GetKey(e.FilePath);
-            
-            var xml = ToExamineXml(data, key, "Documentation");
+
+            var xml = data.ToExamineXml(key, "documentation");
             indexer.ReIndexNode(xml, "documents");
         }
 
-        public static XElement ToExamineXml(Dictionary<string, string> data, string key, string nodeType)
-        {
-            return new XElement("node",
-                //creates the element attributes
-                new XAttribute("id", key),
-                new XAttribute("nodeTypeAlias", nodeType),
-                //creates the data nodes
-                    data.Select(x => new XElement("data",
-                        new XAttribute("alias", x.Key),
-                        new XCData(x.Value))).ToList());
-
-        }
 
         private static string rootDir = "\\Documenation\\";
         private static string TrimPath(string fullpath)
         {
             var defaultVersionPath = rootDir + uDocumentation.Busineslogic.DefaultVersion.Instance.Number + "\\";
             var index = fullpath.IndexOf(defaultVersionPath) + defaultVersionPath.Length;
-            return fullpath.Substring(index);            
+            return fullpath.Substring(index);
         }
 
         private Dictionary<string, string> createDataSet(string fulPath)
         {
-            var lines = new List<string>(); 
+            var lines = new List<string>();
             lines.AddRange(System.IO.File.ReadAllLines(fulPath));
 
             var headLine = RemoveSpecialCharacters(lines[0]);
@@ -96,15 +87,17 @@ namespace our
             return data;
         }
 
-        public static string GetKey(string fullPath)
+        public static int GetKey(string fullPath)
         {
             var key = fullPath;
             var defaultVersionPath = rootDir + uDocumentation.Busineslogic.DefaultVersion.Instance.Number + "\\";
-            if(fullPath.Contains(defaultVersionPath))
+
+            if (fullPath.Contains(defaultVersionPath))
                 key = TrimPath(key);
 
-            return RemoveSpecialCharacters(key);
+            key = RemoveSpecialCharacters(key);
 
+            return key.GetHashCode();
         }
 
         public static string RemoveSpecialCharacters(string input)

@@ -17,10 +17,29 @@ namespace uDocumentation
         {
             bool succes = false;
             url = url.Replace(".aspx", string.Empty);
-            if (url.Length > 0 && (url.StartsWith(MarkdownLogic.BaseUrl) || url.StartsWith(string.Format("/{0}", MarkdownLogic.BaseUrl))))
+
+
+            if (url.Length > 0 && url.StartsWith(MarkdownLogic.BaseUrl) && !IsImage(url))
             {
+                bool redirect = false;
+                //take care of those versioned urls
+                if (url.StartsWith(MarkdownLogic.BaseUrl + "/master") || url.StartsWith(MarkdownLogic.BaseUrl + "/v480"))
+                {
+                    //to kill the old requests and guide them to the root folder
+                    url = url.Replace(MarkdownLogic.BaseUrl + "/master", MarkdownLogic.BaseUrl);
+                    url = url.Replace(MarkdownLogic.BaseUrl + "/v480", MarkdownLogic.BaseUrl);
+                }
+
+
                 if (url.Substring(0, 1) == "/")
                     url = url.Substring(1, url.Length - 1);
+
+                var _url = url;
+                redirect = doRedirect(_url, out url);
+
+                if (redirect)
+                    HttpContext.Current.Response.RedirectPermanent(url);
+
 
                 XmlNode urlNode = null;
                 bool notFound = true;
@@ -88,6 +107,45 @@ namespace uDocumentation
             }
         }
 
+        private static string[] ImgExts = ".jpg,.jpeg,.png,.bmp".Split(',');
+        private bool IsImage(string url)
+        {
+            foreach (var imgExt in ImgExts)
+            {
+                if (url.EndsWith(imgExt))
+                    return true;
+            }
+            return false;
+        }
+
+        private static bool doRedirect(string url, out string returnurl)
+        {
+            if (url.EndsWith("/"))
+            {
+                string markdownRelativePath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
+                string filePath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, "\\index.md");
+
+                if (!File.Exists(filePath))
+                {
+                    returnurl = url.TrimEnd('/');
+                    return true;
+                }
+
+            }
+            else
+            {
+                string markdownRelativePath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
+                string filePath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, ".md");
+                if (!File.Exists(filePath))
+                {
+                    returnurl = url + "/";
+                    return true;
+                }
+            }
+
+            returnurl = url;
+            return false;
+        }
         #endregion
     }
 }

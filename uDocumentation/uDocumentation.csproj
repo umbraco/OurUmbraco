@@ -79,9 +79,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-license.png" />
-    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-search.png" />
-    <Content Include="Documentation\v501\GettingStarted\images\WebMatrix\webmatrix-start.png" />
     <Content Include="usercontrols\DocumentationBreadcrumb.ascx" />
     <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
   </ItemGroup>
@@ -111,66 +108,7 @@
   <ItemGroup>
     <Content Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Documentation\v480\" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="masterpages\DocumentationMainpage.master" />
-    <Content Include="masterpages\DocumentationSubpage.master" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Documentation\v501\BestPractices\index.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\Applications.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\Dashboards.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\Editors.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\index.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\Macros.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\MenuItems.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\ParameterEditors.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\PluginsAndPackages.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\PropertyEditors.md" />
-    <None Include="Documentation\v501\Concepts\BackOffice\Trees.md" />
-    <None Include="Documentation\v501\Concepts\index.md" />
-    <None Include="Documentation\v501\GettingStarted\index.md" />
-    <None Include="Documentation\v501\GettingStarted\InstallWebMatrix.md" />
-    <None Include="Documentation\v501\Glossary\index.md" />
-    <None Include="Documentation\v501\index.md" />
-    <None Include="Documentation\v501\Links\index.md" />
-    <None Include="Documentation\v501\Reference\index.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\index.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListAllPages.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListAncestorsFromCurrentPage.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildMediaItemsFromMediaFolder.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPageFromCurrentPage.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromChosenNode.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageByContentType.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByDateDesc.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByName.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromCurrentPageOrderByPropAlias.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListChildPagesFromSiteRoot.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\ListDescendantsFromCurrentPage.md" />
-    <None Include="Documentation\v501\Reference\MacroPartials\Samples\Twitter.md" />
-    <None Include="Documentation\v501\Reference\Partials\DynamicModel.md" />
-    <None Include="Documentation\v501\Reference\Partials\index.md" />
-    <None Include="Documentation\v501\Reference\Partials\RenderViewPage.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\index.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.Field.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetContentById.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDictionaryItem.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDictionaryItemForLanguage.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetDynamicContentById.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetEntityById.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetMediaUrl.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetPrevalueModel.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.GetUrl.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.RenderMacro.md" />
-    <None Include="Documentation\v501\Reference\Partials\Umbraco.Helpers\Umbraco.Truncate.md" />
-    <None Include="Documentation\v501\Reference\Razor\index.md" />
-    <None Include="Documentation\v501\Reference\Templating\index.md" />
-    <Content Include="githubpull.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -180,6 +118,9 @@
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <ProjectExtensions />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\" /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

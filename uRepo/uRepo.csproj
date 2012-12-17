@@ -98,4 +98,9 @@
   </Target>
   -->
   <ProjectExtensions />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)webservices\*.asmx" "$(SolutionDir)OurUmbraco.Site\umbraco\webservices\api\" /y
+
+</PostBuildEvent>
+  </PropertyGroup>
 </Project>

@@ -25,7 +25,7 @@ namespace uDocumentation.Busineslogic
 
         public string GetMarkdownBasePathWithVersion
         {
-            get { return string.Concat(MarkdownBasePath, "\\", _version, "\\"); }
+            get { return string.Concat(MarkdownBasePath, "\\"); }
         }
 
         public bool PrefixLinks { get; set; }
@@ -67,12 +67,15 @@ namespace uDocumentation.Busineslogic
             //Used for main page to correct relative links
             if (prefixLinks)
             {
-                string temp = string.Concat("/documentation/", _version, "/", rawUrl);
+                string temp = string.Concat("/documentation/", rawUrl);
                 mdUrlTag = mdUrlTag.Replace(rawUrl, temp);
             }
 
             if (rawUrl.EndsWith("index.md"))
-                mdUrlTag = mdUrlTag.Replace("index.md", "");
+                mdUrlTag = mdUrlTag.Replace("/index.md", "/");
+            else
+                mdUrlTag.TrimEnd('/');
+
 
             return mdUrlTag.Replace(rawUrl, rawUrl.EnsureNoDotsInUrl());
         }

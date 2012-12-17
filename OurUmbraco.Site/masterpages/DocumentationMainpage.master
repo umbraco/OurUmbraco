@@ -6,57 +6,23 @@
 
 <div id="wiki" class="subpage">
 
-  <div id="body">
-  <asp:ContentPlaceHolder Id="Main" runat="server">
-      <div style="margin-top: 25px;">
+<div style="margin-top: 20px; padding: 7px;" class="notice"><strong>Please notice</strong>: this is work in progress, so broken links, placeholder text, and things not working, can be expected
+</div>	  
+
+	<div id="body">
+	<asp:ContentPlaceHolder Id="Main" runat="server">
+	    <div style="margin-top: 25px;">
             <markdown:Breadcrumb runat="server" />
         </div>
 
-    <div id="markdown-docs">
-      
-      <markdown:Doc ID="Markdown" MarkdownFilePath="documentation\index.md" PrefixLinks="True" AddHeader="False" runat="server" />
-    </div>
-  <br style="clear: both"/>
-  <div class="divider"></div>
+	 <markdown:Doc ID="Markdown" MarkdownFilePath="documentation\{0}\index.md" PrefixLinks="True" AddHeader="False" runat="server" />
 
-  </asp:ContentPlaceHolder>
-  </div>
-  <!--
-  <div style="margin-top: 20px; padding: 7px;" class="notice">
-  <h2>V5 documentation and the documenation Wiki?</h2>
-  <p>
-    <em>As we have started to focus our documentation efforts on the documentation github project, we will be removing the wiki and V5 documenation from our.umbraco.org</em>
-  </p> 
-  
-  <p>
-    The wiki will still be available on <a href="/wiki">our.umbraco.org/wiki</a>, but editing will be turned off, and the wiki links are also
-    removed from the site navigation and search results.   
-  </p> 
-    
-  <p>The v5 documentation will continue to be <a href="https://github.com/umbraco/Umbraco5Docs">available at GitHub</a> as a legacy reference.</p>
+	<br style="clear: both"/>
+	<div class="divider"></div>
 
-  <p><Strong>Umbraco Documentation Team</strong></p>
-</div>  
-  -->
-  <div style="margin-top: 20px; padding: 7px;" class="notice">
-  <h2>The documenation Wiki?</h2>
-  <p>
-    <em>As we have started to focus our documentation efforts on the documentation github project, we will be removing the wiki from our.umbraco.org</em>
-  </p> 
-  
-  <p>
-    The wiki will still be available on <a href="/wiki">our.umbraco.org/wiki</a>, but editing will be turned off, and the wiki links are also
-    removed from the site navigation and search results.   
-  </p> 
-    
-  <p><Strong>Umbraco Documentation Team</strong></p>
-</div>  
-  
+	</asp:ContentPlaceHolder>
+	</div>
+
 </div>
 
-</asp:Content>
-  
-<asp:Content ContentPlaceHolderId="Head" runat="server">
-  <!-- Documentation styles -->
-  <link media="screen" type="text/css" rel="stylesheet" href="/css/docs.css" />
 </asp:Content>

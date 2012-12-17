@@ -34,7 +34,8 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         {
             Trace.WriteLine("Started git sync", "Gitsyncer");
 
-            foreach(XmlNode node in Configuration.SelectNodes("//add")){
+            foreach (XmlNode node in Configuration.SelectNodes("//add"))
+            {
                 var url = node.Attributes["url"].Value;
                 var folder = node.Attributes["folder"].Value;
                 var path = Path.Combine(RootFolder, folder);
@@ -42,7 +43,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                 Trace.WriteLine("Loading: " + url + " to " + path, "Gitsyncer");
 
                 process(url, folder);
-            }   
+            }
         }
 
         public void process(string url, string foldername)
@@ -54,7 +55,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         private string Download(string url, string foldername)
         {
             var path = Path.Combine(RootFolder, foldername + ".zip");
-            
+
             if (File.Exists(path))
                 File.Delete(path);
 
@@ -81,7 +82,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             }
             else
                 Directory.CreateDirectory(serverFolder);
-            
+
             try
             {
                 while ((theEntry = s.GetNextEntry()) != null)
@@ -101,7 +102,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
                         if (fileName != String.Empty)
                         {
-                            bool update = false; 
+                            bool update = false;
                             var filepath = serverFolder + directoryName + "\\" + fileName;
 
 
@@ -128,11 +129,14 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                             }
                             streamWriter.Close();
 
-                            if(update){
+                            if (update)
+                            {
                                 UpdateEventArgs ev = new UpdateEventArgs();
                                 ev.FilePath = filepath;
                                 FireOnUpdate(ev);
-                            }else{
+                            }
+                            else
+                            {
                                 CreateEventArgs ev = new CreateEventArgs();
                                 ev.FilePath = filepath;
                                 FireOnCreate(ev);
@@ -153,7 +157,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                     ev.FilePath = file;
                     FireOnDelete(ev);
                 }
-                              
+
             }
             catch (Exception ex)
             {
@@ -166,22 +170,34 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         public static event EventHandler<UpdateEventArgs> OnUpdate;
         protected virtual void FireOnUpdate(UpdateEventArgs e)
         {
-            _e.FireCancelableEvent(OnUpdate, this, e);
+            try
+            {
+                _e.FireCancelableEvent(OnUpdate, this, e);
+            }
+            catch (Exception ex) { }
         }
-       
+
 
         public static event EventHandler<CreateEventArgs> OnCreate;
         protected virtual void FireOnCreate(CreateEventArgs e)
         {
-            _e.FireCancelableEvent(OnCreate, this, e);
+            try
+            {
+                _e.FireCancelableEvent(OnCreate, this, e);
+            }
+            catch (Exception ex) { }
         }
-       
+
 
         public static event EventHandler<DeleteEventArgs> OnDelete;
         protected virtual void FireOnDelete(DeleteEventArgs e)
         {
-            _e.FireCancelableEvent(OnDelete, this, e);
+            try
+            {
+                _e.FireCancelableEvent(OnDelete, this, e);
+            }
+            catch (Exception ex) { }
         }
-        
+
     }
 }
