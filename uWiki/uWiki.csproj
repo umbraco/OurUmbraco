@@ -90,7 +90,9 @@
     <Compile Include="WikiFileUploadHandler.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\FileUpload.ascx" />
+    <Content Include="usercontrols\FileUpload.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="usercontrols\scripts\" />
@@ -117,7 +119,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>
-    </PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\uWiki\" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

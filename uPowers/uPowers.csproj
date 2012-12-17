@@ -97,10 +97,7 @@
   <ItemGroup>
     <Content Include="uPowers.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Anti-Spam\" />
-    <Folder Include="usercontrols\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>

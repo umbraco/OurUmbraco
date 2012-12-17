@@ -97,7 +97,6 @@
     <Compile Include="Utility.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Config\Umb.OurUmb.MemberLocator.config" />
     <Content Include="Usercontrols\MemberLocator.ascx" />
   </ItemGroup>
   <ItemGroup>
@@ -124,4 +123,7 @@
   </Target>
   -->
   <ProjectExtensions />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\" /y</PostBuildEvent>
+  </PropertyGroup>
 </Project>
