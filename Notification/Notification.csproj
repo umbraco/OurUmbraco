@@ -72,11 +72,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Notification.config">
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\uForum\uForum.csproj">
       <Project>{547C2D0D-1B55-493B-AE0B-E031A5B8EE77}</Project>
       <Name>uForum</Name>
