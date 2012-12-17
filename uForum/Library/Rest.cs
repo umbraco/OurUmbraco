@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web;
+using umbraco.BusinessLogic;
 using umbraco.presentation.umbracobase.library;
 using umbraco.cms.businesslogic.web;
 using System.Web.Security;
@@ -135,8 +136,8 @@ namespace uForum.Library {
 
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
-            if (Xslt.IsMemberInGroup("admin", _currentMember)) {
-
+            if (User.GetCurrent() != null || Xslt.IsMemberInGroup("admin", _currentMember)) 
+            {
                 Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentId);
                 c.Delete();
                 

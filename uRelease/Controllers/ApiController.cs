@@ -17,7 +17,7 @@ namespace uRelease.Controllers
     using YouTrackSharp.Issues;
     using YouTrackSharp.Projects;
     using Issue = uRelease.Models.Issue;
-using System.Configuration;
+    using System.Configuration;
 
     public class ApiController : Controller
     {
@@ -34,11 +34,11 @@ using System.Configuration;
         public JsonResult Aggregate(string ids)
         {
 
-             ArrayList idArray = new ArrayList();
-            idArray.AddRange(ids.Replace("all","").TrimEnd(',').Split(','));
+            ArrayList idArray = new ArrayList();
+            idArray.AddRange(ids.Replace("all", "").TrimEnd(',').Split(','));
             idArray.Remove("");
-            
-            
+
+
             var gotBundle = GetVersionBundle();
 
             // For each version in the bundle, go get the issues 
@@ -63,7 +63,7 @@ using System.Configuration;
                 .OrderBy(x => x.Value.AsFullVersion())
                 .ToArray();
             }
-            
+
 
             //figure out which is the latest release
             var latestRelease = orderedVersions.Where(x => x.Released).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
@@ -81,7 +81,7 @@ using System.Configuration;
                 item.version = version.Value;
                 item.releaseDescription = version.Description ?? string.Empty;
                 item.released = version.Released;
-                item.releaseDate = new DateTime(1970,1,1).AddMilliseconds(version.ReleaseDate).ToString();
+                item.releaseDate = new DateTime(1970, 1, 1).AddMilliseconds(version.ReleaseDate).ToString();
                 // /rest/issue/byproject/{project}?{filter}
                 var issues = versionCache.GetOrAdd(version.Value, key => GetResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
                 var issueView = new List<IssueView>();
@@ -91,7 +91,7 @@ using System.Configuration;
                     issues.Data.Issues,
                     issue =>
                     {
-                        var changes = changesCache.GetOrAdd(issue.Id, key => GetResponse<Changes>("/issue/" + key + "/changes"));
+                        /*var changes = changesCache.GetOrAdd(issue.Id, key => GetResponse<Changes>("/issue/" + key + "/changes"));
 
                         var allChanges = changes.Data;
 
@@ -116,7 +116,7 @@ using System.Configuration;
                                         new ChangeView() { fieldName = x.Name, newValue = x.NewValue, oldValue = x.OldValue }))
                             };
                             activityView.Add(activity);
-                        }
+                        }*/
 
 
 
@@ -133,9 +133,9 @@ using System.Configuration;
 
                 var activitiesDateDesc = activityView.Where(x => x.changes.Any()).OrderByDescending(x => x.date);
                 var issueIdsFromActivities = activitiesDateDesc.Select(x => x.id).Distinct()
-                    .Concat(issueView.Where(y => !activitiesDateDesc.Select(z => z.id).Contains(y.id)).Select(y => y.id)); // Add issues for which there is no activity
+                    .Concat(issueView.Where(y => y != null && !activitiesDateDesc.Select(z => z.id).Contains(y.id)).Select(y => y.id)); // Add issues for which there is no activity
 
-                item.issues = issueIdsFromActivities.Select(x => issueView.Single(y => y.id == x)).OrderBy(x => x.id);
+                item.issues = issueIdsFromActivities.Select(x => issueView.Single(y => y != null && y.id == x)).OrderBy(x => x.id);
                 item.activities = activitiesDateDesc.Take(5);
 
 
