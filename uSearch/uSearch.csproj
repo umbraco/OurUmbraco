@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="businesslogic">
-      <HintPath>..\dependencies\4.11.2\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3373.692, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -50,7 +50,7 @@
     </Reference>
     <Reference Include="Examine, Version=0.10.0.292, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\Examine.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
     </Reference>
     <Reference Include="interfaces, Version=1.0.3373.676, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,7 +58,7 @@
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\Lucene.Net.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -93,7 +93,7 @@
     </Reference>
     <Reference Include="UmbracoExamine, Version=0.10.0.292, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\UmbracoExamine.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\UmbracoExamine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

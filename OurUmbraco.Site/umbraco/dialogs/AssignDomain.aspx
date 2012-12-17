@@ -21,14 +21,14 @@
     <cc1:Pane runat="server" ID="pane_addnew">
       <cc1:PropertyPanel runat="server" ID="prop_domain" Text="Domain">
          <asp:TextBox ID="DomainName" runat="server" Width="252px"></asp:TextBox>
-         <asp:RequiredFieldValidator ControlToValidate="DomainName" ErrorMessage="*" ID="DomainValidator" runat="server" Display="Dynamic" />
-         <asp:RegularExpressionValidator ControlToValidate="DomainName" ErrorMessage="*" ID="DomainValidator2" runat="server" Display="Dynamic" /> 
-         <br /><small><%= umbraco.ui.Text("assignDomain", "domainHelp") %></small>
+              <asp:RequiredFieldValidator ControlToValidate="Languages" ErrorMessage="*" ID="DomainValidator" runat="server" Display="Dynamic" />
+              <br /><small><%= umbraco.ui.Text("assignDomain", "domainHelp") %></small>
       </cc1:PropertyPanel>
       
       <cc1:PropertyPanel ID="prop_lang" runat="server" Text="language">
-        <asp:DropDownList ID="Languages" runat="server" />
-        <asp:RequiredFieldValidator ControlToValidate="Languages" ErrorMessage="*" ID="LanguageValidator" runat="server" Display="Dynamic" />
+        <asp:RequiredFieldValidator ControlToValidate="Languages" ErrorMessage="*" ID="LanguageValidator"
+              runat="server" Display="Dynamic" />
+            <asp:DropDownList ID="Languages" runat="server" />
       </cc1:PropertyPanel>
       
       <cc1:PropertyPanel runat="server" Text=" ">

@@ -1,7 +1,5 @@
 <%@ Page Trace="false" Language="c#" CodeBehind="umbraco.aspx.cs" AutoEventWireup="True"
-    Inherits="Umbraco.Web.UI.Umbraco.Umbraco" %>
-
-<%@ Import Namespace="System.Web.Script.Serialization" %>
+    Inherits="umbraco.cms.presentation._umbraco" %>
 
 <%@ Register Src="controls/Tree/TreeControl.ascx" TagName="TreeControl" TagPrefix="umbraco" %>
 <%@ Register TagPrefix="cc1" Namespace="umbraco.uicontrols" Assembly="controls" %>
@@ -18,8 +16,6 @@
     <umb:CssInclude ID="CssInclude2" runat="server" FilePath="modal/style.css" PathNameAlias="UmbracoClient" />
     <umb:JsInclude ID="JsInclude1" runat="server" FilePath="Application/NamespaceManager.js"
         PathNameAlias="UmbracoClient" Priority="0" />
-    <umb:JsInclude ID="JSON2" runat="server" FilePath="ui/json2.js" PathNameAlias="UmbracoClient"
-        Priority="0" />
     <umb:JsInclude ID="JsInclude2" runat="server" FilePath="ui/jquery.js" PathNameAlias="UmbracoClient"
         Priority="0" />
     <umb:JsInclude ID="JsInclude3" runat="server" FilePath="ui/jqueryui.js" PathNameAlias="UmbracoClient"
@@ -177,7 +173,7 @@
                 //    .ModalWindowShow("", false, 300, 100, 300, 0)
                 //    .closest(".umbModalBox").css("border", "none");
 
-                UmbClientMgr.appActions().shiftApp(app, uiKeys['sections_' + app] || app);
+                UmbClientMgr.appActions().shiftApp(app, uiKeys['sections_' + app]);
             });
 
 
@@ -293,20 +289,14 @@
         }
 
         function umbracoSessionRenewCheckPassword() {
-            var password = jQuery("#sessionrefreshpassword input").val();
 
-            if (password != "") {
 
-                var data = {
-                    username: <%= new JavaScriptSerializer().Serialize(this.getUser().LoginName) %>, 
-                    password: password
-                };
 
+            if (jQuery("#sessionrefreshpassword input").val() != "") {
                 jQuery.ajax({
                     type: "POST",
                     url: "<%=umbraco.IO.IOHelper.ResolveUrl(umbraco.IO.SystemDirectories.Umbraco) %>/webservices/legacyAjaxCalls.asmx/ValidateUser",
-                    data: JSON.stringify(data),
-                    processData: false, 
+                    data: "{'username': '<%=this.getUser().LoginName%>', 'password': '" + jQuery("#sessionrefreshpassword input").val() + "'}",
                     success: function (result) {
 
                         if (result.d == true) {

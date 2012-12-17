@@ -42,15 +42,15 @@
     </Reference>
     <Reference Include="businesslogic, Version=1.0.3496.7966, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3502.37200, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\cms.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
     </Reference>
     <Reference Include="controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\controls.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\controls.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
@@ -71,11 +71,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="umbraco, Version=1.0.3441.17657, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.DataLayer, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\umbraco.DataLayer.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\umbraco.DataLayer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

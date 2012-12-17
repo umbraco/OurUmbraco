@@ -48,11 +48,11 @@
     </Reference>
     <Reference Include="businesslogic, Version=1.0.3441.18044, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3441.17655, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\cms.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -72,7 +72,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="umbraco, Version=1.0.3441.17657, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.11.2\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

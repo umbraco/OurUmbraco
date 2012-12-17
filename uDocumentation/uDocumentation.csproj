@@ -44,13 +44,13 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="businesslogic">
-      <HintPath>..\dependencies\4.11.2\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="interfaces">
-      <HintPath>..\dependencies\4.11.2\interfaces.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownDeep">
       <HintPath>..\packages\MarkdownDeep.NET.1.4\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
@@ -75,7 +75,7 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="umbraco">
-      <HintPath>..\dependencies\4.11.2\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

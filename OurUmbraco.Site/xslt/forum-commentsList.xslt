@@ -20,7 +20,7 @@
 <xsl:template match="/">
 
 <!-- Topic Data -->
-<xsl:variable name="topicID" select="number(umbraco.library:Request('topicID'))"/>
+<xsl:variable name="topicID" select="number(umbraco.library:ContextKey('topicID'))"/>
 <xsl:variable name="topic" select="uForum.raw:Topic($topicID)/topics/topic"/>
 
 <!-- Sorting -->

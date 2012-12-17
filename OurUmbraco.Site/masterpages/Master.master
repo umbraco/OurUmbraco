@@ -65,7 +65,6 @@
   </head>
   <body>
   <div id="main">
-	  <umbraco:Macro Alias="UpdateMembers" runat="server"></umbraco:Macro>
     <form runat="server">
 
 		
