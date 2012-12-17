@@ -129,6 +129,13 @@
     <Compile Include="usercontrols\acceptTos.ascx.designer.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
     </Compile>
+    <Compile Include="usercontrols\ForumSpamCleaner.ascx.cs">
+      <DependentUpon>ForumSpamCleaner.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="usercontrols\ForumSpamCleaner.ascx.designer.cs">
+      <DependentUpon>ForumSpamCleaner.ascx</DependentUpon>
+    </Compile>
     <Compile Include="usercontrols\EventEditor.ascx.cs">
       <DependentUpon>EventEditor.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -230,6 +237,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\acceptTos.ascx" />
+    <Content Include="usercontrols\ForumSpamCleaner.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
