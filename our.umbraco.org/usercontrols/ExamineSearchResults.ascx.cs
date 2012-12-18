@@ -23,7 +23,7 @@ namespace our.usercontrols
                 return HttpContext.Current.Server.HtmlEncode(result["Title"]);
             else
                 return string.Empty;
-         
+
         }
 
         public static string fullURL(this SearchResult result)
@@ -67,7 +67,7 @@ namespace our.usercontrols
                 }
                 catch { }
             }
-           
+
 
             text = umbraco.library.StripHtml(text);
 
@@ -100,11 +100,11 @@ namespace our.usercontrols
             {
                 cssClass = " forum ";
 
-                
+
                 SqlConnection cn = new SqlConnection(umbraco.GlobalSettings.DbDSN);
                 cn.Open();
-                SqlCommand cmd = new SqlCommand("Select answer from forumTopics where id = @id",cn);
-                cmd.Parameters.AddWithValue("@id",result.Id);
+                SqlCommand cmd = new SqlCommand("Select answer from forumTopics where id = @id", cn);
+                cmd.Parameters.AddWithValue("@id", result.Id);
                 int solved = 0;
                 try
                 {
@@ -113,24 +113,26 @@ namespace our.usercontrols
                 catch { }
                 cn.Close();
 
-                if(solved != 0)
+                if (solved != 0)
                     cssClass += "solution";
             }
-            
+
 
             return cssClass;
 
         }
 
-        public static string BuildExamineString(this string term, int boost, string field)
+        public static string BuildExamineString(this string term, int boost, string field, bool andSearch)
         {
             term = Lucene.Net.QueryParsers.QueryParser.Escape(term);
             var terms = term.Trim().Split(' ');
             var qs = field + ":";
             qs += "\"" + term + "\"^" + (boost + 30000).ToString() + " ";
             qs += field + ":(+" + term.Replace(" ", " +") + ")^" + (boost + 5).ToString() + " ";
-            qs += field + ":(" + term + ")^" + boost.ToString() + " ";
-            return qs;
+            if (!andSearch)
+            {
+                qs += field + ":(" + term + ")^" + boost.ToString() + " ";
+            } return qs;
         }
 
 
@@ -151,18 +153,19 @@ namespace our.usercontrols
 
         protected BaseSearchProvider Searcher;
 
-       
+
 
         public ExamineSearchResults()
         {
-            searchTerm      = string.Empty;
-            searchResults   = new List<SearchResult>();
+            searchTerm = string.Empty;
+            searchResults = new List<SearchResult>();
         }
 
         protected void Page_Load(object sender, EventArgs e)
         {
             //Check we have a search term
-            searchTerm = Request.QueryString["q"].Trim();
+            var orgSearchTerm = Request.QueryString["q"].Trim();
+            searchTerm = orgSearchTerm.Replace(" OR ", " ").Replace(" or ", " ");
             if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length == 1)
             {
                 phNotValid.Visible = true;
@@ -170,34 +173,38 @@ namespace our.usercontrols
                 return;
             }
 
-           
+
             Searcher = ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
 
             //Search Criteria for WIKI & Projects
+            bool andSearch = false;
             var searchCriteria = Searcher.CreateSearchCriteria(BooleanOperation.Or);
+            if (searchTerm.IndexOf("\"") == -1 && searchTerm.ToLower().IndexOf(" and ") > -1)
+            {
+                andSearch = true;
+                searchTerm = searchTerm.Replace(" and ", " ").Replace(" AND ", " ");
+            }
 
-
-
-            
             /*var searchFilter = searchCriteria.Field("a","b").Or().GroupedOr
                .GroupedOr(new string[] { "nodeName", "bodyText", "description", "Title", "Body", "CommentsContent" }, searchTerm)
                .Compile();*/
-            
 
 
-            var searchQuery = searchTerm.BuildExamineString(10, "nodeName");
-            searchQuery += searchTerm.BuildExamineString(8, "bodyText");
-            searchQuery += searchTerm.BuildExamineString(9, "description");
-            searchQuery += searchTerm.BuildExamineString(10, "Title");
-            searchQuery += searchTerm.BuildExamineString(8, "Body");
-            searchQuery += searchTerm.BuildExamineString(7, "CommentsContent").TrimEnd(' ');
+
+            var searchQuery = searchTerm.BuildExamineString(10, "nodeName", andSearch);
+            searchQuery += searchTerm.BuildExamineString(8, "bodyText", andSearch);
+            searchQuery += searchTerm.BuildExamineString(9, "description", andSearch);
+            searchQuery += searchTerm.BuildExamineString(10, "Title", andSearch);
+            searchQuery += searchTerm.BuildExamineString(8, "Body", andSearch);
+            searchQuery += searchTerm.BuildExamineString(7, "CommentsContent", andSearch).TrimEnd(' ');
 
             var searchFilter = searchCriteria.RawQuery(searchQuery);
 
 
             searchResults = Searcher.Search(searchFilter).OrderByDescending(x => x.Score);
 
-            
+            // set the searchterm back for the results view
+            searchTerm = orgSearchTerm;
 
             //Get where to search (content)
             string searchWhere = Request.QueryString["content"];
@@ -241,7 +248,7 @@ namespace our.usercontrols
             int.TryParse(Request.QueryString["p"], out page);
             int ItemsPerPage = 20;
 
-         
+
             //Bind repater to the list of results
             searchResultListing.DataSource = searchResults.Skip(page * ItemsPerPage).Take(ItemsPerPage);
             searchResultListing.DataBind();
@@ -275,6 +282,6 @@ namespace our.usercontrols
             }
 
         }
-       
+
     }
 }
