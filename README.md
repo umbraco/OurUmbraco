@@ -1,4 +1,4 @@
-OurUmbraco
+Our Umbraco
 ==========
 Download the SQL Server Database from: https://dl.dropbox.com/u/3006713/our-cleaned-db.zip
 
