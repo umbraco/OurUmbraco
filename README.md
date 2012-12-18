@@ -36,6 +36,7 @@ Simply run the below command in git bash:
 
 .. Yes, this is a scary command line operation, don't you love it?! :-D
 
+##Continuous deploys
 Any updates to the main repo (github.com/umbraco/OurUmbraco) get deployed automatically to http://our.sandbox.umbraco.org/ - So when your pull request gets accepted, your changes should show up there within a few minutes.
 
 ##Projects section
