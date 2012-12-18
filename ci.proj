@@ -1,44 +1,44 @@
 <Project DefaultTargets="TransformWebConfig" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-	<UsingTask TaskName="TransformXml" AssemblyFile="$(ProjectPath)dependencies\Microsoft.Web.Publishing.Tasks.dll"/>
+  <UsingTask TaskName="TransformXml" AssemblyFile="$(ProjectPath)dependencies\Microsoft.Web.Publishing.Tasks.dll"/>
 
-	<PropertyGroup>
-    	<ProjectPath>.\</ProjectPath>
-    	<SourceDirectory>.\OurUmbraco.Site\</SourceDirectory>
-		<DestinationDirectory>C:\inetpub\wwwroot\CI\OurUmbraco\</DestinationDirectory>
-    </PropertyGroup>
+  <PropertyGroup>
+    <ProjectPath>.\</ProjectPath>
+    <SourceDirectory>.\OurUmbraco.Site\</SourceDirectory>
+    <DestinationDirectory>C:\inetpub\wwwroot\CI\OurUmbraco\</DestinationDirectory>
+  </PropertyGroup>
 
- 
-<Target Name="CopyFiles">
-    	<CreateItem Include="$(SourceDirectory)\**\*.*">
-    		<Output TaskParameter="Include" ItemName="AllFiles" />
-    	</CreateItem>
 
-    	<Copy 
-			SourceFiles="@(AllFiles)"
-    		DestinationFiles="@(AllFiles->'$(DestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')" 
-			OverwriteReadOnlyFiles="true"`
-			SkipUnchangedFiles="true"
+  <Target Name="CopyFiles">
+    <CreateItem Include="$(SourceDirectory)\**\*.*">
+      <Output TaskParameter="Include" ItemName="AllFiles" />
+    </CreateItem>
+
+    <Copy
+      SourceFiles="@(AllFiles)"
+      DestinationFiles="@(AllFiles->'$(DestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')"
+      OverwriteReadOnlyFiles="true"
+      SkipUnchangedFiles="true"
 		/>
-</Target>
- 
- <Target Name="TransformWebConfig" DependsOnTargets="CopyFiles">
-     <PropertyGroup>
-		<Environment>CI</Environment>
-        
-        <WebConfigTransformInputFile>$(SourceDirectory)web.config</WebConfigTransformInputFile>
-        <WebConfigTransformFile>$(DestinationDirectory)ConfigTransforms\Web.$(Environment).config</WebConfigTransformFile>
-		<WebConfigTransformOutputFolder>$(ProjectPath)dependencies\$(Environment)</WebConfigTransformOutputFolder>
-		
-        <StackTraceEnabled>False</StackTraceEnabled>
+  </Target>
+
+  <Target Name="TransformWebConfig" DependsOnTargets="CopyFiles">
+    <PropertyGroup>
+      <Environment>CI</Environment>
+
+      <WebConfigTransformInputFile>$(SourceDirectory)web.config</WebConfigTransformInputFile>
+      <WebConfigTransformFile>$(DestinationDirectory)ConfigTransforms\Web.$(Environment).config</WebConfigTransformFile>
+      <WebConfigTransformOutputFolder>$(ProjectPath)dependencies\$(Environment)</WebConfigTransformOutputFolder>
+
+      <StackTraceEnabled>False</StackTraceEnabled>
     </PropertyGroup>
 
-	<MakeDir Directories="$(WebConfigTransformOutputFolder)"/>
-	
-	<TransformXml Source="$(WebConfigTransformInputFile)"
-				  Transform="$(WebConfigTransformFile)"
-				  Destination="$(WebConfigTransformOutputFolder)\Web.config"
-				  StackTrace="$(StackTraceEnabled)" />		
- </Target>
- 
+    <MakeDir Directories="$(WebConfigTransformOutputFolder)"/>
+
+    <TransformXml Source="$(WebConfigTransformInputFile)"
+                  Transform="$(WebConfigTransformFile)"
+                  Destination="$(WebConfigTransformOutputFolder)\Web.config"
+                  StackTrace="$(StackTraceEnabled)" />
+  </Target>
+
 </Project>
