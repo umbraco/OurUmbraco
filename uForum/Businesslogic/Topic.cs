@@ -380,6 +380,11 @@ namespace uForum.Businesslogic {
             return lt;
         }
 
+        public static int TotalTopics()
+        {
+            return Data.SqlHelper.ExecuteScalar<int>("SELECT SUM(totalTopics) FROM [forumForums]");
+        }
+
         /* Events */
         public static event EventHandler<CreateEventArgs> BeforeCreate;
         protected virtual void FireBeforeCreate(CreateEventArgs e) {

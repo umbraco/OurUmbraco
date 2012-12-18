@@ -13,7 +13,21 @@
 
 	<xsl:param name="currentPage"/>
 
+  <xsl:variable name="p">
+    <xsl:choose>
+      <xsl:when test="string(number( umbraco.library:RequestQueryString('p') )) != 'NaN'">
+        <xsl:value-of select="umbraco.library:RequestQueryString('p')"/>
+      </xsl:when>
+      <xsl:otherwise>0</xsl:otherwise>
+    </xsl:choose>
+  </xsl:variable>
+
+  <xsl:variable name="items">15</xsl:variable>
+  <xsl:variable name="pages" select="uForum:ForumPager(0, $items, $p)"/>
+  <xsl:variable name="topics" select="uForum.raw:LatestTopics($items, $p)//topic"/>
+  
 	<xsl:template match="/">
+    
 		<div id="forum">
 			<table cellspacing="0" class="forumList">
 				<thead>
@@ -25,7 +39,7 @@
 				</thead>
 				<tbody>
 
-					<xsl:for-each select ="uForum.raw:LatestTopics(50, 0)/topics/topic">
+					<xsl:for-each select ="$topics">
 						<xsl:sort select ="updated" order ="descending"/>
 						<tr id="topic{@id}">
 							<xsl:if test="answer != 0">
@@ -67,7 +81,23 @@
 				</tbody>
 			</table>
 
-		</div>
+      <xsl:if test="count($pages//page) &gt; 1">
+        <ul class="pager">
+          <xsl:for-each select="$pages//page">
+            <li>
+              <xsl:if test="@current = 'true'">
+                <xsl:attribute name="class">current</xsl:attribute>
+              </xsl:if>
+              <a href="?p={@index}">
+                <xsl:value-of select="@index + 1"/>
+              </a>
+            </li>
+          </xsl:for-each>
+        </ul>
+      </xsl:if>
+    </div>
+    
+    
 	</xsl:template>
 
 </xsl:stylesheet>

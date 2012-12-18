@@ -21,13 +21,12 @@
 <xsl:choose>
 <xsl:when test="$currentPage/@id = 1053">
 
-
 <div id="options">
     <ul>
     <xsl:if test="umbraco.library:IsLoggedOn()">  
     <li class="right"><a class="act yourtopics" href="/forum/your-topics">Topics you participated in</a></li>
     </xsl:if>
-    <li class="right"><a class="act topics" href="/forum/active-topics">The latest 50 active topics</a></li>  
+    <li class="right"><a class="act topics" href="/forum/active-topics">Active topics</a></li>  
     </ul>
 </div>
 

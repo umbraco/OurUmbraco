@@ -316,11 +316,11 @@ color: #514721; display: block; text-align: center;  margin-bottom: 7px;}
 
 
 /* Pager */
-.pager{margin: 0px; padding: 10px 0px 0px 0px; list-style: none;}
-.pager li{display: block; padding-right: 2px; margin: 0px; margin-bottom: 9px;float:left;}
-.pager li a{font-size: 11px; padding: 3px 6px; border: 1px solid #ccc; text-decoration: none;}
+.pager{margin: auto; padding: 20px 40px 40px 40px; list-style: none;display: block; text-align: center;  }
+.pager li{display: inline-block; padding-right: 2px; margin: 3px; margin-bottom: 9px;}
+.pager li a{font-size: 12px; padding: 3px 6px; border: 1px solid #ccc;color: black; text-decoration: none;}
 .pager li.current a{border: none;}
-.pager li a:hover{color: white; background: #2244BB;}
+.pager li a:hover{color: white; background: #252525; border-color: #252525}
 .pager li.current a{font-weight: bold;}
 
 #memberLoader span, #memberLoader_weeks span, #memberLoader_year span{display: block; background: url(img/ajax-loadercircle.gif) no-repeat center left; 

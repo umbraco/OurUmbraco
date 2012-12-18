@@ -107,13 +107,23 @@ namespace uForum.Library {
 
         public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage) {
             XmlDocument xd = new XmlDocument();
-            Businesslogic.Forum f = new uForum.Businesslogic.Forum(forumId);
-                        
+            var totalTopics = 0;
+
+            if (forumId == 0)
+                totalTopics = Businesslogic.Topic.TotalTopics();
+            else
+            {
+                Businesslogic.Forum f = new uForum.Businesslogic.Forum(forumId);
+                totalTopics = f.TotalTopics;
+            }
+
+
             XmlNode pages = umbraco.xmlHelper.addTextNode(xd, "pages", "");
 
             int i = 0;
             int p = 0;
-            while (i < (f.TotalTopics)) {
+
+            while (i < (totalTopics)) {
                 XmlNode page = umbraco.xmlHelper.addTextNode(xd, "page", "");
                 page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "index", p.ToString()));
                 if (p == currentPage) {
@@ -145,6 +155,32 @@ namespace uForum.Library {
                 }
                 pages.AppendChild(page);
                 
+                p++;
+                i = (i + itemsPerPage);
+            }
+
+            return pages.CreateNavigator().Select(".");
+        }
+
+        public static XPathNodeIterator MemberTopicPager(int memberId, int itemsPerPage, int currentPage)
+        {
+            XmlDocument xd = new XmlDocument();
+            XmlNode pages = umbraco.xmlHelper.addTextNode(xd, "pages", "");
+
+            int i = 0;
+            int p = 0;
+            int total = uForum.Businesslogic.Forum.TotalTopicsAndComments(memberId);
+
+            while (i < (total))
+            {
+                XmlNode page = umbraco.xmlHelper.addTextNode(xd, "page", "");
+                page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "index", p.ToString()));
+                if (p == currentPage)
+                {
+                    page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "current", "true"));
+                }
+                pages.AppendChild(page);
+
                 p++;
                 i = (i + itemsPerPage);
             }

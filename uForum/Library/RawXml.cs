@@ -11,8 +11,41 @@ namespace uForum.Library {
     /// </summary>
     public class RawXml {
 
-        public static XPathNodeIterator TopicsWithParticipation(int memberId) {
+        public static XPathNodeIterator TopicsWithParticipation(int memberId, int maxItems, int page) {
+            
+            // Check for paging
+            int pageSize = maxItems;
+            int pageStart = page;
 
+            int pageEnd = ((page + 1) * pageSize);
+
+            if (pageStart > 0)
+            {
+                pageStart = (page * pageSize) + 1;
+            }
+
+            string sql = @"WITH Topics  AS
+                        (
+                            SELECT forumTopics.*, ROW_NUMBER() OVER (ORDER BY updated DESC) AS RowNumber 
+                            from forumTopics 
+                            
+                            where id IN(
+                            SELECT TOP " + pageSize + @" forumTopics.id
+                            FROM [forumTopics]
+                            LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
+                            where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId + @"
+                            ORDER By forumTopics.updated DESC
+                            )
+                        )
+                        
+                        SELECT	id, parentId, RowNumber, memberId, title, body, created, updated, locked, latestReplyAuthor, latestComment, replies, score, urlname, answer
+                        FROM	Topics
+                        WHERE	RowNumber BETWEEN " + pageStart + " AND " + pageEnd + @"  
+                        ORDER BY RowNumber ASC;";
+
+
+
+            /*
             string SQL = @"SELECT * from forumTopics 
                             where id IN(
                             SELECT TOP 50 forumTopics.id
@@ -22,8 +55,9 @@ namespace uForum.Library {
                             ORDER By forumTopics.updated DESC
                             )
                             ORDER by forumTopics.updated DESC";
+            */
 
-            return Businesslogic.Data.GetDataSet(SQL, "topic");
+            return Businesslogic.Data.GetDataSet(sql, "topic");
         }
 
         public static XPathNodeIterator TopicsWithAuthor(int memberId) {

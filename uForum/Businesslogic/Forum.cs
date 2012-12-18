@@ -178,6 +178,16 @@ namespace uForum.Businesslogic {
             dr.Dispose();
         }
 
+        public static int TotalTopicsAndComments(int memberId)
+        {
+            string sql = @"SELECT Count(forumTopics.id)
+                            FROM [forumTopics]
+                            LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
+                            where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId +@";";
+
+            return Data.SqlHelper.ExecuteScalar<int>(sql);
+        }
+
         public static List<Forum> Forums() { return Forums(0); }
         public static List<Forum> Forums(int parentId) {
 
