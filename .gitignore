@@ -28,7 +28,6 @@ umbraco.config
 *OurUmbraco.Site/App_Data/Logs*/
 *OurUmbraco.Site/App_Data/Preview*/
 *OurUmbraco.Site/install*/
-*OurUmbraco.Site/web.config
 
 _BuildOutput/*
 *.ncrunchsolution
