@@ -69,7 +69,7 @@
 </th>
 <td class="forumLastPost">
 <xsl:if test="number(./@LatestAuthor) &gt; 0 and ./@LatestTopic &gt; 0">
-<a href="{uForum:NiceTopicUrl(./@LatestTopic)}"><xsl:value-of select="uForum:TimeDiff(./@LatestPostDate)"/></a> by <xsl:value-of select="umbraco.library:GetMemberName(./@LatestAuthor)"/> 
+<a href="{uForum:NiceTopicUrl(./@LatestTopic)}" title="{umbraco.library:FormatDateTime(@LatestPostDate, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff(./@LatestPostDate)"/></a> by <xsl:value-of select="umbraco.library:GetMemberName(./@LatestAuthor)"/> 
 </xsl:if>
 </td>
 </tr>
