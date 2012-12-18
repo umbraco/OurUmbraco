@@ -5,16 +5,19 @@ Complete source of the umbraco community site, our.umbraco.org.
 
 
 ##Database restore
-Download the SQL Server Database from: https://dl.dropbox.com/u/3006713/our-cleaned-db.zip?dl=1
+Download the SQL Server Database from: https://dl.dropbox.com/u/3006713/our-cleaned-db-2008R2.zip?dl=1
 
-Restore the database to SQL Server 2012 (looking into a 2008 option!) and update the connection string (umbracoDbDSN) in OurUmbraco.Site/web.config 
-
+Restore the database to SQL Server 2008 R2 (at least R2 is required!) and update the connection string (umbracoDbDSN) in OurUmbraco.Site/web.config 
 
 ##Build in visual studio
 Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager).
 
+##Logging in
+All users and members use the same password: Not_A_Real_Password
 
-##Syncing your form with tje original repository
+To log in, try root / Not_A_Real_Password for the backoffice and member423@non-existing-mail-provider.none / Not_A_Real_Password for the frontend.
+
+##Syncing your fork with the original repository
 To sync your fork with this original one, you'll have to add the upstream url once:
 
 	git remote add upstream git://github.com/umbraco/OurUmbraco.git
