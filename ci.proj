@@ -38,6 +38,11 @@
                   Transform="$(WebConfigTransformFile)"
                   Destination="$(WebConfigTransformOutputFolder)\Web.config"
                   StackTrace="$(StackTraceEnabled)" />
+    
+    <Copy
+         SourceFiles="$(WebConfigTransformOutputFolder)\Web.config"
+         DestinationFiles="$(DestinationDirectory)\Web.config"
+		/>
   </Target>
 
 </Project>
