@@ -17,7 +17,6 @@
     <Copy
       SourceFiles="@(AllFiles)"
       DestinationFiles="@(AllFiles->'$(DestinationDirectory)\%(RecursiveDir)%(Filename)%(Extension)')"
-      OverwriteReadOnlyFiles="true"
       SkipUnchangedFiles="true"
 		/>
   </Target>
