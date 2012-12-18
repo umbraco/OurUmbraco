@@ -72,7 +72,7 @@
 <h2><xsl:value-of select="$topic/title"/></h2>
 <div class="postedAt">
   <a href="/member/{$topicStarter//@id}"><xsl:value-of select="$topicStarter//@nodeName"/></a> 
-    started this topic <strong><xsl:value-of select="uForum:TimeDiff($topic/created)" /></strong>
+    started this topic <strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($topic/created)" /></strong>
 
     <xsl:if test="Exslt.ExsltDatesAndTimes:seconds(Exslt.ExsltDatesAndTimes:difference($topic/created, $topic/updated)) &gt; 10">
     , this topic was edited at: <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
@@ -239,7 +239,7 @@
 <div class="meta">
   <div class="postedAt">
     <a href="/member/{$author//@id}"><xsl:value-of select="$author//@nodeName"/></a>
-    posted this reply <strong><xsl:value-of select="uForum:TimeDiff($comment/created)" /></strong>
+    posted this reply <strong title="{umbraco.library:FormatDateTime($comment/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($comment/created)" /></strong>
   </div>
 </div>
 

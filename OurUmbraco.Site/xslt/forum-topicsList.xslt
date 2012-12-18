@@ -139,7 +139,9 @@
 <a href="{uForum:NiceTopicUrl($topic/id)}"><xsl:value-of select="$topic/title"/></a>
 <small>
   Started by:  <xsl:value-of select="umbraco.library:GetMemberName($topic/memberId)"/>
-   - <xsl:value-of select="uForum:TimeDiff($topic/created)"/>
+   - <span title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}">
+  <xsl:value-of select="uForum:TimeDiff($topic/created)"/>
+</span>
   <xsl:if test="$topic/answer != 0"><em>&nbsp; - Topic has been solved</em></xsl:if>  
 </small>
 </th>
@@ -160,12 +162,12 @@
 <td class="latestComment">
 
 <xsl:choose><xsl:when test="number($topic/latestComment) &gt; 0"> 
- <a href="{uForum:NiceCommentUrl($topic/id, $topic/latestComment, 10 )}">
+ <a href="{uForum:NiceCommentUrl($topic/id, $topic/latestComment, 10 )}" title="{umbraco.library:FormatDateTime($topic/updated, 'MMMM d, yyyy @ hh:mm')}">
     <xsl:value-of select="uForum:TimeDiff($topic/updated)"/>
   </a>
 </xsl:when>
 <xsl:otherwise>
- <a href="{uForum:NiceTopicUrl($topic/id)}">
+ <a href="{uForum:NiceTopicUrl($topic/id)}" title="{umbraco.library:FormatDateTime($topic/updated, 'MMMM d, yyyy @ hh:mm')}">
   <xsl:value-of select="uForum:TimeDiff($topic/updated)"/>
  </a>
 </xsl:otherwise>

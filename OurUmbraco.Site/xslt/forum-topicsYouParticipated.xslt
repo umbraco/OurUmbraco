@@ -65,7 +65,9 @@ $recordsPerPage )">
 										</a>
 										<small>
 											Started by: <xsl:value-of select="umbraco.library:GetMemberName(memberId)" />
-											- <xsl:value-of select="uForum:TimeDiff(created)"/>
+											- <span title="{umbraco.library:FormatDateTime(created, 'MMMM d, yyyy @ hh:mm')}">
+                      <xsl:value-of select="uForum:TimeDiff(created)"/>
+                    </span>
 											<xsl:if test="answer != 0">
 												<em>&nbsp; - Topic has been solved</em>
 											</xsl:if>
@@ -75,7 +77,7 @@ $recordsPerPage )">
 										<xsl:value-of select ="replies"/>
 									</td>
 									<td class="latestComment">
-										<a href="{uForum:NiceTopicUrl(id)}">
+										<a href="{uForum:NiceTopicUrl(id)}" title="{umbraco.library:FormatDateTime(updated, 'MMMM d, yyyy @ hh:mm')}">
 											<xsl:value-of select="uForum:TimeDiff(updated)"/>
 										</a> by
 

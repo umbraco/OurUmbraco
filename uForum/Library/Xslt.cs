@@ -273,6 +273,9 @@ namespace uForum.Library {
             if (span >= 604800 && span < 1209600)
                 return "1 week ago";
 
+            return DateTime.Parse(secondDate).ToString("MMMM d, yyyy @ hh:mm");
+
+            /*
             if (span >= 1209600 && span < 5184000)
                 return Math.Round(TS.TotalDays / 7).ToString() + " weeks ago";
 
@@ -281,8 +284,8 @@ namespace uForum.Library {
 
             if (span >= 31536000)
                 return "More than a year ago";
-
-            return "";
+            */
+            return secondDate;
         }
 
 
