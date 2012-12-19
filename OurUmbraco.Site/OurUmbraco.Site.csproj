@@ -63,6 +63,10 @@
     <Reference Include="DotNetOpenMail">
       <HintPath>..\dependencies\Our\DotNetOpenMail.dll</HintPath>
     </Reference>
+    <Reference Include="EasyHttp">
+      <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Elmah">
       <HintPath>..\dependencies\Our\Elmah.dll</HintPath>
     </Reference>
@@ -105,6 +109,10 @@
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\dependencies\Our\itextsharp.dll</HintPath>
+    </Reference>
+    <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -176,8 +184,9 @@
     <Reference Include="ProjectForumMover">
       <HintPath>..\dependencies\Our\ProjectForumMover.dll</HintPath>
     </Reference>
-    <Reference Include="RestSharp">
-      <HintPath>..\dependencies\Our\RestSharp.dll</HintPath>
+    <Reference Include="RestSharp, Version=104.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\RestSharp.104.1\lib\net4\RestSharp.dll</HintPath>
     </Reference>
     <Reference Include="SignalR, Version=0.3.5.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -307,7 +316,8 @@
       <HintPath>..\dependencies\4.9.1\UrlRewritingNet.UrlRewriter.dll</HintPath>
     </Reference>
     <Reference Include="YouTrackSharp">
-      <HintPath>..\dependencies\Our\YouTrackSharp.dll</HintPath>
+      <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>
+      <Private>True</Private>
     </Reference>
   </ItemGroup>
   <ItemGroup>
