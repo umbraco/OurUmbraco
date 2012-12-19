@@ -25,8 +25,11 @@ To sync your fork with this original one, you'll have to add the upstream url on
 And then each time you want to get the changes:
 
 	git fetch upstream
+	git rebase upstream/master
 
 Yes, this is a scary command line operation, don't you love it?! :-D
+
+(More info on how this works: http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
 
 ##Ignore your local web.config
 To ensure you don't accidently commit your local web.config file, you can tell git ignore any changes done to this file.
