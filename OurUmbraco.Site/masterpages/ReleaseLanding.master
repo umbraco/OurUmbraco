@@ -71,7 +71,7 @@
         </div>
       </div>
       <div class="releaseDate">
-           <span data-bind="text:new Date(releaseDate()).format('MMMM dd, yyyy')"></span>
+           <span data-bind="text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span>
       </div>        
     </div>
 </script>

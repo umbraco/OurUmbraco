@@ -37,7 +37,7 @@
           <span data-bind="visible: $.inArray(version(), hasPageArray) == -1, text: version"></span>
       </h2>    
           
-      <span data-bind="visible: !released()">Target release date: <em><span data-bind="text:new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span></em></span><span data-bind="visible: released()"><em><a href="http://umbraco.codeplex.com/releases">Download it now!</a></em></span><br/>
+      <span data-bind="visible: !released()">Target release date: <em><span data-bind="text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span></em></span><span data-bind="visible: released()"><em><a href="http://umbraco.codeplex.com/releases">Download it now!</a></em></span><br/>
       <p data-bind="visible: (releaseDescription().length > 0)">Summary: <em><span data-bind="html: releaseDescription"></span></em></p>
       <div class="statuses group">
         <div class="status features">

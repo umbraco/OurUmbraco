@@ -76,9 +76,9 @@ namespace uRelease.Controllers
                                    version = version.Value,
                                    releaseDescription = version.Description ?? string.Empty,
                                    released = version.Released,
-                                   releaseDate = new DateTime(1970, 1, 1).AddMilliseconds(version.ReleaseDate).ToString(CultureInfo.InvariantCulture)
+                                   releaseDate = version.ReleaseDate == 0 ? "" : new DateTime(1970, 1, 1).AddMilliseconds(version.ReleaseDate).ToString(CultureInfo.InvariantCulture)
                                };
-
+                
                 // /rest/issue/byproject/{project}?{filter}
                 var issues = versionCache.GetOrAdd(version.Value, key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
                 var issueView = new List<IssueView>();

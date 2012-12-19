@@ -28,7 +28,7 @@
           <div class="bar bar1 rl" data-bind="style: { width: (released()?'100':percentComplete()) + '%' }, visible: percentComplete()  > 0 || released(), css: { rr: percentInProgress() == 0 }">&nbsp;</div>
             <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
         </div>
-  <h3 data-bind="visible: !released()">Target release date: <span data-bind="text:new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
+  <h3 data-bind="visible: !released()">Target release date: <span data-bind="text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
   <h3 data-bind="visible: released()"><a href="http://umbraco.codeplex.com/releases">Download it now!</a></h3>
   <h3>Summary:</h3>
   <p><span data-bind="html: releaseDescription"></span></p>
