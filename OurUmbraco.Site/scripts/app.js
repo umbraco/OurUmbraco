@@ -1,4 +1,4 @@
-var completeStates = ['fixed', 'fixed awaiting retest', 'incomplete', 'obsolete', 'won\'t fix', 'Duplicate', 'can\'t reproduce', 'duplicate'];
+var completeStates = ['fixed', 'fixed awaiting retest', 'incomplete', 'obsolete', 'won\'t fix', 'Duplicate', 'can\'t reproduce', 'duplicate', 'closed'];
 var inProgressStates = ['in progress'];
 var issueTypes = ['bug','exception','performance problem','auto-reported exception','cosmetics','usability problem','meta issue','task'];
 var featureTypes = ['feature (planned)','feature (request)'];
