@@ -162,8 +162,8 @@
    - <span title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}">
   <xsl:value-of select="uForum:TimeDiff($topic/created)"/>
 </span>
-            <em>&nbsp; - Topic has been solved</em>
-          </xsl:if>
+              <xsl:if test="$topic/answer != 0"><em>&nbsp; - Topic has been solved</em></xsl:if>  
+
         </small>
       </th>
 
