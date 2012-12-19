@@ -46,9 +46,9 @@ Manage your licenses
 
         $.validator.addMethod("onlyIpAddress",
             function (value, element) {
-                var re = new RegExp('^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$');
+                var regex = /^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/gi;
                 if (value != '')
-                    return (value.match(re));
+                    return regex.test(value);
                 else
                     return true;
             },
@@ -57,9 +57,9 @@ Manage your licenses
 
         $.validator.addMethod("onlyDomainName",
             function (value, element) {
-                var re = new RegExp('^(([a-zA-Z]|[a-zA-Z][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z]|[A-Za-z][A-Za-z0-9\-]*[A-Za-z0-9])$');
+                var regex = /^(([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?\.)*([a-zA-Z0-9\-]{0,61}[a-zA-Z])?$/gi;
                 if (value != '')
-                    return (value.match(re));
+                    return regex.test(value);
                 else
                     return true;
             },
