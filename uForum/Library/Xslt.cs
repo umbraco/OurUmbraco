@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using System.Web;
 using System.Xml;
 using System.Xml.XPath;
-using System.Web;
-using System.Text.RegularExpressions;
+using umbraco;
 using umbraco.cms.businesslogic.member;
 
 namespace uForum.Library {
@@ -104,39 +105,50 @@ namespace uForum.Library {
             return url;
          }
 
+		public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage)
+		{
+			return ForumPager(forumId, itemsPerPage, currentPage, 10);
+		}
 
-        public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage) {
-            XmlDocument xd = new XmlDocument();
-            var totalTopics = 0;
+		public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage, int distance)
+		{
+			var xd = new XmlDocument();
+			var totalTopics = 0;
 
-            if (forumId == 0)
-                totalTopics = Businesslogic.Topic.TotalTopics();
-            else
-            {
-                Businesslogic.Forum f = new uForum.Businesslogic.Forum(forumId);
-                totalTopics = f.TotalTopics;
-            }
+			if (forumId == 0)
+				totalTopics = Businesslogic.Topic.TotalTopics();
+			else
+			{
+				var f = new uForum.Businesslogic.Forum(forumId);
+				totalTopics = f.TotalTopics;
+			}
 
+			var pages = xmlHelper.addTextNode(xd, "pages", string.Empty);
+			var i = 0;
+			var p = 0;
 
-            XmlNode pages = umbraco.xmlHelper.addTextNode(xd, "pages", "");
+			while (i < (totalTopics))
+			{
+				var distanceFromCurrent = p - currentPage;
+				if (distanceFromCurrent > -distance && distanceFromCurrent < distance)
+				{
+					var page = xmlHelper.addTextNode(xd, "page", string.Empty);
+					page.Attributes.Append(xmlHelper.addAttribute(xd, "index", p.ToString()));
 
-            int i = 0;
-            int p = 0;
+					if (p == currentPage)
+					{
+						page.Attributes.Append(xmlHelper.addAttribute(xd, "current", "true"));
+					}
 
-            while (i < (totalTopics)) {
-                XmlNode page = umbraco.xmlHelper.addTextNode(xd, "page", "");
-                page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "index", p.ToString()));
-                if (p == currentPage) {
-                    page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "current", "true"));
-                }
-                pages.AppendChild(page);
-                
-                p++;
-                i = (i + itemsPerPage);
-            }
+					pages.AppendChild(page);
+				}
 
-            return pages.CreateNavigator().Select(".");
-        }
+				p++;
+				i = (i + itemsPerPage);
+			}
+
+			return pages.CreateNavigator().Select(".");
+		}
 
         public static XPathNodeIterator TopicPager(int topicId, int itemsPerPage, int currentPage) {
             XmlDocument xd = new XmlDocument();
