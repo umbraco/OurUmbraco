@@ -99,9 +99,9 @@
           </tbody>
         </table>
 
-        <xsl:if test="count($pages//page) &gt; 1">
+        <xsl:if test="$pages[page]">
           <ul class="pager">
-            <xsl:for-each select="$pages//page">
+            <xsl:for-each select="$pages/page">
               <li>
                 <xsl:if test="@current = 'true'">
                   <xsl:attribute name="class">current</xsl:attribute>

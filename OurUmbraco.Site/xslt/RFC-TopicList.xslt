@@ -68,10 +68,10 @@
             </xsl:for-each>
         </div>
 
-        <xsl:if test="count($pages//page) &gt; 1">
+        <xsl:if test="$pages[page]">
           <strong>Pages: </strong>
           <ul class="pager">
-            <xsl:for-each select="$pages//page">
+            <xsl:for-each select="$pages/page">
               <li>
                 <xsl:if test="@current = 'true'">
                   <xsl:attribute name="class">current</xsl:attribute>
