@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Xml;
 
-namespace uForum.Businesslogic {
-    public class Topic {
+namespace uForum.Businesslogic
+{
+    public class Topic
+    {
 
         public int Id { get; private set; }
         public int ParentId { get; private set; }
@@ -21,20 +24,13 @@ namespace uForum.Businesslogic {
         public int Replies { get; private set; }
 
         public bool Locked { get; set; }
-        private Events _e = new Events();
+        private readonly Events _events = new Events();
 
-        public bool Exists {
-            get {
-                if (Id > 0)
-                    return true;
-                else
-                    return false;
-            }
-        }
+        public bool Exists { get { return Id > 0; } }
 
         public bool Editable(int memberId)
         {
-            if (this.Exists == false || memberId == 0)
+            if (Exists == false || memberId == 0)
                 return false;
 
             if (Library.Xslt.IsMemberInGroup("admin", memberId))
@@ -43,71 +39,81 @@ namespace uForum.Businesslogic {
             return memberId == MemberId;
         }
 
-        public void Move(int newForumId) {
-            MoveEventArgs e = new MoveEventArgs();
-            FireBeforeMove(e);
+        public void Move(int newForumId)
+        {
+            var moveEventArgs = new MoveEventArgs();
+            FireBeforeMove(moveEventArgs);
 
-            if (!e.Cancel) {
-                Forum newF = new Forum(newForumId);
-                Forum oldF = new Forum(ParentId);
+            if (moveEventArgs.Cancel)
+                return;
 
-                if (newF.Exists) {
-                    ParentId = newForumId;
-                    Save(true);
+            var newF = new Forum(newForumId);
+            var oldF = new Forum(ParentId);
 
-                    newF.Save();
-                    oldF.Save();
+            if (newF.Exists == false)
+                return;
+
+            ParentId = newForumId;
+            Save(true);
+
+            newF.Save();
+            oldF.Save();
 
 
-                    FireAfterMove(e);
-                }
-            }
+            FireAfterMove(moveEventArgs);
         }
 
-        public void Delete() {
-            DeleteEventArgs e = new DeleteEventArgs();
-            FireBeforeDelete(e);
-            if (!e.Cancel) {
-                Forum f = new Forum(this.ParentId);
+        public void Delete()
+        {
+            var deleteEventArgs = new DeleteEventArgs();
+            FireBeforeDelete(deleteEventArgs);
 
-                Data.SqlHelper.ExecuteNonQuery("DELETE FROM forumTopics WHERE id = @id",
-                    Data.SqlHelper.CreateParameter("@id", Id.ToString()));
-                Id = 0;
+            if (deleteEventArgs.Cancel)
+                return;
 
+            var forum = new Forum(ParentId);
 
-                f.Save();
-                
-                
-                FireAfterDelete(e);
-            }
+            Data.SqlHelper.ExecuteNonQuery("DELETE FROM forumTopics WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
+            Id = 0;
+
+            forum.Save();
+
+            FireAfterDelete(deleteEventArgs);
         }
 
-        public void Lock() {
-            LockEventArgs e = new LockEventArgs();
-            FireBeforeLock(e);
+        public void Lock()
+        {
+            var lockEventArgs = new LockEventArgs();
+            FireBeforeLock(lockEventArgs);
 
-            if (!e.Cancel) {
-                Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET locked = 1 WHERE id = ",
-                    Data.SqlHelper.CreateParameter("@id", Id.ToString()));
-                Id = 0;
-                FireAfterLock(e);
-            }  
+            if (lockEventArgs.Cancel)
+                return;
+
+            Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET locked = 1 WHERE id = ", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
+
+            Id = 0;
+
+            FireAfterLock(lockEventArgs);
         }
 
-        public void Save() {
+        public void Save()
+        {
             Save(false);
         }
 
-        public void Save(bool silent) {
-            if (Id == 0) {
+        public void Save(bool silent)
+        {
+            if (Id == 0)
+            {
 
-                if (Library.Utills.IsMember(MemberId) &&  !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(Body)) {
+                if (Library.Utills.IsMember(MemberId) && !string.IsNullOrEmpty(Title) && !string.IsNullOrEmpty(Body))
+                {
 
-                    
-                    CreateEventArgs e = new CreateEventArgs();
-                    FireBeforeCreate(e);
-                    if (!e.Cancel) {
+                    var createEventArgs = new CreateEventArgs();
+                    FireBeforeCreate(createEventArgs);
 
+                    if (createEventArgs.Cancel == false)
+                    {
                         UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
 
                         Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumTopics (parentId, memberId, title, urlName, body, latestReplyAuthor) VALUES(@parentId, @memberId, @title, @urlname, @body, @latestReplyAuthor)",
@@ -115,42 +121,44 @@ namespace uForum.Businesslogic {
                             Data.SqlHelper.CreateParameter("@memberId", MemberId),
                             Data.SqlHelper.CreateParameter("@title", Title),
                             Data.SqlHelper.CreateParameter("@urlname", UrlName),
-                            Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),    
+                            Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
                             Data.SqlHelper.CreateParameter("@body", Body)
-                            );
+                        );
 
                         Created = DateTime.Now;
                         Updated = DateTime.Now;
-                        Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId",
-                            Data.SqlHelper.CreateParameter("@memberId", MemberId));
+                        Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", MemberId));
 
-                        Forum f = new Forum(ParentId);
+                        var forum = new Forum(ParentId);
 
-                        if (f.Exists) {
-                            f.SetLatestTopic(Id);
-                            f.SetLatestAuthor(MemberId);
-                            f.LatestPostDate = DateTime.Now;
-                            f.Save();
+                        if (forum.Exists)
+                        {
+                            forum.SetLatestTopic(Id);
+                            forum.SetLatestAuthor(MemberId);
+                            forum.LatestPostDate = DateTime.Now;
+                            forum.Save();
                         }
 
-                        FireAfterCreate(e);
+                        FireAfterCreate(createEventArgs);
                     }
                 }
 
-            } else {
+            }
+            else
+            {
 
-                UpdateEventArgs e = new UpdateEventArgs();
-                FireBeforeUpdate(e);
+                var updateEventArgs = new UpdateEventArgs();
+                FireBeforeUpdate(updateEventArgs);
 
-                if (!e.Cancel) {
-
-                    int totalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT count(id) from forumComments where topicId = @id", Data.SqlHelper.CreateParameter("@id", Id));
+                if (updateEventArgs.Cancel == false)
+                {
+                    var totalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT count(id) from forumComments where topicId = @id", Data.SqlHelper.CreateParameter("@id", Id));
                     LatestReplyAuthor = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 memberId FROM forumComments WHERE (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
                     LatestComment = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumComments WHERE (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
 
                     UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
-                    
-                    if(!silent)
+
+                    if (silent == false)
                         Updated = DateTime.Now;
 
                     Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET replies = @replies, parentId = @parentId, memberId = @memberId, title = @title, urlname = @urlname, body = @body, updated = @updated, locked = @locked, latestReplyAuthor = @latestReplyAuthor, latestComment = @latestComment WHERE id = @id",
@@ -165,217 +173,222 @@ namespace uForum.Businesslogic {
                         Data.SqlHelper.CreateParameter("@latestComment", LatestComment),
                         Data.SqlHelper.CreateParameter("@locked", Locked),
                         Data.SqlHelper.CreateParameter("@replies", totalComments)
-                        );
+                    );
 
                     UpdateCommentsPosition();
 
-                    FireAfterUpdate(e);
+                    FireAfterUpdate(updateEventArgs);
                 }
             }
         }
 
-        private void UpdateCommentsPosition() {
-            string sql = @"SELECT id, position, created,
-                          ROW_NUMBER() OVER (ORDER BY created) AS RowNumber
-                          FROM forumComments where topicId = @Id";
+        private void UpdateCommentsPosition()
+        {
+            const string sql = @"SELECT id, position, created, ROW_NUMBER() OVER (ORDER BY created) AS RowNumber FROM forumComments where topicId = @Id";
+            var reader = Data.SqlHelper.ExecuteReader(sql, Data.SqlHelper.CreateParameter("@id", Id));
 
+            while (reader.Read())
+            {
+                var commentId = reader.GetInt("id");
+                var rowNumber = reader.GetLong("RowNumber");
 
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(sql, Data.SqlHelper.CreateParameter("@id", Id));
-
-            while (dr.Read()) {
-                int _cid = dr.GetInt("id");
-                long _rn = dr.GetLong("RowNumber");
-                
-                Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET position = @position WHERE id = @id",
-                        Data.SqlHelper.CreateParameter("@id", _cid),
-                        Data.SqlHelper.CreateParameter("@position", _rn));
+                Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET position = @position WHERE id = @id", Data.SqlHelper.CreateParameter("@id", commentId), Data.SqlHelper.CreateParameter("@position", rowNumber));
             }
 
         }
 
-        public List<Comment> Comments() {
-            List<Comment> lc = new List<Comment>();
+        public List<Comment> Comments()
+        {
+            var comments = new List<Comment>();
 
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT * FROM forumComments WHERE topicId = " + Id.ToString()
-            );
+            var dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE topicId = @topicId", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
 
-            try {
+            try
+            {
                 //Sql effiecient way of fetching collection of comments instead of one by one.. 
-                while (dr.Read()) {
-                    Comment c = new Comment();
-                    c.Id = dr.GetInt("id");
-                    c.TopicId = dr.GetInt("topicId");
-                    c.MemberId = dr.GetInt("memberId");
+                while (dr.Read())
+                {
+                    var comment = new Comment
+                                      {
+                                          Id = dr.GetInt("id"),
+                                          TopicId = dr.GetInt("topicId"),
+                                          MemberId = dr.GetInt("memberId"),
+                                          Body = dr.GetString("body"),
+                                          Created = dr.GetDateTime("created")
+                                      };
 
-                    c.Body = dr.GetString("body");
-
-                    c.Created = dr.GetDateTime("created");
-
-                    lc.Add(c);
+                    comments.Add(comment);
                 }
-            } catch (Exception ex) {
+            }
+            catch (Exception ex)
+            {
                 umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, ex.ToString());
             }
 
             dr.Close();
             dr.Dispose();
 
-            return lc;
+            return comments;
         }
 
-        public XmlNode ToXml(XmlDocument d) {
-            XmlNode tx = d.CreateElement("topic");
-            
-            tx.AppendChild(umbraco.xmlHelper.addTextNode(d, "title", Title));
-            tx.AppendChild(umbraco.xmlHelper.addCDataNode(d, "body", Body));
+        public XmlNode ToXml(XmlDocument xmlDocument)
+        {
+            XmlNode topicXml = xmlDocument.CreateElement("topic");
 
-            tx.AppendChild(umbraco.xmlHelper.addTextNode(d, "urlname", UrlName));
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "id", Id.ToString()));
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "parentId", ParentId.ToString()));
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "memberId", MemberId.ToString()));
+            topicXml.AppendChild(umbraco.xmlHelper.addTextNode(xmlDocument, "title", Title));
+            topicXml.AppendChild(umbraco.xmlHelper.addCDataNode(xmlDocument, "body", Body));
 
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "latestReplyAuthor", LatestReplyAuthor.ToString()));
-            
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "created", Created.ToString()));
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "updated", Updated.ToString()));
+            topicXml.AppendChild(umbraco.xmlHelper.addTextNode(xmlDocument, "urlname", UrlName));
 
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "locked", Locked.ToString()));
-            tx.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "replies", Replies.ToString()));
-            return tx;
+            if (topicXml.Attributes != null)
+            {
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "id", Id.ToString(CultureInfo.InvariantCulture)));
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "parentId", ParentId.ToString(CultureInfo.InvariantCulture)));
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "memberId", MemberId.ToString(CultureInfo.InvariantCulture)));
+
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "latestReplyAuthor", LatestReplyAuthor.ToString(CultureInfo.InvariantCulture)));
+
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "created", Created.ToString(CultureInfo.InvariantCulture)));
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "updated", Updated.ToString(CultureInfo.InvariantCulture)));
+
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "locked", Locked.ToString()));
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "replies", Replies.ToString(CultureInfo.InvariantCulture)));
+            }
+
+            return topicXml;
         }
 
-        public static Topic Create(int forumId, string title, string body, int memberId) {
-            Topic t = new Topic();
-            t.ParentId = forumId;
-            t.Title = title;
-            t.Body = body;
-            t.MemberId = memberId;
-            t.LatestReplyAuthor = memberId;
-            t.Replies = 0;
-            t.Save();
-            
-            return t;
+        public static Topic Create(int forumId, string title, string body, int memberId)
+        {
+            var topic = new Topic
+                          {
+                              ParentId = forumId,
+                              Title = title,
+                              Body = body,
+                              MemberId = memberId,
+                              LatestReplyAuthor = memberId,
+                              Replies = 0
+                          };
+            topic.Save();
+
+            return topic;
         }
 
         public Topic() { }
-        
-        public Topic(int topicId) {
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader( "SELECT * FROM forumTopics WHERE id = @id",
-                    Data.SqlHelper.CreateParameter("@id", topicId.ToString()));
 
-            if (dr.Read()) {
+        public Topic(int topicId)
+        {
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE id = @id", Data.SqlHelper.CreateParameter("@id", topicId.ToString(CultureInfo.InvariantCulture)));
 
-                Id = dr.GetInt("id");
-                ParentId = dr.GetInt("parentId");
-                MemberId = dr.GetInt("memberId");
-                Replies = dr.GetInt("replies");
-                Title = dr.GetString("title");
-                Body = dr.GetString("body");
-                LatestReplyAuthor = dr.GetInt("latestReplyAuthor");
-                Created = dr.GetDateTime("created");
-                Updated = dr.GetDateTime("updated");
+            if (reader.Read())
+            {
 
-                UrlName = dr.GetString("urlName");
+                Id = reader.GetInt("id");
+                ParentId = reader.GetInt("parentId");
+                MemberId = reader.GetInt("memberId");
+                Replies = reader.GetInt("replies");
+                Title = reader.GetString("title");
+                Body = reader.GetString("body");
+                LatestReplyAuthor = reader.GetInt("latestReplyAuthor");
+                Created = reader.GetDateTime("created");
+                Updated = reader.GetDateTime("updated");
 
-                Locked = dr.GetBoolean("locked");
+                UrlName = reader.GetString("urlName");
+
+                Locked = reader.GetBoolean("locked");
             }
 
-            dr.Close();
-            dr.Dispose();
+            reader.Close();
+            reader.Dispose();
         }
 
-        public static Topic GetFromReader(umbraco.DataLayer.IRecordsReader dr) {
+        public static Topic GetFromReader(umbraco.DataLayer.IRecordsReader reader)
+        {
 
-            Topic t = new Topic();
-            t.Id = dr.GetInt("id");
-            t.ParentId = dr.GetInt("parentId");
-            t.MemberId = dr.GetInt("memberId");
-            t.Replies = dr.GetInt("replies");
-            t.Title = dr.GetString("title");
-            t.Body = dr.GetString("body");
-            t.LatestReplyAuthor = dr.GetInt("latestReplyAuthor");
-            t.Created = dr.GetDateTime("created");
-            t.Updated = dr.GetDateTime("updated");
+            var topic = new Topic
+                            {
+                                Id = reader.GetInt("id"),
+                                ParentId = reader.GetInt("parentId"),
+                                MemberId = reader.GetInt("memberId"),
+                                Replies = reader.GetInt("replies"),
+                                Title = reader.GetString("title"),
+                                Body = reader.GetString("body"),
+                                LatestReplyAuthor = reader.GetInt("latestReplyAuthor"),
+                                Created = reader.GetDateTime("created"),
+                                Updated = reader.GetDateTime("updated"),
+                                UrlName = reader.GetString("urlName"),
+                                Locked = reader.GetBoolean("locked")
+                            };
 
-            t.UrlName = dr.GetString("urlName");
-
-            t.Locked = dr.GetBoolean("locked");
-
-            return t;
+            return topic;
         }
 
         //Collections
-        public static List<Topic> TopicsInForum(int forumId, int topicsPerPage, int page) {
-            List<Topic> lt = new List<Topic>();
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
+        public static List<Topic> TopicsInForum(int forumId, int topicsPerPage, int page)
+        {
+            var topics = new List<Topic>();
+            var reader = Data.SqlHelper.ExecuteReader(
                 "SELECT TOP @topicsPerPage * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC",
-                    Data.SqlHelper.CreateParameter("@topicsPerPage", topicsPerPage.ToString()),
-                    Data.SqlHelper.CreateParameter("@topicsPerPage", forumId.ToString()));
-            
-            while (dr.Read() ) {
-                lt.Add( GetFromReader(dr) );
-            }
+                    Data.SqlHelper.CreateParameter("@topicsPerPage", topicsPerPage.ToString(CultureInfo.InvariantCulture)),
+                    Data.SqlHelper.CreateParameter("@topicsPerPage", forumId.ToString(CultureInfo.InvariantCulture)));
 
-            dr.Close();
-            dr.Dispose();
+            while (reader.Read())
+                topics.Add(GetFromReader(reader));
 
-            return lt;
+            reader.Close();
+            reader.Dispose();
+
+            return topics;
         }
 
         //Collections
-        public static List<Topic> TopicsInForum(int forumId) {
-            List<Topic> lt = new List<Topic>();
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC",
-                    Data.SqlHelper.CreateParameter("@parentId", forumId.ToString()));
+        public static List<Topic> TopicsInForum(int forumId)
+        {
+            var topics = new List<Topic>();
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC", Data.SqlHelper.CreateParameter("@parentId", forumId.ToString(CultureInfo.InvariantCulture)));
 
-            while (dr.Read()) {
-                lt.Add(GetFromReader(dr));
-            }
+            while (reader.Read())
+                topics.Add(GetFromReader(reader));
 
-            dr.Close();
-            dr.Dispose();
+            reader.Close();
+            reader.Dispose();
 
-            return lt;
+            return topics;
         }
 
         //Collections
-        public static List<Topic> Latest(int amount) {
-            List<Topic> lt = new List<Topic>();
+        public static List<Topic> Latest(int amount)
+        {
+            var topics = new List<Topic>();
 
             // 1057 is the profile node.  This is a hack way of hiding the forums from the latest list on the homepage added by PG
-
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
+            var reader = Data.SqlHelper.ExecuteReader(
                 "SELECT TOP @amount forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC",
-                    Data.SqlHelper.CreateParameter("@amount", amount.ToString()));
+                 Data.SqlHelper.CreateParameter("@amount", amount.ToString(CultureInfo.InvariantCulture)));
 
-            while (dr.Read()) {
-                lt.Add(GetFromReader(dr));
+            while (reader.Read())
+            {
+                topics.Add(GetFromReader(reader));
             }
 
-            dr.Close();
-            dr.Dispose();
+            reader.Close();
+            reader.Dispose();
 
-            return lt;
+            return topics;
         }
 
         public static List<Topic> GetAll()
         {
-            List<Topic> lt = new List<Topic>();
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT * FROM forumTopics"
-            );
+            var topics = new List<Topic>();
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics");
 
-            while (dr.Read())
-            {
-                lt.Add(GetFromReader(dr));
-            }
+            while (reader.Read())
+                topics.Add(GetFromReader(reader));
 
-            dr.Close();
-            dr.Dispose();
+            reader.Close();
+            reader.Dispose();
 
-            return lt;
+            return topics;
         }
 
         public static int TotalTopics()
@@ -385,53 +398,76 @@ namespace uForum.Businesslogic {
 
         /* Events */
         public static event EventHandler<CreateEventArgs> BeforeCreate;
-        protected virtual void FireBeforeCreate(CreateEventArgs e) {
-            _e.FireCancelableEvent(BeforeCreate, this, e);
+
+        protected virtual void FireBeforeCreate(CreateEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeCreate, this, e);
         }
+
         public static event EventHandler<CreateEventArgs> AfterCreate;
-        protected virtual void FireAfterCreate(CreateEventArgs e) {
+
+        protected virtual void FireAfterCreate(CreateEventArgs e)
+        {
             if (AfterCreate != null)
                 AfterCreate(this, e);
         }
 
-
         public static event EventHandler<DeleteEventArgs> BeforeDelete;
-        protected virtual void FireBeforeDelete(DeleteEventArgs e) {
-            _e.FireCancelableEvent(BeforeDelete, this, e);
+
+        protected virtual void FireBeforeDelete(DeleteEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeDelete, this, e);
         }
+
         public static event EventHandler<DeleteEventArgs> AfterDelete;
-        protected virtual void FireAfterDelete(DeleteEventArgs e) {
+
+        protected virtual void FireAfterDelete(DeleteEventArgs e)
+        {
             if (AfterDelete != null)
                 AfterDelete(this, e);
         }
 
         public static event EventHandler<MoveEventArgs> BeforeMove;
-        protected virtual void FireBeforeMove(MoveEventArgs e) {
-            _e.FireCancelableEvent(BeforeMove, this, e);
+
+        protected virtual void FireBeforeMove(MoveEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeMove, this, e);
         }
+
         public static event EventHandler<MoveEventArgs> AfterMove;
-        protected virtual void FireAfterMove(MoveEventArgs e) {
+
+        protected virtual void FireAfterMove(MoveEventArgs e)
+        {
             if (AfterMove != null)
                 AfterMove(this, e);
         }
 
         public static event EventHandler<LockEventArgs> BeforeLock;
-        protected virtual void FireBeforeLock(LockEventArgs e) {
-            _e.FireCancelableEvent(BeforeLock, this, e);
+
+        protected virtual void FireBeforeLock(LockEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeLock, this, e);
         }
+
         public static event EventHandler<LockEventArgs> AfterLock;
-        protected virtual void FireAfterLock(LockEventArgs e) {
+
+        protected virtual void FireAfterLock(LockEventArgs e)
+        {
             if (AfterLock != null)
                 AfterLock(this, e);
         }
 
-
         public static event EventHandler<UpdateEventArgs> BeforeUpdate;
-        protected virtual void FireBeforeUpdate(UpdateEventArgs e) {
-            _e.FireCancelableEvent(BeforeUpdate, this, e);
+
+        protected virtual void FireBeforeUpdate(UpdateEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeUpdate, this, e);
         }
+
         public static event EventHandler<UpdateEventArgs> AfterUpdate;
-        protected virtual void FireAfterUpdate(UpdateEventArgs e) {
+
+        protected virtual void FireAfterUpdate(UpdateEventArgs e)
+        {
             if (AfterUpdate != null)
                 AfterUpdate(this, e);
         }
