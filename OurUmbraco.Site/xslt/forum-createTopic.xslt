@@ -48,33 +48,33 @@
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=11')"/>
     
   <script type="text/javascript">
+    uForum.ForumEditor("topicBody");
 
-  uForum.ForumEditor("topicBody");  
-  
-  jQuery(document).ready(function(){
+    jQuery(document).ready(function() {
 
-    window.setInterval('uForum.lookUp()', 10000);
+      jQuery("#topicForm #title").focusout(function() {
+        uForum.lookUp()
+      });
+
+      jQuery("form").submit( function() {
+        jQuery("#btCreateTopic").attr("disabled", "true");
+        jQuery("#topicForm").hide();
+        jQuery(".success").show();
+
+        var topicId = '<xsl:value-of select="$id"/>';
+          var forumId = <xsl:value-of select="$currentPage/@id"/>;
+          var title = jQuery("#title").val();
+          var body = tinyMCE.get('topicBody').getContent();
+
+          if(topicId !== "") {
+            uForum.EditTopic(topicId, title, body );
+          } else {
+            uForum.NewTopic(forumId, title, body );  
+          }
       
-       jQuery("form").submit( function(){
-    
-         jQuery("#btCreateTopic").attr("disabled", "true");
-         jQuery("#topicForm").hide();
-         jQuery(".success").show();
-    
-      var topicId = '<xsl:value-of select="$id"/>';
-      var forumId = <xsl:value-of select="$currentPage/@id"/>;
-      var title = jQuery("#title").val();
-      var body = tinyMCE.get('topicBody').getContent();
-
-      if(topicId != "")
-        uForum.EditTopic(topicId, title, body );
-      else
-        uForum.NewTopic(forumId, title, body );  
-
-      return false;      
+        return false;      
+      });
     });
-
-  });
   </script>
 
   <div class="success" style="display:none;" id="commentSuccess">
