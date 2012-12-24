@@ -36,17 +36,13 @@ namespace uForum.Businesslogic {
 
         public bool Editable(int memberId)
         {
-            if (!Exists || memberId == 0)
+            if (this.Exists == false || memberId == 0)
                 return false;
 
-            if (uForum.Library.Xslt.IsMemberInGroup("admin", memberId))
+            if (Library.Xslt.IsMemberInGroup("admin", memberId))
                 return true;
 
-            TimeSpan duration = DateTime.Now - Created;
-            if (memberId != MemberId || this.LatestComment == 0 || duration.Minutes > 14)
-                return false;
-
-            return true;
+            return memberId == MemberId;
         }
 
         public void Move(int newForumId) {

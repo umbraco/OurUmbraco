@@ -10,7 +10,7 @@
 <div id="editorSideBar" style="float: right; width: 250px; margin-left: 30px;">
 	<div class="notice">
 		<p>
-			You are currently editing a topic you previously posted. Editing is only possible as long as there has been <strong>less then 3 replies</strong> to the topic.
+			You are currently editing a topic you previously posted.
 		</p>
 		<p>
 			The topic will state it was edited.
