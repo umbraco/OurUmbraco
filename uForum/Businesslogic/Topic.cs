@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
 using System.Xml;
-using System.ComponentModel;
 
 namespace uForum.Businesslogic {
     public class Topic {
@@ -72,7 +70,8 @@ namespace uForum.Businesslogic {
             if (!e.Cancel) {
                 Forum f = new Forum(this.ParentId);
 
-                Data.SqlHelper.ExecuteNonQuery("DELETE FROM forumTopics WHERE id = " + Id.ToString());
+                Data.SqlHelper.ExecuteNonQuery("DELETE FROM forumTopics WHERE id = @id",
+                    Data.SqlHelper.CreateParameter("@id", Id.ToString()));
                 Id = 0;
 
 
@@ -88,7 +87,8 @@ namespace uForum.Businesslogic {
             FireBeforeLock(e);
 
             if (!e.Cancel) {
-                Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET locked = 1 WHERE id = " + Id.ToString());
+                Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET locked = 1 WHERE id = ",
+                    Data.SqlHelper.CreateParameter("@id", Id.ToString()));
                 Id = 0;
                 FireAfterLock(e);
             }  
@@ -261,7 +261,8 @@ namespace uForum.Businesslogic {
         public Topic() { }
         
         public Topic(int topicId) {
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader( "SELECT * FROM forumTopics WHERE id = " + topicId.ToString()  );
+            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader( "SELECT * FROM forumTopics WHERE id = @id",
+                    Data.SqlHelper.CreateParameter("@id", topicId.ToString()));
 
             if (dr.Read()) {
 
@@ -308,9 +309,10 @@ namespace uForum.Businesslogic {
         public static List<Topic> TopicsInForum(int forumId, int topicsPerPage, int page) {
             List<Topic> lt = new List<Topic>();
             umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT TOP " + topicsPerPage.ToString() + " * FROM forumTopics WHERE parentId = " + forumId.ToString() + " ORDER BY updated DESC"
-            );
-
+                "SELECT TOP @topicsPerPage * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC",
+                    Data.SqlHelper.CreateParameter("@topicsPerPage", topicsPerPage.ToString()),
+                    Data.SqlHelper.CreateParameter("@topicsPerPage", forumId.ToString()));
+            
             while (dr.Read() ) {
                 lt.Add( GetFromReader(dr) );
             }
@@ -325,8 +327,8 @@ namespace uForum.Businesslogic {
         public static List<Topic> TopicsInForum(int forumId) {
             List<Topic> lt = new List<Topic>();
             umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT * FROM forumTopics WHERE parentId = " + forumId.ToString() + " ORDER BY updated DESC"
-            );
+                "SELECT * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC",
+                    Data.SqlHelper.CreateParameter("@parentId", forumId.ToString()));
 
             while (dr.Read()) {
                 lt.Add(GetFromReader(dr));
@@ -345,8 +347,8 @@ namespace uForum.Businesslogic {
             // 1057 is the profile node.  This is a hack way of hiding the forums from the latest list on the homepage added by PG
 
             umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT TOP " + amount.ToString() + " forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC"
-            );
+                "SELECT TOP @amount forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC",
+                    Data.SqlHelper.CreateParameter("@amount", amount.ToString()));
 
             while (dr.Read()) {
                 lt.Add(GetFromReader(dr));
