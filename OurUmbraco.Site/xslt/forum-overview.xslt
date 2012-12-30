@@ -2,7 +2,8 @@
 <!--
 	forum-overview.xslt
 	
-	Renders the front page of the forum with all the topics.
+	Renders the front page of the forum with all the categories,
+	or the front page of a category with all its topics.
 -->
 <!DOCTYPE xsl:stylesheet [
 	<!ENTITY nbsp "&#x00A0;">
@@ -20,6 +21,8 @@
 
 	<xsl:param name="currentPage"/>
 
+	<xsl:variable name="forumFrontPageId" select="1053" />
+
 	<xsl:variable name="isLoggedOn" select="umbraco.library:IsLoggedOn()"/>
 	<xsl:variable name="currentMember" select="umbraco.library:GetCurrentMember()"/>
 
@@ -29,7 +32,7 @@
 		</xsl:if>
 
 		<xsl:choose>
-			<xsl:when test="$currentPage/@id = 1053">
+			<xsl:when test="$currentPage/@id = $forumFrontPageId">
 				<div id="options">
 					<ul>
 						<xsl:if test="$isLoggedOn">
@@ -97,5 +100,5 @@
 			</table>
 		</xsl:if>
 	</xsl:template>
-
+	
 </xsl:stylesheet>
