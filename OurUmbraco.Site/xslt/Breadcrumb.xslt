@@ -5,6 +5,7 @@
 -->
 <!DOCTYPE xsl:stylesheet [
 	<!ENTITY nbsp "&#x00A0;">
+	<!ENTITY separator "&#187;">
 ]>
 <xsl:stylesheet
 	version="1.0"
@@ -26,14 +27,14 @@
 			<ul id="breadcrumb">
 				<li>
 					<a href="/">Home</a>
-					<xsl:if test="$linkToCurrent = 1 or $currentPage/@level &gt; 2">&#187;</xsl:if>
+					<xsl:if test="$linkToCurrent = 1 or $currentPage/@level &gt; 2">&separator;</xsl:if>
 				</li>
 				<xsl:for-each select="$currentPage/ancestor::*[@isDoc and @level &gt; $minLevel][not(umbracoNaviHide = 1)]">
 					<li>
 						<a href="{umbraco.library:NiceUrl(@id)}">
 							<xsl:value-of select="@nodeName"/>
 						</a>
-						<xsl:if test="$linkToCurrent = 1 or position() &lt; last()">&#187;</xsl:if>
+						<xsl:if test="$linkToCurrent = 1 or position() &lt; last()">&separator;</xsl:if>
 					</li>
 				</xsl:for-each>
 				<!-- print currentpage? -->
