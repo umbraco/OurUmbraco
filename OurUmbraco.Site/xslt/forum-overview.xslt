@@ -76,10 +76,7 @@
 									<xsl:value-of select="title"/>
 								</a>
 								<div class="forumStats">
-									<xsl:value-of select="@TotalTopics"/>
-									<xsl:text> topics, </xsl:text>
-									<xsl:value-of select="(@TotalTopics + @TotalComments)"/>
-									<xsl:text> posts</xsl:text>
+									<xsl:value-of select="concat(@TotalTopics, ' topics, ', (@TotalTopics + @TotalComments), ' posts')" />
 								</div>
 								<div class="forumDesc">
 									<xsl:value-of select="description"/>
