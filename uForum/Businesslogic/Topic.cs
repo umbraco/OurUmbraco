@@ -382,7 +382,7 @@ namespace uForum.Businesslogic {
 
         public static int TotalTopics()
         {
-            return Data.SqlHelper.ExecuteScalar<int>("SELECT SUM(totalTopics) FROM [forumForums]");
+            return Data.SqlHelper.ExecuteScalar<int>("SELECT COUNT(id) FROM [forumTopics];");
         }
 
         /* Events */
