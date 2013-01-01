@@ -7,6 +7,8 @@
 <!DOCTYPE xsl:stylesheet [
 	<!ENTITY nbsp "&#x00A0;">
 	<!ENTITY hellip "&#x2026;">
+	<!ENTITY queryParam "q">
+	<!ENTITY contentParam "content">
 ]>
 <xsl:stylesheet 
 	version="1.0" 
@@ -20,8 +22,8 @@
 
 	<xsl:param name="currentPage"/>
 
-	<xsl:variable name="q" select="umbraco.library:RequestQueryString('q')"/>
-	<xsl:variable name="c" select="umbraco.library:RequestQueryString('content')"/>
+	<xsl:variable name="q" select="umbraco.library:RequestQueryString('&queryParam;')"/>
+	<xsl:variable name="c" select="umbraco.library:RequestQueryString('&contentParam;')"/>
 
 	<xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects', '|')"/>
 	<xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project', '|')"/>
@@ -30,7 +32,7 @@
 		<div id="searchBar">
 			<fieldset id="selectsearch">
 				<label id="searchlabel" for="searchField">What were you looking for in&hellip;</label>
-				<input type="text" id="searchField" name="q" value="{$q}" />
+				<input type="text" id="searchField" name="&queryParam;" value="{$q}" />
 				<span id="sectionspan">
 					<label>All</label>
 				</span>
