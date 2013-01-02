@@ -27,6 +27,14 @@
 
 	<xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects', '|')"/>
 	<xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project', '|')"/>
+	
+	<xsl:variable name="communityNodeId" select="1052" />
+
+	<!-- Name of current section, if one of the $areas from above -->
+	<xsl:variable name="currentArea" select="$currentPage/ancestor-or-self::*[@nodeName = $areas/value][@parentID = $communityNodeId]/@nodeName" />
+
+	<xsl:variable name="noSpecificArea" select="not(normalize-space($c))" />
+	<xsl:variable name="noCurrentArea" select="not(normalize-space($currentArea))" />
 
 	<xsl:template match="/">
 		<div id="searchBar">
@@ -39,13 +47,18 @@
 				<div id="sections" class="clearfix">
 					<label class="sectiontab">All</label>
 					<p>Search In</p>
-					<xsl:for-each select="$areas//value">
+					<xsl:for-each select="$areas/value">
 						<xsl:variable name="index" select="position()"/>
-						<xsl:variable name="alias" select="$areaAlias//value[$index]"/>
+						<xsl:variable name="alias" select="$areaAlias/value[$index]"/>
 						<input type="checkbox" id="s_{.}" name="contentType" value="{$alias}">
-							<xsl:if test="$c = '' or contains($c, $alias)">
-								<xsl:attribute name="checked">checked</xsl:attribute>
-							</xsl:if>
+							<!-- If no area was specified and we're inside a specific area, select only that -->
+							<xsl:if test="$noSpecificArea and current() = $currentArea"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
+
+							<!-- If this section was specifically searched in, select it -->
+							<xsl:if test="contains($c, $alias)"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
+
+							<!-- If we're not in any specific area and nothing was specified, select it so we search everything -->
+							<xsl:if test="$noCurrentArea and $noSpecificArea"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
 						</input>
 						<label for="s_{.}">
 							<xsl:value-of select="."/>
