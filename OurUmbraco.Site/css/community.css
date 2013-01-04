@@ -164,6 +164,7 @@ input.wikiheadline{display: block; background: white; border: 1px solid #DEE4EF;
 #search .wiki{background-image: url(search/wiki.gif);}
 #search .project{background-image: url(search/project.gif);}
 #search .forum{background-image: url(search/forum.gif);}
+#search .documentation {background-image: url(http://placehold.it/39x40);}
 #search .solution{background-image: url(search/solved.gif);}
 
 /* Member Badge */

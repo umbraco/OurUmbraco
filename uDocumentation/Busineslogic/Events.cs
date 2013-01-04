@@ -25,7 +25,12 @@ namespace uDocumentation.Busineslogic
             }
         }
     }
-    
+
+
+        public class FinishEventArgs : System.ComponentModel.CancelEventArgs
+        {
+            
+        }
     
         public class CreateEventArgs : System.ComponentModel.CancelEventArgs { 
             public string FilePath { get; set; }
