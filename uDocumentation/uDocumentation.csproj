@@ -119,7 +119,7 @@
   <ProjectExtensions />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\" /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\" /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -119,6 +119,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\uWiki\" /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\uWiki\" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>

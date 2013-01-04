@@ -3628,7 +3628,7 @@
   </ProjectExtensions>
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(SolutionDir)\dependencies\legacy\*.dll" "$(SolutionDir)OurUmbraco.Site\bin\legacy\" /s /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(ProjectDir)..\dependencies\legacy\*.dll" "$(ProjectDir)bin\legacy\" /s /y</PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
