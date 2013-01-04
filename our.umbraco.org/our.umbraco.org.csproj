@@ -236,7 +236,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\acceptTos.ascx" />
+    <Content Include="usercontrols\acceptTos.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\ForumSpamCleaner.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -305,6 +307,6 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\our.umbraco.org" /y</PostBuildEvent>
+    <PostBuildEvent>XCOPY "$(SolutionDir)\our.umbraco.org\usercontrols\*.ascx" "$(SolutionDir)OurUmbraco.Site\usercontrols\our.umbraco.org" /y</PostBuildEvent>
   </PropertyGroup>
 </Project>
