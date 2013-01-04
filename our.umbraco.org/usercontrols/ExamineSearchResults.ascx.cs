@@ -226,44 +226,7 @@ namespace our.usercontrols
             //Get where to search (content)
             string searchWhere = Request.QueryString["content"];
 
-            if (searchWhere.Contains("documentation") && !searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("wiki")) { 
-                //documenation only
-                searchResults = from r in searchResults where r["__IndexType"] == "documentation"  select r;
-            }
-            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && !searchWhere.Contains("forum"))
-            {
-                //only wiki
-                searchResults = from r in searchResults where r["__IndexType"] == "content" && r["nodeTypeAlias"] == "WikiPage" select r;
-            }
-            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum"))
-            {
-                //only projects
-                searchResults = from r in searchResults where r["__IndexType"] == "content" && (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
-            }
-            else if (!searchWhere.Contains("wiki") && !searchWhere.Contains("project") && searchWhere.Contains("forum"))
-            {
-                //only forum
-                searchResults = from r in searchResults where r["__IndexType"] == "documents" select r;
-            }
-            else if (searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum"))
-            {
-                //wiki and projects
-                searchResults = from r in searchResults where r["__IndexType"] == "content" && (r["nodeTypeAlias"] == "WikiPage" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1")) select r;
-            }
-            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && searchWhere.Contains("forum"))
-            {
-                //wiki and forum
-                searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["nodeTypeAlias"] == "WikiPage" select r;
-            }
-            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && searchWhere.Contains("forum"))
-            {
-                //project and forum
-                searchResults = from r in searchResults where r["__IndexType"] == "documents" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
-            }
-            else
-            {
-                searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["nodeTypeAlias"] == "WikiPage" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
-            }
+            searchResults = FilterOnContentType(searchWhere, searchResults);
 
             //Setup paging. If there isn't a page specified default to page 0
             int page = 0;
@@ -303,6 +266,110 @@ namespace our.usercontrols
                 pager.Text += "</ul>";
             }
 
+        }
+
+        /// <summary>
+        /// further filtering on content type searching for.
+        /// ideally this should be done using examine!!!
+        /// </summary>
+        /// <param name="searchWhere"></param>
+        /// <param name="searchResults"></param>
+        /// <returns></returns>
+        private IEnumerable<SearchResult> FilterOnContentType(string searchWhere, IEnumerable<SearchResult> searchResults)
+        {
+            #region single item only selected
+           
+            if (searchWhere.Contains("documentation") && !searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("wiki"))
+            {
+                //documenation only
+                searchResults = from r in searchResults where r["__IndexType"] == "documentation" select r;
+            }
+            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //only wiki
+                searchResults = from r in searchResults where r["__IndexType"] == "content" && r["nodeTypeAlias"] == "WikiPage" select r;
+            }
+            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //only projects
+                searchResults = from r in searchResults where r["__IndexType"] == "content" && (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
+            }
+            else if (!searchWhere.Contains("wiki") && !searchWhere.Contains("project") && searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //only forum
+                searchResults = from r in searchResults where r["__IndexType"] == "documents" select r;
+            }
+          
+            #endregion
+
+
+            #region doubles
+            else if (searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //wiki and projects
+                searchResults = from r in searchResults where r["__IndexType"] == "content" && (r["nodeTypeAlias"] == "WikiPage" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1")) select r;
+            }
+            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //wiki and forum
+                searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["nodeTypeAlias"] == "WikiPage" select r;
+            }
+
+            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && !searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
+            {
+                //wiki and documentation    
+                searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["__IndexType"] == "documentation" select r;
+            }
+
+            else if (!searchWhere.Contains("wiki") && !searchWhere.Contains("project") && searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
+            {
+                //forum and documentation
+                searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["__IndexType"] == "documentation" select r;
+            }
+
+            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
+            {
+                //projects and documentation
+                searchResults = from r in searchResults where r["__IndexType"] == "documentation" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
+            }
+
+            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //project and forum
+                searchResults = from r in searchResults where r["__IndexType"] == "documents" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
+            } 
+            #endregion
+
+            #region triples
+            if (searchWhere.Contains("documentation") && !searchWhere.Contains("project") && searchWhere.Contains("forum") && searchWhere.Contains("wiki"))
+            {
+                //all except projects
+                searchResults = from r in searchResults where r["nodeTypeAlias"] != "Project" select r;
+            }
+            else if (searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
+            {
+                //all except forum
+                searchResults = from r in searchResults where r["__IndexType"] != "documents" select r;
+            }
+            else if (searchWhere.Contains("wiki") && searchWhere.Contains("project") && searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
+            {
+                //all except documentation
+                searchResults = from r in searchResults where r["__IndexType"] != "documentation" select r;
+            }
+            else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
+            {
+                //all except wiki
+                searchResults = from r in searchResults where r["nodeTypeAlias"] != "WikiPage" select r;
+            }
+            #endregion
+
+            //all or none selected 
+            else
+            {
+                searchResults = from r in searchResults where r["__IndexType"] == "documentation" || r["__IndexType"] == "documents" || r["nodeTypeAlias"] == "WikiPage" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
+            }
+
+            return searchResults;
         }
 
     }
