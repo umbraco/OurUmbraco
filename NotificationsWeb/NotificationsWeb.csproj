@@ -116,7 +116,7 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)pages\*.aspx" "$(SolutionDir)OurUmbraco.Site\umbraco\plugins\Notifications\" /y
+    <PostBuildEvent>XCOPY "$(ProjectDir)pages\*.aspx" "$(ProjectDir)..\OurUmbraco.Site\umbraco\plugins\Notifications\" /y
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
