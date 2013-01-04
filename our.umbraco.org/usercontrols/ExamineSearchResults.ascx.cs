@@ -19,7 +19,7 @@ namespace our.usercontrols
         {
             if (result["__IndexType"] == "content")
                 return HttpContext.Current.Server.HtmlEncode(result["nodeName"]);
-            else if (result["__IndexType"] == "documents")
+            else if (result["__IndexType"] == "documents" || result["__IndexType"] == "documentation")
                 return HttpContext.Current.Server.HtmlEncode(result["Title"]);
             else
                 return string.Empty;
@@ -30,6 +30,10 @@ namespace our.usercontrols
         {
             if (result["__IndexType"] == "content")
                 return umbraco.library.NiceUrl(result.Id);
+
+            else if (result["__IndexType"] == "documentation") {
+                return result["url"];
+            }
             else if (result["__IndexType"] == "documents")
                 return uForum.Library.Xslt.NiceTopicUrl(result.Id);
             else
@@ -67,7 +71,16 @@ namespace our.usercontrols
                 }
                 catch { }
             }
+            else if (result["__IndexType"] == "documentation")
+            {
 
+                try
+                {
+                    if (result.Fields.ContainsKey("Body"))
+                        text = result["Body"];
+                }
+                catch { }
+            }
 
             text = umbraco.library.StripHtml(text);
 
@@ -95,6 +108,10 @@ namespace our.usercontrols
                         cssClass = " project ";
                         break;
                 }
+            }
+            else if (result["__IndexType"] == "documentation")
+            {
+                cssClass = " documentation ";
             }
             else if (result["__IndexType"] == "documents")
             {
@@ -208,7 +225,12 @@ namespace our.usercontrols
 
             //Get where to search (content)
             string searchWhere = Request.QueryString["content"];
-            if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && !searchWhere.Contains("forum"))
+
+            if (searchWhere.Contains("documentation") && !searchWhere.Contains("project") && !searchWhere.Contains("forum") && !searchWhere.Contains("wiki")) { 
+                //documenation only
+                searchResults = from r in searchResults where r["__IndexType"] == "documentation"  select r;
+            }
+            else if (searchWhere.Contains("wiki") && !searchWhere.Contains("project") && !searchWhere.Contains("forum"))
             {
                 //only wiki
                 searchResults = from r in searchResults where r["__IndexType"] == "content" && r["nodeTypeAlias"] == "WikiPage" select r;

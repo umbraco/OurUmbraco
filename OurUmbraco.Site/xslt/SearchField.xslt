@@ -25,8 +25,8 @@
 	<xsl:variable name="q" select="umbraco.library:RequestQueryString('&queryParam;')"/>
 	<xsl:variable name="c" select="umbraco.library:RequestQueryString('&contentParam;')"/>
 
-	<xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects', '|')"/>
-	<xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project', '|')"/>
+	<xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects|Documentation', '|')"/>
+	<xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project|documentation', '|')"/>
 
 	<xsl:template match="/">
 		<div id="searchBar">

@@ -242,7 +242,9 @@
     <Content Include="usercontrols\ForumSpamCleaner.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\ExamineSearchResults.ascx" />
+    <Content Include="usercontrols\ExamineSearchResults.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
