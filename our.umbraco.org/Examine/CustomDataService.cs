@@ -17,7 +17,7 @@ namespace our
     /// <summary>
     /// The data service used by the LuceneEngine in order for it to reindex all data
     /// </summary>
-    public class CustomDataService : Examine.LuceneEngine.ISimpleDataService
+    public class CustomDataService : ISimpleDataService
     {
         private static int m_CurrentId = 0;
 
@@ -31,7 +31,7 @@ namespace our
         /// </summary>
         /// <param name="indexType"></param>
         /// <returns></returns>
-        public IEnumerable<Examine.LuceneEngine.SimpleDataSet> GetAllData(string indexType)
+        public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
             var data = new List<SimpleDataSet>();
 

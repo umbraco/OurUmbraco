@@ -116,7 +116,9 @@
     <Compile Include="data.cs" />
     <Compile Include="DefaultMemberAvatarHandler.cs" />
     <Compile Include="DocumentationIndexer.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService.cs" />
+    <Compile Include="Examine\DocumentationIndexDataService\FileIndexDataService.cs" />
+    <Compile Include="Examine\DocumentationIndexDataService\Helper\ExamineHelper.cs" />
+    <Compile Include="Examine\DocumentationIndexDataService\Model\FileIndexerConfig.cs" />
     <Compile Include="ForumIndexer.cs" />
     <Compile Include="library.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
@@ -289,6 +291,7 @@
     <Content Include="usercontrols\InsertImage.ascx" />
     <Content Include="usercontrols\ProjectContributors.ascx" />
   </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
