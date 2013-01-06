@@ -1,7 +1,14 @@
 ﻿@{
-    const string root = @"~\Documentation";
-    const string cfg = @"~\config\githubpull.config";
-    
-    var zip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(HttpContext.Current.Server.MapPath(root), HttpContext.Current.Server.MapPath(cfg));
-    zip.Run();
+    const string rootFolder = @"~\Documentation";
+    const string config = @"~\config\githubpull.config";
+    var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
+    var configPath = HttpContext.Current.Server.MapPath(config);
+
+    if (!Directory.Exists(rootFolderPath))
+    {
+        Directory.CreateDirectory(rootFolderPath);
+    }
+
+    var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
+    unzip.Run();
 }
