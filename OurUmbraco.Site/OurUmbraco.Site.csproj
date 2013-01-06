@@ -334,7 +334,9 @@
     <Content Include="config\ClientDependency.config" />
     <Content Include="config\Dashboard.config" />
     <Content Include="config\EmbeddedMedia.config" />
-    <Content Include="config\ExamineIndex.config" />
+    <Content Include="config\ExamineIndex.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\ExamineSettings.config" />
     <Content Include="config\feedProxy.config" />
     <Content Include="config\FergusonMoriyama\FeedCache\feeds.config" />
@@ -514,6 +516,7 @@
     <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco_client\CodeMirror\js\mode\razor\LICENSE" />
     <Content Include="umbraco_client\CodeMirror\js\mode\sieve\LICENSE" />
+    <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
     <Content Include="usercontrols\our.umbraco.org\SignupSimple.ascx" />
@@ -3281,6 +3284,7 @@
     <Content Include="packages.config" />
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
+    <Content Include="config\FileIndexerConfig.config" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

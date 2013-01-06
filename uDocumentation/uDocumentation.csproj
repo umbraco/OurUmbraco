@@ -79,7 +79,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\DocumentationBreadcrumb.ascx" />
+    <Content Include="usercontrols\DocumentationBreadcrumb.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
   </ItemGroup>
   <ItemGroup>

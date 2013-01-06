@@ -44,6 +44,10 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
                 process(url, folder);
             }
+
+            FinishEventArgs ev = new FinishEventArgs();
+            
+            FireOnFinish(ev);
         }
 
         public void process(string url, string foldername)
@@ -195,6 +199,16 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             try
             {
                 _e.FireCancelableEvent(OnDelete, this, e);
+            }
+            catch (Exception ex) { }
+        }
+
+        public static event EventHandler<FinishEventArgs> OnFinish;
+        protected virtual void FireOnFinish(FinishEventArgs e)
+        {
+            try
+            {
+                _e.FireCancelableEvent(OnFinish, this, e);
             }
             catch (Exception ex) { }
         }
