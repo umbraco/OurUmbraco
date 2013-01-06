@@ -38,4 +38,3 @@ build/*.nupkg
 
 /packages/*
 !packages/repositories.config
-documentation
