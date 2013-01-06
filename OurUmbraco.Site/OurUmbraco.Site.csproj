@@ -114,8 +114,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
-    <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Lucene.Net, Version=2.9.4.1, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="LuceneTools">
