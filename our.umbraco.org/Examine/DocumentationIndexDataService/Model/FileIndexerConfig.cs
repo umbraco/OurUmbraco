@@ -1,25 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Configuration;
 
 namespace our.Examine.DocumentationIndexDataService.Model
 {
-    public sealed class FileIndexerConfig: ConfigurationSection
+    public sealed class FileIndexerConfig : ConfigurationSection
     {
-
         private static FileIndexerConfig settings = ConfigurationManager.GetSection("FileIndexerConfig") as FileIndexerConfig;
 
-        public static FileIndexerConfig Settings
-        {
-            get
-            {
-                return settings;
-            }
-        }
-
-
+        public static FileIndexerConfig Settings { get { return settings; } }
+        
         [ConfigurationProperty("SupportedFileTypes", IsRequired = true)]
         public string SupportedFileTypes
         {
@@ -40,7 +29,7 @@ namespace our.Examine.DocumentationIndexDataService.Model
             get { return (string)this["IgnoreFiles"]; }
             set { this["IgnoreFiles"] = value; }
         }
-        
+
         [ConfigurationProperty("Recursive")]
         public bool Recursive
         {
@@ -48,5 +37,4 @@ namespace our.Examine.DocumentationIndexDataService.Model
             set { this["Recursive"] = value; }
         }
     }
-    
 }

@@ -201,32 +201,29 @@ namespace uForum.Businesslogic
         {
             var comments = new List<Comment>();
 
-            var dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE topicId = @topicId", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
-
             try
             {
-                //Sql effiecient way of fetching collection of comments instead of one by one.. 
-                while (dr.Read())
+                using (var dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE topicId = @topicId", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture))))
                 {
-                    var comment = new Comment
-                                      {
-                                          Id = dr.GetInt("id"),
-                                          TopicId = dr.GetInt("topicId"),
-                                          MemberId = dr.GetInt("memberId"),
-                                          Body = dr.GetString("body"),
-                                          Created = dr.GetDateTime("created")
-                                      };
+                    while (dr.Read())
+                    {
+                        var comment = new Comment
+                                          {
+                                              Id = dr.GetInt("id"),
+                                              TopicId = dr.GetInt("topicId"),
+                                              MemberId = dr.GetInt("memberId"),
+                                              Body = dr.GetString("body"),
+                                              Created = dr.GetDateTime("created")
+                                          };
 
-                    comments.Add(comment);
+                        comments.Add(comment);
+                    }
                 }
             }
             catch (Exception ex)
             {
                 umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, ex.ToString());
             }
-
-            dr.Close();
-            dr.Dispose();
 
             return comments;
         }
