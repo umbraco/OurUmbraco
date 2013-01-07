@@ -330,7 +330,7 @@ namespace our.usercontrols
             else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && !searchWhere.Contains("forum") && searchWhere.Contains("documentation"))
             {
                 //projects and documentation
-                searchResults = from r in searchResults where r["__IndexType"] == "documentation" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
+                searchResults = from r in searchResults where r["nodeTypeAlias"] == "document" || (r["nodeTypeAlias"] == "Project" && r["projectLive"] == "1") select r;
             }
 
             else if (!searchWhere.Contains("wiki") && searchWhere.Contains("project") && searchWhere.Contains("forum") && !searchWhere.Contains("documentation"))
