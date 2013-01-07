@@ -247,7 +247,8 @@ namespace our.usercontrols
         /// </summary>
         private void InitLookUpDictionary()
         {
-            if (lookup.Keys.Count == 0) {
+            if (lookup.Keys.Count == 0)
+            {
                 /// making assumption for truth table as = wiki,forum,project,documentation
                 lookup.Add(Tuple.Create(true, true, true, true), value => All(value));
                 lookup.Add(Tuple.Create(false, false, false, false), value => All(value));
@@ -273,7 +274,7 @@ namespace our.usercontrols
                 lookup.Add(Tuple.Create(true, true, false, true), value => AllExceptProjects(value));
                 lookup.Add(Tuple.Create(true, true, true, false), value => AllExceptDocumentation(value));
             }
-            
+
         }
 
 
@@ -286,13 +287,13 @@ namespace our.usercontrols
         /// <param name="searchResults"></param>
         /// <returns></returns>
         private IEnumerable<SearchResult> FilterOnContentType(string searchWhere, IEnumerable<SearchResult> searchResults)
-        {         
+        {
 
             //do not change or of tests else lookup will be incorrect
 
-            searchResults = lookup[Tuple.Create(searchWhere.Contains("wiki"), 
-                                                searchWhere.Contains("forum"), 
-                                                searchWhere.Contains("project"), 
+            searchResults = lookup[Tuple.Create(searchWhere.Contains("wiki"),
+                                                searchWhere.Contains("forum"),
+                                                searchWhere.Contains("project"),
                                                 searchWhere.Contains("documentation"))](searchResults);
 
             return searchResults;
@@ -387,7 +388,7 @@ namespace our.usercontrols
         {
             searchResults = from r in searchResults where r["__IndexType"] == "documentation" select r;
             return searchResults;
-        } 
+        }
         #endregion
 
         private void BindResultsAndSetUpPaging(IEnumerable<SearchResult> searchResults)
