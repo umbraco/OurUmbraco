@@ -350,7 +350,7 @@ namespace our.usercontrols
 
         private static IEnumerable<SearchResult> WikiAndDocumentation(IEnumerable<SearchResult> searchResults)
         {
-            searchResults = from r in searchResults where r["__IndexType"] == "documents" || r["__IndexType"] == "documentation" select r;
+            searchResults = from r in searchResults where r["nodeTypeAlias"] == "WikiPage" || r["__IndexType"] == "documentation" select r;
             return searchResults;
         }
 
