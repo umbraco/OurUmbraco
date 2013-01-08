@@ -23,7 +23,7 @@ _ReSharper*/
 
 umbraco.config
 *.vs10x
-*OurUmbraco.Site/web*
+*OurUmbraco.Site/web.config
 *OurUmbraco.Site/App_Data/TEMP*/
 *OurUmbraco.Site/App_Data/ClientDependency*/
 *OurUmbraco.Site/App_Data/Logs*/
