@@ -64,13 +64,16 @@
 
     function InsertImage() {
 
-        imglink = jQuery('#<%= tb_url.ClientID %>').val();
-        origimglink = imglink.replace('rs/', '');
+        var imglink = jQuery('#<%= tb_url.ClientID %>').val();
+        /*origimglink = imglink.replace('rs/', '');
 
         img = "<a href='" + origimglink + "' target='_blank'><img border='0' src='" + imglink + "' /></a>";
 
         tinyMCEPopup.editor.execCommand("mceInsertContent", false, img);
         
+        CloseDialog();*/
+        //console.log(window.win);
+        window.opener.forumInsertImageCallback(imglink);
         CloseDialog();
     }
     function CloseDialog() {

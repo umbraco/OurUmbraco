@@ -3656,7 +3656,9 @@
     <Content Include="xslt\testrss.xslt" />
     <Content Include="xslt\Title.xslt" />
     <Content Include="xslt\TopNavigation.xslt" />
-    <Content Include="xslt\util-AddGooglePrettify.xslt" />
+    <Content Include="xslt\util-AddGooglePrettify.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\util-SafeHtml.xslt" />
     <Content Include="xslt\widget-latestblogs.xslt" />
     <Content Include="xslt\widget-latestForumTopics.xslt" />
