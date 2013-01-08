@@ -36,34 +36,39 @@
 <xsl:choose>
 <xsl:when test="umbraco.library:IsLoggedOn()">
 
+  <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('Markdown.Styles', '/css/forum/pagedown.css')"/>
+  
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce_update/tiny_mce_src.js')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=6')"/>
+
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Converter', '/scripts/forum/Markdown.Converter.js')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Sanitizer', '/scripts/forum/Markdown.Sanitizer.js')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Editor', '/scripts/forum/Markdown.Editor.js')"/>
     
   <script type="text/javascript">
+    uForum.ForumEditor("commentBody");
+    jQuery(document).ready(function(){
+        jQuery("form").submit( function(){
+            var topicId = '<xsl:value-of select="$topicID" />';
+            //var body = tinyMCE.get('commentBody').getContent();
+            var body = $("#wmd-input").val();
+            
+            var comment = '<xsl:value-of select="$commentID" />';
 
-   uForum.ForumEditor("commentBody");
+            var url = "";
 
-  jQuery(document).ready(function(){
+            if(comment != ''){      
+                url = uForum.EditComment(comment , <xsl:value-of select="$maxitems" />,  body);
+            } else {
+                url = uForum.NewComment(topicId, <xsl:value-of select="$maxitems" />,  body);
+            }
 
-       jQuery("form").submit( function(){
-      var topicId = '<xsl:value-of select="$topicID" />';
-      var body = tinyMCE.get('commentBody').getContent();
-      var comment = '<xsl:value-of select="$commentID" />';
+            jQuery("#commentSuccess").show();    
+            jQuery("#topicForm").hide();
 
-      var url = "";
-
-      if(comment != ''){      
-          url = uForum.EditComment(comment , <xsl:value-of select="$maxitems" />,  body);
-      }else{
-          url = uForum.NewComment(topicId, <xsl:value-of select="$maxitems" />,  body);
-      }
-
-      jQuery("#commentSuccess").show();    
-      jQuery("#topicForm").hide();
-
-      return false;
+            return false;
+        });
     });
-  });
 
   </script>
 
@@ -80,7 +85,48 @@
 
   </div>
 
+    <div class="wmd-panel">
+        <div id="wmd-button-bar"></div>
+<textarea class="wmd-input" id="wmd-input"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
+    </div>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
 
+    <script type="text/javascript">
+        (function () {
+            var converter = Markdown.getSanitizingConverter();
+
+            converter.hooks.chain("postConversion", function (text) {        
+                var newText = $("<div>" + text + "</div>");        
+                var pres = newText.find("pre").addClass("prettyprint");
+                if(pres.length > 0)
+                {
+                    setTimeout(function() {
+                        console.log("pretty printing");
+                        prettyPrint();
+                    }, 2000);
+                }
+                return newText.html();       
+            });
+
+            var editor = new Markdown.Editor(converter);
+            
+            /*
+            editor.hooks.set("insertImageDialog", function (callback) {
+                alert("Please click okay to start scanning your brain...");
+                setTimeout(function () {
+                    var prompt = "We have detected that you like cats. Do you want to insert an image of a cat?";
+                    if (confirm(prompt))
+                        callback("http://icanhascheezburger.files.wordpress.com/2007/06/schrodingers-lolcat1.jpg")
+                    else
+                        callback(null);
+                }, 2000);
+                return true; // tell the editor that we'll take care of getting the image url
+            });
+            */
+            
+            editor.run();
+        })();
+    </script>
   <br />
 
   <div id="commentSuccess" style="display: none" class='success'>

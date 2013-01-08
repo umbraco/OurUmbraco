@@ -14,7 +14,7 @@
 		</p>
 	</div>
 </div>
-
+    <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
 	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
 
 </asp:Content>

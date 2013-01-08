@@ -6,4 +6,31 @@
     <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
 	<umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
 	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
+    <script type="text/javascript">
+        (function() {
+        var comments = $(".commentsList").find(".comment .body");        
+        var converter = Markdown.getSanitizingConverter();
+        comments.each(function () {            
+            var text = $(this);
+            
+            // Remove unallowed attributes from img tags
+            text.find("img").each(function () {
+                var img = this;
+                var illegalAttributes = [];
+                
+                $.each(img.attributes, function() {
+                    if (this.specified && !this.name.match(/^(src|width|height|title|alt)$/i)) {
+                        illegalAttributes.push(this.name);
+                    }
+                });
+
+                $.each(illegalAttributes, function () {
+                    $(img).removeAttr(this);
+                });
+            });
+            text.html(converter.makeHtml(text.html()));
+        });
+        })();
+    </script>
+    <%--<umbraco:Macro Alias="Forum-createComment-razor" runat="server"></umbraco:Macro>--%>
 </asp:content>

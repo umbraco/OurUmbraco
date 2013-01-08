@@ -292,7 +292,9 @@
   <ItemGroup>
     <Content Include="usercontrols\EventEditor.ascx" />
     <Content Include="usercontrols\FileDownloadProxy.ascx" />
-    <Content Include="usercontrols\InsertImage.ascx" />
+    <Content Include="usercontrols\InsertImage.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\ProjectContributors.ascx" />
   </ItemGroup>
   <ItemGroup />

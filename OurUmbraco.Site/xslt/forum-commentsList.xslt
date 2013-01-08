@@ -245,6 +245,7 @@
 
 		</xsl:for-each>
 
+    
 
 	</xsl:template>
 
@@ -306,7 +307,7 @@
 
 				<div class="body"  style="clear: both">
 					<xsl:value-of select="uForum:Sanitize( uForum:ResolveLinks( uForum:CleanBBCode( $comment/body ) ) )" disable-output-escaping="yes"/>
-				</div>
+</div>
 			</div>
 
 

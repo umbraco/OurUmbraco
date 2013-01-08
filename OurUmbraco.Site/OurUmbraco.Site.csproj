@@ -381,8 +381,10 @@
     <Content Include="config\uVersion.backup.config" />
     <Content Include="config\uVersion.config" />
     <Content Include="config\xsltExtensions.config" />
+    <Content Include="css\forum\pagedown.css" />
     <Content Include="css\search\documentation.gif" />
     <Content Include="ImageGen.ashx" />
+    <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="jqtouch\jqtouch.css" />
     <Content Include="jqtouch\jqtouch.js" />
     <Content Include="jqtouch\jqtouch.min.css" />
@@ -512,7 +514,9 @@
     <Content Include="masterpages\WikiPageAttachments.master" />
     <Content Include="masterpages\WikiPageHistory.master" />
     <Content Include="masterpages\WikipagewithTOC.master" />
-    <Content Include="robots.txt" />
+    <Content Include="scripts\forum\Markdown.Converter.js" />
+    <Content Include="scripts\forum\Markdown.Editor.js" />
+    <Content Include="scripts\forum\Markdown.Sanitizer.js" />
     <Content Include="scripts\shadowbox\languages\README" />
     <Content Include="scripts\shadowbox\players\README" />
     <Content Include="setpermssions.bat" />
@@ -3311,6 +3315,7 @@
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
+    <Content Include="macroScripts\forum-createComment.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
