@@ -348,6 +348,7 @@
     <Content Include="config\uVersion.backup.config" />
     <Content Include="config\uVersion.config" />
     <Content Include="config\xsltExtensions.config" />
+    <Content Include="css\forum\pagedown.css" />
     <Content Include="Documentation\Installation\images\Manual\2012-03-12_204006.png" />
     <Content Include="Documentation\Installation\images\Manual\2012-03-12_204144.png" />
     <Content Include="Documentation\Installation\images\Manual\2012-03-12_204429.png" />
@@ -540,6 +541,7 @@
     <Content Include="Documentation\Using-Umbraco\Backoffice-Overview\Property-Editors\Built-in-Property-Editors\images\Radiobutton-List-Settings.jpg" />
     <Content Include="Documentation\Using-Umbraco\Backoffice-Overview\Property-Editors\images\Data-Type-Render-Control.jpg" />
     <Content Include="ImageGen.ashx" />
+    <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="jqtouch\jqtouch.css" />
     <Content Include="jqtouch\jqtouch.js" />
     <Content Include="jqtouch\jqtouch.min.css" />
@@ -669,6 +671,9 @@
     <Content Include="masterpages\WikiPageAttachments.master" />
     <Content Include="masterpages\WikiPageHistory.master" />
     <Content Include="masterpages\WikipagewithTOC.master" />
+    <Content Include="scripts\forum\Markdown.Converter.js" />
+    <Content Include="scripts\forum\Markdown.Editor.js" />
+    <Content Include="scripts\forum\Markdown.Sanitizer.js" />
     <Content Include="scripts\shadowbox\languages\README" />
     <Content Include="scripts\shadowbox\players\README" />
     <Content Include="setpermssions.bat" />
@@ -700,7 +705,9 @@
     <Content Include="umbraco_client\CodeMirror\js\mode\razor\LICENSE" />
     <Content Include="umbraco_client\CodeMirror\js\mode\sieve\LICENSE" />
     <Content Include="Views\Web.config" />
-    <Content Include="web.config" />
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\deli.currency.xml" />
@@ -3986,6 +3993,7 @@
     <Content Include="Documentation\Using-Umbraco\index.md" />
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
+    <Content Include="macroScripts\forum-createComment.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
