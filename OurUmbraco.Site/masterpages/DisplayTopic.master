@@ -10,26 +10,41 @@
         (function() {
         var comments = $(".commentsList").find(".comment .body");        
         var converter = Markdown.getSanitizingConverter();
-        comments.each(function () {            
-            var text = $(this);
-            
-            // Remove unallowed attributes from img tags
-            text.find("img").each(function () {
-                var img = this;
-                var illegalAttributes = [];
-                
-                $.each(img.attributes, function() {
-                    if (this.specified && !this.name.match(/^(src|width|height|title|alt)$/i)) {
-                        illegalAttributes.push(this.name);
-                    }
+            comments.each(function() {
+                var text = $(this);
+
+                // Remove unallowed attributes from img tags
+                text.find("img").each(function() {
+                    var img = this;
+                    var illegalAttributes = [];
+
+                    $.each(img.attributes, function() {
+                        if (this.specified && !this.name.match(/^(src|width|height|title|alt)$/i)) {
+                            illegalAttributes.push(this.name);
+                        }
+                    });
+
+                    $.each(illegalAttributes, function() {
+                        $(img).removeAttr(this);
+                    });
                 });
 
-                $.each(illegalAttributes, function () {
-                    $(img).removeAttr(this);
+                var preHtml = $(converter.makeHtml(text.html()));
+
+                // Linkify images if they are shown as resized versions
+                preHtml.find("img").each(function() {
+                    var img = $(this);
+                    var src = img.attr("src");
+                    var orgSrc = src.replace("rs/");
+
+                    if (src !== orgSrc && !img.parent().is("a")) {
+                        var a = $("<a target='_blank' href='" + img.attr("src").replace('rs/', '') + "'></a>");
+                        img.wrap(a);
+                    }
                 });
+                
+                text.html(preHtml);
             });
-            text.html(converter.makeHtml(text.html()));
-        });
         })();
     </script>
     <%--<umbraco:Macro Alias="Forum-createComment-razor" runat="server"></umbraco:Macro>--%>
