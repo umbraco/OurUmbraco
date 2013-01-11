@@ -337,7 +337,9 @@
     <Content Include="config\ExamineIndex.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="config\ExamineSettings.config" />
+    <Content Include="config\ExamineSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\feedProxy.config" />
     <Content Include="config\FergusonMoriyama\FeedCache\feeds.config" />
     <Content Include="config\FileSystemProviders.config" />
@@ -491,6 +493,7 @@
     <Content Include="masterpages\WikiPageAttachments.master" />
     <Content Include="masterpages\WikiPageHistory.master" />
     <Content Include="masterpages\WikipagewithTOC.master" />
+    <Content Include="robots.txt" />
     <Content Include="scripts\shadowbox\languages\README" />
     <Content Include="scripts\shadowbox\players\README" />
     <Content Include="setpermssions.bat" />
