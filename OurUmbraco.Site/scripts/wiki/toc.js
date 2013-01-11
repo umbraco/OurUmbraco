@@ -1,13 +1,16 @@
 jQuery(function($) {
     var toc = $("#toc ul");
     
+	
   
     jQuery("#toc a.toggle").click(function(){
         toc.toggle();
         if(toc.is(":visible")){
           jQuery("#body").css("margin-right", 280); 
+		  jQuery("#body h1").css("margin-right", 0);
        }else{
-          jQuery("#body").css("margin-right", 20);                     
+          jQuery("#body").css("margin-right", 20);  
+		  jQuery("#body h1").css("margin-right", 250);
        }
                             
     });
@@ -27,7 +30,7 @@ jQuery(function($) {
           toc.append(li);
     });
   
-  
+  /*
     var parent = toc.parent(),
         tocOverlay = parent
           .clone()
@@ -37,5 +40,5 @@ jQuery(function($) {
             position: "absolute",
             right: "10px",
         }).hide();
-          
+          */
 });

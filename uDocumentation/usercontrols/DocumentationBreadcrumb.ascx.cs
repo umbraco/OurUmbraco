@@ -33,7 +33,7 @@ namespace uDocumentation.usercontrols
             //main concern being the version part, ie. v501.
             foreach (string strDirName in strDirs)
             {
-                sbResult.Append("<li><a href=\"" + sbBcUrl + strDirName + "/\" rel=\"nofollow\">" +
+                sbResult.Append("<li><a href=\"" + sbBcUrl + strDirName + "\" rel=\"nofollow\">" +
                                 strDirName
                                 .RemoveDash()
                                 .UnderscoreToDot()

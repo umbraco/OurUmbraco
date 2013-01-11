@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿@{
     const string rootFolder = @"~\Documentation";
     const string config = @"~\config\githubpull.config";
@@ -11,4 +12,27 @@
 
     var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
     unzip.Run();
+=======
+﻿
+
+@{
+
+    if (string.IsNullOrEmpty(Request["id"]))
+    {
+        var root = @"C:\inetpub\wwwroot\_Live Sites\our.umbraco.org\Documentation";
+        var cfg = @"C:\inetpub\wwwroot\_Live Sites\our.umbraco.org\config\githubpull.config";
+
+        uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader zip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(root, cfg);
+        zip.Run();
+    }
+    else
+    {
+        int id = 0;
+        if (int.TryParse(Request["id"], out id))
+        {
+            uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader zip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(id);
+            zip.Run();
+        }
+    }
+>>>>>>> Changes related to OUR-17 Make search in Documentation section work
 }

@@ -5,8 +5,19 @@
 <asp:Content ContentPlaceHolderId="main" runat="server">
 
 <div id="documentation" class="subpage">
-  <div style="margin-top: 20px; padding: 7px;" class="notice"><strong>Please note</strong>: this is work in progress. Broken links, placeholder text, and a few things not working can be expected. <a href="https://github.com/umbraco/Umbraco4Docs"><strong>You can help out. get involved!</strong></a>
-</div>    
+	
+
+<umbraco:Macro runat="server" language="cshtml">
+	@if(Model.NodeTypeAlias != "Projects"){
+	<div style="margin-top: 20px; padding: 7px;" class="notice"><strong>Please note</strong>: this is work in progress. Broken links, placeholder text, and a few things not working can be expected. <a href="https://github.com/umbraco/Umbraco4Docs"><strong>You can help out. get involved!</strong></a>
+  </div> 
+	}
+</umbraco:Macro>
+
+  
+	
+
+     
 
   <div id="toc">
     <a href="#" class="toggle">Table of contents <small>(click to show/hide)</small></a>
@@ -30,10 +41,10 @@
 </div>
 
   
-<script type="text/javascript" src="/scripts/wiki/toc.js"></script>   
+<script type="text/javascript" src="/scripts/wiki/toc.js?u=yes"></script>
 </asp:Content>
   
 <asp:Content ContentPlaceHolderId="Head" runat="server">
   <!-- Documentation styles -->
-  <link media="screen" type="text/css" rel="stylesheet" href="/css/docs.css" />
+  <link media="screen" type="text/css" rel="stylesheet" href="/css/docs.css?u=y" />
 </asp:Content>
