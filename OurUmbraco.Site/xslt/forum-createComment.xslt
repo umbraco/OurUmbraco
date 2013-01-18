@@ -34,19 +34,13 @@
 
 
 <xsl:choose>
-<xsl:when test="umbraco.library:IsLoggedOn()">
-
-  <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('Markdown.Styles', '/css/forum/pagedown.css')"/>
-  
+<xsl:when test="umbraco.library:IsLoggedOn()">  
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce_update/tiny_mce_src.js')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=6')"/>
-
-  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Converter', '/scripts/forum/Markdown.Converter.js')"/>
-  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Sanitizer', '/scripts/forum/Markdown.Sanitizer.js')"/>
-  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Editor', '/scripts/forum/Markdown.Editor.js')"/>
     
   <script type="text/javascript">
     uForum.ForumEditor("commentBody");
+    
     jQuery(document).ready(function(){
         jQuery("form").submit( function(){
             var topicId = '<xsl:value-of select="$topicID" />';
@@ -84,13 +78,12 @@
   </div>
 
   </div>
-
+<div class="wmd-container">
     <div class="wmd-panel">
         <div id="wmd-button-bar"></div>
-<textarea class="wmd-input" id="wmd-input"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
+        <textarea class="wmd-input" id="wmd-input"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
     </div>
     <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
-
     <script type="text/javascript">
         (function () {
             var converter = Markdown.getSanitizingConverter();
@@ -108,30 +101,25 @@
                 return newText.html();       
             });
 
-            var editor = new Markdown.Editor(converter);            
+            var editor = new Markdown.Editor(converter);           
             
             editor.hooks.set("insertImageDialog", function (callback) {
-                <!--alert("Please click okay to start scanning your brain...");
-                setTimeout(function () {
-                    var prompt = "We have detected that you like cats. Do you want to insert an image of a cat?";
-                    if (confirm(prompt))
-                        callback("http://icanhascheezburger.files.wordpress.com/2007/06/schrodingers-lolcat1.jpg")
-                    else
-                        callback(null);
-                }, 2000);-->
-
-
                 window.forumInsertImageCallback = callback;
-                var win = window.open("/insertimage");
-                //win.onload = function() { window.win = win; win.insertImageCallback = callback; console.log(win.insertImageCallback); };
+                
+                var win = window.open("/insertimage", "Insert image", "width=550,height=360");
+
+                //win.onbeforeunload = function() { 
+                    //console.log("test", win.imageInserting); 
+                    
+                //};
 
                 return true; // tell the editor that we'll take care of getting the image url
             });
 
-
-        editor.run();
+            editor.run();
         })();
     </script>
+</div>
   <br />
 
   <div id="commentSuccess" style="display: none" class='success'>

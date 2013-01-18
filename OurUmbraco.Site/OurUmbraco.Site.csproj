@@ -3243,7 +3243,9 @@
     <Content Include="xslt\forum-createComment.xslt" />
     <Content Include="xslt\forum-createTopic.xslt" />
     <Content Include="xslt\forum-notification.xslt" />
-    <Content Include="xslt\forum-overview.xslt" />
+    <Content Include="xslt\forum-overview.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\forum-topicsList.xslt" />
     <Content Include="xslt\forum-topicsYouParticipated.xslt" />
     <Content Include="xslt\forum-yourTopics.xslt" />

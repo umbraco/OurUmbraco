@@ -48,32 +48,33 @@
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=11')"/>
     
   <script type="text/javascript">
-    uForum.ForumEditor("topicBody");
+  uForum.ForumEditor("topicBody");  
 
-    jQuery(document).ready(function() {
-
+  jQuery(document).ready(function(){
       jQuery("#topicForm #title").focusout(function() {
         uForum.lookUp()
       });
 
-      jQuery("form").submit( function() {
-        jQuery("#btCreateTopic").attr("disabled", "true");
-        jQuery("#topicForm").hide();
-        jQuery(".success").show();
+       jQuery("form").submit( function(){
+         jQuery("#btCreateTopic").attr("disabled", "true");
+         jQuery("#topicForm").hide();
+         jQuery(".success").show();
 
-        var topicId = '<xsl:value-of select="$id"/>';
-          var forumId = <xsl:value-of select="$currentPage/@id"/>;
-          var title = jQuery("#title").val();
-          var body = tinyMCE.get('topicBody').getContent();
+      var topicId = '<xsl:value-of select="$id"/>';
+      var forumId = <xsl:value-of select="$currentPage/@id"/>;
+      var title = jQuery("#title").val();
+            //var body = tinyMCE.get('topicBody').getContent();      
+            var body = $("#wmd-input").val();
 
-          if(topicId !== "") {
-            uForum.EditTopic(topicId, title, body );
+      if(topicId !== "") {
+        uForum.EditTopic(topicId, title, body );
           } else {
-            uForum.NewTopic(forumId, title, body );  
-          }
+        uForum.NewTopic(forumId, title, body );  
+            }
+          
       
-        return false;      
-      });
+      return false;      
+    });
     });
   </script>
 
@@ -99,6 +100,49 @@
   </div>
   </fieldset>
   </div>
+
+<div class="wmd-container">
+    <div class="wmd-panel">
+        <div id="wmd-button-bar"></div>
+        <textarea class="wmd-input" id="wmd-input"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
+    </div>
+    <div id="wmd-preview" class="wmd-panel wmd-preview"></div>
+    <script type="text/javascript">
+        (function () {
+            var converter = Markdown.getSanitizingConverter();
+
+            converter.hooks.chain("postConversion", function (text) {        
+                var newText = $("<div>" + text + "</div>");        
+                var pres = newText.find("pre").addClass("prettyprint");
+                if(pres.length > 0)
+                {
+                    setTimeout(function() {
+                        console.log("pretty printing");
+                        prettyPrint();
+                    }, 2000);
+                }
+                return newText.html();       
+            });
+
+            var editor = new Markdown.Editor(converter);           
+            
+            editor.hooks.set("insertImageDialog", function (callback) {
+                window.forumInsertImageCallback = callback;
+                
+                var win = window.open("/insertimage", "Insert image", "width=550,height=360");
+
+                //win.onbeforeunload = function() { 
+                    //console.log("test", win.imageInserting); 
+                    
+                //};
+
+                return true; // tell the editor that we'll take care of getting the image url
+            });
+    
+            editor.run();
+        })();
+    </script>
+</div>
   
 
 </xsl:otherwise>

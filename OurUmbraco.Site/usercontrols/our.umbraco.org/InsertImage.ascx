@@ -3,9 +3,20 @@
 
 <script type="text/javascript">
 
-
-    jQuery(document).ready(function() {
-
+    var imageInserted = false;
+    var imageInserting = false;
+    var imageLink;
+    
+    window.onbeforeunload = function () {
+        if (imageInserted) {
+            window.opener.forumInsertImageCallback(imageLink);
+        } else if (!imageInserting) {
+            window.opener.forumInsertImageCallback(null);
+        }
+    };
+    
+    jQuery(document).ready(function () {
+        
         jQuery("#insert").click(function() {
             InsertImage();
         });
@@ -14,6 +25,9 @@
             CloseDialog();
         });
 
+        jQuery("#<%= btnUpload.ClientID %>").click(function() {
+            imageInserting = true;
+        });
 
         if (jQuery("#<%= tb_url.ClientID %>").val().length > 0) {
             ShowImage();
@@ -63,20 +77,12 @@
     }
 
     function InsertImage() {
-
-        var imglink = jQuery('#<%= tb_url.ClientID %>').val();
-        /*origimglink = imglink.replace('rs/', '');
-
-        img = "<a href='" + origimglink + "' target='_blank'><img border='0' src='" + imglink + "' /></a>";
-
-        tinyMCEPopup.editor.execCommand("mceInsertContent", false, img);
-        
-        CloseDialog();*/
-        //console.log(window.win);
-        window.opener.forumInsertImageCallback(imglink);
+        imageLink = jQuery('#<%= tb_url.ClientID %>').val();        
+        imageInserted = true;
         CloseDialog();
     }
     function CloseDialog() {
+        //window.close();        
         tinyMCEPopup.close();
     }
 </script>

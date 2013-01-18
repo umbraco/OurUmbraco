@@ -1,7 +1,15 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
-
+<script runat="server">
+    protected override void OnInit(EventArgs e)
+    {
+        umbraco.library.RegisterStyleSheetFile("Markdown.Styles", "/css/forum/pagedown.css");
+        umbraco.library.RegisterJavaScriptFile("Markdown.Converter", "/scripts/forum/Markdown.Converter.js"); 
+        umbraco.library.RegisterJavaScriptFile("Markdown.Sanitizer", "/scripts/forum/Markdown.Sanitizer.js"); 
+        umbraco.library.RegisterJavaScriptFile("Markdown.Editor", "/scripts/forum/Markdown.Editor.js");
+        base.OnInit(e);
+    }
+</script>
 <asp:Content ContentPlaceHolderId="main" runat="server">
-
 <div id="body" class="subpage">
 <div id="forum">
 
