@@ -1,5 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Forum.master" AutoEventWireup="true" %>
-<asp:content ContentPlaceHolderId="Main" runat="server">
+<asp:content ContentPlaceHolderId="Main" runat="server">    
 	<div style="padding: 35px 0px 25px 0px">
 	    <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
 	</div>	
@@ -15,20 +15,14 @@
 
                 // Remove unallowed attributes from img tags
                 text.find("img").each(function() {
-                    var img = this;
-                    var illegalAttributes = [];
-
+                    var img = this;                    
                     $.each(img.attributes, function() {
                         if (this.specified && !this.name.match(/^(src|width|height|title|alt)$/i)) {
-                            illegalAttributes.push(this.name);
+                            $(img).removeAttr(this.name);
                         }
                     });
-
-                    $.each(illegalAttributes, function() {
-                        $(img).removeAttr(this);
-                    });
                 });
-
+                
                 var preHtml = $(converter.makeHtml(text.html()));
 
                 // Linkify images if they are shown as resized versions
@@ -36,7 +30,7 @@
                     var img = $(this);
                     var src = img.attr("src");
                     var orgSrc = src.replace("rs/");
-
+                    
                     if (src !== orgSrc && !img.parent().is("a")) {
                         var a = $("<a target='_blank' href='" + img.attr("src").replace('rs/', '') + "'></a>");
                         img.wrap(a);
@@ -47,5 +41,4 @@
             });
         })();
     </script>
-    <%--<umbraco:Macro Alias="Forum-createComment-razor" runat="server"></umbraco:Macro>--%>
 </asp:content>
