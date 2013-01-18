@@ -1,29 +1,19 @@
-<<<<<<< HEAD
-﻿@{
-    const string rootFolder = @"~\Documentation";
-    const string config = @"~\config\githubpull.config";
-    var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
-    var configPath = HttpContext.Current.Server.MapPath(config);
-
-    if (!Directory.Exists(rootFolderPath))
-    {
-        Directory.CreateDirectory(rootFolderPath);
-    }
-
-    var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
-    unzip.Run();
-=======
-﻿
-
 @{
 
     if (string.IsNullOrEmpty(Request["id"]))
     {
-        var root = @"C:\inetpub\wwwroot\_Live Sites\our.umbraco.org\Documentation";
-        var cfg = @"C:\inetpub\wwwroot\_Live Sites\our.umbraco.org\config\githubpull.config";
+        const string rootFolder = @"~\Documentation";
+        const string config = @"~\config\githubpull.config";
+        var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
+        var configPath = HttpContext.Current.Server.MapPath(config);
 
-        uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader zip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(root, cfg);
-        zip.Run();
+        if (!Directory.Exists(rootFolderPath))
+        {
+            Directory.CreateDirectory(rootFolderPath);
+        }
+
+        var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
+        unzip.Run();
     }
     else
     {
@@ -34,5 +24,5 @@
             zip.Run();
         }
     }
->>>>>>> Changes related to OUR-17 Make search in Documentation section work
+
 }
