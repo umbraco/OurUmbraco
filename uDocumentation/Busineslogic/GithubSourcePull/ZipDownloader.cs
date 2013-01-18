@@ -45,7 +45,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                 githubRepo));
 
             Configuration = xd;
-            RootFolder = @"C:\inetpub\wwwroot\_Live Sites\our.umbraco.org" + project.Url.Replace("/",@"\") + @"\Documentation";
+            RootFolder = HttpContext.Current.Server.MapPath(@"~" + project.Url.Replace("/",@"\") + @"\Documentation");
             IsProjectDocumentation = true;
         }
 
