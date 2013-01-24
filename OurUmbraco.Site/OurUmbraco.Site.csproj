@@ -671,6 +671,7 @@
     <Content Include="masterpages\WikiPageAttachments.master" />
     <Content Include="masterpages\WikiPageHistory.master" />
     <Content Include="masterpages\WikipagewithTOC.master" />
+    <Content Include="scripts\forum\Markdown.App.js" />
     <Content Include="scripts\forum\Markdown.Converter.js" />
     <Content Include="scripts\forum\Markdown.Editor.js" />
     <Content Include="scripts\forum\Markdown.Sanitizer.js" />
@@ -3609,8 +3610,12 @@
     <Content Include="xslt\findemptyguids.xslt" />
     <Content Include="xslt\forum-activeTopics.xslt" />
     <Content Include="xslt\forum-commentsList.xslt" />
-    <Content Include="xslt\forum-createComment.xslt" />
-    <Content Include="xslt\forum-createTopic.xslt" />
+    <Content Include="xslt\forum-createComment.xslt">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="xslt\forum-createTopic.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\forum-notification.xslt" />
     <Content Include="xslt\forum-overview.xslt">
       <SubType>Designer</SubType>
@@ -3997,7 +4002,6 @@
     <Content Include="Documentation\Using-Umbraco\index.md" />
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
-    <Content Include="macroScripts\forum-createComment.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

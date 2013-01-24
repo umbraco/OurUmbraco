@@ -52,9 +52,8 @@ var uForum = function() {
       });
     },
     lookUp : function() { 
-      var s_q= jQuery("#title").val();
-      s_q += " " + tinyMCE.get('topicBody').getContent();
-      
+        var s_q = jQuery("#title").val();     
+        s_q += " " + Markdown.App.getPreviewContent();
       if(s_q.length > 10 && s_q != s_currentLookUp ){
         s_currentLookUp = s_q;
         $.post("/base/uSearch/FindSimiliarItems/forumTopics/20.aspx",{q: s_q},

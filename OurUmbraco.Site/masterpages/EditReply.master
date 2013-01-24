@@ -1,20 +1,13 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Forum.master" AutoEventWireup="true" %>
-
-<asp:Content ContentPlaceHolderId="Main" runat="server">
-	<div style="margin-top: 25px;">
-			<umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-	</div>
-	<h1>Edit Reply</h1>
-
-	
-<div id="editorSideBar" style="float: right; width: 250px; margin-left: 30px;">
-	<div class="notice">
-		<p>
-		You are currently editing a reply you previously posted, the reply will state that you edited it.
-		</p>
-	</div>
-</div>
-    <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
-	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
-
+<asp:Content ContentPlaceHolderID="Main" runat="server">
+    <div style="margin-top: 25px;">
+        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <h1>Edit Reply</h1>
+    <div id="editorSideBar" style="float: right; width: 250px; margin-left: 30px;">
+        <div class="notice">
+            <p>You are currently editing a reply you previously posted, the reply will state that you edited it.</p>
+        </div>
+    </div>    
+    <umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
 </asp:Content>

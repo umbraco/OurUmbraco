@@ -8,6 +8,7 @@
     var imageLink;
     
     window.onbeforeunload = function () {
+        // PageDown creates an overlay when opening the insert image popup. To remove that overlay, we need to trigger the PageDown callback even when just closing the popup. onbeforeunload seems to be the answer.
         if (imageInserted) {
             window.opener.forumInsertImageCallback(imageLink);
         } else if (!imageInserting) {
@@ -81,9 +82,8 @@
         imageInserted = true;
         CloseDialog();
     }
-    function CloseDialog() {
-        //window.close();        
-        tinyMCEPopup.close();
+    function CloseDialog() {        
+        tinyMCEPopup.close(); 
     }
 </script>
 
