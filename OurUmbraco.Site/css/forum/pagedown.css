@@ -1,14 +1,13 @@
-body 
-{ 
-	background-color: White;
-    font-family: sans-serif;
+/* For now, we still need the TinyMCE container for the image upload, however, we can just hide it */
+.tinymce-container 
+{
+    display: none;
 }
 
 .wmd-panel
 {
-
-	width: 100%;
-	min-width: 500px;
+	width: 682px;
+    box-sizing: border-box;
 }
 
 .wmd-button-bar 
@@ -20,13 +19,48 @@ body
 .wmd-input 
 { 
 	height: 300px;
-	width: 100%;
     box-sizing: border-box;
 }
 
+.wmd-input.comment
+{
+    width: 980px;
+}
+
+.wmd-input.topic
+{
+    width: 682px;
+}
+
 .wmd-preview 
-{ 
-	background-color: #c0e0ff; 
+{
+    margin: 0 0 10px 0;
+	padding: 3px;
+    border: 2px dotted #ccc;    
+}
+
+.wmd-preview.comment
+{
+    width: 980px;
+}
+
+.wmd-preview.topic
+{
+    width: 682px;
+}
+
+.wmd-preview p
+{
+    font-size: 12px;
+    margin-top: 0;
+    margin-bottom: 15px;
+}
+
+.wmd-preview blockquote 
+{
+    margin-bottom: 10px;
+    padding: 10px 10px 1px 10px;
+    background-color: #eeeeee;
 }
 
 .wmd-button-row 
@@ -84,9 +118,6 @@ body
 {
     left: 300px;
 }
-
-
-
 
 .wmd-prompt-background
 {

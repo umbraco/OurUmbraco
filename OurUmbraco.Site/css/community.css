@@ -87,7 +87,7 @@ padding:0 0 6px;}
 .infoBox a{padding: 2px; font-size: 12px;}
 .infoBox small{color: #999; display: block; padding-top: 2px;}
 
-div.buttons{padding: 20px; background: #F0F2F2; font-size: 18px;}
+div.buttons{margin: 0 0 10px 0;padding: 20px; background: #F0F2F2; font-size: 18px;clear: both;}
 
 a.button{padding: 10px 0px 10px 0px; border: 1px solid #EFEFEF; text-decoration: none;}
 a.button em{border: 5px solid #fff; padding: 5px; color: #fff; background: #F5366D; }
@@ -318,7 +318,7 @@ color: #514721; display: block; text-align: center;  margin-bottom: 7px;}
 
 /* Pager */
 .pager{margin: auto; padding: 20px 40px 40px 40px; list-style: none;display: block; text-align: center;  }
-.pager li{display: inline-block; padding-right: 2px; margin: 3px; margin-bottom: 9px;}
+.pager li{display: inline-block; padding-right: 2px; margin: 0px; margin-bottom: 9px;float:left;}
 .pager li a{font-size: 12px; padding: 3px 6px; border: 1px solid #ccc;color: black; text-decoration: none;}
 .pager li.current a{border: none;}
 .pager li a:hover{color: white; background: #252525; border-color: #252525}

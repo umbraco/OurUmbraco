@@ -1,44 +1,48 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Forum.master" AutoEventWireup="true" %>
-<asp:content ContentPlaceHolderId="Main" runat="server">    
-	<div style="padding: 35px 0px 25px 0px">
-	    <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-	</div>	
-    <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
-	<umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
-	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
+<asp:Content ContentPlaceHolderID="Main" runat="server">
+    <div style="padding: 35px 0px 25px 0px">
+        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
+    <umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
     <script type="text/javascript">
-        (function() {
-        var comments = $(".commentsList").find(".comment .body");        
-        var converter = Markdown.getSanitizingConverter();
-            comments.each(function() {
-                var text = $(this);
-
-                // Remove unallowed attributes from img tags
-                text.find("img").each(function() {
-                    var img = this;                    
-                    $.each(img.attributes, function() {
-                        if (this.specified && !this.name.match(/^(src|width|height|title|alt)$/i)) {
-                            $(img).removeAttr(this.name);
+        (function () {
+            var converter = Markdown.App.getConverter();
+            
+            $("#forum").find(".commentsList").find(".body").each(function () {
+                var body = $(this);
+                
+                // Remove unallowed attributes from img tags or Markdown will strip them (only relevant for old pre-Markdown comments)
+                body.find("img").each(function () {
+                    var img = this;
+                    
+                    $.each(img.attributes, function () {
+                        var attr = this;
+                        if (attr.specified && !attr.name.match(/^(src|width|height|title|alt)$/i)) {
+                            $(img).removeAttr(attr.name);
                         }
                     });
                 });
-                
-                var preHtml = $(converter.makeHtml(text.html()));
 
-                // Linkify images if they are shown as resized versions
-                preHtml.find("img").each(function() {
-                    var img = $(this);
+                var html = $(converter.makeHtml(body.html()));
+                
+                // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
+                html.find("img").each(function () {
+                    var img = $(this);                    
                     var src = img.attr("src");
-                    var orgSrc = src.replace("rs/");
+                    var orgSrc = src.replace("rs/", "");
                     
                     if (src !== orgSrc && !img.parent().is("a")) {
-                        var a = $("<a target='_blank' href='" + img.attr("src").replace('rs/', '') + "'></a>");
+                        var a = $("<a/>", {
+                            href: orgSrc,
+                            target: "_blank"
+                        });                        
                         img.wrap(a);
                     }
                 });
-                
-                text.html(preHtml);
+
+                body.html(html);
             });
         })();
     </script>
-</asp:content>
+</asp:Content>
