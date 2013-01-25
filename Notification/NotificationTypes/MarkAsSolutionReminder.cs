@@ -20,6 +20,7 @@ namespace NotificationsCore.NotificationTypes
            
 
             SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
+            c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
             MailAddress from = new MailAddress(
                 details.SelectSingleNode("//from/email").InnerText,
