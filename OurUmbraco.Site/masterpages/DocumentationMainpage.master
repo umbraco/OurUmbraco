@@ -38,6 +38,9 @@
   <p><Strong>Umbraco Documentation Team</strong></p>
 </div>  
   -->
+	
+<umbraco:Macro runat="server" language="cshtml">
+	@if(Model.Parent.NodeTypeAlias != "Project"){
   <div style="margin-top: 20px; padding: 7px;" class="notice">
   <h2>The documenation Wiki?</h2>
   <p>
@@ -49,8 +52,13 @@
     removed from the site navigation and search results.   
   </p> 
     
-  <p><Strong>Umbraco Documentation Team</strong></p>
-</div>  
+  <p><strong>Umbraco Documentation Team</strong></p>	
+  </div> 	  
+	}
+</umbraco:Macro>
+
+
+ 
   
 </div>
 

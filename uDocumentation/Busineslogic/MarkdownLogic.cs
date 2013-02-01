@@ -67,7 +67,12 @@ namespace uDocumentation.Busineslogic
             //Used for main page to correct relative links
             if (prefixLinks)
             {
-                string temp = string.Concat("/documentation/", rawUrl);
+                var p = "/documentation/";
+
+                if (umbraco.NodeFactory.Node.GetCurrent().Parent.NodeTypeAlias == "Project")
+                    p = "documentation/";
+               
+                string temp = string.Concat(p, rawUrl);
                 mdUrlTag = mdUrlTag.Replace(rawUrl, temp);
             }
 

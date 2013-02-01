@@ -22,6 +22,8 @@ namespace uDocumentation.usercontrols
                 lblHeader.Text = string.Concat("<h1>", urlPath.RemoveDash().UnderscoreToDot().TrimStart('/').TrimEnd('/'), "</h1>");
             }
 
+            
+
             MarkdownLogic ml = new MarkdownLogic(MarkdownFilePath, VersionFromSession) { PrefixLinks = PrefixLinks };
             lblMarkdownOutput.Text = ml.DoTransformation();
         }
@@ -34,6 +36,14 @@ namespace uDocumentation.usercontrols
         {
             get
             {
+                if (umbraco.NodeFactory.Node.GetCurrent().Parent.NodeTypeAlias == "Project")
+                {
+                    string readmePath = string.Concat(HttpRuntime.AppDomainAppPath, umbraco.NodeFactory.Node.GetCurrent().Url.Substring(1).Replace("/", @"\") + @"\readme.md");
+                    if (File.Exists(readmePath))
+                        return readmePath;
+                    else
+                        return string.Concat(HttpRuntime.AppDomainAppPath, umbraco.NodeFactory.Node.GetCurrent().Url.Substring(1).Replace("/", @"\") + @"\index.md");
+                }
                 if (string.IsNullOrEmpty(_markdownFilePath))
                 {
                     return HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();

@@ -15,10 +15,13 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
     {
         public string RootFolder { get; set; }
         public XmlDocument Configuration { get; set; }
+        public bool IsProjectDocumentation { get; set; }
+
         public ZipDownloader(string rootFolder, XmlDocument configuration)
         {
             Configuration = configuration;
             RootFolder = rootFolder;
+            IsProjectDocumentation = false;
         }
 
         public ZipDownloader(string rootFolder, string configurationPath)
@@ -28,6 +31,22 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
             Configuration = xd;
             RootFolder = rootFolder;
+            IsProjectDocumentation = false;
+        }
+
+        public ZipDownloader(int projectId)
+        {
+            var project = new umbraco.NodeFactory.Node(projectId);
+            var githubRepo = project.GetProperty("documentationGitRepo");
+            var xd = new XmlDocument();
+
+            xd.LoadXml(string.Format(
+                "<?xml version=\"1.0\"?><configuration><sources><add url=\"{0}/zipball/master\" folder=\"\" /></sources></configuration>",
+                githubRepo));
+
+            Configuration = xd;
+            RootFolder = HttpContext.Current.Server.MapPath(@"~" + project.Url.Replace("/",@"\") + @"\Documentation");
+            IsProjectDocumentation = true;
         }
 
         public void Run()
@@ -58,8 +77,24 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
         private string Download(string url, string foldername)
         {
-            var path = Path.Combine(RootFolder, foldername + ".zip");
+            var dir = new DirectoryInfo(Path.Combine(RootFolder, foldername));
+            var dirsToCreate = new List<DirectoryInfo>();
+            while (!dir.Exists)
+            {
+               dirsToCreate.Add(dir);
 
+               dir = dir.Parent;
+            }
+
+            if (dirsToCreate.Any())
+            {
+                dirsToCreate.Reverse();
+                foreach (var d in dirsToCreate)
+                    d.Create();
+            }
+
+            var path = Path.Combine(RootFolder, foldername + ".zip");
+            
             if (File.Exists(path))
                 File.Delete(path);
 
@@ -89,8 +124,16 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
             try
             {
+                bool stopDirSet = false;
+
                 while ((theEntry = s.GetNextEntry()) != null)
                 {
+                    if (IsProjectDocumentation && !stopDirSet)
+                    {
+                        stopDir = Path.GetDirectoryName(theEntry.Name);
+                        stopDirSet = true;
+                    }
+
                     string directoryName = Path.GetDirectoryName(theEntry.Name);
                     string fileName = Path.GetFileName(theEntry.Name);
 

@@ -92,9 +92,5 @@
     </asp:RoleGroup>
 </RoleGroups>
 <LoggedInTemplate>
-    <div class="deliNotification sidebarNotification">
-    <h3>Are you interested in being a Deli Vendor?</h3>
-    <p>If you are interested in becoming a Deli Vendor please <a href="http://umbraco.com/contact">contact the Umbraco HQ</a> along with information on the package that you want to commercialize.</p>
-</div>
 </LoggedInTemplate>
 </asp:LoginView>
