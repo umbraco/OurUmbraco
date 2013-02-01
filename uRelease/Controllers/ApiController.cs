@@ -19,7 +19,7 @@ namespace uRelease.Controllers
     public class ApiController : Controller
     {
         private const string VersionBundleUrl = "admin/customfield/versionBundle/Umbraco v4 Versions";
-        private const string IssuesUrl = "issue/byproject/{0}?filter={1}&max=100";
+        private const string IssuesUrl = "issue/byproject/{0}?filter={1}&max=200";
 
         private static readonly string ProjectId = ConfigurationManager.AppSettings["uReleaseProjectId"];
 
