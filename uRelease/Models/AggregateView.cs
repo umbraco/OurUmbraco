@@ -17,6 +17,8 @@ namespace uRelease.Models
 
         public bool inProgressRelease { get; set; }
 
+        public bool isPatch { get; set; }
+
         public string releaseDate { get; set; }
 
         public string releaseDescription { get; set; }

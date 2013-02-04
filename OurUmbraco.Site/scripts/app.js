@@ -131,7 +131,7 @@ viewModel.inProgressReleases = ko.computed(function(){
 
 viewModel.futureReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
-                return (!ver.inProgressRelease() && !ver.released());
+                return (!ver.inProgressRelease() && !ver.released() && !ver.isPatch());
             });
     },viewModel);
 
@@ -143,7 +143,13 @@ viewModel.releasedReleases = ko.computed(function(){
 
 viewModel.comingReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
-                return !ver.released();
+                return (!ver.released() && !ver.isPatch());
+            });
+    },viewModel);
+
+viewModel.patchReleases = ko.computed(function(){
+    return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
+                return (!ver.released() && ver.isPatch());
             });
     },viewModel);
 

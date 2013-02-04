@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace uRelease
 {
@@ -21,11 +19,9 @@ namespace uRelease
         /// </summary>
         /// <param name="ver"></param>
         /// <returns></returns>
-        public static int AsFullVersion(this string ver)
+        public static Version AsFullVersion(this string ver)
         {
-            var verArray = ver.Split('.');
-            var fullVersion = verArray[0] + ((verArray[1].Length <= 1) ? "0" : "") + verArray[1] + ((verArray[2].Length <= 1) ? "0" : "") + verArray[2];
-            return Int32.Parse(fullVersion);
+            return new Version(ver);
         }
     }
 }

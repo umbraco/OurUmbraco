@@ -60,9 +60,11 @@ namespace uRelease.Controllers
             }
 
 
-            //figure out which is the latest release
-            var latestRelease = orderedVersions.Where(x => x.Released).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
-            var inprogressRelease = orderedVersions.Where(x => !x.Released).OrderBy(x => x.ReleaseDate).FirstOrDefault();
+            //figure out which is the latest v4 and v6 release
+            var latestReleasev4 = orderedVersions.Where(x => x.Released && x.Value.AsFullVersion().Major == 4).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
+            var latestReleasev6 = orderedVersions.Where(x => x.Released && x.Value.AsFullVersion().Major == 6).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
+
+            var inprogressRelease = orderedVersions.Where(x => x.Released == false && x.Value.AsFullVersion().Major == 6 && x.Value.AsFullVersion().Build == 0).OrderBy(x => x.ReleaseDate).FirstOrDefault();
 
             // Just used to make sure we don't make repeated API requests for keys
             var versionCache = new ConcurrentDictionary<string, RestResponse<IssuesWrapper>>();
@@ -71,9 +73,10 @@ namespace uRelease.Controllers
             {
                 var item = new AggregateView
                                {
-                                   latestRelease = (latestRelease != null && version.Value == latestRelease.Value),
+                                   latestRelease = (latestReleasev4 != null && version.Value == latestReleasev4.Value || latestReleasev6 != null && version.Value == latestReleasev6.Value),
                                    inProgressRelease = (inprogressRelease != null && version.Value == inprogressRelease.Value),
                                    version = version.Value,
+                                   isPatch = version.Value.AsFullVersion().Build != 0,
                                    releaseDescription = version.Description ?? string.Empty,
                                    released = version.Released,
                                    releaseDate = version.ReleaseDate == 0 ? "" : new DateTime(1970, 1, 1).AddMilliseconds(version.ReleaseDate).ToString(CultureInfo.InvariantCulture)

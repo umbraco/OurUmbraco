@@ -49,14 +49,22 @@
     </div>
     <div class="future" data-bind="template: { name: 'version-template', foreach: futureReleases}"></div>
   </div>
+  <div class="releaseTable"  data-bind="visible: patchReleases().length > 0">
+    <h2>Upcoming patch releases:</h2>
+    <div class="releaseHeaders">
+      <div class="header version">Version</div>
+      <div class="header changes">Changes</div>
+      <div class="header releaseDate">Release Date</div>
+    </div>
+    <div class="future" data-bind="template: { name: 'version-template', foreach: patchReleases}"></div>
+  </div>
 </div>
   
 <script type="text/html" id="version-template">
     <div class="releaseRow" data-bind="attr: { id: id }">
       <div class="version">
         <h2>
-          <a data-bind="visible: $.inArray(version(), hasPageArray) > -1, text: 'v'+ version(), attr: { href: '/contribute/releases/' + id().substring(1) }"></a>
-          <span data-bind="visible: $.inArray(version(), hasPageArray) == -1, text: version"></span>
+          <a data-bind="text: 'v'+ version(), attr: { href: '/contribute/releases/' + version() }"></a>
         </h2>
         <p data-bind="visible: (releaseDescription().length > 0)"><span data-bind="html: releaseDescription"></span></p> 
       </div>

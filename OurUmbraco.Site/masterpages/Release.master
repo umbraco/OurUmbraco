@@ -15,9 +15,13 @@
     <div style="margin-top: 25px;">
       <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
     </div>
-    <h1>Umbraco <umbraco:Item field="pageName" runat="server" /> <small>Status: <umbraco:Item field="status" runat="server" /></small></h1>
 <h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
 <!-- ko foreach: versions -->
+<h1>
+    Umbraco v<%= Request["v"] %>        
+    <small data-bind="visible: !released()">Status: <span data-bind="text: inProgressRelease() === true ? 'In progress' : 'Planned'"></span></small>
+    <small data-bind="visible: released()">Status: Released</small>
+</h1>
 <div class="version" data-bind="css: { released: released() }, attr: { id: id }">
           <h3>
           <span data-bind="text: (released()?'100':percentComplete()) + '% Complete' "></span>
@@ -90,13 +94,14 @@
   <script type="text/javascript">
     var currentVersions= [];
     var inProgressVersions = [];
-    var futureVersions= [];
+    var futureVersions = [];
+    var patchReleases = [];
     $(function () {
 
       // Apply bindings
       ko.applyBindings(viewModel);
       // Load data
-      loadData('<umbraco:Item field="versionTag" runat="server" />');
+      loadData('<%= Request["v"] %>');
     
     });
 
