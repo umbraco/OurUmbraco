@@ -69,6 +69,7 @@ namespace our
                         { "Replies", currentTopic.Replies.ToString()},
                         { "Updated", currentTopic.Updated.ToString()},
                         { "UrlName", currentTopic.UrlName.ToString()},
+                        {"nodeTypeAlias","forumPost"},
                         { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                     }
                 });
@@ -109,6 +110,7 @@ namespace our
                         { "Replies", forumTopic.Replies.ToString()},
                         { "Updated", forumTopic.Updated.ToString()},
                         { "UrlName", forumTopic.UrlName.ToString()},
+                        {"nodeTypeAlias","forumPost"},
                         { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                     }
                 };
@@ -146,6 +148,7 @@ namespace our
                         { "Replies", forumTopic.Replies.ToString()},
                         { "Updated", forumTopic.Updated.ToString()},
                         { "UrlName", forumTopic.UrlName.ToString()},
+                        {"nodeTypeAlias","forumPost"},
                         { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                     }
                 };
