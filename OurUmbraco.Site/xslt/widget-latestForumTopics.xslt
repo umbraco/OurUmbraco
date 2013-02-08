@@ -30,7 +30,7 @@
 RE: <xsl:value-of select="umbraco.library:TruncateString(title, 40, '...')" /></a>
 </xsl:when>
 <xsl:otherwise>
-<a class="entry-content" href="{uForum:NiceTopicUrl(id)}">
+<a class="entry-content" href="http://our.umbraco.org/{uForum:NiceTopicUrl(id)}">
 <xsl:value-of select="umbraco.library:TruncateString(title, 40, '...')" /></a>
 </xsl:otherwise>
 </xsl:choose>

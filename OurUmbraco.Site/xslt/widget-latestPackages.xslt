@@ -23,7 +23,7 @@
 <xsl:for-each select="umbraco.library:GetXmlNodeById($source)/descendant::Project [projectLive = '1']">
 <xsl:sort select="@createDate" order="descending"/>
 <xsl:if test="position() &lt;= $maxitems">
-  <li><a href="{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
+  <li><a href="http://our.umbraco.org/{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
   <small>Version: <xsl:value-of select="version"/>,  by <xsl:value-of select="umbraco.library:GetMemberName(owner)"/> </small>
   </li>
 </xsl:if>

@@ -354,14 +354,13 @@ namespace uForum.Businesslogic
         }
 
         //Collections
-        public static List<Topic> Latest(int amount)
+        public static List<Topic> Latest(int amount = 10)
         {
             var topics = new List<Topic>();
 
             // 1057 is the profile node.  This is a hack way of hiding the forums from the latest list on the homepage added by PG
             var reader = Data.SqlHelper.ExecuteReader(
-                "SELECT TOP @amount forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC",
-                 Data.SqlHelper.CreateParameter("@amount", amount.ToString(CultureInfo.InvariantCulture)));
+                "SELECT TOP " + amount + " forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC");
 
             while (reader.Read())
             {
