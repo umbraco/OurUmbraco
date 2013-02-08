@@ -44,7 +44,19 @@ namespace uForum.Library {
             
             return Businesslogic.Data.GetDataSet(sql, "topic");
         }
-        
+
+        public static XPathNodeIterator CountTopicsWithParticipation(int memberId)
+        {
+
+            string sql = @"SELECT count(DISTINCT forumTopics.id)
+                            FROM [forumTopics]
+                            LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
+                            where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId;
+            
+            var x =  Businesslogic.Data.GetDataSet(sql, "yourTopicsCount");
+            return x;
+        }
+
         public static XPathNodeIterator TopicsWithAuthor(int memberId) {
             return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where memberid = " + memberId.ToString(), "topic");
         }
