@@ -21,7 +21,7 @@
     @if(Model.Parent.NodeTypeAlias != "Release"){
     <div class="box" id="topicsBox" style="display: none">
   <h4>Similiar topics</h4>
-  <small style="padding: 10px; display: block">Maybe your question has already been posted?</small>
+  <small style="padding: 10px; display: block">Maybe your question has already been posted?<br /><strong>Don't worry, the links below open in a new window, you won't loose your post.</strong></small>
 
   <span id="suggestedTopics">
   </span>
