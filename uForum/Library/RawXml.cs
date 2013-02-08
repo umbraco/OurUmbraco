@@ -30,11 +30,10 @@ namespace uForum.Library {
                             from forumTopics 
                             
                             where id IN(
-                            SELECT TOP " + pageSize + @" forumTopics.id
+                            SELECT forumTopics.id
                             FROM [forumTopics]
                             LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
                             where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId + @"
-                            ORDER By forumTopics.updated DESC
                             )
                         )
                         
@@ -42,24 +41,10 @@ namespace uForum.Library {
                         FROM	Topics
                         WHERE	RowNumber BETWEEN " + pageStart + " AND " + pageEnd + @"  
                         ORDER BY RowNumber ASC;";
-
-
-
-            /*
-            string SQL = @"SELECT * from forumTopics 
-                            where id IN(
-                            SELECT TOP 50 forumTopics.id
-                            FROM [forumTopics]
-                            LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
-                            where forumTopics.memberId = " + memberId.ToString() + " OR forumComments.memberId = " + memberId.ToString () + @"
-                            ORDER By forumTopics.updated DESC
-                            )
-                            ORDER by forumTopics.updated DESC";
-            */
-
+            
             return Businesslogic.Data.GetDataSet(sql, "topic");
         }
-
+        
         public static XPathNodeIterator TopicsWithAuthor(int memberId) {
             return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where memberid = " + memberId.ToString(), "topic");
         }
