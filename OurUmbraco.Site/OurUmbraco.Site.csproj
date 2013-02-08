@@ -363,6 +363,7 @@
     <Content Include="config\uVersion.backup.config" />
     <Content Include="config\uVersion.config" />
     <Content Include="config\xsltExtensions.config" />
+    <Content Include="css\search\documentation.gif" />
     <Content Include="ImageGen.ashx" />
     <Content Include="jqtouch\jqtouch.css" />
     <Content Include="jqtouch\jqtouch.js" />
@@ -524,7 +525,9 @@
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
     <Content Include="usercontrols\our.umbraco.org\SignupSimple.ascx" />
     <Content Include="Views\Web.config" />
-    <Content Include="web.config" />
+    <Content Include="web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\deli.currency.xml" />
@@ -3247,7 +3250,9 @@
     <Content Include="xslt\repository\breadcrumb.xslt" />
     <Content Include="xslt\repository\favs.xslt" />
     <Content Include="xslt\repository\Header_Login.xslt" />
-    <Content Include="xslt\RFC-TopicList.xslt" />
+    <Content Include="xslt\RFC-TopicList.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\Rss-ActiveTopics.xslt" />
     <Content Include="xslt\Rss-Forum.xslt" />
     <Content Include="xslt\Rss-Pages.xslt" />

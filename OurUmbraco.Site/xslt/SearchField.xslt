@@ -24,9 +24,9 @@
 
 	<xsl:variable name="q" select="umbraco.library:RequestQueryString('&queryParam;')"/>
 	<xsl:variable name="c" select="umbraco.library:RequestQueryString('&contentParam;')"/>
-
-	<xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects', '|')"/>
-	<xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project', '|')"/>
+  
+  <xsl:variable name="areas" select="umbraco.library:Split('Wiki|Forum|Projects|Documentation', '|')"/>
+  <xsl:variable name="areaAlias" select="umbraco.library:Split('wiki|forum|project|documentation', '|')"/>
 	
 	<xsl:variable name="communityNodeId" select="1052" />
 
@@ -44,13 +44,14 @@
 				<span id="sectionspan">
 					<label>All</label>
 				</span>
-				<div id="sections" class="clearfix">
+        <div id="sections" class="clearfix">
 					<label class="sectiontab">All</label>
 					<p>Search In</p>
-					<xsl:for-each select="$areas/value">
+          <xsl:for-each select="$areas/value">
+            
 						<xsl:variable name="index" select="position()"/>
 						<xsl:variable name="alias" select="$areaAlias/value[$index]"/>
-						<input type="checkbox" id="s_{.}" name="contentType" value="{$alias}">
+            <input type="checkbox" id="s_{.}" name="contentType" value="{$alias}">
 							<!-- If no area was specified and we're inside a specific area, select only that -->
 							<xsl:if test="$noSpecificArea and current() = $currentArea"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
 
