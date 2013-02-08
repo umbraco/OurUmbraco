@@ -19,7 +19,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="/css/img/our.favicon.png"/>
 
     <title><umbraco:Macro Alias="Title" runat="server"></umbraco:Macro></title>
-    <link rel="stylesheet" type="text/css" href="/css/community.css?v=9&update=yes" />
+    <link rel="stylesheet" type="text/css" href="/css/community.css?v=10&update=yes" />
     <link rel="stylesheet" type="text/css" href="/css/forum.css?v=3" />  
     <link rel="stylesheet" type="text/css" href="/css/wiki.css?v=5" />
     <link rel="stylesheet" type="text/css" href="/css/new-deli.css?v=4" />
@@ -33,7 +33,7 @@
     <link media="screen" type="text/css" rel="stylesheet" href="/css/new-projects-mbd.css?v=4" />
 
     <!--[if lt IE 9]>
-        <link rel="stylesheet" type="text/css" href="/css/new-projects-mbd-ie.css?v=2">
+        <link rel="stylesheet" type="text/css" href="/css/new-projects-mbd-ie.css?v=3">
     <![endif]-->
 
     <!-- MBD iPad CSS -->

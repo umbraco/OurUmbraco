@@ -53,7 +53,10 @@ namespace uSearch.Library
             searchQuery = "(" + searchQuery + ") AND +approved:1";
             var searchFilter = searchCriteria.RawQuery(searchQuery);
             IEnumerable<SearchResult> searchResults = searcher.Search(searchFilter).OrderByDescending(x => x.Score);
-            searchResults = from r in searchResults where r["__IndexType"] == "content" && r["nodeTypeAlias"] == "Project" orderby int.Parse(r["downloads"]) descending select r;
+            searchResults = from r in searchResults
+                            where r["__IndexType"] == "content" && r["nodeTypeAlias"] == "Project"
+                            select r;
+                            //orderby int.Parse(r["downloads"]) descending select r;
 
             JavaScriptSerializer serializer = new JavaScriptSerializer();
             return serializer.Serialize(searchResults);
