@@ -40,8 +40,9 @@
     uForum.ForumEditor("topicBody");  
 
     jQuery(document).ready(function(){    
-        window.setInterval('uForum.lookUp()', 10000);
-                            console.log("looking");
+                        window.setInterval(function() {
+                            uForum.lookUp();
+                        }, 10000);
 
         jQuery("form").submit( function(){    
             jQuery("#btCreateTopic").attr("disabled", "true");
