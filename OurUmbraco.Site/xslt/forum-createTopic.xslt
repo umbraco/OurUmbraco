@@ -41,7 +41,6 @@
 
                     jQuery(document).ready(function() {
                         window.setInterval(function() {
-                            console.log("looking");
                             uForum.lookUp();
                         }, 10000);
 
