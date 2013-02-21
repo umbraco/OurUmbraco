@@ -24,7 +24,8 @@
                     });
                 });
 
-                var html = $(converter.makeHtml(body.html()));
+                var decodedHtml = App.htmlDecode(body.html());
+                var html = $(converter.makeHtml(decodedHtml));
                 
                 // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
                 html.find("img").each(function () {
