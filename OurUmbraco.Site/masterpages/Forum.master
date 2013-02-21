@@ -2,14 +2,16 @@
 <script runat="server">
     protected override void OnInit(EventArgs e)
     {
+        umbraco.library.RegisterStyleSheetFile("Markdown.Styles", "/css/forum/pagedown.css");
+        umbraco.library.RegisterJavaScriptFile("Markdown.Converter", "/scripts/forum/Markdown.Converter.js");
+        umbraco.library.RegisterJavaScriptFile("Markdown.Sanitizer", "/scripts/forum/Markdown.Sanitizer.js");
+        
         if (umbraco.library.IsLoggedOn())
-        {
-            umbraco.library.RegisterStyleSheetFile("Markdown.Styles", "/css/forum/pagedown.css");
-            umbraco.library.RegisterJavaScriptFile("Markdown.Converter", "/scripts/forum/Markdown.Converter.js");
-            umbraco.library.RegisterJavaScriptFile("Markdown.Sanitizer", "/scripts/forum/Markdown.Sanitizer.js");
-            umbraco.library.RegisterJavaScriptFile("Markdown.Editor", "/scripts/forum/Markdown.Editor.js");
-            umbraco.library.RegisterJavaScriptFile("Markdown.App", "/scripts/forum/Markdown.App.js");
+        {                        
+            umbraco.library.RegisterJavaScriptFile("Markdown.Editor", "/scripts/forum/Markdown.Editor.js");            
         }
+
+        umbraco.library.RegisterJavaScriptFile("Markdown.App", "/scripts/forum/Markdown.App.js");
         
         base.OnInit(e);
     }
