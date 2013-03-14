@@ -30,7 +30,7 @@
 				<xsl:sort select="@nodeName" order="ascending"/>
 				<li>
 					<a href="http://our.umbraco.org{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
-					<small>Version: <xsl:value-of select="version"/>, by <xsl:value-of select="umbraco.library:GetMemberName(owner)"/></small>
+					<xsl:value-of select="concat('Version: ', version, ', by ', umbraco.library:GetMemberName(owner))"/>
 				</li>
 			</xsl:for-each>
 		</ul>
