@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml.XPath;
+using umbraco.NodeFactory;
 using umbraco.cms.businesslogic.member;
 using System.IO;
 using System.Drawing;
@@ -363,5 +364,34 @@ namespace our.Rest {
             //Member not authorised or memberID passed in is not valid
             return "false";
         }
+    }
+
+    [RestExtension("Data")]
+    public class Data
+    {
+        /// <summary>
+        /// Gets a member's Karma Points
+        /// </summary>
+        [RestExtensionMethod(returnXml = false)]
+        public static int GetMemberKarmaPoints(int memberID)
+        {
+            //Get the member
+            Member ourMember = new Member(memberID);
+
+            //Ensure member not null
+            if (ourMember != null)
+            {
+                //Get the karma points on the member
+                return int.Parse(ourMember.getProperty("reputationCurrent").Value.ToString());
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        //More API style methods to code...
+        //Would be nicer to use WebAPI
+
     }
 }
