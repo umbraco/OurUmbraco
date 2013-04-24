@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Web;
 using System.Xml;
 using uDocumentation.Busineslogic;
@@ -89,6 +90,10 @@ namespace uDocumentation
 
                         HttpContext.Current.Items["altTemplate"] = MarkdownLogic.AlternativeTemplate.ToLower();
                         HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey] = markdownPath;
+                        HttpContext.Current.Items["topicTitle"] = string.Join(" - ", HttpContext.Current.Request.RawUrl
+                            .Split(new[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries)
+                            .Skip(1)
+                            .Reverse());
 
                         HttpContext.Current.Trace.Write("Markdown Files Handler",
                                                         string.Format("Templated changed to: '{0}'",
