@@ -295,9 +295,6 @@
     <Reference Include="Umbraco.Web.UI">
       <HintPath>..\dependencies\4.9.1\Umbraco.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.webservices">
-      <HintPath>..\dependencies\4.9.1\umbraco.webservices.dll</HintPath>
-    </Reference>
     <Reference Include="umbraco.XmlSerializers">
       <HintPath>..\dependencies\4.9.1\umbraco.XmlSerializers.dll</HintPath>
     </Reference>
