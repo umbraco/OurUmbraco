@@ -44,7 +44,9 @@
                             uForum.lookUp();
                         }, 10000);
 
-                        jQuery("form").submit( function(){
+                        jQuery("form").submit( function(e) {
+                            e.preventDefault();
+                        
                             jQuery("#btCreateTopic").attr("disabled", "true");
                             jQuery("#topicForm").hide();
                             jQuery(".success").show();
@@ -52,15 +54,13 @@
                             var topicId = '<xsl:value-of select="$id"/>';
                             var forumId = <xsl:value-of select="$currentPage/@id"/>;
                             var title = jQuery("#title").val();
-                            var body = $("#wmd-input").val();
+                            var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
 
                             if(topicId != "") {
                                 uForum.EditTopic(topicId, title, body );
                             } else {
                                 uForum.NewTopic(forumId, title, body );
                             }
-
-                            return false;
                         });
 
                     });
@@ -88,8 +88,7 @@
                             <div id="wmd-preview" class="wmd-panel wmd-preview topic"></div>
                             <script type="text/javascript">
                                 (function () {
-                                    var editor = Markdown.App.getEditor();
-                                    editor.run();
+                                    Markdown.App.getEditor().run();                                    
                                 })();
                             </script>
                         </div>

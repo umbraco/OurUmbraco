@@ -10,8 +10,8 @@ namespace our.custom_Handlers {
             uForum.Businesslogic.Topic.BeforeCreate += new EventHandler<uForum.Businesslogic.CreateEventArgs>(Topic_BeforeCreate);
             uForum.Businesslogic.Topic.BeforeUpdate += new EventHandler<uForum.Businesslogic.UpdateEventArgs>(Topic_BeforeUpdate);
 
-            uForum.Businesslogic.Comment.BeforeCreate += new EventHandler<uForum.Businesslogic.CreateEventArgs>(Comment_BeforeCreate);
-            uForum.Businesslogic.Comment.BeforeUpdate += new EventHandler<uForum.Businesslogic.UpdateEventArgs>(Comment_BeforeUpdate);
+            //uForum.Businesslogic.Comment.BeforeCreate += new EventHandler<uForum.Businesslogic.CreateEventArgs>(Comment_BeforeCreate);
+            //uForum.Businesslogic.Comment.BeforeUpdate += new EventHandler<uForum.Businesslogic.UpdateEventArgs>(Comment_BeforeUpdate);
 
             uWiki.Businesslogic.WikiPage.BeforeCreate += new EventHandler<uWiki.Businesslogic.CreateEventArgs>(WikiPage_BeforeCreate);
             uWiki.Businesslogic.WikiPage.BeforeUpdate += new EventHandler<uWiki.Businesslogic.UpdateEventArgs>(WikiPage_BeforeUpdate);
@@ -42,7 +42,7 @@ namespace our.custom_Handlers {
         }
 
         private void SanitizeTopic(uForum.Businesslogic.Topic t) {
-            t.Body = our.Utills.Sanitize(t.Body);
+            //t.Body = our.Utills.Sanitize(t.Body);
             t.Title = our.Utills.Sanitize(t.Title);
         }
 

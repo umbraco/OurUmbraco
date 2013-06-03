@@ -120,7 +120,7 @@
       <HintPath>..\dependencies\Our\MarkdownDeep.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownSharp">
-      <HintPath>..\dependencies\Our\MarkdownSharp.dll</HintPath>
+      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace">
       <HintPath>..\dependencies\Marketplace.dll</HintPath>
