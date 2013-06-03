@@ -6,8 +6,9 @@
     var imageInserted = false;
     var imageInserting = false;
     var imageLink;
-    
+
     window.onbeforeunload = function () {
+        // The Markdown callback expects a single parameter: the path to the image as a string.
         // PageDown creates an overlay when opening the insert image popup. To remove that overlay, we need to trigger the PageDown callback even when just closing the popup. onbeforeunload seems to be the answer.
         if (imageInserted) {
             window.opener.forumInsertImageCallback(imageLink);
@@ -15,18 +16,18 @@
             window.opener.forumInsertImageCallback(null);
         }
     };
-    
+
     jQuery(document).ready(function () {
-        
-        jQuery("#insert").click(function() {
+
+        jQuery("#insert").click(function () {
             InsertImage();
         });
 
-        jQuery("#cancel").click(function() {
+        jQuery("#cancel").click(function () {
             CloseDialog();
         });
 
-        jQuery("#<%= btnUpload.ClientID %>").click(function() {
+        jQuery("#<%= btnUpload.ClientID %>").click(function () {
             imageInserting = true;
         });
 
@@ -37,7 +38,7 @@
             jQuery("#insert").attr("disabled", "disabled");
 
         }
-        $("#<%= tb_url.ClientID %>").blur(function() {
+        $("#<%= tb_url.ClientID %>").blur(function () {
             if (jQuery("#<%= tb_url.ClientID %>").val().length > 0) {
                 if (ValidExtension()) {
                     ShowImage();
@@ -53,7 +54,7 @@
 
     function ValidExtension() {
         var ext = jQuery('#<%= tb_url.ClientID %>').val().split('.').pop().toLowerCase();
-        var allow = new Array('gif', 'png', 'jpg', 'jpeg', 'bmp','tif','tiff');
+        var allow = new Array('gif', 'png', 'jpg', 'jpeg', 'bmp', 'tif', 'tiff');
         if (jQuery.inArray(ext, allow) == -1) {
             return false;
         }
@@ -78,12 +79,13 @@
     }
 
     function InsertImage() {
-        imageLink = jQuery('#<%= tb_url.ClientID %>').val();        
+        // When we insert a image, we basically just close the dialog and let the unbeforeunload function do the rest of the work.
+        imageLink = jQuery('#<%= tb_url.ClientID %>').val();
         imageInserted = true;
         CloseDialog();
     }
-    function CloseDialog() {        
-        tinyMCEPopup.close(); 
+    function CloseDialog() {
+        tinyMCEPopup.close();
     }
 </script>
 

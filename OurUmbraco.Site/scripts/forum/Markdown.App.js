@@ -8,39 +8,21 @@ Markdown.App = (function ($) {
             }
         };
 
-    return {
-        htmlEncode: function (value) {
-            return $('<div/>').text(value).html();
-        },
-        htmlDecode: function (value) {
-            return $('<div/>').html(value).text();
-        },
-        getConverter: function () {
+    return {        
+        getConverter: function () {            
             if (!converter) {
                 converter = Markdown.getSanitizingConverter();
                 
-                converter.hooks.chain("preConversion", function (text) {
-                    // For (old) html content, we need to make sure that Markdown doesn't parse code blocks as html
-                    text = text.replace(/<pre([\s\S]*?)<\/pre>/gim, function (match, p1) {
-                        var subtext = p1.substring(1).replace(/</gim, "&lt;");
-                        return "<pre>" + subtext + "</pre>";
-                    });
-                    
-                    return text;
-                });
-
-                converter.hooks.chain("postConversion", function (html) {                    
+                // Stuff to do after the conversion from markdown to html as used in the preview window
+                // See Plugin hooks here: https://code.google.com/p/pagedown/wiki/PageDown
+                converter.hooks.chain("postConversion", function (html) {
+                    // Just wrapping the incoming html in jQuery won't work, not sure why tbh...
                     html = $("<div>" + html + "</div>");
-                    var pres = html.find("pre").addClass("prettyprint");
-                    
-                    pres.each(function() {
-                        var pre = $(this);
-                        if (pre.children("code").length === 0) {
-                            pre.wrapInner("<code/>");
-                        }
-                    });
+                    var pres = html.find("pre").addClass("prettyprint"); // Find all pre-tags and mark them for prettyprint
 
                     if (pres.length > 0) {
+                        // For whatever reason, we need a small delay before re-applying prettyprint. 
+                        // We should probably throttle this, unless prettyprint has throttling build in.
                         setTimeout(function () {
                             prettyPrint();
                         }, 1000);
@@ -55,11 +37,11 @@ Markdown.App = (function ($) {
         getEditor: function () {
             if (!editor) {
                 editor = new Markdown.Editor(this.getConverter(), "", editorOptions);
-
+                
                 editor.hooks.set("insertImageDialog", function (callback) {
-                    window.forumInsertImageCallback = callback;
-                    window.open("/insertimage", "Insert image", "width=550,height=360");
-                    return true; // tell the editor that we'll take care of getting the image url
+                    window.forumInsertImageCallback = callback; // We need a global place to get to the markdown callback from the tinymce insert image window
+                    window.open("/insertimage", "Insert image", "width=550,height=360"); // Open and reuse the tinymce insert image window
+                    return true; // tell the editor that we'll take care of getting the image url ourselves (through tinymce)
                 });
             }
 

@@ -7,28 +7,11 @@
     <umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
     <script type="text/javascript">
         (function () {
-            var converter = Markdown.App.getConverter();
-            
             $("#forum").find(".commentsList").find(".body").each(function () {
                 var body = $(this);
                 
-                // Remove unallowed attributes from img tags or Markdown will strip them (only relevant for old pre-Markdown comments)
-                body.find("img").each(function () {
-                    var img = this;
-                    
-                    $.each(img.attributes, function () {
-                        var attr = this;
-                        if (attr.specified && !attr.name.match(/^(src|width|height|title|alt)$/i)) {
-                            $(img).removeAttr(attr.name);
-                        }
-                    });
-                });
-
-                var decodedHtml = App.htmlDecode(body.html());
-                var html = $(converter.makeHtml(decodedHtml));
-                
                 // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
-                html.find("img").each(function () {
+                body.find("img").each(function () {
                     var img = $(this);                    
                     var src = img.attr("src");
                     var orgSrc = src.replace("rs/", "");
@@ -41,8 +24,6 @@
                         img.wrap(a);
                     }
                 });
-
-                body.html(html);
             });
         })();
     </script>

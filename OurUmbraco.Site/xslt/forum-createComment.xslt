@@ -36,9 +36,11 @@
                             uForum.ForumEditor("commentBody");
 
                             jQuery(document).ready(function(){
-                                jQuery("form").submit( function(){
+                                jQuery("form").submit( function(e) {
+                                    e.preventDefault();
+                                    
                                     var topicId = '<xsl:value-of select="$topicID" />';                            
-                                    var body = $("#wmd-input").val();
+                                    var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
                                     var comment = '<xsl:value-of select="$commentID" />';
                                     var url = "";
 
@@ -50,8 +52,6 @@
 
                                     jQuery("#commentSuccess").show();
                                     jQuery("#topicForm").hide();
-
-                                    return false;
                                 });
                             });
                         </script>

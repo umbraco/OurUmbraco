@@ -5,6 +5,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using umbraco;
+using MarkdownSharp;
 using umbraco.cms.businesslogic.member;
 
 namespace uForum.Library {
@@ -295,6 +296,9 @@ namespace uForum.Library {
         }
 
         public static string Sanitize(string html) {
+            // Run it through Markdown first
+            var md = new Markdown();
+            html = md.Transform(html);
             return Utills.Sanitize(html);
         }
     
