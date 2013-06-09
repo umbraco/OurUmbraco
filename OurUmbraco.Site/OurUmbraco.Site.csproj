@@ -89,6 +89,12 @@
     <Reference Include="FergusonMoriyama.UmbracoPackages.Tree">
       <HintPath>..\dependencies\Our\FergusonMoriyama.UmbracoPackages.Tree.dll</HintPath>
     </Reference>
+    <Reference Include="Fizzler">
+      <HintPath>..\dependencies\Contour\Fizzler.dll</HintPath>
+    </Reference>
+    <Reference Include="Fizzler.Systems.HtmlAgilityPack">
+      <HintPath>..\dependencies\Contour\Fizzler.Systems.HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\HtmlAgilityPack.dll</HintPath>
@@ -269,6 +275,21 @@
     <Reference Include="umbraco.editorControls, Version=1.0.4731.28397, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\umbraco.editorControls.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Forms.CodeFirst">
+      <HintPath>..\dependencies\Contour\Umbraco.Forms.CodeFirst.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Forms.Core">
+      <HintPath>..\dependencies\Contour\Umbraco.Forms.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Forms.Core.Providers">
+      <HintPath>..\dependencies\Contour\Umbraco.Forms.Core.Providers.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Forms.Mvc">
+      <HintPath>..\dependencies\Contour\Umbraco.Forms.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="Umbraco.Forms.UI">
+      <HintPath>..\dependencies\Contour\Umbraco.Forms.UI.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.MacroEngines">
       <HintPath>..\dependencies\4.9.1\umbraco.MacroEngines.dll</HintPath>
