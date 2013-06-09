@@ -344,9 +344,11 @@ namespace uForum.Library {
         private static readonly string imgLink = "<img src=\"{0}{1}\" border=\"0\" alt=\"\" />";
         private static readonly Regex Base64ImageRegex = new Regex("(<img src=\"data:image(.*?)/>)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
         private static readonly Regex imageTagFinderRegex = new Regex("(<img(.*?)/>)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
-       
 
-        
+        public static void TopicNotFound(int topicId)
+        {
+            HttpContext.Current.Response.RedirectPermanent(string.Concat("/?topicNotFound=", topicId));
+        }
 
         public static string ResolveLinks(string body)
         {
