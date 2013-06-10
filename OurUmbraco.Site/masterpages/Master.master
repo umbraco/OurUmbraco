@@ -29,13 +29,6 @@
     <link rel="stylesheet" type="text/css" href="/css/notifications.css?v=4&u=yes" />
 
 
-    <!-- New MBD Styles -->
-    <link media="screen" type="text/css" rel="stylesheet" href="/css/new-projects-mbd.css?v=4" />
-
-    <!--[if lt IE 9]>
-        <link rel="stylesheet" type="text/css" href="/css/new-projects-mbd-ie.css?v=3">
-    <![endif]-->
-
     <!-- MBD iPad CSS -->
     <link rel="stylesheet" type="text/css" href="/css/mbd.forum.iPad.css?v=4" media="screen and (min-device-width: 768px) and (max-device-width: 1024px)"/>
 
@@ -104,9 +97,9 @@
    
     <umbraco:Item field="mainNotification" insertTextBefore="&lt;div id=&quot;alertBar&quot;&gt;" insertTextAfter="&lt;/div&gt;" recursive="true" runat="server"></umbraco:Item>
     
-
-    <div id="contentArea">  
-    <asp:ContentPlaceHolder Id="SpecialContent" runat="server"/>
+        <div id="contentAreaWrapper">
+                <div id="contentArea">  
+                <asp:ContentPlaceHolder Id="SpecialContent" runat="server"/>
 
     <asp:ContentPlaceHolder Id="Main" runat="server">    
     <div id="body" class="subpage wrapper">
@@ -122,6 +115,7 @@
     </asp:ContentPlaceHolder>
     
     </div>
+        </div>
 
       <div class="push"></div>
     
