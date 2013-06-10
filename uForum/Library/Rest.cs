@@ -40,7 +40,7 @@ namespace uForum.Library
                 var tags = HttpContext.Current.Request["tags"];
                 topic.Body = body;
                 topic.Title = title;
-                topic.Tags = tags;
+                //topic.Tags = tags;
                 topic.Save(false);
 
                 return Xslt.NiceTopicUrl(topic.Id);
@@ -67,7 +67,7 @@ namespace uForum.Library
                 var body = HttpContext.Current.Request["body"];
                 var tags = HttpContext.Current.Request["tags"];
 
-                var topic = Businesslogic.Topic.Create(forumId, title, body, currentMember,tags);
+                var topic = Businesslogic.Topic.Create(forumId, title, body, currentMember);
 
                 return Xslt.NiceTopicUrl(topic.Id);
             }
