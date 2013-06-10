@@ -15,7 +15,8 @@
 <xsl:variable name="body" select="umbraco.library:Request('commentBody')"/>
 <xsl:variable name="topicID" select="number(umbraco.library:ContextKey('topicID'))"/>
 <xsl:variable name="commentID" select="umbraco.library:RequestQueryString('id')"/>
-
+<xsl:variable name="tags" select="umbraco.library:Request('tags')"/>
+  
 <xsl:variable name="maxitems">10</xsl:variable>
 
 <xsl:variable name="_body">
@@ -38,7 +39,7 @@
 
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce_update/tiny_mce_src.js')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=6')"/>
-    
+
   <script type="text/javascript">
 
    uForum.ForumEditor("commentBody");
@@ -46,13 +47,13 @@
   jQuery(document).ready(function(){
 
        jQuery("form").submit( function(){
-      var topicId = '<xsl:value-of select="$topicID" />';
-      var body = tinyMCE.get('commentBody').getContent();
-      var comment = '<xsl:value-of select="$commentID" />';
+    var topicId = '<xsl:value-of select="$topicID" />';
+    var body = tinyMCE.get('commentBody').getContent();
+    var comment = '<xsl:value-of select="$commentID" />';
+    
+    var url = "";
 
-      var url = "";
-
-      if(comment != ''){      
+    if(comment != ''){
           url = uForum.EditComment(comment , <xsl:value-of select="$maxitems" />,  body);
       }else{
           url = uForum.NewComment(topicId, <xsl:value-of select="$maxitems" />,  body);
@@ -72,6 +73,7 @@
   <p>
   <textarea style="width: 100%; height: 300px" id="commentBody"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
   </p>
+
   </fieldset>
   
   <div class="buttons">
