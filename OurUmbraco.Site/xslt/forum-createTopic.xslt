@@ -72,7 +72,7 @@
           var forumId = <xsl:value-of select="$currentPage/@id"/>;
           var title = jQuery("#title").val();
           var body = tinyMCE.get('topicBody').getContent();
-          var tags = getTags();
+          var tags = getTags(); //json string of tags with weight and actual tag
           if(topicId !== "") {
             uForum.EditTopic(topicId, title, body,tags);
           } 
@@ -120,15 +120,9 @@
   <textarea style="width: 680px; height: 300px" id="topicBody"><xsl:value-of disable-output-escaping="yes" select="$_body"/></textarea>
   </p>
     <p>Tags</p>
-    <div id="tag-container">
-      <select multiple="" name="tags" id="tags" style="width: 300px">
-        <option value="1" selected="selected">Test 1</option>
-        <option value="2">Test 2</option>
-        <option value="3" selected="selected">Test 3</option>
-      </select>
-     
-    </div>
-    <div id="slider"></div>
+  <div id="tag-container">
+      <ul name="tags" id="tags" style="width: 300px"></ul>
+  </div>
   <div class="buttons">
   <input type="submit" value="submit" id="btCreateTopic"/>
 
