@@ -64,7 +64,7 @@ namespace uForum.Library {
         }
 
         public static string NiceTopicUrl(int topicId) {
-            Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicId);
+            Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
             if (t.Exists) {
                 string _url = umbraco.library.NiceUrl(t.ParentId);
@@ -152,7 +152,7 @@ namespace uForum.Library {
 
         public static XPathNodeIterator TopicPager(int topicId, int itemsPerPage, int currentPage) {
             XmlDocument xd = new XmlDocument();
-            Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicId);
+            Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
             XmlNode pages = umbraco.xmlHelper.addTextNode(xd, "pages", "");
 
@@ -248,7 +248,7 @@ namespace uForum.Library {
 
         public static XPathNodeIterator Topic(int topicID) {
             XmlDocument xd = new XmlDocument();
-            Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicID);
+            Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicID);
 
             if (t.Exists)
                 xd.AppendChild(t.ToXml(xd));
@@ -267,12 +267,12 @@ namespace uForum.Library {
         public static XPathNodeIterator TopicComments(int topicID) {
             
             XmlDocument xd = new XmlDocument();
-            Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicID);
+            Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicID);
 
             if (t.Exists) {
                 XmlNode comments = umbraco.xmlHelper.addTextNode(xd, "comments", "");
 
-                foreach (Businesslogic.Comment cc in t.Comments()) {
+                foreach (Businesslogic.Comment cc in t.Comments) {
                     comments.AppendChild( cc.ToXml(xd) );
                 }
 

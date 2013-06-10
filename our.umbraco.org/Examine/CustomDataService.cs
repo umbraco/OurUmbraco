@@ -39,7 +39,7 @@ namespace our
             {   
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in currentTopic.Comments())
+                foreach (Comment currentComment in currentTopic.Comments)
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }
@@ -88,7 +88,7 @@ namespace our
 
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in forumTopic.Comments())
+                foreach (Comment currentComment in forumTopic.Comments)
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }
@@ -122,11 +122,11 @@ namespace our
             lock (m_Locker)
             {
                 //JobDetailItem jobDetails = new JobDetailItem();
-                Topic forumTopic = new Topic(id);
+                Topic forumTopic = Topic.GetTopic(id);
 
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in forumTopic.Comments())
+                foreach (Comment currentComment in forumTopic.Comments)
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }

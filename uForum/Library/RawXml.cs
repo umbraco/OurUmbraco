@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Xml;
 using System.Xml.XPath;
 
 namespace uForum.Library {
@@ -66,8 +67,12 @@ namespace uForum.Library {
             return Businesslogic.Data.GetDataSet("SELECT * FROM forumComments where id = " + commentId.ToString(), "comment");
         }
 
-        public static XPathNodeIterator Topic(int topicId) {
-            return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where id = " + topicId.ToString(), "topic");
+        public static XPathNodeIterator Topic(int topicId)
+        {
+            var topic = uForum.Businesslogic.Topic.GetTopic(topicId);
+            var topicXml = topic.ToXml(new XmlDocument());
+            return topicXml.CreateNavigator().Select(".");
+//            return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where id = " + topicId.ToString(), "topic");
         }
 
         public static XPathNodeIterator Forum(int forumId) {

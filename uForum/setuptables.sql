@@ -225,3 +225,14 @@ REFERENCES [dbo].[umbracoNode] ([id])
 GO
 ALTER TABLE [dbo].[umbracoNode] CHECK CONSTRAINT [FK_umbracoNode_umbracoNode]
 GO
+CREATE TABLE [dbo].[cmsTagToTopic](
+	[id] [int] IDENTITY(1,1) NOT NULL,
+	[tagId] [int] NOT NULL,
+	[topicId] [int] NOT NULL,
+	[weight] [float] NOT NULL,
+ CONSTRAINT [PK_cmsTagToTopic] PRIMARY KEY CLUSTERED 
+(
+	[id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO

@@ -50,7 +50,7 @@ namespace NotificationsWeb.Pages
                         int topicId = dr.GetInt32(0);
                         int memberId = dr.GetInt32(1);
 
-                        Topic t = new Topic(topicId);
+                        Topic t = Topic.GetTopic(topicId);
 
 
                         not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "MarkAsSolutionReminderSingle", topicId, memberId, NiceTopicUrl(t));

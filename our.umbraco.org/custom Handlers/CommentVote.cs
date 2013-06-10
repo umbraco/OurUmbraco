@@ -43,7 +43,7 @@ namespace our.custom_Handlers {
                     e.ReceiverId = c.MemberId;
                 }
             } else if (a.Alias == "TopicSolved") {
-                Topic t = new Topic(new Comment(e.ItemId).TopicId);
+                Topic t = Topic.GetTopic(new Comment(e.ItemId).TopicId);
                 bool hasAnswer = (our.Data.SqlHelper.ExecuteScalar<int>("SELECT answer FROM forumTopics where id = @id", Data.SqlHelper.CreateParameter("@id", t.Id)) > 0);
 
                 e.Cancel = hasAnswer;

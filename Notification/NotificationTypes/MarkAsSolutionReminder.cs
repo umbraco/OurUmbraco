@@ -54,7 +54,7 @@ namespace NotificationsCore.NotificationTypes
                 int topicId = dr.GetInt32(0);
 
 
-                uForum.Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicId);
+                uForum.Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
                 string mbody = string.Format(body,
                         t.Title,

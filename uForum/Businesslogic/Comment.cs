@@ -5,15 +5,29 @@ using System.Xml;
 using System.ComponentModel;
 
 namespace uForum.Businesslogic {
-    public class Comment {
 
+    [PetaPoco.TableName("forumComments")]
+    [PetaPoco.PrimaryKey("id")]
+    [PetaPoco.ExplicitColumns]
+    public class Comment
+    {
+
+        [PetaPoco.Column("id")]
         public int Id { get; set; }
+        [PetaPoco.Column("topicId")]
         public int TopicId { get; set; }
+        [PetaPoco.Column("memberId")]
         public int MemberId { get; set; }
+        [PetaPoco.Column("position")]
         public int Position { get; set; }
 
+        [PetaPoco.Column("body")]
         public string Body { get; set; }
+        [PetaPoco.Column("created")]
         public DateTime Created { get; set; }
+        [PetaPoco.Column("score")]
+        public int Score { get; set; }
+
         public bool Exists { get; set; }
 
         private Events _e = new Events();
@@ -37,7 +51,7 @@ namespace uForum.Businesslogic {
                         Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumComments WHERE memberId = @memberId",
                             Data.SqlHelper.CreateParameter("@memberId", MemberId));
 
-                        Topic t = new Topic(TopicId);
+                        Topic t = Topic.GetTopic(TopicId);
                         if (t.Exists) {
                             t.Save();
                         }
@@ -118,7 +132,7 @@ namespace uForum.Businesslogic {
             DeleteEventArgs e = new DeleteEventArgs();
             FireBeforeDelete(e);
             if (!e.Cancel) {
-                Topic t = new Topic(this.TopicId);
+                Topic t = Topic.GetTopic(this.TopicId);
                 Forum f = new Forum(t.ParentId);
 
                 Data.SqlHelper.ExecuteNonQuery("DELETE FROM forumComments WHERE id = " + Id.ToString());
@@ -140,7 +154,7 @@ namespace uForum.Businesslogic {
             c.Body = body;
             c.MemberId = memberId;
             c.Created = DateTime.Now;
-            c.Position = (new Topic(topicId).Replies) + 1;
+            c.Position = (Topic.GetTopic(topicId).Replies) + 1;
             c.Exists = true;
             c.Save();
 

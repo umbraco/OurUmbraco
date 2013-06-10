@@ -29,7 +29,7 @@ namespace our.custom_Handlers {
                     Comment c = new Comment(e.ItemId);
                     
                     if (c != null) {
-                        Topic t = new Topic(c.TopicId);
+                        Topic t = Topic.GetTopic(c.TopicId);
 
                         int answer = our.Data.SqlHelper.ExecuteScalar<int>("SELECT answer FROM forumTopics where id = @id", Data.SqlHelper.CreateParameter("@id", t.Id));
 
@@ -69,7 +69,7 @@ namespace our.custom_Handlers {
                 uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
                 if (a.Alias == "LikeTopic" || a.Alias == "DisLikeTopic") {
-                    Topic t = new Topic(e.ItemId);
+                    Topic t = Topic.GetTopic(e.ItemId);
                     e.ReceiverId = t.MemberId;
                  }
         }

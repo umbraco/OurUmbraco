@@ -31,7 +31,7 @@ namespace uForum.Library
         public static string EditTopic(int topicId)
         {
             var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
-            var topic = new Businesslogic.Topic(topicId);
+            var topic = Businesslogic.Topic.GetTopic(topicId);
 
             if (topic.Editable(currentMember))
             {
@@ -111,7 +111,7 @@ namespace uForum.Library
 
             if (Xslt.IsMemberInGroup("admin", currentMember))
             {
-                var topic = new Businesslogic.Topic(topicId);
+                var topic = Businesslogic.Topic.GetTopic(topicId);
                 topic.Delete();
 
                 return "true";
@@ -126,7 +126,7 @@ namespace uForum.Library
 
             if (Xslt.IsMemberInGroup("admin", currentMember))
             {
-                var topic = new Businesslogic.Topic(topicId);
+                var topic = Businesslogic.Topic.GetTopic(topicId);
                 topic.Move(newForumId);
 
                 return Xslt.NiceTopicUrl(topic.Id);

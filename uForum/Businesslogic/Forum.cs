@@ -36,7 +36,7 @@ namespace uForum.Businesslogic {
         public Topic LatestTopic {
             get {
                 if (_latestTopicID > 0)
-                    return new Topic(_latestTopicID);
+                    return Topic.GetTopic(_latestTopicID);
                 else
                     return null;
             }

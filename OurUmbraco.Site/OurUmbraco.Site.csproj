@@ -151,6 +151,7 @@
       <HintPath>..\dependencies\4.9.1\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Microsoft.Web.Helpers">
       <HintPath>..\packages\microsoft-web-helpers.1.0\lib\Microsoft.Web.Helpers.dll</HintPath>
     </Reference>
@@ -3290,6 +3291,7 @@
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
+    <Fakes Include="Fakes\our.mapR.fakes" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

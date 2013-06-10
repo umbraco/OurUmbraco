@@ -34,7 +34,7 @@ namespace NotificationsCore.NotificationTypes
                 int topicId = int.Parse(args[0].ToString());
                 int memberId = int.Parse(args[1].ToString());
 
-                uForum.Businesslogic.Topic t = new uForum.Businesslogic.Topic(topicId);
+                uForum.Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
 
                 Member m = new Member(memberId);

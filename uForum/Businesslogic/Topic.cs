@@ -1,28 +1,74 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Xml;
+using PetaPoco;
 
 namespace uForum.Businesslogic
 {
+    [PetaPoco.TableName("forumTopics")]
+    [PetaPoco.PrimaryKey("id")]
+    [PetaPoco.ExplicitColumns]
     public class Topic
     {
-
+        [PetaPoco.Column("id")]
         public int Id { get; private set; }
+        [PetaPoco.Column("parentId")]
         public int ParentId { get; private set; }
+        [PetaPoco.Column("memberId")]
         public int MemberId { get; private set; }
+        [PetaPoco.Column("answer")]
+        public int Answer { get; set; }
 
+        [PetaPoco.Column("title")]
         public string Title { get; set; }
+        [PetaPoco.Column("urlName")]
         public string UrlName { get; set; }
+        [PetaPoco.Column("body")]
         public string Body { get; set; }
+        [PetaPoco.Column("created")]
         public DateTime Created { get; private set; }
+        [PetaPoco.Column("updated")]
         public DateTime Updated { get; private set; }
 
+        private List<Tag> _tags;
+        public List<Tag> Tags
+        {
+            get
+            {
+                if (_tags == null)
+                {
+                    _tags = Tag.TagsByTopic(Id);
+
+                }
+                return _tags;
+            }
+            set { _tags = value; }
+        }
+        private List<Comment> _comments;
+        public List<Comment> Comments
+        {
+            get
+            {
+                loadComments();
+                return _comments;
+            }
+            set { _comments = value; }
+        }
+
+        [PetaPoco.Column("latestReplyAuthor")]
         public int LatestReplyAuthor { get; private set; }
+
+        [PetaPoco.Column("latestComment")]
         public int LatestComment { get; private set; }
 
+        [PetaPoco.Column("replies")]
         public int Replies { get; private set; }
+        [PetaPoco.Column("score")]
+        public int Score { get; set; }
 
+        [PetaPoco.Column("locked")]
         public bool Locked { get; set; }
         private readonly Events _events = new Events();
 
@@ -139,6 +185,9 @@ namespace uForum.Businesslogic
                             forum.Save();
                         }
 
+                        // save tags
+                        Tag.AddTagsToTopic(Id, Tags);
+
                         FireAfterCreate(createEventArgs);
                     }
                 }
@@ -175,6 +224,9 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@replies", totalComments)
                     );
 
+                    // save tags
+                    Tag.AddTagsToTopic(Id, Tags);
+
                     UpdateCommentsPosition();
 
                     FireAfterUpdate(updateEventArgs);
@@ -197,35 +249,20 @@ namespace uForum.Businesslogic
 
         }
 
-        public List<Comment> Comments()
+        private void loadComments()
         {
-            var comments = new List<Comment>();
-
-            try
+            if (_comments == null)
             {
-                using (var dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE topicId = @topicId", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture))))
-                {
-                    while (dr.Read())
-                    {
-                        var comment = new Comment
-                                          {
-                                              Id = dr.GetInt("id"),
-                                              TopicId = dr.GetInt("topicId"),
-                                              MemberId = dr.GetInt("memberId"),
-                                              Body = dr.GetString("body"),
-                                              Created = dr.GetDateTime("created")
-                                          };
-
-                        comments.Add(comment);
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, ex.ToString());
+                _comments = new List<Comment>();
             }
 
-            return comments;
+            var db = new Database("umbracoDbDSN");
+            foreach (var comment in db.Query<Comment>("Select * from forumComments where topicId = @0", Id))
+            {
+                _comments.Add(comment);
+            }
+
+
         }
 
         public XmlNode ToXml(XmlDocument xmlDocument)
@@ -236,6 +273,18 @@ namespace uForum.Businesslogic
             topicXml.AppendChild(umbraco.xmlHelper.addCDataNode(xmlDocument, "body", Body));
 
             topicXml.AppendChild(umbraco.xmlHelper.addTextNode(xmlDocument, "urlname", UrlName));
+
+            // tags
+            XmlNode tags = umbraco.xmlHelper.addTextNode(xmlDocument, "tags", "");
+            foreach (var tag in Tags)
+            {
+                var tagNode = umbraco.xmlHelper.addTextNode(xmlDocument, "tag", tag.Name);
+                tagNode.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "id", tag.Id.ToString()));
+                tagNode.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "weight", tag.Weight.ToString()));
+                tags.AppendChild(tagNode);
+                tags.AppendChild(tagNode);
+            }
+            topicXml.AppendChild(tags);
 
             if (topicXml.Attributes != null)
             {
@@ -250,6 +299,9 @@ namespace uForum.Businesslogic
 
                 topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "locked", Locked.ToString()));
                 topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "replies", Replies.ToString(CultureInfo.InvariantCulture)));
+
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "answer", Answer.ToString()));
+                topicXml.Attributes.Append(umbraco.xmlHelper.addAttribute(xmlDocument, "score", Score.ToString()));
             }
 
             return topicXml;
@@ -273,6 +325,14 @@ namespace uForum.Businesslogic
 
         public Topic() { }
 
+        public static Topic GetTopic(int topicId)
+        {
+            var db = new Database("umbracoDbDSN");
+            var topic = db.SingleOrDefault<Topic>("SELECT * FROM forumTopics WHERE id = @0", topicId);
+            return topic;
+        }
+
+        [Obsolete("Use GetTopic instead", true)]
         public Topic(int topicId)
         {
             var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE id = @id", Data.SqlHelper.CreateParameter("@id", topicId.ToString(CultureInfo.InvariantCulture)));
@@ -281,6 +341,8 @@ namespace uForum.Businesslogic
             {
 
                 Id = reader.GetInt("id");
+                Answer = reader.GetInt("answer");
+                Score = reader.GetInt("score");
                 ParentId = reader.GetInt("parentId");
                 MemberId = reader.GetInt("memberId");
                 Replies = reader.GetInt("replies");
@@ -297,6 +359,9 @@ namespace uForum.Businesslogic
 
             reader.Close();
             reader.Dispose();
+
+            // load tags
+            Tags = Tag.TagsByTopic(topicId);
         }
 
         public static Topic GetFromReader(umbraco.DataLayer.IRecordsReader reader)
