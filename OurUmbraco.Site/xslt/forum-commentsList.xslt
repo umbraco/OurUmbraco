@@ -89,7 +89,7 @@
 
 
 <div class="body" style="clear: both">
-  <xsl:value-of select="uForum:Sanitize(uForum:ResolveLinks( uForum:CleanBBCode( $topic/body ) ) )" disable-output-escaping="yes"/>
+    <xsl:value-of select="uForum:Sanitize($topic/body)" disable-output-escaping="yes"/>
 </div>
 
 </div>
@@ -251,7 +251,7 @@
 </xsl:if>
 
 <div class="body"  style="clear: both">
-<xsl:value-of select="uForum:Sanitize( uForum:ResolveLinks( uForum:CleanBBCode( $comment/body ) ) )" disable-output-escaping="yes"/>
+    <xsl:value-of select="uForum:Sanitize($comment/body)" disable-output-escaping="yes"/>
 </div>    
 </div>
 
