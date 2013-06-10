@@ -81,12 +81,12 @@
     </fieldset>
 
     <fieldset>
-    <legend>Newsletters and treshold</legend>
+    <legend>Newsletters and threshold</legend>
     <p>
-    <em>Treshold is a way to control what items are displayed to you. Any item with a score <u>lower</u> then your set treshold, will not be displayed in the forum. </em>
+    <em>Threshold is a way to control what items are displayed to you. Any item with a score <u>lower</u> than your set threshold, will not be displayed in the forum. </em>
     </p>
     <p>
-        <asp:label ID="Label7" AssociatedControlID="tb_treshold" CssClass="inputLabel" runat="server">Treshold</asp:label>
+        <asp:label ID="Label7" AssociatedControlID="tb_treshold" CssClass="inputLabel" runat="server">Threshold</asp:label>
         <asp:TextBox ID="tb_treshold" runat="server" Text="-10" ToolTip="Please enter a minimum score" TextMode="SingleLine" CssClass="number title"/>
     </p>
 
