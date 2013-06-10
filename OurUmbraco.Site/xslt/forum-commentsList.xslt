@@ -9,7 +9,8 @@
 	xmlns:umbraco.library="urn:umbraco.library"
 	xmlns:Exslt.ExsltDatesAndTimes="urn:Exslt.ExsltDatesAndTimes"
 	xmlns:uForum="urn:uForum"
-	xmlns:uForum.raw="urn:uForum.raw" xmlns:uPowers="urn:uPowers"
+	xmlns:uForum.raw="urn:uForum.raw"
+	xmlns:uPowers="urn:uPowers"
 	xmlns:Notifications="urn:Notifications"
 	exclude-result-prefixes="uPowers uForum.raw msxml umbraco.library Exslt.ExsltDatesAndTimes uForum uForum.raw Notifications">
 
@@ -92,7 +93,6 @@
 
 <div class="comment">
 <div class="meta">
-									<h2>
               <h2>
                 <xsl:value-of select="$topic/title"/>
               </h2>
@@ -101,18 +101,15 @@
                   <xsl:value-of select="$topicStarter//@nodeName"/>
                 </a>
 										<xsl:text> started this topic </xsl:text>
-    started this topic <strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($topic/created)" /></strong>
-                </strong>
+    <strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($topic/created)" /></strong>
 
                 <xsl:if test="Exslt.ExsltDatesAndTimes:seconds(Exslt.ExsltDatesAndTimes:difference($topic/@created, $topic/updated)) &gt; 10">
 											<xsl:text>, this topic was edited at: </xsl:text>
-    , this topic was edited at: <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
+    <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
     </xsl:if> 
 
-    <xsl:if test="$topic/answer != 0"><a href="{uForum:NiceCommentUrl($topic/id, $topic/answer, $maxitems)}" class="solution">, Go directly to the topic solution</a></xsl:if>
-												<xsl:text>, Go directly to the topic solution</xsl:text>
-											</a>
-                </xsl:if>
+    <xsl:if test="$topic/answer != 0"><a href="{uForum:NiceCommentUrl($topic/@id, $topic/answer, $maxitems)}" class="solution">, Go directly to the topic solution</a></xsl:if>
+				
 </div>
 </div>
 
@@ -130,7 +127,7 @@
 
               <!-- tags -->
               <xsl:if test="count($topic/tags/tag) &gt; 0">
-                Tags:
+                  <xsl:text>Tags:</xsl:text>
                 <ul>
                   <xsl:for-each select="$topic/tags/tag">
                     <li>
@@ -153,7 +150,7 @@
 
 								<xsl:if test="umbraco.library:IsLoggedOn()">
 									<xsl:if test="$mem != $topic/memberId">
-										<xsl:variable name="vote" select="uPowers:YourVote($mem, $topic/id, 'powersTopic')"/>
+										<xsl:variable name="vote" select="uPowers:YourVote($mem, $topic/@id, 'powersTopic')"/>
 
 										<xsl:if test="$vote = 0">
 											<a href="#" class="LikeTopic vote" rel="{$topicID}">
@@ -300,9 +297,7 @@
               <xsl:value-of select="$author//@nodeName"/>
             </a>
 						<xsl:text> posted this reply </xsl:text>
-    posted this reply <strong title="{umbraco.library:FormatDateTime($comment/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($comment/created)" /></strong>
-              <xsl:value-of select="uForum:TimeDiff($comment/created)" />
-            </strong>
+    <strong title="{umbraco.library:FormatDateTime($comment/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($comment/created)" /></strong>
   </div>
 </div>
 
@@ -352,7 +347,7 @@
 			<em>
 				<xsl:value-of select="umbraco.library:GetMemberName($comment/memberId)"/>
 			</em>
-			<xsl:text>has a very low score and been hidden, </xsl:text>
+			<xsl:text> has a very low score and been hidden, </xsl:text>
 			<a class="forumToggleComment" rel="comment{$comment/id}" href="#">Show it anyway</a>
 		</li>
 	</xsl:template>
@@ -388,10 +383,10 @@
 		<ul style="width: 100%;">
 
 			<xsl:if test="umbraco.library:IsLoggedOn()">
-				<xsl:variable name="subscribed" select="Notifications:IsSubscribedToForumTopic($topic/id, $mem)" />
+				<xsl:variable name="subscribed" select="Notifications:IsSubscribedToForumTopic($topic/@id, $mem)" />
 
 				<li>
-					<a href="#" class="act subscribe UnSubscribeTopic" title="Unsubscribe from this topic" rel="{$topic/id}">
+					<a href="#" class="act subscribe UnSubscribeTopic" title="Unsubscribe from this topic" rel="{$topic/@id}">
 						<xsl:if test="not($subscribed)">
 							<xsl:attribute name="style">
 								<xsl:text>display:none;</xsl:text>
@@ -400,7 +395,7 @@
 						<xsl:text>Unsubscribe</xsl:text>
 					</a>
 
-					<a href="#" class="act subscribe SubscribeTopic" title="Subscribe to this topic" rel="{$topic/id}">
+					<a href="#" class="act subscribe SubscribeTopic" title="Subscribe to this topic" rel="{$topic/@id}">
 						<xsl:if test="$subscribed">
 							<xsl:attribute name="style">
 								<xsl:text>display:none;</xsl:text>
@@ -413,16 +408,16 @@
 
 			<xsl:if test="$isAdmin = true() or ($mem = $topic/memberId and $topic/replies &lt; 1)">
 				<li>
-					<a href="/forum/EditTopic?id={$topic/id}" class="act edit kill" title="Edit this topic">Edit</a>
+					<a href="/forum/EditTopic?id={$topic/@id}" class="act edit kill" title="Edit this topic">Edit</a>
 				</li>
 				<li>
-					<a href="#" class="act delete DeleteTopic kill" title="Delete this topic" rel="{$topic/id}">Delete</a>
+					<a href="#" class="act delete DeleteTopic kill" title="Delete this topic" rel="{$topic/@id}">Delete</a>
 				</li>
 			</xsl:if>
 
 			<xsl:if test="$isAdmin = true()">
 				<li>
-					<a href="#" onclick="jQuery('#moveList').toggle(); return false;" class="act move ToggleMoveList" id="MoveTopic" title="Move this topic" rel="{$topic/id}">Move</a>
+					<a href="#" onclick="jQuery('#moveList').toggle(); return false;" class="act move ToggleMoveList" id="MoveTopic" title="Move this topic" rel="{$topic/@id}">Move</a>
 
 					<ol id="moveList">
 						<li class="close">
