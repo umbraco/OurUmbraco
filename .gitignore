@@ -38,3 +38,7 @@ build/*.nupkg
 
 /packages/*
 !packages/repositories.config
+
+/UpgradeReport_Files/*
+/UpgradeLog.xml
+/UpgradeLog.htm
