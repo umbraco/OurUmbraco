@@ -39,33 +39,8 @@
 	<xsl:template match="/">
 		<div id="searchBar">
 			<fieldset id="selectsearch">
-				<label id="searchlabel" for="searchField">What were you looking for in&hellip;</label>
-				<input type="text" id="searchField" name="&queryParam;" value="{$q}" />
-				<span id="sectionspan">
-					<label>All</label>
-				</span>
-        <div id="sections" class="clearfix">
-					<label class="sectiontab">All</label>
-					<p>Search In</p>
-          <xsl:for-each select="$areas/value">
-            
-						<xsl:variable name="index" select="position()"/>
-						<xsl:variable name="alias" select="$areaAlias/value[$index]"/>
-            <input type="checkbox" id="s_{.}" name="contentType" value="{$alias}">
-							<!-- If no area was specified and we're inside a specific area, select only that -->
-							<xsl:if test="$noSpecificArea and current() = $currentArea"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
-
-							<!-- If this section was specifically searched in, select it -->
-							<xsl:if test="contains($c, $alias)"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
-
-							<!-- If we're not in any specific area and nothing was specified, select it so we search everything -->
-							<xsl:if test="$noCurrentArea and $noSpecificArea"><xsl:attribute name="checked">checked</xsl:attribute></xsl:if>
-						</input>
-						<label for="s_{.}">
-							<xsl:value-of select="."/>
-						</label>
-					</xsl:for-each>
-				</div>
+				<label id="searchlabel" class="visuallyhidden" for="searchField">Search for topics, documentation and packages...</label>
+				<input type="text" id="searchField" name="&queryParam;" value="{$q}" placeholder="Search for topics, documentation and packages..." autocomplete="off" />
 				<button id="searchbutton">Go</button>
 			</fieldset>
 		</div>

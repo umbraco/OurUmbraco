@@ -142,22 +142,6 @@ String.prototype.capitalize = function () {
 setupSearchField = function () {
     
     //onload if the search field has a value because of previous search hide the content of the searchfield
-    if ($('#searchField').val().length > 0) {
-        $('#searchlabel').hide();
-    }
-
-    $('#searchField').focus(function () {
-        $('#searchlabel').fadeOut();
-    }).blur(function () {
-        if ($(this).val().length == 0) {
-            $('#searchlabel').fadeIn();
-        }
-    }).bind("keypress", function (e) {
-        if (e.keyCode == 13) {
-            doSearch();
-            return false;
-        }
-    });
 
     $("#searchbutton").click(function (e) {
         doSearch();
