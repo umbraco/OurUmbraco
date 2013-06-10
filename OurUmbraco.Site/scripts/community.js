@@ -54,7 +54,17 @@ function doSearch(){
 window.location = "/search?q=" + encodeURIComponent(jQuery('#searchField').val()) + "&content=" + types;
 }
 
+jQuery(document).ready(function () {
 
+    $("#searchField").focus(function () {
+        $("#selectsearch").addClass('focused');
+    });
+
+    $("#searchField").blur(function () {
+        $("#selectsearch").removeClass('focused');
+    });
+
+});
 
 /* SIGNUP FORM RELATED */
 function lookupTwitter(field){

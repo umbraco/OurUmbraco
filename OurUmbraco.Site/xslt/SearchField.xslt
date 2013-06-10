@@ -38,11 +38,56 @@
 
 	<xsl:template match="/">
 		<div id="searchBar">
-			<fieldset id="selectsearch">
-				<label id="searchlabel" class="visuallyhidden" for="searchField">Search for topics, documentation and packages...</label>
-				<input type="text" id="searchField" name="&queryParam;" value="{$q}" placeholder="Search for topics, documentation and packages..." autocomplete="off" />
-				<button id="searchbutton">Go</button>
-			</fieldset>
+            <div id="searchbar-inner">
+			    <fieldset id="selectsearch">
+                    <legend class="visuallyhidden">Search</legend>
+				    <label id="searchlabel" class="visuallyhidden" for="searchField">Search for topics, documentation and packages...</label>
+				    <input type="text" id="searchField" name="&queryParam;" value="{$q}" placeholder="Search for topics, documentation and packages..." autocomplete="off" />
+				    <button id="searchbutton">Go</button>
+			    </fieldset>
+                <div id="search-hits">
+                    <div id="search-hits-inner">
+                    <div class="search-hit first">
+                        <strong id="hit-trending">Top hits</strong>
+                        <ul>
+                            <li>
+                                <a href="#">Some result</a>
+                            </li>
+                            <li>
+                                <a href="#">Some result</a>
+                            </li>
+                            <li>
+                                <a href="#">Some result</a>
+                            </li>
+                        </ul>
+                    </div>
+                <div class="search-hit">
+                    <strong id="hit-packages">Packages</strong>
+                    <ul>
+                        <li>
+                            <a href="#">Some result</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-hit">
+                    <strong id="hit-documentation">Documentation</strong>
+                    <ul>
+                        <li>
+                            <a href="#">Some result</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-hit last">
+                    <strong id="hit-forum">Questions/Suggestions</strong>
+                    <ul>
+                        <li>
+                            <a href="#">Some result</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+                </div>
+            </div>
 		</div>
 	</xsl:template>
 
