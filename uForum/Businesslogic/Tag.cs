@@ -73,6 +73,13 @@ namespace uForum.Businesslogic
             }
         }
 
+        public static Tag GetByName(string name)
+        {
+            var db = new Database("umbracoDbDSN");
+            var tag = db.FirstOrDefault<Tag>("WHERE tag = @0", name);
+            return tag;
+        }
+
         private static void addTagToTopic(int topicId, Tag tag)
         {
             var db = new Database("umbracoDbDSN");
@@ -85,7 +92,7 @@ namespace uForum.Businesslogic
             var topicTag = db.SingleOrDefault<TopicTag>("WHERE tagId = @0 and topicId = @1", tag.Id, topicId);
             if (topicTag == null)
             {
-                topicTag = new TopicTag(tag.Id, topicId, 0);
+                topicTag = new TopicTag(tag.Id, topicId, tag.Weight);
                 db.Insert(topicTag);
             }
         }
