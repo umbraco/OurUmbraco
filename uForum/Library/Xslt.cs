@@ -4,6 +4,7 @@ using System.Xml;
 using System.Xml.XPath;
 using System.Web;
 using System.Text.RegularExpressions;
+using HtmlAgilityPack;
 using MarkdownSharp;
 using umbraco.cms.businesslogic.member;
 
@@ -251,6 +252,43 @@ namespace uForum.Library {
             // Run it through Markdown first
             var md = new Markdown();
             html = md.Transform(html);
+
+            // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var root = doc.DocumentNode;
+            if (root != null)
+            {
+                var images = root.SelectNodes("//img");
+                if (images != null)
+                {
+                    var replace = false;
+                    foreach (var image in images)
+                    {
+                        var src = image.GetAttributeValue("src", "");
+                        var orgSrc = src.Replace("rs/", "");
+                        
+                        if (src == orgSrc || image.ParentNode.Name == "a") continue;
+
+                        var a = doc.CreateElement("a");
+                        a.SetAttributeValue("href", orgSrc);
+                        a.SetAttributeValue("target", "_blank");
+
+                        a.AppendChild(image.Clone());
+
+                        image.ParentNode.ReplaceChild(a, image);
+
+                        replace = true;
+                    }
+
+                    if (replace)
+                    {
+                        html = root.OuterHtml;
+                    }                    
+                }
+            }
+
             return Utills.Sanitize(html);
         }
     
