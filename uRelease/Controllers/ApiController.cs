@@ -1,15 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Web.Mvc;
 using System.Collections;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
-using System.Web.UI;
+using System.Web.Script.Serialization;
 using RestSharp;
 using uRelease.Models;
 using YouTrackSharp.Infrastructure;
+using umbraco.NodeFactory;
 using Issue = uRelease.Models.Issue;
 using System.Configuration;
 using Version = uRelease.Models.Version;
@@ -25,9 +27,9 @@ namespace uRelease.Controllers
 
         private static readonly string Login = ConfigurationManager.AppSettings["uReleaseUsername"];
         private static readonly string Password = ConfigurationManager.AppSettings["uReleasePassword"];
+        private static readonly string ReleasesPageNodeId = ConfigurationManager.AppSettings["uReleaseParentNodeId"];
+        private const string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
 
-
-        [OutputCache(Duration = 30, Location = OutputCacheLocation.ServerAndClient)]
         public JsonResult Aggregate(string ids)
         {
             var idArray = new ArrayList();
@@ -59,13 +61,35 @@ namespace uRelease.Controllers
                 .ToArray();
             }
 
+            var currentReleases = new List<Version>();
+            var plannedReleases = new List<Version>();
+            var inProgressReleases = new List<Version>();
 
-            //figure out which is the latest v4 and v6 release
-            var latestReleasev4 = orderedVersions.Where(x => x.Released && x.Value.AsFullVersion().Major == 4).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
-            var latestReleasev6 = orderedVersions.Where(x => x.Released && x.Value.AsFullVersion().Major == 6).OrderByDescending(x => x.ReleaseDate).FirstOrDefault();
+            var releasesNode = new Node(int.Parse(ReleasesPageNodeId));
+            foreach (Node release in releasesNode.Children)
+            {
+                if (release.GetProperty("recommendedRelease") != null && release.GetProperty("recommendedRelease").Value == "1")
+                {
+                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
+                    if (version != null)
+                        currentReleases.Add(version);
+                }
 
-            var inprogressRelease = orderedVersions.Where(x => x.Released == false && x.Value.AsFullVersion().Major == 6 && x.Value.AsFullVersion().Build == 0).OrderBy(x => x.ReleaseDate).FirstOrDefault();
+                if (release.GetProperty("releaseStatus") != null && release.GetProperty("releaseStatus").Value == "Planning")
+                {
+                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
+                    if (version != null)
+                        plannedReleases.Add(version);
+                }
 
+                if (release.GetProperty("releaseStatus") != null && release.GetProperty("releaseStatus").Value == "Unreleased")
+                {
+                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
+                    if (version != null)
+                        inProgressReleases.Add(version);
+                }
+            }
+            
             // Just used to make sure we don't make repeated API requests for keys
             var versionCache = new ConcurrentDictionary<string, RestResponse<IssuesWrapper>>();
 
@@ -73,13 +97,14 @@ namespace uRelease.Controllers
             {
                 var item = new AggregateView
                                {
-                                   latestRelease = (latestReleasev4 != null && version.Value == latestReleasev4.Value || latestReleasev6 != null && version.Value == latestReleasev6.Value),
-                                   inProgressRelease = (inprogressRelease != null && version.Value == inprogressRelease.Value),
+                                   inProgressRelease = inProgressReleases.FirstOrDefault(x => x.Value == version.Value) != null,
                                    version = version.Value,
                                    isPatch = version.Value.AsFullVersion().Build != 0,
                                    releaseDescription = version.Description ?? string.Empty,
                                    released = version.Released,
-                                   releaseDate = version.ReleaseDate == 0 ? "" : new DateTime(1970, 1, 1).AddMilliseconds(version.ReleaseDate).ToString(CultureInfo.InvariantCulture)
+                                   releaseDate = version.ReleaseDate == 0 ? "" : ConvertDate(version.ReleaseDate).ToString(CultureInfo.InvariantCulture),
+                                   currentRelease = currentReleases.FirstOrDefault(x => x.Value == version.Value) != null,
+                                   plannedRelease = plannedReleases.FirstOrDefault(x => x.Value == version.Value) != null
                                };
                 
                 // /rest/issue/byproject/{project}?{filter}
@@ -104,18 +129,50 @@ namespace uRelease.Controllers
 
                 var activitiesDateDesc = activityView.Where(x => x.changes.Any()).OrderByDescending(x => x.date);
                 var issueIdsFromActivities = activitiesDateDesc.Select(x => x.id).Distinct()
-                    .Concat(issueView.Where(y => y != null && !activitiesDateDesc.Select(z => z.id).Contains(y.id)).Select(y => y.id)); // Add issues for which there is no activity
+                    .Concat(issueView.Where(y => y != null && activitiesDateDesc.Select(z => z.id).Contains(y.id) == false).Select(y => y.id)); // Add issues for which there is no activity
 
                 item.issues = issueIdsFromActivities.Select(x => issueView.Single(y => y != null && y.id == x)).OrderBy(x => x.id);
                 item.activities = activitiesDateDesc.Take(5);
-
-
+                
                 toReturn.Add(item);
             }
 
             return new JsonResult { Data = toReturn, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
         
+        public JsonResult GetAllFromFile()
+        {
+            if (System.IO.File.Exists(Server.MapPath(YouTrackJsonFile)) == false)
+                SaveAllToFile();
+
+            var allText = System.IO.File.ReadAllText(Server.MapPath(YouTrackJsonFile));
+
+            return new JsonResult { Data = new JavaScriptSerializer().DeserializeObject(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+        
+        public string SaveAllToFile()
+        {
+            try
+            {
+                var result = new JavaScriptSerializer().Serialize(Aggregate("all").Data);
+                using (var streamWriter = new StreamWriter(Server.MapPath(YouTrackJsonFile), false))
+                {
+                    streamWriter.WriteLine(result);
+                }
+            }
+            catch (Exception exception)
+            {
+                return string.Format("{0} {1}", exception.Message, exception.StackTrace);
+            }
+
+            return string.Format("Results succesfully written to {0} at {1}", Server.MapPath(YouTrackJsonFile), DateTime.Now);
+        }
+
+        private static DateTime ConvertDate(long date)
+        {
+            return new DateTime(1970, 1, 1).AddMilliseconds(date);
+        }
+
         private static string GetFieldFromIssue(Issue issue, string fieldName)
         {
             var findField = issue.Fields.FirstOrDefault(x => x.Name == fieldName);

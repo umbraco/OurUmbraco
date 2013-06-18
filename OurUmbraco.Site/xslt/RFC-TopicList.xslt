@@ -52,39 +52,6 @@
 
       <xsl:variable name="topics" select="uForum.raw:Topics($forumNode/@id, $items, $p)//topic"/>
 
-      <xsl:if test="count($topics) &gt; 0">
-        <div class="rfcList">
-
-            <xsl:for-each select="$topics">
-              <xsl:sort select="updated" order="descending" />
-
-              <xsl:if test="score &gt;= $treshold">
-                <xsl:call-template name="topic">
-                  <xsl:with-param name="topic" select="." />
-                </xsl:call-template>
-              </xsl:if>
-
-
-            </xsl:for-each>
-        </div>
-
-        <xsl:if test="$pages[page]">
-          <strong>Pages: </strong>
-          <ul class="pager">
-            <xsl:for-each select="$pages/page">
-              <li>
-                <xsl:if test="@current = 'true'">
-                  <xsl:attribute name="class">current</xsl:attribute>
-                </xsl:if>
-                <a href="?p={@index}">
-                  <xsl:value-of select="@index + 1"/>
-                </a>
-              </li>
-            </xsl:for-each>
-          </ul>
-        </xsl:if>
-
-      </xsl:if>
       <xsl:choose>
       <xsl:when test="umbraco.library:IsLoggedOn()">
         <div class="rfcOptions">

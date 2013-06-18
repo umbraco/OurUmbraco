@@ -47,6 +47,9 @@
     <Reference Include="EasyHttp">
       <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
     </Reference>
+    <Reference Include="interfaces">
+      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
+    </Reference>
     <Reference Include="JsonFx">
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
@@ -81,6 +84,9 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
+    <Reference Include="umbraco">
+      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+    </Reference>
     <Reference Include="YouTrackSharp">
       <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>
     </Reference>

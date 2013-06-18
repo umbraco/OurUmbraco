@@ -26,6 +26,10 @@ namespace uRelease.Models
         public IEnumerable<IssueView> issues { get; set; }
 
         public IEnumerable<ActivityView> activities { get; set; }
+
+        public bool currentRelease { get; set; }
+
+        public bool plannedRelease { get; set; }
     }
 
     public class IssuesWrapper

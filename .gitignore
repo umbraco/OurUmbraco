@@ -23,11 +23,13 @@ _ReSharper*/
 
 umbraco.config
 *.vs10x
+*OurUmbraco.Site/web.config
 *OurUmbraco.Site/App_Data/TEMP*/
 *OurUmbraco.Site/App_Data/ClientDependency*/
 *OurUmbraco.Site/App_Data/Logs*/
 *OurUmbraco.Site/App_Data/Preview*/
 *OurUmbraco.Site/install*/
+*OurUmbraco.Site/media/
 
 _BuildOutput/*
 *.ncrunchsolution
@@ -38,3 +40,4 @@ build/*.nupkg
 
 /packages/*
 !packages/repositories.config
+OurUmbraco.Site/App_Data/YouTrack

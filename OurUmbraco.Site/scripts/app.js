@@ -118,7 +118,7 @@ var viewModel = {
 
 viewModel.currentReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
-                return ver.latestRelease();
+                return ver.currentRelease();
             });
     },viewModel);
 
@@ -131,7 +131,7 @@ viewModel.inProgressReleases = ko.computed(function(){
 
 viewModel.futureReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
-                return (!ver.inProgressRelease() && !ver.released() && !ver.isPatch());
+                return ver.plannedRelease();
             });
     },viewModel);
 
@@ -150,6 +150,12 @@ viewModel.comingReleases = ko.computed(function(){
 viewModel.patchReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
                 return (!ver.released() && ver.isPatch());
+            });
+    },viewModel);
+
+viewModel.historicalReleases = ko.computed(function(){
+    return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
+                return (ver.released() && !ver.latestRelease());
             });
     },viewModel);
 
@@ -179,12 +185,51 @@ loadData = function (versionId) {
     });
 };
 
+// Declare loader function
+loadAllData = function () {
+    $.getJSON("/api/GetAllFromFile/", function (data) {
+
+        // Parse result
+        ko.mapping.fromJS(data, versionMappingOptions, viewModel.versions);
+
+        // Reload data
+        //setTimeout(loadData, 60000);
+
+        $('.progress span').each(function(i,e){
+                var progressItem = $(this);
+                if(progressItem.attr('title') > 0){
+                    progressItem.countTo({
+                        from: 0,
+                        to: progressItem.attr('title'),
+                        speed: 1200,
+                        refreshInterval: 50,
+                    });
+                }
+            });
+
+    });
+};
+
 // Initialize
 
 // Knockout extentions
 ko.observable.fn.prettyDate = function () {
     return humaneDate(new Date(this()));
 };
+
+ko.bindingHandlers.slideVisible = {
+    init: function (element, valueAccessor) {
+        // Initially set the element to be instantly visible/hidden depending on the value
+        var value = valueAccessor();
+        $(element).toggle(ko.utils.unwrapObservable(value)); // Use "unwrapObservable" so we can handle values that may or may not be observable
+    },
+    update: function (element, valueAccessor) {
+        // Whenever the value subsequently changes, slowly fade the element in or out
+        var value = valueAccessor();
+        ko.utils.unwrapObservable(value) ? $(element).slideDown() : $(element).slideUp();
+    }
+};
+
 
 (function($) {
     $.fn.countTo = function(options) {
