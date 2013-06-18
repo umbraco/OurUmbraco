@@ -1,9 +1,30 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Forum.master" AutoEventWireup="true" %>
-<asp:content ContentPlaceHolderId="Main" runat="server">
-	<div style="padding: 35px 0px 25px 0px">
-	    <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-	</div>	
-    <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
-	<umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
-	<umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
-</asp:content>
+<asp:Content ContentPlaceHolderID="Main" runat="server">
+    <div style="padding: 35px 0px 25px 0px">
+        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    <umbraco:Macro Alias="Forum-commentsList" runat="server"></umbraco:Macro>
+    <umbraco:Macro Alias="Forum-createComment" runat="server"></umbraco:Macro>
+    <script type="text/javascript">
+        (function () {
+            $("#forum").find(".commentsList").find(".body").each(function () {
+                var body = $(this);
+                
+                // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
+                body.find("img").each(function () {
+                    var img = $(this);                    
+                    var src = img.attr("src");
+                    var orgSrc = src.replace("rs/", "");
+                    
+                    if (src !== orgSrc && !img.parent().is("a")) {
+                        var a = $("<a/>", {
+                            href: orgSrc,
+                            target: "_blank"
+                        });                        
+                        img.wrap(a);
+                    }
+                });
+            });
+        })();
+    </script>
+</asp:Content>

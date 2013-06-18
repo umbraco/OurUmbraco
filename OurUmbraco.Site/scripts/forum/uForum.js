@@ -53,8 +53,8 @@ var uForum = function () {
         },
         lookUp: function () {
             var query = jQuery("#title").val();
-            query += " " + tinyMCE.get('topicBody').getContent();
-
+            query += " " + Markdown.App.getPreviewContent();
+      
             if (query.length <= 1) {
                 jQuery("#topicsBox").fadeOut("fast");
             }

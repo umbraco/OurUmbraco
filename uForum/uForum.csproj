@@ -53,6 +53,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownSharp">
+      <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
     </Reference>
@@ -88,9 +91,7 @@
     <Compile Include="Businesslogic\Mod.cs" />
     <Compile Include="Businesslogic\Subscribtion.cs" />
     <Compile Include="Businesslogic\Topic.cs" />
-    <Compile Include="ForumChangeTemplate.cs">
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    <Compile Include="ForumChangeTemplate.cs" />
     <Compile Include="iNotFoundHandler.cs" />
     <Compile Include="Library\RawXml.cs" />
     <Compile Include="Library\Rest.cs" />

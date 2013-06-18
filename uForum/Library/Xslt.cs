@@ -5,6 +5,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using umbraco;
+using MarkdownSharp;
 using umbraco.cms.businesslogic.member;
 
 namespace uForum.Library {
@@ -295,45 +296,43 @@ namespace uForum.Library {
         }
 
         public static string Sanitize(string html) {
+            // Run it through Markdown first
+            var md = new Markdown();
+            html = md.Transform(html);
             return Utills.Sanitize(html);
         }
     
         public static string TimeDiff(string secondDate)
         {
-            TimeSpan TS = DateTime.Now.Subtract(DateTime.Parse(secondDate));
-            int span = int.Parse(Math.Round(TS.TotalSeconds, 0).ToString());
+            DateTime date;
+            if (!DateTime.TryParse(secondDate, out date))
+                return secondDate;
+
+            var TS = DateTime.Now.Subtract(date);
+            var span = int.Parse(Math.Round(TS.TotalSeconds, 0).ToString());
 
             if (span < 60)
                 return "1 minute ago";
 
             if (span >= 60 && span < 3600)
-                return Math.Round(TS.TotalMinutes).ToString() + " minutes ago";
+                return string.Concat(Math.Round(TS.TotalMinutes), " minutes ago");
 
             if (span >= 3600 && span < 7200)
                 return "1 hour ago";
 
             if (span >= 3600 && span < 86400)
-                return Math.Round(TS.TotalHours).ToString() + " hours ago";
+                return string.Concat(Math.Round(TS.TotalHours), " hours ago");
 
-            if (span >= 86400 && span < 604800)
-                return Math.Round(TS.TotalDays).ToString() + " days ago";
+            if (span >= 86400 && span < 172800)
+                return "1 day ago";
+
+            if (span >= 172800 && span < 604800)
+                return string.Concat(Math.Round(TS.TotalDays), " days ago");
 
             if (span >= 604800 && span < 1209600)
                 return "1 week ago";
 
-            return DateTime.Parse(secondDate).ToString("MMMM d, yyyy @ hh:mm");
-
-            /*
-            if (span >= 1209600 && span < 5184000)
-                return Math.Round(TS.TotalDays / 7).ToString() + " weeks ago";
-
-            if (span >= 5184000 && span < 31536000)
-                return Math.Round(TS.TotalDays / 30).ToString() + " months ago";
-
-            if (span >= 31536000)
-                return "More than a year ago";
-            */
-            return secondDate;
+            return date.ToString("MMMM d, yyyy @ hh:mm");
         }
 
 
@@ -344,9 +343,11 @@ namespace uForum.Library {
         private static readonly string imgLink = "<img src=\"{0}{1}\" border=\"0\" alt=\"\" />";
         private static readonly Regex Base64ImageRegex = new Regex("(<img src=\"data:image(.*?)/>)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
         private static readonly Regex imageTagFinderRegex = new Regex("(<img(.*?)/>)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline);
-       
 
-        
+        public static void TopicNotFound(int topicId)
+        {
+            HttpContext.Current.Response.RedirectPermanent(string.Concat("/?topicNotFound=", topicId));
+        }
 
         public static string ResolveLinks(string body)
         {

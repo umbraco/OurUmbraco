@@ -4,6 +4,10 @@
 
 <div id="dashboard" class="subpage">
 
+<%if (!string.IsNullOrWhiteSpace(Request.QueryString["topicNotFound"])) { %>
+    <div class="error" style="margin-top:15px;"><p><strong>The forum post that you requested could not be found or was marked as spam.</strong></p></div>
+<% } %>
+
 <div style="text-align: center">
 <h1>The friendliest CMS community on the planet</h1>
 
