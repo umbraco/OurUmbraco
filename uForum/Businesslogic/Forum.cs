@@ -272,7 +272,7 @@ namespace uForum.Businesslogic {
                 if (_latestCommentID > 0)
                     l.AppendChild(LatestComment.ToXml(d));
 
-                if (_latestTopicID > 0)
+                if (_latestTopicID > 0 && LatestTopic != null)
                     l.AppendChild(LatestTopic.ToXml(d));
 
                 tx.AppendChild(l);

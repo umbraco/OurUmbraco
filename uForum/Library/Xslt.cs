@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Xml;
 using System.Xml.XPath;
+using HtmlAgilityPack;
 using umbraco;
 using MarkdownSharp;
 using umbraco.cms.businesslogic.member;
@@ -67,7 +68,7 @@ namespace uForum.Library {
         public static string NiceTopicUrl(int topicId) {
             Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
-            if (t.Exists) {
+            if (t != null && t.Exists) {
                 string _url = umbraco.library.NiceUrl(t.ParentId);
 
                 if (umbraco.GlobalSettings.UseDirectoryUrls) {
@@ -299,6 +300,43 @@ namespace uForum.Library {
             // Run it through Markdown first
             var md = new Markdown();
             html = md.Transform(html);
+
+            // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
+            var doc = new HtmlDocument();
+            doc.LoadHtml(html);
+
+            var root = doc.DocumentNode;
+            if (root != null)
+            {
+                var images = root.SelectNodes("//img");
+                if (images != null)
+                {
+                    var replace = false;
+                    foreach (var image in images)
+                    {
+                        var src = image.GetAttributeValue("src", "");
+                        var orgSrc = src.Replace("rs/", "");
+                        
+                        if (src == orgSrc || image.ParentNode.Name == "a") continue;
+
+                        var a = doc.CreateElement("a");
+                        a.SetAttributeValue("href", orgSrc);
+                        a.SetAttributeValue("target", "_blank");
+
+                        a.AppendChild(image.Clone());
+
+                        image.ParentNode.ReplaceChild(a, image);
+
+                        replace = true;
+                    }
+
+                    if (replace)
+                    {
+                        html = root.OuterHtml;
+                    }                    
+                }
+            }
+
             return Utills.Sanitize(html);
         }
     

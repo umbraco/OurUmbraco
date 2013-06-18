@@ -69,10 +69,9 @@ namespace uForum.Library {
 
         public static XPathNodeIterator Topic(int topicId)
         {
-            var topic = uForum.Businesslogic.Topic.GetTopic(topicId);
+            var topic = Businesslogic.Topic.GetTopic(topicId);
             var topicXml = topic.ToXml(new XmlDocument());
             return topicXml.CreateNavigator().Select(".");
-//            return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where id = " + topicId.ToString(), "topic");
         }
 
         public static XPathNodeIterator Forum(int forumId) {

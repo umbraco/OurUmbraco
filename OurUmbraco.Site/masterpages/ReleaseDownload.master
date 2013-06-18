@@ -1,0 +1,38 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+ 
+<umbraco:Macro runat="server" language="cshtml">
+@using System.Web	
+@using umbraco.cms.businesslogic.web
+@using umbraco.BusinessLogic
+
+	@{
+		var d = new Document(int.Parse(Request["id"]));
+ 		var link = d.getProperty("downloadLink").Value.ToString().Trim();
+		var downloads = d.getProperty("numberOfDownloads").Value.ToString();
+		int numberOfDownloads = 1; 
+		if(int.TryParse(downloads, out numberOfDownloads)) {
+			numberOfDownloads = numberOfDownloads + 1;
+		}
+		if(numberOfDownloads < 1)
+		{
+			numberOfDownloads = 1;
+		}
+		d.getProperty("numberOfDownloads").Value = numberOfDownloads;
+		
+		var user = new User(0);
+	    d.Publish(user);
+	    umbraco.library.UpdateDocumentCache(d.Id);
+
+		Response.Redirect(link);
+	}
+	
+</umbraco:Macro>
+
+</asp:Content>
+
+</asp:Content>

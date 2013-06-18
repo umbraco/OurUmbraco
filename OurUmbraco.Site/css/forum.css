@@ -68,7 +68,8 @@ padding: 15px; text-align: left; padding-left: 60px }
 #forum ul.commentsList li .comment .body p{font-size: 12px; margin-top: 0px; margin-bottom: 15px;}
 #forum ul.commentsList li .comment .body li{display: list-item; margin-top:.5em; margin-bottom:1em;}
 #forum ul.commentsList li .comment .body ul li {list-style-type: disc;}
-
+#forum ul.commentsList li .comment .body img { border: 0; }
+#forum ul.commentsList li .comment .body blockquote { margin-bottom: 10px; padding: 10px 10px 1px 10px; background-color: #eeeeee; }
 
 /* Solutions */
 #forum ul.commentsList li.postSolution .postedAt{color: #8ECA56 !Important}
