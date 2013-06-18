@@ -34,8 +34,16 @@
                 Here we will submit it server side...
             </xsl:when>
             <xsl:otherwise>
+    <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('uicore', '/css/jquery.ui.core.css')"/>
+  <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('uitheme', '/css/jquery.ui.theme.css')"/>
+  <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('slidercss', '/css/jquery.ui.slider.css')"/>
+  <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('select2Newcss', '/css/select2-new.css')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('jquery171', '/scripts/jquery-1.7.1.min.js')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('jqueryui1816', '/scripts/jquery-ui-1.8.16.custom.min.js')"/>
                 <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce/tiny_mce_src.js')"/>
                 <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=11')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('select2', '/scripts/forum/select2/select2-new.js?v=6')"/>
+  <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tags', '/scripts/forum/tags.js?v=6')"/>
                 <script type="text/javascript">
     uForum.ForumEditor("topicBody");  
 
@@ -55,15 +63,38 @@
             var forumId = <xsl:value-of select="$currentPage/@id"/>;
             var title = jQuery("#title").val();
                             var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
-
+          var tags = getTags(); //json string of tags with weight and actual tag
       if(topicId !== "") {
-                uForum.EditTopic(topicId, title, body );
-            } else {
-                uForum.NewTopic(forumId, title, body );
+            uForum.EditTopic(topicId, title, body,tags);
+          } 
+          else {
+            uForum.NewTopic(forumId, title, body,tags);  
                             }
           
 
         });
+      
+      /*
+       get the selected tags and return json
+      */
+      function getTags() {
+          var selectedTags = [];
+
+          jQuery('.select2-choices li.select2-search-choice').each(function () {
+              var classes = jQuery(this).attr('class');
+              var index=(classes.indexOf("size-")); //we are assuming last one is size need better way
+              var weight = 1;
+              var tag = {};
+              if (index != -1) {
+                  weight = classes.substring(index+5);
+                  tag.weight = weight;
+              }
+              tag.tagText = jQuery(this).find('div').attr('title');
+              selectedTags.push(tag);
+          });
+          return JSON.stringify(selectedTags);
+      }
+      
                     });
                 </script>
                 <div class="success" style="display:none;" id="commentSuccess">
@@ -93,6 +124,10 @@
                                 })();
                             </script>
                         </div>
+			<p>Tags</p>
+			  <div id="tag-container">
+			      <ul name="tags" id="tags" style="width: 300px"></ul>
+			  </div>
                         <div class="buttons">
                             <input type="submit" value="submit" id="btCreateTopic"/>
                             <xsl:if test="$id != ''">

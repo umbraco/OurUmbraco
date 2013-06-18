@@ -32,7 +32,7 @@ namespace NotificationsCore.NotificationTypes
                 string body = details.SelectSingleNode("//body").InnerText;
 
                 Comment com = (Comment)args[0];
-                Topic t = new Topic(com.TopicId);
+                Topic t = Topic.GetTopic(com.TopicId);
                 subject = string.Format(subject, t.Title);
 
                 Member s = (Member)args[2];

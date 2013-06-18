@@ -17,14 +17,14 @@ var uForum = function () {
                 theme_advanced_buttons1: "bold,strikethrough,|,bullist,numlist,|,link,unlink,formatselect,insertimage,code"
             });
         },
-        NewTopic: function (forumId, title, body) {
-            $.post("/base/uForum/NewTopic/" + forumId + ".aspx", { title: title, body: body },
+        NewTopic: function (forumId, title, body,tags) {
+            $.post("/base/uForum/NewTopic/" + forumId + ".aspx", { title: title, body: body,tags:tags },
             function (data) {
                 window.location = jQuery("value", data).text();
             });
         },
-        EditTopic: function (topicId, title, body) {
-            $.post("/base/uForum/EditTopic/" + topicId + ".aspx", { title: title, body: body },
+        EditTopic: function (topicId, title, body,tags) {
+            $.post("/base/uForum/EditTopic/" + topicId + ".aspx", { title: title, body: body,tags:tags },
             function (data) {
                 window.location = jQuery("value", data).text();
             });

@@ -13,6 +13,8 @@
     <xsl:variable name="body" select="umbraco.library:Request('commentBody')"/>
     <xsl:variable name="topicID" select="number(umbraco.library:ContextKey('topicID'))"/>
     <xsl:variable name="commentID" select="umbraco.library:RequestQueryString('id')"/>
+<xsl:variable name="tags" select="umbraco.library:Request('tags')"/>
+
     <xsl:variable name="maxitems">10</xsl:variable>
     <xsl:variable name="_body">
         <xsl:if test="$commentID != ''">
@@ -32,6 +34,7 @@
                     <xsl:when test="umbraco.library:IsLoggedOn()">
                         <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce_update/tiny_mce_src.js')"/>
                         <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=6')"/>
+    
                         <script type="text/javascript">
                             uForum.ForumEditor("commentBody");
 
@@ -39,12 +42,13 @@
                                 jQuery("form").submit( function(e) {
                                     e.preventDefault();
                                     
-                                    var topicId = '<xsl:value-of select="$topicID" />';                            
+      var topicId = '<xsl:value-of select="$topicID" />';
                                     var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
-                                    var comment = '<xsl:value-of select="$commentID" />';
-                                    var url = "";
+      var comment = '<xsl:value-of select="$commentID" />';
 
-                                    if(comment != '') {
+      var url = "";
+
+      if(comment != ''){      
                                         url = uForum.EditComment(comment , <xsl:value-of select="$maxitems" />,  body);
                                     } else {
                                         url = uForum.NewComment(topicId, <xsl:value-of select="$maxitems" />,  body);
