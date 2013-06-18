@@ -10,9 +10,6 @@
 	xmlns:Exslt.ExsltDatesAndTimes="urn:Exslt.ExsltDatesAndTimes"
 	xmlns:uForum="urn:uForum"
   xmlns:uForum.raw="urn:uForum.raw" xmlns:uPowers="urn:uPowers" xmlns:Notifications="urn:Notifications"
-	xmlns:uForum.raw="urn:uForum.raw"
-	xmlns:uPowers="urn:uPowers"
-	xmlns:Notifications="urn:Notifications"
 	exclude-result-prefixes="uPowers uForum.raw msxml umbraco.library Exslt.ExsltDatesAndTimes uForum uForum.raw Notifications">
 
 	<xsl:output method="html" omit-xml-declaration="yes"/>
@@ -88,7 +85,7 @@
 							<div class="author vcard">
 								<xsl:call-template name="badge">
 									<xsl:with-param name="mem" select="$topicStarter" />
-									<xsl:with-param name="date" select="$topic/created" />
+									<xsl:with-param name="date" select="$topic/@created" />
 								</xsl:call-template>
 							</div>
 
@@ -102,13 +99,13 @@
                   <xsl:value-of select="$topicStarter//@nodeName"/>
                 </a>
 										<xsl:text> started this topic </xsl:text>
-										<strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}">
-											<xsl:value-of select="uForum:TimeDiff($topic/created)" />
+										<strong title="{umbraco.library:FormatDateTime($topic/@created, 'MMMM d, yyyy @ hh:mm')}">
+											<xsl:value-of select="uForum:TimeDiff($topic/@created)" />
 										</strong>
 
 										<xsl:if test="Exslt.ExsltDatesAndTimes:seconds(Exslt.ExsltDatesAndTimes:difference($topic/created, $topic/updated)) &gt; 10">
 											<xsl:text>, this topic was edited at: </xsl:text>
-    <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
+                      <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
 										</xsl:if>
 
 										<xsl:if test="$topic/answer != 0">
