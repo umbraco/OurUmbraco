@@ -9,27 +9,28 @@
 	xmlns:umbraco.library="urn:umbraco.library"
 	xmlns:Exslt.ExsltDatesAndTimes="urn:Exslt.ExsltDatesAndTimes"
 	xmlns:uForum="urn:uForum"
+  xmlns:uForum.raw="urn:uForum.raw" xmlns:uPowers="urn:uPowers" xmlns:Notifications="urn:Notifications"
 	xmlns:uForum.raw="urn:uForum.raw"
 	xmlns:uPowers="urn:uPowers"
 	xmlns:Notifications="urn:Notifications"
 	exclude-result-prefixes="uPowers uForum.raw msxml umbraco.library Exslt.ExsltDatesAndTimes uForum uForum.raw Notifications">
 
-<xsl:output method="html" omit-xml-declaration="yes"/>
-<xsl:param name="currentPage"/>
+	<xsl:output method="html" omit-xml-declaration="yes"/>
+	<xsl:param name="currentPage"/>
 
-<!-- Member -->
-<xsl:variable name="isAdmin" select="uForum:IsInGroup('admin')"/>
+	<!-- Member -->
+	<xsl:variable name="isAdmin" select="uForum:IsInGroup('admin')"/>
   <xsl:variable name="mem">
     <xsl:if test="umbraco.library:IsLoggedOn()">
       <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
     </xsl:if>
   </xsl:variable>
-<xsl:variable name="canVote" select="boolean( number(umbraco.library:GetCurrentMember()/reputationCurrent) &gt;= 25 )"/>
+	<xsl:variable name="canVote" select="boolean( number(umbraco.library:GetCurrentMember()/reputationCurrent) &gt;= 25 )"/>
 
-<xsl:template match="/">
+	<xsl:template match="/">
 
-<!-- Topic Data -->
-<xsl:variable name="topicID" select="number(umbraco.library:ContextKey('topicID'))"/>
+		<!-- Topic Data -->
+		<xsl:variable name="topicID" select="number(umbraco.library:ContextKey('topicID'))"/>
     <xsl:variable name="topic" select="uForum.raw:Topic($topicID)"/>
 
 		<xsl:choose>
@@ -38,80 +39,85 @@
 			</xsl:when>
 			<xsl:otherwise>
 
-<!-- Sorting -->
-<xsl:variable name="sortBy">
+				<!-- Sorting -->
+				<xsl:variable name="sortBy">
       <xsl:choose>
         <xsl:when test="umbraco.library:RequestQueryString('sort') != ''">
           <xsl:value-of select="umbraco.library:RequestQueryString('sort')"/>
         </xsl:when>
         <xsl:otherwise>oldest</xsl:otherwise>
       </xsl:choose>
-</xsl:variable>
+				</xsl:variable>
 
-<!-- Current Page -->
-<xsl:variable name="p">
+				<!-- Current Page -->
+				<xsl:variable name="p">
       <xsl:choose>
         <xsl:when test="string(number( umbraco.library:RequestQueryString('p') )) != 'NaN'">
           <xsl:value-of select="umbraco.library:RequestQueryString('p')"/>
         </xsl:when>
         <xsl:otherwise>0</xsl:otherwise>
       </xsl:choose>
-</xsl:variable>
+				</xsl:variable>
 
-<!-- RSS -->
-<xsl:value-of select="uForum:RegisterRssFeed( concat('http://our.umbraco.org/rss/topic?id=',$topicID), concat('New replies to the the ',$topic/title ,' thread'), 'topicRss')"/>
+				<!-- RSS -->
+				<xsl:value-of select="uForum:RegisterRssFeed( concat('http://our.umbraco.org/rss/topic?id=',$topicID), concat('New replies to the the ',$topic/title ,' thread'), 'topicRss')"/>
 
-<!-- Treshold -->
-<xsl:variable name="treshold">
+				<!-- Treshold -->
+				<xsl:variable name="treshold">
       <xsl:choose>
         <xsl:when test="umbraco.library:IsLoggedOn()">
           <xsl:value-of select="umbraco.library:GetCurrentMember()/treshold" />
         </xsl:when>
         <xsl:otherwise>-10</xsl:otherwise>
       </xsl:choose>
-</xsl:variable>
+				</xsl:variable>
 
-<!-- Paging -->
-<xsl:variable name="maxitems">10</xsl:variable>
-<xsl:variable name="pages" select="uForum:TopicPager($topicID, $maxitems, $p)"/>
+				<!-- Paging -->
+				<xsl:variable name="maxitems">10</xsl:variable>
+				<xsl:variable name="pages" select="uForum:TopicPager($topicID, $maxitems, $p)"/>
 
-<!-- Indicate if topic has been solved -->
+				<!-- Indicate if topic has been solved -->
 
-<ul class="commentsList">
-<!-- Display the topic start -->
-<xsl:if test="$p = 0">
+				<ul class="commentsList">
+					<!-- Display the topic start -->
+					<xsl:if test="$p = 0">
 
         <xsl:variable name="topicStarter" select="umbraco.library:GetMember($topic/@memberId)"/>
 
-<li class="post" id="posts-{$topicID}">
-<div class="author vcard">
-<xsl:call-template name="badge">
-    <xsl:with-param name="mem" select="$topicStarter" />
-    <xsl:with-param name="date" select="$topic/created" />
-</xsl:call-template>
-</div>
+						<li class="post" id="posts-{$topicID}">
+							<div class="author vcard">
+								<xsl:call-template name="badge">
+									<xsl:with-param name="mem" select="$topicStarter" />
+									<xsl:with-param name="date" select="$topic/created" />
+								</xsl:call-template>
+							</div>
 
-<div class="comment">
-<div class="meta">
+							<div class="comment">
+								<div class="meta">
               <h2>
                 <xsl:value-of select="$topic/title"/>
               </h2>
-<div class="postedAt">
+									<div class="postedAt">
                 <a href="/member/{$topicStarter//@id}">
                   <xsl:value-of select="$topicStarter//@nodeName"/>
                 </a>
 										<xsl:text> started this topic </xsl:text>
-    <strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($topic/created)" /></strong>
+										<strong title="{umbraco.library:FormatDateTime($topic/created, 'MMMM d, yyyy @ hh:mm')}">
+											<xsl:value-of select="uForum:TimeDiff($topic/created)" />
+										</strong>
 
-                <xsl:if test="Exslt.ExsltDatesAndTimes:seconds(Exslt.ExsltDatesAndTimes:difference($topic/@created, $topic/updated)) &gt; 10">
+										<xsl:if test="Exslt.ExsltDatesAndTimes:seconds(Exslt.ExsltDatesAndTimes:difference($topic/created, $topic/updated)) &gt; 10">
 											<xsl:text>, this topic was edited at: </xsl:text>
     <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
-    </xsl:if> 
+										</xsl:if>
 
-    <xsl:if test="$topic/answer != 0"><a href="{uForum:NiceCommentUrl($topic/@id, $topic/answer, $maxitems)}" class="solution">, Go directly to the topic solution</a></xsl:if>
-				
-</div>
-</div>
+										<xsl:if test="$topic/answer != 0">
+											<a href="{uForum:NiceCommentUrl($topic/id, $topic/answer, $maxitems)}" class="solution">
+												<xsl:text>, Go directly to the topic solution</xsl:text>
+											</a>
+										</xsl:if>
+									</div>
+								</div>
 
 								<xsl:if test="umbraco.library:IsLoggedOn()">
 									<div class="options">
@@ -276,45 +282,48 @@
 			</xsl:if>
 
 
-<div class="author vcard">
-<xsl:call-template name="badge">
-  <xsl:with-param name="mem" select="$author" />
-  <xsl:with-param name="date" select="$comment/created" />
-</xsl:call-template>
+			<div class="author vcard">
+				<xsl:call-template name="badge">
+					<xsl:with-param name="mem" select="$author" />
+					<xsl:with-param name="date" select="$comment/created" />
+				</xsl:call-template>
 
-<xsl:if test="id = $topic/answer">
-<a name="solution" style="visibility: hidden">Solution</a>
-</xsl:if>
+				<xsl:if test="id = $topic/answer">
+					<a name="solution" style="visibility: hidden">Solution</a>
+				</xsl:if>
         <a name="comment{$comment/id}" style="visibility: hidden">
 					<xsl:text>Comment with ID: </xsl:text>
+					<xsl:value-of select="$comment/id"/>
         </a>
-</div>
+			</div>
 
-<div class="comment" id="comment{$comment/id}">
+			<div class="comment" id="comment{$comment/id}">
 
-<div class="meta">
-  <div class="postedAt">
+				<div class="meta">
+					<div class="postedAt">
             <a href="/member/{$author//@id}">
               <xsl:value-of select="$author//@nodeName"/>
             </a>
 						<xsl:text> posted this reply </xsl:text>
-    <strong title="{umbraco.library:FormatDateTime($comment/created, 'MMMM d, yyyy @ hh:mm')}"><xsl:value-of select="uForum:TimeDiff($comment/created)" /></strong>
-  </div>
-</div>
+						<strong title="{umbraco.library:FormatDateTime($comment/created, 'MMMM d, yyyy @ hh:mm')}">
+							<xsl:value-of select="uForum:TimeDiff($comment/created)" />
+						</strong>
+					</div>
+				</div>
 
-<xsl:if test="umbraco.library:IsLoggedOn()">
-<div class="options">
+				<xsl:if test="umbraco.library:IsLoggedOn()">
+					<div class="options">
             <xsl:call-template name="commentOptions">
               <xsl:with-param name="comment" select="$comment" />
               <xsl:with-param name="topic" select="$topic" />
             </xsl:call-template>
-</div>
-</xsl:if>
+					</div>
+				</xsl:if>
 
-<div class="body"  style="clear: both">
+				<div class="body"  style="clear: both">
   <xsl:value-of select="uForum:Sanitize($comment/body)" disable-output-escaping="yes"/>
-</div>
-</div>
+				</div>
+			</div>
 
 
 			<div class="voting rounded">
