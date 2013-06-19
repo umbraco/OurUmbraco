@@ -23,7 +23,7 @@
 
   <xsl:template match="/">
 
-    <xsl:if test="number($currentPage/forumAllowNewTopics) = 1">
+    
       <xsl:variable name="treshold">
         <xsl:choose>
           <xsl:when test="umbraco.library:IsLoggedOn()">
@@ -73,9 +73,11 @@
                 Subscribe
               </a>
             </li>
-            <li class="right">
-              <a class="act add" href="{umbraco.library:NiceUrl($currentPage/@id)}/NewTopic" style="font-weight: bold;">Create a new topic</a>
-            </li>
+            <xsl:if test="number($currentPage/forumAllowNewTopics) = 1">
+              <li class="right">
+                <a class="act add" href="{umbraco.library:NiceUrl($currentPage/@id)}/NewTopic" style="font-weight: bold;">Create a new topic</a>
+              </li>
+            </xsl:if>
           </ul>
         </div>
       </xsl:if>
@@ -116,7 +118,6 @@
 
       </xsl:if>
 
-    </xsl:if>
   </xsl:template>
 
   <xsl:template name="collapsedTopic">
