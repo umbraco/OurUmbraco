@@ -3321,9 +3321,11 @@
     <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
-    <Content Include="macroScripts\forum-createComment.cshtml" />
     <Content Include="masterpages\ArchivedRelease.master" />
     <Content Include="masterpages\ReleaseDownload.master" />
+    <Content Include="macroScripts\Releases-ListDownloads.cshtml">
+      <SubType>Code</SubType>
+    </Content>
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
