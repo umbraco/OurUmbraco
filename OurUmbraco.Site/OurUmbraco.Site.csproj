@@ -538,7 +538,6 @@
     <Content Include="umbraco\webservices\MediaUploader.ashx" />
     <Content Include="umbraco\webservices\TagsAutoCompleteHandler.ashx" />
     <Content Include="umbraco\webservices\TreeDataService.ashx" />
-    <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco_client\CodeMirror\js\mode\razor\LICENSE" />
     <Content Include="umbraco_client\CodeMirror\js\mode\sieve\LICENSE" />
     <Content Include="usercontrols\IndexStatus.ascx" />
