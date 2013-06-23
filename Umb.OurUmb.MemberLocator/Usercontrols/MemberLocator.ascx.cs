@@ -359,8 +359,10 @@ namespace Umb.OurUmb.MemberLocator.Usercontrols
                     where lat.propertytypeid = 43 and lat.dataNvarchar is not null and lat.dataNvarchar != ''
                     and lon.propertytypeid = 34 and lon.dataNvarchar is not null and lon.dataNvarchar != ''
                     and karma.propertytypeid = 32 and avatar.propertytypeid = 39
-                and Cast(lat.dataNvarchar as decimal(10)) > @minlat and Cast(lat.dataNvarchar as decimal(10)) < @maxlat
-                and Cast(lon.dataNvarchar as decimal(10)) > @minlon and Cast(lon.dataNvarchar as decimal(10)) < @maxlon;";
+                    and CASE WHEN IsNumeric(lat.dataNvarchar) = 1 THEN Cast(lat.dataNvarchar as decimal(10)) ELSE -90 END > @minlat
+                    and CASE WHEN IsNumeric(lat.dataNvarchar) = 1 THEN Cast(lat.dataNvarchar as decimal(10)) ELSE 90 END < @maxlat
+                    and CASE WHEN IsNumeric(lon.dataNvarchar) = 1 THEN Cast(lon.dataNvarchar as decimal(10)) ELSE -180 END > @minlon
+                    and CASE WHEN IsNumeric(lon.dataNvarchar) = 1 THEN Cast(lon.dataNvarchar as decimal(10)) ELSE 180 END < @maxlon;";
 
             SqlConnection conn = new SqlConnection(umbraco.GlobalSettings.DbDSN);
             SqlCommand commMembLoc = new SqlCommand(selectMembLoc, conn);
