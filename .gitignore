@@ -30,6 +30,7 @@ umbraco.config
 *OurUmbraco.Site/App_Data/Preview*/
 *OurUmbraco.Site/install*/
 *OurUmbraco.Site/media/
+!OurUmbraco.Site/images/releases*/
 
 _BuildOutput/*
 *.ncrunchsolution
