@@ -16,12 +16,21 @@
     <div style="margin-top: 25px;">
       <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
     </div>
-    <h1><umbraco:Item ID="Item1" field="alternativeHeadline" useIfEmpty="pageName" runat="server"></umbraco:Item></h1>
-    <h2 id="loading" data-bind="visible: versions().length == 0">Loading...</h2> 
+	
+	<umbraco:Macro ID="Macro2" runat="server" Language="cshtml">
+		@{
+		   var pageName = Model.Name;
+		   if(Request.Url.AbsoluteUri.EndsWith("download")) 
+		   {
+				pageName = "Download";
+		   }
+		}
+		<h1>@pageName</h1>
+	</umbraco:Macro>
 
     <umbraco:Item ID="Item2" field="bodyText" runat="server"></umbraco:Item>
     
-  <div class="releaseTable" data-bind="slideVisible: currentReleases().length > 0">
+  <div class="releaseTable">
     <h2>Current:</h2>
     <div class="releaseHeaders">
       <div class="header version">Version</div>
@@ -30,7 +39,7 @@
     </div>
     <div class="released" data-bind="template: { name: 'version-template', foreach: currentReleases }"></div>
   </div>
-  <div class="releaseTable" data-bind="slideVisible: inProgressReleases().length > 0">
+  <div class="releaseTable"  data-bind="slideVisible: inProgressReleases().length > 0">
     <h2>In Progress:</h2>
     <div class="releaseHeaders">
       <div class="header version">Version</div>
@@ -69,7 +78,7 @@
   <div class="releaseTable manyReleases">
 
     <h2>Historical releases:</h2>
-    <umbraco:Macro ID="Macro2" runat="server" Language="cshtml">
+    <umbraco:Macro ID="Macro3" runat="server" Language="cshtml">
         <ul>
         @using uRelease
         @{

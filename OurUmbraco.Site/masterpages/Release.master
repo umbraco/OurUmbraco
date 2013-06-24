@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
-  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />
+  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=5" />
   <!-- release scripts -->
   <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
   <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
@@ -123,7 +123,19 @@
                 <h2>Source code</h2>
                 <p>The source for <a href="@Model.LinkToChangeset">this specific release is available for download from the repository</a> (click the "ZIP" button).</p>
             }
+            
+            @if(Model.HasNuGet) {
+                <h2>Also available on NuGet</h2>
+                
+                <div class="nuget-badge">
+                    <a href="https://nuget.org/packages/UmbracoCms/@Model.Name">
+                        <p><code>PM&gt; Install-Package UmbracoCms -Version @Model.Name</code></p>
+                    </a>
+                </div>
+                
+            }
         </umbraco:Macro>
+
     </div>
   
 </div>
