@@ -342,6 +342,7 @@
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
+    <Content Include="bin\legacy\HtmlAgilityPack.dll" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
