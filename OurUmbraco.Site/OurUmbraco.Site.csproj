@@ -342,7 +342,6 @@
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
-    <Content Include="bin\legacy\HtmlAgilityPack.dll" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
@@ -3738,7 +3737,7 @@
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>MD "$(TargetDir)\legacy\"
-XCOPY "$(ProjectDir)..\dependencies\legacy\*.dll" "$(TargetDir)\legacy\" /S /Y</PreBuildEvent>
+XCOPY "$(TargetDir)..\..\dependencies\legacy\*.dll" "$(TargetDir)\legacy\" /S /Y</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
