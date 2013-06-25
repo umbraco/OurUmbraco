@@ -3736,8 +3736,8 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>MD "$(SolutionDir)OurUmbraco.Site\bin\legacy\"
-XCOPY "$(SolutionDir)dependencies\legacy\*.dll" "$(SolutionDir)OurUmbraco.Site\bin\legacy\" /S /Y</PreBuildEvent>
+    <PreBuildEvent>MD "$(ProjectDir)bin\legacy\"
+XCOPY "$(ProjectDir)..\dependencies\legacy\*.dll" "$(ProjectDir)bin\legacy\" /S /Y</PreBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
