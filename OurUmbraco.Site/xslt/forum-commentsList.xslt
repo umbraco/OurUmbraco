@@ -152,7 +152,7 @@
 								</span>
 
 								<xsl:if test="umbraco.library:IsLoggedOn()">
-									<xsl:if test="$mem != $topic/memberId">
+									<xsl:if test="$mem!= $topic/@memberId">
 										<xsl:variable name="vote" select="uPowers:YourVote($mem, $topic/@id, 'powersTopic')"/>
 
 										<xsl:if test="$vote = 0">
