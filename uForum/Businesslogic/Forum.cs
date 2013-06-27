@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Linq;
 using System.Web;
 using System.Xml;
 using umbraco.cms.businesslogic.member;
@@ -281,7 +283,12 @@ namespace uForum.Businesslogic {
             return tx;
 
         }
-    
+
+        public static bool TextContainsSpam(string text)
+        {
+            var spamWords = ConfigurationManager.AppSettings["uForumSpamWords"];
+            return spamWords.Split(',').Any(spamWord => text.ToLowerInvariant().Contains(spamWord.Trim().ToLowerInvariant()));
+        }
         
         /* Events */
         public static event EventHandler<CreateEventArgs> BeforeCreate;

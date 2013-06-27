@@ -32,6 +32,9 @@ namespace uForum.Businesslogic
         [PetaPoco.Column("updated")]
         public DateTime Updated { get; private set; }
 
+        [PetaPoco.Column("isSpam")]
+        public bool IsSpam { get; set; }
+
         private List<Tag> _tags;
         public List<Tag> Tags
         {
@@ -147,7 +150,7 @@ namespace uForum.Businesslogic
             Save(false);
         }
 
-        public void Save(bool silent)
+        public void Save(bool silent, bool isNotSpam = false)
         {
             if (Id == 0)
             {
@@ -210,7 +213,7 @@ namespace uForum.Businesslogic
                     if (silent == false)
                         Updated = DateTime.Now;
 
-                    Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET replies = @replies, parentId = @parentId, memberId = @memberId, title = @title, urlname = @urlname, body = @body, updated = @updated, locked = @locked, latestReplyAuthor = @latestReplyAuthor, latestComment = @latestComment WHERE id = @id",
+                    Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET replies = @replies, parentId = @parentId, memberId = @memberId, title = @title, urlname = @urlname, body = @body, updated = @updated, locked = @locked, latestReplyAuthor = @latestReplyAuthor, latestComment = @latestComment, isSpam = @isSpam WHERE id = @id",
                         Data.SqlHelper.CreateParameter("@parentId", ParentId),
                         Data.SqlHelper.CreateParameter("@memberId", MemberId),
                         Data.SqlHelper.CreateParameter("@title", Title),
@@ -221,7 +224,8 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
                         Data.SqlHelper.CreateParameter("@latestComment", LatestComment),
                         Data.SqlHelper.CreateParameter("@locked", Locked),
-                        Data.SqlHelper.CreateParameter("@replies", totalComments)
+                        Data.SqlHelper.CreateParameter("@replies", totalComments),
+                        Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
                     );
 
                     // save tags

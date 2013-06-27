@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web;
+using System.Linq;
 using System.Xml;
-using System.ComponentModel;
 
 namespace uForum.Businesslogic {
 
@@ -28,11 +26,14 @@ namespace uForum.Businesslogic {
         [PetaPoco.Column("score")]
         public int Score { get; set; }
 
+        [PetaPoco.Column("isSpam")]
+        public bool IsSpam { get; set; }
+
         public bool Exists { get; set; }
 
         private Events _e = new Events();
 
-        public void Save() {
+        public void Save(bool isNotSpam = false) {
 
             if (Id == 0) {
 
@@ -40,12 +41,13 @@ namespace uForum.Businesslogic {
                     CreateEventArgs e = new CreateEventArgs();
                     FireBeforeCreate(e);
                     if (!e.Cancel) {
-                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumComments (topicId, memberId, body, position) VALUES(@topicId, @memberId, @body, @position)",
+                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumComments (topicId, memberId, body, position, isSpam) VALUES(@topicId, @memberId, @body, @position, @isSpam)",
                             Data.SqlHelper.CreateParameter("@topicId", TopicId),
                             Data.SqlHelper.CreateParameter("@memberId", MemberId),
                             Data.SqlHelper.CreateParameter("@body", Body),
-                            Data.SqlHelper.CreateParameter("@position", Position)
-                            );
+                            Data.SqlHelper.CreateParameter("@position", Position),
+                            Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
+                         );
 
                         Created = DateTime.Now;
                         Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumComments WHERE memberId = @memberId",
@@ -76,17 +78,17 @@ namespace uForum.Businesslogic {
                 FireBeforeUpdate(e);
 
                 if (!e.Cancel) {
-                    Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET topicId = @topicId, memberId = @memberId, body = @body WHERE id = @id",
+                    Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET topicId = @topicId, memberId = @memberId, body = @body, isSpam = @isSpam WHERE id = @id",
                         Data.SqlHelper.CreateParameter("@topicId", TopicId),
                         Data.SqlHelper.CreateParameter("@memberId", MemberId),
                         Data.SqlHelper.CreateParameter("@body", Body),
-                        Data.SqlHelper.CreateParameter("@id", Id)
+                        Data.SqlHelper.CreateParameter("@id", Id),
+                        Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
                         );
                     FireAfterUpdate(e);
                 }
             }
         }
-
 
         public bool Editable(int memberId)
         {

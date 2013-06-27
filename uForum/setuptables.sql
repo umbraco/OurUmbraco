@@ -77,6 +77,7 @@ CREATE TABLE [dbo].[forumTopics](
 	[updated] [datetime] NOT NULL,
 	[locked] [bit] NOT NULL,
 	[latestReplyAuthor] [int] NOT NULL,
+	[isSpam] [bit] NULL
  CONSTRAINT [PK_forumTopics] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC
@@ -97,6 +98,7 @@ CREATE TABLE [dbo].[forumComments](
 	[memberId] [int] NOT NULL,
 	[body] [ntext] COLLATE SQL_Latin1_General_CP1_CI_AS NOT NULL,
 	[created] [datetime] NOT NULL,
+	[isSpam] [bit] NULL
  CONSTRAINT [PK_forumComments] PRIMARY KEY CLUSTERED 
 (
 	[id] ASC

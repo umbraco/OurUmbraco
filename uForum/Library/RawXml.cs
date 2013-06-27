@@ -59,12 +59,12 @@ namespace uForum.Library {
         }
 
         public static XPathNodeIterator TopicsWithAuthor(int memberId) {
-            return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where memberid = " + memberId.ToString(), "topic");
+            return Businesslogic.Data.GetDataSet("SELECT * FROM forumTopics where (isSpam IS NULL OR isSpam != 1) AND memberid = " + memberId.ToString(), "topic");
         }
 
         public static XPathNodeIterator Comment(int commentId)
         {
-            return Businesslogic.Data.GetDataSet("SELECT * FROM forumComments where id = " + commentId.ToString(), "comment");
+            return Businesslogic.Data.GetDataSet("SELECT * FROM forumComments where (isSpam IS NULL OR isSpam != 1) AND  where id = " + commentId.ToString(), "comment");
         }
 
         public static XPathNodeIterator Topic(int topicId)
@@ -96,7 +96,7 @@ namespace uForum.Library {
                             SELECT	id, parentId, memberId, title, body, created, updated, locked, latestReplyAuthor, latestComment, replies, score, urlname, answer,
 		                            ROW_NUMBER() OVER (ORDER BY updated DESC) AS RowNumber
                             FROM	dbo.forumTopics
-                            WHERE parentId = " + forumId.ToString() + @"
+                            WHERE (isSpam IS NULL OR isSpam != 1) AND parentId = " + forumId.ToString() + @"
                         )
                         SELECT	id, parentId, RowNumber, memberId, title, body, created, updated, locked, latestReplyAuthor, latestComment, replies, score, urlname, answer
                         FROM	Topics
@@ -124,7 +124,7 @@ namespace uForum.Library {
 	                            SELECT	id, topicId, memberId, body, created, score, position,
 			                            ROW_NUMBER() OVER (ORDER BY created " + order  + @") AS RowNumber
 	                            FROM	dbo.forumComments
-	                            WHERE topicId = " + topicId.ToString() + @"
+	                            WHERE (isSpam IS NULL OR isSpam != 1) AND topicId = " + topicId.ToString() + @"
                             )
                             SELECT	id, topicId, memberId, body, created, score, position, RowNumber
                             FROM	Comments
@@ -152,7 +152,7 @@ namespace uForum.Library {
 	                            SELECT	id, topicId, memberId, body, created, score, position,
 			                            ROW_NUMBER() OVER (ORDER BY score " + order + @") AS RowNumber
 	                            FROM	dbo.forumComments
-	                            WHERE topicId = " + topicId.ToString() + @"
+	                            WHERE (isSpam IS NULL OR isSpam != 1) AND topicId = " + topicId.ToString() + @"
                             )
                             SELECT	id, topicId, memberId, body, created, score, position, RowNumber
                             FROM	Comments
@@ -188,7 +188,7 @@ namespace uForum.Library {
                         (
                             SELECT	dbo.forumTopics.id, dbo.forumTopics.parentId, dbo.forumTopics.memberId, dbo.forumTopics.title, dbo.forumTopics.body, dbo.forumTopics.created, dbo.forumTopics.updated, dbo.forumTopics.locked, dbo.forumTopics.latestReplyAuthor, dbo.forumTopics.replies, dbo.forumTopics.score, dbo.forumTopics.urlname, dbo.forumTopics.answer, dbo.forumTopics.latestComment,
 		                            ROW_NUMBER() OVER (ORDER BY dbo.forumTopics.updated DESC) AS RowNumber 
-                            FROM	dbo.forumTopics INNER JOIN dbo.ForumForums on dbo.forumTopics.ParentId = dbo.ForumForums.Id WHERE dbo.forumforums.parentId != 1057 AND dbo.ForumTopics.updated > " + sinceDate.ToShortDateString() + @"
+                            FROM	dbo.forumTopics INNER JOIN dbo.ForumForums on dbo.forumTopics.ParentId = dbo.ForumForums.Id WHERE (dbo.forumTopics.isSpam IS NULL OR dbo.forumTopics.isSpam != 1) AND dbo.forumforums.parentId != 1057 AND dbo.ForumTopics.updated > " + sinceDate.ToShortDateString() + @"
                         )
                         SELECT	id, parentId, RowNumber, memberId, title, body, created, updated, locked, latestReplyAuthor, replies, score, urlname, answer, latestComment
                         FROM	Topics
