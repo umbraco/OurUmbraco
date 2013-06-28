@@ -108,7 +108,7 @@ namespace uForum.Businesslogic {
 
         public Comment() { }
         public Comment(int id) {
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE id = " + id.ToString());
+            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND id = " + id.ToString());
 
             if (dr.Read())
             {

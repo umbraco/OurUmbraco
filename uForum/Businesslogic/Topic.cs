@@ -165,13 +165,14 @@ namespace uForum.Businesslogic
                     {
                         UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
 
-                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumTopics (parentId, memberId, title, urlName, body, latestReplyAuthor) VALUES(@parentId, @memberId, @title, @urlname, @body, @latestReplyAuthor)",
+                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumTopics (parentId, memberId, title, urlName, body, latestReplyAuthor, isSpam) VALUES(@parentId, @memberId, @title, @urlname, @body, @latestReplyAuthor, @isSpam)",
                             Data.SqlHelper.CreateParameter("@parentId", ParentId),
                             Data.SqlHelper.CreateParameter("@memberId", MemberId),
                             Data.SqlHelper.CreateParameter("@title", Title),
                             Data.SqlHelper.CreateParameter("@urlname", UrlName),
                             Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
-                            Data.SqlHelper.CreateParameter("@body", Body)
+                            Data.SqlHelper.CreateParameter("@body", Body),
+                            Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
                         );
 
                         Created = DateTime.Now;
@@ -204,9 +205,9 @@ namespace uForum.Businesslogic
 
                 if (updateEventArgs.Cancel == false)
                 {
-                    var totalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT count(id) from forumComments where topicId = @id", Data.SqlHelper.CreateParameter("@id", Id));
-                    LatestReplyAuthor = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 memberId FROM forumComments WHERE (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
-                    LatestComment = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumComments WHERE (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
+                    var totalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT count(id) from forumComments where (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND topicId = @id", Data.SqlHelper.CreateParameter("@id", Id));
+                    LatestReplyAuthor = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 memberId FROM forumComments WHERE (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
+                    LatestComment = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumComments WHERE (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND (topicId= @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", Id));
 
                     UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
 
@@ -240,7 +241,7 @@ namespace uForum.Businesslogic
 
         private void UpdateCommentsPosition()
         {
-            const string sql = @"SELECT id, position, created, ROW_NUMBER() OVER (ORDER BY created) AS RowNumber FROM forumComments where topicId = @Id";
+            const string sql = @"SELECT id, position, created, ROW_NUMBER() OVER (ORDER BY created) AS RowNumber FROM forumComments where (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND topicId = @Id";
             var reader = Data.SqlHelper.ExecuteReader(sql, Data.SqlHelper.CreateParameter("@id", Id));
 
             while (reader.Read())
@@ -261,7 +262,7 @@ namespace uForum.Businesslogic
             }
 
             var db = new Database("umbracoDbDSN");
-            foreach (var comment in db.Query<Comment>("Select * from forumComments where topicId = @0", Id))
+            foreach (var comment in db.Query<Comment>("Select * from forumComments where (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND topicId = @0", Id))
             {
                 _comments.Add(comment);
             }
@@ -332,14 +333,14 @@ namespace uForum.Businesslogic
         public static Topic GetTopic(int topicId)
         {
             var db = new Database("umbracoDbDSN");
-            var topic = db.SingleOrDefault<Topic>("SELECT * FROM forumTopics WHERE id = @0", topicId);
+            var topic = db.SingleOrDefault<Topic>("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND id = @0", topicId);
             return topic;
         }
 
         [Obsolete("Use GetTopic instead", true)]
         public Topic(int topicId)
         {
-            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE id = @id", Data.SqlHelper.CreateParameter("@id", topicId.ToString(CultureInfo.InvariantCulture)));
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND id = @id", Data.SqlHelper.CreateParameter("@id", topicId.ToString(CultureInfo.InvariantCulture)));
 
             if (reader.Read())
             {
@@ -394,7 +395,7 @@ namespace uForum.Businesslogic
         {
             var topics = new List<Topic>();
             var reader = Data.SqlHelper.ExecuteReader(
-                "SELECT TOP @topicsPerPage * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC",
+                "SELECT TOP @topicsPerPage * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND parentId = @parentId ORDER BY updated DESC",
                     Data.SqlHelper.CreateParameter("@topicsPerPage", topicsPerPage.ToString(CultureInfo.InvariantCulture)),
                     Data.SqlHelper.CreateParameter("@topicsPerPage", forumId.ToString(CultureInfo.InvariantCulture)));
 
@@ -411,7 +412,7 @@ namespace uForum.Businesslogic
         public static List<Topic> TopicsInForum(int forumId)
         {
             var topics = new List<Topic>();
-            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE parentId = @parentId ORDER BY updated DESC", Data.SqlHelper.CreateParameter("@parentId", forumId.ToString(CultureInfo.InvariantCulture)));
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND parentId = @parentId ORDER BY updated DESC", Data.SqlHelper.CreateParameter("@parentId", forumId.ToString(CultureInfo.InvariantCulture)));
 
             while (reader.Read())
                 topics.Add(GetFromReader(reader));
@@ -429,7 +430,7 @@ namespace uForum.Businesslogic
 
             // 1057 is the profile node.  This is a hack way of hiding the forums from the latest list on the homepage added by PG
             var reader = Data.SqlHelper.ExecuteReader(
-                "SELECT TOP " + amount + " forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where forumforums.parentId != 1057 ORDER BY updated DESC");
+                "SELECT TOP " + amount + " forumTopics.* FROM forumTopics INNER JOIN ForumForums on forumTopics.ParentId = ForumForums.Id Where (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND forumforums.parentId != 1057 ORDER BY updated DESC");
 
             while (reader.Read())
             {
@@ -445,7 +446,7 @@ namespace uForum.Businesslogic
         public static List<Topic> GetAll()
         {
             var topics = new List<Topic>();
-            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics");
+            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) ");
 
             while (reader.Read())
                 topics.Add(GetFromReader(reader));
@@ -458,7 +459,7 @@ namespace uForum.Businesslogic
 
         public static int TotalTopics()
         {
-            return Data.SqlHelper.ExecuteScalar<int>("SELECT COUNT(id) FROM [forumTopics];");
+            return Data.SqlHelper.ExecuteScalar<int>("SELECT COUNT(id) FROM [forumTopics] WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1);");
         }
 
         /* Events */

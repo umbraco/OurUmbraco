@@ -101,17 +101,17 @@ namespace uForum.Businesslogic {
 
                 if (!e.Cancel) {
 
-                    TotalTopics = Data.SqlHelper.ExecuteScalar<int>("SELECT count(*) from forumTopics where parentId = @id", Data.SqlHelper.CreateParameter("@id", Id));
-                    TotalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT COUNT(forumComments.id) FROM forumTopics INNER JOIN forumComments ON forumComments.topicId = forumTopics.id WHERE (forumTopics.parentId = @id)", Data.SqlHelper.CreateParameter("@id", Id));
+                    TotalTopics = Data.SqlHelper.ExecuteScalar<int>("SELECT count(*) from forumTopics where (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND parentId = @id", Data.SqlHelper.CreateParameter("@id", Id));
+                    TotalComments = Data.SqlHelper.ExecuteScalar<int>("SELECT COUNT(forumComments.id) FROM forumTopics INNER JOIN forumComments ON forumComments.topicId = forumTopics.id WHERE ((forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND forumTopics.parentId = @id) AND (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) ", Data.SqlHelper.CreateParameter("@id", Id));
 
                     if (TotalTopics > 0) {
-                        _latestTopicID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumTopics WHERE (forumTopics.parentId = @id) ORDER BY Updated DESC ", Data.SqlHelper.CreateParameter("@id", Id));
-                        _latestAuthorID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 latestReplyAuthor FROM forumTopics WHERE (forumTopics.parentId = @id) ORDER BY Updated DESC ", Data.SqlHelper.CreateParameter("@id", Id));
-                        
-                        LatestPostDate = Data.SqlHelper.ExecuteScalar<DateTime>("SELECT TOP 1 updated FROM forumTopics WHERE (forumTopics.parentId = @id) ORDER BY Updated DESC", Data.SqlHelper.CreateParameter("@id", Id));
+                        _latestTopicID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND (forumTopics.parentId = @id) ORDER BY Updated DESC ", Data.SqlHelper.CreateParameter("@id", Id));
+                        _latestAuthorID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 latestReplyAuthor FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND (forumTopics.parentId = @id) ORDER BY Updated DESC ", Data.SqlHelper.CreateParameter("@id", Id));
+
+                        LatestPostDate = Data.SqlHelper.ExecuteScalar<DateTime>("SELECT TOP 1 updated FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND (forumTopics.parentId = @id) ORDER BY Updated DESC", Data.SqlHelper.CreateParameter("@id", Id));
 
                         if (TotalComments > 0) {
-                            _latestCommentID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumComments WHERE (topicId = @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", _latestTopicID));
+                            _latestCommentID = Data.SqlHelper.ExecuteScalar<int>("SELECT TOP 1 id FROM forumComments WHERE (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND (topicId = @id) ORDER BY Created DESC ", Data.SqlHelper.CreateParameter("@id", _latestTopicID));
                         }
                     }
 
@@ -185,7 +185,7 @@ namespace uForum.Businesslogic {
             string sql = @"SELECT Count(forumTopics.id)
                             FROM [forumTopics]
                             LEFT JOIN forumComments ON forumComments.topicId = forumTopics.id
-                            where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId +@";";
+                            where forumTopics.memberId = " + memberId + " OR forumComments.memberId = " + memberId + @";";
 
             return Data.SqlHelper.ExecuteScalar<int>(sql);
         }
