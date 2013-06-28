@@ -22,7 +22,16 @@ namespace NotificationsCore.NotificationTypes
         public override bool SendNotification(System.Xml.XmlNode details, params object[] args)
         {
             try
-            {                
+            {
+
+                var topic = (Topic)args[0];
+                if (topic.IsSpam)
+                {
+                    umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, string.Format("[Notifications] Topic ID {0} is marked as spam, no notification sent{0}", topic.Id));
+                    return true;
+                }
+                    
+
                 SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
                 c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
@@ -32,39 +41,29 @@ namespace NotificationsCore.NotificationTypes
 
                 string subject = details.SelectSingleNode("//subject").InnerText;
                 string body = details.SelectSingleNode("//body").InnerText;
-
               
-                Topic t = (Topic)args[0];
-
-                Member s = (Member)args[2];
+                Member member = (Member)args[2];
 
                 //currently using document api instead of nodefactory
-                Document f = new Document(t.ParentId);
+                Document forum = new Document(topic.ParentId);
 
                
-                subject = string.Format(subject, f.Text);
+                subject = string.Format(subject, forum.Text);
 
-                string domain = details.SelectSingleNode("//domain").InnerText;
-
-               
-
-                body = string.Format(body,
-                    f.Text,
-                    "http://" + domain + args[1].ToString(), s.Text, t.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(t.Body)));
+                var domain = details.SelectSingleNode("//domain").InnerText;
+                
+                body = string.Format(body, forum.Text, "http://" + domain + args[1], member.Text, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
               
                 SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
 
                
                 SqlCommand comm = new SqlCommand("Select memberId from forumSubscribers where forumId = @forumId", conn);
-                comm.Parameters.AddWithValue("@forumId", t.ParentId);
-
+                comm.Parameters.AddWithValue("@forumId", topic.ParentId);
                 conn.Open();
 
                 SqlDataReader dr = comm.ExecuteReader();
-
-               
-
+                
                 while (dr.Read())
                 {
 
@@ -75,7 +74,7 @@ namespace NotificationsCore.NotificationTypes
                         Member m = new Member(mid);
 
 
-                        if (m.Id != t.MemberId
+                        if (m.Id != topic.MemberId
                             && (m.getProperty("bugMeNot").Value.ToString() != "1"))
                         {
                             MailMessage mm = new MailMessage();

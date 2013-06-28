@@ -21,6 +21,13 @@ namespace NotificationsCore.NotificationTypes
         {
             try
             {
+                Comment com = (Comment)args[0];
+                if (com.IsSpam)
+                {
+                    umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, string.Format("[Notifications] Comment Id {{0}} is marked as spam, no notification sent{0}", com.Id));
+                    return true;
+                }
+
                 SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
                 c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
@@ -28,28 +35,22 @@ namespace NotificationsCore.NotificationTypes
                     details.SelectSingleNode("//from/email").InnerText,
                     details.SelectSingleNode("//from/name").InnerText);
 
-                string subject = details.SelectSingleNode("//subject").InnerText;
-                string body = details.SelectSingleNode("//body").InnerText;
+                var subject = details.SelectSingleNode("//subject").InnerText;
+                var body = details.SelectSingleNode("//body").InnerText;
+                
+                var topic = Topic.GetTopic(com.TopicId);
+                subject = string.Format(subject, topic.Title);
 
-                Comment com = (Comment)args[0];
-                Topic t = Topic.GetTopic(com.TopicId);
-                subject = string.Format(subject, t.Title);
+                var member = (Member)args[2];
 
-                Member s = (Member)args[2];
+                var domain = details.SelectSingleNode("//domain").InnerText;
 
-                string domain = details.SelectSingleNode("//domain").InnerText;
-
-                body = string.Format(body, 
-                    t.Title,
-                    "http://" + domain + args[1].ToString(), s.Text,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
-
-
+                body = string.Format(body, topic.Title, "http://" + domain + args[1], member.Text,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
+                
                 SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
-
-
-
-                SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers where topicId = @topicId", conn);
-                comm.Parameters.AddWithValue("@topicId", t.Id);
+                
+                SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers topicId = @topicId", conn);
+                comm.Parameters.AddWithValue("@topicId", topic.Id);
 
                 conn.Open();
 
@@ -84,9 +85,6 @@ namespace NotificationsCore.NotificationTypes
                 }
 
                 conn.Close();
-
-
-
             }
             catch (Exception e)
             {
