@@ -13,7 +13,7 @@ using System.Text;
 
 namespace our
 {
-    
+
     /// <summary>
     /// The data service used by the LuceneEngine in order for it to reindex all data
     /// </summary>
@@ -35,11 +35,11 @@ namespace our
         {
             var data = new List<SimpleDataSet>();
 
-            foreach (Topic currentTopic in Topic.GetAll())
-            {   
+            foreach (Topic currentTopic in Topic.GetAll().Where(x => x.IsSpam != true))
+            {
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in currentTopic.Comments)
+                foreach (Comment currentComment in currentTopic.Comments.Where(x => x.IsSpam != true))
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }
@@ -50,7 +50,7 @@ namespace our
                 {
                     //Create the node definition, ensure that it is the same type as referenced in the config
                     NodeDefinition = new IndexedNode()
-                    {   
+                    {
                         NodeId = currentTopic.Id,
                         Type = "ForumPosts"
                     },
@@ -75,7 +75,7 @@ namespace our
                 });
 
             }
-            
+
             return data;
         }
 
@@ -88,7 +88,7 @@ namespace our
 
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in forumTopic.Comments)
+                foreach (Comment currentComment in forumTopic.Comments.Where(x => x.IsSpam != true))
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }
@@ -126,7 +126,7 @@ namespace our
 
                 //First generate the accumulated comment text:
                 string commentText = String.Empty;
-                foreach (Comment currentComment in forumTopic.Comments)
+                foreach (Comment currentComment in forumTopic.Comments.Where(x => x.IsSpam != true))
                 {
                     commentText += umbraco.library.StripHtml(currentComment.Body);
                 }
