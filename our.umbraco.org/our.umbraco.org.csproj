@@ -131,6 +131,20 @@
     <Compile Include="usercontrols\acceptTos.ascx.designer.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
     </Compile>
+    <Compile Include="usercontrols\ForumSpamListComments.ascx.cs">
+      <DependentUpon>ForumSpamListComments.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="usercontrols\ForumSpamListComments.ascx.designer.cs">
+      <DependentUpon>ForumSpamListComments.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="usercontrols\ForumSpamListTopics.ascx.cs">
+      <DependentUpon>ForumSpamListTopics.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="usercontrols\ForumSpamListTopics.ascx.designer.cs">
+      <DependentUpon>ForumSpamListTopics.ascx</DependentUpon>
+    </Compile>
     <Compile Include="usercontrols\ForumSpamCleaner.ascx.cs">
       <DependentUpon>ForumSpamCleaner.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -239,6 +253,12 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\acceptTos.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="usercontrols\ForumSpamListComments.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="usercontrols\ForumSpamListTopics.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="usercontrols\ForumSpamCleaner.ascx">

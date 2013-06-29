@@ -798,6 +798,8 @@
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
+    <Content Include="usercontrols\our.umbraco.org\ForumSpamListComments.ascx" />
+    <Content Include="usercontrols\our.umbraco.org\ForumSpamListTopics.ascx" />
     <Content Include="usercontrols\our.umbraco.org\SignupSimple.ascx" />
     <Content Include="usercontrols\umbracoContour\EditForm.ascx" />
     <Content Include="usercontrols\umbracoContour\Installer.ascx" />
