@@ -49,7 +49,7 @@ namespace NotificationsCore.NotificationTypes
                 
                 SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
                 
-                SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers topicId = @topicId", conn);
+                SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers where topicId = @topicId", conn);
                 comm.Parameters.AddWithValue("@topicId", topic.Id);
 
                 conn.Open();
