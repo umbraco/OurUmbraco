@@ -108,8 +108,8 @@
                       <xsl:value-of select="umbraco.library:FormatDateTime($topic/updated, 'f')"/>
 										</xsl:if>
 
-										<xsl:if test="$topic/answer != 0">
-											<a href="{uForum:NiceCommentUrl($topic/id, $topic/answer, $maxitems)}" class="solution">
+										<xsl:if test="$topic/@answer != 0">
+											<a href="{uForum:NiceCommentUrl($topic/@id, $topic/@answer, $maxitems)}" class="solution">
 												<xsl:text>, Go directly to the topic solution</xsl:text>
 											</a>
 										</xsl:if>
