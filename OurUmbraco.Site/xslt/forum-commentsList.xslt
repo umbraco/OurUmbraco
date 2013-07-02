@@ -363,7 +363,7 @@
 		<xsl:param name="comment"/>
 		<xsl:param name="topic"/>
 		<ul>
-			<xsl:if test="$topic/answer = 0 and $topic/memberId = $mem">
+			<xsl:if test="$topic/@answer = 0 and $topic/@memberId = $mem">
 				<li>
 					<a href="#" rel="{$comment/id}" title="Mark this reply as the solution" class="TopicSolver">
 						<img src="/css/img/icons/tick.png" alt="Mark this reply as the solution"/>
