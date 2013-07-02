@@ -271,7 +271,7 @@
 		<xsl:variable name="author" select="umbraco.library:GetMember($comment/memberId)"/>
 
 		<li class="post postComment" id="comment{$comment/id}">
-			<xsl:if test="id = $topic/answer">
+			<xsl:if test="id = $topic/@answer">
 				<xsl:attribute name="class">post postComment postSolution</xsl:attribute>
 			</xsl:if>
 			<xsl:if test="$collaps">
@@ -285,7 +285,7 @@
 					<xsl:with-param name="date" select="$comment/created" />
 				</xsl:call-template>
 
-				<xsl:if test="id = $topic/answer">
+				<xsl:if test="id = $topic/@answer">
 					<a name="solution" style="visibility: hidden">Solution</a>
 				</xsl:if>
         <a name="comment{$comment/id}" style="visibility: hidden">
