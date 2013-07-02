@@ -413,7 +413,7 @@
 				</li>
 			</xsl:if>
 
-			<xsl:if test="$isAdmin = true() or ($mem = $topic/memberId and $topic/replies &lt; 1)">
+			<xsl:if test="$isAdmin = true() or ($mem = $topic/@memberId and $topic/@replies &lt; 1)">
 				<li>
 					<a href="/forum/EditTopic?id={$topic/@id}" class="act edit kill" title="Edit this topic">Edit</a>
 				</li>
