@@ -179,7 +179,7 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@urlname", UrlName),
                         Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
                         Data.SqlHelper.CreateParameter("@body", Body),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "topic"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic"))
                         );
 
                     Created = DateTime.Now;
@@ -232,7 +232,7 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@latestComment", LatestComment),
                         Data.SqlHelper.CreateParameter("@locked", Locked),
                         Data.SqlHelper.CreateParameter("@replies", totalComments),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "topic"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic"))
                     );
 
                     // save tags

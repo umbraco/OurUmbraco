@@ -340,11 +340,10 @@ namespace uForum.Businesslogic
                               UserAgent = HttpContext.Current.Request.UserAgent
                           };
 
-            return akismetApi.CommentCheck(comment);
+            return akismetApi.CommentCheck(comment) || TextContainsSpam(body);
         }
 
-        [Obsolete("Use Forum.IsSpam instead to filter through Akismet", true)]
-        public static bool TextContainsSpam(string text)
+        private static bool TextContainsSpam(string text)
         {
             var spamWords = ConfigurationManager.AppSettings["uForumSpamWords"];
             return spamWords.Split(',').Any(spamWord => text.ToLowerInvariant().Contains(spamWord.Trim().ToLowerInvariant()));
