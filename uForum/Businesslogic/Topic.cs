@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Web;
+using System.Web.UI.MobileControls;
 using System.Xml;
+using Joel.Net;
 using PetaPoco;
+using umbraco.cms.businesslogic.member;
 
 namespace uForum.Businesslogic
 {
@@ -76,7 +81,7 @@ namespace uForum.Businesslogic
         private readonly Events _events = new Events();
 
         public bool Exists { get { return Id > 0; } }
-
+        
         public bool Editable(int memberId)
         {
             if (Exists == false || memberId == 0)
@@ -150,7 +155,7 @@ namespace uForum.Businesslogic
             Save(false);
         }
 
-        public void Save(bool silent, bool isNotSpam = false)
+        public void Save(bool silent, bool dontMarkAsSpam = false)
         {
             if (Id == 0)
             {
@@ -161,39 +166,40 @@ namespace uForum.Businesslogic
                     var createEventArgs = new CreateEventArgs();
                     FireBeforeCreate(createEventArgs);
 
-                    if (createEventArgs.Cancel == false)
-                    {
-                        UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
+                    if (createEventArgs.Cancel) 
+                        return;
 
-                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumTopics (parentId, memberId, title, urlName, body, latestReplyAuthor, isSpam) VALUES(@parentId, @memberId, @title, @urlname, @body, @latestReplyAuthor, @isSpam)",
-                            Data.SqlHelper.CreateParameter("@parentId", ParentId),
-                            Data.SqlHelper.CreateParameter("@memberId", MemberId),
-                            Data.SqlHelper.CreateParameter("@title", Title),
-                            Data.SqlHelper.CreateParameter("@urlname", UrlName),
-                            Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
-                            Data.SqlHelper.CreateParameter("@body", Body),
-                            Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : (Forum.TextContainsSpam(Body) || Forum.TextContainsSpam(Title)))
+
+                    UrlName = umbraco.cms.helpers.url.FormatUrl(Title);
+                    
+                    Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumTopics (parentId, memberId, title, urlName, body, latestReplyAuthor, isSpam) VALUES(@parentId, @memberId, @title, @urlname, @body, @latestReplyAuthor, @isSpam)",
+                        Data.SqlHelper.CreateParameter("@parentId", ParentId),
+                        Data.SqlHelper.CreateParameter("@memberId", MemberId),
+                        Data.SqlHelper.CreateParameter("@title", Title),
+                        Data.SqlHelper.CreateParameter("@urlname", UrlName),
+                        Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
+                        Data.SqlHelper.CreateParameter("@body", Body),
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "topic"))
                         );
 
-                        Created = DateTime.Now;
-                        Updated = DateTime.Now;
-                        Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", MemberId));
+                    Created = DateTime.Now;
+                    Updated = DateTime.Now;
+                    Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", MemberId));
 
-                        var forum = new Forum(ParentId);
+                    var forum = new Forum(ParentId);
 
-                        if (forum.Exists)
-                        {
-                            forum.SetLatestTopic(Id);
-                            forum.SetLatestAuthor(MemberId);
-                            forum.LatestPostDate = DateTime.Now;
-                            forum.Save();
-                        }
-
-                        // save tags
-                        Tag.AddTagsToTopic(Id, Tags);
-
-                        FireAfterCreate(createEventArgs);
+                    if (forum.Exists)
+                    {
+                        forum.SetLatestTopic(Id);
+                        forum.SetLatestAuthor(MemberId);
+                        forum.LatestPostDate = DateTime.Now;
+                        forum.Save();
                     }
+
+                    // save tags
+                    Tag.AddTagsToTopic(Id, Tags);
+
+                    FireAfterCreate(createEventArgs);
                 }
 
             }
@@ -226,7 +232,7 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@latestComment", LatestComment),
                         Data.SqlHelper.CreateParameter("@locked", Locked),
                         Data.SqlHelper.CreateParameter("@replies", totalComments),
-                        Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : (Forum.TextContainsSpam(Body) || Forum.TextContainsSpam(Title)))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "topic"))
                     );
 
                     // save tags

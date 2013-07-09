@@ -1,6 +1,12 @@
 ﻿using System;
+using System.Configuration;
 using System.Linq;
+using System.Web;
+using System.Web.UI.MobileControls;
 using System.Xml;
+using Joel.Net;
+using umbraco.cms.businesslogic.member;
+using umbraco.presentation.channels;
 
 namespace uForum.Businesslogic {
 
@@ -33,43 +39,44 @@ namespace uForum.Businesslogic {
 
         private Events _e = new Events();
 
-        public void Save(bool isNotSpam = false) {
+        public void Save(bool dontMarkAsSpam = false) {
 
             if (Id == 0) {
 
                 if (Library.Utills.IsMember(MemberId) && !string.IsNullOrEmpty(Body)) {
                     CreateEventArgs e = new CreateEventArgs();
                     FireBeforeCreate(e);
-                    if (!e.Cancel) {
-                        Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumComments (topicId, memberId, body, position, isSpam) VALUES(@topicId, @memberId, @body, @position, @isSpam)",
-                            Data.SqlHelper.CreateParameter("@topicId", TopicId),
-                            Data.SqlHelper.CreateParameter("@memberId", MemberId),
-                            Data.SqlHelper.CreateParameter("@body", Body),
-                            Data.SqlHelper.CreateParameter("@position", Position),
-                            Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
-                         );
+                    if (e.Cancel) 
+                        return;
+                    
+                    Data.SqlHelper.ExecuteNonQuery("INSERT INTO forumComments (topicId, memberId, body, position, isSpam) VALUES(@topicId, @memberId, @body, @position, @isSpam)",
+                        Data.SqlHelper.CreateParameter("@topicId", TopicId),
+                        Data.SqlHelper.CreateParameter("@memberId", MemberId),
+                        Data.SqlHelper.CreateParameter("@body", Body),
+                        Data.SqlHelper.CreateParameter("@position", Position),
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment"))
+                        );
 
-                        Created = DateTime.Now;
-                        Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumComments WHERE memberId = @memberId",
-                            Data.SqlHelper.CreateParameter("@memberId", MemberId));
+                    Created = DateTime.Now;
+                    Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumComments WHERE memberId = @memberId",
+                        Data.SqlHelper.CreateParameter("@memberId", MemberId));
 
-                        Topic t = Topic.GetTopic(TopicId);
-                        if (t.Exists) {
-                            t.Save();
-                        }
-
-                        Forum f = new Forum(t.ParentId);
-                        if (f.Exists) {
-                            f.SetLatestComment(Id);
-                            f.SetLatestTopic(t.Id);
-                            f.SetLatestAuthor(MemberId);
-                            f.LatestPostDate = DateTime.Now;
-                            f.Save();
-                        }
-
-
-                        FireAfterCreate(e);
+                    Topic t = Topic.GetTopic(TopicId);
+                    if (t.Exists) {
+                        t.Save();
                     }
+
+                    Forum f = new Forum(t.ParentId);
+                    if (f.Exists) {
+                        f.SetLatestComment(Id);
+                        f.SetLatestTopic(t.Id);
+                        f.SetLatestAuthor(MemberId);
+                        f.LatestPostDate = DateTime.Now;
+                        f.Save();
+                    }
+
+
+                    FireAfterCreate(e);
                 }
 
             } else {
@@ -78,12 +85,13 @@ namespace uForum.Businesslogic {
                 FireBeforeUpdate(e);
 
                 if (!e.Cancel) {
+
                     Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET topicId = @topicId, memberId = @memberId, body = @body, isSpam = @isSpam WHERE id = @id",
                         Data.SqlHelper.CreateParameter("@topicId", TopicId),
                         Data.SqlHelper.CreateParameter("@memberId", MemberId),
                         Data.SqlHelper.CreateParameter("@body", Body),
                         Data.SqlHelper.CreateParameter("@id", Id),
-                        Data.SqlHelper.CreateParameter("@isSpam", isNotSpam ? false : Forum.TextContainsSpam(Body))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment"))
                         );
                     FireAfterUpdate(e);
                 }
