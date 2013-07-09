@@ -70,6 +70,7 @@ namespace uForum.Businesslogic
         public List<Forum> SubForums { get; set; }
 
         private Events _e = new Events();
+        private static readonly string AkismetApiKey = ConfigurationManager.AppSettings["AkismetApiKey"];
 
         public Forum() { }
 
@@ -321,9 +322,7 @@ namespace uForum.Businesslogic
 
         public static bool IsSpam(int memberId, string body, string commentType)
         {
-            var akismetApiKey = ConfigurationManager.AppSettings["AkismetApiKey"];
-
-            var akismetApi = new Akismet(akismetApiKey, "http://our.umbraco.org", "Test/1.0");
+            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
             if (akismetApi.VerifyKey() == false)
                 throw new Exception("Akismet API key could not be verified");
 
@@ -340,7 +339,34 @@ namespace uForum.Businesslogic
                               UserAgent = HttpContext.Current.Request.UserAgent
                           };
 
-            return akismetApi.CommentCheck(comment) || TextContainsSpam(body);
+            var isSpam = akismetApi.CommentCheck(comment) || TextContainsSpam(body);
+            
+            if(isSpam)
+                akismetApi.SubmitSpam(comment);
+
+            return isSpam;
+        }
+
+        public static void MarkAsHam(int memberId, string body, string commentType)
+        {
+
+            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
+            if (akismetApi.VerifyKey() == false)
+                throw new Exception("Akismet API key could not be verified");
+
+            var member = new Member(memberId);
+
+            var comment = new AkismetComment
+                          {
+                              Blog = "http://our.umbraco.org",
+                              UserIp = member.getProperty("ip").Value.ToString(),
+                              CommentAuthor = member.Text,
+                              CommentAuthorEmail = member.Email,
+                              CommentType = commentType,
+                              CommentContent = body
+                          };
+
+            akismetApi.SubmitHam(comment);
         }
 
         private static bool TextContainsSpam(string text)

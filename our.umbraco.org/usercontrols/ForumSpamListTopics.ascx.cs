@@ -20,6 +20,7 @@ namespace uForum.usercontrols
             var id = int.Parse(e.CommandArgument.ToString());
             var topic = Topic.GetTopic(id);
             topic.Save(false, true);
+            Forum.MarkAsHam(topic.MemberId, topic.Body, "topic");
             FillSpamTopicGrid();
         }
 

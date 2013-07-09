@@ -19,6 +19,7 @@ namespace uForum.usercontrols
             var id = int.Parse(e.CommandArgument.ToString());
             var comment = new Comment(id) { IsSpam = false };
             comment.Save(true);
+            Forum.MarkAsHam(comment.MemberId, comment.Body, "comment");
             FillSpamCommentGrid();
         }
 
