@@ -322,11 +322,17 @@ namespace uForum.Businesslogic
 
         public static bool IsSpam(int memberId, string body, string commentType)
         {
+            var member = new Member(memberId);
+            
+            int karma;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out karma);
+            // Members with over 50 karma are trusted automatically
+            if (karma >= 50)
+                return false;
+            
             var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
             if (akismetApi.VerifyKey() == false)
                 throw new Exception("Akismet API key could not be verified");
-
-            var member = new Member(memberId);
 
             var comment = new AkismetComment
                           {
