@@ -115,7 +115,8 @@ namespace uForum.Businesslogic {
 
 
         public Comment() { }
-        public Comment(int id, bool getSpamComment = false) 
+
+        public Comment(int id, bool getSpamComment) 
         {
             var query = string.Format("SELECT * FROM forumComments WHERE {0} id = {1}", getSpamComment ? "" : " (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND ", id);
 
@@ -137,6 +138,11 @@ namespace uForum.Businesslogic {
                     Exists = false;
                 }
             }
+        }
+
+        public Comment(int id)
+        {
+            new Comment(id, false);
         }
 
         public void Delete() {
