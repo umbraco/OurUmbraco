@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web.UI.WebControls;
 using PetaPoco;
 using uForum.Businesslogic;
+using umbraco.cms.businesslogic.member;
 
 namespace uForum.usercontrols
 {
@@ -19,6 +20,18 @@ namespace uForum.usercontrols
             var id = int.Parse(e.CommandArgument.ToString());
             var comment = new Comment(id, true) { IsSpam = false };
             comment.Save(true);
+            
+            // Restore karma
+            var member = new Member(comment.MemberId);
+
+            int reputationTotal;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputationTotal);
+            member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal + 1 : 0;
+
+            int reputationCurrent;
+            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
+            member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent + 1 : 0;
+            
             Forum.MarkAsHam(comment.MemberId, comment.Body, "comment");
             FillSpamCommentGrid();
         }

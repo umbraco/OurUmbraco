@@ -323,11 +323,11 @@ namespace uForum.Businesslogic
         public static bool IsSpam(int memberId, string body, string commentType)
         {
             var member = new Member(memberId);
-            
-            int karma;
-            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out karma);
+
+            int reputationTotal;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputationTotal);
             // Members with over 50 karma are trusted automatically
-            if (karma >= 50)
+            if (reputationTotal >= 50)
                 return false;
             
             var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
@@ -349,6 +349,13 @@ namespace uForum.Businesslogic
             
             if(isSpam)
                 akismetApi.SubmitSpam(comment);
+
+            // Deduct karma
+            member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
+
+            int reputationCurrent;
+            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
+            member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
 
             return isSpam;
         }
