@@ -115,26 +115,28 @@ namespace uForum.Businesslogic {
 
 
         public Comment() { }
-        public Comment(int id) {
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader("SELECT * FROM forumComments WHERE (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND id = " + id.ToString());
+        public Comment(int id, bool getSpamComment = false) 
+        {
+            var query = string.Format("SELECT * FROM forumComments WHERE {0} id = {1}", getSpamComment ? "" : " (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND ", id);
 
-            if (dr.Read())
+            using(var dr = Data.SqlHelper.ExecuteReader(query))
             {
-                Id = dr.GetInt("id");
-                TopicId = dr.GetInt("topicId");
-                MemberId = dr.GetInt("memberId");
-                Exists = true;
-                Body = dr.GetString("body");
+                if (dr.Read())
+                {
+                    Id = dr.GetInt("id");
+                    TopicId = dr.GetInt("topicId");
+                    MemberId = dr.GetInt("memberId");
+                    Exists = true;
+                    Body = dr.GetString("body");
 
-                Created = dr.GetDateTime("created");
-                Position = dr.GetInt("position");
+                    Created = dr.GetDateTime("created");
+                    Position = dr.GetInt("position");
+                }
+                else
+                {
+                    Exists = false;
+                }
             }
-            else
-                Exists = false;
-
-            dr.Close();
-            dr.Dispose();
-
         }
 
         public void Delete() {

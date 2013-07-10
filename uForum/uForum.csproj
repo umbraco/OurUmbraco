@@ -59,6 +59,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Joel.Net.Akismet">
+      <HintPath>..\dependencies\Akismet\Joel.Net.Akismet.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
     </Reference>

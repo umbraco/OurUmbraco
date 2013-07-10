@@ -17,7 +17,7 @@ namespace uForum.usercontrols
         protected void NotSpamComment(Object sender, CommandEventArgs e)
         {
             var id = int.Parse(e.CommandArgument.ToString());
-            var comment = new Comment(id) { IsSpam = false };
+            var comment = new Comment(id, true) { IsSpam = false };
             comment.Save(true);
             Forum.MarkAsHam(comment.MemberId, comment.Body, "comment");
             FillSpamCommentGrid();

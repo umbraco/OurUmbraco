@@ -336,10 +336,10 @@ namespace uForum.Businesslogic
 
         public Topic() { }
 
-        public static Topic GetTopic(int topicId)
+        public static Topic GetTopic(int topicId, bool getSpamTopic = false)
         {
             var db = new Database("umbracoDbDSN");
-            var topic = db.SingleOrDefault<Topic>("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND id = @0", topicId);
+            var topic = db.SingleOrDefault<Topic>(string.Format("SELECT * FROM forumTopics WHERE {0} id = @0", getSpamTopic ? "" : " (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND "), topicId);
             return topic;
         }
 

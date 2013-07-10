@@ -18,7 +18,7 @@ namespace uForum.usercontrols
         protected void NotSpamTopic(Object sender, CommandEventArgs e)
         {
             var id = int.Parse(e.CommandArgument.ToString());
-            var topic = Topic.GetTopic(id);
+            var topic = Topic.GetTopic(id, true);
             topic.Save(false, true);
             Forum.MarkAsHam(topic.MemberId, topic.Body, "topic");
             FillSpamTopicGrid();
