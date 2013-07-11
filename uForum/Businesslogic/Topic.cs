@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI.MobileControls;
 using System.Xml;
@@ -388,8 +389,8 @@ namespace uForum.Businesslogic
                                 ParentId = reader.GetInt("parentId"),
                                 MemberId = reader.GetInt("memberId"),
                                 Replies = reader.GetInt("replies"),
-                                Title = reader.GetString("title"),
-                                Body = reader.GetString("body"),
+                                Title = CleanInvalidXmlChars(reader.GetString("title")),
+                                Body = CleanInvalidXmlChars(reader.GetString("body")),
                                 LatestReplyAuthor = reader.GetInt("latestReplyAuthor"),
                                 Created = reader.GetDateTime("created"),
                                 Updated = reader.GetDateTime("updated"),
@@ -398,6 +399,16 @@ namespace uForum.Businesslogic
                             };
 
             return topic;
+        }
+
+        // From: http://forums.asp.net/t/1688373.aspx/1
+        private static string CleanInvalidXmlChars(string text)
+        {
+            // From xml spec valid chars: 
+            // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]     
+            // any Unicode character, excluding the surrogate blocks, FFFE, and FFFF. 
+            const string regex = @"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]";
+            return Regex.Replace(text, regex, "");
         }
 
         //Collections
