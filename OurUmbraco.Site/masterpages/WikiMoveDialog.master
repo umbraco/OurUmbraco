@@ -2,7 +2,7 @@
 
 <asp:Content ContentPlaceHolderID="head" runat="server">
 
-	<script type="text/javascript" src="/scripts/powers/uPowers.js?v=2"></script>
+	<script type="text/javascript" src="/scripts/powers/uPowers.js?v=6"></script>
 		
 
 		<script type="text/javascript">

@@ -47,7 +47,7 @@
 
     <script type="text/javascript" src="/scripts/mapr/jquery-1.6.4.js"></script>
     <script type="text/javascript" src="/scripts/community.js?v=3"></script>
-    <script type="text/javascript" src="/scripts/powers/uPowers.js?v=5"></script>
+    <script type="text/javascript" src="/scripts/powers/uPowers.js?v=6"></script>
     <script type="text/javascript" src="/scripts/jquery.validation.js?v=3"></script>
     <script type="text/javascript" src="/scripts/notifications/notifications.js?ay=y&v=3"></script>
     <script src="/scripts/libs/jquery-ui-1.7.1.custom.min.js?v=3" type="text/javascript"></script>
