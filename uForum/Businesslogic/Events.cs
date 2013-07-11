@@ -8,6 +8,7 @@ namespace uForum.Businesslogic {
     public class CreateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class UpdateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class DeleteEventArgs : System.ComponentModel.CancelEventArgs { }
+    public class MarkAsSpamEventArgs : System.ComponentModel.CancelEventArgs { }
     public class LockEventArgs : System.ComponentModel.CancelEventArgs { }
     public class MoveEventArgs : System.ComponentModel.CancelEventArgs { }
     

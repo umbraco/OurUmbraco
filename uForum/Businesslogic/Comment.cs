@@ -186,6 +186,32 @@ namespace uForum.Businesslogic {
         
         }
 
+        public void MarkAsSpam() {
+
+            var e = new MarkAsSpamEventArgs();
+
+            FireBeforeMarkAsSpam(e);
+
+            if (e.Cancel) 
+                return;
+
+            var topic = Topic.GetTopic(TopicId);
+            var forum = new Forum(topic.ParentId);
+
+            var member = new Member(MemberId);
+            var akismetApi = Forum.GetAkismetApi();
+            var akismetComment = Forum.ConstructAkismetComment(member, "comment", Body);
+            akismetApi.SubmitSpam(akismetComment);
+
+            Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET isSpam = 1 WHERE id = " + Id);
+            Id = 0;
+
+            topic.Save(true);
+            forum.Save();
+                
+            FireAfterMarkAsSpam(e);
+        }
+
 
         public static Comment Create(int topicId, string body, int memberId) {
             Comment c = new Comment();
@@ -246,7 +272,17 @@ namespace uForum.Businesslogic {
             if (AfterUpdate != null)
                 AfterUpdate(this, e);
         }
-               
-
+        
+        public static event EventHandler<MarkAsSpamEventArgs> BeforeMarkAsSpam;
+        protected virtual void FireBeforeMarkAsSpam(MarkAsSpamEventArgs e)
+        {
+            _e.FireCancelableEvent(BeforeMarkAsSpam, this, e);
+        }
+        public static event EventHandler<MarkAsSpamEventArgs> AfterMarkAsSpam;
+        protected virtual void FireAfterMarkAsSpam(MarkAsSpamEventArgs e)
+        {
+            if (AfterMarkAsSpam != null)
+                AfterMarkAsSpam(this, e);
+        }
     }
 }

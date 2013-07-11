@@ -376,6 +376,11 @@
 					<a href="#" class="act delete DeleteComment kill" title="Delete this comment" rel="{$comment/id}">Delete</a>
 				</li>
 			</xsl:if>
+			<xsl:if test="$isAdmin = true()">
+				<li class="admin">
+					<a href="#" class="act markSpam MarkCommentAsSpam spam" title="Mark as spam" rel="{$comment/id}">Mark as spam</a>
+				</li>
+			</xsl:if>
 			<xsl:if test="$isAdmin = true() or $comment/memberId = $mem">
 				<li class="admin">
 					<a href="/forum/EditReply?id={$comment/id}" class="act edit kill" title="Edit this reply">Edit</a>
@@ -419,7 +424,10 @@
 				</li>
 				<li>
 					<a href="#" class="act delete DeleteTopic kill" title="Delete this topic" rel="{$topic/@id}">Delete</a>
-				</li>
+				</li>			
+        <li>
+          <a href="#" class="act markSpam MarkTopicAsSpam spam" title="Mark as spam" rel="{$topic/@id}">Mark as spam</a>
+        </li>
 			</xsl:if>
 
 			<xsl:if test="$isAdmin = true()">

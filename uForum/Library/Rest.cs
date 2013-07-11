@@ -122,6 +122,21 @@ namespace uForum.Library
             return "false";
         }
 
+        public static string MarkTopicAsSpam(int topicId)
+        {
+            var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+
+            if (Xslt.IsMemberInGroup("admin", currentMember))
+            {
+                var topic = Businesslogic.Topic.GetTopic(topicId);
+                topic.MarkAsSpam();
+
+                return "true";
+            }
+
+            return "false";
+        }
+
         public static string MoveTopic(int topicId, int newForumId)
         {
             var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
@@ -146,6 +161,21 @@ namespace uForum.Library
             {
                 var comment = new Businesslogic.Comment(commentId);
                 comment.Delete();
+
+                return "true";
+            }
+
+            return "false";
+        }
+
+        public static string MarkCommentAsSpam(int commentId)
+        {
+            var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+
+            if (User.GetCurrent() != null || Xslt.IsMemberInGroup("admin", currentMember))
+            {
+                var comment = new Businesslogic.Comment(commentId);
+                comment.MarkAsSpam();
 
                 return "true";
             }

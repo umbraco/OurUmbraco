@@ -330,20 +330,8 @@ namespace uForum.Businesslogic
             if (reputationTotal >= 50)
                 return false;
             
-            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
-            if (akismetApi.VerifyKey() == false)
-                throw new Exception("Akismet API key could not be verified");
-
-            var comment = new AkismetComment
-                          {
-                              Blog = "http://our.umbraco.org",
-                              UserIp = HttpContext.Current.Request.UserHostAddress,
-                              CommentAuthor = member.Text,
-                              CommentAuthorEmail = member.Email,
-                              CommentType = commentType,
-                              CommentContent = body,
-                              UserAgent = HttpContext.Current.Request.UserAgent
-                          };
+            var akismetApi = GetAkismetApi();
+            var comment = ConstructAkismetComment(member, commentType, body);
 
             var isSpam = akismetApi.CommentCheck(comment) || TextContainsSpam(body);
             
@@ -360,6 +348,31 @@ namespace uForum.Businesslogic
             }
 
             return isSpam;
+        }
+
+        public static Akismet GetAkismetApi()
+        {
+            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "OurUmbraco/1.0");
+            if (akismetApi.VerifyKey() == false)
+                throw new Exception("Akismet API key could not be verified");
+
+            return akismetApi;
+        }
+
+        public static AkismetComment ConstructAkismetComment(Member member, string commentType, string body)
+        {
+            var comment = new AkismetComment
+            {
+                Blog = "http://our.umbraco.org",
+                UserIp = HttpContext.Current.Request.UserHostAddress,
+                CommentAuthor = member.Text,
+                CommentAuthorEmail = member.Email,
+                CommentType = commentType,
+                CommentContent = body,
+                UserAgent = HttpContext.Current.Request.UserAgent
+            };
+
+            return comment;
         }
 
         public static void MarkAsHam(int memberId, string body, string commentType)

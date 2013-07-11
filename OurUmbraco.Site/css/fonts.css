@@ -125,6 +125,7 @@ a.upload{background-image: url(img/ico/document--plus.png);}
 a.blockMember { background-image: url(img/ico/minus-small-circle.png); }
 a.unblockMember { background-image: url(img/ico/tick-small.png); }
 
+a.markSpam { background-image: url(img/ico/minus-small-circle.png); }
 
 .options{padding: 3px !Important;}
 

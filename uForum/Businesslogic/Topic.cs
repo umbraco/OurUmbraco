@@ -136,6 +136,31 @@ namespace uForum.Businesslogic
             FireAfterDelete(deleteEventArgs);
         }
 
+        public void MarkAsSpam()
+        {
+            var markAsSpamEventArgs = new MarkAsSpamEventArgs();
+            FireBeforeMarkAsSpam(markAsSpamEventArgs);
+
+            if (markAsSpamEventArgs.Cancel)
+                return;
+
+            var forum = new Forum(ParentId);
+
+            var topic = GetTopic(Id);
+            var member = new Member(topic.MemberId);
+            var akismetApi = Forum.GetAkismetApi();
+            var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
+            akismetApi.SubmitSpam(akismetComment);
+
+            Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = 1 WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
+
+            Id = 0;
+
+            forum.Save();
+
+            FireAfterMarkAsSpam(markAsSpamEventArgs);
+        }
+
         public void Lock()
         {
             var lockEventArgs = new LockEventArgs();
@@ -562,6 +587,21 @@ namespace uForum.Businesslogic
         {
             if (AfterUpdate != null)
                 AfterUpdate(this, e);
+        }
+
+        public static event EventHandler<MarkAsSpamEventArgs> BeforeMarkAsSpam;
+
+        protected virtual void FireBeforeMarkAsSpam(MarkAsSpamEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeMarkAsSpam, this, e);
+        }
+
+        public static event EventHandler<MarkAsSpamEventArgs> AfterMarkAsSpam;
+
+        protected virtual void FireAfterMarkAsSpam(MarkAsSpamEventArgs e)
+        {
+            if (AfterMarkAsSpam != null)
+                AfterMarkAsSpam(this, e);
         }
     }
 }
