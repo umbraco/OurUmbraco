@@ -348,14 +348,16 @@ namespace uForum.Businesslogic
             var isSpam = akismetApi.CommentCheck(comment) || TextContainsSpam(body);
             
             if(isSpam)
+            {
                 akismetApi.SubmitSpam(comment);
 
-            // Deduct karma
-            member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
+                // Deduct karma
+                member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
 
-            int reputationCurrent;
-            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
-            member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
+                int reputationCurrent;
+                int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
+                member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
+            }
 
             return isSpam;
         }
