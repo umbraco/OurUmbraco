@@ -156,7 +156,12 @@ namespace uForum.Businesslogic
             Save(false);
         }
 
-        public void Save(bool silent, bool dontMarkAsSpam = false)
+        public void Save(bool silent)
+        {
+            Save(false, false);
+        }
+
+        public void Save(bool silent, bool dontMarkAsSpam)
         {
             if (Id == 0)
             {

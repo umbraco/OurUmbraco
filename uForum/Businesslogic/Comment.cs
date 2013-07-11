@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.UI.MobileControls;
@@ -36,10 +37,15 @@ namespace uForum.Businesslogic {
         public bool IsSpam { get; set; }
 
         public bool Exists { get; set; }
-
+        
         private Events _e = new Events();
 
-        public void Save(bool dontMarkAsSpam = false) {
+        public void Save()
+        {
+            Save(false);
+        }
+
+        public void Save(bool dontMarkAsSpam) {
 
             if (Id == 0) {
 
@@ -116,33 +122,47 @@ namespace uForum.Businesslogic {
 
         public Comment() { }
 
-        public Comment(int id, bool getSpamComment) 
+        public Comment(int id)
+        {
+            var comment = GetComment(id, false);
+
+            this.Id = comment.Id;
+            this.TopicId = comment.TopicId;
+            this.MemberId = comment.MemberId;
+            this.Exists = comment.Exists;
+            this.Body = comment.Body;
+            this.IsSpam = comment.IsSpam;
+            this.Created = comment.Created;
+            this.Position = comment.Position;
+        }
+        
+        public static Comment GetComment(int id, bool getSpamComment)
         {
             var query = string.Format("SELECT * FROM forumComments WHERE {0} id = {1}", getSpamComment ? "" : " (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND ", id);
-
-            using(var dr = Data.SqlHelper.ExecuteReader(query))
+            
+            var comment = new Comment();
+            
+            using (var dr = Data.SqlHelper.ExecuteReader(query))
             {
                 if (dr.Read())
                 {
-                    Id = dr.GetInt("id");
-                    TopicId = dr.GetInt("topicId");
-                    MemberId = dr.GetInt("memberId");
-                    Exists = true;
-                    Body = dr.GetString("body");
-
-                    Created = dr.GetDateTime("created");
-                    Position = dr.GetInt("position");
+                    comment.Id = dr.GetInt("id");
+                    comment.TopicId = dr.GetInt("topicId");
+                    comment.MemberId = dr.GetInt("memberId");
+                    comment.Exists = true;
+                    comment.Body = dr.GetString("body");
+                    comment.IsSpam = dr.GetBoolean("isSpam");
+                    
+                    comment.Created = dr.GetDateTime("created");
+                    comment.Position = dr.GetInt("position");
                 }
                 else
                 {
-                    Exists = false;
+                    comment.Exists = false;
                 }
             }
-        }
-
-        public Comment(int id)
-        {
-            new Comment(id, false);
+            
+            return comment;
         }
 
         public void Delete() {

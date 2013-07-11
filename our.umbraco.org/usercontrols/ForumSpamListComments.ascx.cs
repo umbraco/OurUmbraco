@@ -18,7 +18,8 @@ namespace uForum.usercontrols
         protected void NotSpamComment(Object sender, CommandEventArgs e)
         {
             var id = int.Parse(e.CommandArgument.ToString());
-            var comment = new Comment(id, true) { IsSpam = false };
+            var comment = Comment.GetComment(id, true);
+            comment.IsSpam = false;
             comment.Save(true);
             
             // Restore karma
