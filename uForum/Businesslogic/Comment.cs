@@ -151,8 +151,9 @@ namespace uForum.Businesslogic {
                     comment.MemberId = dr.GetInt("memberId");
                     comment.Exists = true;
                     comment.Body = dr.GetString("body");
-                    comment.IsSpam = dr.GetBoolean("isSpam");
-                    
+                    if (dr.IsNull("isSpam") == false)
+                        comment.IsSpam = dr.GetBoolean("isSpam");
+
                     comment.Created = dr.GetDateTime("created");
                     comment.Position = dr.GetInt("position");
                 }
