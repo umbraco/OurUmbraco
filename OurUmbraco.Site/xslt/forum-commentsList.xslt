@@ -425,12 +425,12 @@
 				<li>
 					<a href="#" class="act delete DeleteTopic kill" title="Delete this topic" rel="{$topic/@id}">Delete</a>
 				</li>			
-        <li>
-          <a href="#" class="act markSpam MarkTopicAsSpam spam" title="Mark as spam" rel="{$topic/@id}">Mark as spam</a>
-        </li>
 			</xsl:if>
 
 			<xsl:if test="$isAdmin = true()">
+				<li>
+				  <a href="#" class="act markSpam MarkTopicAsSpam spam" title="Mark as spam" rel="{$topic/@id}">Mark as spam</a>
+				</li>			
 				<li>
 					<a href="#" onclick="jQuery('#moveList').toggle(); return false;" class="act move ToggleMoveList" id="MoveTopic" title="Move this topic" rel="{$topic/@id}">Move</a>
 
