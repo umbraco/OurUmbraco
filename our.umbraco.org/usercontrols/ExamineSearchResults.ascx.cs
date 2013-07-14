@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using Examine;
-using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using System.Data.SqlClient;
 using Examine.SearchCriteria;
-using Examine.LuceneEngine.SearchCriteria;
 
 namespace our.usercontrols
 {
@@ -24,6 +21,33 @@ namespace our.usercontrols
             else
                 return string.Empty;
 
+        }
+
+        public static string getDate(this SearchResult result)
+        {
+            if (result["__IndexType"] == "content")
+                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
+
+            if (result["__IndexType"] == "documents")
+                return HttpContext.Current.Server.HtmlEncode(string.Format("Created: {0} / Last update: {1}", DateTime.Parse(result["Created"]).ToString("MMMM dd, yyyy HH:mm"), DateTime.Parse(result["Updated"]).ToString("MMMM dd, yyyy HH:mm")));
+
+            if(result["__IndexType"] == "documentation")
+                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["dateCreatedSearchAble"], "MMMM dd, yyyy")));
+
+            return string.Empty;
+        }
+
+        public static string GetFormattedDateTime(string date, string format)
+        {
+            try
+            {
+                var dateTime = new DateTime(int.Parse(date.Substring(0, 4)), int.Parse(date.Substring(4, 2)), int.Parse(date.Substring(6, 2)));
+                return dateTime.ToString(format);
+            }
+            catch
+            {
+                return string.Empty;
+            }
         }
 
         public static string fullURL(this SearchResult result)

@@ -12,7 +12,7 @@
         Your search for <strong><%=searchTerm %></strong> returned <i><%= this.searchResults.Count() %></i> results.<br />
         You can narrow down your results by unchecking categories below the search field test
     </p>
-    
+    ewqwrwqrqr
     <asp:Repeater ID="searchResultListing" runat="server">
         <HeaderTemplate>
             <div id="results" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
@@ -25,10 +25,9 @@
                     </a>
                 </h3>
                 <p>
-                
                    <%# ((Examine.SearchResult)Container.DataItem).generateBlurb(250) %>
                 </p>
-                <cite>http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).fullURL()%></cite>
+                <cite><%# ((Examine.SearchResult)Container.DataItem).getDate() %> http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).fullURL()%></cite>
             </div>            
         </ItemTemplate>
         <FooterTemplate>
