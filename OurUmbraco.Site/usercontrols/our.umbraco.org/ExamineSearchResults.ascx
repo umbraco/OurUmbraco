@@ -27,7 +27,7 @@
                 <p>
                    <%# ((Examine.SearchResult)Container.DataItem).generateBlurb(250) %>
                 </p>
-                <cite><%# ((Examine.SearchResult)Container.DataItem).getDate() %> http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).fullURL()%></cite>
+                <cite><%# ((Examine.SearchResult)Container.DataItem).getDate() %><br />http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).fullURL()%></cite>
             </div>            
         </ItemTemplate>
         <FooterTemplate>
