@@ -14,18 +14,21 @@
     <xsl:variable name="id" select="umbraco.library:RequestQueryString('id')"/>
     <xsl:variable name="body" select="umbraco.library:Request('topicBody')"/>
     <xsl:variable name="title" select="umbraco.library:Request('title')"/>
+  
     <xsl:variable name="successMessage">
         <h1>your topic has been created</h1>
     </xsl:variable>
     <xsl:template match="/">
         <xsl:variable name="_body">
             <xsl:if test="$id != ''">
-                <xsl:value-of select="uForum.raw:Topic($id)/topics/topic/body"/>
+                <xsl:variable name="topic" select="uForum.raw:Topic($id)"/>
+                <xsl:value-of select="$topic/body"/>
             </xsl:if>
         </xsl:variable>
         <xsl:variable name="_title">
             <xsl:if test="$id != ''">
-                <xsl:value-of select="uForum.raw:Topic($id)/topics/topic/title"/>
+                <xsl:variable name="topic" select="uForum.raw:Topic($id)"/>
+                <xsl:value-of select="$topic/title"/>
             </xsl:if>
         </xsl:variable>
         <xsl:choose>
