@@ -1,0 +1,24 @@
+﻿@using Our.Umbraco.uTwit
+@using Our.Umbraco.uTwit.Models
+@using umbraco.MacroEngines
+@inherits DynamicNodeContext
+@{
+    var configProperty = Model.AncestorOrSelf(1).uTwit;
+    if (configProperty.GetType() != typeof (DynamicNull))
+    {
+        var config = uTwit.DeserializeValue(configProperty);
+        var tweets = uTwit.SearchTweets(config, "umbraco", 5);
+
+        foreach (Status tweet in tweets)
+        {
+            <ul class="twitter summary">
+                <li>
+                    <small>@tweet.Text</small>
+                    <a href="@tweet.PermalinkUrl">
+                        @tweet.User.Name
+                    </a>
+                </li>
+            </ul>
+        }
+    }
+}

@@ -1,0 +1,5 @@
+﻿@{
+    Response.ContentType = "text/xml";
+	string blogs = File.ReadAllText(Server.MapPath("~/umbraco/plugins/FergusonMoriyama/FeedCache/communityblogs.xml"));
+	Response.Write(blogs);
+}

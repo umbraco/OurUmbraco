@@ -51,13 +51,13 @@ help and guidance from seasoned experts, download and collaborate on plugins and
 <div style="width: 315px; float: right; clear: none; overflow: hidden;">
 
 <div class="spotlight">
-<h4>Community blogs <a class="rss_small" href="http://pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&amp;_render=rss">rss</a></h4>
+<h4>Community blogs <a class="rss_small" href="/rss/communityblogs">rss</a></h4>
 <div id="data_blogs"><small>Loading blog list...</small></div>
 </div>
 
 <div class="spotlight">
-<h4>Twitter <a class="rss_small" href="http://search.twitter.com/search.atom?q=%23umbraco">rss</a></h4>
-<div id="data_twitter"><small>Loading tweets...</small></div>
+<h4>Twitter <a class="rss_small" href="https://twitter.com/search?q=umbraco&src=typd" target="_blank">rss</a></h4>
+<umbraco:Macro Alias="TwitterSearch" runat="server" />
 </div>
 
 </div>
@@ -88,11 +88,6 @@ $.post("/html/wiki",
 $.post("/html/blogs",
   function(data){
     jQuery("#data_blogs").html(data);
-  });
-
-$.post("/html/twitter",
-  function(data){
-    jQuery("#data_twitter").html(data);
   });
 
 });

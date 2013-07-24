@@ -181,6 +181,9 @@
     <Reference Include="Our.Umbraco.uGoLive.Checks">
       <HintPath>..\dependencies\4.9.1\Our.Umbraco.uGoLive.Checks.dll</HintPath>
     </Reference>
+    <Reference Include="Our.Umbraco.uTwit.Web">
+      <HintPath>..\dependencies\uTwit\Our.Umbraco.uTwit.Web.dll</HintPath>
+    </Reference>
     <Reference Include="OurkarmaTest">
       <HintPath>..\dependencies\Our\OurkarmaTest.dll</HintPath>
     </Reference>
@@ -3637,6 +3640,8 @@
     <Content Include="umbraco\plugins\umbracoContour\Views\Script.cshtml" />
     <Content Include="umbraco\plugins\umbracoContour\Views\Web.config" />
     <Content Include="umbraco\plugins\umbracoContour\Views\_ViewStart.cshtml" />
+    <Content Include="macroScripts\Rss-CommunityBlogs.cshtml" />
+    <Content Include="macroScripts\TwitterSearch.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
