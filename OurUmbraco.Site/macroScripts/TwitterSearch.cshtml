@@ -13,10 +13,8 @@
         {
             <ul class="twitter summary">
                 <li>
-                    <small>@tweet.Text</small>
-                    <a href="@tweet.PermalinkUrl">
-                        @tweet.User.Name
-                    </a>
+                    <small>@tweet.LinkifiedText</small><br />
+                    <a href="@tweet.PermalinkUrl" style="display: inline">@tweet.User.Name</a> <small>(@uTwit.FormatDate(tweet.CreatedAt) ago)</small>
                 </li>
             </ul>
         }
