@@ -181,6 +181,10 @@
     <Reference Include="Our.Umbraco.uGoLive.Checks">
       <HintPath>..\dependencies\4.9.1\Our.Umbraco.uGoLive.Checks.dll</HintPath>
     </Reference>
+    <Reference Include="Our.Umbraco.uTwit.DataType, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\uTwit\Our.Umbraco.uTwit.DataType.dll</HintPath>
+    </Reference>
     <Reference Include="Our.Umbraco.uTwit.Web">
       <HintPath>..\dependencies\uTwit\Our.Umbraco.uTwit.Web.dll</HintPath>
     </Reference>
