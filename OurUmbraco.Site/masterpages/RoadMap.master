@@ -33,7 +33,7 @@
 <script type="text/html" id="version-template">
   <div class="version" data-bind="attr: { id: id }">
       <h2>
-          <a data-bind="text: 'v'+ version(), attr: { href: '/contribute/releases/' + version() }"></a>
+          <a data-bind="text: 'v'+ version(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }"></a>
       </h2>    
           
       <span data-bind="visible: !released()">Target release date: <em><span data-bind="text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span></em></span><span data-bind="visible: released()"><em><a href="http://umbraco.codeplex.com/releases">Download it now!</a></em></span><br/>
