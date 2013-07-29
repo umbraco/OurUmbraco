@@ -110,7 +110,38 @@
     </xsl:if>
   </xsl:template>
     
-  <xsl:template match="Project|WikiPage">
+  <xsl:template match="Project">
+    <xsl:if test="position() &lt;= $RSSNoItems and projectLive = '1'">
+      <item>
+        <title>
+          <xsl:value-of select="@nodeName"/>
+        </title>
+        <link>
+          <xsl:value-of select="$SiteURL"/>
+          <xsl:value-of select="umbraco.library:NiceUrl(@id)"/>
+        </link>
+        <pubDate>
+             <xsl:choose>
+      <xsl:when test="$updatefeed">
+                <xsl:value-of select="umbraco.library:FormatDateTime(@updateDate,'r')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="umbraco.library:FormatDateTime(@createDate,'r')" />
+      </xsl:otherwise>
+    </xsl:choose>
+        </pubDate>
+        <guid>
+          <xsl:value-of select="$SiteURL"/>
+          <xsl:value-of select="umbraco.library:NiceUrl(@id)"/>
+        </guid>
+        <content:encoded>
+          <xsl:value-of select="concat('&lt;![CDATA[ ', ./* [local-name() = $content],']]&gt;')" disable-output-escaping="yes"/>
+        </content:encoded>
+      </item>
+    </xsl:if>
+  </xsl:template>
+  
+  <xsl:template match="WikiPage">
     <xsl:if test="position() &lt;= $RSSNoItems">
       <item>
         <title>
