@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web;
 using Examine;
 using Examine.Providers;
@@ -216,6 +217,10 @@ namespace our.usercontrols
             //Check we have a search term
             var orgSearchTerm = Request.QueryString["q"].Trim();
             searchTerm = orgSearchTerm.Replace(" OR ", " ").Replace(" or ", " ");
+            
+            // Replace double whitespaces with single space as they were giving errors
+            searchTerm = Regex.Replace(searchTerm, @"\s{2,}", " ");
+            
             if (string.IsNullOrEmpty(searchTerm) || searchTerm.Length == 1)
             {
                 phNotValid.Visible = true;
