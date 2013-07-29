@@ -41,6 +41,20 @@ namespace our.usercontrols
             return string.Empty;
         }
 
+        public static string getDateSortable(this SearchResult result)
+        {
+            if (result["__IndexType"] == "content")
+                return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
+
+            if (result["__IndexType"] == "documents")
+                return DateTime.Parse(result["Updated"]).ToString("yyyy-MM-dd HH:mm");
+
+            if(result["__IndexType"] == "documentation")
+                return GetFormattedDateTime(result["dateCreatedSearchAble"], "yyyy-MM-dd HH:mm");
+
+            return string.Empty;
+        }
+
         public static string GetFormattedDateTime(string date, string format)
         {
             try
@@ -275,12 +289,12 @@ namespace our.usercontrols
                 if (sortOrder != null && sortOrder.ToLower() == "desc")
                 {
                     OrderByDateDescLink.CssClass = OrderByDateDescLink.CssClass + "linkNoColor";
-                    searchResults = searchResults.OrderByDescending(x => x.getDate());
+                    searchResults = searchResults.OrderByDescending(x => x.getDateSortable());
                 }
                 else
                 {
                     OrderByDateAscLink.CssClass = OrderByDateAscLink.CssClass + "linkNoColor";
-                    searchResults = searchResults.OrderBy(x => x.getDate());
+                    searchResults = searchResults.OrderBy(x => x.getDateSortable());
                 }
             }
             else

@@ -10,7 +10,7 @@
 <div id="search">
     <p>
         Your search for <strong><%=searchTerm %></strong> returned <i><%= this.searchResults.Count() %></i> results.<br />
-        You can narrow down your results by unchecking categories below the search field test
+        You can narrow down your results by unchecking categories in the search field
     </p>
     <p>
         Order results by:
