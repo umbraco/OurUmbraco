@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.UI;
+using System.Web.UI.WebControls;
 using Examine;
 using Examine.Providers;
 using System.Data.SqlClient;
@@ -266,6 +269,25 @@ namespace our.usercontrols
 
             searchResults = FilterOnContentType(searchWhere, searchResults);
 
+            if (Request.QueryString["OrderByDate"] == "1")
+            {
+                var sortOrder = Request.QueryString["SortOrder"];
+                if (sortOrder != null && sortOrder.ToLower() == "desc")
+                {
+                    OrderByDateDescLink.CssClass = OrderByDateDescLink.CssClass + "linkNoColor";
+                    searchResults = searchResults.OrderByDescending(x => x.getDate());
+                }
+                else
+                {
+                    OrderByDateAscLink.CssClass = OrderByDateAscLink.CssClass + "linkNoColor";
+                    searchResults = searchResults.OrderBy(x => x.getDate());
+                }
+            }
+            else
+            {
+                OrderByNoneLink.CssClass = OrderByNoneLink.CssClass + "linkNoColor";
+            }
+
             BindResultsAndSetUpPaging(searchResults);
 
         }
@@ -459,6 +481,36 @@ namespace our.usercontrols
 
                 pager.Text += "</ul>";
             }
+        }
+
+        protected void OrderByDateDesc(object sender, EventArgs e)
+        {
+            var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            nameValues.Set("OrderByDate", "1");
+            nameValues.Set("SortOrder", "desc");
+            var url = Request.Url.AbsolutePath;
+            var updatedQueryString = "?" + nameValues;
+            Response.Redirect(url + updatedQueryString);
+        }
+
+        protected void OrderByDateAsc(object sender, EventArgs e)
+        {
+            var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            nameValues.Set("OrderByDate", "1");
+            nameValues.Set("SortOrder", "asc");
+            var url = Request.Url.AbsolutePath;
+            var updatedQueryString = "?" + nameValues;
+            Response.Redirect(url + updatedQueryString);
+        }
+        
+        protected void OrderByNone(object sender, EventArgs e)
+        {
+            var nameValues = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+            nameValues.Remove("OrderByDate");
+            nameValues.Remove("SortOrder");
+            var url = Request.Url.AbsolutePath;
+            var updatedQueryString = "?" + nameValues;
+            Response.Redirect(url + updatedQueryString);
         }
     }
 }

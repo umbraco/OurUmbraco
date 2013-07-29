@@ -31,6 +31,33 @@ namespace our.usercontrols {
         protected global::System.Web.UI.WebControls.PlaceHolder phResults;
         
         /// <summary>
+        /// OrderByDateDescLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton OrderByDateDescLink;
+        
+        /// <summary>
+        /// OrderByDateAscLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton OrderByDateAscLink;
+        
+        /// <summary>
+        /// OrderByNoneLink control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.LinkButton OrderByNoneLink;
+        
+        /// <summary>
         /// searchResultListing control.
         /// </summary>
         /// <remarks>

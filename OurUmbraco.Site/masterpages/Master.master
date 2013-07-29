@@ -19,7 +19,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="/css/img/our.favicon.png"/>
 
     <title><umbraco:Macro Alias="Title" runat="server"></umbraco:Macro></title>
-    <link rel="stylesheet" type="text/css" href="/css/community.css?v=10&update=yes" />
+    <link rel="stylesheet" type="text/css" href="/css/community.css?v=11&update=yes" />
     <link rel="stylesheet" type="text/css" href="/css/forum.css?v=3" />  
     <link rel="stylesheet" type="text/css" href="/css/wiki.css?v=5" />
     <link rel="stylesheet" type="text/css" href="/css/new-deli.css?v=4" />

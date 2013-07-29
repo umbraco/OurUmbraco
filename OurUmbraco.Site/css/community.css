@@ -167,6 +167,8 @@ input.wikiheadline{display: block; background: white; border: 1px solid #DEE4EF;
 #search .documentation {background-image: url(search/documentation.gif);}
 #search .solution{background-image: url(search/solved.gif);}
 
+#search .linkNoColor{ color: #333; text-decoration: none; font-style: italic; font-weight: bold; }
+
 /* Member Badge */
 div.memberBadge{background: #f0f0f0; padding: 10px 0px 10px 0px; text-align: center;}
 div.memberBadge *{color: #333;}

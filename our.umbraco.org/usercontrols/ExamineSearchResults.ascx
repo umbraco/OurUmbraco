@@ -10,9 +10,14 @@
 <div id="search">
     <p>
         Your search for <strong><%=searchTerm %></strong> returned <i><%= this.searchResults.Count() %></i> results.<br />
-        You can narrow down your results by unchecking categories below the search field test
+        You can narrow down your results by unchecking categories in the search field
     </p>
-    ewqwrwqrqr
+    <p>
+        Order results by:
+        <asp:LinkButton runat="server" ID="OrderByDateDescLink" OnClick="OrderByDateDesc">date (newest to oldest)</asp:LinkButton> | 
+        <asp:LinkButton runat="server" ID="OrderByDateAscLink" OnClick="OrderByDateAsc">date (oldest to newest)</asp:LinkButton> | 
+        <asp:LinkButton runat="server" ID="OrderByNoneLink" OnClick="OrderByNone">default (based on score)</asp:LinkButton>
+    </p>  
     <asp:Repeater ID="searchResultListing" runat="server">
         <HeaderTemplate>
             <div id="results" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
