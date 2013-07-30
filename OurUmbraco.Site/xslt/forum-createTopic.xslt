@@ -48,34 +48,66 @@
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('select2', '/scripts/forum/select2/select2-new.js?v=6')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tags', '/scripts/forum/tags.js?v=6')"/>
                 <script type="text/javascript">
-    uForum.ForumEditor("topicBody");  
+                  uForum.ForumEditor("topicBody");
 
-    jQuery(document).ready(function(){    
-                        window.setInterval(function() {
-                            uForum.lookUp();
-                        }, 10000);
+                  jQuery(document).ready(function(){
+                  <xsl:choose>
+                  <xsl:when test="uForum:UseMarkdownEditor()">
+                    window.setInterval(function() {
+                      uForum.lookUp(true);
+                      uForum.lookUp(false);
+                    }, 10000);
 
-                        jQuery("form").submit( function(e) {
-                            e.preventDefault();
-                        
-            jQuery("#btCreateTopic").attr("disabled", "true");
-            jQuery("#topicForm").hide();
-            jQuery(".success").show();
+                    jQuery("form").submit( function(e) {
+                      e.preventDefault();
 
-            var topicId = '<xsl:value-of select="$id"/>';
-            var forumId = <xsl:value-of select="$currentPage/@id"/>;
-            var title = jQuery("#title").val();
-                            var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
-          var tags = getTags(); //json string of tags with weight and actual tag
-      if(topicId !== "") {
-            uForum.EditTopic(topicId, title, body,tags);
-          } 
-          else {
-            uForum.NewTopic(forumId, title, body,tags);  
-                            }
-          
+                      jQuery("#btCreateTopic").attr("disabled", "true");
+                      jQuery("#topicForm").hide();
+                      jQuery(".success").show();
 
-        });
+                      var topicId = '<xsl:value-of select="$id"/>';
+                      var forumId = <xsl:value-of select="$currentPage/@id"/>;
+                      var title = jQuery("#title").val();
+                      var body = $("#wmd-input").val(); // Always save the raw markdown input, otherwise, we screw up editing
+
+                      var tags = getTags(); //json string of tags with weight and actual tag
+                      
+                      if(topicId !== "") {
+                        uForum.EditTopic(topicId, title, body,tags);
+                      }
+                      else {
+                        uForum.NewTopic(forumId, title, body,tags);
+                      }
+                    });
+                  </xsl:when>
+                  <xsl:otherwise>
+                    jQuery("#topicForm #title").focusout(function() {
+                      uForum.lookUp(false)
+                    });
+
+                    jQuery("form").submit( function() {
+                      jQuery("#btCreateTopic").attr("disabled", "true");
+                      jQuery("#topicForm").hide();
+                      jQuery(".success").show();
+
+                      var topicId = '<xsl:value-of select="$id"/>';
+                      var forumId = <xsl:value-of select="$currentPage/@id"/>;
+                      var title = jQuery("#title").val();
+                      var body = tinyMCE.get('topicBody').getContent();
+                      
+                      var tags = getTags(); //json string of tags with weight and actual tag
+
+                      if(topicId !== "") {
+                        uForum.EditTopic(topicId, title, body );
+                      } else {
+                        uForum.NewTopic(forumId, title, body );
+                      }
+  
+                      return false;
+                    });
+                  </xsl:otherwise>
+                </xsl:choose>
+
       
       /*
        get the selected tags and return json
@@ -108,29 +140,52 @@
                         <p>
                             <input type="text" id="title" class="title" style="width: 670px;" value="{$_title}" />
                         </p>
-                        <p class="tinymce-container">
+                      <xsl:choose>
+                        <xsl:when test="uForum:UseMarkdownEditor()">
+                          <div class="success">
+                            <h4 style="text-align: center; margin: 2px;">
+                              You're using the (experimental) Markdown editor. <br/><a href="/SwitchForumEditor?EditorChoice=Rte">Switch back to the old Rich Text Editor?</a>
+                            </h4>
+                          </div>
+                          <p class="tinymce-container">
                             <textarea style="width: 680px; height: 300px" id="topicBody">
-                                <xsl:value-of disable-output-escaping="yes" select="$_body"/>
+                              <xsl:value-of disable-output-escaping="yes" select="$_body"/>
                             </textarea>
-                        </p>
-                        <div class="wmd-container">
+                          </p>
+                          
+                          <div class="wmd-container">
                             <div class="wmd-panel">
-                                <div id="wmd-button-bar"></div>
-                                <textarea class="wmd-input topic" id="wmd-input">
-                                    <xsl:value-of disable-output-escaping="yes" select="$_body"/>
-                                </textarea>
+                              <div id="wmd-button-bar"></div>
+                              <textarea class="wmd-input topic" id="wmd-input">
+                                <xsl:value-of disable-output-escaping="yes" select="$_body"/>
+                              </textarea>
                             </div>
                             <div id="wmd-preview" class="wmd-panel wmd-preview topic"></div>
                             <script type="text/javascript">
-                                (function () {
-                                    Markdown.App.getEditor().run();                                    
-                                })();
+                              (function () {
+                                Markdown.App.getEditor().run();
+                              })();
                             </script>
-                        </div>
-			<p>Tags</p>
+                          </div>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <div class="success">
+                            <h4 style="text-align: center; margin: 2px;">
+                              We have an (experimental) Markdown editor for you to test: <br/><a href="/SwitchForumEditor?EditorChoice=Markdown">Click here to switch to the Markdown Editor.</a>
+                            </h4>
+                          </div>
+                          <p>
+                            <textarea style="width: 680px; height: 300px" id="topicBody">
+                              <xsl:value-of disable-output-escaping="yes" select="$_body"/>
+                            </textarea>
+                          </p>
+                        </xsl:otherwise>
+                      </xsl:choose>
+
+			<!--<p>Tags</p>
 			  <div id="tag-container">
 			      <ul name="tags" id="tags" style="width: 300px"></ul>
-			  </div>
+			  </div>-->
                         <div class="buttons">
                             <input type="submit" value="submit" id="btCreateTopic"/>
                             <xsl:if test="$id != ''">

@@ -13,6 +13,42 @@ namespace our.usercontrols {
     public partial class InsertImage {
         
         /// <summary>
+        /// InsertImageMarkdown1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder InsertImageMarkdown1;
+        
+        /// <summary>
+        /// InsertImageMarkdown2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder InsertImageMarkdown2;
+        
+        /// <summary>
+        /// InsertImageRte control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder InsertImageRte;
+        
+        /// <summary>
+        /// InsertImageMarkdown3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.PlaceHolder InsertImageMarkdown3;
+        
+        /// <summary>
         /// Label1 control.
         /// </summary>
         /// <remarks>

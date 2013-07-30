@@ -270,7 +270,9 @@
     <Content Include="usercontrols\Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\HeaderLogin.ascx" />
+    <Content Include="usercontrols\HeaderLogin.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\Login.ascx" />
     <Content Include="usercontrols\ProjectCollabRequest.ascx" />
     <Content Include="usercontrols\ProjectEditor.ascx" />

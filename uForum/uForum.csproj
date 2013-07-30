@@ -98,6 +98,7 @@
     <Compile Include="Businesslogic\Data.cs" />
     <Compile Include="Businesslogic\Events.cs" />
     <Compile Include="Businesslogic\Forum.cs" />
+    <Compile Include="Businesslogic\ForumEditor.cs" />
     <Compile Include="Businesslogic\Mod.cs" />
     <Compile Include="Businesslogic\Subscribtion.cs" />
     <Compile Include="Businesslogic\Tag.cs" />

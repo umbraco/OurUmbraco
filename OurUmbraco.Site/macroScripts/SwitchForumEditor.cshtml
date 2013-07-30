@@ -1,0 +1,21 @@
+﻿@{
+    var currentSite = new Uri(HttpContext.Current.Request.Url.AbsoluteUri);
+    var referrer = HttpContext.Current.Request.UrlReferrer;
+
+    if (referrer != null && currentSite.Host == referrer.Host && currentSite.Port == referrer.Port && HttpContext.Current.Request.QueryString["EditorChoice"] != null)
+    {
+        var editorChoice = HttpContext.Current.Request.QueryString["EditorChoice"];
+        uForum.Businesslogic.ForumEditor.SaveEditorChoice(editorChoice);
+        HttpContext.Current.Response.Redirect(referrer.ToString());
+    }
+    else
+    {
+        <p>Error switching editors.</p>
+        <ul style="display: none;">
+            <li>referrer not null? @(referrer != null)</li>
+            <li>hosts match? @(referrer != null && currentSite.Host == referrer.Host)</li>
+            <li>ports match? @(referrer != null && currentSite.Port == referrer.Port)</li>
+            <li>editorchoice not null? @(HttpContext.Current.Request.QueryString["EditorChoice"] != null)</li>
+        </ul>
+    }
+}

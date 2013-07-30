@@ -5,6 +5,7 @@ using System.Web;
 using System.Xml;
 using System.Xml.XPath;
 using HtmlAgilityPack;
+using uForum.Businesslogic;
 using umbraco;
 using MarkdownSharp;
 using umbraco.cms.businesslogic.member;
@@ -460,7 +461,11 @@ namespace uForum.Library {
 
             return body;
         }
-
+        public static bool UseMarkdownEditor()
+        {
+            return ForumEditor.UseMarkdownEditor();
+        }
+        
         private static string ShortenUrl(string url, int max) {
             if (url.Length <= max)
                 return url;

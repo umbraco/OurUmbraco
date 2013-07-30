@@ -51,10 +51,14 @@ var uForum = function () {
                 }
             });
         },
-        lookUp: function () {
+        lookUp: function (useMarkdown) {
             var query = jQuery("#title").val();
-            query += " " + Markdown.App.getPreviewContent();
-      
+            if (useMarkdown) {
+                query += " " + Markdown.App.getPreviewContent();
+            } else {
+                query += " " + tinyMCE.get('topicBody').getContent();
+            }
+
             if (query.length <= 1) {
                 jQuery("#topicsBox").fadeOut("fast");
             }

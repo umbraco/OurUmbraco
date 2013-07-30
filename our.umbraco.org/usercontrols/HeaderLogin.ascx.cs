@@ -137,6 +137,8 @@ namespace our.usercontrols
                 umbraco.cms.businesslogic.member.Member.RemoveMemberFromCache(mem);
                 umbraco.cms.businesslogic.member.Member.ClearMemberFromClient(mem);
 
+                uForum.Businesslogic.ForumEditor.ClearEditorChoiceCookie();
+
                 Response.Redirect(umbraco.presentation.nodeFactory.Node.GetCurrent().Url);
             }
         }

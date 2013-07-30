@@ -1,22 +1,25 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="InsertImage.ascx.cs"
     Inherits="our.usercontrols.InsertImage" %>
 
+
 <script type="text/javascript">
 
-    var imageInserted = false;
-    var imageInserting = false;
-    var imageLink;
+    <asp:PlaceHolder runat="server" ID="InsertImageMarkdown1">
+        var imageInserted = false;
+        var imageInserting = false;
+        var imageLink;
 
-    window.onbeforeunload = function () {
-        // The Markdown callback expects a single parameter: the path to the image as a string.
-        // PageDown creates an overlay when opening the insert image popup. To remove that overlay, we need to trigger the PageDown callback even when just closing the popup. onbeforeunload seems to be the answer.
-        if (imageInserted) {
-            window.opener.forumInsertImageCallback(imageLink);
-        } else if (!imageInserting) {
-            window.opener.forumInsertImageCallback(null);
-        }
-    };
-
+        window.onbeforeunload = function () {
+            // The Markdown callback expects a single parameter: the path to the image as a string.
+            // PageDown creates an overlay when opening the insert image popup. To remove that overlay, we need to trigger the PageDown callback even when just closing the popup. onbeforeunload seems to be the answer.
+            if (imageInserted) {
+                window.opener.forumInsertImageCallback(imageLink);
+            } else if (!imageInserting) {
+                window.opener.forumInsertImageCallback(null);
+            }
+        };
+    </asp:PlaceHolder>
+    
     jQuery(document).ready(function () {
 
         jQuery("#insert").click(function () {
@@ -27,9 +30,11 @@
             CloseDialog();
         });
 
-        jQuery("#<%= btnUpload.ClientID %>").click(function () {
-            imageInserting = true;
-        });
+        <asp:PlaceHolder runat="server" ID="InsertImageMarkdown2">
+            jQuery("#<%= btnUpload.ClientID %>").click(function () {
+                imageInserting = true;
+            });
+        </asp:PlaceHolder>
 
         if (jQuery("#<%= tb_url.ClientID %>").val().length > 0) {
             ShowImage();
@@ -79,10 +84,22 @@
     }
 
     function InsertImage() {
-        // When we insert a image, we basically just close the dialog and let the unbeforeunload function do the rest of the work.
-        imageLink = jQuery('#<%= tb_url.ClientID %>').val();
-        imageInserted = true;
-        CloseDialog();
+        <asp:PlaceHolder runat="server" ID="InsertImageRte">
+            imglink = jQuery('#<%= tb_url.ClientID %>').val();
+            origimglink = imglink.replace('rs/', '');
+
+            img = "<a href='" + origimglink + "' target='_blank'><img border='0' src='" + imglink + "' /></a>";
+
+            tinyMCEPopup.editor.execCommand("mceInsertContent", false, img);
+            CloseDialog();
+        </asp:PlaceHolder>
+
+        <asp:PlaceHolder runat="server" ID="InsertImageMarkdown3">
+            // When we insert a image, we basically just close the dialog and let the unbeforeunload function do the rest of the work.
+            imageLink = jQuery('#<%= tb_url.ClientID %>').val();
+            imageInserted = true;
+            CloseDialog();
+        </asp:PlaceHolder>
     }
     function CloseDialog() {
         tinyMCEPopup.close();
