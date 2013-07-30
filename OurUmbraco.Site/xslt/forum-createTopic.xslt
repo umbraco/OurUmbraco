@@ -44,7 +44,7 @@
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('jquery171', '/scripts/jquery-1.7.1.min.js')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('jqueryui1816', '/scripts/jquery-ui-1.8.16.custom.min.js')"/>
                 <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tinyMce', '/scripts/tiny_mce/tiny_mce_src.js')"/>
-                <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=11')"/>
+                <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('uForum', '/scripts/forum/uForum.js?v=12')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('select2', '/scripts/forum/select2/select2-new.js?v=6')"/>
   <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('tags', '/scripts/forum/tags.js?v=6')"/>
                 <script type="text/javascript">
