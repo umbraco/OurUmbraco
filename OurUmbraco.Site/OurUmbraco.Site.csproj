@@ -3646,6 +3646,8 @@
     <Content Include="umbraco\plugins\umbracoContour\Views\_ViewStart.cshtml" />
     <Content Include="macroScripts\Rss-CommunityBlogs.cshtml" />
     <Content Include="macroScripts\TwitterSearch.cshtml" />
+    <Content Include="masterpages\SwitchForumEditor.master" />
+    <Content Include="macroScripts\SwitchForumEditor.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
