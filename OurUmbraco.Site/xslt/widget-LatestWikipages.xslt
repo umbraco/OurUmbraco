@@ -15,7 +15,58 @@
 <xsl:template match="/">
 
 <ul class="wiki summary">
-<xsl:for-each select="umbraco.library:GetXmlNodeById(1054)/descendant::* [@isDoc]">
+
+  <li>
+    <a href="/documentation/Reference/Mvc/">
+      Working with Mvc
+    </a>
+    <small>
+      Documentation on Views, Partial Views, Surface Controllers, Child Actions, Querying, Custom Controllers and more
+    </small>
+  </li>
+  <li>
+    <a href="/documentation/Reference/Management-v6/">
+      Umbraco v6 API
+    </a>
+    <small>
+      Reference for all the Services and Models available in the v6 API
+    </small>
+  </li>
+  <li>
+    <a href="/documentation/Reference/Management/">
+      Umbraco v4 API
+    </a>
+    <small>
+      Reference for accessing Nodes, Documents, Members and more
+    </small>
+  </li>
+  <li>
+    <a href="/documentation/Reference/Querying/">
+      Querying content, media, members and relations
+    </a>
+    <small>
+      How to query Umbraco data using Razor Macros or C# using DynamicNode or uQuery
+    </small>
+  </li>
+  <li>
+    <a href="/documentation/Reference/Events/">
+      Events
+    </a>
+    <small>
+      Documentation on the events available in Umbraco how to register them
+    </small>
+  </li>
+  <li>
+    <a href="/documentation/Reference/Templating/">
+      Templating
+    </a>
+    <small>
+      Documentation on how to work with masterpages and macros
+    </small>
+  </li>
+
+
+  <!-- xsl:for-each select="umbraco.library:GetXmlNodeById(1054)/descendant::* [@isDoc]">
 <xsl:sort select="@createDate" order="descending"/>
 <xsl:if test="position() &lt;= 5">
   <li><a href="{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
@@ -27,7 +78,7 @@
     </small>
   </li>
 </xsl:if>
-</xsl:for-each>
+</-->
 </ul>
 
 
