@@ -17,7 +17,7 @@
 <xsl:template match="/">
 <xsl:variable name="maxItems" select="/macro/maxItems" />
 
-<xsl:variable name="feedcache" select="document('../umbraco/plugins/FergusonMoriyama/FeedCache/communityblogs.xml')"/>
+<xsl:variable name="feedcache" select="document('../App_Data/communityblogs.xml')"/>
 
 <xsl:variable name="blogs" select="$feedcache">
 
