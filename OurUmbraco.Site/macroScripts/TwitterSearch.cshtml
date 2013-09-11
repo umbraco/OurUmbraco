@@ -9,7 +9,7 @@
     if (configProperty.GetType() != typeof(DynamicNull))
     {
         var config = uTwit.DeserializeValue(configProperty);
-        var tweets = uTwit.SearchTweets(config, "umbraco", 30);
+        var tweets = uTwit.SearchTweets(config, "#umbraco", 30);
         
         var filterWords = "umbraco.vogue.it,umbraco.vanityfair.it".Split(',');
         var filterAccounts = "VanityFairIt".Split(',');
