@@ -133,7 +133,8 @@
   list-style: decimal;
 }
 #markdown-docs li {
-  line-height: 18px;
+  font-size: 14px;
+  line-height: 22px;
 }
 #markdown-docs ul.unstyled,
 #markdown-docs ol.unstyled {
