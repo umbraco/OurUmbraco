@@ -17,7 +17,7 @@
 <ul class="wiki summary">
 
   <li>
-    <a href="/documentation/Reference/Mvc/">
+    <a href="/documentation/Reference/Templating/Mvc/">
       Working with Mvc
     </a>
     <small>
@@ -37,7 +37,7 @@
       Umbraco v4 API
     </a>
     <small>
-      Reference for accessing Nodes, Documents, Members and more
+      Reference for accessing Nodes, Documents, Members and more using the v4 API
     </small>
   </li>
   <li>
@@ -50,18 +50,18 @@
   </li>
   <li>
     <a href="/documentation/Reference/Events/">
-      Events
+      Events v4 API
     </a>
     <small>
-      Documentation on the events available in Umbraco how to register them
+      Documentation on the events available in Umbraco v4 API how to register them
     </small>
   </li>
   <li>
-    <a href="/documentation/Reference/Templating/">
-      Templating
+    <a href="/documentation/reference/Events-v6/">
+      Events v6 API
     </a>
     <small>
-      Documentation on how to work with masterpages and macros
+		Documentation on the events available in Umbraco v6 API how to register them
     </small>
   </li>
 
