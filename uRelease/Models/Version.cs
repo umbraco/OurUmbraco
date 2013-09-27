@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace uRelease.Models
 {
@@ -25,6 +24,8 @@ namespace uRelease.Models
         }
 
         public string Value { get; set; }
+
+        public string ReleaseStatus { get; set; }
     }
 
     public class CustomField

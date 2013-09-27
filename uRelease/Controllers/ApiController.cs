@@ -27,7 +27,7 @@ namespace uRelease.Controllers
 
         private static readonly string Login = ConfigurationManager.AppSettings["uReleaseUsername"];
         private static readonly string Password = ConfigurationManager.AppSettings["uReleasePassword"];
-        private static readonly string ReleasesPageNodeId = ConfigurationManager.AppSettings["uReleaseParentNodeId"];
+        private static readonly int ReleasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
         private const string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
 
         public JsonResult Aggregate(string ids)
@@ -65,29 +65,26 @@ namespace uRelease.Controllers
             var plannedReleases = new List<Version>();
             var inProgressReleases = new List<Version>();
 
-            var releasesNode = new Node(int.Parse(ReleasesPageNodeId));
+            var releasesNode = new Node(ReleasesPageNodeId);
+
             foreach (Node release in releasesNode.Children)
             {
-                if (release.GetProperty("recommendedRelease") != null && release.GetProperty("recommendedRelease").Value == "1")
+                if (release.GetPropertyValue("recommendedRelease") == "1")
                 {
-                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
-                    if (version != null)
-                        currentReleases.Add(version);
+                    var version = orderedVersions.Single(x => x.Value == release.Name);
+                    var status = release.GetProperty("releaseStatus").Value;
+                    if (status != "Released")
+                        version.ReleaseStatus = status;
+
+                    currentReleases.Add(version);
                 }
 
-                if (release.GetProperty("releaseStatus") != null && release.GetProperty("releaseStatus").Value == "Planning")
-                {
-                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
-                    if (version != null)
-                        plannedReleases.Add(version);
-                }
+                if (release.GetPropertyValue("releaseStatus") == "Planning")
+                    plannedReleases.Add(orderedVersions.Single(x => x.Value == release.Name));
 
-                if (release.GetProperty("releaseStatus") != null && release.GetProperty("releaseStatus").Value == "Unreleased")
-                {
-                    var version = orderedVersions.FirstOrDefault(x => x.Value.ToString(CultureInfo.InvariantCulture) == release.Name);
-                    if (version != null)
-                        inProgressReleases.Add(version);
-                }
+                if (release.GetPropertyValue("releaseStatus") == "Unreleased")
+                    inProgressReleases.Add(orderedVersions.Single(x => x.Value == release.Name));
+                
             }
             
             // Just used to make sure we don't make repeated API requests for keys
@@ -101,6 +98,7 @@ namespace uRelease.Controllers
                                    version = version.Value,
                                    isPatch = version.Value.AsFullVersion().Build != 0,
                                    releaseDescription = version.Description ?? string.Empty,
+                                   releaseStatus = version.ReleaseStatus,
                                    released = version.Released,
                                    releaseDate = version.ReleaseDate == 0 ? "" : ConvertDate(version.ReleaseDate).ToString(CultureInfo.InvariantCulture),
                                    currentRelease = currentReleases.FirstOrDefault(x => x.Value == version.Value) != null,
@@ -139,7 +137,7 @@ namespace uRelease.Controllers
 
             return new JsonResult { Data = toReturn, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
-        
+
         public JsonResult GetAllFromFile()
         {
             if (System.IO.File.Exists(Server.MapPath(YouTrackJsonFile)) == false)
@@ -170,7 +168,7 @@ namespace uRelease.Controllers
 
         private static DateTime ConvertDate(long date)
         {
-            return new DateTime(1970, 1, 1).AddMilliseconds(date);
+            return new DateTime(1970, 1, 1).AddMilliseconds(date);    
         }
 
         private static string GetFieldFromIssue(Issue issue, string fieldName)

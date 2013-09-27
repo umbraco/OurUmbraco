@@ -119,7 +119,7 @@
     <div class="releaseRow" data-bind="attr: { id: id }">
       <div class="version">
         <h2>
-          <a data-bind="text: 'v' + version(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }"></a>
+          <a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }"></a>
         </h2>
         <p data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></p> 
       </div>

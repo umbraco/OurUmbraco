@@ -21,6 +21,8 @@ namespace uRelease.Models
 
         public string releaseDate { get; set; }
 
+        public string releaseStatus { get; set; }
+
         public string releaseDescription { get; set; }
 
         public IEnumerable<IssueView> issues { get; set; }
