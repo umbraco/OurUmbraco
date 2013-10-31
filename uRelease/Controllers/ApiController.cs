@@ -35,7 +35,7 @@ namespace uRelease.Controllers
             var idArray = new ArrayList();
             idArray.AddRange(ids.Replace("all", "").TrimEnd(',').Split(','));
             idArray.Remove("");
-            
+
             var gotBundle = GetVersionBundle();
 
             // For each version in the bundle, go get the issues 
@@ -69,24 +69,29 @@ namespace uRelease.Controllers
 
             foreach (Node release in releasesNode.Children)
             {
-                if (release.GetPropertyValue("recommendedRelease") == "1")
+                var version = orderedVersions.SingleOrDefault(x => x.Value == release.Name);
+                if (version != null)
                 {
-                    var version = orderedVersions.Single(x => x.Value == release.Name);
-                    var status = release.GetProperty("releaseStatus").Value;
-                    if (status != "Released")
-                        version.ReleaseStatus = status;
+                    if (release.GetPropertyValue("recommendedRelease") == "1")
+                    {
+                        var status = release.GetProperty("releaseStatus");
+                        if (status != null && status.Value != "Released")
+                            version.ReleaseStatus = status.Value;
 
-                    currentReleases.Add(version);
+                        currentReleases.Add(version);
+                    }
+
+
+                    if (release.GetPropertyValue("releaseStatus") == "Planning")
+                    {
+                        plannedReleases.Add(version);
+                    }
+
+                    if (release.GetPropertyValue("releaseStatus") != "Released")
+                        inProgressReleases.Add(version);
                 }
-
-                if (release.GetPropertyValue("releaseStatus") == "Planning")
-                    plannedReleases.Add(orderedVersions.Single(x => x.Value == release.Name));
-
-                if (release.GetPropertyValue("releaseStatus") == "Unreleased")
-                    inProgressReleases.Add(orderedVersions.Single(x => x.Value == release.Name));
-                
             }
-            
+
             // Just used to make sure we don't make repeated API requests for keys
             var versionCache = new ConcurrentDictionary<string, RestResponse<IssuesWrapper>>();
 
@@ -104,7 +109,7 @@ namespace uRelease.Controllers
                                    currentRelease = currentReleases.FirstOrDefault(x => x.Value == version.Value) != null,
                                    plannedRelease = plannedReleases.FirstOrDefault(x => x.Value == version.Value) != null
                                };
-                
+
                 // /rest/issue/byproject/{project}?{filter}
                 var issues = versionCache.GetOrAdd(version.Value, key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
                 var issueView = new List<IssueView>();
@@ -131,7 +136,7 @@ namespace uRelease.Controllers
 
                 item.issues = issueIdsFromActivities.Select(x => issueView.Single(y => y != null && y.id == x)).OrderBy(x => x.id);
                 item.activities = activitiesDateDesc.Take(5);
-                
+
                 toReturn.Add(item);
             }
 
@@ -147,7 +152,7 @@ namespace uRelease.Controllers
 
             return new JsonResult { Data = new JavaScriptSerializer().DeserializeObject(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
-        
+
         public string SaveAllToFile()
         {
             try
@@ -168,7 +173,7 @@ namespace uRelease.Controllers
 
         private static DateTime ConvertDate(long date)
         {
-            return new DateTime(1970, 1, 1).AddMilliseconds(date);    
+            return new DateTime(1970, 1, 1).AddMilliseconds(date);
         }
 
         private static string GetFieldFromIssue(Issue issue, string fieldName)
@@ -208,7 +213,7 @@ namespace uRelease.Controllers
                 getVBundle.AddCookie(restResponseCookie.Name, restResponseCookie.Value);
 
             var gotBundle = auth.Execute<T>(getVBundle);
-            return (RestResponse<T>) gotBundle;
+            return (RestResponse<T>)gotBundle;
         }
     }
 }
