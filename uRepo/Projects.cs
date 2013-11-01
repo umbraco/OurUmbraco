@@ -147,7 +147,7 @@ namespace uRepo
         }
 
         public static List<Package> GetPackagesByProperty(string propertyAlias, string value) {
-          string xpath = "/descendant::node [@nodeTypeAlias = '" + _projectAlias + "' and data [@alias = '" + propertyAlias + "'] = '" + value + "']";
+          string xpath = "//" + _projectAlias + "[" + propertyAlias + " = '" + value + "']";
           XPathNodeIterator xni = queryRepo(xpath);
           return iteratorToPackageList(xni);
         }
