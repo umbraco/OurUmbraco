@@ -604,6 +604,20 @@ a.remove
 /* Hide treshold fields */
 html .treshold{display:none}
 
+.main-release h3 a {
+			font-size: 20px;
+		}
+
+.release h3 a {
+				font-size: 12px;
+				color: gray;
+			}
+
+.release div p {
+				color: silver;	
+				}
+
+
 
 
 

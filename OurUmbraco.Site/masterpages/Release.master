@@ -50,9 +50,13 @@
 							var numberOfDownloads = 0;
 							int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
 							
-							<li>
-								<div style="background-image: url('@background');width: @(width)px;height: 40px;">
+						<li class="@(item.IsFirst() == false ? "release" : "main-release")">
+								<div style="background-image: url('@background');width: @(width)px;height: 60px;">
 									<h3><a href="/ReleaseDownload?id=@item.Id">@item.Name</a></h3>
+									@if(item.IsFirst())
+									{
+									    <strong>This is the main Umbraco download, generally you won't need anything else.</strong>
+									}
 									<p>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</p>
 								</div>
 							</li>
