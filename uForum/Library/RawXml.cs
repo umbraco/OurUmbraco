@@ -119,17 +119,17 @@ namespace uForum.Library {
             }
             
                         
-            string sql = @"WITH Comments  AS
+            string sql = string.Format(@"WITH Comments  AS
                             (
-	                            SELECT	id, topicId, memberId, body, created, score, position,
-			                            ROW_NUMBER() OVER (ORDER BY created " + order  + @") AS RowNumber
+	                            SELECT	id, topicId, memberId, body, created, score, position, isSpam,
+			                            ROW_NUMBER() OVER (ORDER BY created {0}) AS RowNumber
 	                            FROM	dbo.forumComments
-	                            WHERE (isSpam IS NULL OR isSpam != 1) AND topicId = " + topicId.ToString() + @"
+	                            WHERE topicId = {1}
                             )
-                            SELECT	id, topicId, memberId, body, created, score, position, RowNumber
+                            SELECT	id, topicId, memberId, body, created, score, position, RowNumber, isSpam
                             FROM	Comments
-                            WHERE	RowNumber BETWEEN " + pageStart.ToString() + " AND " + pageEnd.ToString() + @" 
-                            ORDER BY RowNumber ASC;";
+                            WHERE	RowNumber BETWEEN {2} AND {3} 
+                            ORDER BY RowNumber ASC;", order, topicId, pageStart, pageEnd);
             
             return Businesslogic.Data.GetDataSet(sql, "comment");
         }

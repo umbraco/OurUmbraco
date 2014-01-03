@@ -161,6 +161,43 @@ namespace uForum.Businesslogic
             FireAfterMarkAsSpam(markAsSpamEventArgs);
         }
 
+        public void MarkAsHam()
+        {
+            var markAsHamEventArgs = new MarkAsHamEventArgs();
+            FireBeforeMarkAsHam(markAsHamEventArgs);
+
+            if (markAsHamEventArgs.Cancel)
+                return;
+
+            var forum = new Forum(ParentId);
+
+            var topic = GetTopic(Id);
+            var member = new Member(topic.MemberId);
+            var akismetApi = Forum.GetAkismetApi();
+            var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
+            akismetApi.SubmitHam(akismetComment);
+
+            Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = 0 WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
+
+            Id = 0;
+
+            forum.Save();
+
+            // Set reputation to at least 50 so their next posts won't be automatically marked as spam
+            int reputation;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationTotal").Value = 50;
+
+            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationCurrent").Value = 50;
+
+            member.Save();
+
+            FireAfterMarkAsHam(markAsHamEventArgs);
+        }
+
         public void Lock()
         {
             var lockEventArgs = new LockEventArgs();
@@ -210,7 +247,7 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@urlname", UrlName),
                         Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
                         Data.SqlHelper.CreateParameter("@body", Body),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic", Id))
                         );
 
                     Created = DateTime.Now;
@@ -263,7 +300,7 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@latestComment", LatestComment),
                         Data.SqlHelper.CreateParameter("@locked", Locked),
                         Data.SqlHelper.CreateParameter("@replies", totalComments),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic", Id))
                     );
 
                     // save tags
@@ -316,6 +353,8 @@ namespace uForum.Businesslogic
 
             topicXml.AppendChild(umbraco.xmlHelper.addTextNode(xmlDocument, "urlname", UrlName));
 
+            topicXml.AppendChild(umbraco.xmlHelper.addTextNode(xmlDocument, "isSpam", IsSpam.ToString().ToLowerInvariant()));
+
             // tags
             XmlNode tags = umbraco.xmlHelper.addTextNode(xmlDocument, "tags", "");
             foreach (var tag in Tags)
@@ -367,46 +406,36 @@ namespace uForum.Businesslogic
 
         public Topic() { }
 
-        public static Topic GetTopic(int topicId, bool getSpamTopic)
-        {
-            var db = new Database("umbracoDbDSN");
-            var topic = db.SingleOrDefault<Topic>(string.Format("SELECT * FROM forumTopics WHERE {0} id = @0", getSpamTopic ? "" : " (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND "), topicId);
-            return topic;
-        }
         public static Topic GetTopic(int topicId)
         {
-            return GetTopic(topicId, false);
+            var db = new Database("umbracoDbDSN");
+            var topic = db.SingleOrDefault<Topic>(string.Format("SELECT * FROM forumTopics WHERE id = @0"), topicId);
+            return topic;
         }
-
-        [Obsolete("Use GetTopic instead", true)]
+        
+        [Obsolete("Use GetTopic instead", false)]
         public Topic(int topicId)
         {
-            var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM forumTopics WHERE (forumTopics.isSpam IS NULL OR forumTopics.isSpam != 1) AND id = @id", Data.SqlHelper.CreateParameter("@id", topicId.ToString(CultureInfo.InvariantCulture)));
+            var topic = GetTopic(topicId);
 
-            if (reader.Read())
-            {
+            Id = topic.Id;
+            Answer = topic.Answer;
+            Score = topic.Score;
+            ParentId = topic.ParentId;
+            MemberId = topic.MemberId;
+            Replies = topic.Replies;
+            Title = topic.Title;
+            Body = topic.Body;
+            LatestReplyAuthor = topic.LatestReplyAuthor;
+            Created = topic.Created;
+            Updated = topic.Updated;
 
-                Id = reader.GetInt("id");
-                Answer = reader.GetInt("answer");
-                Score = reader.GetInt("score");
-                ParentId = reader.GetInt("parentId");
-                MemberId = reader.GetInt("memberId");
-                Replies = reader.GetInt("replies");
-                Title = reader.GetString("title");
-                Body = reader.GetString("body");
-                LatestReplyAuthor = reader.GetInt("latestReplyAuthor");
-                Created = reader.GetDateTime("created");
-                Updated = reader.GetDateTime("updated");
+            UrlName = topic.UrlName;
 
-                UrlName = reader.GetString("urlName");
+            Locked = topic.Locked;
 
-                Locked = reader.GetBoolean("locked");
-            }
+            IsSpam = topic.IsSpam;
 
-            reader.Close();
-            reader.Dispose();
-
-            // load tags
             Tags = Tag.TagsByTopic(topicId);
         }
 
@@ -507,6 +536,14 @@ namespace uForum.Businesslogic
 
             return topics;
         }
+        
+        public static List<Topic> GetAllSpamTopics()
+        {
+            using (var db = new Database("umbracoDbDSN"))
+            {
+                return db.Fetch<Topic>("SELECT * FROM forumTopics WHERE isSpam = 1 ORDER BY id DESC");
+            }
+        }
 
         public static int TotalTopics()
         {
@@ -602,6 +639,20 @@ namespace uForum.Businesslogic
         {
             if (AfterMarkAsSpam != null)
                 AfterMarkAsSpam(this, e);
+        }
+        public static event EventHandler<MarkAsHamEventArgs> BeforeMarkAsHam;
+
+        protected virtual void FireBeforeMarkAsHam(MarkAsHamEventArgs e)
+        {
+            _events.FireCancelableEvent(BeforeMarkAsHam, this, e);
+        }
+
+        public static event EventHandler<MarkAsHamEventArgs> AfterMarkAsHam;
+
+        protected virtual void FireAfterMarkAsHam(MarkAsHamEventArgs e)
+        {
+            if (AfterMarkAsHam != null)
+                AfterMarkAsHam(this, e);
         }
     }
 }

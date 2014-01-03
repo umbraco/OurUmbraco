@@ -59,7 +59,7 @@
         <language>en</language>
 
         <xsl:apply-templates select="$cs/comments/comment">
-          <xsl:sort select="created" order="descending" />
+            <xsl:sort select="created" order="descending" />
         </xsl:apply-templates>
     
   </channel>
@@ -68,7 +68,7 @@
   </xsl:template>
 
   <xsl:template match="comment">
-    <xsl:if test="position() &lt;= $RSSNoItems">
+    <xsl:if test="position() &lt;= $RSSNoItems and ./isSpam != 'true'">
       <item>
         <title>
           Reply from: <xsl:value-of select="umbraco.library:GetMemberName(memberId)"/>

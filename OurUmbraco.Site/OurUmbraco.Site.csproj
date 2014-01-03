@@ -3504,7 +3504,9 @@
     <Content Include="xslt\Events-UpcomingList.xslt" />
     <Content Include="xslt\findemptyguids.xslt" />
     <Content Include="xslt\forum-activeTopics.xslt" />
-    <Content Include="xslt\forum-commentsList.xslt" />
+    <Content Include="xslt\forum-commentsList.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\forum-createComment.xslt">
       <SubType>Designer</SubType>
     </Content>
@@ -3546,7 +3548,9 @@
     <Content Include="xslt\RFC-TopicList.xslt">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="xslt\Rss-ActiveTopics.xslt" />
+    <Content Include="xslt\Rss-ActiveTopics.xslt">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="xslt\Rss-Forum.xslt" />
     <Content Include="xslt\Rss-Pages.xslt" />
     <Content Include="xslt\Rss-topic.xslt" />
@@ -3648,6 +3652,8 @@
     <Content Include="macroScripts\TwitterSearch.cshtml" />
     <Content Include="masterpages\SwitchForumEditor.master" />
     <Content Include="macroScripts\SwitchForumEditor.cshtml" />
+    <Content Include="masterpages\ManageSpam.master" />
+    <Content Include="macroScripts\ManageSpam.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

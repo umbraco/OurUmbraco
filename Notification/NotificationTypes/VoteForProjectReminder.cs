@@ -29,7 +29,7 @@ namespace NotificationsCore.NotificationTypes
             string subject = details.SelectSingleNode("//subject").InnerText;
             string body = details.SelectSingleNode("//body").InnerText;
 
-            SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
+            SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
 
             string select = @"SELECT projectId, memberId
                             FROM [projectDownload] d

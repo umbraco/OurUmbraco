@@ -24,7 +24,6 @@
 
 <xsl:template match="/">
 
-
 <xsl:choose>
 <xsl:when test="$mode = 'forum'">
 <xsl:call-template name="forum" />
@@ -195,7 +194,12 @@ RE: <xsl:value-of select="title" />
 <xsl:call-template name="renderTopicReply"><xsl:with-param name="topic" select="$topic"/></xsl:call-template>
 
 <xsl:for-each select="$comments//comment">
-	<xsl:call-template name="renderComment"><xsl:with-param name="topic" select="$topic"/><xsl:with-param name="comment" select="."/></xsl:call-template>
+  <xsl:if test="./isSpam != 'true'">
+    <xsl:call-template name="renderComment">
+      <xsl:with-param name="topic" select="$topic"/>
+      <xsl:with-param name="comment" select="."/>
+    </xsl:call-template>
+  </xsl:if>
 </xsl:for-each> 
 
 </div>

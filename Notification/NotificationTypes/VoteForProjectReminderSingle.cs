@@ -57,7 +57,7 @@ namespace NotificationsCore.NotificationTypes
                     c.Send(mm);
                 }
 
-                SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
+                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
 
 
                 conn.Open();

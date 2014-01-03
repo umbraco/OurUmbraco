@@ -124,17 +124,24 @@ namespace uForum.Library
 
         public static string MarkTopicAsSpam(int topicId)
         {
-            var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+            if (Utills.IsModerator() == false)
+                return "false";
 
-            if (Xslt.IsMemberInGroup("admin", currentMember))
-            {
-                var topic = Businesslogic.Topic.GetTopic(topicId);
-                topic.MarkAsSpam();
+            var topic = Businesslogic.Topic.GetTopic(topicId);
+            topic.MarkAsSpam();
 
-                return "true";
-            }
+            return "true";
+        }
 
-            return "false";
+        public static string MarkTopicAsHam(int topicId)
+        {
+            if (Utills.IsModerator() == false) 
+                return "false";
+
+            var topic = Businesslogic.Topic.GetTopic(topicId);
+            topic.MarkAsHam();
+
+            return "true";
         }
 
         public static string MoveTopic(int topicId, int newForumId)
@@ -170,17 +177,24 @@ namespace uForum.Library
 
         public static string MarkCommentAsSpam(int commentId)
         {
-            var currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+            if (Utills.IsModerator() == false) 
+                return "false";
 
-            if (User.GetCurrent() != null || Xslt.IsMemberInGroup("admin", currentMember))
-            {
-                var comment = new Businesslogic.Comment(commentId);
-                comment.MarkAsSpam();
+            var comment = new Businesslogic.Comment(commentId);
+            comment.MarkAsSpam();
 
-                return "true";
-            }
+            return "true";
+        }
 
-            return "false";
+        public static string MarkCommentAsHam(int commentId)
+        {
+            if (Utills.IsModerator() == false) 
+                return "false";
+
+            var comment = new Businesslogic.Comment(commentId);
+            comment.MarkAsHam();
+
+            return "true";
         }
     }
 }

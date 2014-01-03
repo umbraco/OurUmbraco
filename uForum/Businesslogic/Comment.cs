@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Web;
 using System.Web.UI.MobileControls;
 using System.Xml;
 using Joel.Net;
+using PetaPoco;
 using umbraco.cms.businesslogic.member;
 using umbraco.presentation.channels;
 
@@ -60,7 +62,7 @@ namespace uForum.Businesslogic {
                         Data.SqlHelper.CreateParameter("@memberId", MemberId),
                         Data.SqlHelper.CreateParameter("@body", Body),
                         Data.SqlHelper.CreateParameter("@position", Position),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment", TopicId))
                         );
 
                     Created = DateTime.Now;
@@ -97,7 +99,7 @@ namespace uForum.Businesslogic {
                         Data.SqlHelper.CreateParameter("@memberId", MemberId),
                         Data.SqlHelper.CreateParameter("@body", Body),
                         Data.SqlHelper.CreateParameter("@id", Id),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment"))
+                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, Body, "comment", TopicId))
                         );
                     FireAfterUpdate(e);
                 }
@@ -138,7 +140,7 @@ namespace uForum.Businesslogic {
         
         public static Comment GetComment(int id, bool getSpamComment)
         {
-            var query = string.Format("SELECT * FROM forumComments WHERE {0} id = {1}", getSpamComment ? "" : " (forumComments.isSpam IS NULL OR forumComments.isSpam != 1) AND ", id);
+            var query = string.Format("SELECT * FROM forumComments WHERE id = {0}", id);
             
             var comment = new Comment();
             
@@ -164,6 +166,14 @@ namespace uForum.Businesslogic {
             }
             
             return comment;
+        }
+
+        public static List<Comment> GetAllSpamComments()
+        {
+            using (var db = new Database("umbracoDbDSN"))
+            {
+                return db.Fetch<Comment>("SELECT * FROM forumComments WHERE isSpam = 1 ORDER BY id DESC");
+            }
         }
 
         public void Delete() {
@@ -210,6 +220,44 @@ namespace uForum.Businesslogic {
             forum.Save();
                 
             FireAfterMarkAsSpam(e);
+        }
+
+        public void MarkAsHam() {
+
+            var e = new MarkAsHamEventArgs();
+
+            FireBeforeMarkAsHam(e);
+
+            if (e.Cancel) 
+                return;
+
+            var topic = Topic.GetTopic(TopicId);
+            var forum = new Forum(topic.ParentId);
+
+            var member = new Member(MemberId);
+            var akismetApi = Forum.GetAkismetApi();
+            var akismetComment = Forum.ConstructAkismetComment(member, "comment", Body);
+            akismetApi.SubmitHam(akismetComment);
+
+            Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET isSpam = 0 WHERE id = " + Id);
+            Id = 0;
+
+            topic.Save(true);
+            forum.Save();
+
+            // Set reputation to at least 50 so their next posts won't be automatically marked as spam
+            int reputation;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationTotal").Value = 50;
+
+            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationCurrent").Value = 50;
+
+            member.Save();
+                
+            FireAfterMarkAsHam(e);
         }
 
 
@@ -283,6 +331,17 @@ namespace uForum.Businesslogic {
         {
             if (AfterMarkAsSpam != null)
                 AfterMarkAsSpam(this, e);
+        }
+        public static event EventHandler<MarkAsHamEventArgs> BeforeMarkAsHam;
+        protected virtual void FireBeforeMarkAsHam(MarkAsHamEventArgs e)
+        {
+            _e.FireCancelableEvent(BeforeMarkAsHam, this, e);
+        }
+        public static event EventHandler<MarkAsHamEventArgs> AfterMarkAsHam;
+        protected virtual void FireAfterMarkAsHam(MarkAsHamEventArgs e)
+        {
+            if (AfterMarkAsHam != null)
+                AfterMarkAsHam(this, e);
         }
     }
 }

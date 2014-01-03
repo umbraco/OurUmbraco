@@ -66,22 +66,19 @@ namespace uForum.Library {
             umbraco.library.RegisterClientScriptBlock(alias, "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" + title + "\" href=\"" + url + "\" />" ,false);
         }
 
-        public static string NiceTopicUrl(int topicId) {
-            Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
+        public static string NiceTopicUrl(int topicId)
+        {
+            var topic = Businesslogic.Topic.GetTopic(topicId);
 
-            if (t != null && t.Exists) {
-                string _url = umbraco.library.NiceUrl(t.ParentId);
-
-                if (umbraco.GlobalSettings.UseDirectoryUrls) {
-                    return "/" + _url.Trim('/') + "/" + t.Id.ToString() + "-" + t.UrlName;
-                } else {
-                    return "/" + _url.Substring(0, _url.LastIndexOf('.')).Trim('/') + "/" + t.Id.ToString() + "-" + t.UrlName + ".aspx";
-                }
-            } else {
+            if (topic == null || topic.Exists == false) 
                 return "";
-            }
-        }
 
+            var url = library.NiceUrl(topic.ParentId);
+
+            return GlobalSettings.UseDirectoryUrls 
+                ? string.Format("/{0}/{1}-{2}", url.Trim('/'), topic.Id, topic.UrlName) 
+                : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), topic.Id, topic.UrlName);
+        }
 
         public static int CommentPageNumber(int commentId, int itemsPerPage) {
                 Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentId);
@@ -464,6 +461,21 @@ namespace uForum.Library {
         public static bool UseMarkdownEditor()
         {
             return ForumEditor.UseMarkdownEditor();
+        }
+
+        public static bool IsModerator()
+        {
+            return Utills.IsModerator();
+        }
+
+        public static bool CanSeeTopic(int topicId)
+        {
+            return Utills.CanSeeTopic(topicId);
+        }
+
+        public static bool CanSeeComment(int commentId)
+        {
+            return Utills.CanSeeComment(commentId);
         }
         
         private static string ShortenUrl(string url, int max) {

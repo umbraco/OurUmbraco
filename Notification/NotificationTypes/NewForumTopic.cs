@@ -54,8 +54,8 @@ namespace NotificationsCore.NotificationTypes
                 
                 body = string.Format(body, forum.Text, "http://" + domain + args[1], member.Text, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
-              
-                SqlConnection conn = new SqlConnection(details.SelectSingleNode("//conn").InnerText);
+
+                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
 
                
                 SqlCommand comm = new SqlCommand("Select memberId from forumSubscribers where forumId = @forumId", conn);

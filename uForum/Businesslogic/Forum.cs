@@ -2,10 +2,13 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using System.Net.Mail;
 using System.Web;
 using System.Xml;
 using Joel.Net;
+using uForum.Library;
 using umbraco.cms.businesslogic.member;
+using umbraco.presentation.install.utills;
 using umbraco.presentation.nodeFactory;
 using umbraco.BusinessLogic;
 
@@ -320,7 +323,7 @@ namespace uForum.Businesslogic
 
         }
 
-        public static bool IsSpam(int memberId, string body, string commentType)
+        public static bool IsSpam(int memberId, string body, string commentType, int topicId)
         {
             var member = new Member(memberId);
 
@@ -333,7 +336,12 @@ namespace uForum.Businesslogic
             var akismetApi = GetAkismetApi();
             var comment = ConstructAkismetComment(member, commentType, body);
 
-            var isSpam = akismetApi.CommentCheck(comment) || TextContainsSpam(body);
+            var isAkismetSpam = akismetApi.CommentCheck(comment);
+
+            if (isAkismetSpam)
+                SendSpamMail(body, topicId, commentType);
+
+            var isSpam = isAkismetSpam || TextContainsSpam(body);
             
             if(isSpam)
             {
@@ -348,6 +356,40 @@ namespace uForum.Businesslogic
             }
 
             return isSpam;
+        }
+
+        private static void SendSpamMail(string postBody, int topicId, string commentType)
+        {
+            try
+            {
+                var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+
+                var topic = Topic.GetTopic(topicId);
+
+                var post = string.Format("Topic: {0} - link: <a href=\"http://our.umbraco.org{1}\">http://our.umbraco.org{1}</a><br />", topic.Title, Xslt.NiceTopicUrl(topic.Id));
+                post = post + string.Format("{0} text: {1}", commentType, postBody);
+                
+                var body = string.Format("<p>The following forum post was marked as spam by Akismet, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{0}", post);
+
+                var mailMessage = new MailMessage
+                                  {
+                                      Subject = "Umbraco community: Akismet marked as spam",
+                                      Body = body,
+                                      IsBodyHtml = true
+                                  };
+
+                foreach (var email in notify.Split(','))
+                    mailMessage.To.Add(email);
+
+                mailMessage.From = new MailAddress("our@umbraco.org");
+
+                var smtpClient = new SmtpClient();
+                smtpClient.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, "Error sending spam notification: " + ex.Message + " " + ex.StackTrace);
+            }
         }
 
         public static Akismet GetAkismetApi()

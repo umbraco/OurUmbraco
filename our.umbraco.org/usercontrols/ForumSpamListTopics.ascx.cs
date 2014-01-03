@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using PetaPoco;
 using uForum.Businesslogic;
 
 namespace uForum.usercontrols
@@ -18,7 +16,7 @@ namespace uForum.usercontrols
         protected void NotSpamTopic(Object sender, CommandEventArgs e)
         {
             var id = int.Parse(e.CommandArgument.ToString());
-            var topic = Topic.GetTopic(id, true);
+            var topic = Topic.GetTopic(id);
             topic.Save(false, true);
             Forum.MarkAsHam(topic.MemberId, topic.Body, "topic");
             FillSpamTopicGrid();
@@ -26,7 +24,7 @@ namespace uForum.usercontrols
 
         private void FillSpamTopicGrid()
         {
-            var topics = GetAllTopics();
+            var topics = Topic.GetAllSpamTopics();
             GridViewSpamTopic.DataSource = topics;
             GridViewSpamTopic.DataBind();
             GridViewSpamTopic.PageIndexChanging += GridViewSpamTopic_PageIndexChanging;
@@ -36,17 +34,9 @@ namespace uForum.usercontrols
         protected void GridViewSpamTopic_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewSpamTopic.PageIndex = e.NewPageIndex;
-            var topics = GetAllTopics();
+            var topics = Topic.GetAllSpamTopics();
             GridViewSpamTopic.DataSource = topics;
             GridViewSpamTopic.DataBind();
-        }
-
-        private static List<Topic> GetAllTopics()
-        {
-            using (var db = new Database("umbracoDbDSN"))
-            {
-                return db.Fetch<Topic>("SELECT * FROM forumTopics WHERE isSpam = 1 ORDER BY id DESC");
-            }
         }
     }
 }

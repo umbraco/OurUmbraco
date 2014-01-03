@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
+using uForum.Businesslogic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
 
@@ -49,6 +51,57 @@ namespace uForum.Library
         {
             return (Businesslogic.Data.SqlHelper.ExecuteScalar<int>("select count(nodeid) from cmsMember where nodeid = '" + id + "'") > 0);
         }
+
+        public static bool IsModerator()
+        {
+            var isModerator = false;
+
+            var currentMember = Member.GetCurrentMember();
+
+            if (currentMember != null)
+            {
+                var roles = System.Web.Security.Roles.GetRolesForUser(currentMember.LoginName);
+
+                var moderatorRoles = new[] {"admin", "HQ", "Core", "MVP"};
+
+                var intersect = roles.Intersect(moderatorRoles, StringComparer.InvariantCultureIgnoreCase);
+
+                isModerator = intersect.Any();
+            }
+
+            return isModerator;
+        }
+
+        public static bool CanSeeTopic(int topicId)
+        {
+            var topic = Topic.GetTopic(topicId);
+            if(topic != null && topic.IsSpam == false)
+                return true;
+            
+            var currentMember = Member.GetCurrentMember();
+
+            if(topic != null && currentMember != null && topic.IsSpam)
+                if(IsModerator() || topic.MemberId == currentMember.Id)
+                    return true;
+
+            return false;
+        }
+
+        public static bool CanSeeComment(int commentId)
+        {
+            var comment = new Comment(commentId);
+            if(comment.IsSpam == false)
+                return true;
+            
+            var currentMember = Member.GetCurrentMember();
+
+            if(currentMember != null && comment.IsSpam)
+                if(IsModerator() || comment.MemberId == currentMember.Id)
+                    return true;
+
+            return false;
+        }
+
     }
 
     public struct ReplacePoint

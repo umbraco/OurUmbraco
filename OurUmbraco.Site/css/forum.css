@@ -89,7 +89,14 @@ padding: 15px; text-align: left; padding-left: 60px }
 
 #forum #topicBody_parent{width:680px}
 
-
+#forum .spamNotice {
+    background: #FFF6BF;
+    padding: 10px;
+    margin: 10px;
+}
+#forum .spamNotice h3 {
+    color: #8a0000;
+}
 
 
 

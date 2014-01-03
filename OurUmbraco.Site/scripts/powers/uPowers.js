@@ -27,9 +27,17 @@ var uPowers = function () {
             //This is secured on the serverside, so don't even bother fuckers...
             $.get("/base/uForum/MarkCommentAsSpam/" + s_Id + ".aspx");
         },
+        MarkCommentAsHam: function (s_Id) {
+            //This is secured on the serverside, so don't even bother fuckers...
+            $.get("/base/uForum/MarkCommentAsHam/" + s_Id + ".aspx");
+        },
         MarkTopicAsSpam: function (s_Id) {
             //This is secured on the serverside, so don't even bother fuckers...
             $.get("/base/uForum/MarkTopicAsSpam/" + s_Id + ".aspx");
+        },
+        MarkTopicAsHam: function (s_Id) {
+            //This is secured on the serverside, so don't even bother fuckers...
+            $.get("/base/uForum/MarkTopicAsHam/" + s_Id + ".aspx");
         },
 
         EventSignUp: function (s_link, s_Id) {
@@ -185,6 +193,21 @@ jQuery(document).ready(function () {
         return false;
     });
 
+
+    jQuery("a.MarkCommentAsHam").click(function () {
+        if (confirm("Do you really want mark this comment as ham?")) {
+            var link = jQuery(this);
+            var comment = jQuery("#comment" + link.attr("rel"));
+
+            uPowers.MarkCommentAsHam(link.attr("rel"));
+            link.hide();
+            comment.find(".spamNotice").first().hide("fast");
+
+        }
+
+        return false;
+    });
+
     jQuery("a.DeleteTopic").click(function () {
         if (confirm("Do you really want to delete this entire topic and all comments?")) {
             var link = jQuery(this);
@@ -209,6 +232,22 @@ jQuery(document).ready(function () {
 
             topic.after("<div class='success' style='text-align: center;'><h3>Topic marked as spam</h3></div>");
             topic.hide();
+
+        }
+
+        return false;
+    });
+
+    jQuery("a.MarkTopicAsHam").click(function () {
+        if (confirm("Do you really want to mark this topic as ham?")) {
+            var link = jQuery(this);
+            var topic = jQuery("#forum");
+
+            uPowers.MarkTopicAsHam(link.attr("rel"));
+
+            link.hide();
+            topic.after("<div class='success' style='text-align: center;'><h3>Topic marked as ham</h3></div>");
+            topic.find(".spamNotice").first().hide("fast");
 
         }
 

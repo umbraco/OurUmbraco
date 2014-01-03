@@ -60,7 +60,7 @@ namespace NotificationsWeb.BusinessLogic
 
             while (dr.Read())
             {
-                lt.Add(Topic.GetTopic(dr.GetInt("topicId"), true));
+                lt.Add(Topic.GetTopic(dr.GetInt("topicId")));
             }
             dr.Close();
             return lt;

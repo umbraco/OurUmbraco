@@ -1,0 +1,71 @@
+﻿@using uForum.Businesslogic
+@using uForum.Library
+@using umbraco.cms.businesslogic.member
+@{
+    if (uForum.Library.Utills.IsModerator() == false)
+    {
+        return;
+    }
+
+    var type = Request["type"];
+    if (type != "Comments" && type != "Topics")
+    {
+        Response.Redirect(Request.RawUrl + "?type=Topics");
+    }
+}
+
+<a href="?type=Topics">Topics</a> | <a href="?type=Comments">Comments</a>
+<h1>Manage @type</h1>
+<h2>These are the latest 100 spam @type.ToLowerInvariant() - Paging will be added later. <br />Click on the topic to mark a topic or comment as ham instead of spam.</h2>
+<hr />
+@{
+    if (type == "Comments")
+    {
+        var comments = Comment.GetAllSpamComments().Take(100);
+        
+        foreach (var comment in comments)
+        {
+            var member = new Member(comment.MemberId);
+            var topic = Topic.GetTopic(comment.TopicId);
+            
+            <p>Posted on <strong>@comment.Created.ToString("u")</strong>  by <a href="/member/@member.Id">@member.Text</a> in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
+            
+    
+            <div class="collapse">
+                @if (comment.Body.Length >= 400)
+                {
+                    @comment.Body.Substring(0, 400)
+                }
+                else
+                {
+                    @comment.Body
+                }
+            </div>
+            <hr />
+    
+        }
+    }
+    else
+    {
+        var topics = Topic.GetAllSpamTopics().Take(100);
+
+        foreach (var topic in topics)
+        {
+            var member = new Member(topic.MemberId);
+                
+            <h3>@topic.Title</h3>
+            <p>Posted on <strong>@topic.Created.ToString("u")</strong> by <a href="/member/@member.Id">@member.Text</a>  in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
+            <div class="collapse">
+                @if (topic.Body.Length >= 400)
+                {
+                    @topic.Body.Substring(0, 400)
+                }
+                else
+                {
+                    @topic.Body
+                }
+            </div>
+            <hr />
+        }
+    }
+}

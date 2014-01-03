@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI.WebControls;
-using PetaPoco;
 using uForum.Businesslogic;
 using umbraco.cms.businesslogic.member;
 
@@ -39,7 +37,7 @@ namespace uForum.usercontrols
 
         private void FillSpamCommentGrid()
         {
-            var comments = GetAllComments();
+            var comments = Comment.GetAllSpamComments();
             GridViewSpamComment.DataSource = comments;
             GridViewSpamComment.DataBind();
             GridViewSpamComment.PageIndexChanging += GridViewSpamComment_PageIndexChanging;
@@ -48,17 +46,10 @@ namespace uForum.usercontrols
         protected void GridViewSpamComment_PageIndexChanging(object sender, GridViewPageEventArgs e)
         {
             GridViewSpamComment.PageIndex = e.NewPageIndex;
-            var comments = GetAllComments();
+            var comments = Comment.GetAllSpamComments();
             GridViewSpamComment.DataSource = comments;
             GridViewSpamComment.DataBind();
         }
         
-        private static List<Comment> GetAllComments()
-        {
-            using (var db = new Database("umbracoDbDSN"))
-            {
-                return db.Fetch<Comment>("SELECT * FROM forumComments WHERE isSpam = 1 ORDER BY id DESC");
-            }
-        }
     }
 }
