@@ -14,7 +14,7 @@
     }
 }
 
-<a href="?type=Topics">Topics</a> | <a href="?type=Comments">Comments</a>
+<div style="padding: 10px; text-align: center; "><h2><a href="?type=Topics">Topics</a> | <a href="?type=Comments">Comments</a></h2></div>
 <h1>Manage @type</h1>
 <h2>These are the latest 100 spam @type.ToLowerInvariant() - Paging will be added later. <br />Click on the topic to mark a topic or comment as ham instead of spam.</h2>
 <hr />
@@ -22,15 +22,15 @@
     if (type == "Comments")
     {
         var comments = Comment.GetAllSpamComments().Take(100);
-        
+
         foreach (var comment in comments)
         {
             var member = new Member(comment.MemberId);
             var topic = Topic.GetTopic(comment.TopicId);
-            
-            <p>Posted on <strong>@comment.Created.ToString("u")</strong>  by <a href="/member/@member.Id">@member.Text</a> in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
-            
-    
+            var blocked = member.getProperty("blocked").Value.ToString() == "1" ? "" : "<span style=\"color: red;\">NOT</span>";
+
+            <p>Posted on <strong>@comment.Created.ToString("u")</strong>  by <a href="/member/@member.Id" target="_blank">@member.Text</a> (member has @Html.Raw(blocked) been blocked) in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
+
             <div class="collapse">
                 @if (comment.Body.Length >= 400)
                 {
@@ -42,7 +42,7 @@
                 }
             </div>
             <hr />
-    
+
         }
     }
     else
@@ -52,9 +52,11 @@
         foreach (var topic in topics)
         {
             var member = new Member(topic.MemberId);
-                
+            var blocked = member.getProperty("blocked").Value.ToString() == "1" ? "" : "<span style=\"color: red;\">NOT</span>";
+
             <h3>@topic.Title</h3>
-            <p>Posted on <strong>@topic.Created.ToString("u")</strong> by <a href="/member/@member.Id">@member.Text</a>  in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
+            <p>Posted on <strong>@topic.Created.ToString("u")</strong>  by <a href="/member/@member.Id" target="_blank">@member.Text</a> (member has @Html.Raw(blocked) been blocked) in topic <a href="@Xslt.NiceTopicUrl(topic.Id)" target="_blank">@topic.Title</a></p>
+
             <div class="collapse">
                 @if (topic.Body.Length >= 400)
                 {
