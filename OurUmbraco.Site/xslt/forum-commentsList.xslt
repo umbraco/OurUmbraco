@@ -140,6 +140,7 @@
 
                           <xsl:if test="uForum:IsModerator() = 'true'">
                             <h3>You can see this topic because you're a moderator of the forum. Only moderators and the topic starter can see this topic.</h3>
+                            <p>As a moderator you can <a href="/ManageSpam?type=Topics">browse through topics marked as spam</a>.</p>
                           </xsl:if>
 
                           <xsl:if test="$mem = $topic/@memberId">
@@ -358,6 +359,7 @@
 
                 <xsl:if test="uForum:IsModerator() = 'true'">
                   <h3>You can see this comment because you're a moderator of the forum. Only moderators and the original commenter can see this comment.</h3>
+                  <p>As a moderator you can <a href="/ManageSpam?type=Comments">browse through comments marked as spam</a>.</p>				  
                 </xsl:if>
 
                 <xsl:if test="$mem = ./memberId">
