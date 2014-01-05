@@ -112,6 +112,9 @@
     <Compile Include="custom Handlers\projectVote.cs" />
     <Compile Include="custom Handlers\Sanitizer.cs" />
     <Compile Include="custom Handlers\TopicVote.cs" />
+    <Compile Include="Hiccup.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
     <Compile Include="Examine\CustomDataService.cs" />
     <Compile Include="data.cs" />
     <Compile Include="DefaultMemberAvatarHandler.cs" />
@@ -278,7 +281,9 @@
     <Content Include="usercontrols\ProjectEditor.ascx" />
     <Content Include="usercontrols\ProjectFileUpload.ascx" />
     <Content Include="usercontrols\ProjectForums.ascx" />
-    <Content Include="usercontrols\Signup.ascx" />
+    <Content Include="usercontrols\Signup.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\SignupSimple.ascx" />
   </ItemGroup>
   <ItemGroup>

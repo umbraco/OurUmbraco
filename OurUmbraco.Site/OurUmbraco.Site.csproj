@@ -70,9 +70,6 @@
     <Reference Include="Elmah">
       <HintPath>..\dependencies\Our\Elmah.dll</HintPath>
     </Reference>
-    <Reference Include="ErrorMessage">
-      <HintPath>..\dependencies\Our\ErrorMessage.dll</HintPath>
-    </Reference>
     <Reference Include="Examine, Version=0.1.42.2941, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
@@ -396,6 +393,7 @@
     <Content Include="css\search\documentation.gif" />
     <Content Include="css\select2-new.css" />
     <Content Include="css\select2.css" />
+    <Content Include="Hiccup.aspx" />
     <Content Include="ImageGen.ashx" />
     <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="images\releases\download.png" />
@@ -972,7 +970,6 @@
     <Content Include="css\wiki\pin.png" />
     <Content Include="css\wiki\pin_current.png" />
     <Content Include="default.aspx" />
-    <Content Include="Hiccup.aspx" />
     <Content Include="HTMLPage.html" />
     <Content Include="images\add-your-projects.png" />
     <Content Include="images\arrow-viewall.png" />
