@@ -29,29 +29,44 @@ namespace our.usercontrols
 
         public static string getDate(this SearchResult result)
         {
-            if (result["__IndexType"] == "content")
-                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
+            try
+            {
+                if (result["__IndexType"] == "content")
+                    return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
 
-            if (result["__IndexType"] == "documents")
-                return HttpContext.Current.Server.HtmlEncode(string.Format("Created: {0} / Last update: {1}", DateTime.Parse(result["Created"]).ToString("MMMM dd, yyyy HH:mm"), DateTime.Parse(result["Updated"]).ToString("MMMM dd, yyyy HH:mm")));
+                if (result["__IndexType"] == "documents")
+                    return HttpContext.Current.Server.HtmlEncode(string.Format("Created: {0} / Last update: {1}", DateTime.Parse(result["Created"]).ToString("MMMM dd, yyyy HH:mm"), DateTime.Parse(result["Updated"]).ToString("MMMM dd, yyyy HH:mm")));
 
-            if(result["__IndexType"] == "documentation")
-                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["dateCreatedSearchAble"], "MMMM dd, yyyy")));
+                if (result["__IndexType"] == "documentation")
+                    return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["dateCreatedSearchAble"], "MMMM dd, yyyy")));
+            }
+            catch (FormatException ex)
+            {
+                // Catches "String was not recognized as a valid DateTime." errors
+                // TODO: Figure out why these errors occur..
+            }
 
             return string.Empty;
         }
 
         public static string getDateSortable(this SearchResult result)
         {
-            if (result["__IndexType"] == "content")
-                return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
+            try
+            {
+                if (result["__IndexType"] == "content")
+                    return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
 
-            if (result["__IndexType"] == "documents")
-                return DateTime.Parse(result["Updated"]).ToString("yyyy-MM-dd HH:mm");
+                if (result["__IndexType"] == "documents")
+                    return DateTime.Parse(result["Updated"]).ToString("yyyy-MM-dd HH:mm");
 
-            if(result["__IndexType"] == "documentation")
-                return GetFormattedDateTime(result["dateCreatedSearchAble"], "yyyy-MM-dd HH:mm");
-
+                if (result["__IndexType"] == "documentation")
+                    return GetFormattedDateTime(result["dateCreatedSearchAble"], "yyyy-MM-dd HH:mm");
+            }
+            catch (FormatException ex) 
+            {
+                // Catches "String was not recognized as a valid DateTime." errors
+                // TODO: Figure out why these errors occur..
+            }
             return string.Empty;
         }
 
