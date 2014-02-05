@@ -17,6 +17,7 @@
 
   <!-- Member -->
   <xsl:variable name="isAdmin" select="uForum:IsInGroup('admin')"/>
+  <xsl:variable name="isModerator" select="uForum:IsModerator()"/>
   <xsl:variable name="mem">
     <xsl:if test="umbraco.library:IsLoggedOn()">
       <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
@@ -72,9 +73,12 @@
         <!-- Paging -->
         <xsl:variable name="maxitems">10</xsl:variable>
         <xsl:variable name="pages" select="uForum:TopicPager($topicID, $maxitems, $p)"/>
+        
+        <xsl:variable name="canSeeTopic" select="$topic/isSpam = 'false' or ($topic/isSpam = 'true' and $isModerator = 'true') or ($topic/isSpam = 'true' and $topic/@memberId = $mem)" />
 
         <xsl:choose>
-          <xsl:when test="uForum:CanSeeTopic($topicID) = 'true'">
+          
+          <xsl:when test="$canSeeTopic = true()">
             <!-- Indicate if topic has been solved -->
             <ul class="commentsList">
               <!-- Display the topic start -->
@@ -138,7 +142,7 @@
                             Sorry if we're causing you any inconvenience but this topic has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your topic. When this topic has been marked as clean, this topic will be shown as normal.
                           </h3>
 
-                          <xsl:if test="uForum:IsModerator() = 'true'">
+                          <xsl:if test="$isModerator = true()">
                             <h3>You can see this topic because you're a moderator of the forum. Only moderators and the topic starter can see this topic.</h3>
                             <p>As a moderator you can <a href="/ManageSpam?type=Topics">browse through topics marked as spam</a>.</p>
                           </xsl:if>
@@ -210,6 +214,7 @@
                 <xsl:with-param name="topic" select="$topic"/>
                 <xsl:with-param name="mem" select="$mem"/>
                 <xsl:with-param name="isAdmin" select="$isAdmin"/>
+                <xsl:with-param name="isModerator" select="$isModerator"/>
                 <xsl:with-param name="treshold" select="$treshold"/>
               </xsl:call-template>
 
@@ -252,6 +257,7 @@
     <xsl:param name="topic"/>
     <xsl:param name="mem"/>
     <xsl:param name="isAdmin"/>
+    <xsl:param name="isModerator"/>
     <xsl:param name="treshold"/>
 
     <xsl:for-each select="$comments//comment" >
@@ -269,6 +275,7 @@
             <xsl:with-param name="topic" select="$topic"/>
             <xsl:with-param name="mem" select="$mem"/>
             <xsl:with-param name="isAdmin" select="$isAdmin"/>
+            <xsl:with-param name="isModerator" select="$isModerator"/>
             <xsl:with-param name="collaps" select="true()"/>
           </xsl:call-template>
         </xsl:when>
@@ -279,6 +286,7 @@
             <xsl:with-param name="topic" select="$topic"/>
             <xsl:with-param name="mem" select="$mem"/>
             <xsl:with-param name="isAdmin" select="$isAdmin"/>
+            <xsl:with-param name="isModerator" select="$isModerator"/>
             <xsl:with-param name="collaps" select="false()"/>
           </xsl:call-template>
         </xsl:otherwise>
@@ -297,11 +305,13 @@
     <xsl:param name="collaps"/>
     <xsl:param name="mem"/>
     <xsl:param name="isAdmin"/>
+    <xsl:param name="isModerator"/>
 
-    <xsl:if test="uForum:CanSeeComment(./id) = 'true'">
-
+    <xsl:variable name="canSeeComment" select="$comment/isSpam = 'false' or ($comment/isSpam = 'true' and $isModerator = 'true') or ($comment/isSpam = 'true' and $comment/memberId = $mem)" />
+    
+    <xsl:if test="$canSeeComment = true()">
       <xsl:variable name="author" select="umbraco.library:GetMember($comment/memberId)"/>
-
+      
       <li class="post postComment" id="comment{$comment/id}">
         <xsl:if test="id = $topic/@answer">
           <xsl:attribute name="class">post postComment postSolution</xsl:attribute>
@@ -357,7 +367,7 @@
                   Sorry if we're causing you any inconvenience but this comment has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your comment. When this topic has been marked as clean, this topic will be shown as normal.
                 </h3>
 
-                <xsl:if test="uForum:IsModerator() = 'true'">
+                <xsl:if test="$isModerator = true()">
                   <h3>You can see this comment because you're a moderator of the forum. Only moderators and the original commenter can see this comment.</h3>
                   <p>As a moderator you can <a href="/ManageSpam?type=Comments">browse through comments marked as spam</a>.</p>				  
                 </xsl:if>
@@ -427,12 +437,12 @@
           <a href="#" class="act delete DeleteComment kill" title="Delete this comment" rel="{$comment/id}">Delete</a>
         </li>
       </xsl:if>
-      <xsl:if test="uForum:IsModerator() = 'true' and $comment/isSpam = 'false'">
+      <xsl:if test="$isModerator = true() and $comment/isSpam = 'false'">
         <li class="admin">
           <a href="#" class="act markSpam MarkCommentAsSpam spam" title="Mark as spam" rel="{$comment/id}">Mark as spam</a>
         </li>
       </xsl:if>
-      <xsl:if test="uForum:IsModerator() = 'true' and $comment/isSpam = 'true'">
+      <xsl:if test="$isModerator = true() and $comment/isSpam = 'true'">
         <li class="admin">
           <a href="#" class="act markHam MarkCommentAsHam ham" title="Mark as ham" rel="{$comment/id}">Mark as ham</a>
         </li>
@@ -485,13 +495,13 @@
 
       <xsl:if test="$isAdmin = true()">
 
-        <xsl:if test="uForum:IsModerator() = 'true' and $topic/isSpam = 'false'">
+        <xsl:if test="$isModerator = true() and $topic/isSpam = 'false'">
           <li class="admin">
             <a href="#" class="act markSpam MarkTopicAsSpam spam" title="Mark as spam" rel="{$topic/@id}">Mark as spam</a>
           </li>
         </xsl:if>
         
-        <xsl:if test="uForum:IsModerator() = 'true' and $topic/isSpam = 'true'">
+        <xsl:if test="$isModerator = true() and $topic/isSpam = 'true'">
           <li class="admin">
             <a href="#" class="act markHam MarkTopicAsHam ham" title="Mark as ham" rel="{$topic/@id}">Mark as ham</a>
           </li>

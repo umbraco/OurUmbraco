@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Security;
 using uForum.Businesslogic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
@@ -56,17 +58,13 @@ namespace uForum.Library
         {
             var isModerator = false;
 
-            var currentMember = Member.GetCurrentMember();
+            var currentMemberId = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
-            if (currentMember != null)
+            if (currentMemberId != 0)
             {
-                var roles = System.Web.Security.Roles.GetRolesForUser(currentMember.LoginName);
-
                 var moderatorRoles = new[] {"admin", "HQ", "Core", "MVP"};
 
-                var intersect = roles.Intersect(moderatorRoles, StringComparer.InvariantCultureIgnoreCase);
-
-                isModerator = intersect.Any();
+                isModerator = moderatorRoles.Any(moderatorRole => Xslt.IsMemberInGroup(moderatorRole, currentMemberId));
             }
 
             return isModerator;
