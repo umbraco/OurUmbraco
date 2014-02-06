@@ -74,7 +74,8 @@
         <xsl:variable name="maxitems">10</xsl:variable>
         <xsl:variable name="pages" select="uForum:TopicPager($topicID, $maxitems, $p)"/>
         
-        <xsl:variable name="canSeeTopic" select="$topic/isSpam = 'false' or ($topic/isSpam = 'true' and $isModerator = 'true') or ($topic/isSpam = 'true' and $topic/@memberId = $mem)" />
+        <!-- if the isSpam property is null, count will be zero, assume that it's not spam -->
+        <xsl:variable name="canSeeTopic" select="(count($topic/isSpam) = 0 or $topic/isSpam = 'false') or ($topic/isSpam = 'true' and $isModerator = 'true') or ($topic/isSpam = 'true' and $topic/@memberId = $mem)" />
 
         <xsl:choose>
           
@@ -307,7 +308,8 @@
     <xsl:param name="isAdmin"/>
     <xsl:param name="isModerator"/>
 
-    <xsl:variable name="canSeeComment" select="$comment/isSpam = 'false' or ($comment/isSpam = 'true' and $isModerator = 'true') or ($comment/isSpam = 'true' and $comment/memberId = $mem)" />
+    <!-- if the isSpam property is null, count will be zero, assume that it's not spam -->
+    <xsl:variable name="canSeeComment" select="(count($comment/isSpam) = 0 or $comment/isSpam = 'false') or ($comment/isSpam = 'true' and $isModerator = 'true') or ($comment/isSpam = 'true' and $comment/memberId = $mem)" />
     
     <xsl:if test="$canSeeComment = true()">
       <xsl:variable name="author" select="umbraco.library:GetMember($comment/memberId)"/>
