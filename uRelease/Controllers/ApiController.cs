@@ -20,7 +20,7 @@ namespace uRelease.Controllers
 {
     public class ApiController : Controller
     {
-        private const string VersionBundleUrl = "admin/customfield/versionBundle/Umbraco v4 Versions";
+        private const string VersionBundleUrl = "admin/customfield/versionBundle/Umbraco Versions";
         private const string IssuesUrl = "issue/byproject/{0}?filter={1}&max=200";
 
         private static readonly string ProjectId = ConfigurationManager.AppSettings["uReleaseProjectId"];
@@ -157,7 +157,8 @@ namespace uRelease.Controllers
         {
             try
             {
-                var result = new JavaScriptSerializer().Serialize(Aggregate("all").Data);
+                var data = Aggregate("all").Data;
+                var result = new JavaScriptSerializer().Serialize(data);
                 using (var streamWriter = new StreamWriter(Server.MapPath(YouTrackJsonFile), false))
                 {
                     streamWriter.WriteLine(result);
