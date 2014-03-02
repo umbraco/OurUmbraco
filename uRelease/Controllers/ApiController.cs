@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Net.Mail;
 using System.Web.Mvc;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -158,10 +159,20 @@ namespace uRelease.Controllers
             try
             {
                 var data = Aggregate("all").Data;
-                var result = new JavaScriptSerializer().Serialize(data);
-                using (var streamWriter = new StreamWriter(Server.MapPath(YouTrackJsonFile), false))
+                var typedData = (List<AggregateView>)data;
+                if (typedData.Any())
                 {
-                    streamWriter.WriteLine(result);
+                    var result = new JavaScriptSerializer().Serialize(data);
+
+                    using (var streamWriter = new StreamWriter(Server.MapPath(YouTrackJsonFile), false))
+                    {
+                        streamWriter.WriteLine(result);
+                    }
+                }
+                else
+                {
+                    SendYouTrackErrorMail();
+                    return string.Format("{0} There was no data to serialize so a new cache file hasn't been created", DateTime.Now);
                 }
             }
             catch (Exception exception)
@@ -170,6 +181,28 @@ namespace uRelease.Controllers
             }
 
             return string.Format("Results succesfully written to {0} at {1}", Server.MapPath(YouTrackJsonFile), DateTime.Now);
+        }
+
+        private static void SendYouTrackErrorMail()
+        {
+            var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+
+            var body = string.Format("<p>Creating YouTrack cache has failed to get any data, there might be something wrong with YouTrack.</p>");
+
+            var mailMessage = new MailMessage
+            {
+                Subject = "Our - Issue tracker cache creation failed",
+                Body = body,
+                IsBodyHtml = true
+            };
+
+            foreach (var email in notify.Split(','))
+                mailMessage.To.Add(email);
+
+            mailMessage.From = new MailAddress("our@umbraco.org");
+
+            var smtpClient = new SmtpClient();
+            smtpClient.Send(mailMessage);
         }
 
         private static DateTime ConvertDate(long date)
