@@ -30,36 +30,29 @@ namespace uRelease.Controllers
         private static readonly string Password = ConfigurationManager.AppSettings["uReleasePassword"];
         private static readonly int ReleasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
         private const string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
-
-        public JsonResult Aggregate(string ids)
+        
+        public JsonResult VersionBundle(string ids, bool cached)
         {
             var idArray = new ArrayList();
             idArray.AddRange(ids.Replace("all", "").TrimEnd(',').Split(','));
             idArray.Remove("");
-
-            var gotBundle = GetVersionBundle();
 
             // For each version in the bundle, go get the issues 
             var toReturn = new List<AggregateView>();
 
             Version[] orderedVersions;
 
-            if (idArray.Count > 0)
+            if (cached == false)
             {
-                //get version specific data
-                orderedVersions =
-                    gotBundle.Data.Versions
-                    .Where(x => idArray.Contains(x.Value))
-                    .OrderBy(x => x.Value.AsFullVersion())
-                    .ToArray();
+                var gotBundle = GetVersionBundle();
+
+                orderedVersions = idArray.Count > 0
+                    ? gotBundle.Data.Versions.Where(x => idArray.Contains(x.Value)).OrderBy(x => x.Value.AsFullVersion()).ToArray()
+                    : gotBundle.Data.Versions.OrderBy(x => x.Value.AsFullVersion()).ToArray();
             }
             else
             {
-                //get all versions with projectID
-                orderedVersions =
-                gotBundle.Data.Versions
-                .OrderBy(x => x.Value.AsFullVersion())
-                .ToArray();
+                orderedVersions = ids.Split(',').Select(versionId => new Version { Value = versionId }).ToArray();
             }
 
             var currentReleases = new List<Version>();
@@ -82,11 +75,8 @@ namespace uRelease.Controllers
                         currentReleases.Add(version);
                     }
 
-
                     if (release.GetPropertyValue("releaseStatus") == "Planning")
-                    {
                         plannedReleases.Add(version);
-                    }
 
                     if (release.GetPropertyValue("releaseStatus") != "Released")
                         inProgressReleases.Add(version);
@@ -98,45 +88,68 @@ namespace uRelease.Controllers
 
             foreach (var version in orderedVersions)
             {
-                var item = new AggregateView
-                               {
-                                   inProgressRelease = inProgressReleases.FirstOrDefault(x => x.Value == version.Value) != null,
-                                   version = version.Value,
-                                   isPatch = version.Value.AsFullVersion().Build != 0,
-                                   releaseDescription = version.Description ?? string.Empty,
-                                   releaseStatus = version.ReleaseStatus,
-                                   released = version.Released,
-                                   releaseDate = version.ReleaseDate == 0 ? "" : ConvertDate(version.ReleaseDate).ToString(CultureInfo.InvariantCulture),
-                                   currentRelease = currentReleases.FirstOrDefault(x => x.Value == version.Value) != null,
-                                   plannedRelease = plannedReleases.FirstOrDefault(x => x.Value == version.Value) != null
-                               };
-
-                // /rest/issue/byproject/{project}?{filter}
-                var issues = versionCache.GetOrAdd(version.Value, key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
                 var issueView = new List<IssueView>();
+
                 var activityView = new List<ActivityView>();
 
-                Parallel.ForEach(
-                    issues.Data.Issues,
-                    issue =>
+                var item = new AggregateView();
+
+                if (cached == false)
+                {
+                    item = new AggregateView
                     {
-                        var view = new IssueView
+                        inProgressRelease = inProgressReleases.FirstOrDefault(x => x.Value == version.Value) != null,
+                        version = version.Value,
+                        isPatch = version.Value.AsFullVersion().Build != 0,
+                        releaseDescription = version.Description ?? string.Empty,
+                        releaseStatus = version.ReleaseStatus,
+                        released = version.Released,
+                        releaseDate = version.ReleaseDate == 0 ? "" : ConvertDate(version.ReleaseDate).ToString(CultureInfo.InvariantCulture),
+                        currentRelease = currentReleases.FirstOrDefault(x => x.Value == version.Value) != null,
+                        plannedRelease = plannedReleases.FirstOrDefault(x => x.Value == version.Value) != null
+                    };
+
+                    var issuesList = new List<Issue>();
+
+                    var issues = versionCache.GetOrAdd(version.Value,
+                        key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
+                    
+                    issuesList.AddRange(issues.Data.Issues);
+
+                    Parallel.ForEach(
+                        issuesList,
+                        issue =>
                         {
-                            id = issue.Id,
-                            state = GetFieldFromIssue(issue, "State"),
-                            title = GetFieldFromIssue(issue, "summary"),
-                            type = GetFieldFromIssue(issue, "Type"),
-                            breaking = (GetFieldFromIssue(issue, "Backwards compatible?") == "No")
-                        };
-                        issueView.Add(view);
-                    });
+                            var view = new IssueView
+                                       {
+                                           id = issue.Id,
+                                           state = GetFieldFromIssue(issue, "State"),
+                                           title = GetFieldFromIssue(issue, "summary"),
+                                           type = GetFieldFromIssue(issue, "Type"),
+                                           breaking = (GetFieldFromIssue(issue, "Backwards compatible?") == "No")
+                                       };
+
+                            issueView.Add(view);
+                        });
+                }
+                else
+                {
+                    var cache = (List<AggregateView>)GetVersionsFromFile().Data;
+                    var cachedVersion = cache.FirstOrDefault(x => x.version == version.Value);
+                    if (cachedVersion != null)
+                    {
+                        item = cachedVersion;
+                        issueView = cachedVersion.issues.ToList();
+                    }
+                }
 
                 var activitiesDateDesc = activityView.Where(x => x.changes.Any()).OrderByDescending(x => x.date);
                 var issueIdsFromActivities = activitiesDateDesc.Select(x => x.id).Distinct()
-                    .Concat(issueView.Where(y => y != null && activitiesDateDesc.Select(z => z.id).Contains(y.id) == false).Select(y => y.id)); // Add issues for which there is no activity
+                    .Concat(issueView.Where(y => y != null && activitiesDateDesc.Select(z => z.id).Contains(y.id) == false)
+                    .Select(y => y.id)); // Add issues for which there is no activity
 
-                item.issues = issueIdsFromActivities.Select(x => issueView.Single(y => y != null && y.id == x)).OrderBy(x => x.id);
-                item.activities = activitiesDateDesc.Take(5);
+                item.issues = new List<IssueView>(issueIdsFromActivities.Select(x => issueView.Single(y => y != null && y.id == x)).OrderBy(x => x.id));
+                item.activities = activitiesDateDesc.Take(5).ToList();
 
                 toReturn.Add(item);
             }
@@ -150,15 +163,22 @@ namespace uRelease.Controllers
                 SaveAllToFile();
 
             var allText = System.IO.File.ReadAllText(Server.MapPath(YouTrackJsonFile));
+            
+            return new JsonResult { Data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
 
-            return new JsonResult { Data = new JavaScriptSerializer().DeserializeObject(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        public JsonResult GetVersionsFromFile()
+        {
+            var allText = System.IO.File.ReadAllText(Server.MapPath(YouTrackJsonFile));
+
+            return new JsonResult { Data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
         public string SaveAllToFile()
         {
             try
             {
-                var data = Aggregate("all").Data;
+                var data = VersionBundle("all", false).Data;
                 var typedData = (List<AggregateView>)data;
                 if (typedData.Any())
                 {

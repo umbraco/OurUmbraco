@@ -162,7 +162,7 @@ viewModel.historicalReleases = ko.computed(function(){
 
 // Declare loader function
 loadData = function (versionId) {
-    $.getJSON("/api/aggregate/" + versionId, function (data) {
+    $.getJSON("/api/VersionBundle/?ids=" + versionId + "&cached=true", function (data) {
 
         // Parse result
         ko.mapping.fromJS(data, versionMappingOptions, viewModel.versions);
