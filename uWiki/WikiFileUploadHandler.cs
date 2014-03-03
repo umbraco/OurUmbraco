@@ -4,34 +4,41 @@ using System.Linq;
 using System.Web;
 using uWiki.Businesslogic;
 
-namespace uWiki {
-    public class WikiFileUploadHandler : IHttpHandler {
-
+namespace uWiki
+{
+    public class WikiFileUploadHandler : IHttpHandler
+    {
         #region IHttpHandler Members
 
-        public bool IsReusable {
+        public bool IsReusable
+        {
             get { return true; }
         }
 
-        public void ProcessRequest(HttpContext context) {
+        public void ProcessRequest(HttpContext context)
+        {
+            var file = context.Request.Files["Filedata"];
+            var userguid = context.Request.Form["USERGUID"];
+            var nodeguid = context.Request.Form["NODEGUID"];
+            var fileType = context.Request.Form["FILETYPE"];
+            var fileName = context.Request.Form["FILENAME"];
+            var umbracoVersion = context.Request.Form["UMBRACOVERSION"];
 
-            HttpPostedFile file = context.Request.Files["Filedata"];
-            string userguid = context.Request.Form["USERGUID"];
-            string nodeguid = context.Request.Form["NODEGUID"];
-            string fileType = context.Request.Form["FILETYPE"];
-            string fileName = context.Request.Form["FILENAME"];
-            string umbraoVersion = context.Request.Form["UMBRACOVERSION"];
+            var versions = new List<UmbracoVersion> { UmbracoVersion.DefaultVersion() };
 
-            List<UmbracoVersion> v = new List<UmbracoVersion>(){Businesslogic.UmbracoVersion.DefaultVersion()};
-
-            if (!string.IsNullOrEmpty(umbraoVersion))
+            if (string.IsNullOrWhiteSpace(umbracoVersion) == false)
             {
-                v.Clear();
-                v = Businesslogic.WikiFile.GetVersionsFromString(umbraoVersion);
+                versions.Clear();
+                versions = WikiFile.GetVersionsFromString(umbracoVersion);
             }
 
-            if (!string.IsNullOrEmpty(userguid) && !string.IsNullOrEmpty(nodeguid) && !string.IsNullOrEmpty(fileType) && !string.IsNullOrEmpty(fileName))
-                uWiki.Businesslogic.WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v);
+            if (string.IsNullOrWhiteSpace(userguid) == false
+                && string.IsNullOrWhiteSpace(nodeguid) == false
+                && string.IsNullOrWhiteSpace(fileType) == false
+                && string.IsNullOrWhiteSpace(fileName) == false)
+            {
+                WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, versions);
+            }
         }
 
         #endregion
