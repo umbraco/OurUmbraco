@@ -45,10 +45,7 @@ namespace uWiki.usercontrols {
                 Literal _name = (Literal)e.Item.FindControl("lt_name");
                 Literal _date = (Literal)e.Item.FindControl("lt_date");
                 Button _delete = (Button)e.Item.FindControl("bt_delete");
-                Literal _member = (Literal)e.Item.FindControl("lt_member");
                 Literal _version = (Literal)e.Item.FindControl("lt_version");
-
-                _member.Text = umbraco.library.GetMemberName(wf.CreatedBy);
 
                 _name.Text = "<a href='" + wf.Path + "'>" + wf.Name + "</a>";
                 _date.Text = wf.CreateDate.ToShortDateString() + " - " + wf.CreateDate.ToShortTimeString();
