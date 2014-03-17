@@ -56,7 +56,7 @@ help and guidance from seasoned experts, download and collaborate on plugins and
 </div>
 
 <div class="spotlight">
-<h4>Twitter <a class="rss_small" href="https://twitter.com/search?q=umbraco&src=typd" target="_blank">rss</a></h4>
+<h4>Twitter <a class="rss_small" href="https://twitter.com/search?q=%23umbraco&src=typd" target="_blank">rss</a></h4>
 <umbraco:Macro Alias="TwitterSearch" runat="server" />
 </div>
 
