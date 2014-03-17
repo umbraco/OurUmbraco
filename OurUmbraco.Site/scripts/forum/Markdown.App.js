@@ -7,6 +7,17 @@ Markdown.App = (function ($) {
                 linkdescription: "Insert link text here"
             }
         };
+    
+    var prettifyTimeout;
+    function debounce(func) {        
+        if (prettifyTimeout)
+            clearTimeout(prettifyTimeout);
+
+        prettifyTimeout = setTimeout(function () {
+            func();
+            prettifyTimeout = null;
+        }, 1000);
+    }
 
     return {        
         getConverter: function () {            
@@ -21,11 +32,8 @@ Markdown.App = (function ($) {
                     var pres = html.find("pre").addClass("prettyprint"); // Find all pre-tags and mark them for prettyprint
 
                     if (pres.length > 0) {
-                        // For whatever reason, we need a small delay before re-applying prettyprint. 
-                        // We should probably throttle this, unless prettyprint has throttling build in.
-                        setTimeout(function () {
-                            prettyPrint();
-                        }, 1000);
+                        // We only want to prettify when not typing as this can be a performance killer if called too often !
+                        debounce(prettyPrint);
                     }
 
                     return html.html();
