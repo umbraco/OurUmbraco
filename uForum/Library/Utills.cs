@@ -23,7 +23,14 @@ namespace uForum.Library
             html = html.Replace("[code]", "<pre>");
             html = html.Replace("[/code]", "</pre>");
 
-            return CleanInvalidXmlChars(html);
+            var cleanHtml = CleanInvalidXmlChars(html);
+            
+            // Add links to URLs that aren't "properly" linked in a markdown way
+            var regex = new Regex(@"(^|\s|>|;)(https?|ftp)(:\/\/[-A-Z0-9+&@#\/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#\/%=~_|\[\]])($|\W)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+            var linkedHtml = regex.Replace(cleanHtml, "$1<a href=\"$2$3\" rel=\"nofollow\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
+
+            return linkedHtml;
         }
 
         public static string CleanInvalidXmlChars(string text)
