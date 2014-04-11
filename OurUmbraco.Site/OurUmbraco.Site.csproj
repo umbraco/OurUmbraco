@@ -3651,6 +3651,9 @@
     <Content Include="macroScripts\SwitchForumEditor.cshtml" />
     <Content Include="masterpages\ManageSpam.master" />
     <Content Include="macroScripts\ManageSpam.cshtml" />
+    <Content Include="masterpages\ProjectsVersioned.master" />
+    <Content Include="macroScripts\ProjectsVersioned.cshtml" />
+    <Content Include="macroScripts\ProjectsVersionList.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

@@ -1,0 +1,137 @@
+﻿@using System.Globalization
+@using System.Text.RegularExpressions
+@{
+    var projectGroups = Model.Children.Where("nodeTypeAlias == \"ProjectGroup\"");
+    var projects = new List<UmbracoProject>();
+
+    foreach (var projectGroup in projectGroups)
+    {
+        foreach (var project in projectGroup.Children)
+        {
+            if (project.projectLive)
+            {
+                var versionsList = new List<int>();
+                var compatibleVersions = project.CompatibleVersions.Split(',');
+                foreach (var compatibleVersion in compatibleVersions)
+                {
+                    if (string.IsNullOrWhiteSpace(compatibleVersion) == false && compatibleVersion != "saved")
+                    {
+                        int version;
+                        if (int.TryParse(compatibleVersion.Substring(1), out version))
+                        {
+                            versionsList.Add(version);
+                        }
+                    }
+                }
+
+                var umbracoProject = new UmbracoProject
+                                     {
+                                         Id = project.Id,
+                                         Name = project.Name,
+                                         CreateDate = project.CreateDate,
+                                         CompatibleVersions = versionsList
+                                     };
+
+                projects.Add(umbracoProject);
+            }
+        }
+    }
+
+    <div class="deliPromoBox clearfix">
+        @{
+            var vs = new List<int>();
+            foreach (var project in projects.OrderByDescending(x => x.CreateDate))
+            {
+                foreach (var version in project.CompatibleVersions.Where(version => vs.Contains(version) == false))
+                {
+                    vs.Add(version);
+                }
+            }
+
+            foreach (var v in vs.OrderBy(x => x).Where(x => x.ToString(CultureInfo.InvariantCulture).StartsWith("3") == false && x.ToString(CultureInfo.InvariantCulture).StartsWith("5") == false).Skip(6))
+            {
+                <a href="/Projects/ProjectsVersioned?v=@v">Umbraco @(GetProperVersion(v.ToString(CultureInfo.InvariantCulture)).ToString(2)).x</a>
+                <br />
+            }
+        }
+    </div>
+}
+
+@functions {
+
+    public class UmbracoProject
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public DateTime CreateDate { get; set; }
+        public List<int> CompatibleVersions { get; set; }
+        public int TotalDownloads { get; set; }
+        public int DownloadsCurrentVersion { get; set; }
+        public int Karma { get; set; }
+        public int TotalDownloadsRank { get; set; }
+        public int CurrentVersionDownloadsRank { get; set; }
+        public int KarmaRank { get; set; }
+        public int TotalRank { get; set; }
+        public int FileId { get; set; }
+        public int ReportsCount { get; set; }
+        public int CompatibilityCount { get; set; }
+        public float CompatibilityScore { get; set; }
+    }
+
+    public Version GetProperVersion(string version)
+    {
+        if (version == "4.1.0")
+        {
+            return new Version(version);
+        }
+
+        version = version.Replace(".", "");
+
+        if (version.EndsWith("x"))
+        {
+            version = version.Substring(0, version.IndexOf("x", StringComparison.Ordinal));
+        }
+
+        if (version == "410" || version == "4100")
+        {
+            return new Version("4.10");
+        }
+
+        if (version == "411" || version == "4110")
+        {
+            return new Version("4.11");
+        }
+
+        if (version.EndsWith("x"))
+        {
+            version = version.Substring(0, version.IndexOf("x", StringComparison.Ordinal) - 1);
+        }
+
+        var splitVersion = version.ToCharArray();
+        version = string.Join(".", splitVersion);
+
+        if (version.Length == 1)
+        {
+            version = version + ".0";
+        }
+
+        var tempRevision = new Version(version);
+
+        return tempRevision.Revision == -1 ? new Version(tempRevision.Major, tempRevision.Minor, 0) : tempRevision;
+    }
+
+    public static string ShortenText(string text)
+    {
+        text = our.Utills.StripHTML(text).Replace("&nbsp;", "");
+        if (text.Length > 210)
+        {
+
+            text = text.Substring(0, 210);
+            text = text.Substring(0, text.LastIndexOf(' '));
+        }
+
+        text = Regex.Replace(text, @"[^a-zA-Z0-9\s.?!&;]", ""); //strip all crap from the listing such as ======================================= !!!!
+        return text.Trim();
+    }
+
+}
