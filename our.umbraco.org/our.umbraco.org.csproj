@@ -279,7 +279,9 @@
     <Content Include="usercontrols\Login.ascx" />
     <Content Include="usercontrols\ProjectCollabRequest.ascx" />
     <Content Include="usercontrols\ProjectEditor.ascx" />
-    <Content Include="usercontrols\ProjectFileUpload.ascx" />
+    <Content Include="usercontrols\ProjectFileUpload.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\ProjectForums.ascx" />
     <Content Include="usercontrols\Signup.ascx">
       <SubType>ASPXCodeBehind</SubType>

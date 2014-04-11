@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="True" CodeBehind="ProjectView.ascx.cs"
     Inherits="Marketplace.usercontrols.Deli.ProjectView" %>
 <%@ Import Namespace="Marketplace.Interfaces" %>
+<%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 <div id="project">
     <div id="projectVotes">
         <div id="projectvoting" class="voting rounded" style="width: 60px">
@@ -52,7 +53,7 @@
                 Package Info</h2>
             <h3>
                 Project Owner/Creator</h3>
-
+                
                 <div class="memberBadge rounded">
                     <a href="/member/<%= Project.Vendor.Member.Id %>">
                         <img alt="Avatar" class="photo" src="/media/avatar/<%= Project.Vendor.Member.Id %>.jpg" />
@@ -86,6 +87,13 @@
             <div id="projectCompat" class="sideSection">
                 <h3>
                     Project Compatibility</h3>
+                <% if (Member.GetCurrentMember() != null && Member.GetCurrentMember().Id == Project.Vendor.Member.Id)
+                       {  
+                %>
+                        <a href="/projectcompatibility?p=<%= Project.Id %>" target="_blank">Update compatible versions</a>
+                <%
+                       } 
+                %>
                 <p>
                     <asp:PlaceHolder runat="server" ID="HasReports">
                     <span class="compatSummary">

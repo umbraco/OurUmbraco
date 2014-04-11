@@ -3654,6 +3654,8 @@
     <Content Include="masterpages\ProjectsVersioned.master" />
     <Content Include="macroScripts\ProjectsVersioned.cshtml" />
     <Content Include="macroScripts\ProjectsVersionList.cshtml" />
+    <Content Include="masterpages\ProjectCompatibility.master" />
+    <Content Include="macroScripts\EditProjectCompatibility.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

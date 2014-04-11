@@ -1,0 +1,75 @@
+﻿@using System.Globalization
+@using umbraco.BusinessLogic
+@using umbraco.cms.businesslogic.member
+@using umbraco.cms.businesslogic.web
+@using umbraco.NodeFactory
+@using uWiki.Businesslogic
+@{
+    int nodeId;
+    var projectId = Request.QueryString["p"];
+    int.TryParse(projectId, out nodeId);
+
+    if (nodeId != 0)
+    {
+        var project = new Node(nodeId);
+        var owner = project.GetProperty("owner").Value;
+        var m = Member.GetCurrentMember();
+        
+        if (Request.Form["compatibleVersion"] != null)
+        {
+            if (m != null && owner == m.Id.ToString(CultureInfo.InvariantCulture))
+            {
+                var allVersions = UmbracoVersion.AvailableVersions().Values;
+                var postedVersions = Request.Form["compatibleVersion"].Split(',');
+                
+                //Check if these are existing versions in the list of all available versions
+                var saveVersions = postedVersions.Where(version => allVersions.SingleOrDefault(x => x.Version.ToString(CultureInfo.InvariantCulture) == version) != null).ToList();
+                if (saveVersions.Any())
+                {
+                    var commaSeparatedList = saveVersions.Aggregate((a, x) => a + "," + x);
+
+                    var files = WikiFile.CurrentFiles(nodeId).Where(x => x.FileType == "package");
+                    var fileVersions = WikiFile.GetVersionsFromString(commaSeparatedList);
+                    foreach (var wikiFile in files)
+                    {
+                        wikiFile.Versions = fileVersions;
+                        wikiFile.Save();
+                    }
+
+                    var doc = new Document(nodeId);
+                    doc.Publish(new User(0));
+                    library.UpdateDocumentCache(doc.Id);
+                }
+            }
+        }
+        
+        if (m != null && owner == m.Id.ToString(CultureInfo.InvariantCulture))
+        {
+            <br /><br />
+            <h2>Update the compatibiliy of @project.Name</h2>
+            <p>This package is currently set to be compatible with the versions below.</p>
+            <p>If it is compatible with versions not selected then please select them now and click "Save".</p>
+    
+            var node = new Node(nodeId);
+            var compatibleVersions = node.GetProperty("compatibleVersions").Value.Replace("saved,", string.Empty).Split(',');
+            
+            var options = string.Empty;
+
+            foreach (var uv in UmbracoVersion.AvailableVersions().Values)
+            {
+                var selected = string.Empty;
+                if (compatibleVersions.Contains(uv.Version))
+                {
+                    selected = "checked='checked'";
+                }
+
+                options += string.Format("<input type='checkbox' name='compatibleVersion' id='{0}' value='{0}' {2} /><label for='{0}'>{1}</label><br />", uv.Version, uv.Name, selected);
+            }
+
+            <form target="/ProjectCompatibility?p=@nodeId" method="POST" >
+                @Html.Raw(options)
+                <input type="submit" value="Save"/>
+            </form>
+        }
+    }
+}
