@@ -26,8 +26,6 @@ jQuery(document).ready(function () {
         if ($(this).text() == "View Details") {
             $("#compatLoading").show();
             
-            
-            
             var key = $(this).attr("rel").split(",");
             $.get("/html/versioncompatibilityreport?fileId=" + key[0] + "&packageId=" + key[1],
             function (data) {
@@ -44,6 +42,8 @@ jQuery(document).ready(function () {
         }
         return false;
     });
+
+    $("a.viewFullCompatibilityDetails").trigger("click");
 
     $("a.compatibilityReport").click(function () {
         var key = $(this).attr("rel").split(",");

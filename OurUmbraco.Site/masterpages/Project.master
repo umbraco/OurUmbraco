@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderId="Head" runat="server">
-        <script type="text/javascript" src="/scripts/projects/projects.js?v=3"></script>
+        <script type="text/javascript" src="/scripts/projects/projects.js?v=4"></script>
   <script type="text/javascript" src="/scripts/projects/jquery.tagger.js"></script>
   <script type="text/javascript" src="/scripts/projects/jquery.autocomplete.js"></script>
   <link rel="stylesheet" type="text/css" href="/css/shadowbox.css" />
