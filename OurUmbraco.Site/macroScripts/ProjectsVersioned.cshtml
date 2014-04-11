@@ -99,101 +99,104 @@
                     @{
                         var projectIds = projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)).Select(x => x.Id).ToArray();
                         var selection = string.Join(",", projectIds);
-
-                        var reader = Data.SqlHelper.ExecuteReader("SELECT id, nodeId, downloads FROM wikiFiles WHERE type = 'package' AND nodeId IN (" + selection + ")");
-
-                        while (reader.Read())
+                        if (string.IsNullOrWhiteSpace(selection) == false)
                         {
-                            var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("nodeId"));
+                            var reader = Data.SqlHelper.ExecuteReader("SELECT id, nodeId, downloads FROM wikiFiles WHERE type = 'package' AND nodeId IN (" + selection + ")");
 
-                            if (project != null)
+                            while (reader.Read())
                             {
-                                project.TotalDownloads = project.TotalDownloads + reader.GetInt("downloads");
-                                project.FileId = reader.GetInt("id");
-                            }
-                        }
+                                var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("nodeId"));
 
-                        reader = Data.SqlHelper.ExecuteReader("SELECT id, SUM([points]) AS Karma FROM powersProject WHERE id IN (" + selection + ") GROUP BY Id");
-
-                        while (reader.Read())
-                        {
-                            var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("id"));
-
-                            if (project != null)
-                            {
-                                project.Karma = reader.GetInt("Karma");
-                            }
-                        }
-
-                        var i = 1;
-                        foreach (var project in projects.OrderBy(x => x.TotalDownloads).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
-                        {
-                            project.TotalDownloadsRank = i + 5;
-                            i++;
-                        }
-
-                        i = 1;
-                        foreach (var project in projects.OrderBy(x => x.DownloadsCurrentVersion).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
-                        {
-                            project.CurrentVersionDownloadsRank = i + 10;
-                            i++;
-                        }
-
-                        i = 1;
-                        foreach (var project in projects.OrderBy(x => x.Karma).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
-                        {
-                            project.KarmaRank = i + 5;
-                            i++;
-                        }
-
-                        foreach (var project in projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)))
-                        {
-                            project.TotalRank = project.TotalDownloadsRank + project.CurrentVersionDownloadsRank + project.KarmaRank;
-                        }
-
-                        var fileIds = projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)).Select(x => x.FileId).ToArray();
-                        selection = string.Join(",", fileIds);
-
-                        reader = Data.SqlHelper.ExecuteReader("SELECT * FROM DeliVersionCompatibility WHERE fileID IN(" + selection + ") AND version LIKE '" + GetProperVersion(requestedVersion.ToString(CultureInfo.InvariantCulture)).ToString(2) + ".%'");
-
-                        while (reader.Read())
-                        {
-                            var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("projectId"));
-
-                            if (project != null)
-                            {
-                                project.ReportsCount++;
-
-                                if (reader.GetBoolean("isCompatible"))
+                                if (project != null)
                                 {
-                                    project.CompatibilityCount++;
+                                    project.TotalDownloads = project.TotalDownloads + reader.GetInt("downloads");
+                                    project.FileId = reader.GetInt("id");
                                 }
                             }
-                        }
 
-                        var totalProjects = projects.Count(x => x.CompatibleVersions.Contains(requestedVersion));
-                        foreach (var project in projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)))
-                        {
-                            if (project.ReportsCount > 0 && project.CompatibilityCount == 0)
+                            reader = Data.SqlHelper.ExecuteReader("SELECT id, SUM([points]) AS Karma FROM powersProject WHERE id IN (" + selection + ") GROUP BY Id");
+
+                            while (reader.Read())
                             {
-                                project.TotalRank = -30;
-                                continue;
+                                var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("id"));
+
+                                if (project != null)
+                                {
+                                    project.Karma = reader.GetInt("Karma");
+                                }
                             }
 
-                            if (project.ReportsCount > 0)
+                            var i = 1;
+                            foreach (var project in projects.OrderBy(x => x.TotalDownloads).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
                             {
-                                project.TotalRank = project.TotalRank + (project.CompatibilityCount + totalProjects);
-
-                                float compats = project.CompatibilityCount;
-                                float numReps = project.ReportsCount;
-                                var percentage = compats / numReps;
-                                project.CompatibilityScore = percentage;
-                                project.TotalRank = (int)(project.TotalRank * percentage);
+                                project.TotalDownloadsRank = i + 5;
+                                i++;
                             }
+
+                            i = 1;
+                            foreach (var project in projects.OrderBy(x => x.DownloadsCurrentVersion).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
+                            {
+                                project.CurrentVersionDownloadsRank = i + 10;
+                                i++;
+                            }
+
+                            i = 1;
+                            foreach (var project in projects.OrderBy(x => x.Karma).Where(x => x.CompatibleVersions.Contains(requestedVersion)))
+                            {
+                                project.KarmaRank = i + 5;
+                                i++;
+                            }
+
+                            foreach (var project in projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)))
+                            {
+                                project.TotalRank = project.TotalDownloadsRank + project.CurrentVersionDownloadsRank + project.KarmaRank;
+                            }
+
+                            var fileIds = projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)).Select(x => x.FileId).ToArray();
+                            selection = string.Join(",", fileIds);
+
+                            reader = Data.SqlHelper.ExecuteReader("SELECT * FROM DeliVersionCompatibility WHERE fileID IN(" + selection + ") AND version LIKE '" + GetProperVersion(requestedVersion.ToString(CultureInfo.InvariantCulture)).ToString(2) + ".%'");
+
+                            while (reader.Read())
+                            {
+                                var project = projects.FirstOrDefault(x => x.Id == reader.GetInt("projectId"));
+
+                                if (project != null)
+                                {
+                                    project.ReportsCount++;
+
+                                    if (reader.GetBoolean("isCompatible"))
+                                    {
+                                        project.CompatibilityCount++;
+                                    }
+                                }
+                            }
+
+                            var totalProjects = projects.Count(x => x.CompatibleVersions.Contains(requestedVersion));
+                            foreach (var project in projects.Where(x => x.CompatibleVersions.Contains(requestedVersion)))
+                            {
+                                if (project.ReportsCount > 0 && project.CompatibilityCount == 0)
+                                {
+                                    project.TotalRank = -30;
+                                    continue;
+                                }
+
+                                if (project.ReportsCount > 0)
+                                {
+                                    project.TotalRank = project.TotalRank + (project.CompatibilityCount + totalProjects);
+
+                                    float compats = project.CompatibilityCount;
+                                    float numReps = project.ReportsCount;
+                                    var percentage = compats/numReps;
+                                    project.CompatibilityScore = percentage;
+                                    project.TotalRank = (int) (project.TotalRank*percentage);
+                                }
+                            }
+                            
+
+                            <p class="viewAll">Showing @totalProjects projects</p>
                         }
                     }
-
-                    <p class="viewAll">Showing @totalProjects projects</p>
 
                     <ul id="newest-projects">
 
