@@ -49,10 +49,11 @@
 							var width = (item.IsLast() && countIsOdd) ? 895 : 380;
 							var numberOfDownloads = 0;
 							int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
+                            numberOfDownloads = numberOfDownloads + our.Utills.GetProjectTotalDownloadCount(item.Id);
 							
 						<li class="@(item.IsFirst() == false ? "release" : "main-release")">
 								<div style="background-image: url('@background');width: @(width)px;height: 60px;">
-									<h3><a href="/ReleaseDownload?id=@item.Id">@item.Name</a></h3>
+									<h3><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></h3>
 									@if(item.IsFirst())
 									{
 									    <strong>This is the main Umbraco download, generally you won't need anything else.</strong>

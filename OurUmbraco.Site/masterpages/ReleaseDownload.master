@@ -1,38 +1,50 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
-<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
-
-<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
  
 <umbraco:Macro runat="server" language="cshtml">
 @using System.Web	
 @using umbraco.cms.businesslogic.web
 @using umbraco.BusinessLogic
+@using umbraco.NodeFactory
+@using umbraco.cms.businesslogic.member
 
 	@{
-		var d = new Document(int.Parse(Request["id"]));
- 		var link = d.getProperty("downloadLink").Value.ToString().Trim();
-		var downloads = d.getProperty("numberOfDownloads").Value.ToString();
+		var docId = int.Parse(Request["id"]);
+		if (docId == 92350) { docId = 111983; }
+        
+        var d = new Node(docId);
+        
+		var link = d.GetProperty("downloadLink").Value.ToString().Trim();
+		var downloads = d.GetProperty("numberOfDownloads").Value.ToString();
+
 		int numberOfDownloads = 1; 
-		if(int.TryParse(downloads, out numberOfDownloads)) {
+		if(int.TryParse(downloads, out numberOfDownloads)) 
+        {
 			numberOfDownloads = numberOfDownloads + 1;
 		}
+
 		if(numberOfDownloads < 1)
 		{
 			numberOfDownloads = 1;
 		}
-		d.getProperty("numberOfDownloads").Value = numberOfDownloads;
-		
-		var user = new User(0);
-	    d.Publish(user);
-	    umbraco.library.UpdateDocumentCache(d.Id);
+        
+        var currentMember = 0;
+        var member = Member.GetCurrentMember();
+        if (member != null) 
+        {
+            currentMember = member.Id;
+        }
 
-		Response.Redirect(link);
+        //update download count update
+        Application.SqlHelper.ExecuteNonQuery(
+            @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
+            Application.SqlHelper.CreateParameter("@id", docId),
+            Application.SqlHelper.CreateParameter("@memberId", currentMember));    
+        
+        Response.Redirect(link);
 	}
 	
 </umbraco:Macro>
-
-</asp:Content>
 
 </asp:Content>
