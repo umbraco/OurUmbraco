@@ -9,42 +9,28 @@
 @using umbraco.NodeFactory
 @using umbraco.cms.businesslogic.member
 
-	@{
-		var docId = int.Parse(Request["id"]);
-		if (docId == 92350) { docId = 111983; }
+@{
+	var docId = int.Parse(Request["id"]);
+	if (docId == 92350) { docId = 111983; }
         
-        var d = new Node(docId);
-        
-		var link = d.GetProperty("downloadLink").Value.ToString().Trim();
-		var downloads = d.GetProperty("numberOfDownloads").Value.ToString();
+    var d = new Node(docId);
+	var link = d.GetProperty("downloadLink").Value.ToString().Trim();
 
-		int numberOfDownloads = 1; 
-		if(int.TryParse(downloads, out numberOfDownloads)) 
-        {
-			numberOfDownloads = numberOfDownloads + 1;
-		}
+    var currentMember = 0;
+    var member = Member.GetCurrentMember();
+    if (member != null) 
+    {
+        currentMember = member.Id;
+    }
 
-		if(numberOfDownloads < 1)
-		{
-			numberOfDownloads = 1;
-		}
+    Application.SqlHelper.ExecuteNonQuery(
+        @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
+        Application.SqlHelper.CreateParameter("@id", docId),
+        Application.SqlHelper.CreateParameter("@memberId", currentMember));    
         
-        var currentMember = 0;
-        var member = Member.GetCurrentMember();
-        if (member != null) 
-        {
-            currentMember = member.Id;
-        }
+    Response.Redirect(link);
+}
 
-        //update download count update
-        Application.SqlHelper.ExecuteNonQuery(
-            @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
-            Application.SqlHelper.CreateParameter("@id", docId),
-            Application.SqlHelper.CreateParameter("@memberId", currentMember));    
-        
-        Response.Redirect(link);
-	}
-	
 </umbraco:Macro>
 
 </asp:Content>
