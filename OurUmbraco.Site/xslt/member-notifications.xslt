@@ -60,13 +60,18 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<ul>
-							<xsl:apply-templates select="$topicsubscriptions//topic" />
+							<xsl:call-template name="PaginateSelection">
+								<xsl:with-param name="selection" select="$topicsubscriptions//topic" />
+								<xsl:with-param name="perPage" select="50" />
+							</xsl:call-template>
 						</ul>
 					</xsl:otherwise>
 				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
 	</xsl:template>
+	
+	<xsl:include href="_PaginationHelper.xslt" />
 	
 	<xsl:template match="forum">
 		<li>
