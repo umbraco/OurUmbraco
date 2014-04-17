@@ -43,13 +43,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<ul>
-							<xsl:for-each select="$forumsubscriptions//forum">
-								<li>
-									<a href="{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="title" /></a>
-									-
-									<a href="#" rel="{@id}" class="NotificationForumUnsubscribe">Unsubscribe</a>
-								</li>
-							</xsl:for-each>
+							<xsl:apply-templates select="$forumsubscriptions//forum" />
 						</ul>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -76,6 +70,16 @@
 				</xsl:choose>
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+	
+	<xsl:template match="forum">
+		<li>
+			<a href="{umbraco.library:NiceUrl(@id)}">
+				<xsl:value-of select="title" />
+			</a>
+			<xsl:text> - </xsl:text>
+			<a href="#" rel="{@id}" class="NotificationForumUnsubscribe">Unsubscribe</a>
+		</li>
 	</xsl:template>
 
 </xsl:stylesheet>
