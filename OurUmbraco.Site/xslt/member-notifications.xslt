@@ -59,7 +59,7 @@
 						<p>Currently no active subscriptions.</p>
 					</xsl:when>
 					<xsl:otherwise>
-						<ul>
+						<ul class="MemberTopicNotifications">
 							<xsl:call-template name="PaginateSelection">
 								<xsl:with-param name="selection" select="$topicsubscriptions//topic" />
 								<xsl:with-param name="perPage" select="50" />
