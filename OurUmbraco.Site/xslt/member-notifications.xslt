@@ -27,9 +27,11 @@
 
 	<xsl:template match="/">
 		<xsl:choose>
-			<xsl:when test="string(umbraco.library:GetCurrentMember()/bugMeNot) = '1'">
+			<xsl:when test="umbraco.library:GetCurrentMember()/bugMeNot = 1">
 				<div class="alert" style="width:600px">
-					Currently you will not receive any notifications since your profile preference is set to 'Do not send me any notifications or newsletters from our.umbraco.org'. To change this, please update the setting on your profile.
+					Currently you will not receive any notifications since your profile preference is set
+					to 'Do not send me any notifications or newsletters from our.umbraco.org'.
+					To change this, please update the setting on your profile.
 				</div>
 			</xsl:when>
 			<xsl:otherwise>
@@ -38,7 +40,7 @@
 				
 				<xsl:variable name="forumsubscriptions" select="Notifications:SubscribedForums($mem)" />
 				<xsl:choose>
-					<xsl:when test="count($forumsubscriptions//forum) = 0">
+					<xsl:when test="not($forumsubscriptions//forum)">
 						<p>Currently no active subscriptions.</p>
 					</xsl:when>
 					<xsl:otherwise>
@@ -53,7 +55,7 @@
 
 				<xsl:variable name="topicsubscriptions" select="Notifications:SubscribedTopics($mem)" />
 				<xsl:choose>
-					<xsl:when test="count($topicsubscriptions//topic) = 0">
+					<xsl:when test="not($topicsubscriptions//topic)">
 						<p>Currently no active subscriptions.</p>
 					</xsl:when>
 					<xsl:otherwise>
