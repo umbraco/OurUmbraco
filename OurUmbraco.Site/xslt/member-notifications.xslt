@@ -58,13 +58,7 @@
 					</xsl:when>
 					<xsl:otherwise>
 						<ul>
-							<xsl:for-each select="$topicsubscriptions//topic">
-								<li>
-									<a href="{uForum:NiceTopicUrl(@id)}"><xsl:value-of select="title" /></a>
-									-
-									<a href="#" rel="{@id}" class="NotificationTopicUnsubscribe">Unsubscribe</a>
-								</li>
-							</xsl:for-each>
+							<xsl:apply-templates select="$topicsubscriptions//topic" />
 						</ul>
 					</xsl:otherwise>
 				</xsl:choose>
@@ -79,6 +73,16 @@
 			</a>
 			<xsl:text> - </xsl:text>
 			<a href="#" rel="{@id}" class="NotificationForumUnsubscribe">Unsubscribe</a>
+		</li>
+	</xsl:template>
+	
+	<xsl:template match="topic">
+		<li>
+			<a href="{uForum:NiceTopicUrl(@id)}">
+				<xsl:value-of select="title" />
+			</a>
+			<xsl:text> - </xsl:text>
+			<a href="#" rel="{@id}" class="NotificationTopicUnsubscribe">Unsubscribe</a>
 		</li>
 	</xsl:template>
 
