@@ -18,16 +18,13 @@
 	<xsl:output method="xml" omit-xml-declaration="yes"/>
 
 	<xsl:param name="currentPage"/>
-
-	<xsl:variable name="mem">
-		<xsl:if test="umbraco.library:IsLoggedOn()">
-			<xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
-		</xsl:if>
-	</xsl:variable>
+	
+	<xsl:variable name="isLoggedOn" select="umbraco.library:IsLoggedOn()" />
+	<xsl:variable name="member" select="umbraco.library:GetCurrentMember()" />
 
 	<xsl:template match="/">
 		<xsl:choose>
-			<xsl:when test="umbraco.library:GetCurrentMember()/bugMeNot = 1">
+			<xsl:when test="$isLoggedOn and $member[bugMeNot = 1]">
 				<div class="alert" style="width:600px">
 					Currently you will not receive any notifications since your profile preference is set
 					to 'Do not send me any notifications or newsletters from our.umbraco.org'.
@@ -38,7 +35,7 @@
 				<h2>Forum subscriptions</h2>
 				<small>You get notified whenever a new topic is added to the subscribed forums.</small>
 				
-				<xsl:variable name="forumsubscriptions" select="Notifications:SubscribedForums($mem)" />
+				<xsl:variable name="forumsubscriptions" select="Notifications:SubscribedForums($member/@id)" />
 				<xsl:choose>
 					<xsl:when test="not($forumsubscriptions//forum)">
 						<p>Currently no active subscriptions.</p>
@@ -53,7 +50,7 @@
 				<h2>Topic subscriptions</h2>
 				<small>You get notified whenever a new reply is added to the subscribed topics.</small>
 
-				<xsl:variable name="topicsubscriptions" select="Notifications:SubscribedTopics($mem)" />
+				<xsl:variable name="topicsubscriptions" select="Notifications:SubscribedTopics($member/@id)" />
 				<xsl:choose>
 					<xsl:when test="not($topicsubscriptions//topic)">
 						<p>Currently no active subscriptions.</p>
