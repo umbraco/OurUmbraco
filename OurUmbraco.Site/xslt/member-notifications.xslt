@@ -82,6 +82,7 @@
 	
 	<xsl:template match="topic">
 		<li>
+			<xsl:if test="not(@answer = 0)"><xsl:attribute name="class">TopicSolved</xsl:attribute></xsl:if>
 			<a href="{uForum:NiceTopicUrl(@id)}">
 				<xsl:value-of select="title" />
 			</a>
