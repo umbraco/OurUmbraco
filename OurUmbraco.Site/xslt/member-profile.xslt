@@ -262,33 +262,40 @@
       <small>karma</small>
     </span>
   </div>
-  
-  <xsl:if test="contains($groups, '2011-mvp-candidate')">
-    <a href="/umbracomvp2011" title="Umbraco: Most Valuable Person 2011 Candidate" class="badge mvpcandidate">MVP</a>
-  </xsl:if>
-      
-  <xsl:if test="contains($groups, 'HQ')">
-    <a href="/wiki/about/umbraco-corporation" title="Umbraco HQ Employee" class="badge hq">HQ</a>
-  </xsl:if>
 
-  <xsl:if test="contains($groups, 'admin')">
-    <a href="/wiki/about/our-admins" title="Member of the our.umbraco.org admin team" class="badge admin">admin</a>
-  </xsl:if>
+  <xsl:if test="string-length($groups) > 0">
+    <xsl:variable name="items" select="umbraco.library:Split($groups,',')" />
+    <xsl:for-each select="$items//value">
+      <xsl:choose>
+        <xsl:when test=". = '2011-mvp-candidate'">
+          <a href="/umbracomvp2011" title="Umbraco: Most Valuable Person 2011 Candidate" class="badge mvpcandidate">MVP</a>
+        </xsl:when>
 
-  <xsl:if test="contains($groups, 'vendor')">
-    <a href="/wiki/about/vendors" title="Umbraco Shop Vendor" class="badge vendor">Vendor</a>
-  </xsl:if>
+        <xsl:when test=". = 'HQ'">
+          <a href="/wiki/about/umbraco-corporation" title="Umbraco HQ Employee" class="badge hq">HQ</a>
+        </xsl:when>
 
-  <xsl:if test="contains($groups, 'Core')">
-    <a href="/wiki/about/core-team" title="Member of the umbraco core team" class="badge core">Core</a>
-  </xsl:if>
+        <xsl:when test=". ='admin'">
+          <a href="/wiki/about/our-admins" title="Member of the our.umbraco.org admin team" class="badge admin">admin</a>
+        </xsl:when>
 
-  <xsl:if test="contains($groups, 'CoreContrib')">
-    <a href="/wiki/about/core-contributor" title="Contributor to the core" class="badge core-contrib">Core Contributor</a>
-  </xsl:if>
+        <xsl:when test=". = 'vendor'">
+          <a href="/wiki/about/vendors" title="Umbraco Shop Vendor" class="badge vendor">Vendor</a>
+        </xsl:when>
 
-  <xsl:if test="contains($groups, 'MVP')">
-    <a href="/wiki/about/mvps" title="Umbraco: Most Valuable Person" class="badge mvp">MVP</a>
+        <xsl:when test=".='Core'">
+          <a href="/wiki/about/core-team" title="Member of the umbraco core team" class="badge core">Core</a>
+        </xsl:when>
+
+        <xsl:when test=".='CoreContrib'">
+          <a href="/wiki/about/core-contributor" title="Member of the umbraco core contribution team" class="badge core-contrib">Core</a>
+        </xsl:when>
+
+        <xsl:when test=".= 'MVP'">
+          <a href="/wiki/about/mvps" title="Umbraco: Most Valuable Person" class="badge mvp">MVP</a>
+        </xsl:when>
+      </xsl:choose>
+    </xsl:for-each>
   </xsl:if>
   
 </xsl:template>
