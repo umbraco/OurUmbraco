@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Drawing;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -24,6 +26,8 @@ namespace our.usercontrols
         {
             //lazyloading the needed javascript for validation. (addded it to the master template as our ahah forms need it aswel)
             //umbraco.library.RegisterJavaScriptFile("jquery.validation", "/scripts/jquery.validation.js");
+
+            recaptcha.PrivateKey = ConfigurationManager.AppSettings["RecaptchaPrivateKey"];
 
             MemberExists.Visible = false;
 
@@ -62,7 +66,17 @@ namespace our.usercontrols
                 tb_location.Text = m.getProperty("location").Value.ToString();
 
             }
-
+            // ReCaptcha is wrong when Page.IsValid is false
+            Page.Validate();
+            if (Page.IsPostBack && Page.IsValid == false)
+            {
+                tb_password.Attributes["value"] = tb_password.Text;
+                err_recaptcha.Visible = true;
+            }
+            else
+            {
+                err_recaptcha.Visible = false;
+            }
         }
 
         protected void createMember(object sender, EventArgs e)
@@ -109,7 +123,7 @@ namespace our.usercontrols
             }
             else
             {
-                if (tb_email.Text != "")
+                if (tb_email.Text != "" && Page.IsValid)
                 {
                     m = Member.GetMemberFromLoginName(tb_email.Text);
                     if (m == null)

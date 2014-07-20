@@ -90,7 +90,8 @@ namespace uWiki.Businesslogic
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
                         Directory.CreateDirectory(HttpContext.Current.Server.MapPath(path));
-
+                    
+                    path = string.Format("{0}/{1}_{2}.{3}", path, DateTime.Now.Ticks, umbraco.cms.helpers.url.FormatUrl(filename), extension);
 
                     file.SaveAs(HttpContext.Current.Server.MapPath(path));
 

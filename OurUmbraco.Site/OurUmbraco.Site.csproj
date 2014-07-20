@@ -381,7 +381,9 @@
     <Content Include="config\uPowers.config" />
     <Content Include="config\UrlRewriting.config" />
     <Content Include="config\uVersion.backup.config" />
-    <Content Include="config\uVersion.config" />
+    <Content Include="config\uVersion.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\xsltExtensions.config" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />

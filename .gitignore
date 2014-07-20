@@ -42,3 +42,4 @@ build/*.nupkg
 /packages/*
 !packages/repositories.config
 OurUmbraco.Site/App_Data/YouTrack/all.json
+OurUmbraco.Site/App_Data/communityblogs.xml

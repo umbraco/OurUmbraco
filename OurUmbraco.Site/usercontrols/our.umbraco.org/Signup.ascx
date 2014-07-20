@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="our.usercontrols.Signup" %>
-
+<%@ Register TagPrefix="recaptcha" Namespace="Recaptcha" Assembly="Recaptcha" %>
 
 <asp:panel ID="MemberExists" Visible="False" runat="server">
     <p>There is already an account with this e-mail address! You can <a href="/member/login">login</a> or <a href="/member/forgot-password">reset your password</a>.</p>
@@ -10,7 +10,7 @@
 <fieldset>
 <legend>Basic Information</legend>
   <p>
-  We just need the most basic information from you.
+  We just need the most basic information from you....
   </p>
   <p>
     <asp:label ID="Label1" AssociatedControlID="tb_name" CssClass="inputLabel" runat="server">Name</asp:label>
@@ -33,6 +33,7 @@
     <asp:TextBox ID="tb_bio" runat="server" TextMode="MultiLine" CssClass="title noHtml"/>
   	
   </p>  
+
 </fieldset>
 
 <fieldset>
@@ -90,7 +91,14 @@
  
  <br />
 </fieldset>
-
+<fieldset>
+  <legend>Are you human?</legend>
+  <p>
+      <asp:Label runat="server" ID="lbl_recaptcha" AssociatedControlID="recaptcha">Please complete the following captcha</asp:Label>
+      <recaptcha:RecaptchaControl ID="recaptcha" runat="server" Theme="clean" PublicKey="6LeHJfcSAAAAADyRdX4f_z79H7iH3rjggZcXFWio" />
+      <asp:Label runat="server" CssClass="error" ID="err_recaptcha" Visible="False">Please type the text as it appears in the image(s) above.</asp:Label>
+  </p>
+</fieldset>
 
 
 <div class="buttons">
