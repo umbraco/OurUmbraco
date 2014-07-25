@@ -61,6 +61,10 @@
     <Reference Include="Examine">
       <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
     </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\legacy\HtmlAgilityPack.dll</HintPath>
+    </Reference>
     <Reference Include="interfaces, Version=1.0.4076.22254, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
@@ -324,7 +328,9 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\EventEditor.ascx" />
+    <Content Include="usercontrols\EventEditor.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\FileDownloadProxy.ascx" />
     <Content Include="usercontrols\InsertImage.ascx">
       <SubType>ASPXCodeBehind</SubType>

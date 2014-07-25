@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="our.usercontrols.Signup" %>
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="our.usercontrols.Signup" %>
 <%@ Register TagPrefix="recaptcha" Namespace="Recaptcha" Assembly="Recaptcha" %>
 
 <asp:panel ID="MemberExists" Visible="False" runat="server">
@@ -10,7 +10,7 @@
 <fieldset>
 <legend>Basic Information</legend>
   <p>
-  We just need the most basic information from you....
+  We just need the most basic information from you.
   </p>
   <p>
     <asp:label ID="Label1" AssociatedControlID="tb_name" CssClass="inputLabel" runat="server">Name</asp:label>

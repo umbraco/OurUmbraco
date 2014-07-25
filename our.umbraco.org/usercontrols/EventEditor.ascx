@@ -68,25 +68,18 @@
       <legend>Location</legend>
       <p>Where will the event be? , please enter a full address that google maps can show correctly.</p>
        
-       
-       <p>
-        <asp:Label ID="Label5" AssociatedControlID="tb_venue" CssClass="inputLabel" runat="server">Venue</asp:Label>
-        
-        <table>
-        <tr>
-            <td style="vertical-align: top">
-                <asp:TextBox ID="tb_venue" runat="server" TextMode="MultiLine" ToolTip="Please enter the complete address of the event venue" CssClass="title required"/> <br />
-                <input type="button" class="submitButton" value="look up" onclick="lookupAddress(jQuery('#<%= tb_venue.ClientID %>').val());" />
-            </td>
-            <td style="vertical-align: top">
-                <div id="googleMap" style="width: 320px; height: 270px;"></div>
-            </td>
-        </tr>
-        </table>
+         <p>
+    <asp:TextBox ID="tb_venue" runat="server" ToolTip="Please enter the complete address of the event venue" CssClass="title required" style="clear: both; width: 470px;"/> 
+    <input type="button" class="submitButton" value="look up" onclick="lookupAddress(jQuery('#<%= tb_venue.ClientID %>    ').val());" />
+    
         
         <asp:HiddenField ID="tb_lat" runat="server" />
         <asp:HiddenField ID="tb_lng" runat="server" />
-     </p>
+ </p>
+ 
+ <div id="googleMap" style="width: 500px; height: 460px;"></div>
+       
+     
      
      
      
@@ -98,59 +91,44 @@
 
     </div>
     
-    
-    <script type="text/javascript">
-      var map = null;
-      var t_lat = null;
-      var t_lng = null;
-      var latlng = null;
-      var markersArray = [];
-  
-      $(document).ready(function() {
-          t_lat = jQuery('#<%= tb_lat.ClientID %>');
-          t_lng = jQuery('#<%= tb_lng.ClientID %>');
+<script type="text/javascript">
+    var map = null;
+    var t_lat = null;
+    var t_lng = null;
+    var latlng = null;
+
+    $(document).ready(function () {
+        t_lat = jQuery('#<%= tb_lat.ClientID %>');
+        t_lng = jQuery('#<%= tb_lng.ClientID %>');
           
-          
-           $.validator.addMethod("onlyValidLatLng",
-           function(value, element) {
-             return (t_lat.val() != "" && t_lng.val() != "");
-             "Please enter an address google maps can find"
-           });
-          
-          
-          $("form").validate();
-          
+        $.validator.addMethod("onlyValidLatLng",
+               function (value, element) {
+                   return (t_lat.val() != "" && t_lng.val() != "");
+                   "Please enter an address google maps can find"
+               });
 
-              if (t_lat.val() != "" && t_lng.val() != "") {
-                  latlng = new google.maps.LatLng(t_lat.val(), t_lng.val());
-              }
-              else{
-                  latlng = new google.maps.LatLng(37.4419, -122.1419);
-              }
+        $("form").validate();
 
-              var mapopts = {
-                zoom: 8,
-                center: latlng,
-                mapTypeId: google.maps.MapTypeId.ROADMAP
-              }
 
-                map = new google.maps.Map(document.getElementById("googleMap"),mapopts);
+        if (GBrowserIsCompatible()) {
+            map = new GMap2(document.getElementById("googleMap"));
 
-              if (t_lat.val() != "" && t_lng.val() != "") {
+            if (t_lat.val() != "" && t_lng.val() != "") {
+                var point = new GLatLng(t_lat.val(), t_lng.val());
+                latlng = point;
+                var marker = new GMarker(point);
 
-                var marker = new google.maps.Marker({
-                  map: map,
-                  position: latlng
-                });
+                map.setCenter(point, 13);
+                map.addOverlay(marker);
+            } else {
+                map.setCenter(new GLatLng(37.4419, -122.1419), 13);
+            }
 
-                markersArray.push(marker);
-              }
+            map.setUIToDefault();
+        }
+    });
 
-           // map.setUIToDefault();
-          
-      });
-
-      tinyMCE.init({
+    tinyMCE.init({
         // General options
         mode: "exact",
         elements: "<%= tb_desc.ClientID %>",
@@ -158,74 +136,37 @@
         auto_resize: true,
         theme: "simple",
         remove_linebreaks: false
-      });
-    
-      
-function lookupAddress(address){
-  
-  var geocoder = new google.maps.Geocoder();
-  
-  if (geocoder) {
-    geocoder.geocode({ 'address': address.replace(/(\r\n|\n|\r)/gm," ")},function(results, status) {
-      if (status == google.maps.GeocoderStatus.OK) {
-        map.setCenter(results[0].geometry.location);
-        clearOverlays();
-        var marker = new google.maps.Marker({
-          map: map,
-          position: results[0].geometry.location
-        });
-        var infoWindow = new google.maps.InfoWindow();
-        infoWindow.setContent(address.replace(/(\r\n|\n|\r)/gm,"<br//>"));
-        infoWindow.open(map, marker);
-        markersArray.push(marker);
-        t_lat.val(results[0].geometry.location.lat());
-        t_lng.val(results[0].geometry.location.lng());
-      } else {
-        alert("Unable to find addres for the following reason: " + status);
-      }
     });
-  }
 
-  /*var geocoder = new GClientGeocoder();
-  
+    function lookupAddress(address) {
+        var geocoder = new GClientGeocoder();
 
-
-  if (geocoder) {
-    geocoder.getLatLng(
+        if (geocoder) {
+            geocoder.getLatLng(
           address,
-          function(point) {
-            if (!point) {
+          function (point) {
+              if (!point) {
 
-              alert(address + " not found");
+                  alert(address + " not found");
 
-              t_lat.val('');
-              t_lng.val('');
+                  t_lat.val('');
+                  t_lng.val('');
 
-            } else {
-                         
-              map.setCenter(point, 13);
-              t_lat.val(point.lat());
-              t_lng.val(point.lng());
-              
-              var marker = new GMarker(point);
-              map.addOverlay(marker);
-              marker.openInfoWindowHtml(address);
-            }
+              } else {
+
+                  map.setCenter(point, 13);
+                  t_lat.val(point.lat());
+                  t_lng.val(point.lng());
+
+                  var marker = new GMarker(point);
+                  map.addOverlay(marker);
+                  marker.openInfoWindowHtml(address);
+              }
           }
         );
-      }*/
- }  
-
- function clearOverlays() {
-  if (markersArray) {
-    for (i in markersArray) {
-      markersArray[i].setMap(null);
-    }
-  }
-}
-      
+        }
+    }  
 </script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBofhf4tHWAJ_X3NfirX-hgnlrgcBeyrSo&sensor=false" type="text/javascript"></script>
-        
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA0NU1XDEzOML2eyLWhmJ9LBSxfxjTTu64lrS209cfOxNPw1orBxShNTRVj48sdN3ldWVic17nG0GLeA" type="text/javascript"></script>
 </asp:Panel>

@@ -64,8 +64,23 @@ namespace our.usercontrols
                 //allowed?
                 if (d.ContentType.Alias == "Event" && int.Parse(d.getProperty("owner").Value.ToString()) == m.Id)
                 {
-                    d.Text = tb_name.Text;
                     d.getProperty("description").Value = tb_desc.Text;
+
+                    // Filter out links when karma is low, probably a spammer
+                    var karma = int.Parse(m.getProperty("reputationTotal").Value.ToString());
+                    if (karma < 50)
+                    {
+                        var doc = new HtmlAgilityPack.HtmlDocument();
+                        doc.LoadHtml(tb_desc.Text);
+
+                        var anchorNodes = doc.DocumentNode.SelectNodes("//a");
+                        foreach (var anchor in anchorNodes)
+                            anchor.ParentNode.RemoveChild(anchor, true);
+
+                        d.getProperty("description").Value = doc.DocumentNode.OuterHtml;
+                    }
+                    
+                    d.Text = tb_name.Text;
 
                     d.getProperty("venue").Value = tb_venue.Text;
                     d.getProperty("latitude").Value = tb_lat.Value;
