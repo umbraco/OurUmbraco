@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Collections;
 using System.Configuration;
-using System.Data;
 using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
+using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
 using umbraco.presentation.nodeFactory;
 using umbraco.cms.businesslogic.web;
+using System.Net.Mail;
+using umbraco.BusinessLogic;
 
 namespace our.usercontrols
 {
     public partial class EventEditor : System.Web.UI.UserControl
     {
-        private Member m = umbraco.cms.businesslogic.member.Member.GetCurrentMember();
+        private readonly Member _member = Member.GetCurrentMember();
         public int EventsRoot { get; set; }
 
         protected override void OnInit(EventArgs e)
@@ -32,109 +26,159 @@ namespace our.usercontrols
             umbraco.library.RegisterJavaScriptFile("tinyMce", "/scripts/tiny_mce/tiny_mce_src.js");
 
             //edit?
-            if (!Page.IsPostBack && !string.IsNullOrEmpty(Request.QueryString["id"]))
+            if (Page.IsPostBack == false && string.IsNullOrEmpty(Request.QueryString["id"]) == false)
             {
-
-                Node n = new Node(int.Parse(Request.QueryString["id"]));
+                var node = new Node(int.Parse(Request.QueryString["id"]));
                 //allowed?
-                if (n.NodeTypeAlias == "Event" && int.Parse(n.GetProperty("owner").Value) == m.Id)
+                if (node.NodeTypeAlias == "Event" && int.Parse(node.GetProperty("owner").Value) == _member.Id)
                 {
-                    tb_name.Text = n.Name;
-                    tb_desc.Text = n.GetProperty("description").Value;
+                    tb_name.Text = node.Name;
+                    tb_desc.Text = node.GetProperty("description").Value;
 
-                    tb_venue.Text = n.GetProperty("venue").Value;
-                    tb_capacity.Text = n.GetProperty("capacity").Value;
+                    tb_venue.Text = node.GetProperty("venue").Value;
+                    tb_capacity.Text = node.GetProperty("capacity").Value;
 
-                    tb_lat.Value = n.GetProperty("latitude").Value;
-                    tb_lng.Value = n.GetProperty("longitude").Value;
+                    tb_lat.Value = node.GetProperty("latitude").Value;
+                    tb_lng.Value = node.GetProperty("longitude").Value;
 
-                    dp_startdate.Text = DateTime.Parse(n.GetProperty("start").Value).ToString("MM/dd/yyyy H:mm");
-                    dp_enddate.Text = DateTime.Parse(n.GetProperty("end").Value).ToString("MM/dd/yyyy H:mm");
+                    dp_startdate.Text = DateTime.Parse(node.GetProperty("start").Value).ToString("MM/dd/yyyy H:mm");
+                    dp_enddate.Text = DateTime.Parse(node.GetProperty("end").Value).ToString("MM/dd/yyyy H:mm");
                 }
             }
         }
 
         protected void createEvent(object sender, EventArgs e)
         {
-            //edit?
-            if (!string.IsNullOrEmpty(Request.QueryString["id"]))
+            var hasAnchors = false;
+            var hasLowKarma = false;
+            var documentId = 0;
+
+            var karma = int.Parse(_member.getProperty("reputationTotal").Value.ToString());
+            if (karma < 50)
             {
+                hasLowKarma = true;
+            }
 
-                Document d = new Document(int.Parse(Request.QueryString["id"]));
+            //edit?
+            if (string.IsNullOrEmpty(Request.QueryString["id"]) == false)
+            {
+                var document = new Document(int.Parse(Request.QueryString["id"]));
+                documentId = document.Id;
+
                 //allowed?
-                if (d.ContentType.Alias == "Event" && int.Parse(d.getProperty("owner").Value.ToString()) == m.Id)
+                if (document.ContentType.Alias == "Event" && int.Parse(document.getProperty("owner").Value.ToString()) == _member.Id)
                 {
-                    d.getProperty("description").Value = tb_desc.Text;
+                    SetDescription(document, hasLowKarma, ref hasAnchors);
 
-                    // Filter out links when karma is low, probably a spammer
-                    var karma = int.Parse(m.getProperty("reputationTotal").Value.ToString());
-                    if (karma < 50)
-                    {
-                        var doc = new HtmlAgilityPack.HtmlDocument();
-                        doc.LoadHtml(tb_desc.Text);
+                    document.Text = tb_name.Text;
 
-                        var anchorNodes = doc.DocumentNode.SelectNodes("//a");
-                        foreach (var anchor in anchorNodes)
-                            anchor.ParentNode.RemoveChild(anchor, true);
+                    document.getProperty("venue").Value = tb_venue.Text;
+                    document.getProperty("latitude").Value = tb_lat.Value;
+                    document.getProperty("longitude").Value = tb_lng.Value;
 
-                        d.getProperty("description").Value = doc.DocumentNode.OuterHtml;
-                    }
-                    
-                    d.Text = tb_name.Text;
+                    var sync = tb_capacity.Text != document.getProperty("capacity").Value.ToString();
 
-                    d.getProperty("venue").Value = tb_venue.Text;
-                    d.getProperty("latitude").Value = tb_lat.Value;
-                    d.getProperty("longitude").Value = tb_lng.Value;
+                    document.getProperty("capacity").Value = tb_capacity.Text;
 
-                    bool sync = false;
-                    if (tb_capacity.Text != d.getProperty("capacity").Value.ToString())
-                        sync = true;
+                    document.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
+                    document.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
 
-                    d.getProperty("capacity").Value = tb_capacity.Text;
+                    document.Save();
+                    document.Publish(new User(0));
 
-                    d.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
-                    d.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
-
-                    d.Save();
-                    d.Publish(new umbraco.BusinessLogic.User(0));
-                    
-                    umbraco.library.UpdateDocumentCache(d.Id);
+                    umbraco.library.UpdateDocumentCache(document.Id);
 
                     if (sync)
                     {
-                        uEvents.Event ev = new uEvents.Event(d);
+                        var ev = new uEvents.Event(document);
                         ev.syncCapacity();
                     }
-                    
-
-                    Response.Redirect(umbraco.library.NiceUrl(d.Id));
                 }
             }
             else
             {
-                Document d = Document.MakeNew(tb_name.Text, DocumentType.GetByAlias("Event"), new umbraco.BusinessLogic.User(0), EventsRoot);
+                Document document = Document.MakeNew(tb_name.Text, DocumentType.GetByAlias("Event"), new User(0), EventsRoot);
+                documentId = document.Id;
 
-                d.getProperty("description").Value = tb_desc.Text;
+                SetDescription(document, hasLowKarma, ref hasAnchors);
 
-                d.getProperty("venue").Value = tb_venue.Text;
-                d.getProperty("latitude").Value = tb_lat.Value;
-                d.getProperty("longitude").Value = tb_lng.Value;
+                document.getProperty("venue").Value = tb_venue.Text;
+                document.getProperty("latitude").Value = tb_lat.Value;
+                document.getProperty("longitude").Value = tb_lng.Value;
 
-                d.getProperty("capacity").Value = tb_capacity.Text;
-                d.getProperty("signedup").Value = 0;
+                document.getProperty("capacity").Value = tb_capacity.Text;
+                document.getProperty("signedup").Value = 0;
 
-                d.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
-                d.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
+                document.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
+                document.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
 
-                d.getProperty("owner").Value = m.Id;
+                document.getProperty("owner").Value = _member.Id;
 
-                d.Save();
-                d.Publish(new umbraco.BusinessLogic.User(0));
-                umbraco.library.UpdateDocumentCache(d.Id);
+                document.Save();
+                document.Publish(new User(0));
+                umbraco.library.UpdateDocumentCache(document.Id);
+            }
 
-                Response.Redirect(umbraco.library.NiceUrl(d.Id));
+            var redirectUrl = umbraco.library.NiceUrl(documentId);
+
+            if (hasLowKarma && hasAnchors)
+                SendPotentialSpamNotification(tb_name.Text, redirectUrl, _member.Id);
+
+            Response.Redirect(redirectUrl);
+        }
+
+        private void SetDescription(Content content, bool hasLowKarma, ref bool hasAnchors)
+        {
+            content.getProperty("description").Value = tb_desc.Text;
+
+            // Filter out links when karma is low, probably a spammer
+            if (hasLowKarma)
+            {
+                var doc = new HtmlAgilityPack.HtmlDocument();
+                doc.LoadHtml(tb_desc.Text);
+
+                var anchorNodes = doc.DocumentNode.SelectNodes("//a");
+                if (anchorNodes != null)
+                {
+                    hasAnchors = true;
+
+                    foreach (var anchor in anchorNodes)
+                        anchor.ParentNode.RemoveChild(anchor, true);
+                }
+
+                content.getProperty("description").Value = doc.DocumentNode.OuterHtml;
             }
         }
 
+        private static void SendPotentialSpamNotification(string eventName, string eventUrl, int memberId)
+        {
+            try
+            {
+                var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+
+                var post = string.Format("Event: {0} - link: <a href=\"http://{1}\">http://{1}</a><br />By member:<a href=\"http://our.umbraco.org/member/{2}\">http://our.umbraco.org/member/{2}</a>", eventName, eventUrl, memberId);
+
+                var body = string.Format("<p>The following event could be spam as it was posted by someone with low karma and it includes anchor tags (which have been stripped)</p><hr />{0}", post);
+
+                var mailMessage = new MailMessage
+                {
+                    Subject = "Umbraco community: Event is possible spam",
+                    Body = body,
+                    IsBodyHtml = true
+                };
+
+                foreach (var email in notify.Split(','))
+                    mailMessage.To.Add(email);
+
+                mailMessage.From = new MailAddress("our@umbraco.org");
+
+                var smtpClient = new SmtpClient();
+                smtpClient.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, "Error sending spam notification: " + ex.Message + " " + ex.StackTrace);
+            }
+        }
     }
 }
