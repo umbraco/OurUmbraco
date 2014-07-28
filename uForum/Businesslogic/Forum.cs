@@ -335,15 +335,15 @@ namespace uForum.Businesslogic
             // Members with over 50 karma are trusted automatically
             if (reputationTotal >= 50)
                 return false;
-            
+
             var akismetApi = GetAkismetApi();
             var comment = ConstructAkismetComment(member, commentType, body);
 
             var isAkismetSpam = akismetApi.CommentCheck(comment);
-            
+
             var isSpam = isAkismetSpam || TextContainsSpam(body) || IsSuspiciousBehavior(body);
-            
-            if(isSpam)
+
+            if (isSpam)
             {
                 akismetApi.SubmitSpam(comment);
 
@@ -369,8 +369,32 @@ namespace uForum.Businesslogic
 
             var anchorNodes = doc.DocumentNode.SelectNodes("//a");
             if (anchorNodes != null)
-                return true;
+            {
+                var validLinksCount = 0;
 
+                foreach (var anchorNode in anchorNodes)
+                {
+                    if (anchorNode.Attributes["href"] != null)
+                    {
+                        var href = anchorNode.Attributes["href"].Value;
+                        if (href != null && (href.StartsWith("/media")
+                                             || href.Contains("umbraco.org")
+                                             || href.Contains("umbraco.com")
+                                             || href.Contains("umbraco.io")))
+                        {
+                            validLinksCount = validLinksCount + 1;
+                        }
+                    }
+                }
+
+                var otherLinksCount = anchorNodes.Count - validLinksCount;
+
+                // If all links go to umbraco domains or the umbraco media folder, it's most likely not spam
+                if (otherLinksCount == 0)
+                    return false;
+            }
+
+            // Find possible links that are not wrapped in an anchor tag, they're probably malicious
             if (body.Contains("http://") || body.Contains("https://") || body.Contains("www."))
                 return true;
 
