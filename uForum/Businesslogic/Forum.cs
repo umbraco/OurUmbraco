@@ -378,8 +378,10 @@ namespace uForum.Businesslogic
                     {
                         var href = anchorNode.Attributes["href"].Value;
                         if (href != null && (href.StartsWith("/media")
+                                             || href.Contains("stackoverflow.com")
                                              || href.Contains("umbraco.org")
-                                             || href.Contains("umbraco.com")
+                                             || href.Contains("umbraco.org")
+                                             || href.Contains("umbraco.tv")
                                              || href.Contains("umbraco.io")))
                         {
                             validLinksCount = validLinksCount + 1;
