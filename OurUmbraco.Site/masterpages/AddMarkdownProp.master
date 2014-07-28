@@ -1,0 +1,57 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
+<body onload="JavaScript:timedRefresh(5000);">
+
+<umbraco:Macro runat="server" language="cshtml">
+@using System.Threading
+@using System.Diagnostics
+@using uForum.Businesslogic
+@{
+    var stopwatch1 = new Stopwatch();
+    stopwatch1.Start();
+    
+    var records = 10;
+    if (Request.QueryString["records"] != null)
+    {
+        records = int.Parse(Request.QueryString["records"]);
+    }
+
+    var sql = string.Format("SELECT TOP {0} contentNodeId, versionId FROM [our.umbraco.org.live].[dbo].[cmsPropertyData] WHERE contentNodeId IN (SELECT NodeId FROM [our.umbraco.org.live].[dbo].[cmsMember]) AND contentNodeId NOT IN (SELECT contentNodeId FROM [our.umbraco.org.live].[dbo].[cmsPropertyData] WHERE propertytypeid = 203) GROUP BY contentNodeId, versionId", records);
+    var reader = Data.SqlHelper.ExecuteReader(sql);
+
+    while (reader.Read())
+    {
+        var contentNodeId = reader.GetInt("contentNodeId");
+        var versionId = reader.GetGuid("versionId").ToString();
+
+        var stopwatch2 = new Stopwatch();
+        stopwatch2.Start();
+        Data.SqlHelper.ExecuteNonQuery("INSERT INTO [our.umbraco.org.live].[dbo].[cmsPropertyData] (contentNodeId, versionId, propertyTypeId) VALUES (@id, @versionId, 203)", Data.SqlHelper.CreateParameter("@id", contentNodeId), Data.SqlHelper.CreateParameter("@versionId", versionId));
+        stopwatch2.Stop();
+        <span style="font-size: 9px;">@contentNodeId - @stopwatch2.Elapsed.Ticks</span>
+    }
+    reader.Close();
+	reader.Dispose();
+	
+    stopwatch1.Stop();
+    
+    <hr />
+    <p>Updated @records records in @stopwatch1.Elapsed.Seconds seconds</p>
+	
+}
+</umbraco:Macro>
+<script type="text/JavaScript">
+<!--
+function timedRefresh(timeoutPeriod) {
+	setTimeout("location.reload(true);",timeoutPeriod);
+}
+//   -->
+</script>
+	</body>
+</asp:Content>
+
+</asp:Content>

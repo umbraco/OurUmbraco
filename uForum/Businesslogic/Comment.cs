@@ -8,6 +8,7 @@ using System.Web.UI.MobileControls;
 using System.Xml;
 using Joel.Net;
 using PetaPoco;
+using uForum.Library;
 using umbraco.cms.businesslogic.member;
 using umbraco.presentation.channels;
 
@@ -218,6 +219,9 @@ namespace uForum.Businesslogic {
 
             topic.Save(true);
             forum.Save();
+
+            member.getProperty("blocked").Value = true;
+            member.Save();
                 
             FireAfterMarkAsSpam(e);
         }
@@ -255,8 +259,9 @@ namespace uForum.Businesslogic {
             if (reputation < 50)
                 member.getProperty("reputationCurrent").Value = 50;
 
+            member.getProperty("blocked").Value = false;
             member.Save();
-                
+
             FireAfterMarkAsHam(e);
         }
 

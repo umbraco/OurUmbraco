@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.UI.MobileControls;
 using System.Xml;
 using Joel.Net;
 using PetaPoco;
+using uForum.Library;
 using umbraco.cms.businesslogic.member;
 
 namespace uForum.Businesslogic
@@ -148,6 +150,9 @@ namespace uForum.Businesslogic
 
             var topic = GetTopic(Id);
             var member = new Member(topic.MemberId);
+            member.getProperty("blocked").Value = true;
+            member.Save();
+
             var akismetApi = Forum.GetAkismetApi();
             var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
             akismetApi.SubmitSpam(akismetComment);
@@ -173,6 +178,9 @@ namespace uForum.Businesslogic
 
             var topic = GetTopic(Id);
             var member = new Member(topic.MemberId);
+            member.getProperty("blocked").Value = false;
+            member.Save();
+
             var akismetApi = Forum.GetAkismetApi();
             var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
             akismetApi.SubmitHam(akismetComment);
@@ -192,7 +200,7 @@ namespace uForum.Businesslogic
             int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputation);
             if (reputation < 50)
                 member.getProperty("reputationCurrent").Value = 50;
-
+            
             member.Save();
 
             FireAfterMarkAsHam(markAsHamEventArgs);
