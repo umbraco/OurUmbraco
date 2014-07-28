@@ -374,7 +374,7 @@ namespace uForum.Businesslogic
 
                 foreach (var anchorNode in anchorNodes)
                 {
-                    if (anchorNode.Attributes["href"] != null)
+                    if (anchorNode.Attributes != null && anchorNode.Attributes["href"] != null)
                     {
                         var href = anchorNode.Attributes["href"].Value;
                         if (href != null && (href.StartsWith("/media")
