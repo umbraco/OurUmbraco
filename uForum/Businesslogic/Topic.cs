@@ -153,15 +153,13 @@ namespace uForum.Businesslogic
             member.getProperty("blocked").Value = true;
             member.Save();
 
-            var akismetApi = Forum.GetAkismetApi();
-            var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
-            akismetApi.SubmitSpam(akismetComment);
-
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = 1 WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
 
             Id = 0;
 
             forum.Save();
+
+            Forum.SendSpamMail(Body, Id, "topic", member.Id, true);
 
             FireAfterMarkAsSpam(markAsSpamEventArgs);
         }

@@ -210,9 +210,6 @@ namespace uForum.Businesslogic {
             var forum = new Forum(topic.ParentId);
 
             var member = new Member(MemberId);
-            var akismetApi = Forum.GetAkismetApi();
-            var akismetComment = Forum.ConstructAkismetComment(member, "comment", Body);
-            akismetApi.SubmitSpam(akismetComment);
 
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET isSpam = 1 WHERE id = " + Id);
             Id = 0;
@@ -223,6 +220,8 @@ namespace uForum.Businesslogic {
             member.getProperty("blocked").Value = true;
             member.Save();
                 
+            Forum.SendSpamMail(Body, TopicId, "comment", member.Id, true);
+
             FireAfterMarkAsSpam(e);
         }
 

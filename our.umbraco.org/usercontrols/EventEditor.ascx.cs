@@ -156,7 +156,7 @@ namespace our.usercontrols
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
 
-                var post = string.Format("Event: {0} - link: <a href=\"http://{1}\">http://{1}</a><br />By member:<a href=\"http://our.umbraco.org/member/{2}\">http://our.umbraco.org/member/{2}</a>", eventName, eventUrl, memberId);
+                var post = string.Format("Event: {0} - link: <a href=\"http://{1}\">http://our.umbraco.org/{1}</a><br />By member:<a href=\"http://our.umbraco.org/member/{2}\">http://our.umbraco.org/member/{2}</a>", eventName, eventUrl, memberId);
 
                 var body = string.Format("<p>The following event could be spam as it was posted by someone with low karma and it includes anchor tags (which have been stripped)</p><hr />{0}", post);
 

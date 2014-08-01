@@ -336,17 +336,10 @@ namespace uForum.Businesslogic
             if (reputationTotal >= 50)
                 return false;
 
-            var akismetApi = GetAkismetApi();
-            var comment = ConstructAkismetComment(member, commentType, body);
-
-            var isAkismetSpam = akismetApi.CommentCheck(comment);
-
-            var isSpam = isAkismetSpam || TextContainsSpam(body) || IsSuspiciousBehavior(body);
+            var isSpam = TextContainsSpam(body) || IsSuspiciousBehavior(body);
 
             if (isSpam)
             {
-                akismetApi.SubmitSpam(comment);
-
                 // Deduct karma
                 member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
 
@@ -355,7 +348,7 @@ namespace uForum.Businesslogic
                 member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
                 member.Save();
 
-                SendSpamMail(body, topicId, commentType, memberId);
+                SendSpamMail(body, topicId, commentType, memberId, false);
             }
 
             return isSpam;
@@ -403,7 +396,7 @@ namespace uForum.Businesslogic
             return false;
         }
 
-        private static void SendSpamMail(string postBody, int topicId, string commentType, int memberId)
+        internal static void SendSpamMail(string postBody, int topicId, string commentType, int memberId, bool markedManually)
         {
             try
             {
@@ -415,7 +408,9 @@ namespace uForum.Businesslogic
                 post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
                 post = post + string.Format("Posted by member:  <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a>", memberId);
 
-                var body = string.Format("<p>The following forum post was marked as spam, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{0}", post);
+                var markedBy = markedManually ? "a moderator" : "the spam system";
+
+                var body = string.Format("<p>The following forum post was marked as spam by {0}, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{1}", post, markedBy);
 
                 var mailMessage = new MailMessage
                                   {
