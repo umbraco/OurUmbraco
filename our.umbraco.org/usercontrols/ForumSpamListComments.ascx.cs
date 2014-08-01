@@ -31,7 +31,6 @@ namespace uForum.usercontrols
             int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
             member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent + 1 : 0;
             
-            Forum.MarkAsHam(comment.MemberId, comment.Body, "comment");
             FillSpamCommentGrid();
         }
 

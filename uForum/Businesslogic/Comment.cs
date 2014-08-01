@@ -238,9 +238,6 @@ namespace uForum.Businesslogic {
             var forum = new Forum(topic.ParentId);
 
             var member = new Member(MemberId);
-            var akismetApi = Forum.GetAkismetApi();
-            var akismetComment = Forum.ConstructAkismetComment(member, "comment", Body);
-            akismetApi.SubmitHam(akismetComment);
 
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET isSpam = 0 WHERE id = " + Id);
             Id = 0;

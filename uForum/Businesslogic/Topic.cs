@@ -179,10 +179,6 @@ namespace uForum.Businesslogic
             member.getProperty("blocked").Value = false;
             member.Save();
 
-            var akismetApi = Forum.GetAkismetApi();
-            var akismetComment = Forum.ConstructAkismetComment(member, "topic", string.Format("{0} - {1}", Title, Body));
-            akismetApi.SubmitHam(akismetComment);
-
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = 0 WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
 
             Id = 0;

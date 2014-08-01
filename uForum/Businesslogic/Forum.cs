@@ -76,7 +76,6 @@ namespace uForum.Businesslogic
         public List<Forum> SubForums { get; set; }
 
         private Events _e = new Events();
-        private static readonly string AkismetApiKey = ConfigurationManager.AppSettings["AkismetApiKey"];
 
         public Forum() { }
 
@@ -432,54 +431,7 @@ namespace uForum.Businesslogic
                 Log.Add(LogTypes.Error, new User(0), -1, "Error sending spam notification: " + ex.Message + " " + ex.StackTrace);
             }
         }
-
-        public static Akismet GetAkismetApi()
-        {
-            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "OurUmbraco/1.0");
-            if (akismetApi.VerifyKey() == false)
-                throw new Exception("Akismet API key could not be verified");
-
-            return akismetApi;
-        }
-
-        public static AkismetComment ConstructAkismetComment(Member member, string commentType, string body)
-        {
-            var comment = new AkismetComment
-            {
-                Blog = "http://our.umbraco.org",
-                UserIp = HttpContext.Current.Request.UserHostAddress,
-                CommentAuthor = member.Text,
-                CommentAuthorEmail = member.Email,
-                CommentType = commentType,
-                CommentContent = body,
-                UserAgent = HttpContext.Current.Request.UserAgent
-            };
-
-            return comment;
-        }
-
-        public static void MarkAsHam(int memberId, string body, string commentType)
-        {
-
-            var akismetApi = new Akismet(AkismetApiKey, "http://our.umbraco.org", "Test/1.0");
-            if (akismetApi.VerifyKey() == false)
-                throw new Exception("Akismet API key could not be verified");
-
-            var member = new Member(memberId);
-
-            var comment = new AkismetComment
-                          {
-                              Blog = "http://our.umbraco.org",
-                              UserIp = member.getProperty("ip").Value.ToString(),
-                              CommentAuthor = member.Text,
-                              CommentAuthorEmail = member.Email,
-                              CommentType = commentType,
-                              CommentContent = body
-                          };
-
-            akismetApi.SubmitHam(comment);
-        }
-
+        
         private static bool TextContainsSpam(string text)
         {
             var spamWords = ConfigurationManager.AppSettings["uForumSpamWords"];
