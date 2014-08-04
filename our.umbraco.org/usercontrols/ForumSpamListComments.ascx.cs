@@ -19,17 +19,17 @@ namespace uForum.usercontrols
             var comment = Comment.GetComment(id, true);
             comment.IsSpam = false;
             comment.Save(true);
-            
-            // Restore karma
+
+            // Set reputation to at least 50 so their next posts won't be automatically marked as spam
             var member = new Member(comment.MemberId);
+            int reputation;
+            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationTotal").Value = 50;
 
-            int reputationTotal;
-            int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputationTotal);
-            member.getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal + 1 : 0;
-
-            int reputationCurrent;
-            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
-            member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent + 1 : 0;
+            int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputation);
+            if (reputation < 50)
+                member.getProperty("reputationCurrent").Value = 50;
             
             FillSpamCommentGrid();
         }

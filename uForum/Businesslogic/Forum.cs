@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using System.Net.Mail;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Services.Description;
+using System.Web.UI;
 using System.Xml;
 using Joel.Net;
 using uForum.Library;
@@ -359,34 +361,51 @@ namespace uForum.Businesslogic
             var doc = new HtmlAgilityPack.HtmlDocument();
             doc.LoadHtml(body);
 
+            var validLinksCount = 0;
+            var otherLinksCount = 0;
+
             var anchorNodes = doc.DocumentNode.SelectNodes("//a");
             if (anchorNodes != null)
             {
-                var validLinksCount = 0;
-
                 foreach (var anchorNode in anchorNodes)
                 {
                     if (anchorNode.Attributes != null && anchorNode.Attributes["href"] != null)
                     {
                         var href = anchorNode.Attributes["href"].Value;
-                        if (href != null && (href.StartsWith("/media")
-                                             || href.Contains("stackoverflow.com")
-                                             || href.Contains("umbraco.org")
-                                             || href.Contains("umbraco.org")
-                                             || href.Contains("umbraco.tv")
-                                             || href.Contains("umbraco.io")))
-                        {
-                            validLinksCount = validLinksCount + 1;
-                        }
+                        validLinksCount = CountValidLinks(href, validLinksCount);
                     }
                 }
+                otherLinksCount = anchorNodes.Count - validLinksCount;
 
-                var otherLinksCount = anchorNodes.Count - validLinksCount;
-
-                // If all links go to umbraco domains or the umbraco media folder, it's most likely not spam
-                if (otherLinksCount == 0)
-                    return false;
+                // If there are links that don't go to umbraco domains, it might be spam
+                if (otherLinksCount > 0)
+                    return true;
             }
+
+
+            // Same for markdown style links
+            var rx = new Regex(@"\[\s*([a-zA-Z0-9_-]+)\s*\]\s*:\s*(\S+)\s*("".*?"")?");
+            var matches = rx.Matches(body);
+            validLinksCount = 0;
+
+            foreach (Match match in matches)
+            {
+                var groups = match.Groups;
+                string href = null;
+                try
+                {
+                    href = groups[2].Value;
+                }
+                catch (Exception ex) { }
+
+                validLinksCount = CountValidLinks(href, validLinksCount);
+            }
+
+            otherLinksCount = matches.Count - validLinksCount;
+
+            // If there are links that don't go to umbraco domains, it might be spam
+            if (otherLinksCount > 0)
+                return true;
 
             // Find possible links that are not wrapped in an anchor tag, they're probably malicious
             if (body.Contains("http://") || body.Contains("https://") || body.Contains("www."))
@@ -395,21 +414,34 @@ namespace uForum.Businesslogic
             return false;
         }
 
+        private static int CountValidLinks(string href, int validLinksCount)
+        {
+            if (href != null && (href.StartsWith("/media")
+                                 || href.Contains("stackoverflow.com")
+                                 || href.Contains("umbraco.org")
+                                 || href.Contains("umbraco.org")
+                                 || href.Contains("umbraco.tv")
+                                 || href.Contains("umbraco.io")))
+            {
+                validLinksCount = validLinksCount + 1;
+            }
+
+            return validLinksCount;
+        }
+
         internal static void SendSpamMail(string postBody, int topicId, string commentType, int memberId, bool markedManually)
         {
             try
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
 
-                var topic = Topic.GetTopic(topicId);
-
-                var post = string.Format("'{0}: {1} - link: <a href=\"http://our.umbraco.org{2}\">http://our.umbraco.org{2}</a><br /><br />", commentType, topic.Title, Xslt.NiceTopicUrl(topic.Id));
-                post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
+                var post = string.Format("{0} link: <br /><a href=\"http://our.umbraco.org/forum/{1}\">http://our.umbraco.org/forum/{1}</a><br /><br />", commentType, topicId);
+                post = post + string.Format("{0} text:<br /> {1}<br /><br />", commentType, postBody);
                 post = post + string.Format("Posted by member:  <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a>", memberId);
 
                 var markedBy = markedManually ? "a moderator" : "the spam system";
 
-                var body = string.Format("<p>The following forum post was marked as spam by {0}, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{1}", post, markedBy);
+                var body = string.Format("<p>The following forum post was marked as spam by {0}, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{1}", markedBy, post);
 
                 var mailMessage = new MailMessage
                                   {
@@ -428,10 +460,10 @@ namespace uForum.Businesslogic
             }
             catch (Exception ex)
             {
-                Log.Add(LogTypes.Error, new User(0), -1, "Error sending spam notification: " + ex.Message + " " + ex.StackTrace);
+                Log.Add(LogTypes.Error, new User(0), topicId, "Error sending spam notification: " + ex.Message + " " + ex.StackTrace);
             }
         }
-        
+
         private static bool TextContainsSpam(string text)
         {
             var spamWords = ConfigurationManager.AppSettings["uForumSpamWords"];
