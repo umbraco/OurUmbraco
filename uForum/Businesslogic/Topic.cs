@@ -249,12 +249,19 @@ namespace uForum.Businesslogic
                         Data.SqlHelper.CreateParameter("@urlname", UrlName),
                         Data.SqlHelper.CreateParameter("@latestReplyAuthor", LatestReplyAuthor),
                         Data.SqlHelper.CreateParameter("@body", Body),
-                        Data.SqlHelper.CreateParameter("@isSpam", dontMarkAsSpam ? false : Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic", Id))
+                        Data.SqlHelper.CreateParameter("@isSpam", false)
                         );
 
                     Created = DateTime.Now;
                     Updated = DateTime.Now;
                     Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", MemberId));
+
+                    if (dontMarkAsSpam == false && Forum.IsSpam(MemberId, string.Format("{0} - {1}", Title, Body), "topic", Id))
+                    {
+                        Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = @isSpam WHERE id = @id",
+                            Data.SqlHelper.CreateParameter("@isSpam", true),
+                            Data.SqlHelper.CreateParameter("@id", Id));
+                    }
 
                     var forum = new Forum(ParentId);
 

@@ -438,14 +438,9 @@ namespace uForum.Businesslogic
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
                 
-                var post = string.Empty;
-                
-                if (topicId != 0)
-                {
-                    var topic = Topic.GetTopic(topicId);
-                    post = string.Format("{0}: {1} - link: <a href=\"http://our.umbraco.org{2}\">http://our.umbraco.org{2}</a><br /><br />", commentType, topic.Title, Xslt.NiceTopicUrl(topic.Id));
-                }
+                var topic = Topic.GetTopic(topicId);
 
+                var post = string.Format("{0}: {1} - link: <a href=\"http://our.umbraco.org{2}\">http://our.umbraco.org{2}</a><br /><br />", commentType, topic.Title, Xslt.NiceTopicUrl(topic.Id));
                 post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
 
                 var markedBy = markedManually ? "a moderator" : "the spam system";
