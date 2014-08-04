@@ -329,9 +329,6 @@ namespace uForum.Businesslogic
 
         public static bool IsSpam(int memberId, string body, string commentType, int topicId)
         {
-            if(topicId == 0 && commentType == "topic")
-                topicId = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", memberId));
-
             var member = new Member(memberId);
             
             int reputationTotal;
