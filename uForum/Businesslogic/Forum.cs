@@ -437,7 +437,7 @@ namespace uForum.Businesslogic
                 
                 var topic = Topic.GetTopic(topicId);
 
-                var post = string.Format("{0}: {1} - link: <a href=\"http://our.umbraco.org{2}\">http://our.umbraco.org{2}</a><br /><br />", commentType, topic.Title, Xslt.NiceTopicUrl(topic.Id));
+                var post = string.Format("Topic: {0} - link: <a href=\"http://our.umbraco.org{1}\">http://our.umbraco.org{1}</a><br /><br />", topic.Title, Xslt.NiceTopicUrl(topic.Id));
                 post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
 
                 var markedBy = markedManually ? "a moderator" : "the spam system";
