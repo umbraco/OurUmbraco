@@ -329,8 +329,11 @@ namespace uForum.Businesslogic
 
         public static bool IsSpam(int memberId, string body, string commentType, int topicId)
         {
-            var member = new Member(memberId);
+            if(topicId == 0 && commentType == "topic")
+                topicId = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM forumTopics WHERE memberId = @memberId", Data.SqlHelper.CreateParameter("@memberId", memberId));
 
+            var member = new Member(memberId);
+            
             int reputationTotal;
             int.TryParse(member.getProperty("reputationTotal").Value.ToString(), out reputationTotal);
             // Members with over 50 karma are trusted automatically
@@ -434,10 +437,16 @@ namespace uForum.Businesslogic
             try
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+                
+                var post = string.Empty;
+                
+                if (topicId != 0)
+                {
+                    var topic = Topic.GetTopic(topicId);
+                    post = string.Format("{0}: {1} - link: <a href=\"http://our.umbraco.org{2}\">http://our.umbraco.org{2}</a><br /><br />", commentType, topic.Title, Xslt.NiceTopicUrl(topic.Id));
+                }
 
-                var post = string.Format("{0} link: <br /><a href=\"http://our.umbraco.org/forum/{1}\">http://our.umbraco.org/forum/{1}</a><br /><br />", commentType, topicId);
-                post = post + string.Format("{0} text:<br /> {1}<br /><br />", commentType, postBody);
-                post = post + string.Format("Posted by member:  <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a>", memberId);
+                post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
 
                 var markedBy = markedManually ? "a moderator" : "the spam system";
 
