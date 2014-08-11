@@ -802,6 +802,7 @@
     <Content Include="umbraco\webservices\TreeDataService.ashx" />
     <Content Include="umbraco_client\CodeMirror\js\mode\razor\LICENSE" />
     <Content Include="umbraco_client\CodeMirror\js\mode\sieve\LICENSE" />
+    <Content Include="usercontrols\DocumentationEditButton.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
