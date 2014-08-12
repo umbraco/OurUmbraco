@@ -7,8 +7,6 @@
 <asp:Content ContentPlaceHolderId="main" runat="server">
     <div id="documentation" class="subpage">
         
-        <markdown:DocumentationEditButton runat="server" ID="DocumentationEditButton" />
-
         <umbraco:Macro runat="server" language="cshtml">
             @if(Model.NodeTypeAlias != "Projects"){
                 <div style="margin-top: 20px; padding: 7px;" class="notice">
@@ -17,7 +15,9 @@
                 </div>
             }
         </umbraco:Macro>
-        
+
+        <markdown:DocumentationEditButton runat="server" ID="DocumentationEditButton" />
+
         <div id="toc">
             <a href="#" class="toggle">Table of contents <small>(click to show/hide)</small></a>
             <ul></ul>

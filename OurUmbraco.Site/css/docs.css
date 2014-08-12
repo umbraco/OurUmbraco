@@ -290,7 +290,10 @@
 }
 
 
-
+.edit-doc-btn {
+    text-align: right;
+    display: block;
+}
 
 
 
