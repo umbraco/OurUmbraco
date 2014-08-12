@@ -42,6 +42,14 @@ namespace uDocumentation.usercontrols
                 //Ensure beginning part of url is right case for GitHub URL
                 originalUrl = originalUrl.Replace("/documentation/", "/Documentation/");
 
+                //If ends with / then it's an index.md file in a folder
+                if (originalUrl.EndsWith("/"))
+                {
+                    //Add the word  after the /, so it's /index
+                    originalUrl += "index";
+
+                }
+
                 //Append the .md file extension
                 docUrl = string.Format("{0}{1}", originalUrl, ".md");
 
