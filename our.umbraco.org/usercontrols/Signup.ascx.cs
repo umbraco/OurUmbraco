@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Net.Mail;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
@@ -26,9 +27,7 @@ namespace our.usercontrols
         {
             //lazyloading the needed javascript for validation. (addded it to the master template as our ahah forms need it aswel)
             //umbraco.library.RegisterJavaScriptFile("jquery.validation", "/scripts/jquery.validation.js");
-
-            recaptcha.PrivateKey = ConfigurationManager.AppSettings["RecaptchaPrivateKey"];
-
+            
             MemberExists.Visible = false;
 
             if (!Page.IsPostBack && m != null)
@@ -71,11 +70,39 @@ namespace our.usercontrols
             if (Page.IsPostBack && Page.IsValid == false)
             {
                 tb_password.Attributes["value"] = tb_password.Text;
-                err_recaptcha.Visible = true;
             }
             else
             {
-                err_recaptcha.Visible = false;
+                
+            }
+        }
+
+        internal static void SendPotentialSpamMemberMail(int memberId, bool memberIsNew)
+        {
+            try
+            {
+                var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+                var body = string.Format("Go to member <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a>", memberId);
+                body = body + string.Format("<br />Member is new: {0}", memberIsNew);
+
+                var mailMessage = new MailMessage
+                {
+                    Subject = string.Format("Umbraco community: member flagged as potential spammer"),
+                    Body = body,
+                    IsBodyHtml = true
+                };
+
+                foreach (var email in notify.Split(','))
+                    mailMessage.To.Add(email);
+
+                mailMessage.From = new MailAddress("our@umbraco.org");
+
+                var smtpClient = new SmtpClient();
+                smtpClient.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, "Error sending potential spam member notification: " + ex.Message + " " + ex.StackTrace);
             }
         }
 
@@ -117,6 +144,11 @@ namespace our.usercontrols
                 //Refresh the member cache data
                 Member.RemoveMemberFromCache(m);
                 Member.AddMemberToCache(m);
+
+                if (CommentBody.Text != string.Empty)
+                {
+                    SendPotentialSpamMemberMail(m.Id, false);
+                }
 
                 Response.Redirect(umbraco.library.NiceUrl(NextPage));
 
@@ -177,6 +209,11 @@ namespace our.usercontrols
                         m.Save();
                         m.XmlGenerate(new XmlDocument());
                         Member.AddMemberToCache(m);
+
+                        if (CommentBody.Text != string.Empty)
+                        {
+                            SendPotentialSpamMemberMail(m.Id, true);
+                        }
 
                         Response.Redirect(library.NiceUrl(NextPage));
                     }

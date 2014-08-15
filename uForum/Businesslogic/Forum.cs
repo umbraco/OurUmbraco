@@ -439,6 +439,7 @@ namespace uForum.Businesslogic
 
                 var post = string.Format("Topic: {0} - link: <a href=\"http://our.umbraco.org{1}\">http://our.umbraco.org{1}</a><br /><br />", topic.Title, Xslt.NiceTopicUrl(topic.Id));
                 post = post + string.Format("{0} text: {1}<br /><br />", commentType, postBody);
+                post = post + string.Format("<hr /> Go to member <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a>", memberId);
 
                 var markedBy = markedManually ? "a moderator" : "the spam system";
 
@@ -446,7 +447,7 @@ namespace uForum.Businesslogic
 
                 var mailMessage = new MailMessage
                                   {
-                                      Subject = "Umbraco community: Post marked as spam",
+                                      Subject = string.Format("Umbraco community: {0} marked as spam", commentType),
                                       Body = body,
                                       IsBodyHtml = true
                                   };

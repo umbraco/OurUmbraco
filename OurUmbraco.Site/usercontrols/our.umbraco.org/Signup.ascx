@@ -86,18 +86,14 @@
     <asp:HiddenField ID="tb_lat" runat="server" />
     <asp:HiddenField ID="tb_lng" runat="server" />
  </p>
- 
  <div id="googleMap" style="width: 500px; height: 460px;"></div>
- 
  <br />
-</fieldset>
-<fieldset>
-  <legend>Are you human?</legend>
-  <p>
-      <asp:Label runat="server" ID="lbl_recaptcha" AssociatedControlID="recaptcha">Please complete the following captcha</asp:Label>
-      <recaptcha:RecaptchaControl ID="recaptcha" runat="server" Theme="clean" PublicKey="6LeHJfcSAAAAADyRdX4f_z79H7iH3rjggZcXFWio" />
-      <asp:Label runat="server" CssClass="error" ID="err_recaptcha" Visible="False">Please type the text as it appears in the image(s) above.</asp:Label>
-  </p>
+
+ <style type="text/css">.comment-text { display: none; }</style>
+ <span class="comment-text">
+  <asp:TextBox runat="server" TextMode="MultiLine" ID="CommentBody"></asp:TextBox>
+ </span>
+
 </fieldset>
 
 
