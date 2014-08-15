@@ -1,5 +1,4 @@
 <%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="our.usercontrols.Signup" %>
-<%@ Register TagPrefix="recaptcha" Namespace="Recaptcha" Assembly="Recaptcha" %>
 
 <asp:panel ID="MemberExists" Visible="False" runat="server">
     <p>There is already an account with this e-mail address! You can <a href="/member/login">login</a> or <a href="/member/forgot-password">reset your password</a>.</p>
@@ -98,7 +97,7 @@
 
 
 <div class="buttons">
-<asp:Button ID="bt_submit" Text="Sign up" CssClass="submitButton" OnClick="createMember" runat="server" />
+<asp:Button ID="bt_submit" Text="Sign up" CssClass="submitButton" OnClick="CreateMember" runat="server" />
 </div>
 
 </div>

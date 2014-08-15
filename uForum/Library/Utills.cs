@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Configuration;
+using System.Globalization;
 using System.Linq;
+using System.Net.Mail;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Web;
 using System.Web.Security;
 using RestSharp;
@@ -136,29 +140,78 @@ namespace uForum.Library
                 member.RemoveGroup(memberGroup.Id);
         }
 
-        public static bool MarkPotentialSpammer(Member member)
+        public static Spammer CheckForSpam(Member member)
         {
+            // Already blocked, nothing left to do here
+            if (member.getProperty("blocked").Value.ToString() == "1")
+            {
+                return new Spammer
+                       {
+                           MemberId = member.Id,
+                           Name = member.Text,
+                           Blocked = true
+                       };
+            }
+
+            // If reputation is > 30 they've gotten at least 10 karma, spammers never get that far
+            var reputation = member.getProperty("reputationTotal").Value.ToString();
+            int reputationTotal;
+            if (int.TryParse(reputation, out reputationTotal) && reputationTotal > 30)
+                return null;
+
+            // If they're already marked as suspicious then no need to process again
             if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName))
-                return true;
+            {
+                return new Spammer
+                       {
+                           MemberId = member.Id,
+                           Name = member.Text,
+                           AlreadyInSpamRole = true
+                       };
+            }
 
             try
             {
-                var ipAddress = HttpContext.Current.Request.UserHostAddress;
-
+                var ipAddress = GetIpAddress();
                 var client = new RestClient("http://api.stopforumspam.org");
-                var request = new RestRequest(string.Format("api?ip={0}&email={1}&username={2}f=json", ipAddress, HttpUtility.UrlEncode(member.Email), HttpUtility.UrlEncode(member.Text)), Method.GET);
+                var request = new RestRequest(string.Format("api?ip={0}&email={1}&f=json", ipAddress, HttpUtility.UrlEncode(member.Email)), Method.GET);
                 var response = client.Execute(request);
                 var jsonResult = new JsonDeserializer();
                 var spamCheckResult = jsonResult.Deserialize<SpamCheckResult>(response);
 
                 if (spamCheckResult.Success == 1)
                 {
-                    var score = spamCheckResult.Ip.Confidence + spamCheckResult.Email.Confidence +
-                                spamCheckResult.Username.Confidence;
-                    if (score > 30)
+                    var score = spamCheckResult.Ip.Confidence + spamCheckResult.Email.Confidence;
+
+                    if (score > 100)
                     {
                         AddMemberToPotentialSpamGroup(member);
-                        return true;
+
+                        // That's 90+ on both e-mail and IP score, must be a spammer - instant block
+                        if (score > 190)
+                        {
+                            member.getProperty("blocked").Value = true;
+                            member.Save();
+                        }
+
+                        var spammer = new Spammer
+                                      {
+                                          MemberId = member.Id,
+                                          Name = member.Text,
+                                          Email = member.Email,
+                                          Ip = GetIpAddress(),
+                                          ScoreEmail = spamCheckResult.Email.Confidence.ToString(CultureInfo.InvariantCulture),
+                                          ScoreIp = spamCheckResult.Ip.Confidence.ToString(CultureInfo.InvariantCulture),
+                                          Blocked = score > 180
+                                      };
+
+                        SendPotentialSpamMemberMail(spammer);
+                        
+                        // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
+                        if(spammer.Blocked)
+                            HttpContext.Current.Response.Redirect("/");
+
+                        return spammer;
                     }
                 }
                 else
@@ -170,8 +223,53 @@ namespace uForum.Library
             {
                 Log.Add(LogTypes.Error, -1, string.Format("Error checking stopforumspam.org {0}", ex.Message + ex.StackTrace));
             }
-            return false;
+
+            return null;
         }
+
+        public static string GetIpAddress()
+        {
+            var context = HttpContext.Current;
+            var ipAddress = context.Request.ServerVariables["HTTP_X_FORWARDED_FOR"];
+
+            if (string.IsNullOrEmpty(ipAddress))
+                return context.Request.ServerVariables["REMOTE_ADDR"];
+
+            var addresses = ipAddress.Split(',');
+            return addresses.Length != 0 ? addresses[0] : context.Request.ServerVariables["REMOTE_ADDR"];
+        }
+
+        internal static void SendPotentialSpamMemberMail(Spammer spammer)
+        {
+            try
+            {
+                var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+                var body = string.Format("Edit member <a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}</a><br /><br />", spammer.MemberId);
+                body = body + string.Format("Go to member <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a><br />", spammer.MemberId);
+                body = body + string.Format("Blocked: {0}<br /> Email: {1}<br /> IP: {2}<br /> - Score IP: {3}<br /> Score e-mail: {4}<br />Already marked before: {5}<br/>Name: {6}",
+                                            spammer.Blocked, spammer.Email, spammer.Ip, spammer.ScoreIp, spammer.ScoreEmail, spammer.AlreadyInSpamRole, spammer.Name);
+
+                var mailMessage = new MailMessage
+                {
+                    Subject = string.Format("Umbraco community: member flagged as potential spammer"),
+                    Body = body,
+                    IsBodyHtml = true
+                };
+
+                foreach (var email in notify.Split(','))
+                    mailMessage.To.Add(email);
+
+                mailMessage.From = new MailAddress("our@umbraco.org");
+
+                var smtpClient = new SmtpClient();
+                smtpClient.Send(mailMessage);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, "Error sending potential spam member notification: " + ex.Message + " " + ex.StackTrace);
+            }
+        }
+
     }
 
 
@@ -192,6 +290,17 @@ namespace uForum.Library
         public float Confidence { get; set; }
     }
 
+    public class Spammer
+    {
+        public int MemberId { get; set; }
+        public string Name { get; set; }
+        public string Ip { get; set; }
+        public string Email { get; set; }
+        public string ScoreIp { get; set; }
+        public string ScoreEmail { get; set; }
+        public bool AlreadyInSpamRole { get; set; }
+        public bool Blocked { get; set; }
+    }
 
     public struct ReplacePoint
     {

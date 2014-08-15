@@ -23,6 +23,9 @@ namespace our.usercontrols
             //kill member cookies with an invalid id-guid combo
             KillInvalidMemberCookies();
 
+            if (Member.IsLoggedOn())
+                uForum.Library.Utills.CheckForSpam(Member.GetCurrentMember());
+
             toggleControls(Member.IsLoggedOn());
 
             hl_login.NavigateUrl = umbraco.library.NiceUrl(LoginPage) + "?redirectUrl=" + Server.UrlEncode(Request.Url.ToString());
