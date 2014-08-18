@@ -118,7 +118,7 @@ namespace our.usercontrols
                     {
                         // If spammer then this will stop account creation
                         var spamResult = uForum.Library.Utills.CheckForSpam(tb_email.Text, tb_name.Text, true);
-                        if(spamResult.Blocked)
+                        if (spamResult != null && spamResult.Blocked)
                             return;
 
                         var mt = MemberType.GetByAlias(memberType);

@@ -172,7 +172,7 @@ namespace uForum.Library
 
             var spammer = CheckForSpam(member.Email, member.Text, false);
 
-            if (spammer.TotalScore > 100)
+            if (spammer != null && spammer.TotalScore > 100)
             {
                 spammer.MemberId = member.Id;
                 
@@ -269,7 +269,7 @@ namespace uForum.Library
                 }
                 else
                 {
-                    body = body + string.Format("Member was never created. Eat that, spammer!");
+                    body = body + string.Format("Member was never created. Eat that, spammer!<br />");
                 }
 
                 body = body + string.Format("Blocked: {0}<br />Name: {1}<br />Email: {2}<br />IP: {3}<br />Score IP: {4}<br />Frequency IP: {5}<br />Score e-mail: {6}<br />Frequency e-mail: {7}<br />Already marked before: {8}",
