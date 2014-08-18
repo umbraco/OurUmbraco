@@ -116,6 +116,11 @@ namespace our.usercontrols
                     _member = Member.GetMemberFromLoginName(tb_email.Text);
                     if (_member == null)
                     {
+                        // If spammer then this will stop account creation
+                        var spamResult = uForum.Library.Utills.CheckForSpam(tb_email.Text, tb_name.Text, true);
+                        if(spamResult.Blocked)
+                            return;
+
                         var mt = MemberType.GetByAlias(memberType);
 
                         // Adding " Temp" is a hack - bizarrely, when you create a member using MakeNew and 

@@ -170,11 +170,35 @@ namespace uForum.Library
                        };
             }
 
+            var spammer = CheckForSpam(member.Email, member.Text, false);
+
+            if (spammer.TotalScore > 100)
+            {
+                spammer.MemberId = member.Id;
+                
+                SendPotentialSpamMemberMail(spammer);
+                
+                if (spammer.Blocked)
+                {
+                    member.getProperty("blocked").Value = true;
+                    member.Save();
+
+                    // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
+                    HttpContext.Current.Response.Redirect("/");
+                }
+                    
+            }
+
+            return null;
+        }
+
+        public static Spammer CheckForSpam(string email, string name, bool sendMail)
+        {
             try
             {
                 var ipAddress = GetIpAddress();
                 var client = new RestClient("http://api.stopforumspam.org");
-                var request = new RestRequest(string.Format("api?ip={0}&email={1}&f=json", ipAddress, HttpUtility.UrlEncode(member.Email)), Method.GET);
+                var request = new RestRequest(string.Format("api?ip={0}&email={1}&f=json", ipAddress, HttpUtility.UrlEncode(email)), Method.GET);
                 var response = client.Execute(request);
                 var jsonResult = new JsonDeserializer();
                 var spamCheckResult = jsonResult.Deserialize<SpamCheckResult>(response);
@@ -183,33 +207,25 @@ namespace uForum.Library
                 {
                     var score = spamCheckResult.Ip.Confidence + spamCheckResult.Email.Confidence;
 
+                    const int blockThreshold = 185;
+
                     if (score > 100)
                     {
-                        AddMemberToPotentialSpamGroup(member);
-
-                        // That's 90+ on both e-mail and IP score, must be a spammer - instant block
-                        if (score > 190)
-                        {
-                            member.getProperty("blocked").Value = true;
-                            member.Save();
-                        }
-
                         var spammer = new Spammer
-                                      {
-                                          MemberId = member.Id,
-                                          Name = member.Text,
-                                          Email = member.Email,
-                                          Ip = GetIpAddress(),
-                                          ScoreEmail = spamCheckResult.Email.Confidence.ToString(CultureInfo.InvariantCulture),
-                                          ScoreIp = spamCheckResult.Ip.Confidence.ToString(CultureInfo.InvariantCulture),
-                                          Blocked = score > 180
-                                      };
+                        {
+                            Name = name,
+                            Email = email,
+                            Ip = ipAddress,
+                            ScoreEmail = spamCheckResult.Email.Confidence.ToString(CultureInfo.InvariantCulture),
+                            FrequencyEmail = spamCheckResult.Email.Frequency.ToString(CultureInfo.InvariantCulture),
+                            ScoreIp = spamCheckResult.Ip.Confidence.ToString(CultureInfo.InvariantCulture),
+                            FrequencyIp = spamCheckResult.Ip.Frequency.ToString(CultureInfo.InvariantCulture),
+                            Blocked = score > blockThreshold,
+                            TotalScore = score
+                        };
 
-                        SendPotentialSpamMemberMail(spammer);
-                        
-                        // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
-                        if(spammer.Blocked)
-                            HttpContext.Current.Response.Redirect("/");
+                        if (sendMail)
+                            SendPotentialSpamMemberMail(spammer);
 
                         return spammer;
                     }
@@ -223,7 +239,7 @@ namespace uForum.Library
             {
                 Log.Add(LogTypes.Error, -1, string.Format("Error checking stopforumspam.org {0}", ex.Message + ex.StackTrace));
             }
-
+            
             return null;
         }
 
@@ -244,10 +260,24 @@ namespace uForum.Library
             try
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
-                var body = string.Format("Edit member <a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}</a><br /><br />", spammer.MemberId);
-                body = body + string.Format("Go to member <a href=\"http://our.umbraco.org/member/{0}\">http://our.umbraco.org/member/{0}</a><br />", spammer.MemberId);
-                body = body + string.Format("Blocked: {0}<br /> Email: {1}<br /> IP: {2}<br /> - Score IP: {3}<br /> Score e-mail: {4}<br />Already marked before: {5}<br/>Name: {6}",
-                                            spammer.Blocked, spammer.Email, spammer.Ip, spammer.ScoreIp, spammer.ScoreEmail, spammer.AlreadyInSpamRole, spammer.Name);
+                var body = string.Empty;
+
+                if (spammer.MemberId != 0)
+                {
+                    body = body + string.Format("<a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">Edit Member</a><br /><br />", spammer.MemberId);
+                    body = body + string.Format("<a href=\"http://our.umbraco.org/member/{0}\">Go to member </a><br />", spammer.MemberId);
+                }
+                else
+                {
+                    body = body + string.Format("Member was never created. Eat that, spammer!");
+                }
+
+                body = body + string.Format("Blocked: {0}<br />Name: {1}<br />Email: {2}<br />IP: {3}<br />Score IP: {4}<br />Frequency IP: {5}<br />Score e-mail: {6}<br />Frequency e-mail: {7}<br />Already marked before: {8}",
+                                            spammer.Blocked, spammer.Name, spammer.Email, spammer.Ip, spammer.ScoreIp, spammer.FrequencyIp, spammer.ScoreEmail, spammer.FrequencyEmail, spammer.AlreadyInSpamRole);
+
+                var querystring = string.Format("api?ip={0}&email={1}&f=json", spammer.Ip, HttpUtility.UrlEncode(spammer.Email));
+
+                body = body + string.Format("<hr /><a href=\"http://api.stopforumspam.org/{0}\">Check full StopForumSpam response</a>", querystring);
 
                 var mailMessage = new MailMessage
                 {
@@ -296,10 +326,13 @@ namespace uForum.Library
         public string Name { get; set; }
         public string Ip { get; set; }
         public string Email { get; set; }
+        public string FrequencyIp { get; set; }
         public string ScoreIp { get; set; }
         public string ScoreEmail { get; set; }
+        public string FrequencyEmail { get; set; }
         public bool AlreadyInSpamRole { get; set; }
         public bool Blocked { get; set; }
+        public float TotalScore { get; set; }
     }
 
     public struct ReplacePoint
