@@ -168,8 +168,13 @@ namespace our.usercontrols
                         _member.Save();
                         _member.XmlGenerate(new XmlDocument());
                         Member.AddMemberToCache(_member);
-                        
-                        uForum.Library.Utills.CheckForSpam(_member);
+
+                        if (spamResult != null)
+                        {
+                            spamResult.MemberId = _member.Id;
+                            uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
+                            uForum.Library.Utills.SendPotentialSpamMemberMail(spamResult);
+                        }
 
                         Response.Redirect(library.NiceUrl(NextPage));
                     }
