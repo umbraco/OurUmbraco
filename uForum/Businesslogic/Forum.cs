@@ -445,6 +445,15 @@ namespace uForum.Businesslogic
 
                 var body = string.Format("<p>The following forum post was marked as spam by {0}, if this is incorrect make sure to <a href=\"http://our.umbraco.org/ManageSpam\">mark it as ham</a>.</p><hr />{1}", markedBy, post);
 
+                
+                if (memberId != 0)
+                {
+                    var member = new Member(memberId);
+                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utills.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+
+                    body = body + string.Format("<hr /><a href=\"http://api.stopforumspam.org/{0}\">Check StopForumSpam response</a>", querystring);
+                }
+
                 var mailMessage = new MailMessage
                                   {
                                       Subject = string.Format("Umbraco community: {0} marked as spam", commentType),

@@ -174,6 +174,8 @@ namespace uForum.Library
 
             if (spammer != null && spammer.TotalScore > 100)
             {
+                AddMemberToPotentialSpamGroup(member);
+
                 spammer.MemberId = member.Id;
                 
                 SendPotentialSpamMemberMail(spammer);
@@ -186,7 +188,6 @@ namespace uForum.Library
                     // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
                     HttpContext.Current.Response.Redirect("/");
                 }
-                    
             }
 
             return null;
@@ -265,7 +266,7 @@ namespace uForum.Library
                 if (spammer.MemberId != 0)
                 {
                     body = body + string.Format("<a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">Edit Member</a><br /><br />", spammer.MemberId);
-                    body = body + string.Format("<a href=\"http://our.umbraco.org/member/{0}\">Go to member </a><br />", spammer.MemberId);
+                    body = body + string.Format("<a href=\"http://our.umbraco.org/member/{0}\">Go to member</a><br />", spammer.MemberId);
                 }
                 else
                 {
