@@ -256,7 +256,7 @@ namespace uForum.Library
             return addresses.Length != 0 ? addresses[0] : context.Request.ServerVariables["REMOTE_ADDR"];
         }
 
-        internal static void SendPotentialSpamMemberMail(Spammer spammer)
+        public static void SendPotentialSpamMemberMail(Spammer spammer)
         {
             try
             {
@@ -268,7 +268,7 @@ namespace uForum.Library
                     body = body + string.Format("<a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">Edit Member</a><br /><br />", spammer.MemberId);
                     body = body + string.Format("<a href=\"http://our.umbraco.org/member/{0}\">Go to member</a><br />", spammer.MemberId);
                 }
-                else
+                else if (spammer.Blocked)
                 {
                     body = body + string.Format("Member was never created. Eat that, spammer!<br />");
                 }
