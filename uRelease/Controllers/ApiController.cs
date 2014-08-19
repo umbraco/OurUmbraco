@@ -9,6 +9,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
 using System.Web.Script.Serialization;
+using Newtonsoft.Json;
 using RestSharp;
 using uRelease.Models;
 using YouTrackSharp.Infrastructure;
@@ -30,7 +31,7 @@ namespace uRelease.Controllers
         private static readonly string Password = ConfigurationManager.AppSettings["uReleasePassword"];
         private static readonly int ReleasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
         private const string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
-        
+
         public JsonResult VersionBundle(string ids, bool cached)
         {
             var idArray = new ArrayList();
@@ -111,10 +112,13 @@ namespace uRelease.Controllers
 
                     var issuesList = new List<Issue>();
 
-                    var issues = versionCache.GetOrAdd(version.Value,
-                        key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key)));
-                    
-                    issuesList.AddRange(issues.Data.Issues);
+                    var issuesRest = versionCache.GetOrAdd(version.Value,
+                        key => GetRestResponse<IssuesWrapper>(string.Format(IssuesUrl, ProjectId, "Due+in+version%3A+" + key), true));
+
+                    var issues = JsonConvert.DeserializeObject<List<Issue>>(issuesRest.Content);
+
+                    if (issues.Any())
+                        issuesList.AddRange(issues);
 
                     Parallel.ForEach(
                         issuesList,
@@ -122,7 +126,7 @@ namespace uRelease.Controllers
                         {
                             var view = new IssueView
                                        {
-                                           id = issue.Id,
+                                           id = issue.id,
                                            state = GetFieldFromIssue(issue, "State"),
                                            title = GetFieldFromIssue(issue, "summary"),
                                            type = GetFieldFromIssue(issue, "Type"),
@@ -163,7 +167,7 @@ namespace uRelease.Controllers
                 SaveAllToFile();
 
             var allText = System.IO.File.ReadAllText(Server.MapPath(YouTrackJsonFile));
-            
+
             return new JsonResult { Data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
 
@@ -232,8 +236,8 @@ namespace uRelease.Controllers
 
         private static string GetFieldFromIssue(Issue issue, string fieldName)
         {
-            var findField = issue.Fields.FirstOrDefault(x => x.Name == fieldName);
-            return findField != null ? findField.Value : string.Empty;
+            var findField = issue.field.FirstOrDefault(x => x.name == fieldName);
+            return findField != null ? findField.value.ToString().Replace("[", string.Empty).Replace("]", string.Empty).Replace("\"", string.Empty).Trim() : string.Empty;
         }
 
         public JsonResult AllVersions()
@@ -244,10 +248,10 @@ namespace uRelease.Controllers
 
         private static RestResponse<VersionBundle> GetVersionBundle()
         {
-            return GetRestResponse<VersionBundle>(VersionBundleUrl);
+            return GetRestResponse<VersionBundle>(VersionBundleUrl, false);
         }
 
-        private static RestResponse<T> GetRestResponse<T>(string restUri)
+        private static RestResponse<T> GetRestResponse<T>(string restUri, bool requestJsonFormat)
             where T : new()
         {
             var ctor = new DefaultUriConstructor("http", "issues.umbraco.org", 80, "");
@@ -266,8 +270,43 @@ namespace uRelease.Controllers
             foreach (var restResponseCookie in cookie)
                 getVBundle.AddCookie(restResponseCookie.Name, restResponseCookie.Value);
 
+            if (requestJsonFormat)
+                getVBundle.AddHeader("Accept", "application/json");
+
             var gotBundle = auth.Execute<T>(getVBundle);
             return (RestResponse<T>)gotBundle;
         }
+    }
+    
+    public class Issue
+    {
+        public string id { get; set; }
+        public object jiraId { get; set; }
+        public List<Field> field { get; set; }
+        public List<Comment> comment { get; set; }
+        public object[] tag { get; set; }
+    }
+
+    public class Field
+    {
+        public string name { get; set; }
+        public object value { get; set; }
+    }
+
+    public class Comment
+    {
+        public string id { get; set; }
+        public string author { get; set; }
+        public string authorFullName { get; set; }
+        public string issueId { get; set; }
+        public object parentId { get; set; }
+        public bool deleted { get; set; }
+        public object jiraId { get; set; }
+        public string text { get; set; }
+        public bool shownForIssueAuthor { get; set; }
+        public long created { get; set; }
+        public long? updated { get; set; }
+        public object permittedGroup { get; set; }
+        public object[] replies { get; set; }
     }
 }
