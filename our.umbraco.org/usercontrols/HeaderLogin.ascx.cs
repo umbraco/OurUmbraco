@@ -5,9 +5,9 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Security;
+using umbraco;
 using umbraco.cms.businesslogic.member;
 using umbraco.BusinessLogic;
-
 
 namespace our.usercontrols
 {
@@ -239,6 +239,12 @@ namespace our.usercontrols
             if (_state)
             {
                 lt_LoggedInmsg.Text = lt_LoggedInmsg.Text.Replace("%name%", m.Text);
+				
+				if (m.HasProperty("reputationCurrent"))
+                {
+                    lt_LoggedInmsg.Text = lt_LoggedInmsg.Text.Replace("%karma%",
+                        m.getProperty("reputationCurrent").Value.ToString());
+                }
             }
         }
     }
