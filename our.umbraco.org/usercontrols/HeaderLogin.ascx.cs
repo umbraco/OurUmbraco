@@ -239,8 +239,8 @@ namespace our.usercontrols
             if (_state)
             {
                 lt_LoggedInmsg.Text = lt_LoggedInmsg.Text.Replace("%name%", m.Text);
-				
-				if (m.HasProperty("reputationCurrent"))
+                
+                if (m.HasProperty("reputationCurrent"))
                 {
                     lt_LoggedInmsg.Text = lt_LoggedInmsg.Text.Replace("%karma%",
                         m.getProperty("reputationCurrent").Value.ToString());
