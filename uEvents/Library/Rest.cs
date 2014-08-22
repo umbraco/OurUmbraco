@@ -1,19 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Xml.XPath;
+using uEvents.Meetup;
+using umbraco;
 using umbraco.cms.businesslogic.cache;
+using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.relation;
 using System.Web.Security;
 using System.Web;
+using umbraco.NodeFactory;
 
 namespace uEvents.Library
 {
     public class Rest
     {
         public static string Toggle(int eventId)
-        {  
+        {
             Event e = new Event(eventId);
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
@@ -30,9 +35,9 @@ namespace uEvents.Library
 
         public static string Sync(int eventId)
         {
-                Event e = new Event(eventId);
-                e.syncCapacity();
-                return "true";
+            Event e = new Event(eventId);
+            e.syncCapacity();
+            return "true";
         }
 
         public static string SignUp(int eventId)
@@ -53,20 +58,104 @@ namespace uEvents.Library
 
             if (_currentMember > 0)
             {
-            Event e = new Event(eventId);
-            e.Cancel(_currentMember, "no comment");
+                Event e = new Event(eventId);
+                e.Cancel(_currentMember, "no comment");
             }
             return "true";
         }
 
         public static XPathNodeIterator UpcomingEvents()
         {
-             object eventCacheSyncLock = new object();
-             return Cache.GetCacheItem<XPathNodeIterator>("ourEvents", eventCacheSyncLock, new TimeSpan(1,0,0),
-                 delegate
-                 {
-                     return Rest.UpcomingEvents();
-                 });
+            object eventCacheSyncLock = new object();
+            return Cache.GetCacheItem<XPathNodeIterator>("ourEvents", eventCacheSyncLock, new TimeSpan(1, 0, 0),
+                delegate
+                {
+                    return Rest.UpcomingEvents();
+                });
+        }
+
+        public static List<Models.Event> UpcomingEvents(int parentNode)
+        {
+            var events = new List<Models.Event>();
+            var eventOverview = new Node(parentNode);
+
+            foreach (var publishedEvent in eventOverview.ChildrenAsList.Where(e => e.NodeTypeAlias == "Event"))
+            {
+                var start = publishedEvent.GetProperty("start").Value;
+                DateTime startDateTime;
+                if (DateTime.TryParse(start, out startDateTime) == false)
+                    continue;
+                if (startDateTime.Date < DateTime.Today)
+                    continue;
+
+                var end = publishedEvent.GetProperty("end").Value;
+                DateTime endDateTime;
+                DateTime.TryParse(end, out endDateTime);
+
+                var capacity = publishedEvent.GetProperty("capacity").Value;
+                int venueCapacity;
+                int.TryParse(capacity, out venueCapacity);
+
+                var signedUp = publishedEvent.GetProperty("signedup").Value;
+                int signedUpCount;
+                int.TryParse(signedUp, out signedUpCount);
+
+                var owner = publishedEvent.GetProperty("owner").Value;
+                int ownerId;
+                var ownerName = string.Empty;
+                if (int.TryParse(owner, out ownerId))
+                {
+                    var member = Member.GetMemberFromCache(ownerId);
+                    if (member != null)
+                        ownerName = member.Text;
+                }
+
+                var ev = new Models.Event
+                {
+                    Id = publishedEvent.Id.ToString(CultureInfo.InvariantCulture),
+                    Name = publishedEvent.Name,
+                    Description = publishedEvent.GetProperty("description").Value,
+                    StartDateTime = startDateTime,
+                    EndDateTime = endDateTime,
+                    Link = library.NiceUrl(int.Parse(publishedEvent.Id.ToString(CultureInfo.InvariantCulture))),
+                    Venue = publishedEvent.GetProperty("venue").Value,
+                    VenueLongitude = publishedEvent.GetProperty("longitude").Value,
+                    VenueLatitude = publishedEvent.GetProperty("latitude").Value,
+                    VenueCapacity = venueCapacity,
+                    SignedUpCount = signedUpCount,
+                    OwnerName = ownerName
+                };
+
+                events.Add(ev);
+            }
+
+            var meetupController = new MeetupController();
+            var meetups = meetupController.GetAllFromFile();
+            if (meetups != null)
+            {
+                foreach (var meetupEventSearchResult in meetups.Results.Where(m => m.Time.Date >= DateTime.Now.Date))
+                {
+                    var ev = new Models.Event();
+
+                    ev.Id = meetupEventSearchResult.Id;
+                    ev.Name = meetupEventSearchResult.Name ?? string.Empty;
+                    ev.Description = meetupEventSearchResult.Description ?? string.Empty;
+                    ev.StartDateTime = meetupEventSearchResult.Time;
+                    ev.EndDateTime = meetupEventSearchResult.Time;
+                    ev.IsExternal = true;
+                    ev.Link = meetupEventSearchResult.Event_Url ?? string.Empty;
+                    ev.OwnerName = meetupEventSearchResult.Group.Name ?? string.Empty;
+                    ev.SignedUpCount = meetupEventSearchResult.Yes_Rsvp_Count;
+                    ev.Venue = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Name ?? string.Empty;
+                    ev.VenueLongitude = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Lon.ToString(CultureInfo.InvariantCulture);
+                    ev.VenueLatitude = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Lat.ToString(CultureInfo.InvariantCulture);
+                    ev.VenueCapacity = meetupEventSearchResult.Rsvp_Limit;
+
+                    events.Add(ev);
+                }
+            }
+
+            return events;
         }
     }
 }

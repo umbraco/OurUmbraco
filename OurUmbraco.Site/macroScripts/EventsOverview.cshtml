@@ -1,0 +1,33 @@
+﻿@{ 
+	var events = uEvents.Library.Rest.UpcomingEvents(Model.Id);	
+}
+
+		<div id="googlemap" style="width:978px;height:350px;">Loading map, please wait...</div>
+		<div class="box">
+			<p>
+				<table class="list" id="eventList" style="width: 100%;">
+					<thead>
+						<tr>
+							<th>Name</th>
+							<th>Location</th>
+							<th>Time</th>
+						</tr>
+					</thead>
+					<tbody>
+					@foreach(var ev in events) {
+						<tr id="@ev.Id" rel="@ev.VenueLatitude,@ev.VenueLongitude">
+							<td class="name">
+								<a href="@ev.Link">@ev.Name</a>
+							</td>
+							<td class="location">
+								<xsl:value-of select="venue" />
+							</td>
+							<td class="date">
+								@ev.StartDateTime
+							</td>
+						</tr>							
+					}
+					</tbody>
+				</table>
+			</p>
+		</div>
