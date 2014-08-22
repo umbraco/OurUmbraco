@@ -1,5 +1,7 @@
-﻿@{ 
-	var events = uEvents.Library.Rest.UpcomingEvents(Model.Id);	
+﻿@{
+    var events = new List<uEvents.Models.Event>();
+    List<uEvents.Models.Event> getEvents = uEvents.Library.Rest.UpcomingEvents(Model.Id);
+    events.AddRange(getEvents);
 }
 
 		<div id="googlemap" style="width:978px;height:350px;">Loading map, please wait...</div>
@@ -14,7 +16,7 @@
 						</tr>
 					</thead>
 					<tbody>
-					@foreach(var ev in events) {
+					@foreach(var ev in events.OrderBy(x => x.StartDateTime)) {
 						<tr id="@ev.Id" rel="@ev.VenueLatitude,@ev.VenueLongitude">
 							<td class="name">
 								<a href="@ev.Link">@ev.Name</a>
