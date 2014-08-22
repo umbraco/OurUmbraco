@@ -20,10 +20,10 @@
 								<a href="@ev.Link">@ev.Name</a>
 							</td>
 							<td class="location">
-								<xsl:value-of select="venue" />
+								@ev.Venue
 							</td>
 							<td class="date">
-								@ev.StartDateTime
+								@ev.StartDateTime.ToLongDateString() @ev.StartDateTime.ToLongTimeString()
 							</td>
 						</tr>							
 					}

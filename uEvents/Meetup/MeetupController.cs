@@ -34,7 +34,7 @@ namespace uEvents.Meetup
                 var response = client.Execute(request);
                 if (response != null)
                 {
-                    var meetupCacheDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, MeetupJsonFile.Substring(0, MeetupJsonFile.LastIndexOf("/", StringComparison.Ordinal)));
+                    var meetupCacheDirectory = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, MeetupJsonFile.Substring(0, MeetupJsonFile.LastIndexOf("\\", StringComparison.Ordinal)));
                     if (Directory.Exists(meetupCacheDirectory) == false)
                         Directory.CreateDirectory(meetupCacheDirectory);
 

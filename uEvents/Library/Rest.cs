@@ -135,6 +135,20 @@ namespace uEvents.Library
             {
                 foreach (var meetupEventSearchResult in meetups.Results.Where(m => m.Time.Date >= DateTime.Now.Date))
                 {
+                    var venueNameAddress = string.Empty;
+                    if (meetupEventSearchResult.Venue != null)
+                    {
+                        venueNameAddress = meetupEventSearchResult.Venue.Name;
+                        if (string.IsNullOrWhiteSpace(meetupEventSearchResult.Venue.Address_1) == false)
+                            venueNameAddress = venueNameAddress + ", " + meetupEventSearchResult.Venue.Address_1;
+                        if (string.IsNullOrWhiteSpace(meetupEventSearchResult.Venue.Zip) == false)
+                            venueNameAddress = venueNameAddress + ", " + meetupEventSearchResult.Venue.Zip;
+                        if (string.IsNullOrWhiteSpace(meetupEventSearchResult.Venue.City) == false)
+                            venueNameAddress = venueNameAddress + ", " + meetupEventSearchResult.Venue.City;
+                        if (string.IsNullOrWhiteSpace(meetupEventSearchResult.Venue.Country) == false)
+                            venueNameAddress = venueNameAddress + ", " + meetupEventSearchResult.Venue.Country;
+                    }
+
                     var ev = new Models.Event();
 
                     ev.Id = meetupEventSearchResult.Id;
@@ -146,7 +160,7 @@ namespace uEvents.Library
                     ev.Link = meetupEventSearchResult.Event_Url ?? string.Empty;
                     ev.OwnerName = meetupEventSearchResult.Group.Name ?? string.Empty;
                     ev.SignedUpCount = meetupEventSearchResult.Yes_Rsvp_Count;
-                    ev.Venue = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Name ?? string.Empty;
+                    ev.Venue = venueNameAddress;
                     ev.VenueLongitude = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Lon.ToString(CultureInfo.InvariantCulture);
                     ev.VenueLatitude = meetupEventSearchResult.Venue == null ? string.Empty : meetupEventSearchResult.Venue.Lat.ToString(CultureInfo.InvariantCulture);
                     ev.VenueCapacity = meetupEventSearchResult.Rsvp_Limit;
