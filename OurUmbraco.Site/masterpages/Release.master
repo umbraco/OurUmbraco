@@ -109,7 +109,7 @@
     <div style="width: 400px; float: right; padding-top: 15px;">
         <h2>Getting started</h2>
         <p>Make sure to give the <a href="http://our.umbraco.org/documentation/Installation/">installation instructions a read</a>.</p>
-        <p>Check the <strong>free</strong> <a href="http://umbraco.tv/videos/umbraco-v7/implementor/"foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
+        <p>Check the <strong>free</strong> <a href="http://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
             <ul>
                 <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
                 <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
