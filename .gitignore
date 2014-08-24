@@ -44,3 +44,4 @@ build/*.nupkg
 OurUmbraco.Site/App_Data/YouTrack/all.json
 OurUmbraco.Site/App_Data/communityblogs.xml
 OurUmbraco.Site/App_Data/Meetup/searchresults.json
+OurUmbraco.Site/[Dd]ocumentation/
