@@ -290,7 +290,11 @@
 }
 
 
-
+.edit-doc-btn {
+    float: right;
+    display: block;
+    padding: 2px 10px 2px 10px;
+}
 
 
 
