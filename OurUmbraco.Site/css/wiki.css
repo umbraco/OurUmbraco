@@ -1,6 +1,7 @@
 /*
 #wikiContent{width: 700px;}
 */
+#wikiContent { margin-right: 216px; }
 input.wikiheadline{border: 2px dotted #999; display: block; font-size: 28px; 
 font-weight: bold;  margin-bottom: 7px; margin-top: 0.67em; width: 850px; }
 
