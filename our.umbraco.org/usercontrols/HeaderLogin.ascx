@@ -3,7 +3,7 @@
 
 
   <span class="memberProfileInfo">
-    <asp:Literal ID="lt_LoggedInmsg" runat="server">You are logged in as <strong>%name%</strong></asp:Literal>
+    <asp:Literal ID="lt_LoggedInmsg" runat="server">You are logged in as <strong>%name%</strong> <span title="Your karma: %karma%">(%karma%)</span></asp:Literal>
     <asp:Literal ID="lt_notLoggedInmsg" runat="server">You are not logged in</asp:Literal>
   </span>
   
