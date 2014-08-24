@@ -291,8 +291,9 @@
 
 
 .edit-doc-btn {
-    text-align: right;
+    float: right;
     display: block;
+    padding: 2px 10px 2px 10px;
 }
 
 
