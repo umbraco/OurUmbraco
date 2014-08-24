@@ -14,71 +14,70 @@
 
 <xsl:template match="/">
 
-<ul class="wiki summary">
+        <ul class="wiki summary">
+
+    <li>
+        <a href="/documentation/Using-Umbraco/Creating-Basic-Site/">
+            Creating a Basic Website using Umbraco v7
+        </a>
+         <small>
+            An in-depth guide to installing, creating document types/templates/css/javascript, and adding your own content
+        </small>
+    </li>
+
+    <li>
+        <a href="/documentation/Installation/">
+            Installing Umbraco
+        </a>
+        <small>
+            Installing using WebMatrix, manually, or using NuGet
+        </small>
+    </li>
+
+    <li>
+    <a href="/documentation/Reference/Templating/Mvc/">
+        Working with Mvc Views in Umbraco
+    </a>
+    <small>
+        Documentation on Views, Partial Views, Surface Controllers, Child Actions, Querying, Custom Controllers and more
+    </small>
+    </li>
+
+    <li>
+        <a href="/documentation/Reference/WebApi/">
+            Using Umbraco's WebApi to create REST services
+        </a>
+        <small>
+            Create your own REST services by using Umbraco's WebApi
+        </small>
+    </li>
 
   <li>
-    <a href="/documentation/Reference/Templating/Mvc/">
-      Working with Mvc
-    </a>
-    <small>
-      Documentation on Views, Partial Views, Surface Controllers, Child Actions, Querying, Custom Controllers and more
-    </small>
-  </li>
-  <li>
     <a href="/documentation/Reference/Management-v6/">
-      Umbraco v6 API
+      Umbraco Management API
     </a>
     <small>
-      Reference for all the Services and Models available in the v6 API
+      Reference for all the Services and Models available in the API
     </small>
   </li>
-  <li>
-    <a href="/documentation/Reference/Management/">
-      Umbraco v4 API
-    </a>
-    <small>
-      Reference for accessing Nodes, Documents, Members and more using the v4 API
-    </small>
-  </li>
+
   <li>
     <a href="/documentation/Reference/Querying/">
       Querying content, media, members and relations
     </a>
     <small>
-      How to query Umbraco data using Razor Macros or C# using DynamicNode or uQuery
+      How to query Umbraco data using Razor Macros or C#
     </small>
   </li>
-  <li>
-    <a href="/documentation/Reference/Events/">
-      Events v4 API
-    </a>
-    <small>
-      Documentation on the events available in Umbraco v4 API how to register them
-    </small>
-  </li>
+
   <li>
     <a href="/documentation/reference/Events-v6/">
-      Events v6 API
+      Events in the API
     </a>
     <small>
-		Documentation on the events available in Umbraco v6 API how to register them
+		Documentation on the events available in Umbraco API and how to register them
     </small>
   </li>
-
-
-  <!-- xsl:for-each select="umbraco.library:GetXmlNodeById(1054)/descendant::* [@isDoc]">
-<xsl:sort select="@createDate" order="descending"/>
-<xsl:if test="position() &lt;= 5">
-  <li><a href="{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
-  <small>In <xsl:value-of select="../@nodeName"/>,
-    
-    <xsl:if test="author != '' and string(author) != '0'">
-    by <xsl:value-of select="umbraco.library:GetMemberName(author)"/> 
-    </xsl:if>
-    </small>
-  </li>
-</xsl:if>
-</-->
 </ul>
 
 
