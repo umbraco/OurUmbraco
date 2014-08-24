@@ -169,7 +169,11 @@ namespace our.usercontrols
                         _member.XmlGenerate(new XmlDocument());
                         Member.AddMemberToCache(_member);
 
-                        if (spamResult != null)
+                        if (spamResult == null)
+                        {
+                            uForum.Library.Utills.SendMemberSignupMail(_member);
+                        }
+                        else
                         {
                             spamResult.MemberId = _member.Id;
                             uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
