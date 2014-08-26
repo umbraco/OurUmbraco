@@ -66,7 +66,7 @@
       Querying content, media, members and relations
     </a>
     <small>
-      How to query Umbraco data using Razor Macros or C#
+      How to query Umbraco data using Razor or C#
     </small>
   </li>
 
