@@ -140,7 +140,7 @@ namespace uForum.Library
         public static SpamResult CheckForSpam(Member member)
         {
             // Already blocked, nothing left to do here
-            if (member.getProperty("blocked").Value.ToString() == "1")
+            if (member.getProperty("blocked").Value != null && member.getProperty("blocked").Value.ToString() == "1")
             {
                 return new SpamResult
                        {
