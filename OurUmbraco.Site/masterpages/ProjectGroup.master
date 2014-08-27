@@ -30,7 +30,6 @@
 <h1 class="deliCatHead"><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
   
 <umbraco:Macro PageNumber="[@page]" IsCategoryListing="1" MaxPageSize="20" viewAll="[@ViewAll]" ListingType="[@filter]" Alias="Deli-ProjectListing" runat="server"></umbraco:Macro>
-<div class="deliNotificationToList"><a href="/wiki/deli/deli-getting-started/">Win friends, Influence people. Add your Umbraco package to Projects. Get Started Today &gt;</a></div>
 </div>
 </div>
 </asp:Content>

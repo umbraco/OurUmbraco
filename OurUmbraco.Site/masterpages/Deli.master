@@ -33,7 +33,6 @@
 </div>
 <div class="deliRight">
   <asp:ContentPlaceHolder Id="DeliRight" runat="server" />
-  <div class="deliNotificationToList"><a href="/wiki/deli/deli-getting-started/">Win friends, Influence people. Add your Umbraco package to Projects. Get Started Today &gt;</a></div>
 </div>
 </div>
 

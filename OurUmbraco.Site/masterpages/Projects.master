@@ -80,7 +80,6 @@
         <umbraco:Macro MaxPageSize="4" paged="0" ListingType="[@nplt]" Alias="Deli-NewestProjects" runat="server"></umbraco:Macro>
 
     </div>
-    <div class="deliNotificationToList"><a href="/wiki/deli/deli-getting-started/">Win friends, Influence people. Add your Umbraco package to Projects. Get Started Today &gt;</a></div>
     <div class="deliPromoBox deliTags">
         <h2>Browse by Tag</h2>
         <umbraco:Macro ID="Macro1" Alias="Deli-TagCloud" runat="server"></umbraco:Macro>
