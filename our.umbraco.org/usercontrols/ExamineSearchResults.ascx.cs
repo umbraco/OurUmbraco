@@ -293,8 +293,8 @@ namespace our.usercontrols
             // set the searchterm back for the results view
             searchTerm = orgSearchTerm;
 
-            //Get where to search (content)
-            string searchWhere = Request.QueryString["content"];
+            //Get where to search (content) - default to all areas (because Chrome default search doesn't provide content parameter, only q)
+            string searchWhere = !string.IsNullOrEmpty(Request.QueryString["content"]) ? Request.QueryString["content"] : "wiki,forum,project,documentation,";
 
             searchResults = FilterOnContentType(searchWhere, searchResults);
 
