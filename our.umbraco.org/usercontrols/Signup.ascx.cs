@@ -130,7 +130,7 @@ namespace our.usercontrols
                         // and then update the member's name immediately after that... -SJ
                         _member = Member.MakeNew(tb_name.Text + " Temp", mt, new User(0));
                         _member.Text = tb_name.Text;
-
+                        
                         _member.Email = tb_email.Text;
                         _member.Password = tb_password.Text;
                         _member.LoginName = tb_email.Text;
@@ -169,15 +169,15 @@ namespace our.usercontrols
                         _member.XmlGenerate(new XmlDocument());
                         Member.AddMemberToCache(_member);
 
-                        if (spamResult == null)
-                        {
-                            uForum.Library.Utills.SendMemberSignupMail(_member);
-                        }
-                        else
+                        if (spamResult != null && spamResult.TotalScore >= uForum.Library.Utills.PotentialSpammerThreshold)
                         {
                             spamResult.MemberId = _member.Id;
                             uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
                             uForum.Library.Utills.SendPotentialSpamMemberMail(spamResult);
+                        }
+                        else
+                        {
+                            uForum.Library.Utills.SendMemberSignupMail(_member);
                         }
 
                         Response.Redirect(library.NiceUrl(NextPage));

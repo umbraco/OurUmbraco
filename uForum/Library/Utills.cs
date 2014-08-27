@@ -17,8 +17,8 @@ namespace uForum.Library
     public class Utills
     {
         private const string SpamMemberGroupName = "potentialspam";
-        private const int BlockThreshold = 100;
-        private const int PotentialSpammerThreshold = 60;
+        public const int BlockThreshold = 100;
+        public const int PotentialSpammerThreshold = 60;
         private const int ReputationThreshold = 30;
 
         /// <summary>
@@ -124,9 +124,7 @@ namespace uForum.Library
                 MemberGroup.MakeNew(SpamMemberGroupName, new User(0));
 
             memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-
-            if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName) == false)
-                member.AddGroup(memberGroup.Id);
+            member.AddGroup(memberGroup.Id);
         }
 
         public static void RemoveMemberFromPotentialSpamGroup(Member member)
@@ -136,9 +134,7 @@ namespace uForum.Library
                 MemberGroup.MakeNew(SpamMemberGroupName, new User(0));
 
             memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-
-            if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName))
-                member.RemoveGroup(memberGroup.Id);
+            member.RemoveGroup(memberGroup.Id);
         }
 
         public static SpamResult CheckForSpam(Member member)
@@ -386,9 +382,9 @@ namespace uForum.Library
 
             body = body +
                    string.Format(
-                       "Blocked: {0}<br />Name: {1}<br />Email: {2}<br />IP: {3}<br />Score IP: {4}<br />Frequency IP: {5}<br />Score e-mail: {6}<br />Frequency e-mail: {7}",
+                       "Blocked: {0}<br />Name: {1}<br />Email: {2}<br />IP: {3}<br />Score IP: {4}<br />Frequency IP: {5}<br />Score e-mail: {6}<br />Frequency e-mail: {7}<br />Total score: {8}",
                        spammer.Blocked, spammer.Name, spammer.Email, spammer.Ip, spammer.ScoreIp, spammer.FrequencyIp,
-                       spammer.ScoreEmail, spammer.FrequencyEmail);
+                       spammer.ScoreEmail, spammer.FrequencyEmail, spammer.TotalScore);
 
             var querystring = string.Format("api?ip={0}&email={1}&f=json", spammer.Ip, HttpUtility.UrlEncode(spammer.Email));
 
