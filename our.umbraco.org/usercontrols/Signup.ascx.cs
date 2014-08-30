@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Web.UI;
 using System.Xml;
 using our.Rest;
@@ -169,7 +170,7 @@ namespace our.usercontrols
                         _member.XmlGenerate(new XmlDocument());
                         Member.AddMemberToCache(_member);
 
-                        if (spamResult != null && spamResult.TotalScore >= uForum.Library.Utills.PotentialSpammerThreshold)
+                        if (spamResult != null && spamResult.TotalScore >= int.Parse(ConfigurationManager.AppSettings["PotentialSpammerThreshold"]))
                         {
                             spamResult.MemberId = _member.Id;
                             uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
