@@ -80,6 +80,10 @@ var uPowers = function () {
         UnBlockMember: function (s_memberId) {
             //This is secured on the serverside, so don't even bother fuckers...
             $.get("/base/Community/UnBlockMember/" + s_memberId + ".aspx");
+        },
+        DeleteMember: function (s_memberId) {
+            //This is secured on the serverside, so don't even bother fuckers...
+            $.get("/base/Community/DeleteMember/" + s_memberId + ".aspx");
         }
     };
 } ();
@@ -380,6 +384,17 @@ jQuery(document).ready(function () {
             unblockLink.parent("li").hide();
             blockLink.parent("li").show();
 
+        }
+        return false;
+    });
+
+
+    jQuery("a.deleteMember").click(function () {
+        if (confirm("Do you really want to DELETE this member?")) {
+            var deleteLink = jQuery(this);
+            
+            uPowers.DeleteMember(deleteLink.attr("rel"));
+            deleteLink.parent("li").hide();
         }
         return false;
     });

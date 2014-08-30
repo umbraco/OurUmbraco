@@ -209,18 +209,26 @@ namespace uForum.Businesslogic {
             var topic = Topic.GetTopic(TopicId);
             var forum = new Forum(topic.ParentId);
 
-            var member = new Member(MemberId);
+            Member member = null;
+            try { member = new Member(topic.MemberId); }
+            catch (Exception) { }
+
+            if (member != null)
+            {
+                member.getProperty("blocked").Value = true;
+                member.Save();
+            }
 
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumComments SET isSpam = 1 WHERE id = " + Id);
             Id = 0;
 
-            topic.Save(true);
+            topic.Save(true, true);
             forum.Save();
 
             member.getProperty("blocked").Value = true;
             member.Save();
-                
-            Forum.SendSpamMail(Body, TopicId, "comment", member.Id, true);
+
+            Forum.SendSpamMail(Body, TopicId, "comment", member == null ? 0 : member.Id, true);
 
             FireAfterMarkAsSpam(e);
         }

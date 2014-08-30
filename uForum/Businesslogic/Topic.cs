@@ -149,9 +149,16 @@ namespace uForum.Businesslogic
             var forum = new Forum(ParentId);
 
             var topic = GetTopic(Id);
-            var member = new Member(topic.MemberId);
-            member.getProperty("blocked").Value = true;
-            member.Save();
+            
+            Member member = null;
+            try { member = new Member(topic.MemberId); }
+            catch(Exception) {}
+
+            if (member != null)
+            {
+                member.getProperty("blocked").Value = true;
+                member.Save();
+            }
 
             Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET isSpam = 1 WHERE id = @id", Data.SqlHelper.CreateParameter("@id", Id.ToString(CultureInfo.InvariantCulture)));
 
@@ -159,7 +166,7 @@ namespace uForum.Businesslogic
 
             forum.Save();
 
-            Forum.SendSpamMail(Body, Id, "topic", member.Id, true);
+            Forum.SendSpamMail(Body, Id, "topic", member == null ? 0 : member.Id, true);
 
             FireAfterMarkAsSpam(markAsSpamEventArgs);
         }

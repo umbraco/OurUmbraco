@@ -157,6 +157,12 @@ namespace our {
             return m.Groups.ContainsKey(MemberGroup.GetByName("admin").Id);
         }
 
+        public static bool IsHq(int id)
+        {
+            Member m = new Member(id);
+            return m.Groups.ContainsKey(MemberGroup.GetByName("HQ").Id);
+        }
+
         public static int GetProjectTotalDownloadCount(int projectId)
         {
             try

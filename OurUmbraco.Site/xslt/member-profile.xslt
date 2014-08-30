@@ -18,6 +18,7 @@
 
   <!-- Signed in Member -->
   <xsl:variable name="isAdmin" select="uForum:IsInGroup('admin')"/>
+  <xsl:variable name="isHQ" select="uForum:IsInGroup('HQ')"/>
   <xsl:variable name="mem">
     <xsl:if test="umbraco.library:IsLoggedOn()">
       <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
@@ -87,6 +88,16 @@
                       </xsl:if>
 
                       <a href="#" class="act unblockMember" title="Unblock Member" rel="{$memId}">Unblock Member</a>
+                    </li>
+                  </ul>
+                </div>
+              </xsl:if>
+              
+              <xsl:if test="$isHQ = true()">
+                <div class="options">
+                  <ul>
+                    <li>
+                      <a href="#" class="act deleteMember" title="Delete Member" rel="{$memId}">Delete Member</a>
                     </li>
                   </ul>
                 </div>

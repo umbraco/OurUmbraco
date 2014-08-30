@@ -16,7 +16,8 @@ using umbraco.presentation.umbracobase;
 using our;
 using System.Web.Security;
 
-namespace our.Rest {
+namespace our.Rest
+{
     /// <summary>
     /// Our mighty utill classes for looking stuff up quickly...
     /// </summary>
@@ -90,30 +91,35 @@ namespace our.Rest {
                     }
                     catch { }
                 }
-                
+
             }
         }
 
-      
+
     }
 
 
-    public class Twitter {
+    public class Twitter
+    {
 
-        public static XPathNodeIterator Search(string searchString) {
+        public static XPathNodeIterator Search(string searchString)
+        {
             string twitterUrl = "http://search.twitter.com/search.atom?q=" + searchString;
             return umbraco.library.GetXmlDocumentByUrl(twitterUrl, 2000);
         }
 
-        public static XPathNodeIterator Profile(string alias) {
+        public static XPathNodeIterator Profile(string alias)
+        {
             string twitterUrl = "http://twitter.com/users/show/" + alias + ".xml";
             return umbraco.library.GetXmlDocumentByUrl(twitterUrl, 0);
         }
     }
 
-    public class Validation {
+    public class Validation
+    {
 
-        public static string IsEmailUnique(string email) {
+        public static string IsEmailUnique(string email)
+        {
             string e = email;
 
             //if user is already logged in and tries to re-enter his own email...
@@ -126,20 +132,26 @@ namespace our.Rest {
 
     }
 
-    public class BuddyIcon {
+    public class BuddyIcon
+    {
 
-        public static string SetAvatar(int mId, string service) {
+        public static string SetAvatar(int mId, string service)
+        {
 
             string retval = "";
             Member m = new Member(mId);
 
-            if (m != null) {
-                switch (service) {
+            if (m != null)
+            {
+                switch (service)
+                {
 
                     case "twitter":
-                        if (m.getProperty("twitter") != null && m.getProperty("twitter").Value.ToString() != "") {
+                        if (m.getProperty("twitter") != null && m.getProperty("twitter").Value.ToString() != "")
+                        {
                             XPathNodeIterator twitData = Twitter.Profile(m.getProperty("twitter").Value.ToString());
-                            if (twitData.MoveNext()) {
+                            if (twitData.MoveNext())
+                            {
                                 string imgUrl = twitData.Current.SelectSingleNode("//profile_image_url").Value;
                                 return saveUrlAsBuddyIcon(imgUrl, m);
                             }
@@ -157,14 +169,16 @@ namespace our.Rest {
 
         }
 
-        public static string SetServiceAsBuddyIcon(string service) {
+        public static string SetServiceAsBuddyIcon(string service)
+        {
 
             int id = umbraco.presentation.umbracobase.library.library.CurrentMemberId();
 
             return SetAvatar(id, service);
         }
 
-        private static string saveUrlAsBuddyIcon(string url, Member m) {
+        private static string saveUrlAsBuddyIcon(string url, Member m)
+        {
             string _file = m.Id.ToString();
             string _path = HttpContext.Current.Server.MapPath("/media/avatar/" + _file + ".jpg");
             string _currentFile = m.getProperty("avatar").Value.ToString();
@@ -182,26 +196,34 @@ namespace our.Rest {
             Member.RemoveMemberFromCache(m);
             Member.AddMemberToCache(m);
 
-            
+
             return "/media/avatar/" + _file + ".jpg";
         }
 
 
-        private static void deleteFile(string vPath) {
-            try {
+        private static void deleteFile(string vPath)
+        {
+            try
+            {
                 string _currentFile = HttpContext.Current.Server.MapPath(vPath);
                 if (System.IO.File.Exists(_currentFile))
                     System.IO.File.Delete(_currentFile);
-            } catch { }
+            }
+            catch { }
         }
 
-        public static string SaveWebCamImage(string memberGuid) {
+        public static string SaveWebCamImage(string memberGuid)
+        {
             string url = HttpContext.Current.Request["AvatarUrl"];
-            if (!string.IsNullOrEmpty(url)) {
+            if (!string.IsNullOrEmpty(url))
+            {
                 return "true";
-            } else {
+            }
+            else
+            {
                 Member m = umbraco.presentation.umbracobase.library.library.GetCurrentMember();
-                if (m != null) {
+                if (m != null)
+                {
                     byte[] imageBytes = HttpContext.Current.Request.BinaryRead(HttpContext.Current.Request.ContentLength);
                     string _file = m.Id.ToString();
                     string _path = HttpContext.Current.Server.MapPath("/media/avatar/" + _file + ".jpg");
@@ -210,7 +232,8 @@ namespace our.Rest {
 
 
                     System.Drawing.Image newImage;
-                    using (MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length)) {
+                    using (MemoryStream ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
+                    {
 
                         ms.Write(imageBytes, 0, imageBytes.Length);
 
@@ -232,17 +255,20 @@ namespace our.Rest {
 
                     return "/media/avatar/" + _file + ".jpg";
 
-                } else {
+                }
+                else
+                {
                     return "error";
                 }
             }
         }
 
-        private static bool ThumbnailCallback() {
+        private static bool ThumbnailCallback()
+        {
             return true;
         }
 
-       
+
 
     }
 
@@ -292,7 +318,7 @@ namespace our.Rest {
                 {
                     return "false";
                 }
-               
+
             }
 
             return "false";
@@ -314,7 +340,8 @@ namespace our.Rest {
             if (Utills.IsAdmin(_currentMember))
             {
                 //Lets check the memberID of the member we are blocking passed into /base is a valid member..
-                if(Utills.IsMember(memberId)){
+                if (Utills.IsMember(memberId))
+                {
                     //Yep - it's valid, lets get that member
                     Member MemberToBlock = Utills.GetMember(memberId);
 
@@ -345,7 +372,8 @@ namespace our.Rest {
             if (Utills.IsAdmin(_currentMember))
             {
                 //Lets check the memberID of the member we are blocking passed into /base is a valid member..
-                if(Utills.IsMember(memberId)){
+                if (Utills.IsMember(memberId))
+                {
                     //Yep - it's valid, lets get that member
                     Member MemberToBlock = Utills.GetMember(memberId);
 
@@ -363,5 +391,62 @@ namespace our.Rest {
             //Member not authorised or memberID passed in is not valid
             return "false";
         }
+
+        [RestExtensionMethod(allowGroup = "HQ", returnXml = false)]
+        public static string DeleteMember(int memberId)
+        {
+            int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+
+            //Check if member is an admin (in group 'admin')
+            if (Utills.IsHq(_currentMember))
+            {
+                //Lets check the memberID of the member we are blocking passed into /base is a valid member..
+                if (Utills.IsMember(memberId))
+                {
+                    //Yep - it's valid, lets get that member
+                    var member = Utills.GetMember(memberId);
+
+                    Membership.DeleteUser(member.LoginName, true);
+
+                    Application.SqlHelper.ExecuteNonQuery("UPDATE forumForums SET latestAuthor = 0 WHERE latestAuthor = @memberId",
+                        Application.SqlHelper.CreateParameter("@memberId", memberId));
+
+                    //It's all good...
+                    return "true";
+                }
+            }
+
+            //Member not authorised or memberID passed in is not valid
+            return "false";
+        }
+
+        [RestExtensionMethod(allowGroup = "HQ", returnXml = false)]
+        public static string GetBlockedMembers()
+        {
+            int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
+
+            //Check if member is an admin (in group 'admin')
+            if (Utills.IsHq(_currentMember))
+            {
+                var returnValue = string.Empty;
+
+                const string blockedMembersQuery = "SELECT contentNodeId FROM cmsPropertyData WHERE propertytypeid = (SELECT id FROM cmsPropertyType WHERE alias = 'blocked') AND dataInt = 1";
+
+                var reader = Data.SqlHelper.ExecuteReader(blockedMembersQuery);
+
+                while (reader.Read())
+                {
+                    var memberId = reader.GetInt("contentNodeId");
+                    returnValue = returnValue + "<a href=\"/member/" + memberId + "\">" + memberId + "</a><br />";
+                }
+                
+                //It's all good...
+                return returnValue;
+            }
+
+            //Member not authorised or memberID passed in is not valid
+            return "";
+        }
+
     }
 }
