@@ -144,11 +144,11 @@ namespace uForum.Library
             if (member.getProperty("blocked") != null && member.getProperty("blocked").Value.ToString() == "1")
             {
                 return new SpamResult
-                       {
-                           MemberId = member.Id,
-                           Name = member.Text,
-                           Blocked = true
-                       };
+                {
+                    MemberId = member.Id,
+                    Name = member.Text,
+                    Blocked = true
+                };
             }
 
             // If reputation is > ReputationThreshold they've got enough karma, spammers never get that far
@@ -162,11 +162,11 @@ namespace uForum.Library
             if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName))
             {
                 return new SpamResult
-                       {
-                           MemberId = member.Id,
-                           Name = member.Text,
-                           AlreadyInSpamRole = true
-                       };
+                {
+                    MemberId = member.Id,
+                    Name = member.Text,
+                    AlreadyInSpamRole = true
+                };
             }
 
             var spammer = CheckForSpam(member.Email, member.Text, false);
@@ -255,6 +255,7 @@ namespace uForum.Library
 
                 var spammer = new SpamResult
                 {
+                    MemberId = member.Id,
                     Name = member.Text,
                     Company = member.GetProperty<string>("company"),
                     Bio = member.GetProperty<string>("profileText"),
@@ -273,7 +274,7 @@ namespace uForum.Library
                     spammer.FrequencyIp = spamCheckResult.Ip.Frequency.ToString(CultureInfo.InvariantCulture);
                     spammer.Blocked = blocked;
                     spammer.TotalScore = score;
-                    
+
                     SendNewMemberMail(spammer);
                 }
                 else
@@ -378,9 +379,9 @@ namespace uForum.Library
 
             body = body + string.Format(
                        "Blocked: {0}<br />Name: {1}<br />Company: {2}<br />Bio: {3}<br />Email: {4}<br />IP: {5}<br />" +
-                       "Score IP: {6}<br />Frequency IP: {7}<br />Score e-mail: {8}<br />Frequency e-mail: {9}<br />Total score: {10}",
-                       spammer.Blocked, spammer.Name, spammer.Company, spammer.Bio.Replace("\n", "<br />"), spammer.Email, spammer.Ip, 
-                       spammer.ScoreIp, spammer.FrequencyIp, spammer.ScoreEmail, spammer.FrequencyEmail, spammer.TotalScore);
+                       "Score IP: {6}<br />Frequency IP: {7}<br />Score e-mail: {8}<br />Frequency e-mail: {9}<br />Total score: {10}<br />Member Id: {11}",
+                       spammer.Blocked, spammer.Name, spammer.Company, spammer.Bio.Replace("\n", "<br />"), spammer.Email, spammer.Ip,
+                       spammer.ScoreIp, spammer.FrequencyIp, spammer.ScoreEmail, spammer.FrequencyEmail, spammer.TotalScore, spammer.MemberId);
 
             var querystring = string.Format("api?ip={0}&email={1}&f=json", spammer.Ip, HttpUtility.UrlEncode(spammer.Email));
 
