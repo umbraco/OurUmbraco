@@ -326,7 +326,8 @@ namespace uForum.Library
             }
             catch (Exception ex)
             {
-                Log.Add(LogTypes.Error, new User(0), -1, "Error sending potential spam member notification: " + ex.Message + " " + ex.StackTrace);
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending potential spam member notification: {0} {1} {2}", 
+                    ex.Message, ex.StackTrace, ex.InnerException));
             }
         }
 
