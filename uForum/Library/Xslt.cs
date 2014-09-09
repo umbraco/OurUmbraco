@@ -8,10 +8,13 @@ using HtmlAgilityPack;
 using uForum.Businesslogic;
 using umbraco;
 using MarkdownSharp;
+using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
 
-namespace uForum.Library {
-    public class Xslt {
+namespace uForum.Library
+{
+    public class Xslt
+    {
 
         public string ReplaceCode(Match m)
         {
@@ -20,17 +23,18 @@ namespace uForum.Library {
             else
                 return "";
         }
-        
 
-        public static string CleanBBCode(string html) {
+
+        public static string CleanBBCode(string html)
+        {
 
             string str = html;
             Regex exp;
 
             // format the code tags: [code]my site[code]
             // becomes: <code>my site</code>
-            exp = new Regex(@"\[code\](.+?)\[/code\]", RegexOptions.Singleline | RegexOptions.IgnoreCase );
-            
+            exp = new Regex(@"\[code\](.+?)\[/code\]", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+
             Xslt x = new Xslt();
             MatchEvaluator exp_eval = new MatchEvaluator(x.ReplaceCode);
             // Replace matched characters using the delegate method.
@@ -40,117 +44,134 @@ namespace uForum.Library {
             // becomes: <a href="www.website.com">my site</a>
             exp = new Regex(@"\[quote\=([^\]]+)\]([^\]]+)\[/quote\]", RegexOptions.Singleline);
             str = exp.Replace(str, "<blockquote>$2</blockquote>");
-                                   
+
             return str;
         }
 
-        public static bool IsMemberInGroup(string GroupName, int memberid) {
-                Member m = Utills.GetMember(memberid);
+        public static bool IsMemberInGroup(string GroupName, int memberid)
+        {
+            Member m;
+            try
+            {
+                m = Utills.GetMember(memberid);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Utills.GetMember({0}) failed - {1} {2} {3}", memberid, ex.Message, ex.StackTrace, ex.InnerException));
+                return false;
+            }
+            
+            foreach (MemberGroup mg in m.Groups.Values)
+            {
+                if (mg.Text == GroupName)
+                    return true;
+            }
+            return false;
+        }
 
-                foreach (MemberGroup mg in m.Groups.Values) {
-                    if (mg.Text == GroupName)
-                        return true;
-                }
+        public static bool IsInGroup(string GroupName)
+        {
+
+            if (umbraco.library.IsLoggedOn())
+                return IsMemberInGroup(GroupName, Member.CurrentMemberId());
+            else
                 return false;
         }
 
-        public static bool IsInGroup(string GroupName) {
-
-             if (umbraco.library.IsLoggedOn())
-                 return IsMemberInGroup(GroupName, Member.CurrentMemberId());
-             else
-                 return false;
-        }
-
-        public static void RegisterRssFeed(string url, string title, string alias) { 
-            umbraco.library.RegisterClientScriptBlock(alias, "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" + title + "\" href=\"" + url + "\" />" ,false);
+        public static void RegisterRssFeed(string url, string title, string alias)
+        {
+            umbraco.library.RegisterClientScriptBlock(alias, "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"" + title + "\" href=\"" + url + "\" />", false);
         }
 
         public static string NiceTopicUrl(int topicId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
 
-            if (topic == null || topic.Exists == false) 
+            if (topic == null || topic.Exists == false)
                 return "";
 
             var url = library.NiceUrl(topic.ParentId);
 
-            return GlobalSettings.UseDirectoryUrls 
-                ? string.Format("/{0}/{1}-{2}", url.Trim('/'), topic.Id, topic.UrlName) 
+            return GlobalSettings.UseDirectoryUrls
+                ? string.Format("/{0}/{1}-{2}", url.Trim('/'), topic.Id, topic.UrlName)
                 : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), topic.Id, topic.UrlName);
         }
 
-        public static int CommentPageNumber(int commentId, int itemsPerPage) {
-                Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentId);
+        public static int CommentPageNumber(int commentId, int itemsPerPage)
+        {
+            Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentId);
 
-                int position = c.Position - 1;
+            int position = c.Position - 1;
 
-                return (int)(position / itemsPerPage);
+            return (int)(position / itemsPerPage);
         }
 
 
-        public static string NiceCommentUrl(int topicId, int commentId, int itemsPerPage) {
+        public static string NiceCommentUrl(int topicId, int commentId, int itemsPerPage)
+        {
             string url = NiceTopicUrl(topicId);
-            if (!string.IsNullOrEmpty(url)) {
+            if (!string.IsNullOrEmpty(url))
+            {
                 Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentId);
 
                 int position = c.Position - 1;
 
                 int page = (int)(position / itemsPerPage);
-                
+
 
                 url += "?p=" + page.ToString() + "#comment" + c.Id.ToString();
             }
 
             return url;
-         }
+        }
 
-		public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage)
-		{
-			return ForumPager(forumId, itemsPerPage, currentPage, 10);
-		}
+        public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage)
+        {
+            return ForumPager(forumId, itemsPerPage, currentPage, 10);
+        }
 
-		public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage, int distance)
-		{
-			var xd = new XmlDocument();
-			var totalTopics = 0;
+        public static XPathNodeIterator ForumPager(int forumId, int itemsPerPage, int currentPage, int distance)
+        {
+            var xd = new XmlDocument();
+            var totalTopics = 0;
 
-			if (forumId == 0)
-				totalTopics = Businesslogic.Topic.TotalTopics();
-			else
-			{
-				var f = new uForum.Businesslogic.Forum(forumId);
-				totalTopics = f.TotalTopics;
-			}
+            if (forumId == 0)
+                totalTopics = Businesslogic.Topic.TotalTopics();
+            else
+            {
+                var f = new uForum.Businesslogic.Forum(forumId);
+                totalTopics = f.TotalTopics;
+            }
 
-			var pages = xmlHelper.addTextNode(xd, "pages", string.Empty);
-			var i = 0;
-			var p = 0;
+            var pages = xmlHelper.addTextNode(xd, "pages", string.Empty);
+            var i = 0;
+            var p = 0;
 
-			while (i < (totalTopics))
-			{
-				var distanceFromCurrent = p - currentPage;
-				if (distanceFromCurrent > -distance && distanceFromCurrent < distance)
-				{
-					var page = xmlHelper.addTextNode(xd, "page", string.Empty);
-					page.Attributes.Append(xmlHelper.addAttribute(xd, "index", p.ToString()));
+            while (i < (totalTopics))
+            {
+                var distanceFromCurrent = p - currentPage;
+                if (distanceFromCurrent > -distance && distanceFromCurrent < distance)
+                {
+                    var page = xmlHelper.addTextNode(xd, "page", string.Empty);
+                    page.Attributes.Append(xmlHelper.addAttribute(xd, "index", p.ToString()));
 
-					if (p == currentPage)
-					{
-						page.Attributes.Append(xmlHelper.addAttribute(xd, "current", "true"));
-					}
+                    if (p == currentPage)
+                    {
+                        page.Attributes.Append(xmlHelper.addAttribute(xd, "current", "true"));
+                    }
 
-					pages.AppendChild(page);
-				}
+                    pages.AppendChild(page);
+                }
 
-				p++;
-				i = (i + itemsPerPage);
-			}
+                p++;
+                i = (i + itemsPerPage);
+            }
 
-			return pages.CreateNavigator().Select(".");
-		}
+            return pages.CreateNavigator().Select(".");
+        }
 
-        public static XPathNodeIterator TopicPager(int topicId, int itemsPerPage, int currentPage) {
+        public static XPathNodeIterator TopicPager(int topicId, int itemsPerPage, int currentPage)
+        {
             XmlDocument xd = new XmlDocument();
             Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
@@ -159,14 +180,16 @@ namespace uForum.Library {
             int i = 0;
             int p = 0;
 
-            while (i < (t.Replies)) {
+            while (i < (t.Replies))
+            {
                 XmlNode page = umbraco.xmlHelper.addTextNode(xd, "page", "");
                 page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "index", p.ToString()));
-                if(p == currentPage){
-                    page.Attributes.Append( umbraco.xmlHelper.addAttribute(xd, "current", "true"));
+                if (p == currentPage)
+                {
+                    page.Attributes.Append(umbraco.xmlHelper.addAttribute(xd, "current", "true"));
                 }
                 pages.AppendChild(page);
-                
+
                 p++;
                 i = (i + itemsPerPage);
             }
@@ -200,53 +223,61 @@ namespace uForum.Library {
             return pages.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator AllForums(bool includeLatestData) {
+        public static XPathNodeIterator AllForums(bool includeLatestData)
+        {
 
-          
+
             XmlDocument xd = new XmlDocument();
             XmlNode x = xd.CreateElement("forums");
 
             List<Businesslogic.Forum> forums = Businesslogic.Forum.Forums();
-            foreach (Businesslogic.Forum f in forums) {
+            foreach (Businesslogic.Forum f in forums)
+            {
                 x.AppendChild(f.ToXml(xd, includeLatestData));
             }
 
             return x.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator Forum(int id, bool includeLatestData) {
+        public static XPathNodeIterator Forum(int id, bool includeLatestData)
+        {
             XmlDocument xd = new XmlDocument();
 
-           
+
             return new Businesslogic.Forum(id).ToXml(xd, includeLatestData).CreateNavigator().Select(".");
 
         }
 
-        public static XPathNodeIterator Forums(int parentId, bool includeLatestData) {
+        public static XPathNodeIterator Forums(int parentId, bool includeLatestData)
+        {
             XmlDocument xd = new XmlDocument();
             XmlNode x = xd.CreateElement("forums");
 
             List<Businesslogic.Forum> forums = Businesslogic.Forum.Forums(parentId);
-            foreach (Businesslogic.Forum f in forums) {
+            foreach (Businesslogic.Forum f in forums)
+            {
                 x.AppendChild(f.ToXml(xd, includeLatestData));
             }
 
             return x.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator ForumTopics(int nodeId, int amount){
+        public static XPathNodeIterator ForumTopics(int nodeId, int amount)
+        {
             XmlDocument xd = new XmlDocument();
             XmlNode x = xd.CreateElement("topics");
 
             List<Businesslogic.Topic> topics = Businesslogic.Topic.TopicsInForum(nodeId, amount, 1);
-            foreach (Businesslogic.Topic t in topics) {
+            foreach (Businesslogic.Topic t in topics)
+            {
                 x.AppendChild(t.ToXml(xd));
             }
 
             return x.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator Topic(int topicID) {
+        public static XPathNodeIterator Topic(int topicID)
+        {
             XmlDocument xd = new XmlDocument();
             Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicID);
 
@@ -256,7 +287,8 @@ namespace uForum.Library {
             return xd.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator Comment(int commentID) {
+        public static XPathNodeIterator Comment(int commentID)
+        {
 
             XmlDocument xd = new XmlDocument();
             Businesslogic.Comment c = new uForum.Businesslogic.Comment(commentID);
@@ -264,16 +296,19 @@ namespace uForum.Library {
             return c.ToXml(xd).CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator TopicComments(int topicID) {
-            
+        public static XPathNodeIterator TopicComments(int topicID)
+        {
+
             XmlDocument xd = new XmlDocument();
             Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicID);
 
-            if (t.Exists) {
+            if (t.Exists)
+            {
                 XmlNode comments = umbraco.xmlHelper.addTextNode(xd, "comments", "");
 
-                foreach (Businesslogic.Comment cc in t.Comments) {
-                    comments.AppendChild( cc.ToXml(xd) );
+                foreach (Businesslogic.Comment cc in t.Comments)
+                {
+                    comments.AppendChild(cc.ToXml(xd));
                 }
 
                 xd.AppendChild(comments);
@@ -282,19 +317,22 @@ namespace uForum.Library {
             return xd.CreateNavigator().Select(".");
         }
 
-        public static XPathNodeIterator LatestTopics(int amount) {
+        public static XPathNodeIterator LatestTopics(int amount)
+        {
             XmlDocument xd = new XmlDocument();
             XmlNode x = xd.CreateElement("topics");
 
             List<Businesslogic.Topic> topics = Businesslogic.Topic.Latest(amount);
-            foreach (Businesslogic.Topic t in topics) {
+            foreach (Businesslogic.Topic t in topics)
+            {
                 x.AppendChild(t.ToXml(xd));
             }
 
             return x.CreateNavigator().Select(".");
         }
 
-        public static string Sanitize(string html) {
+        public static string Sanitize(string html)
+        {
             // Run it through Markdown first
             var md = new Markdown();
             html = md.Transform(html);
@@ -314,7 +352,7 @@ namespace uForum.Library {
                     {
                         var src = image.GetAttributeValue("src", "");
                         var orgSrc = src.Replace("rs/", "");
-                        
+
                         if (src == orgSrc || image.ParentNode.Name == "a") continue;
 
                         var a = doc.CreateElement("a");
@@ -331,13 +369,13 @@ namespace uForum.Library {
                     if (replace)
                     {
                         html = root.OuterHtml;
-                    }                    
+                    }
                 }
             }
 
             return Utills.Sanitize(html);
         }
-    
+
         public static string TimeDiff(string secondDate)
         {
             DateTime date;
@@ -450,7 +488,7 @@ namespace uForum.Library {
                 i++;
             }
 
-    
+
             foreach (KeyValuePair<string, string> replaceValue in replaceValues)
             {
                 body = body.Replace(replaceValue.Key, replaceValue.Value);
@@ -477,8 +515,9 @@ namespace uForum.Library {
         {
             return Utills.CanSeeComment(commentId);
         }
-        
-        private static string ShortenUrl(string url, int max) {
+
+        private static string ShortenUrl(string url, int max)
+        {
             if (url.Length <= max)
                 return url;
 
@@ -531,11 +570,12 @@ namespace uForum.Library {
 
                 return url;
             }
-            catch {
+            catch
+            {
                 return url;
             }
         }
-    
-    
+
+
     }
 }

@@ -61,7 +61,7 @@ namespace uForum.Library
             }
             catch (Exception exception)
             {
-                Log.Add(LogTypes.Error, 0, string.Format("Could not get member {0} from the cache nor from the database - Exception: {1}", id, exception.InnerException));
+                Log.Add(LogTypes.Error, 0, string.Format("Could not get member {0} from the cache nor from the database - Exception: {1} {2} {3}", id, exception.Message,  exception.StackTrace, exception.InnerException));
             }
 
             return null;
@@ -380,8 +380,18 @@ namespace uForum.Library
             body = body + string.Format(
                        "Blocked: {0}<br />Name: {1}<br />Company: {2}<br />Bio: {3}<br />Email: {4}<br />IP: {5}<br />" +
                        "Score IP: {6}<br />Frequency IP: {7}<br />Score e-mail: {8}<br />Frequency e-mail: {9}<br />Total score: {10}<br />Member Id: {11}",
-                       spammer.Blocked, spammer.Name, spammer.Company, spammer.Bio.Replace("\n", "<br />"), spammer.Email, spammer.Ip,
-                       spammer.ScoreIp, spammer.FrequencyIp, spammer.ScoreEmail, spammer.FrequencyEmail, spammer.TotalScore, spammer.MemberId);
+                       spammer.Blocked, 
+                       spammer.Name, 
+                       spammer.Company, 
+                       spammer.Bio.Replace("\n", "<br />"),
+                       spammer.Email, 
+                       spammer.Ip,
+                       spammer.ScoreIp, 
+                       spammer.FrequencyIp, 
+                       spammer.ScoreEmail, 
+                       spammer.FrequencyEmail, 
+                       spammer.TotalScore, 
+                       spammer.MemberId);
 
             var querystring = string.Format("api?ip={0}&email={1}&f=json", spammer.Ip, HttpUtility.UrlEncode(spammer.Email));
 
