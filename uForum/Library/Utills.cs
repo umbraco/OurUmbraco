@@ -305,6 +305,7 @@ namespace uForum.Library
             try
             {
                 var notify = ConfigurationManager.AppSettings["uForumSpamNotify"];
+
                 var body = GetSpamResultBody(spammer);
 
                 var subject = string.Format("Umbraco community: member {0}", spammer.Blocked ? "blocked" : "flagged as potential spammer");
@@ -357,7 +358,8 @@ namespace uForum.Library
             }
             catch (Exception ex)
             {
-                Log.Add(LogTypes.Error, new User(0), -1, "Error sending new member notification: " + ex.Message + " " + ex.StackTrace);
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending new member notification: {0} {1} {2}", 
+                    ex.Message, ex.StackTrace, ex.InnerException));
             }
         }
 
@@ -381,16 +383,16 @@ namespace uForum.Library
             body = body + string.Format(
                        "Blocked: {0}<br />Name: {1}<br />Company: {2}<br />Bio: {3}<br />Email: {4}<br />IP: {5}<br />" +
                        "Score IP: {6}<br />Frequency IP: {7}<br />Score e-mail: {8}<br />Frequency e-mail: {9}<br />Total score: {10}<br />Member Id: {11}",
-                       spammer.Blocked, 
-                       spammer.Name, 
-                       spammer.Company, 
-                       spammer.Bio.Replace("\n", "<br />"),
-                       spammer.Email, 
-                       spammer.Ip,
-                       spammer.ScoreIp, 
-                       spammer.FrequencyIp, 
-                       spammer.ScoreEmail, 
-                       spammer.FrequencyEmail, 
+                       spammer.Blocked,
+                       spammer.Name ?? string.Empty, 
+                       spammer.Company ?? string.Empty, 
+                       spammer.Bio == null ? string.Empty : spammer.Bio.Replace("\n", "<br />"),
+                       spammer.Email ?? string.Empty, 
+                       spammer.Ip ?? string.Empty,
+                       spammer.ScoreIp ?? string.Empty, 
+                       spammer.FrequencyIp ?? string.Empty,
+                       spammer.ScoreEmail ?? string.Empty,
+                       spammer.FrequencyEmail ?? string.Empty, 
                        spammer.TotalScore, 
                        spammer.MemberId);
 
