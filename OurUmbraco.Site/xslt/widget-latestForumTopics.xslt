@@ -36,7 +36,6 @@
             <xsl:otherwise>
               <a class="entry-content">
                 <xsl:attribute name="href">
-                  <xsl:value-of select="$urlPrefix"/>
                   <xsl:value-of select="uForum:NiceTopicUrl(id)"/>
                 </xsl:attribute>
                 <xsl:value-of select="umbraco.library:TruncateString(title, 40, '...')" />
