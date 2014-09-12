@@ -3,16 +3,17 @@
 <%@ Register TagPrefix="cc1" Namespace="umbraco.uicontrols" Assembly="controls" %>
 <%@ Register Namespace="umbraco" TagPrefix="umb" Assembly="umbraco" %>
 <%@ Register TagPrefix="umb" Namespace="ClientDependency.Core.Controls" Assembly="ClientDependency.Core" %>
+<%@ Register TagPrefix="umbClient" Namespace="Umbraco.Web.UI.Bundles" Assembly="umbraco" %>
+
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" >
 <html>
 <head runat="server">
     <title>Login - Umbraco - <%=Request.Url.Host.ToLower().Replace("www.", "") %></title>
     <cc1:UmbracoClientDependencyLoader runat="server" ID="ClientLoader" />
     <umb:CssInclude ID="CssInclude1" runat="server" FilePath="ui/default.css" PathNameAlias="UmbracoClient" />
-    <umb:JsInclude ID="JsInclude1" runat="server" FilePath="ui/default.js" PathNameAlias="UmbracoClient" />
-    <umb:JsInclude ID="JsInclude3" runat="server" FilePath="ui/jquery.js" PathNameAlias="UmbracoClient"
-        Priority="0" />
-    <umb:JsInclude ID="JsInclude2" runat="server" FilePath="ui/jqueryui.js" PathNameAlias="UmbracoClient" />
+    <umbClient:JsJQueryCore ID="JsJQueryCore1" runat="server"/>
+    <umb:JsInclude ID="JsInclude1" runat="server" FilePath="ui/default.js" PathNameAlias="UmbracoClient" />    
+
     <style type="text/css">
         html
         {
@@ -59,7 +60,7 @@
 <body>
     <form id="Form1" method="post" runat="server">
     <cc1:UmbracoPanel Style="text-align: left;" ID="Panel1" runat="server" Height="347px"
-        Width="340px" Text="Umbraco 4 login" AutoResize="false">
+        Width="340px" Text="Umbraco login" AutoResize="false">
         <div style="padding: 70px 0px 0px 0px;">
             <p style="margin: 0px; padding: 5px 0px 20px 0px; color: #999">
                 <asp:Literal ID="TopText" runat="server"></asp:Literal>
@@ -109,11 +110,13 @@
     <asp:HiddenField ID="hf_height" runat="server" />
     <asp:HiddenField ID="hf_width" runat="server" />
     </form>
-    <script type="text/javascript">
-        jQuery("#<%= lname.ClientID %>").focus();
-        jQuery('#<%= hf_height.ClientID %>').value = getViewportHeight();
-        jQuery('#<%= hf_width.ClientID %>').value = getViewportWidth();    
-    </script>
+    <asp:PlaceHolder ID="loginJavascript" runat="server">
+        <script type="text/javascript">
+            jQuery("#<%= lname.ClientID %>").focus();
+            jQuery('#<%= hf_height.ClientID %>').value = getViewportHeight();
+            jQuery('#<%= hf_width.ClientID %>').value = getViewportWidth();    
+        </script>
+    </asp:PlaceHolder>
     <asp:PlaceHolder Visible="false" ID="loginError" runat="server">
         <script type="text/javascript">
             jQuery(document).ready(function () {

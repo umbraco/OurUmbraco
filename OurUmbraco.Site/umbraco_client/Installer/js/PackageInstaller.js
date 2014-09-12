@@ -72,6 +72,14 @@
 
             //bind to the click handler for each of the install starter kit buttons
             this._opts.starterKits.click(function () {
+                // show status screen
+                $(".thumbnails").fadeOut();
+                $(".declineKit").fadeOut();
+                $("#starter-kit-progress").fadeIn();
+
+                // set progress
+                self._setProgress("5", "Downloading " + $(this).attr("data-name"));
+
                 //set the package id to install
                 self._packageId = $(this).attr("data-repoId");
                 self.downloadPackageFiles();
@@ -157,13 +165,7 @@
                         self._setProgress(r.percentage, r.message);
                         //install business logic
                         self.installBusinessLogic();
-                    }
-                    else if (r && !r.success) {
-                        //hasn't completed restarted, re-poll in 2 seconds
-                        setTimeout(function() {
-                            self.pollForRestart();
-                        }, 2000);
-                    }
+                    }                    
                     else {
                         self._showServerError("The server did not respond");
                     }
@@ -178,7 +180,7 @@
                 data: "{'kitGuid': '" + self._packageId + "', 'manifestId': '" + self._manifestId + "', 'packageFile': '" + encodeURIComponent(self._packageFile) + "'}",
                 url: self._opts.baseUrl + '/InstallBusinessLogic',
                 success: function (r) {
-                    if (r && r.success) {
+                    if (r) {
                         //set the progress
                         self._setProgress(r.percentage, r.message);
                         //cleanup install
@@ -198,7 +200,7 @@
                 data: "{'kitGuid': '" + self._packageId + "', 'manifestId': '" + self._manifestId + "', 'packageFile': '" + encodeURIComponent(self._packageFile) + "'}",
                 url: self._opts.baseUrl + '/CleanupInstallation',
                 success: function (r) {
-                    if (r && r.success) {
+                    if (r) {
                         //set the progress
                         self._setProgress(r.percentage, r.message);
                         //installation complete!

@@ -38,10 +38,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="businesslogic">
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms">
-      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -59,7 +59,7 @@
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="umbraco">
-      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

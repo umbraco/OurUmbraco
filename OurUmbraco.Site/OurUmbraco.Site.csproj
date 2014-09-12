@@ -43,22 +43,22 @@
   <ItemGroup>
     <Reference Include="businesslogic, Version=1.0.4679.40364, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="ClientDependency.Core">
-      <HintPath>..\dependencies\4.9.1\ClientDependency.Core.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\ClientDependency.Core.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.4731.28386, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
     </Reference>
     <Reference Include="controls, Version=1.0.4731.28386, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\controls.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\controls.dll</HintPath>
     </Reference>
     <Reference Include="CookComputing.XmlRpcV2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\CookComputing.XmlRpcV2.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
     <Reference Include="DotNetOpenMail">
       <HintPath>..\dependencies\Our\DotNetOpenMail.dll</HintPath>
@@ -72,7 +72,7 @@
     </Reference>
     <Reference Include="Examine, Version=0.1.42.2941, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Examine.dll</HintPath>
     </Reference>
     <Reference Include="FergusonMoriyama.ConfigFormRenderer">
       <HintPath>..\dependencies\Our\FergusonMoriyama.ConfigFormRenderer.dll</HintPath>
@@ -94,11 +94,11 @@
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.3.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\ICSharpCode.SharpZipLib.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="imagegen">
       <HintPath>..\dependencies\Our\imagegen.dll</HintPath>
@@ -108,7 +108,7 @@
     </Reference>
     <Reference Include="interfaces, Version=1.0.4731.28385, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="itextsharp">
       <HintPath>..\dependencies\Our\itextsharp.dll</HintPath>
@@ -118,7 +118,7 @@
       <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.4.1, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="LuceneTools">
       <HintPath>..\dependencies\Our\LuceneTools.dll</HintPath>
@@ -148,7 +148,7 @@
       <HintPath>..\dependencies\Our\MemberTools.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
-      <HintPath>..\dependencies\4.9.1\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.QualityTools.Testing.Fakes, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
@@ -161,22 +161,13 @@
     </Reference>
     <Reference Include="MySql.Data, Version=6.5.4.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\MySql.Data.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="Nibble.Umb.Poll">
       <HintPath>..\dependencies\Our\Nibble.Umb.Poll.dll</HintPath>
     </Reference>
     <Reference Include="our.mapR">
       <HintPath>..\dependencies\Our\our.mapR.dll</HintPath>
-    </Reference>
-    <Reference Include="Our.Umbraco.uGoLive">
-      <HintPath>..\dependencies\4.9.1\Our.Umbraco.uGoLive.dll</HintPath>
-    </Reference>
-    <Reference Include="Our.Umbraco.uGoLive.47x">
-      <HintPath>..\dependencies\4.9.1\Our.Umbraco.uGoLive.47x.dll</HintPath>
-    </Reference>
-    <Reference Include="Our.Umbraco.uGoLive.Checks">
-      <HintPath>..\dependencies\4.9.1\Our.Umbraco.uGoLive.Checks.dll</HintPath>
     </Reference>
     <Reference Include="Our.Umbraco.uTwit.DataType, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -200,16 +191,16 @@
       <HintPath>..\dependencies\Our\SignalR.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco">
-      <HintPath>..\dependencies\4.9.1\SQLCE4Umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\SQLCE4Umbraco.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\System.Data.SqlServerCe.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\System.Data.SqlServerCe.dll</HintPath>
     </Reference>
     <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\System.Data.SqlServerCe.Entity.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\System.Data.SqlServerCe.Entity.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -254,29 +245,29 @@
     </Reference>
     <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\TidyNet.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\TidyNet.dll</HintPath>
     </Reference>
     <Reference Include="uComponents.Core">
       <HintPath>..\dependencies\Our\uComponents.Core.dll</HintPath>
     </Reference>
     <Reference Include="umbraco, Version=1.0.4731.28387, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Core, Version=1.0.4731.28385, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\Umbraco.Core.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Umbraco.Core.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.DataLayer, Version=1.0.4731.28385, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.DataLayer.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.DataLayer.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Ecommerce">
       <HintPath>..\dependencies\Our\Umbraco.Ecommerce.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.4731.28397, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.editorControls.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.editorControls.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Forms.CodeFirst">
       <HintPath>..\dependencies\Contour\Umbraco.Forms.CodeFirst.dll</HintPath>
@@ -294,14 +285,11 @@
       <HintPath>..\dependencies\Contour\Umbraco.Forms.UI.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.MacroEngines">
-      <HintPath>..\dependencies\4.9.1\umbraco.MacroEngines.dll</HintPath>
-    </Reference>
-    <Reference Include="umbraco.macroRenderings">
-      <HintPath>..\dependencies\4.9.1\umbraco.macroRenderings.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.MacroEngines.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.providers, Version=1.0.4731.28386, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.providers.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.providers.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Support">
       <HintPath>..\dependencies\Our\Umbraco.Support.dll</HintPath>
@@ -316,14 +304,14 @@
       <HintPath>..\dependencies\Our\umbraco.UQL.RazorContext.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI">
-      <HintPath>..\dependencies\4.9.1\Umbraco.Web.UI.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Umbraco.Web.UI.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.XmlSerializers">
-      <HintPath>..\dependencies\4.9.1\umbraco.XmlSerializers.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.XmlSerializers.dll</HintPath>
     </Reference>
     <Reference Include="UmbracoExamine, Version=0.1.42.2941, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\UmbracoExamine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\UmbracoExamine.dll</HintPath>
     </Reference>
     <Reference Include="UmbracoExamine.PDF">
       <HintPath>..\dependencies\Our\UmbracoExamine.PDF.dll</HintPath>
@@ -332,7 +320,7 @@
       <HintPath>..\dependencies\Our\umbracoMemberControls.dll</HintPath>
     </Reference>
     <Reference Include="UrlRewritingNet.UrlRewriter">
-      <HintPath>..\dependencies\4.9.1\UrlRewritingNet.UrlRewriter.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\UrlRewritingNet.UrlRewriter.dll</HintPath>
     </Reference>
     <Reference Include="YouTrackSharp">
       <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>

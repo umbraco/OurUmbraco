@@ -44,19 +44,19 @@
     </Reference>
     <Reference Include="businesslogic, Version=1.0.3496.7966, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3502.37200, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
     </Reference>
     <Reference Include="controls, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\controls.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\controls.dll</HintPath>
     </Reference>
     <Reference Include="interfaces, Version=1.0.4679.40364, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <Private>True</Private>
@@ -113,11 +113,11 @@
     <Reference Include="System.Xml" />
     <Reference Include="umbraco, Version=1.0.3441.17657, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.DataLayer, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.DataLayer.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.DataLayer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

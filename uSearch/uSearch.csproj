@@ -42,7 +42,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="businesslogic">
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3373.692, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -50,7 +50,7 @@
     </Reference>
     <Reference Include="Examine, Version=0.10.0.292, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Examine.dll</HintPath>
     </Reference>
     <Reference Include="interfaces, Version=1.0.3373.676, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -58,19 +58,19 @@
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\Marketplace.dll</HintPath>
+      <HintPath>..\dependencies\Marketplace\Marketplace.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\Marketplace.Interfaces.dll</HintPath>
+      <HintPath>..\dependencies\Marketplace\Marketplace.Interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Providers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\Marketplace.Providers.dll</HintPath>
+      <HintPath>..\dependencies\Marketplace\Marketplace.Providers.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -93,7 +93,7 @@
     </Reference>
     <Reference Include="UmbracoExamine, Version=0.10.0.292, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\UmbracoExamine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\UmbracoExamine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

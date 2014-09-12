@@ -12,57 +12,42 @@ function expandCollapse(theId) {
         document.getElementById("desc" + theId).style.display = 'block';
     }
 }
-function duplicatePropertyNameAsSafeAlias(theId, theAliasId) {
-    jQuery('#' + theId).keyup(function(event) {
-        var message = jQuery('#' + theId).val();
-        jQuery('#' + theAliasId).val(safeAlias(message));
-    })
+function duplicatePropertyNameAsSafeAlias(propertySelector) {
+    $(propertySelector).each(function() {
+        var prop = $(this);
+        var inputName = prop.find('.prop-name');
+        var inputAlias = prop.find('.prop-alias');
+        inputName.on('input blur', function (event) {
+            getSafeAlias(inputAlias, inputName.val(), false, function (alias) {
+                if (!inputAlias.data('dirty'))
+                    inputAlias.val(alias);
+            });
+        });
+        inputAlias.on('input', function(event) {
+            inputName.off('input blur');
+        });
+    });
 }
 
-function checkAlias(theId) {
-    jQuery('#' + theId).keyup(function(event) {
-        var currentAlias = jQuery('#' + theId).val();
-        jQuery('#' + theId).toggleClass('aliasValidationError', !isValidAlias(currentAlias));
-    })
-
-    jQuery('#' + theId).blur(function(event) {
-        var currentAlias = jQuery('#' + theId).val();
-        jQuery('#' + theId).val(safeAlias(currentAlias));
-        jQuery('#' + theId).removeClass('aliasValidationError');
-    })
-
+function checkAlias(aliasSelector) {
+    $(aliasSelector).on('input', function (event) {
+        var input = $(this);
+        input.data('dirty', true);
+        var value = input.val();
+        validateSafeAlias(input, value, false, function (isSafe) {
+            input.toggleClass('highlight-error', !isSafe);
+        });
+    }).on('blur', function(event) {
+        var input = $(this);
+        if (!input.data('dirty')) return;
+        input.removeData('dirty');
+        var value = input.val();
+        getSafeAlias(input, value, true, function (alias) {
+            if (value.toLowerCase() != alias.toLowerCase())
+                input.val(alias);
+            input.removeClass('highlight-error');
+        });
+    });
 }
 
-function safeAlias(alias) {
-    if (UMBRACO_FORCE_SAFE_ALIAS) {
-        var safeAlias = '';
-        var aliasLength = alias.length;
-        for (var i = 0; i < aliasLength; i++) {
-            currentChar = alias.substring(i, i + 1);
-            if (UMBRACO_FORCE_SAFE_ALIAS_VALIDCHARS.indexOf(currentChar.toLowerCase()) > -1) {
-                // check for camel (if previous character is a space, we'll upper case the current one
-                if (safeAlias == '' && UMBRACO_FORCE_SAFE_ALIAS_INVALID_FIRST_CHARS.indexOf(currentChar.toLowerCase()) > 0) { 
-                    currentChar = '';
-                } else {
-                    // first char should always be lowercase (camel style)
-                    if (safeAlias.length == 0)
-                        currentChar = currentChar.toLowerCase();
-
-                    if (i < aliasLength - 1 && safeAlias != '' && alias.substring(i - 1, i) == ' ')
-                        currentChar = currentChar.toUpperCase();
-
-                    safeAlias += currentChar;
-                }
-            }
-        }
-
-        return safeAlias;
-
-    } else {
-        return alias;
-    }
-}
-
-function isValidAlias(alias) {
-    return alias == safeAlias(alias);
-}
+// validateSafeAlias and getSafeAlias are defined by UmbracoCasingRules.aspx

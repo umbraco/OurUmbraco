@@ -45,11 +45,11 @@
   <ItemGroup>
     <Reference Include="businesslogic, Version=1.0.3441.18044, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.3448.14851, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -57,16 +57,13 @@
     </Reference>
     <Reference Include="interfaces, Version=1.0.3438.34252, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Joel.Net.Akismet">
       <HintPath>..\dependencies\Akismet\Joel.Net.Akismet.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="RestSharp">
@@ -89,11 +86,11 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="umbraco, Version=1.0.3441.17657, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.DataLayer, Version=0.3.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.DataLayer.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.DataLayer.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

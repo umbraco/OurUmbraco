@@ -52,14 +52,14 @@
     </Reference>
     <Reference Include="businesslogic, Version=1.0.4731.28385, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
     <Reference Include="cms, Version=1.0.4731.28386, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
     </Reference>
     <Reference Include="Examine">
-      <HintPath>..\dependencies\4.9.1\Examine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Examine.dll</HintPath>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.5.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -67,14 +67,14 @@
     </Reference>
     <Reference Include="interfaces, Version=1.0.4076.22254, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\interfaces.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\interfaces.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.2.2, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\Lucene.Net.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Lucene.Net.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
-      <HintPath>..\dependencies\4.9.1\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\Microsoft.ApplicationBlocks.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -93,18 +93,18 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="umbraco, Version=1.0.4077.25828, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.DataLayer, Version=1.0.4064.21726, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.DataLayer.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.DataLayer.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.4077.25834, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\4.9.1\umbraco.editorControls.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\umbraco.editorControls.dll</HintPath>
     </Reference>
     <Reference Include="UmbracoExamine">
-      <HintPath>..\dependencies\4.9.1\UmbracoExamine.dll</HintPath>
+      <HintPath>..\dependencies\7.1.6\UmbracoExamine.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
