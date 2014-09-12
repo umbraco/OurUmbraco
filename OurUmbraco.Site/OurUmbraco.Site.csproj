@@ -98,9 +98,9 @@
     <Reference Include="FergusonMoriyama.UmbracoPackages.Tree">
       <HintPath>..\dependencies\Our\FergusonMoriyama.UmbracoPackages.Tree.dll</HintPath>
     </Reference>
-    <Reference Include="HtmlAgilityPack, Version=1.4.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+    <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\HtmlAgilityPack.1.4.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
+      <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -325,7 +325,6 @@
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
-    <Content Include="bin\legacy\HtmlAgilityPack.dll" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
@@ -363,7 +362,6 @@
     <Content Include="config\uVersion.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="config\xsltExtensions.config" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
     <Content Include="css\img\select2.png" />

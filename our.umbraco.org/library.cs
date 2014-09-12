@@ -7,6 +7,7 @@ using umbraco.BusinessLogic;
 using System.Xml.XPath;
 
 namespace our {
+    [Umbraco.Core.Macros.XsltExtension("our.library")]
     public class Utills {
         private static Regex _tags = new Regex("<[^>]*(>|$)", RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
         private static Regex _whitelist = new Regex(@"

@@ -10,6 +10,7 @@ namespace uForum.Library {
     /// This class contains raw xml from the database server, so extra coloumns addded etc, will be included in these feeds.
     /// These are uncached feeds, so should only be used with macros that 
     /// </summary>
+    [Umbraco.Core.Macros.XsltExtension("uForum.raw")]
     public class RawXml {
 
         public static XPathNodeIterator TopicsWithParticipation(int memberId, int maxItems, int page) {

@@ -8,6 +8,7 @@ using NotificationsWeb.BusinessLogic;
 
 namespace NotificationsWeb.Library
 {
+    [Umbraco.Core.Macros.XsltExtension("Notifications")]
     public class Xslt
     {
         public static bool IsSubscribedToForum(int forumId, int memberId)

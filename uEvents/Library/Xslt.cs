@@ -9,6 +9,7 @@ using System.Xml;
 
 namespace uEvents.Library
 {
+    [Umbraco.Core.Macros.XsltExtension("uEvents")]
     public class Xslt
     {
         public static bool isSignedUp(int eventId, int memberId)

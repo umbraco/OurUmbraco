@@ -6,6 +6,7 @@ using System.Xml;
 
 namespace Umb.OurUmb.MemberLocator
 {
+    [Umbraco.Core.Macros.XsltExtension("MemberLocator")]
     public class Utility
     {
         /// <summary>

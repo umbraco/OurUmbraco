@@ -6,6 +6,7 @@ using System.Web;
 using System.Data;
 
 namespace uPowers.Library {
+    [Umbraco.Core.Macros.XsltExtension("uPowers")]
     public class Xslt {
 
         //this will be changed to something abit less static before Upowers are released, if it ever is...

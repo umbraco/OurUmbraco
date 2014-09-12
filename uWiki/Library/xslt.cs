@@ -10,6 +10,7 @@ using umbraco.cms.businesslogic.property;
 using umbraco.cms.businesslogic.propertytype;
 
 namespace uWiki.Library {
+    [Umbraco.Core.Macros.XsltExtension("uWiki")]
     public class Xslt {
         public static XPathNodeIterator PageHistory(int nodeId) {
             Document doc = new Document(nodeId);
