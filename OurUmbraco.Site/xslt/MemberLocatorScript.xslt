@@ -40,7 +40,7 @@
 <xsl:choose>
 
 
-<xsl:when test="count(/root/member [@id != umbraco.library:GetCurrentMember()/@id]) = 0">
+<xsl:when test="count(/root/member [@id != uForum:GetCurrentMember()/@id]) = 0">
 	document.getElementById('memberlocatorextra').style.display = 'block';
 </xsl:when>
 <xsl:otherwise>
@@ -58,7 +58,7 @@
    
     map.setCenter(new GLatLng(<xsl:value-of select="/root/location"/>), <xsl:value-of select="$zoomlevel"/>);
         
-	<xsl:for-each select="/root/member [@id != umbraco.library:GetCurrentMember()/@id]">
+	<xsl:for-each select="/root/member [@id != uForum:GetCurrentMember()/@id]">
 	<xsl:sort select="./data [@alias = 'distance']" data-type="number"/>	
 	<xsl:if test="string-length(./@name) &gt; 0">
 

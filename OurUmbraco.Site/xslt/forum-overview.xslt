@@ -24,7 +24,7 @@
 	<xsl:variable name="forumFrontPageId" select="1053" />
 
 	<xsl:variable name="isLoggedOn" select="umbraco.library:IsLoggedOn()"/>
-	<xsl:variable name="currentMember" select="umbraco.library:GetCurrentMember()"/>
+	<xsl:variable name="currentMember" select="uForum:GetCurrentMember()"/>
 
 	<xsl:template match="/">
 		<xsl:if test="$isLoggedOn">

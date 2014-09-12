@@ -15,7 +15,7 @@
     <xsl:param name="currentPage"/>
 
     <xsl:template match="/">
-        <xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+        <xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
         <xsl:variable name="memberTopics" select="uForum.raw:TopicsWithParticipation($mem/@id)"/>
 
         <div style="overflow: hidden; width: 480px; float: left; clear: none;">

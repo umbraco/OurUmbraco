@@ -22,7 +22,7 @@
     <div id="profile">
       
       <xsl:if test="umbraco.library:IsLoggedOn()">
-      <xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+      <xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
   
       You are logged in as: 
       <xsl:value-of select="$mem/@nodeName" />

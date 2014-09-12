@@ -21,13 +21,13 @@
 
 	<xsl:variable name="mem">
 		<xsl:if test="umbraco.library:IsLoggedOn()">
-			<xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
+			<xsl:value-of select="uForum:GetCurrentMember()/@id"/>
 		</xsl:if>
 	</xsl:variable>
 
 	<xsl:template match="/">
 		<xsl:choose>
-			<xsl:when test="umbraco.library:GetCurrentMember()/bugMeNot = 1">
+			<xsl:when test="uForum:GetCurrentMember()/bugMeNot = 1">
 				<div class="alert" style="width:600px">
 					Currently you will not receive any notifications since your profile preference is set
 					to 'Do not send me any notifications or newsletters from our.umbraco.org'.

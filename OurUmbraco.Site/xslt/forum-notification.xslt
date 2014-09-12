@@ -12,7 +12,7 @@
 
 <xsl:param name="currentPage"/>
 
-<xsl:variable name="mem"><xsl:if test="umbraco.library:IsLoggedOn()"><xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/></xsl:if></xsl:variable>
+<xsl:variable name="mem"><xsl:if test="umbraco.library:IsLoggedOn()"><xsl:value-of select="uForum:GetCurrentMember()/@id"/></xsl:if></xsl:variable>
 <xsl:variable name="forumid" select="$currentPage/@id" />
 
 <xsl:template match="/">

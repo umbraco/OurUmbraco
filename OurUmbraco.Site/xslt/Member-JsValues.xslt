@@ -10,7 +10,8 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" 
 	xmlns:msxml="urn:schemas-microsoft-com:xslt"
 	xmlns:umbraco.library="urn:umbraco.library"
-	exclude-result-prefixes="msxml umbraco.library"
+	xmlns:uForum="urn:uForum"
+	exclude-result-prefixes="msxml umbraco.library uForum"
 >
 
 	<xsl:output method="xml" omit-xml-declaration="yes"/>
@@ -21,7 +22,7 @@
 
 	<xsl:template match="/">
 		<xsl:if test="$isLoggedOn">
-		<xsl:variable name="member" select="umbraco.library:GetCurrentMember()"/>
+		<xsl:variable name="member" select="uForum:GetCurrentMember()"/>
 			<script type="text/javascript">
 				var umb_member_guid = '<xsl:value-of select="$member/@id"/>';
 				var umb_member_name = '<xsl:value-of select="$member/@nodeName"/>';

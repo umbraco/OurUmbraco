@@ -20,14 +20,14 @@
 
         <xsl:variable name="mem">
             <xsl:if test="umbraco.library:IsLoggedOn()">
-                <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
+                <xsl:value-of select="uForum:GetCurrentMember()/@id"/>
             </xsl:if>
         </xsl:variable>
 
         <xsl:variable name="isAdmin" select="uForum:IsInGroup('admin')"/>
         <xsl:variable name="files" select="uWiki:GetAttachedFiles($currentPage/@id)" />
         <xsl:variable name="owner" select="umbraco.library:GetMember( number($currentPage/owner) )"/>
-        <xsl:variable name="canVote" select="boolean( number(umbraco.library:GetCurrentMember()/reputationCurrent) &gt; 25 )"/>
+        <xsl:variable name="canVote" select="boolean( number(uForum:GetCurrentMember()/reputationCurrent) &gt; 25 )"/>
         
         <div id="project">
           

@@ -16,7 +16,7 @@
 
   <xsl:if test="umbraco.library:IsLoggedOn()">
     
-    <xsl:variable name="items" select="uPowers:ItemsVotedFor(umbraco.library:GetCurrentMember()/@id, 'powersProject')"/>
+    <xsl:variable name="items" select="uPowers:ItemsVotedFor(uForum:GetCurrentMember()/@id, 'powersProject')"/>
     <ul>
     <xsl:for-each select="$items/items/item/id">
       

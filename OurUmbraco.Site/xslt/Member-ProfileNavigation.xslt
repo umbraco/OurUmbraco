@@ -14,7 +14,7 @@
 <!-- Don't change this, but add a 'contentPicker' element to -->
 <!-- your macro with an alias named 'source' -->
 <xsl:variable name="source" select="umbraco.library:GetXmlNodeById(/macro/source)"/>
-<xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+<xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
 
 <xsl:template match="/">
 

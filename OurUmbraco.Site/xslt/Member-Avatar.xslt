@@ -7,7 +7,8 @@
   xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
   xmlns:msxml="urn:schemas-microsoft-com:xslt"
   xmlns:umbraco.library="urn:umbraco.library"
-  exclude-result-prefixes="msxml umbraco.library">
+  xmlns:uForum="urn:uForum"
+  exclude-result-prefixes="msxml umbraco.library uForum">
 
 
   <xsl:output method="html" omit-xml-declaration="yes"/>
@@ -15,7 +16,7 @@
   <xsl:param name="currentPage"/>
 
   <xsl:template match="/">
-    <xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+    <xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
     <xsl:variable name="editor" select="umbraco.library:NiceUrl(1057)"/>
 
     <div id="buddyIconForm">

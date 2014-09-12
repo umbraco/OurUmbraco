@@ -98,7 +98,7 @@ RE: <xsl:value-of select="title" />
 <xsl:call-template name="renderTopBar"><xsl:with-param name="title">Your Topics</xsl:with-param><xsl:with-param name="backLink" select="concat('/','') "/></xsl:call-template>
 <div id="content">
 <ul class="topicList list">
-<xsl:for-each select="uForum.raw:TopicsWithAuthor(umbraco.library:GetCurrentMember()/@id)/topics/topic">
+<xsl:for-each select="uForum.raw:TopicsWithAuthor(uForum:GetCurrentMember()/@id)/topics/topic">
 <xsl:sort select="updated" order ="descending"/>
 
 	<xsl:call-template name="renderTopic"><xsl:with-param name="topic" select="."/></xsl:call-template>
@@ -113,7 +113,7 @@ RE: <xsl:value-of select="title" />
 
 <div id="content">
 <xsl:if test="$loggedOn">
-<p>Welcome <xsl:value-of select="umbraco.library:GetMemberName(umbraco.library:GetCurrentMember()/@id)"/></p>
+<p>Welcome <xsl:value-of select="umbraco.library:GetMemberName(uForum:GetCurrentMember()/@id)"/></p>
 </xsl:if>
 <ul class="list">
 <li><a href="?mode=latest">Latest topics</a></li>

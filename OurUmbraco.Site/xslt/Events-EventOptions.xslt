@@ -24,7 +24,7 @@
 
 <xsl:if test="umbraco.library:IsLoggedOn()">
   <div class="box" style="text-align: center">
-  <xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+  <xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
   
   <xsl:if test="true and number($mem/@id) = number($currentPage/owner)">
     <small>Notify event participants</small>

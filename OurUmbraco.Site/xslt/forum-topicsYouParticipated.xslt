@@ -31,7 +31,7 @@
 
         <xsl:when test="umbraco.library:IsLoggedOn()">
 
-          <xsl:variable name="mem" select="umbraco.library:GetCurrentMember()/@id"/>
+          <xsl:variable name="mem" select="uForum:GetCurrentMember()/@id"/>
 
           <xsl:variable name="pages" select="uForum:MemberTopicPager($mem, $recordsPerPage, $pageNumber)"/>
           <xsl:variable name="topics" select="uForum.raw:TopicsWithParticipation($mem, $recordsPerPage, $pageNumber)//topic"/>

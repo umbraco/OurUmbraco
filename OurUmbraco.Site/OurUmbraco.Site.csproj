@@ -281,6 +281,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.MacroEngines.dll</HintPath>
     </Reference>
+    <Reference Include="umbraco.presentation.xslt.Exslt">
+      <HintPath>..\dependencies\Our\umbraco.presentation.xslt.Exslt.dll</HintPath>
+    </Reference>
     <Reference Include="umbraco.providers, Version=1.0.5350.25719, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.providers.dll</HintPath>

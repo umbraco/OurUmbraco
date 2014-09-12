@@ -25,6 +25,23 @@ namespace uForum.Library
                 return "";
         }
 
+        public static XPathNodeIterator GetCurrentMember()
+        {
+            Member m = Member.GetCurrentMember();
+            if (m != null)
+            {
+                XmlDocument mXml = new XmlDocument();
+                mXml.LoadXml(m.ToXml(mXml, false).OuterXml);
+                XPathNavigator xp = mXml.CreateNavigator();
+                return xp.Select("/*");
+            }
+
+            XmlDocument xd = new XmlDocument();
+            xd.LoadXml(
+                "<error>No current member exists (best practice is to validate with 'isloggedon()' prior to this call)</error>");
+            var retVal = xd.CreateNavigator().Select("/");
+            return retVal;
+        }
 
         public static string CleanBBCode(string html)
         {

@@ -15,8 +15,8 @@
 <xsl:variable name="minLevel" select="1" />
 <xsl:variable name="isAdmin" select="uForum:IsInGroup('admin') or uForum:IsInGroup('wiki editor')"/>
 <xsl:variable name="isLoggedOn" select="umbraco.library:IsLoggedOn()"/>
-<xsl:variable name="mem"><xsl:if test="$isLoggedOn"><xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/></xsl:if></xsl:variable>
-<xsl:variable name="canVote" select="boolean( number(umbraco.library:GetCurrentMember()/reputationCurrent) &gt;= 25 )"/>
+<xsl:variable name="mem"><xsl:if test="$isLoggedOn"><xsl:value-of select="uForum:GetCurrentMember()/@id"/></xsl:if></xsl:variable>
+<xsl:variable name="canVote" select="boolean( number(uForum:GetCurrentMember()/reputationCurrent) &gt;= 25 )"/>
 <xsl:variable name="isUmbracoHelp" select="$currentPage/@level > 3 and $currentPage/ancestor-or-self::* [@isDoc and @level = 3]/@nodeName = 'Umbraco Help'" />
 
 <div id="wikivoting" class="voting rounded">

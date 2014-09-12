@@ -21,7 +21,7 @@
   <xsl:variable name="isHQ" select="uForum:IsInGroup('HQ')"/>
   <xsl:variable name="mem">
     <xsl:if test="umbraco.library:IsLoggedOn()">
-      <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
+      <xsl:value-of select="uForum:GetCurrentMember()/@id"/>
     </xsl:if>
   </xsl:variable>
 

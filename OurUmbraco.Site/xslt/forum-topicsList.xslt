@@ -16,7 +16,7 @@
 
   <xsl:variable name="mem">
     <xsl:if test="umbraco.library:IsLoggedOn()">
-      <xsl:value-of select="umbraco.library:GetCurrentMember()/@id"/>
+      <xsl:value-of select="uForum:GetCurrentMember()/@id"/>
     </xsl:if>
   </xsl:variable>
   <xsl:variable name="forumid" select="$currentPage/@id" />
@@ -27,7 +27,7 @@
       <xsl:variable name="treshold">
         <xsl:choose>
           <xsl:when test="umbraco.library:IsLoggedOn()">
-            <xsl:value-of select="umbraco.library:GetCurrentMember()/treshold" />
+            <xsl:value-of select="uForum:GetCurrentMember()/treshold" />
           </xsl:when>
           <xsl:otherwise>-10</xsl:otherwise>
         </xsl:choose>

@@ -24,7 +24,7 @@
 <xsl:template match="/">
 
 <xsl:if test="umbraco.library:IsLoggedOn()">
-<xsl:variable name="mem" select="umbraco.library:GetCurrentMember()"/>
+<xsl:variable name="mem" select="uForum:GetCurrentMember()"/>
 
 <h3><a href="{umbraco.library:NiceUrl($editor)}">Create a new project</a></h3>
 

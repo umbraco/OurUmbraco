@@ -41,7 +41,7 @@
 <xsl:choose>
 
 
-<xsl:when test="count(/root/member [@id != umbraco.library:GetCurrentMember()/@id]) = 0">
+<xsl:when test="count(/root/member [@id != uForum:GetCurrentMember()/@id]) = 0">
 <div class="error">
 	<xsl:choose>
 	<xsl:when test="string-length(/root/location/@name) &gt; 0">
@@ -69,9 +69,9 @@
 
 
 <div class="box">
-<h4><xsl:value-of select="count(/root/member [@id != umbraco.library:GetCurrentMember()/@id and string-length(@name) &gt; 0]) "/> members found within <xsl:value-of select="/root/location/@radius"/>&nbsp;KM of <xsl:value-of select="/root/location/@name"/>:</h4>
+<h4><xsl:value-of select="count(/root/member [@id != uForum:GetCurrentMember()/@id and string-length(@name) &gt; 0]) "/> members found within <xsl:value-of select="/root/location/@radius"/>&nbsp;KM of <xsl:value-of select="/root/location/@name"/>:</h4>
 <ul class="forumTopics summary" style="height:535px;overflow:auto;">
-<xsl:for-each select="/root/member [@id != umbraco.library:GetCurrentMember()/@id]">
+<xsl:for-each select="/root/member [@id != uForum:GetCurrentMember()/@id]">
 	<xsl:sort select="./data [@alias = 'distance']" data-type="number"/>	
 	<xsl:variable name="member" select="." />
 	<xsl:if test="string-length($member/@name) &gt; 0">
