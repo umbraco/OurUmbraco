@@ -140,53 +140,63 @@ namespace uForum.Library
 
         public static SpamResult CheckForSpam(Member member)
         {
-            // Already blocked, nothing left to do here
-            if (member.getProperty("blocked") != null && member.getProperty("blocked").Value.ToString() == "1")
+            try
             {
-                return new SpamResult
+                // Already blocked, nothing left to do here
+                if (member.getProperty("blocked") != null && member.getProperty("blocked").Value != null && member.getProperty("blocked").Value.ToString() == "1")
                 {
-                    MemberId = member.Id,
-                    Name = member.Text,
-                    Blocked = true
-                };
-            }
-
-            // If reputation is > ReputationThreshold they've got enough karma, spammers never get that far
-            var reputation = member.getProperty("reputationTotal").Value.ToString();
-
-            int reputationTotal;
-            if (int.TryParse(reputation, out reputationTotal) && reputationTotal > ReputationThreshold)
-                return null;
-
-            // If they're already marked as suspicious then no need to process again
-            if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName))
-            {
-                return new SpamResult
-                {
-                    MemberId = member.Id,
-                    Name = member.Text,
-                    AlreadyInSpamRole = true
-                };
-            }
-
-            var spammer = CheckForSpam(member.Email, member.Text, false);
-
-            if (spammer != null && spammer.TotalScore > PotentialSpammerThreshold)
-            {
-                AddMemberToPotentialSpamGroup(member);
-
-                spammer.MemberId = member.Id;
-
-                SendPotentialSpamMemberMail(spammer);
-
-                if (spammer.Blocked)
-                {
-                    member.getProperty("blocked").Value = true;
-                    member.Save();
-
-                    // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
-                    HttpContext.Current.Response.Redirect("/");
+                    return new SpamResult
+                           {
+                               MemberId = member.Id,
+                               Name = member.Text,
+                               Blocked = true
+                           };
                 }
+
+                // If reputation is > ReputationThreshold they've got enough karma, spammers never get that far
+
+                var reputation = string.Empty;
+                if(member.getProperty("reputationTotal") != null && member.getProperty("reputationTotal").Value != null)
+                    reputation = member.getProperty("reputationTotal").Value.ToString();
+
+                int reputationTotal;
+                if (int.TryParse(reputation, out reputationTotal) && reputationTotal > ReputationThreshold)
+                    return null;
+
+                // If they're already marked as suspicious then no need to process again
+                if (Roles.IsUserInRole(member.LoginName, SpamMemberGroupName))
+                {
+                    return new SpamResult
+                           {
+                               MemberId = member.Id,
+                               Name = member.Text,
+                               AlreadyInSpamRole = true
+                           };
+                }
+
+                var spammer = CheckForSpam(member.Email, member.Text, false);
+
+                if (spammer != null && spammer.TotalScore > PotentialSpammerThreshold)
+                {
+                    AddMemberToPotentialSpamGroup(member);
+
+                    spammer.MemberId = member.Id;
+
+                    SendPotentialSpamMemberMail(spammer);
+
+                    if (spammer.Blocked)
+                    {
+                        member.getProperty("blocked").Value = true;
+                        member.Save();
+
+                        // If blocked, just redirect them to the home page where they'll get a message saying they're blocked
+                        HttpContext.Current.Response.Redirect("/");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error trying to CheckForSpam for a member {0} {1} {2}", ex.Message, ex.StackTrace, ex.InnerException));
             }
 
             return null;
