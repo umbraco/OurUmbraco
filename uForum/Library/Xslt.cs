@@ -10,6 +10,7 @@ using umbraco;
 using MarkdownSharp;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
+using Umbraco.Web.BaseRest;
 
 namespace uForum.Library
 {

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml.XPath;
@@ -10,11 +9,8 @@ using System.Xml;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using our.Businesslogic;
-
-//WB Added
-using umbraco.presentation.umbracobase;
-using our;
 using System.Web.Security;
+using Umbraco.Web.BaseRest;
 
 namespace our.Rest
 {
@@ -123,7 +119,7 @@ namespace our.Rest
             string e = email;
 
             //if user is already logged in and tries to re-enter his own email...
-            umbraco.cms.businesslogic.member.Member mem = umbraco.presentation.umbracobase.library.library.GetCurrentMember();
+            umbraco.cms.businesslogic.member.Member mem = Member.GetCurrentMember();
             if (mem != null && mem.Email == email)
                 return "true";
             else
@@ -172,7 +168,7 @@ namespace our.Rest
         public static string SetServiceAsBuddyIcon(string service)
         {
 
-            int id = umbraco.presentation.umbracobase.library.library.CurrentMemberId();
+            int id = Member.GetCurrentMember().Id;
 
             return SetAvatar(id, service);
         }
@@ -221,7 +217,7 @@ namespace our.Rest
             }
             else
             {
-                Member m = umbraco.presentation.umbracobase.library.library.GetCurrentMember();
+                Member m = Member.GetCurrentMember();
                 if (m != null)
                 {
                     byte[] imageBytes = HttpContext.Current.Request.BinaryRead(HttpContext.Current.Request.ContentLength);
@@ -276,7 +272,7 @@ namespace our.Rest
     {
         public static string ChangeCollabStatus(int projectId, bool status)
         {
-            int _currentMember = umbraco.presentation.umbracobase.library.library.CurrentMemberId();
+            int _currentMember = Member.GetCurrentMember().Id;
             if (_currentMember > 0)
             {
                 Document p = new Document(projectId);
@@ -301,7 +297,7 @@ namespace our.Rest
 
         public static string RemoveContributor(int projectId, int memberId)
         {
-            int _currentMember = umbraco.presentation.umbracobase.library.library.CurrentMemberId();
+            int _currentMember = Member.GetCurrentMember().Id;
 
             if (_currentMember > 0)
             {
@@ -331,7 +327,7 @@ namespace our.Rest
         /// <summary>
         /// WB Added: A way for members of the 'Admin' group to block a spammy member
         /// </summary>
-        [RestExtensionMethod(allowGroup = "admin", returnXml = false)]
+        [RestExtensionMethod(AllowGroup = "admin", ReturnXml = false)]
         public static string BlockMember(int memberId)
         {
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
@@ -363,7 +359,7 @@ namespace our.Rest
         /// <summary>
         /// WB Added: A way for members of the 'Admin' group to un-block a spammy member
         /// </summary>
-        [RestExtensionMethod(allowGroup = "admin", returnXml = false)]
+        [RestExtensionMethod(AllowGroup = "admin", ReturnXml = false)]
         public static string UnBlockMember(int memberId)
         {
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
@@ -392,7 +388,7 @@ namespace our.Rest
             return "false";
         }
 
-        [RestExtensionMethod(allowGroup = "HQ", returnXml = false)]
+        [RestExtensionMethod(AllowGroup = "HQ", ReturnXml = false)]
         public static string DeleteMember(int memberId)
         {
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
@@ -420,7 +416,7 @@ namespace our.Rest
             return "false";
         }
 
-        [RestExtensionMethod(allowGroup = "HQ", returnXml = false)]
+        [RestExtensionMethod(AllowGroup = "HQ", ReturnXml = false)]
         public static string GetBlockedMembers()
         {
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
