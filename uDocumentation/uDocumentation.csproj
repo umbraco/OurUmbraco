@@ -49,6 +49,9 @@
     <Reference Include="businesslogic">
       <HintPath>..\dependencies\7.1.6\businesslogic.dll</HintPath>
     </Reference>
+    <Reference Include="cms">
+      <HintPath>..\dependencies\7.1.6\cms.dll</HintPath>
+    </Reference>
     <Reference Include="ICSharpCode.SharpZipLib">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>

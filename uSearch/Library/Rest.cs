@@ -21,7 +21,7 @@ using Lucene.Net.Search;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using umbraco.presentation;
-using umbraco.presentation.umbracobase;
+using Umbraco.Web.BaseRest;
 using UmbracoExamine;
 
 namespace uSearch.Library
@@ -36,7 +36,7 @@ namespace uSearch.Library
             return Xslt.LuceneInContentType(keywords, types, 0, 255, maxItems);
         }
 
-        [RestExtensionMethod(returnXml = false)]
+        [RestExtensionMethod(ReturnXml = false)]
         public static string FindProjects(string query, int parent, bool wildcard)
         {
             if (query.ToLower() == "useqsstring") query = UmbracoContext.Current.Request.QueryString["term"];
