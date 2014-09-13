@@ -18,19 +18,19 @@ var uForum = function () {
             });
         },
         NewTopic: function (forumId, title, body,tags) {
-            $.post("/base/uForum/NewTopic/" + forumId + ".aspx", { title: title, body: body,tags:tags },
+            $.post("/umbraco/api/Forum/NewTopic/?forumId=" + forumId, { title: title, body: body,tags:tags },
             function (data) {
                 window.location = jQuery("value", data).text();
             });
         },
         EditTopic: function (topicId, title, body,tags) {
-            $.post("/base/uForum/EditTopic/" + topicId + ".aspx", { title: title, body: body,tags:tags },
+            $.post("/umbraco/api/Forum/EditTopic/?topicId=" + topicId, { title: title, body: body,tags:tags },
             function (data) {
                 window.location = jQuery("value", data).text();
             });
         },
         NewComment: function (topicId, items, body) {
-            $.post("/base/uForum/NewComment/" + topicId + "/" + items + ".aspx", { body: body },
+            $.post("/umbraco/api/Forum/NewComment/?topicId=" + topicId + "&itemsPerPage=" + items, { body: body },
             function (data) {
                 var forceReload = (window.location.href.indexOf("#") > -1);
                 window.location = jQuery("value", data).text();
@@ -41,7 +41,7 @@ var uForum = function () {
             });
         },
         EditComment: function (commentId, items, body) {
-            $.post("/base/uForum/EditComment/" + commentId + "/" + items + ".aspx", { body: body },
+            $.post("/umbraco/api/Forum/EditComment/?commentId=" + commentId + "&itemsPerPage=" + items, { body: body },
             function (data) {
                 var forceReload = (window.location.href.indexOf("#") > -1);
                 window.location = jQuery("value", data).text();
@@ -74,7 +74,7 @@ var uForum = function () {
                     jQuery.each(jQuery("result", data), function (index, value) {
                         var title = jQuery(value).find("Title").text();
                         var topicId = jQuery(value).find("__NodeId").text();
-                        html += "<li><a href='/base/uForum/TopicUrl/" + topicId + ".aspx' target='_blank' class='similarTopicLink'>" + title + "</a></li>";
+                        html += "<li><a href='/umbraco/api/Forum/TopicUrl/?topicId=" + topicId + "' target='_blank' class='similarTopicLink'>" + title + "</a></li>";
                         found = true;
                     });
                     html += "</ul>";

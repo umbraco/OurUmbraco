@@ -49,7 +49,7 @@
                 var link = $(this);
                 var commentId = link.attr("rel");
                 var commentRow = link.closest('tr');
-                $.get("/base/uForum/DeleteComment/" + commentId + ".aspx");
+                $.get("/umbraco/api/Forum/DeleteComment/?commentId=" + commentId);
                 commentRow.hide("slow");
             }
 

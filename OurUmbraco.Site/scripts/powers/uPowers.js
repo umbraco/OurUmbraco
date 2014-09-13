@@ -1,89 +1,89 @@
 var uPowers = function () {
     return {
         LikeTopic: function (s_topicId) {
-            $.get("/base/uPowers/Action/LikeTopic/" + s_topicId + ".aspx");
+            $.get("/base/uPowers/Action/LikeTopic/" + s_topicId);
         },
         DeleteTopic: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/DeleteTopic/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/DeleteTopic/?topicId=" + s_Id);
         },
         MoveTopic: function (s_Id, f_id) {
-            //This is secured on the serverside, so don't even bother fuckers...
+            
 
-            $.get("/base/uForum/MoveTopic/" + s_Id + "/" + f_id + ".aspx",
+            $.get("/umbraco/api/Forum/MoveTopic/?topicId=" + s_Id + "&newForumId=" + f_id,
       function (data) {
           window.location = jQuery("value", data).text();
       });
 
         },
         LikeComment: function (s_Id) {
-            $.get("/base/uPowers/Action/LikeComment/" + s_Id + ".aspx");
+            $.get("/base/uPowers/Action/LikeComment/" + s_Id);
         },
         DeleteComment: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/DeleteComment/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/DeleteComment/?commentId=" + s_Id);
         },
         MarkCommentAsSpam: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/MarkCommentAsSpam/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/MarkCommentAsSpam/?commentId=" + s_Id);
         },
         MarkCommentAsHam: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/MarkCommentAsHam/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/MarkCommentAsHam/?commentId=" + s_Id);
         },
         MarkTopicAsSpam: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/MarkTopicAsSpam/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/MarkTopicAsSpam/?topicId=" + s_Id);
         },
         MarkTopicAsHam: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uForum/MarkTopicAsHam/" + s_Id + ".aspx");
+            
+            $.get("/umbraco/api/Forum/MarkTopicAsHam/?topicId=" + s_Id);
         },
 
         EventSignUp: function (s_link, s_Id) {
 
-            $.get("/base/uEvents/Toggle/" + s_Id + ".aspx",
+            $.get("/base/uEvents/Toggle/" + s_Id,
       function (data) {
           window.location = s_link + "?done=true";
       });
         },
 
         WikiUp: function (s_nodeId) {
-            $.get("/base/uPowers/Action/WikiUp/" + s_nodeId + ".aspx");
+            $.get("/base/uPowers/Action/WikiUp/" + s_nodeId);
         },
         WikiDelete: function (s_Id) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uWiki/Delete/" + s_Id + ".aspx");
+            
+            $.get("/base/uWiki/Delete/" + s_Id);
         },
         WikiMove: function (s_Id, s_target) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/uWiki/Move/" + s_Id + "/" + s_target + ".aspx",
+            
+            $.get("/base/uWiki/Move/" + s_Id + "/" + s_target,
       function (data) {
           top.location = jQuery("value", data).text();
       });
         },
         ProjectUp: function (s_nodeId, comment) {
-            $.get("/base/uPowers/Action/ProjectUp/" + s_nodeId + ".aspx");
+            $.get("/base/uPowers/Action/ProjectUp/" + s_nodeId);
         },
 
         ProjectApproval: function (s_nodeId) {
-            $.post("/base/uPowers/Action/ProjectApproval/" + s_nodeId + ".aspx");
+            $.post("/base/uPowers/Action/ProjectApproval/" + s_nodeId);
         },
 
         SolvesProblem: function (s_nodeId) {
-            $.get("/base/uPowers/Action/TopicSolved/" + s_nodeId + ".aspx");
+            $.get("/base/uPowers/Action/TopicSolved/" + s_nodeId);
         },
         BlockMember: function (s_memberId) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/Community/BlockMember/" + s_memberId + ".aspx");
+            
+            $.get("/base/Community/BlockMember/" + s_memberId);
         },
         UnBlockMember: function (s_memberId) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/Community/UnBlockMember/" + s_memberId + ".aspx");
+            
+            $.get("/base/Community/UnBlockMember/" + s_memberId);
         },
         DeleteMember: function (s_memberId) {
-            //This is secured on the serverside, so don't even bother fuckers...
-            $.get("/base/Community/DeleteMember/" + s_memberId + ".aspx");
+            
+            $.get("/base/Community/DeleteMember/" + s_memberId);
         }
     };
 } ();

@@ -239,6 +239,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ForumController.cs" />
     <Compile Include="Businesslogic\Comment.cs" />
     <Compile Include="Businesslogic\Data.cs" />
     <Compile Include="Businesslogic\Events.cs" />

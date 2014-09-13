@@ -23,13 +23,13 @@ if ($('#f_search').val() != '')
 var mForum = function() {
 	return {
 		NewTopic : function(s_forumId, s_title, s_body) {		
-			$.post("/base/uForum/NewTopic/" + s_forumId + ".aspx", {title: s_title, body: s_body},
+			$.post("/umbraco/api/Forum/NewTopic/?forumId=" + s_forumId, {title: s_title, body: s_body},
 			function(data){		   
 			   window.location = jQuery("value", data).text();
 			});
 		},
 		NewComment : function(s_topicId, i_items, s_body) {
-			$.post("/base/uForum/NewComment/" + s_topicId + "/" + i_items +".aspx", {body: s_body},
+		    $.post("/umbraco/api/Forum/NewComment/?topicId=" + s_topicId + "&itemsPerPage=" + i_items, { body: s_body },
 			function(data){
 		           var forceReload = false;
 		           forceReload = (window.location.href.indexOf("#") > -1);
