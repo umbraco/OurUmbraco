@@ -1,7 +1,7 @@
 var uPowers = function () {
     return {
         LikeTopic: function (s_topicId) {
-            $.get("/umbraco/api/Powers/?alias=LikeTopic&topicId=" + s_topicId);
+            $.get("/umbraco/api/Powers/Action/?alias=LikeTopic&pageId=" + s_topicId);
         },
         DeleteTopic: function (s_Id) {
             
@@ -17,7 +17,7 @@ var uPowers = function () {
 
         },
         LikeComment: function (s_Id) {
-            $.get("/umbraco/api/Powers/?alias=LikeComment?topicId=" + s_Id);
+            $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + s_Id);
         },
         DeleteComment: function (s_Id) {
             
@@ -49,7 +49,7 @@ var uPowers = function () {
         },
 
         WikiUp: function (s_nodeId) {
-            $.get("/umbraco/api/Powers/?alias=WikiUp?topicId=" + s_nodeId);
+            $.get("/umbraco/api/Powers/Action/?alias=WikiUp&pageId=" + s_nodeId);
         },
         WikiDelete: function (s_Id) {
             
@@ -63,15 +63,15 @@ var uPowers = function () {
       });
         },
         ProjectUp: function (s_nodeId, comment) {
-            $.get("/umbraco/api/Powers/?alias=ProjectUp?topicId=" + s_nodeId);
+            $.get("/umbraco/api/Powers/Action/?alias=ProjectUp&pageId=" + s_nodeId);
         },
 
         ProjectApproval: function (s_nodeId) {
-            $.post("/umbraco/api/Powers/?alias=ProjectApproval?topicId=" + s_nodeId);
+            $.post("/umbraco/api/Powers/Action/?alias=ProjectApproval&pageId=" + s_nodeId);
         },
 
         SolvesProblem: function (s_nodeId) {
-            $.get("/umbraco/api/Powers/?alias=TopicSolved?topicId=" + s_nodeId);
+            $.get("/umbraco/api/Powers/Action/?alias=TopicSolved&pageId=" + s_nodeId);
         },
         BlockMember: function (s_memberId) {
             
