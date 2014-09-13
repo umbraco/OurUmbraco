@@ -229,11 +229,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\PowersController.cs" />
     <Compile Include="Buddha\Buddha.cs" />
     <Compile Include="BusinessLogic\Data.cs" />
     <Compile Include="config.cs" />
     <Compile Include="BusinessLogic\Events.cs" />
-    <Compile Include="Library\rest.cs" />
     <Compile Include="Library\Utills.cs" />
     <Compile Include="Library\xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
