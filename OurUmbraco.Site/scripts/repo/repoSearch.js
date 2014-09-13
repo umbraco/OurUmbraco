@@ -21,7 +21,7 @@
       if (query.length > 1) {
         $("#search-field").addClass("search-loading");
         // get data
-        $.getJSON("/base/uSearch/FindProjects/" + query + "/0/true.aspx", function(data){
+        $.getJSON("/umbraco/api/Search/FindProjects/?query=" + query + "&parent=0&wildcard=true", function(data){
           // toggle UI
           if (data.length > 0) {
             $("#search-no-results").hide();            

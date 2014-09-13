@@ -241,6 +241,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\SearchController.cs" />
     <Compile Include="Businesslogic\Events.cs" />
     <Compile Include="Businesslogic\FilterFactory.cs" />
     <Compile Include="Businesslogic\Indexer.cs" />
