@@ -291,15 +291,6 @@
     <Reference Include="Umbraco.Support">
       <HintPath>..\dependencies\Our\Umbraco.Support.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.UQL">
-      <HintPath>..\dependencies\Our\umbraco.UQL.dll</HintPath>
-    </Reference>
-    <Reference Include="umbraco.UQL.ContribBinders">
-      <HintPath>..\dependencies\Our\umbraco.UQL.ContribBinders.dll</HintPath>
-    </Reference>
-    <Reference Include="umbraco.UQL.RazorContext">
-      <HintPath>..\dependencies\Our\umbraco.UQL.RazorContext.dll</HintPath>
-    </Reference>
     <Reference Include="Umbraco.Web.UI, Version=1.0.5350.25722, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Umbraco.Web.UI.dll</HintPath>
