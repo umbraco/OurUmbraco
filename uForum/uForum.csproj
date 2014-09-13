@@ -252,7 +252,6 @@
     <Compile Include="ForumChangeTemplate.cs" />
     <Compile Include="iNotFoundHandler.cs" />
     <Compile Include="Library\RawXml.cs" />
-    <Compile Include="Library\Rest.cs" />
     <Compile Include="Library\Utills.cs" />
     <Compile Include="Library\Xslt.cs" />
     <Compile Include="Models\PetaPoco.cs" />
