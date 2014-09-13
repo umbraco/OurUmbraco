@@ -242,7 +242,9 @@
     <Content Include="usercontrols\DocumentationBreadcrumb.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
+    <Content Include="usercontrols\DocumentationShowMarkdown.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Busineslogic\ConventionExtensions.cs" />
@@ -250,8 +252,8 @@
     <Compile Include="Busineslogic\Events.cs" />
     <Compile Include="Busineslogic\GithubSourcePull\ZipDownloader.cs" />
     <Compile Include="Busineslogic\MarkdownLogic.cs" />
+    <Compile Include="DocumentationContentFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SearchForMarkdown.cs" />
     <Compile Include="usercontrols\DocumentationEditButton.ascx.cs">
       <DependentUpon>DocumentationEditButton.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
