@@ -66,7 +66,7 @@ var uForum = function () {
                 jQuery("#topicsBox").fadeIn("fast");
 
                 s_currentLookUp = query;
-                $.post("/umbraco/api/Search/FindSimiliarItems?types=forumTopics&maxItems=20", { q: query },
+                $.get("/umbraco/api/Search/FindSimiliarItems?types=forumTopics&maxItems=20&query=" + query,
                 function (data) {
                     var found = false;
                     

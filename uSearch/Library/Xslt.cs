@@ -137,12 +137,12 @@ namespace uSearch.Library {
         //}
 
 
-        public static XPathNodeIterator Lucene(string q, int currentPage, int trimAtChar, int pagesize)
+        public static XmlDocument Lucene(string q, int currentPage, int trimAtChar, int pagesize)
         {
             return LuceneInContentType(q, string.Empty, currentPage, trimAtChar, pagesize);
         }
 
-        public static XPathNodeIterator LuceneInContentType(string q, string types, int currentPage, int trimAtChar, int pagesize)
+        public static XmlDocument LuceneInContentType(string q, string types, int currentPage, int trimAtChar, int pagesize)
         {
             int _pageSize = pagesize;
             int _page = currentPage;
@@ -162,42 +162,6 @@ namespace uSearch.Library {
 
             new Page().Trace.Write("umbAdvancedSearch:doSearch", "Performing search! using query " + q);
 
-            /*
-            IndexSearcher searcher = new IndexSearcher( new uSearch.Businesslogic.Settings().IndexDirectory);
-            
-            Analyzer analyzer = new StandardAnalyzer();
-
-            
-            MultiFieldQueryParser mfqp = new MultiFieldQueryParser(_fields, analyzer);
-            Query mainquery = GetSafeQuery(mfqp,q);
-            
-            BooleanQuery filterQuery = new BooleanQuery();
-            filterQuery.Add(mainquery, BooleanClause.Occur.MUST);
-
-            types = types.Trim(',');
-            if (!string.IsNullOrEmpty(types))
-            {
-                string typeQuery = "";
-                string[] t = types.Split(',');
-                for (int i = 0; i < t.Length; i++)
-                {
-                    typeQuery += t[i];
-
-                    if (i < t.Length - 1)
-                        typeQuery += " OR ";
-                }
-
-
-                var parsedTypes = new QueryParser("contentType", analyzer).Parse(typeQuery);
-                filterQuery.Add(parsedTypes, BooleanClause.Occur.MUST);
-            }
-             
-            
-
-            Hits hits;
-            hits = searcher.Search(filterQuery);
-             
-             */
 
              BaseSearchProvider Searcher = ExamineManager.Instance.SearchProviderCollection["ForumSearcher"];
             var searchCriteria = Searcher.CreateSearchCriteria(BooleanOperation.Or);
@@ -291,7 +255,7 @@ namespace uSearch.Library {
 
             }
 
-            return xd.CreateNavigator().Select(".");
+            return xd;
         } //end search
 
     }

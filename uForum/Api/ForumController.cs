@@ -3,26 +3,21 @@ using System.Web;
 using System.Web.Http;
 using uForum.Library;
 using umbraco.cms.businesslogic.web;
-using Umbraco.Core.Models;
 using umbraco.NodeFactory;
-using Umbraco.Web;
-using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
 {
     public class ForumController : UmbracoApiController
-    {
-        private static readonly MembershipHelper MemberShipHelper = new MembershipHelper(UmbracoContext.Current);
-        private static readonly IPublishedContent CurrentMember = MemberShipHelper.GetCurrentMember();
+    {        
         private const string ModeratorRoles = "admin,HQ,Core,MVP";
 
         [HttpGet]
-        public static string EditTopic(int topicId)
+        public string EditTopic(int topicId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
 
-            if (topic.Editable(CurrentMember.Id) == false)
+            if (topic.Editable(Members.GetCurrentMember().Id) == false)
                 return "0";
 
             var title = HttpContext.Current.Request["title"];
@@ -37,7 +32,7 @@ namespace uForum.Api
         }
 
         [HttpGet]
-        public static string TopicUrl(int topicId)
+        public string TopicUrl(int topicId)
         {
             HttpContext.Current.Response.Redirect(Xslt.NiceTopicUrl(topicId));
             HttpContext.Current.Response.End();
@@ -45,17 +40,17 @@ namespace uForum.Api
         }
 
         [HttpGet]
-        public static string NewTopic(int forumId)
+        public string NewTopic(int forumId)
         {
             var node = new Node(forumId);
 
-            if (CurrentMember.Id > 0 && Access.HasAccces(node.Id, CurrentMember.Id))
+            if (Members.GetCurrentMember().Id > 0 && Access.HasAccces(node.Id, Members.GetCurrentMember().Id))
             {
                 var title = HttpContext.Current.Request["title"];
                 var body = HttpContext.Current.Request["body"];
                 var tags = HttpContext.Current.Request["tags"];
 
-                var topic = Businesslogic.Topic.Create(forumId, title, body, CurrentMember.Id);
+                var topic = Businesslogic.Topic.Create(forumId, title, body, Members.GetCurrentMember().Id);
 
                 return Xslt.NiceTopicUrl(topic.Id);
             }
@@ -64,12 +59,12 @@ namespace uForum.Api
         }
 
         [HttpGet]
-        public static string NewComment(int topicId, int itemsPerPage)
+        public string NewComment(int topicId, int itemsPerPage)
         {
-            if (CurrentMember.Id > 0 && topicId > 0)
+            if (Members.GetCurrentMember().Id > 0 && topicId > 0)
             {
                 var body = HttpContext.Current.Request["body"];
-                var comment = Businesslogic.Comment.Create(topicId, body, CurrentMember.Id);
+                var comment = Businesslogic.Comment.Create(topicId, body, Members.GetCurrentMember().Id);
 
                 return Xslt.NiceCommentUrl(comment.TopicId, comment.Id, itemsPerPage);
             }
@@ -78,11 +73,11 @@ namespace uForum.Api
         }
 
         [HttpGet]
-        public static string EditComment(int commentId, int itemsPerPage)
+        public string EditComment(int commentId, int itemsPerPage)
         {
             var comment = new Businesslogic.Comment(commentId);
 
-            if (comment.Editable(CurrentMember.Id))
+            if (comment.Editable(Members.GetCurrentMember().Id))
             {
                 var body = HttpContext.Current.Request["body"];
                 comment.Body = body;
@@ -96,7 +91,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = "admin")]
-        public static string DeleteTopic(int topicId)
+        public string DeleteTopic(int topicId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
             topic.Delete();
@@ -106,7 +101,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public static string MarkTopicAsSpam(int topicId)
+        public string MarkTopicAsSpam(int topicId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
             topic.MarkAsSpam();
@@ -116,7 +111,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public static string MarkTopicAsHam(int topicId)
+        public string MarkTopicAsHam(int topicId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
             topic.MarkAsHam();
@@ -126,7 +121,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = "admin")]
-        public static string MoveTopic(int topicId, int newForumId)
+        public string MoveTopic(int topicId, int newForumId)
         {
             var topic = Businesslogic.Topic.GetTopic(topicId);
             topic.Move(newForumId);
@@ -136,7 +131,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = "admin")]
-        public static string DeleteComment(int commentId)
+        public string DeleteComment(int commentId)
         {
             var comment = new Businesslogic.Comment(commentId);
             comment.Delete();
@@ -146,7 +141,7 @@ namespace uForum.Api
 
         [HttpGet]
         [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public static string MarkCommentAsSpam(int commentId)
+        public string MarkCommentAsSpam(int commentId)
         {
             var comment = new Businesslogic.Comment(commentId);
             comment.MarkAsSpam();
