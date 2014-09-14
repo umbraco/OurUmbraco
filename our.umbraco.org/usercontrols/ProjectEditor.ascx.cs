@@ -232,7 +232,7 @@ namespace our.usercontrols
 
                     if (Request["projecttags[]"] != null)
                     {
-                        Rest.Tagger.SetTags(d.Id.ToString(), "project", Request["projecttags[]"].ToString());
+                        Api.CommunityController.SetTags(d.Id.ToString(), "project", Request["projecttags[]"].ToString());
                     }
 
 
@@ -284,7 +284,7 @@ namespace our.usercontrols
 
                 if (Request["projecttags[]"] != null)
                 {
-                    Rest.Tagger.SetTags(d.Id.ToString(), "project", Request["projecttags[]"].ToString());
+                    Api.CommunityController.SetTags(d.Id.ToString(), "project", Request["projecttags[]"].ToString());
                     d.getProperty("tags").Value = Request["projecttags[]"].ToString();
                 }
 

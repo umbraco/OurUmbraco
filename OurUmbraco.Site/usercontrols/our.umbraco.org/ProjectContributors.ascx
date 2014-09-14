@@ -37,7 +37,7 @@
 <script type="text/javascript">
 
     function RemoveContributor(obj, projectid, memberid) {
-        $.get("/base/projects/RemoveContributor/" + projectid + "/" + memberid + ".aspx");
+        $.get("/umbraco/api/Community/RemoveContributor/?projectId=" + projectid + "&memberId=" + memberid);
         obj.parent().hide("slow");
     }
  

@@ -237,6 +237,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\CommunityController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="controls\DateTimePicker.cs" />
     <Compile Include="custom Handlers\CommentVote.cs" />
@@ -461,7 +462,9 @@
     <Content Include="usercontrols\InsertImage.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\ProjectContributors.ascx" />
+    <Content Include="usercontrols\ProjectContributors.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

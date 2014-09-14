@@ -82,7 +82,7 @@
             webcam.set_swf_url('/scripts/webcam.swf');
             webcam.set_shutter_sound(false, '/scripts/shutter.mp3'); // play shutter click sound
 
-            webcam.set_api_url('/base/avatar/SaveWebCamImage/' + umb_member_guid + '.aspx');
+            webcam.set_api_url('/umbraco/api/Community/SaveWebCamImage/?memberGuid=' + umb_member_guid);
 
             document.write(webcam.get_html(320, 240, 48, 48));
 
@@ -127,7 +127,7 @@
       }
 
       function setBuddyIconServer(service){
-      $.get("/base/avatar/SetServiceAsBuddyIcon/" + service + ".aspx", function(data){
+      $.get("/umbraco/api/Community/SetServiceAsBuddyIcon/?service=" + service, function(data){
       $("#memberAvatar").css("background-image", "url(" + data + ")"); });
       }
     </script>

@@ -76,7 +76,7 @@ function lookupEmail(field){
 var f = $(field);
 
 if(!f.hasClass("error") && f.val() != ""){
-    var turl = "/base/member/IsEmailUnique/" + f.val() + ".aspx";
+    var turl = "/umbraco/api/Community/IsEmailUnique/?email=" + f.val();
 	$.get(turl, function(d){
 
 	if( jQuery("value",d).text() != "true"){

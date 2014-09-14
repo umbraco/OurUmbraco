@@ -35,7 +35,7 @@ namespace uEvents.Api
         }
 
         [HttpGet]
-        public static string Sync(int eventId)
+        public string Sync(int eventId)
         {
             var umbracoEvent = new Event(eventId);
             umbracoEvent.syncCapacity();

@@ -1,9 +1,9 @@
 function AddTagToProject(projectid,tag){
-  $.post("/base/tagger/AddTag/" + projectid + "/project.aspx", {tag: tag});
+    $.get("/umbraco/api/Community/AddTag/?projectId=" + projectid + "&group=project&tag=" + tag);
 }
 
 function RemoveTagFromProject(projectid,tag){
-  $.post("/base/tagger/RemoveTag/" + projectid + "/project.aspx", {tag: tag});
+  $.get("/umbraco/api/Community/RemoveTag/?projectId=" + projectid + "&group=project&tag=" + tag);
 }
 
 function VerifyFile(fileId)

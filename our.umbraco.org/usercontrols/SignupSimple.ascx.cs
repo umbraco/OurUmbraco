@@ -49,7 +49,7 @@ namespace our.usercontrols
                         }
 
                         //set a default avatar
-                        Rest.BuddyIcon.SetAvatar(m.Id, "gravatar");
+                        Api.CommunityController.SetAvatar(m.Id, "gravatar");
                             
                         m.Save();
                         m.XmlGenerate(new System.Xml.XmlDocument());

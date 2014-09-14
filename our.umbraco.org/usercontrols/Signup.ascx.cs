@@ -164,7 +164,7 @@ namespace our.usercontrols
                         }
 
                         //set a default avatar
-                        BuddyIcon.SetAvatar(_member.Id, "gravatar");
+                        Api.CommunityController.SetAvatar(_member.Id, "gravatar");
 
                         _member.Save();
                         _member.XmlGenerate(new XmlDocument());
