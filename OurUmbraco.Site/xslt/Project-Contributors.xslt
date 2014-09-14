@@ -50,7 +50,7 @@
   <script type="text/javascript">
     function ChangeCollabStatus(projectid,status)
     {
-      $.get("/base/projects/ChangeCollabStatus/?projectId=" + projectid + "&amp;status=" + status);
+    $.get("/umbraco/api/Community/ChangeCollabStatus/?projectId=" + projectid + "&amp;status=" + status);
     }
     
     $(document).ready(function() {

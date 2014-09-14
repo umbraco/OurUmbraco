@@ -75,15 +75,15 @@ var uPowers = function () {
         },
         BlockMember: function (s_memberId) {
             
-            $.get("/base/Community/BlockMember/" + s_memberId);
+            $.get("/umbraco/api/Community/BlockMember/" + s_memberId);
         },
         UnBlockMember: function (s_memberId) {
             
-            $.get("/base/Community/UnBlockMember/" + s_memberId);
+            $.get("/umbraco/api/Community/UnBlockMember/" + s_memberId);
         },
         DeleteMember: function (s_memberId) {
             
-            $.get("/base/Community/DeleteMember/" + s_memberId);
+            $.get("/umbraco/api/Community/DeleteMember/" + s_memberId);
         }
     };
 } ();
