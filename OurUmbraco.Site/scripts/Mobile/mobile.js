@@ -34,9 +34,9 @@ var mForum = function() {
 		           var forceReload = false;
 		           forceReload = (window.location.href.indexOf("#") > -1);
 			   window.location = jQuery("value", data).text();
-		
-			   if(forceReload)
-				window.location.reload()
+
+			    if (forceReload)
+			        window.location.reload();
 			});
 		}
 	};

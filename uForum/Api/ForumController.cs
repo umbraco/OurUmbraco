@@ -13,25 +13,6 @@ namespace uForum.Api
         private const string ModeratorRoles = "admin,HQ,Core,MVP";
 
         [HttpGet]
-        public string EditTopic(int topicId)
-        {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-
-            if (topic.Editable(Members.GetCurrentMember().Id) == false)
-                return "0";
-
-            var title = HttpContext.Current.Request["title"];
-            var body = HttpContext.Current.Request["body"];
-            var tags = HttpContext.Current.Request["tags"];
-            topic.Body = body;
-            topic.Title = title;
-            //topic.Tags = tags;
-            topic.Save(false);
-
-            return Xslt.NiceTopicUrl(topic.Id);
-        }
-
-        [HttpGet]
         public string TopicUrl(int topicId)
         {
             HttpContext.Current.Response.Redirect(Xslt.NiceTopicUrl(topicId));
@@ -39,7 +20,7 @@ namespace uForum.Api
             return "";
         }
 
-        [HttpGet]
+        [HttpPost]
         public string NewTopic(int forumId)
         {
             var node = new Node(forumId);
@@ -58,7 +39,26 @@ namespace uForum.Api
             return "0";
         }
 
-        [HttpGet]
+        [HttpPost]
+        public string EditTopic(int topicId)
+        {
+            var topic = Businesslogic.Topic.GetTopic(topicId);
+
+            if (topic.Editable(Members.GetCurrentMember().Id) == false)
+                return "0";
+
+            var title = HttpContext.Current.Request["title"];
+            var body = HttpContext.Current.Request["body"];
+            var tags = HttpContext.Current.Request["tags"];
+            topic.Body = body;
+            topic.Title = title;
+            //topic.Tags = tags;
+            topic.Save(false);
+
+            return Xslt.NiceTopicUrl(topic.Id);
+        }
+
+        [HttpPost]
         public string NewComment(int topicId, int itemsPerPage)
         {
             if (Members.GetCurrentMember().Id > 0 && topicId > 0)
@@ -72,7 +72,7 @@ namespace uForum.Api
             return "";
         }
 
-        [HttpGet]
+        [HttpPost]
         public string EditComment(int commentId, int itemsPerPage)
         {
             var comment = new Businesslogic.Comment(commentId);
