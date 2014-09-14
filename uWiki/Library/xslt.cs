@@ -53,7 +53,7 @@ namespace uWiki.Library {
                     );
         }
 
-        public static XPathNodeIterator GetXmlNodeFromVersion(int id, string guid, bool deep) {
+        public static string GetXmlNodeFromVersion(int id, string guid, bool deep) {
 
             Document d;
 
@@ -67,7 +67,7 @@ namespace uWiki.Library {
             XmlNode x = umbraco.xmlHelper.addTextNode(xd, "node", "");
             d.XmlPopulate(xd, ref x, deep); 
 
-            return x.CreateNavigator().Select(".");
+            return x.OuterXml;
         }
 
      

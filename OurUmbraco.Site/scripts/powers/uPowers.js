@@ -53,11 +53,11 @@ var uPowers = function () {
         },
         WikiDelete: function (s_Id) {
             
-            $.get("/base/uWiki/Delete/" + s_Id);
+            $.get("/umbraco/api/wiki/Delete/?wikiId=" + s_Id);
         },
         WikiMove: function (s_Id, s_target) {
             
-            $.get("/base/uWiki/Move/" + s_Id + "/" + s_target,
+            $.get("/umbraco/api/wiki/Move/?wikiId=" + s_Id + "&target=" + s_target,
       function (data) {
           top.location = jQuery("value", data).text();
       });

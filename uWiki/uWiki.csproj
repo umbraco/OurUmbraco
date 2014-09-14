@@ -225,6 +225,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\WikiController.cs" />
     <Compile Include="Businesslogic\Data.cs" />
     <Compile Include="Businesslogic\Events.cs" />
     <Compile Include="Businesslogic\UmbracoVersion.cs" />
@@ -232,7 +233,6 @@
     <Compile Include="Businesslogic\WikiHelpRequest.cs" />
     <Compile Include="Businesslogic\WikiPage.cs" />
     <Compile Include="iNotFoundHandler.cs" />
-    <Compile Include="Library\rest.cs" />
     <Compile Include="Library\Utills.cs" />
     <Compile Include="Library\xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

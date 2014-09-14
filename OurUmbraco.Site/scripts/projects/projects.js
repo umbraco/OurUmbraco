@@ -8,7 +8,7 @@ function RemoveTagFromProject(projectid,tag){
 
 function VerifyFile(fileId)
 {
-    $.post("/base/uWiki/VerifyFile/" + fileId + ".aspx");
+    $.post("/umbraco/api/Wiki/VerifyFile/?fileId=" + fileId);
 }
 
 jQuery(document).ready(function () {

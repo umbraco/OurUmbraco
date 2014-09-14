@@ -1,9 +1,9 @@
 var uWiki = function() {
   return {
     Edit: function(s_baseId, s_baseVersion,readOnlyTitle) {
-    
+        
     //fetch content from the server in case someone has changed it
-    $.post("/base/uWiki/GetContentVersion/" + s_baseId + "/" + s_baseVersion + ".aspx",
+    $.post("/umbraco/api/Wiki/GetContentVersion/?id=" + s_baseId + "&guid=" + s_baseVersion,
       function(data){
         
           if(_currentContent == ''){
@@ -82,7 +82,7 @@ var uWiki = function() {
       
     },
     Save: function(s_pageId, s_title, s_body, s_keywords) {
-      $.post("/base/uWiki/Update/" + s_pageId + ".aspx", {body: s_body, title: s_title, keywords: s_keywords},
+        $.post("/umbraco/api/Wiki/Update/", { pageId: s_pageId, body: s_body, title: s_title, keywords: s_keywords },
       function(data){
          window.location = jQuery("value", data).text();
       });
@@ -90,7 +90,7 @@ var uWiki = function() {
       uWiki.Cancel(false);
     },
     Create: function(s_parentId, s_title, s_body,s_keywords){
-      $.post("/base/uWiki/Create/" + s_parentId + ".aspx", {body: s_body, title: s_title, keywords: s_keywords},
+      $.post("/umbraco/api/Wiki/Create/", {parentId: s_parentId, body: s_body, title: s_title, keywords: s_keywords},
       function(data){
         window.location = jQuery("value", data).text();
       });
@@ -120,7 +120,7 @@ var uWiki = function() {
       }
     },
     PreviewOldVersion: function(s_pageId, s_versionGuid, s_currentVersionGuid){
-      $.post("/base/uWiki/GetContentVersion/" + s_pageId + "/" + s_versionGuid + ".aspx",
+      $.post("/umbraco/api/Wiki/GetContentVersion/?id=" + s_pageId + "&guid=" + s_versionGuid,
       function(data){
           //jQuery("#wikiContent").html( diffString(_c, jQuery("node/data [alias = 'bodyText']", data).text()) );
           jQuery("#wikiContent").html( jQuery("node/data [alias = 'bodyText']", data).text() ).effect('highlight');
@@ -128,14 +128,14 @@ var uWiki = function() {
       );
     },
     Rollback: function(s_pageId, s_versionGuid){
-      $.post("/base/uWiki/Rollback/" + s_pageId + "/" + s_versionGuid + ".aspx",
+      $.post("/umbraco/api/Wiki/Rollback/?pageId=" + s_pageId + "&guid=" + s_versionGuid,
       function(data){
           window.location = jQuery("value", data).text();
       });
     },
     ClearHelpRequests: function(s_section, s_applicationPage){
       
-      $.get("/base/uWiki/ClearHelpRequests/" + s_section + "/" + s_applicationPage + ".aspx");
+        $.get("/umbraco/api/Wiki/ClearHelpRequests/?section=" + s_section + "&applicationPage=" + s_applicationPage);
     }
   };
 }();
