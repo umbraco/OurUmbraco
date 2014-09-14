@@ -1,12 +1,12 @@
 function SubscribeToForum(forumId){
-	$.get("/base/Notifications/SubscribeToForum/" + forumId + ".aspx");
+    $.get("/umbraco/api/Notifications/SubscribeToForum/?forumId=" + forumId);
 
 	jQuery(".SubscribeForum").hide("slow");
 	jQuery(".UnSubscribeForum").show("slow");
 }
 
 function UnSubscribeFromForum(forumId){
-	$.get("/base/Notifications/UnSubscribeFromForum/" + forumId + ".aspx");
+    $.get("/umbraco/api/Notifications/UnSubscribeFromForum/?forumId=" + forumId);
 
 	jQuery(".UnSubscribeForum").hide("slow");
 	jQuery(".SubscribeForum").show("slow");
@@ -14,14 +14,14 @@ function UnSubscribeFromForum(forumId){
 
 
 function SubscribeToForumTopic(topicId){
-	$.get("/base/Notifications/SubscribeToForumTopic/" + topicId + ".aspx");
+	$.get("/umbraco/api/Notifications/SubscribeToForumTopic/?topicId=" + topicId);
 
 	jQuery(".SubscribeTopic").hide("slow");
 	jQuery(".UnSubscribeTopic").show("slow");
 }
 
 function UnSubscribeFromForumTopic(topicId){
-	$.get("/base/Notifications/UnSubscribeFromForumTopic/" + topicId + ".aspx");
+    $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + topicId);
 
 	jQuery(".UnSubscribeTopic").hide("slow");
 	jQuery(".SubscribeTopic").show("slow");
@@ -30,13 +30,13 @@ function UnSubscribeFromForumTopic(topicId){
 
 function NotificationTopicUnsubscribe(obj, topicId)
 {
-	$.get("/base/Notifications/UnSubscribeFromForumTopic/" + topicId + ".aspx");
+    $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + topicId);
 	obj.parent().hide("slow");
 }
 
 function NotificationForumUnsubscribe(obj, forumId)
 {
-	$.get("/base/Notifications/UnSubscribeFromForum/" + forumId + ".aspx");
+    $.get("/umbraco/api/Notifications/UnSubscribeFromForum/?forumId=" + forumId);
 	obj.parent().hide("slow");
 }
 

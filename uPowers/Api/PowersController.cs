@@ -12,10 +12,11 @@ namespace uPowers.Api
         {
             var comment = HttpContext.Current.Request["comment"] + "";
 
-            if (Members.GetCurrentMember().Id > 0)
+            var currentMemberId = Members.GetCurrentMember().Id;
+            if (currentMemberId > 0)
             {
                 var action = new BusinessLogic.Action(alias);
-                return action.Perform(Members.GetCurrentMember().Id, pageId, comment).ToString();
+                return action.Perform(currentMemberId, pageId, comment).ToString();
             }
 
             return "notLoggedIn";

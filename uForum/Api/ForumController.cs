@@ -25,13 +25,14 @@ namespace uForum.Api
         {
             var node = new Node(forumId);
 
-            if (Members.GetCurrentMember().Id > 0 && Access.HasAccces(node.Id, Members.GetCurrentMember().Id))
+            var currentMemberId = Members.GetCurrentMember().Id;
+            if (currentMemberId > 0 && Access.HasAccces(node.Id, currentMemberId))
             {
                 var title = HttpContext.Current.Request["title"];
                 var body = HttpContext.Current.Request["body"];
                 var tags = HttpContext.Current.Request["tags"];
 
-                var topic = Businesslogic.Topic.Create(forumId, title, body, Members.GetCurrentMember().Id);
+                var topic = Businesslogic.Topic.Create(forumId, title, body, currentMemberId);
 
                 return Xslt.NiceTopicUrl(topic.Id);
             }
@@ -61,10 +62,11 @@ namespace uForum.Api
         [HttpPost]
         public string NewComment(int topicId, int itemsPerPage)
         {
-            if (Members.GetCurrentMember().Id > 0 && topicId > 0)
+            var currentMemberId = Members.GetCurrentMember().Id;
+            if (currentMemberId > 0 && topicId > 0)
             {
                 var body = HttpContext.Current.Request["body"];
-                var comment = Businesslogic.Comment.Create(topicId, body, Members.GetCurrentMember().Id);
+                var comment = Businesslogic.Comment.Create(topicId, body, currentMemberId);
 
                 return Xslt.NiceCommentUrl(comment.TopicId, comment.Id, itemsPerPage);
             }
