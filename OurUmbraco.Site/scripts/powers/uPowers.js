@@ -67,7 +67,7 @@ var uPowers = function () {
         },
 
         ProjectApproval: function (s_nodeId) {
-            $.post("/umbraco/api/Powers/Action/?alias=ProjectApproval&pageId=" + s_nodeId);
+            $.get("/umbraco/api/Powers/Action/?alias=ProjectApproval&pageId=" + s_nodeId);
         },
 
         SolvesProblem: function (s_nodeId) {
