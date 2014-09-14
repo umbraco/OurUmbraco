@@ -42,7 +42,7 @@ var uPowers = function () {
 
         EventSignUp: function (s_link, s_Id) {
 
-            $.get("/base/uEvents/Toggle/" + s_Id,
+            $.get("/umbraco/api/Events/Toggle/?eventId=" + s_Id,
       function (data) {
           window.location = s_link + "?done=true";
       });

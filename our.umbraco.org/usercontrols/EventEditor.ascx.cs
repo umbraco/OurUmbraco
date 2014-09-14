@@ -1,23 +1,24 @@
 ﻿using System;
 using System.Configuration;
 using System.Linq;
-using umbraco.cms.businesslogic;
-using umbraco.cms.businesslogic.member;
-using umbraco.presentation.nodeFactory;
-using umbraco.cms.businesslogic.web;
+using System.Web.UI;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 using System.Net.Mail;
 using umbraco.BusinessLogic;
+using Umbraco.Web;
+using Member = umbraco.cms.businesslogic.member.Member;
 
 namespace our.usercontrols
 {
-    public partial class EventEditor : System.Web.UI.UserControl
+    public partial class EventEditor : UserControl
     {
         private readonly Member _member = Member.GetCurrentMember();
         public int EventsRoot { get; set; }
 
         protected override void OnInit(EventArgs e)
         {
-            ((umbraco.UmbracoDefault)this.Page).ValidateRequest = false;
+            ((umbraco.UmbracoDefault)Page).ValidateRequest = false;
         }
 
 
@@ -28,21 +29,23 @@ namespace our.usercontrols
             //edit?
             if (Page.IsPostBack == false && string.IsNullOrEmpty(Request.QueryString["id"]) == false)
             {
-                var node = new Node(int.Parse(Request.QueryString["id"]));
+                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                var content = umbracoHelper.TypedContent(int.Parse(Request.QueryString["id"]));
+
                 //allowed?
-                if (node.NodeTypeAlias == "Event" && int.Parse(node.GetProperty("owner").Value) == _member.Id)
+                if (content.DocumentTypeAlias == "Event" && content.GetPropertyValue<int>("owner") == _member.Id)
                 {
-                    tb_name.Text = node.Name;
-                    tb_desc.Text = node.GetProperty("description").Value;
+                    tb_name.Text = content.Name;
+                    tb_desc.Text = content.GetPropertyValue<string>("description");
 
-                    tb_venue.Text = node.GetProperty("venue").Value;
-                    tb_capacity.Text = node.GetProperty("capacity").Value;
+                    tb_venue.Text = content.GetPropertyValue<string>("venue");
+                    tb_capacity.Text = content.GetPropertyValue<string>("capacity");
 
-                    tb_lat.Value = node.GetProperty("latitude").Value;
-                    tb_lng.Value = node.GetProperty("longitude").Value;
+                    tb_lat.Value = content.GetPropertyValue<string>("latitude");
+                    tb_lng.Value = content.GetPropertyValue<string>("longitude");
 
-                    dp_startdate.Text = DateTime.Parse(node.GetProperty("start").Value).ToString("MM/dd/yyyy H:mm");
-                    dp_enddate.Text = DateTime.Parse(node.GetProperty("end").Value).ToString("MM/dd/yyyy H:mm");
+                    dp_startdate.Text = DateTime.Parse(content.GetPropertyValue<string>("start")).ToString("MM/dd/yyyy H:mm");
+                    dp_enddate.Text = DateTime.Parse(content.GetPropertyValue<string>("start")).ToString("MM/dd/yyyy H:mm");
                 }
             }
         }
@@ -51,7 +54,6 @@ namespace our.usercontrols
         {
             var hasAnchors = false;
             var hasLowKarma = false;
-            var documentId = 0;
 
             var karma = int.Parse(_member.getProperty("reputationTotal").Value.ToString());
             if (karma < 50)
@@ -59,67 +61,72 @@ namespace our.usercontrols
                 hasLowKarma = true;
             }
 
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var contentService = ApplicationContext.Current.Services.ContentService;
+
+            IContent content;
+
             //edit?
             if (string.IsNullOrEmpty(Request.QueryString["id"]) == false)
             {
-                var document = new Document(int.Parse(Request.QueryString["id"]));
-                documentId = document.Id;
+                content = contentService.GetById(int.Parse(Request.QueryString["id"]));
+                var publishedContent = umbracoHelper.TypedContent(Request.QueryString["id"]);
 
                 //allowed?
-                if (document.ContentType.Alias == "Event" && int.Parse(document.getProperty("owner").Value.ToString()) == _member.Id)
+                if (publishedContent.DocumentTypeAlias == "Event" && publishedContent.GetPropertyValue<int>("owner") == _member.Id)
                 {
-                    SetDescription(document, hasLowKarma, ref hasAnchors);
+                    content = SetDescription(content, hasLowKarma, ref hasAnchors);
 
-                    document.Text = tb_name.Text;
+                    content.Name = tb_name.Text;
 
-                    document.getProperty("venue").Value = tb_venue.Text;
-                    document.getProperty("latitude").Value = tb_lat.Value;
-                    document.getProperty("longitude").Value = tb_lng.Value;
+                    content.SetValue("venue", tb_venue.Text);
+                    content.SetValue("latitude", tb_lat.Value);
+                    content.SetValue("longitude", tb_lng.Value);
 
-                    var sync = tb_capacity.Text != document.getProperty("capacity").Value.ToString();
+                    content.SetValue("capacity", tb_capacity.Text);
 
-                    document.getProperty("capacity").Value = tb_capacity.Text;
+                    var startDate = GetProperDate(dp_startdate.Text);
+                    var endDate = GetProperDate(dp_enddate.Text);
 
-                    document.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
-                    document.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
+                    content.SetValue("start", startDate);
+                    content.SetValue("end", endDate);
 
-                    document.Save();
-                    document.Publish(new User(0));
+                    var sync = tb_capacity.Text != publishedContent.GetPropertyValue<string>("capacity");
 
-                    umbraco.library.UpdateDocumentCache(document.Id);
+                    contentService.SaveAndPublishWithStatus(content);
 
                     if (sync)
                     {
-                        var ev = new uEvents.Event(document);
+                        var ev = new uEvents.Event(publishedContent);
                         ev.syncCapacity();
                     }
                 }
             }
             else
             {
-                Document document = Document.MakeNew(tb_name.Text, DocumentType.GetByAlias("Event"), new User(0), EventsRoot);
-                documentId = document.Id;
+                content = contentService.CreateContent(tb_name.Text, EventsRoot, "Event");
 
-                SetDescription(document, hasLowKarma, ref hasAnchors);
+                content = SetDescription(content, hasLowKarma, ref hasAnchors);
 
-                document.getProperty("venue").Value = tb_venue.Text;
-                document.getProperty("latitude").Value = tb_lat.Value;
-                document.getProperty("longitude").Value = tb_lng.Value;
+                content.SetValue("venue", tb_venue.Text);
+                content.SetValue("latitude", tb_lat.Value);
+                content.SetValue("longitude", tb_lng.Value);
 
-                document.getProperty("capacity").Value = tb_capacity.Text;
-                document.getProperty("signedup").Value = 0;
+                content.SetValue("capacity", tb_capacity.Text);
 
-                document.getProperty("start").Value = DateTime.Parse(dp_startdate.Text);
-                document.getProperty("end").Value = DateTime.Parse(dp_enddate.Text);
+                var startDate = GetProperDate(dp_startdate.Text);
+                var endDate = GetProperDate(dp_enddate.Text);
 
-                document.getProperty("owner").Value = _member.Id;
+                content.SetValue("start", startDate);
+                content.SetValue("end", endDate);
 
-                document.Save();
-                document.Publish(new User(0));
-                umbraco.library.UpdateDocumentCache(document.Id);
+                content.SetValue("owner", _member.Id);
+
+                content.SetValue("signedup", 0);
+                contentService.SaveAndPublishWithStatus(content);
             }
 
-            var redirectUrl = umbraco.library.NiceUrl(documentId);
+            var redirectUrl = umbraco.library.NiceUrl(content.Id);
 
             if (hasLowKarma && hasAnchors)
                 SendPotentialSpamNotification(tb_name.Text, redirectUrl, _member.Id);
@@ -127,9 +134,26 @@ namespace our.usercontrols
             Response.Redirect(redirectUrl);
         }
 
-        private void SetDescription(Content content, bool hasLowKarma, ref bool hasAnchors)
+        private DateTime GetProperDate(string date)
         {
-            content.getProperty("description").Value = tb_desc.Text;
+            var dateSplit = date.Split(' ');
+            var dateTimeSplit = dateSplit[1].Split(':');
+
+            var dateHour = int.Parse(dateTimeSplit[0]);
+            var dateMinute = int.Parse(dateTimeSplit[1]);
+
+            var dateDateSplit = dateSplit[0].Split('/');
+
+            var dateDay = int.Parse(dateDateSplit[1]);
+            var dateMonth = int.Parse(dateDateSplit[0]);
+            var dateYear = int.Parse(dateDateSplit[2]);
+            var startDate = new DateTime(dateYear, dateMonth, dateDay, dateHour, dateMinute, 0, 0);
+            return startDate;
+        }
+
+        private IContent SetDescription(IContent content, bool hasLowKarma, ref bool hasAnchors)
+        {
+            content.SetValue("description", tb_desc.Text);
 
             // Filter out links when karma is low, probably a spammer
             if (hasLowKarma)
@@ -146,8 +170,10 @@ namespace our.usercontrols
                         anchor.ParentNode.RemoveChild(anchor, true);
                 }
 
-                content.getProperty("description").Value = doc.DocumentNode.OuterHtml;
+                content.SetValue("description", doc.DocumentNode.OuterHtml);
             }
+
+            return content;
         }
 
         private static void SendPotentialSpamNotification(string eventName, string eventUrl, int memberId)

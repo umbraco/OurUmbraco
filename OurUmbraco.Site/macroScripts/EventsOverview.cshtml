@@ -1,7 +1,7 @@
 ﻿@inherits umbraco.MacroEngines.DynamicNodeContext
 @{
     var events = new List<uEvents.Models.Event>();
-    List<uEvents.Models.Event> getEvents = uEvents.Library.Rest.UpcomingEvents(Model.Id);
+    List<uEvents.Models.Event> getEvents = uEvents.Api.EventsController.UpcomingEvents(Model.Id);
     events.AddRange(getEvents);
 }
 

@@ -234,9 +234,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\EventsController.cs" />
     <Compile Include="App_Startup\ControllerRouting.cs" />
     <Compile Include="controls\DateTimePicker.cs" />
-    <Compile Include="Library\Rest.cs" />
     <Compile Include="Library\Xslt.cs" />
     <Compile Include="Meetup\DateTimeExtensions.cs" />
     <Compile Include="Meetup\MeetupController.cs" />
