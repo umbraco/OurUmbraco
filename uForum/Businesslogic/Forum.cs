@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Configuration;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -349,10 +352,53 @@ namespace uForum.Businesslogic
                 member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
                 member.Save();
 
-                SendSpamMail(body, topicId, commentType, memberId, false);
+                SendSlackSpamReport(body, topicId, commentType, memberId);
             }
 
             return isSpam;
+        }
+
+        private static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
+        {
+            using (var client = new WebClient())
+            {
+                var topic = Topic.GetTopic(topicId);
+
+                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, Xslt.NiceTopicUrl(topic.Id));
+                post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
+                post = post + string.Format("Go to member http://our.umbraco.org/member/{0}\n\n", memberId);
+
+                var body = string.Format("The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}", post);
+                
+                if (memberId != 0)
+                {
+                    var member = new Member(memberId);
+                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utills.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+
+                    body = body + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                }
+
+                body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+
+                var values = new NameValueCollection
+                             {
+                                 {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
+                                 {"token", ConfigurationManager.AppSettings["SlackToken"]},
+                                 {"username", ConfigurationManager.AppSettings["SlackUsername"]},
+                                 { "icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
+                                 {"text", body}
+                             };
+
+                try
+                {
+                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
+                    var response = client.Encoding.GetString(data);
+                }
+                catch (Exception ex)
+                {
+                    Log.Add(LogTypes.Error, new User(0), -1, string.Format("Posting update to Slack failed {0} {1}", ex.Message, ex.StackTrace));
+                }
+            }
         }
 
         // Remember this one only kicks in if a user has < 50 karma
@@ -406,22 +452,25 @@ namespace uForum.Businesslogic
             // If there are links that don't go to umbraco domains, it might be spam
             if (otherLinksCount > 0)
                 return true;
-
-            // Find possible links that are not wrapped in an anchor tag, they're probably malicious
-            if (body.Contains("http://") || body.Contains("https://") || body.Contains("www."))
-                return true;
-
+            
             return false;
         }
 
         private static int CountValidLinks(string href, int validLinksCount)
         {
-            if (href != null && (href.StartsWith("/media")
+            if (href != null && (href.TrimStart().StartsWith("/media")
+                                 || href.TrimStart().StartsWith("@")
+                                 || href.TrimStart().StartsWith("localhost")
+                                 || href.Contains(".local")
                                  || href.Contains("stackoverflow.com")
                                  || href.Contains("umbraco.org")
-                                 || href.Contains("umbraco.org")
                                  || href.Contains("umbraco.tv")
-                                 || href.Contains("umbraco.io")))
+                                 || href.Contains("umbraco.io")
+                                 || href.Contains("azure.com")
+                                 || href.Contains("microsoft.com")
+                                 || href.Contains("asp.net")
+                                 || href.Contains("github.com")
+                                 || href.Contains("example.com")))
             {
                 validLinksCount = validLinksCount + 1;
             }
