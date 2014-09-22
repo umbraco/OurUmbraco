@@ -459,6 +459,7 @@ namespace uForum.Businesslogic
         private static int CountValidLinks(string href, int validLinksCount)
         {
             if (href != null && (href.TrimStart().StartsWith("/media")
+                                 || href.TrimStart().StartsWith("/forum")
                                  || href.TrimStart().StartsWith("@")
                                  || href.TrimStart().StartsWith("localhost")
                                  || href.Contains(".local")
