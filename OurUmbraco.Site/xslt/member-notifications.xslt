@@ -55,6 +55,12 @@
 					<xsl:when test="not($topicsubscriptions//topic)">
 						<p>Currently no active subscriptions.</p>
 					</xsl:when>
+					<!-- Show absolutely everything if the pagerParam is "all" (e.g.: p=all) -->
+					<xsl:when test="translate($options[@key = $pagerParam], 'AL', 'al') = 'all'">
+						<xsl:apply-templates select="$topicsubscriptions//topic">
+							<xsl:sort select="@updated" data-type="text" order="descending" />
+						</xsl:apply-templates>
+					</xsl:when>
 					<xsl:otherwise>
 						<ul class="MemberTopicNotifications">
 							<xsl:call-template name="PaginateSelection">
