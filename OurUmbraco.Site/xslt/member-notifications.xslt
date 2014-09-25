@@ -60,6 +60,7 @@
 							<xsl:call-template name="PaginateSelection">
 								<xsl:with-param name="selection" select="$topicsubscriptions//topic" />
 								<xsl:with-param name="perPage" select="50" />
+								<xsl:with-param name="sortBy" select="'@updated DESC'" />
 							</xsl:call-template>
 						</ul>
 					</xsl:otherwise>
