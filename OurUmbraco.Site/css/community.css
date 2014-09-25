@@ -327,6 +327,9 @@ color: #514721; display: block; text-align: center;  margin-bottom: 7px;}
 .pager li.current a{font-weight: bold;}
 .MemberTopicNotifications .pager li.current {font-weight: bold; padding: 1px 6px; font-size: 12px;}
 
+.MemberTopicNotifications li.TopicSolved a { color: #77a948; text-decoration: none; }
+.MemberTopicNotifications li.TopicSolved a:hover { color: #77a948; text-decoration: underline; }
+
 #memberLoader span, #memberLoader_weeks span, #memberLoader_year span{display: block; background: url(img/ajax-loadercircle.gif) no-repeat center left; 
     font-size: 11px; color: #999; margin: 10px; padding: 5px 30px 10px 40px; width: 200px;}
 
