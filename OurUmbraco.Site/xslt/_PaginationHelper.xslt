@@ -242,7 +242,14 @@
 						<a href="{$query}{$sep}{$pagerParam}={$page + 1}" rel="next"><xsl:value-of select="$nextPage"/></a>
 					</xsl:otherwise>
 				</xsl:choose>
-			</li>			
+			</li>
+			
+			<!-- Create the "All" link -->
+			<li class="all">
+				<a href="{$query}{$sep}{$pagerParam}=all">
+					<xsl:value-of select="concat('Show all ', $total, ' topics')" />
+				</a>
+			</li>
 		</ul>
 	</xsl:template>
 	
