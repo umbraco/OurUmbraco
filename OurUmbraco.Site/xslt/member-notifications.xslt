@@ -50,21 +50,21 @@
 				<h2>Topic subscriptions</h2>
 				<small>You get notified whenever a new reply is added to the subscribed topics.</small>
 
-				<xsl:variable name="topicsubscriptions" select="Notifications:SubscribedTopics($member/@id)" />
+				<xsl:variable name="topicsubscriptions" select="Notifications:SubscribedTopics($member/@id)//topic" />
 				<xsl:choose>
-					<xsl:when test="not($topicsubscriptions//topic)">
+					<xsl:when test="not($topicsubscriptions)">
 						<p>Currently no active subscriptions.</p>
 					</xsl:when>
 					<!-- Show absolutely everything if the pagerParam is "all" (e.g.: p=all) -->
 					<xsl:when test="translate($options[@key = $pagerParam], 'AL', 'al') = 'all'">
-						<xsl:apply-templates select="$topicsubscriptions//topic">
+						<xsl:apply-templates select="$topicsubscriptions">
 							<xsl:sort select="@updated" data-type="text" order="descending" />
 						</xsl:apply-templates>
 					</xsl:when>
 					<xsl:otherwise>
 						<ul class="MemberTopicNotifications">
 							<xsl:call-template name="PaginateSelection">
-								<xsl:with-param name="selection" select="$topicsubscriptions//topic" />
+								<xsl:with-param name="selection" select="$topicsubscriptions" />
 								<xsl:with-param name="perPage" select="50" />
 								<xsl:with-param name="sortBy" select="'@updated DESC'" />
 							</xsl:call-template>
