@@ -44,6 +44,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="businesslogic">
+      <HintPath>..\dependencies\4.9.1\businesslogic.dll</HintPath>
+    </Reference>
+    <Reference Include="cms">
+      <HintPath>..\dependencies\4.9.1\cms.dll</HintPath>
+    </Reference>
     <Reference Include="EasyHttp">
       <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
     </Reference>
@@ -124,6 +130,7 @@
     <Compile Include="App_Start\ControllerRouting.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\NodeExtensions.cs" />
+    <Compile Include="EventHandlers\FinalReleaseHandler.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\AggregateView.cs" />
     <Compile Include="Models\Version.cs" />
