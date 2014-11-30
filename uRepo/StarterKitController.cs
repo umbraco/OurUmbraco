@@ -82,7 +82,7 @@ namespace uRepo
                 {
                     Name = umbracoNode.Name,
                     Thumbnail = GetPropertyValue(umbracoNode, "defaultScreenshotPath"),
-                    Id = umbracoNode.Id,
+                    Id = GetPropertyValue(umbracoNode, "packageGuid"),
                     SortOrder = umbracoNode.SortOrder
                 };
 
