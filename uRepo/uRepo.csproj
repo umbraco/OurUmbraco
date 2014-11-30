@@ -113,6 +113,10 @@
     <Folder Include="webservices\App_Data\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\uVersion\uVersion.csproj">
+      <Project>{b46f84cc-4d9b-4b52-ae17-de5633ce7023}</Project>
+      <Name>uVersion</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uWiki\uWiki.csproj">
       <Project>{996601FA-5C0E-46A6-B39D-2863BADC80D8}</Project>
       <Name>uWiki</Name>

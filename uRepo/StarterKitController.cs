@@ -5,6 +5,8 @@ using System.Linq;
 using System.Web.Http;
 using System.Xml;
 using System.Xml.XPath;
+using umbraco.NodeFactory;
+using uVersion;
 
 namespace uRepo
 {
@@ -41,42 +43,30 @@ namespace uRepo
 
         private IEnumerable<StarterKit> GetStarterKits(IEnumerable<umbraco.NodeFactory.Node> umbracoNodes, string umbracoVersion)
         {
-            var starterKits = new List<StarterKit>();
-
-            var versionName = string.Empty;
+            Version version = null;
             if (umbracoVersion != null)
             {
                 if (umbracoVersion.Contains("-"))
                     umbracoVersion = umbracoVersion.Substring(0, umbracoVersion.IndexOf("-", StringComparison.Ordinal));
 
-                versionName = string.Format("v{0}", umbracoVersion.Replace(".", string.Empty));
+                version = new Version(umbracoVersion);
             }
 
             var officialStarterKitGuidCollection =
                 ConfigurationManager.AppSettings["UmbracoStarterKits"].Split(',').ToList();
-            
+            var starterKits = new List<StarterKit>();
+            var allConfiguredVersions = UWikiFileVersion.GetAllVersions();
+
             foreach (var umbracoNode in umbracoNodes)
             {
                 // If it's not in the official list, move on to the next package
-                if (officialStarterKitGuidCollection.Contains(GetPropertyValue(umbracoNode, "packageGuid"), 
+                if (officialStarterKitGuidCollection.Contains(GetPropertyValue(umbracoNode, "packageGuid"),
                     StringComparer.OrdinalIgnoreCase) == false)
                     continue;
-                
+
                 // If the umbracoVersion is filled in then check if the kit is compatible the version requested
-                if (umbracoVersion != null)
-                {
-                    var versionCompatible = false;
-                    var compatibleVersions = GetPropertyValue(umbracoNode, "compatibleVersions");
-
-                    foreach (var compatibleVersion in compatibleVersions.Split(','))
-                    {
-                        if (compatibleVersion == versionName)
-                            versionCompatible = true;
-                    }
-
-                    if(versionCompatible == false) 
-                        continue;
-                }
+                if (umbracoVersion != null && VersionCompatible(umbracoNode, version, allConfiguredVersions) == false)
+                    continue;
 
                 var starterKit = new StarterKit
                 {
@@ -90,6 +80,54 @@ namespace uRepo
             }
 
             return starterKits.OrderBy(s => s.SortOrder);
+        }
+
+        private bool VersionCompatible(Node umbracoNode, Version version, List<UWikiFileVersion> allConfiguredVersions)
+        {
+            var versionCompatible = false;
+
+            var compatibleVersions =
+                GetAllCompatibleVersions(GetPropertyValue(umbracoNode, "compatibleVersions"), allConfiguredVersions)
+                    .ToList();
+
+            // If there's no versions in the list, it's compatible with everything
+            if (compatibleVersions.Any() == false)
+            {
+                versionCompatible = true;
+            }
+            else
+            {
+                foreach (var compatibleVersion in compatibleVersions)
+                {
+                    if (version >= compatibleVersion)
+                        versionCompatible = true;
+                }
+            }
+            
+            return versionCompatible;
+        }
+
+        private static IEnumerable<Version> GetAllCompatibleVersions(string compatibleVersions, List<UWikiFileVersion> configuredVersions)
+        {
+            var compatibleVersionsList = new List<Version>();
+
+            foreach (var compatibleVersion in compatibleVersions.Split(','))
+            {
+                var compVersion = compatibleVersion;
+                var configuredVersion = configuredVersions.FirstOrDefault(x => x.Key == compVersion);
+
+                if (configuredVersion == null)
+                    continue;
+
+                if (configuredVersion.Key != "nan")
+                {
+                    var voteDescription = configuredVersion.VoteDescription;
+                    voteDescription = voteDescription.Replace("Version ", string.Empty).Replace(".x", ".0");
+                    compatibleVersionsList.Add(new Version(voteDescription));
+                }
+            }
+
+            return compatibleVersionsList;
         }
 
         private string GetPropertyValue(umbraco.NodeFactory.Node umbracoNode, string propertyAlias)

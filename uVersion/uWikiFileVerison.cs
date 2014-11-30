@@ -11,6 +11,7 @@ namespace uVersion
         public string Name { get; set; }
         public string Key { get; set; }
         public string Description { get; set; }
+        public string VoteDescription { get; set; }
         public bool Exists { get; set; }
 
 
@@ -21,6 +22,9 @@ namespace uVersion
             {
                 Name = x.Attributes.GetNamedItem("name").Value;
                 Description = x.Attributes.GetNamedItem("description").Value;
+                VoteDescription = x.Attributes.GetNamedItem("voteDescription") == null 
+                    ? string.Empty 
+                    : x.Attributes.GetNamedItem("voteDescription").Value;
                 Key = x.Attributes.GetNamedItem("key").Value;
 
 
