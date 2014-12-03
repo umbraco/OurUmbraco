@@ -73,6 +73,7 @@ namespace uRepo
                     Name = umbracoNode.Name,
                     Thumbnail = GetPropertyValue(umbracoNode, "defaultScreenshotPath"),
                     Id = GetPropertyValue(umbracoNode, "packageGuid"),
+                    Description = GetPropertyValue(umbracoNode, "description"),
                     SortOrder = umbracoNode.SortOrder
                 };
 
