@@ -47,3 +47,4 @@ OurUmbraco.Site/App_Data/Meetup/searchresults.json
 OurUmbraco.Site/[Dd]ocumentation/
 OurUmbraco.Site_419
 OurUmbraco.Site/App_Data/cache/
+*.sln.ide/

@@ -11,7 +11,11 @@
  if(Request.QueryString["version"] != null){
   version = Request.QueryString["version"].ToLower();
  }
- 
+
+ if (!string.IsNullOrEmpty(fullversion) && fullversion.Substring(0, 1) == "7")
+ {
+     version = "v7";
+ }
   
  var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
  var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ).Replace("&category_id=" + id, ""); 

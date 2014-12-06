@@ -151,7 +151,11 @@ namespace uRepo
           XPathNodeIterator xni = queryRepo(xpath);
           return iteratorToPackageList(xni);
         }
-
+        public XPathNodeIterator GetProjects()
+        {
+            const string xpath = "//" + _projectAlias;
+            return queryRepo(xpath);
+        }
 
         public static List<Category> GetPackagesByPropertyCategorized(string propertyAlias, string value) {
           string xpath = "/descendant::node [@nodeTypeAlias = '" + _projectGroupAlias + "']";
