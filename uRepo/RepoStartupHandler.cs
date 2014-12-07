@@ -1,19 +1,18 @@
-﻿using System.Web;
-using System.Web.Http;
+﻿using System.Web.Http;
 using System.Web.Routing;
-using uRepo;
+using Umbraco.Core;
 
-[assembly: PreApplicationStartMethod(typeof(AppStart), "PreStart")]
 namespace uRepo
 {
-    public static class AppStart
+    public class AppStart : ApplicationEventHandler
     {
-        public static void PreStart()
+        protected override void ApplicationInitialized(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             RouteTable.Routes.MapHttpRoute(
-            name: "DefaultApi",
-            routeTemplate: "webapi/{controller}/{id}",
-            defaults: new { id = RouteParameter.Optional }
+                name: "RepoApi", 
+                routeTemplate: "webapi/{controller}/{id}",
+                defaults: new { id = RouteParameter.Optional },
+                constraints: new { controller = "StarterKit" }
             );
         }
     }
