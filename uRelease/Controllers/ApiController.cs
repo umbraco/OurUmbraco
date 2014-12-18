@@ -11,10 +11,12 @@ using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
 using RestSharp;
+using umbraco;
+using umbraco.BusinessLogic;
+using umbraco.cms.businesslogic.web;
 using uRelease.Models;
 using YouTrackSharp.Infrastructure;
 using umbraco.NodeFactory;
-using Issue = uRelease.Models.Issue;
 using System.Configuration;
 using Version = uRelease.Models.Version;
 
@@ -86,6 +88,22 @@ namespace uRelease.Controllers
 
             // Just used to make sure we don't make repeated API requests for keys
             var versionCache = new ConcurrentDictionary<string, RestResponse<IssuesWrapper>>();
+
+            // Make sure all versions exist on Our 
+            foreach (var orderedVersion in orderedVersions.Where(v => v.Value.AsFullVersion() > "6.0.0".AsFullVersion()))
+            {
+                var versionExistsInUmbraco = releasesNode.Children.Cast<Node>().Any(child => child.Name == orderedVersion.Value);
+
+                if (versionExistsInUmbraco) 
+                    continue;
+
+                //make it
+                var releaseDocumentType = DocumentType.GetByAlias("Release");
+                var document = Document.MakeNew(orderedVersion.Value, releaseDocumentType, new User(0), releasesNode.Id);
+                document.getProperty("bodyText").Value = string.Format("<p>{0}</p>", orderedVersion.Description);
+                document.Publish(new User(0));
+                library.UpdateDocumentCache(document.Id);
+            }
 
             foreach (var version in orderedVersions)
             {
@@ -187,7 +205,7 @@ namespace uRelease.Controllers
                 if (typedData.Any())
                 {
                     var result = new JavaScriptSerializer().Serialize(data);
-
+                    
                     using (var streamWriter = new StreamWriter(Server.MapPath(YouTrackJsonFile), false))
                     {
                         streamWriter.WriteLine(result);
