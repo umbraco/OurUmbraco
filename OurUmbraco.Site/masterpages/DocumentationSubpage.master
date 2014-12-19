@@ -10,8 +10,8 @@
         <umbraco:Macro runat="server" language="cshtml">
             @if(Model.NodeTypeAlias != "Projects"){
                 <div style="margin-top: 20px; padding: 7px;" class="notice">
-                    <strong>Please note</strong>: this is work in progress. Broken links, placeholder text, and a few things 
-                    not working can be expected. <a href="https://github.com/umbraco/Umbraco4Docs"><strong>You can help out. get involved!</strong></a>
+                    <strong>Please note</strong>: This is work in progress. Broken links, placeholder text, and a few things 
+                    not working can be expected. <a href="https://github.com/umbraco/Umbraco4Docs"><strong>You can help out. Get involved!</strong></a>
                 </div>
             }
         </umbraco:Macro>
