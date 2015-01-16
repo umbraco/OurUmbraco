@@ -5,9 +5,10 @@ Complete source of the umbraco community site, our.umbraco.org.
 
 
 ##Database restore
-Download the SQL Server Database from: https://dl.dropbox.com/u/3006713/our-cleaned-db-2008R2.zip?dl=1
+Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/our-database-backup.zip
 
-Restore the database to SQL Server 2008 R2 (at least R2 is required!) and update the connection string (umbracoDbDSN) in OurUmbraco.Site/web.config 
+Restore the database to SQL Server 2008 R2 (at least R2 is required!) and update the connection string (umbracoDbDSN) in OurUmbraco.Site/web.config.   
+**Note:** there's 2 connection strings, make sure to update them both. 
 
 ##Build in visual studio
 Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager).
@@ -39,8 +40,5 @@ Simply run the below command in git bash:
 
 .. Yes, this is a scary command line operation, don't you love it?! :-D
 
-##Continuous deploys
-Any updates to the main repo (github.com/umbraco/OurUmbraco) get deployed automatically to http://our.sandbox.umbraco.org/ - So when your pull request gets accepted, your changes should show up there within a few minutes.
-
 ##Projects section
-Note: the projects section doesn't work well at the moment, due to missing Marketplace.*.dll files. We need to seperate our some of the Deli processes into a seperate DLL so you won't be able to figure out our "secret" processes, the cleaned up DLLs will come soon. 
+Note: the projects section doesn't work well at the moment, due to missing Marketplace.*.dll files. We still need to seperate our some of the Deli processes into a seperate DLL.
