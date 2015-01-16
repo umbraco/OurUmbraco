@@ -364,6 +364,7 @@
     <Content Include="css\search\documentation.gif" />
     <Content Include="css\select2-new.css" />
     <Content Include="css\select2.css" />
+    <Content Include="Global.asax" />
     <Content Include="Hiccup.aspx" />
     <Content Include="ImageGen.ashx" />
     <Content Include="css\forum\wmd-buttons.png" />
