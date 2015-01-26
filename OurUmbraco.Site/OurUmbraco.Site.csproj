@@ -482,7 +482,6 @@
     <Content Include="masterpages\Mobile.master" />
     <Content Include="masterpages\MobileTextPage.master" />
     <Content Include="masterpages\newest.master" />
-    <Content Include="masterpages\NewTopic.master" />
     <Content Include="masterpages\Nothing.master" />
     <Content Include="masterpages\Notifications.master" />
     <Content Include="masterpages\PayPalRedirect.master" />
