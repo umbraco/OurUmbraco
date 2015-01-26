@@ -230,10 +230,7 @@
     <Compile Include="Interfaces\INotification.cs" />
     <Compile Include="Notification.cs" />
     <Compile Include="NotificationTypes\DailyDigest.cs" />
-    <Compile Include="NotificationTypes\MarkAsSolutionReminder.cs" />
-    <Compile Include="NotificationTypes\MarkAsSolutionReminderSingle.cs" />
     <Compile Include="NotificationTypes\NewForumTopic.cs" />
-    <Compile Include="NotificationTypes\NewForumTopicComment.cs" />
     <Compile Include="NotificationTypes\VoteForProjectReminder.cs" />
     <Compile Include="NotificationTypes\VoteForProjectReminderSingle.cs" />
     <Compile Include="SheduledNotification.cs" />

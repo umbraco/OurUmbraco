@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Data.SqlClient;
-using umbraco.cms.businesslogic.member;
 using System.Net.Mail;
 
 namespace NotificationsCore.NotificationTypes
@@ -40,21 +39,15 @@ namespace NotificationsCore.NotificationTypes
 
             SqlCommand comm = new SqlCommand(
                 select, conn);
-
             conn.Open();
-
             SqlDataReader dr = comm.ExecuteReader();
 
             string domain = details.SelectSingleNode("//domain").InnerText;
 
 
-
             while (dr.Read())
             {
                 int topicId = dr.GetInt32(0);
-
-
-                uForum.Businesslogic.Topic t = uForum.Businesslogic.Topic.GetTopic(topicId);
 
                 string mbody = string.Format(body,
                         t.Title,
