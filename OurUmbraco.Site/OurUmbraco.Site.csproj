@@ -470,8 +470,6 @@
     <Content Include="masterpages\DocumentationMainpage.master" />
     <Content Include="masterpages\DocumentationSubpage.master" />
     <Content Include="masterpages\EditProject.master" />
-    <Content Include="masterpages\EditReply.master" />
-    <Content Include="masterpages\EditTopic.master" />
     <Content Include="masterpages\Event.master" />
     <Content Include="masterpages\Eventnews.master" />
     <Content Include="masterpages\Events.master" />
