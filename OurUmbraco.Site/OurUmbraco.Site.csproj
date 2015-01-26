@@ -4677,10 +4677,6 @@
       <Project>{547c2d0d-1b55-493b-ae0b-e031a5b8ee77}</Project>
       <Name>uForum</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Umb.OurUmb.MemberLocator\Umb.OurUmb.MemberLocator.csproj">
-      <Project>{691f947d-6517-4a22-b6e7-f94c4393f58e}</Project>
-      <Name>Umb.OurUmb.MemberLocator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uPowers\uPowers.csproj">
       <Project>{00f050b9-e3ed-49a7-ab97-e8bec2513553}</Project>
       <Name>uPowers</Name>
@@ -4693,17 +4689,9 @@
       <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>
       <Name>uRepo</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uSearch\uSearch.csproj">
-      <Project>{6b5fe138-1713-4a97-ae6d-01b9293ac825}</Project>
-      <Name>uSearch</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uVersion\uVersion.csproj">
       <Project>{b46f84cc-4d9b-4b52-ae17-de5633ce7023}</Project>
       <Name>uVersion</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\uWiki\uWiki.csproj">
-      <Project>{996601fa-5c0e-46a6-b39d-2863badc80d8}</Project>
-      <Name>uWiki</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

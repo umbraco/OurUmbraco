@@ -214,10 +214,6 @@
       <Project>{b46f84cc-4d9b-4b52-ae17-de5633ce7023}</Project>
       <Name>uVersion</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uWiki\uWiki.csproj">
-      <Project>{996601fa-5c0e-46a6-b39d-2863badc80d8}</Project>
-      <Name>uWiki</Name>
-    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
@@ -236,7 +232,7 @@
   <ProjectExtensions />
   <PropertyGroup>
     <PostBuildEvent>
-</PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
