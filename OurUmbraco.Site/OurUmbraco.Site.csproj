@@ -4678,10 +4678,6 @@
       <Project>{00f050b9-e3ed-49a7-ab97-e8bec2513553}</Project>
       <Name>uPowers</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uRelease\uRelease.csproj">
-      <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
-      <Name>uRelease</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uRepo\uRepo.csproj">
       <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>
       <Name>uRepo</Name>
