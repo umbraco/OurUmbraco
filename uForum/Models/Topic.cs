@@ -3,57 +3,73 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using umbraco;
+using Umbraco.Core.Persistence;
 
 namespace uForum.Models
 {
-    [PetaPoco.TableName("forumTopics")]
-    [PetaPoco.PrimaryKey("id")]
-    [PetaPoco.ExplicitColumns]
+    [TableName("forumTopics")]
+    [PrimaryKey("id")]
+    [ExplicitColumns]
     public class Topic
     {
-        [PetaPoco.Column("id")]
+        [Column("id")]
         public int Id { get; set; }
 
-        [PetaPoco.Column("parentId")]
+        [Column("parentId")]
         public int ParentId { get; set; }
         
-        [PetaPoco.Column("memberId")]
+        [Column("memberId")]
         public int MemberId { get; set; }
         
-        [PetaPoco.Column("answer")]
+        [Column("answer")]
         public int Answer { get; set; }
 
-        [PetaPoco.Column("title")]
+        [Column("title")]
         public string Title { get; set; }
         
-        [PetaPoco.Column("urlName")]
+        [Column("urlName")]
         public string UrlName { get; set; }
         
-        [PetaPoco.Column("body")]
+        [Column("body")]
         public string Body { get; set; }
         
-        [PetaPoco.Column("created")]
+        [Column("created")]
         public DateTime Created { get; set; }
         
-        [PetaPoco.Column("updated")]
+        [Column("updated")]
         public DateTime Updated { get; set; }
 
-        [PetaPoco.Column("isSpam")]
+        [Column("isSpam")]
         public bool IsSpam { get; set; }
 
-        [PetaPoco.Column("latestReplyAuthor")]
+        [Column("latestReplyAuthor")]
         public int LatestReplyAuthor { get; set; }
 
-        [PetaPoco.Column("latestComment")]
+        [Column("latestComment")]
         public int LatestComment { get; set; }
 
-        [PetaPoco.Column("replies")]
+        [Column("replies")]
         public int Replies { get; set; }
 
-        [PetaPoco.Column("score")]
+        [Column("score")]
         public int Score { get; set; }
 
-        [PetaPoco.Column("locked")]
+        [Column("locked")]
         public bool Locked { get; set; }
+
+        [Column("version")]
+        public int Version { get; set; }
+
+        public string Url
+        {
+            get
+            {
+                var url = library.NiceUrl(this.ParentId);
+                return GlobalSettings.UseDirectoryUrls
+                    ? string.Format("/{0}/{1}-{2}", url.Trim('/'), Id, UrlName)
+                    : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), Id, UrlName);
+            }
+        }
     }
 }

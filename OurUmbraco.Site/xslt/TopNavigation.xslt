@@ -18,8 +18,6 @@
 
   <xsl:template match="/">
 
-    <!-- The fun starts here -->
-    <ul id="topNavigation">
       <xsl:for-each select="$currentPage/ancestor-or-self::* [@level=$level]/* [@isDoc and string(umbracoNaviHide) != '1']">
         <li>
           <xsl:attribute name="class">
@@ -35,8 +33,6 @@
           </a>
         </li>
       </xsl:for-each>
-    </ul>
-
   </xsl:template>
 
 </xsl:stylesheet>

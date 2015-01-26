@@ -1,38 +1,35 @@
-﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
-<script runat="server">
-    protected override void OnInit(EventArgs e)
-    {
-        umbraco.library.RegisterStyleSheetFile("Markdown.Styles", "/css/forum/pagedown.css");
-        umbraco.library.RegisterJavaScriptFile("Markdown.Converter", "/scripts/forum/Markdown.Converter.js");
-        umbraco.library.RegisterJavaScriptFile("Markdown.Sanitizer", "/scripts/forum/Markdown.Sanitizer.js");
-        
-        if (umbraco.library.IsLoggedOn())
-        {                        
-            umbraco.library.RegisterJavaScriptFile("Markdown.Editor", "/scripts/forum/Markdown.Editor.js");            
-        }
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/ForumMaster.master" AutoEventWireup="true" %>
 
-        umbraco.library.RegisterJavaScriptFile("Markdown.App", "/scripts/forum/Markdown.App.js");
-        
-        base.OnInit(e);
-    }
-</script>
 <asp:Content ContentPlaceHolderID="main" runat="server">
-    <umbraco:Macro Alias="Util-AddGooglePrettify" runat="server"></umbraco:Macro>
-    <div id="body" class="subpage">
-        <div id="forum">
-            <asp:ContentPlaceHolder ID="Main" runat="server">
-                <div style="padding-top: 25px">
-                    <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
-                </div>
-                <h1>
-                    <umbraco:Item Field="pageName" runat="server"></umbraco:Item>
-                </h1>
-                <small>
-                    <umbraco:Item Field="forumDescription" recursive="true" runat="server"></umbraco:Item>
-                </small>
-                <umbraco:Macro Alias="Forum-overview" runat="server"></umbraco:Macro>
-                <umbraco:Macro Alias="Forum-topicsList" runat="server"></umbraco:Macro>
-            </asp:ContentPlaceHolder>
+        <div class="forum-archive">
+
+		    <!-- FORUM HEADER START -->
+		    <div class="forum-archive-header">
+
+			    <!-- FORUM BREADCRUMB START -->
+                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                <!-- FORUM BREADCRUMB END -->
+
+			    <!-- FORUM SORTING START -->
+			    <div class="sorting">
+                    <ul>
+					    <li>
+					    Category
+						    <ul>
+							    <li class="frontend"><a href="#"></a>Frontend</li>
+							    <li class="core"><a href="#"></a>Core</li>
+							    <li class="azure"><a href="#"></a>Azure</li>
+						    </ul>
+					    </li>
+				    </ul>
+
+			    </div>
+			    <!-- FORUM SORTING END -->
+			    <div class="clear"></div>
+		    </div>
+		    <!-- FORUM HEADER END -->
+
+            <!-- FORUM TOPICS -->
+            <umbraco:Macro Alias="[Forum]Forum" runat="server"></umbraco:Macro>
         </div>
-    </div>
 </asp:Content>

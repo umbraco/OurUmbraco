@@ -2,43 +2,51 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using uForum.Services;
+using Umbraco.Core;
+using Umbraco.Core.Services;
 
 namespace uForum {
-    public class NewForumHandler : umbraco.BusinessLogic.ApplicationBase {
-        public NewForumHandler() {
-            umbraco.cms.businesslogic.web.Document.AfterPublish += new umbraco.cms.businesslogic.web.Document.PublishEventHandler(Document_AfterPublish);
-            umbraco.cms.businesslogic.web.Document.AfterDelete += new umbraco.cms.businesslogic.web.Document.DeleteEventHandler(Document_AfterDelete);
+    public class NewForumHandler : ApplicationEventHandler {
+
+        /*
+         * This handler creates a forum entry in the forumForums table
+         * When a forum node is created in the content tree, all forums are connected to a node
+         */
+        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+            ContentService.Published += ContentService_Published;
+            ContentService.Deleted += ContentService_Deleted;
         }
 
-        void Document_AfterDelete(umbraco.cms.businesslogic.web.Document sender, umbraco.cms.businesslogic.DeleteEventArgs e) {
-            if (sender.ContentType.Alias == "Forum") {
-
-                umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, 0, "forum has been deleted");
-                
-                Businesslogic.Forum f = new uForum.Businesslogic.Forum(sender.Id);
-
-                umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, f.Id, f.Title);
-
-                f.Delete();
-               
-            }
-        }
-        
-        void Document_AfterPublish(umbraco.cms.businesslogic.web.Document sender, umbraco.cms.businesslogic.PublishEventArgs e) {
-
-            if (sender.ContentType.Alias == "Forum") {
-                
-                Businesslogic.Forum f = new uForum.Businesslogic.Forum(sender.Id);
-                
-                if (!f.Exists) {
-                    f.Id = sender.Id;
-                    f.ParentId = sender.Parent.Id;
-                    f.SortOrder = sender.sortOrder;
+        void ContentService_Deleted(IContentService sender, Umbraco.Core.Events.DeleteEventArgs<Umbraco.Core.Models.IContent> e)
+        {
+           foreach(var ent in e.DeletedEntities.Where(x => x.ContentType.Alias == "Forum")){
+                using (var fs = new ForumService())
+                {
+                    var f = fs.GetById(ent.Id);
+                    if(f != null)
+                        fs.Delete(f);
                 }
-
-                f.Save();
             }
-            
+        }
+
+        void ContentService_Published(Umbraco.Core.Publishing.IPublishingStrategy sender, Umbraco.Core.Events.PublishEventArgs<Umbraco.Core.Models.IContent> e)
+        {
+            foreach(var ent in e.PublishedEntities.Where(x => x.ContentType.Alias == "Forum")){
+                using (var fs = new ForumService())
+                {
+                    var f = fs.GetById(ent.Id);
+
+                    if (f != null)
+                    {
+                        f.ParentId = ent.ParentId;
+                        f.SortOrder = ent.SortOrder;
+                        fs.Save(f);
+                    }
+                
+                }
+            }
         }
     }
 }

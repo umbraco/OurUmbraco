@@ -254,9 +254,6 @@
     <Compile Include="Businesslogic\Indexer.cs" />
     <Compile Include="Businesslogic\IUmbracoSearchFileFilter.cs" />
     <Compile Include="Businesslogic\Settings.cs" />
-    <Compile Include="EventHandlers\Project.cs" />
-    <Compile Include="EventHandlers\Wiki.cs" />
-    <Compile Include="EventHandlers\Forum.cs" />
     <Compile Include="Library\Rest.cs" />
     <Compile Include="Library\Xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -274,6 +271,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="EventHandlers\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

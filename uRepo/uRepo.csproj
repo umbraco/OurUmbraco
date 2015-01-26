@@ -235,8 +235,7 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)webservices\*.asmx" "$(ProjectDir)..\OurUmbraco.Site\umbraco\webservices\api\" /y
-
+    <PostBuildEvent>
 </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

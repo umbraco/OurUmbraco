@@ -1,4 +1,4 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/DocumentationMaster.master" AutoEventWireup="true" %>
 <%@ Register Src="~/usercontrols/DocumentationShowMarkdown.ascx" TagPrefix="markdown" TagName="Doc" %>
 <%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb"%>
 
@@ -36,9 +36,4 @@
             }
         </umbraco:Macro>
     </div>
-</asp:Content>
-  
-<asp:Content ContentPlaceHolderId="Head" runat="server">
-    <!-- Documentation styles -->
-    <link media="screen" type="text/css" rel="stylesheet" href="/css/docs.css" />
 </asp:Content>

@@ -1,0 +1,10 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum;
+
+@if(Members.IsLoggedIn()){
+    <div class="user">
+        <img src="@Members.GetCurrentMember().Avatar()" alt="">
+    </div>
+}else{
+    <a href="/members/login">Sign in</a>  <a href="/members/register">Register</a>   
+}

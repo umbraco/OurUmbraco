@@ -2,68 +2,52 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using uForum.Services;
 using umbraco.cms.businesslogic.member;
+using Umbraco.Core;
+using Umbraco.Core.Services;
+using Umbraco.Web;
+using uForum;
 
 namespace our.custom_Handlers {
-    public class ForumPostsCounter : umbraco.BusinessLogic.ApplicationBase {
+    public class ForumPostsCounter : ApplicationEventHandler {
 
-        public ForumPostsCounter() {
-
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, "ForumPostsCounter class events - starting");
-
-            uForum.Businesslogic.Topic.AfterCreate += new EventHandler<uForum.Businesslogic.CreateEventArgs>(Topic_AfterCreate);
-            uForum.Businesslogic.Comment.AfterCreate += new EventHandler<uForum.Businesslogic.CreateEventArgs>(Comment_AfterCreate);
-
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, "ForumPostsCounter class events - finishing");
+        /*
+         * This handler updates the members forum posts counter
+         * So the forum doesnt know about where and how the member stores these counts
+         */
+        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+            TopicService.Created += TopicService_Created;
+            CommentService.Created += CommentService_Created;
         }
 
-        void Comment_AfterCreate(object sender, uForum.Businesslogic.CreateEventArgs e) {
-            uForum.Businesslogic.Comment c = (uForum.Businesslogic.Comment)sender;
+        void CommentService_Created(object sender, uForum.CommentEventArgs e)
+        {
+            if (e.Comment != null && e.Comment.MemberId > 0)
+            {
+                var ms = UmbracoContext.Current.Application.Services.MemberService;
+                var member = ms.GetById(e.Comment.MemberId);
+                member.IncreaseForumPostCount();
+                ms.Save(member);
 
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, c.Id, "Comment_AfterCreate in ForumPostsCounter() class is starting");
-
-            Member mem = new Member(c.MemberId);
-            int posts = 0;
-            int.TryParse(mem.getProperty("forumPosts").Value.ToString(), out posts);
-
-            mem.getProperty("forumPosts").Value = (posts + 1);
-            mem.Save();
-
-            mem.XmlGenerate(new System.Xml.XmlDocument());
-
-            //Performs the action NewTopic in case we want to reward people for creating new posts.
-            uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewComment");
-            a.Perform(mem.Id, c.Id, "New comment created");
-
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, c.Id, "Comment_AfterCreate in ForumPostsCounter() class is finishing");
+                uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewComment");
+                a.Perform(member.Id, e.Comment.Id, "New comment created");  
+            }
         }
 
+        void TopicService_Created(object sender, uForum.TopicEventArgs e)
+        {
+            if (e.Topic != null && e.Topic.MemberId > 0)
+            {
+                var ms = UmbracoContext.Current.Application.Services.MemberService;
+                var member = ms.GetById(e.Topic.MemberId);
+                member.IncreaseForumPostCount();
+                ms.Save(member);
 
-        void Topic_AfterCreate(object sender, uForum.Businesslogic.CreateEventArgs e) {
-            uForum.Businesslogic.Topic t = (uForum.Businesslogic.Topic)sender;
-
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, t.Id, "Topic_AfterCreate in ForumPostsCounter() class is starting");
-
-            Member mem = new Member(t.MemberId);
-            int posts = 0;
-            int.TryParse(mem.getProperty("forumPosts").Value.ToString(), out posts);
-
-            mem.getProperty("forumPosts").Value = (posts + 1);
-            mem.Save();
-
-            mem.XmlGenerate(new System.Xml.XmlDocument());
-            
-            //Performs the action NewTopic in case we want to reward people for creating new posts.
-            uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewTopic");
-            a.Perform(mem.Id, t.Id, "New topic created");
-
-            //WB added to show these events are firing...
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, t.Id, "Topic_AfterCreate in ForumPostsCounter() class is finishing");
+                uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewTopic");
+                a.Perform(member.Id, e.Topic.Id, "New topic created");
+            }
         }
 
     }

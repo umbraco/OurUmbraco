@@ -1,0 +1,16 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum;
+
+@if(Members.IsLoggedIn()){
+
+
+    var profile = Members.GetCurrentMemberProfileModel();
+    var member = Members.GetCurrentMember();
+    
+    <script type="text/javascript">
+        var umb_member_name = '@member.Name';
+        var umb_member_email = '@profile.Email';
+        var umb_member_icon = '@member.Avatar()';
+    </script>
+    
+}

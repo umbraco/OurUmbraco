@@ -9,21 +9,12 @@ namespace our.usercontrols
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (uForum.Businesslogic.ForumEditor.UseMarkdownEditor())
-            {
                 InsertImageMarkdown1.Visible = true;
                 InsertImageMarkdown2.Visible = true;
                 InsertImageMarkdown3.Visible = true;
                 InsertImageRte.Visible = false;
-            }
-            else
-            {
-                InsertImageMarkdown1.Visible = false;
-                InsertImageMarkdown2.Visible = false;
-                InsertImageMarkdown3.Visible = false;
-                InsertImageRte.Visible = true;
-            }
-        }
+           
+         }
 
         protected void btnUpload_Click(object sender, EventArgs e)
         {

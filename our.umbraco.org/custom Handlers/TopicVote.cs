@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using uForum.Services;
 using uPowers.BusinessLogic;
-using uForum.Businesslogic;
 
 
 namespace our.custom_Handlers {
@@ -23,31 +23,34 @@ namespace our.custom_Handlers {
         void TopicSolved(object sender, ActionEventArgs e) {
            
                 uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
-
                 if (a.Alias == "TopicSolved") {
 
-                    Comment c = new Comment(e.ItemId);
-                    
-                    if (c != null) {
-                        Topic t = Topic.GetTopic(c.TopicId);
+                    using(var cs = new CommentService())
+                    using (var ts = new TopicService())
+                    {
+                        var c = cs.GetById(e.ItemId);
+                        if (c != null)
+                        {
+                            var t = ts.GetById(c.TopicId);
 
-                        int answer = our.Data.SqlHelper.ExecuteScalar<int>("SELECT answer FROM forumTopics where id = @id", Data.SqlHelper.CreateParameter("@id", t.Id));
+                            //if performer and author of the topic is the same... go ahead..
+                            if (e.PerformerId == t.MemberId && t.Answer == 0)
+                            {
 
-                        //if performer and author of the topic is the same... go ahead..
+                                //receiver of points is the comment author.
+                                e.ReceiverId = c.MemberId;
 
-                        if (e.PerformerId == t.MemberId && answer == 0) {
+                                //remove any previous votes by the author on this comment to ensure the solution is saved instead of just the vote
+                                a.ClearVotes(e.PerformerId, e.ItemId);
 
-                            //receiver of points is the comment author.
-                            e.ReceiverId = c.MemberId;
+                                //this uses a non-standard coloumn in the forum schema, so this is added manually..
+                                t.Answer = c.Id;
+                                ts.Save(t, false);
+                            }
 
-                            //remove any previous votes by the author on this comment to ensure the solution is saved instead of just the vote
-                            a.ClearVotes(e.PerformerId, e.ItemId);
-                            
-                            //this uses a non-standard coloumn in the forum schema, so this is added manually..
-                            our.Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET answer = @answer WHERE id = @id", Data.SqlHelper.CreateParameter("@id", t.Id), Data.SqlHelper.CreateParameter("@answer", c.Id));
                         }
-
                     }
+                    
                 }
         }
 
@@ -69,7 +72,7 @@ namespace our.custom_Handlers {
                 uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
                 if (a.Alias == "LikeTopic" || a.Alias == "DisLikeTopic") {
-                    Topic t = Topic.GetTopic(e.ItemId);
+                    var t = uForum.Services.TopicService.Instance.GetById(e.ItemId);
                     e.ReceiverId = t.MemberId;
                  }
         }

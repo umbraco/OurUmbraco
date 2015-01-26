@@ -250,7 +250,6 @@
     <Compile Include="custom Handlers\memberSave.cs" />
     <Compile Include="custom Handlers\ProjectsEnsureGuid.cs" />
     <Compile Include="custom Handlers\projectVote.cs" />
-    <Compile Include="custom Handlers\Sanitizer.cs" />
     <Compile Include="custom Handlers\TopicVote.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
@@ -273,27 +272,6 @@
     </Compile>
     <Compile Include="usercontrols\acceptTos.ascx.designer.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamListComments.ascx.cs">
-      <DependentUpon>ForumSpamListComments.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamListComments.ascx.designer.cs">
-      <DependentUpon>ForumSpamListComments.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamListTopics.ascx.cs">
-      <DependentUpon>ForumSpamListTopics.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamListTopics.ascx.designer.cs">
-      <DependentUpon>ForumSpamListTopics.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamCleaner.ascx.cs">
-      <DependentUpon>ForumSpamCleaner.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\ForumSpamCleaner.ascx.designer.cs">
-      <DependentUpon>ForumSpamCleaner.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\EventEditor.ascx.cs">
       <DependentUpon>EventEditor.ascx</DependentUpon>
@@ -322,13 +300,6 @@
     </Compile>
     <Compile Include="usercontrols\Forgotpassword.ascx.designer.cs">
       <DependentUpon>Forgotpassword.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\HeaderLogin.ascx.cs">
-      <DependentUpon>HeaderLogin.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\HeaderLogin.ascx.designer.cs">
-      <DependentUpon>HeaderLogin.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\InsertImage.ascx.cs">
       <DependentUpon>InsertImage.ascx</DependentUpon>
@@ -398,31 +369,25 @@
     <Content Include="usercontrols\acceptTos.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\ForumSpamListComments.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="usercontrols\ForumSpamListTopics.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="usercontrols\ForumSpamCleaner.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
     <Content Include="usercontrols\ExamineSearchResults.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="usercontrols\Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\HeaderLogin.ascx">
+    <Content Include="usercontrols\Login.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\Login.ascx" />
     <Content Include="usercontrols\ProjectCollabRequest.ascx" />
-    <Content Include="usercontrols\ProjectEditor.ascx" />
+    <Content Include="usercontrols\ProjectEditor.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\ProjectFileUpload.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\ProjectForums.ascx" />
+    <Content Include="usercontrols\ProjectForums.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\Signup.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
@@ -446,12 +411,8 @@
       <Name>uPowers</Name>
     </ProjectReference>
     <ProjectReference Include="..\uRepo\uRepo.csproj">
-      <Project>{47FD2B14-1653-4052-AD53-1871A8F85E0E}</Project>
+      <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>
       <Name>uRepo</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\uSearch\uSearch.csproj">
-      <Project>{6B5FE138-1713-4A97-AE6D-01B9293AC825}</Project>
-      <Name>uSearch</Name>
     </ProjectReference>
     <ProjectReference Include="..\uWiki\uWiki.csproj">
       <Project>{996601FA-5C0E-46A6-B39D-2863BADC80D8}</Project>

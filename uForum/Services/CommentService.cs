@@ -29,24 +29,51 @@ namespace uForum.Services
         }
 
         
-        public IEnumerable<Comment> GetComments(int topicId, long number = 10, long page = 1)
+        public Page<Comment> GetPagedComments(int topicId, long number = 10, long page = 1, bool ignoreSpam = true)
         {
-            var sql = new Sql();
-            
-            if(topicId > 0)
+            var sql = new Sql()
+                 .Select("*")
+                 .From<Comment>();
+
+           // if (ignoreSpam)
+           //     sql.Where<Comment>(x => x.IsSpam != true);
+
+            if (topicId > 0)
                 sql.Where<Comment>(x => x.TopicId == topicId);
 
-            sql.OrderBy<Comment>(x => x.Created);
-            return DatabaseContext.Database.Page<Comment>(page, number, sql).Items;
+            sql.Where<Comment>(x => x.ParentCommentId == 0);
+            sql.OrderByDescending("created");
+            
+            return DatabaseContext.Database.Page<Comment>(page, number, sql);
+        }
+
+        public IEnumerable<Comment> GetComments(int topicId, bool ignoreSpam = true)
+        {
+            var sql = new Sql()
+                 .Select("*")
+                 .From<Comment>();
+
+            if (ignoreSpam)
+                 sql.Where<Comment>(x => x.IsSpam != true);
+
+            if (topicId > 0)
+                sql.Where<Comment>(x => x.TopicId == topicId);
+
+            sql.Where<Comment>(x => x.ParentCommentId == 0);
+            sql.OrderByDescending("created");
+
+            return DatabaseContext.Database.Fetch<Comment>(sql);
         }
 
         public IEnumerable<Comment> GetChildComments(int commentId)
         {
-            var sql = new Sql();
+            var sql = new Sql()
+                  .Select("*")
+                  .From<Comment>();
 
             sql.Where<Comment>(x => x.ParentCommentId == commentId);
+            sql.OrderByDescending("created");
 
-            sql.OrderBy<Comment>(x => x.Created);
             return DatabaseContext.Database.Query<Comment>(sql);
         }
 
@@ -72,6 +99,15 @@ namespace uForum.Services
             if (!eventArgs.Cancel)
             {
                 DatabaseContext.Database.Save(comment);
+                UpdateTopicPostsCount(comment);
+
+                if (comment.ParentCommentId > 0)
+                {
+                    var p = GetById(comment.ParentCommentId);
+                    if (p != null)
+                        p.HasChildren = true;
+                    Save(p);
+                }
 
                 if (raiseEvents)
                 {
@@ -90,11 +126,27 @@ namespace uForum.Services
             return comment;
         }
 
+        private void UpdateTopicPostsCount(Comment c, bool adding = true)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(c.TopicId);
+                t.Replies = adding ? t.Replies + 1 : t.Replies - 1;
+                t.Updated = DateTime.Now;
+
+                if (adding)
+                    t.LatestReplyAuthor = c.MemberId;
+                
+                ts.Save(t);
+            }
+        }
+
         public void Delete(Comment comment)
         {
             var eventArgs = new CommentEventArgs() { Comment = comment };
             if (Deleting.RaiseAndContinue(this, eventArgs))
             {
+                UpdateTopicPostsCount(comment, false);
                 DatabaseContext.Database.Delete(comment);
                 Deleted.Raise(this, eventArgs);
             }
@@ -121,9 +173,12 @@ namespace uForum.Services
         public static event EventHandler<CommentEventArgs> CancelledByEvent;
 
 
-        public static CommentService Instance()
+        public static CommentService Instance
         {
-            return Singleton<CommentService>.UniqueInstance;
+            get
+            {
+                return Singleton<CommentService>.UniqueInstance;
+            }
         }
 
         public void Dispose()

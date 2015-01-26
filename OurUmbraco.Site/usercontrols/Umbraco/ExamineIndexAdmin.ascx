@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeFile="ExamineIndexAdmin.ascx.cs" Inherits="usercontrols.Umbraco.ExamineIndexAdmin"%>
+﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="usercontrols.Umbraco.ExamineIndexAdmin" Codebehind="ExamineIndexAdmin.ascx.cs" %>
 <asp:Repeater ID="indexManager" runat="server">
         <HeaderTemplate>Index manager<br /></HeaderTemplate>
         <ItemTemplate>

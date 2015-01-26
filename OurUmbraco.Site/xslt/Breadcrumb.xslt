@@ -27,8 +27,7 @@
 		<xsl:if test="$currentPage/@level &gt; $minLevel">
 			<ul id="breadcrumb">
 				<li>
-					<a href="/">Home</a>
-					<xsl:if test="$linkToCurrent = 1 or $currentPage/@level &gt; 2">&separator;</xsl:if>
+					<a href="/">Our</a>
 				</li>
 				<xsl:for-each select="$currentPage/ancestor::*[@isDoc and @level &gt; $minLevel][not(umbracoNaviHide = 1)]">
 					<li>

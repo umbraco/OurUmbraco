@@ -6,8 +6,8 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Data.SqlClient;
 using NotificationsCore;
-using uForum.Businesslogic;
 using umbraco.cms.businesslogic.web;
+using uForum.Services;
 
 namespace NotificationsWeb.Pages
 {
@@ -15,7 +15,6 @@ namespace NotificationsWeb.Pages
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, "[Notifications] sheduled trigger");
             SendMarkAsSolutionReminders();
             SendProjectVoteReminders();
         }
@@ -43,17 +42,18 @@ namespace NotificationsWeb.Pages
 
                     SqlDataReader dr = comm.ExecuteReader();
 
-                    while (dr.Read())
+                    using (var ts = new TopicService())
                     {
-                        InstantNotification not = new InstantNotification();
+                        while (dr.Read())
+                        {
+                            InstantNotification not = new InstantNotification();
 
-                        int topicId = dr.GetInt32(0);
-                        int memberId = dr.GetInt32(1);
+                            int topicId = dr.GetInt32(0);
+                            int memberId = dr.GetInt32(1);
 
-                        Topic t = Topic.GetTopic(topicId);
-
-
-                        not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "MarkAsSolutionReminderSingle", topicId, memberId, NiceTopicUrl(t));
+                            var topic = ts.GetById(topicId);
+                            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "MarkAsSolutionReminderSingle", topic, memberId);
+                        }
                     }
 
                 }
@@ -114,37 +114,15 @@ namespace NotificationsWeb.Pages
                 catch (Exception ex)
                 {
                     umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, "[Notifications] " + ex.Message);
-
                 }
                 finally
                 {
                     if(conn != null)
                         conn.Close();
                 }
-
             }
         }
 
-        private static string NiceTopicUrl(Topic t)
-        {
-
-            if (t.Exists)
-            {
-                string _url = umbraco.library.NiceUrl(t.ParentId);
-
-                if (umbraco.GlobalSettings.UseDirectoryUrls)
-                {
-                    return "/" + _url.Trim('/') + "/" + t.Id.ToString() + "-" + t.UrlName;
-                }
-                else
-                {
-                    return "/" + _url.Substring(0, _url.LastIndexOf('.')).Trim('/') + "/" + t.Id.ToString() + "-" + t.UrlName + ".aspx";
-                }
-            }
-            else
-            {
-                return "";
-            }
-        }
+       
     }
 }

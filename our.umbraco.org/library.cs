@@ -44,94 +44,6 @@ namespace our {
 
 
 
-        /*
-        public static string Sanitize(string html) {
-
-            var tagname = "";
-            Match tag;
-            var tags = _tags.Matches(html);
-
-            List<ReplacePoint> replacePoints = new List<ReplacePoint>();
-
-
-            // iterate through all HTML tags in the input
-            for (int i = tags.Count - 1; i > -1; i--) {
-                tag = tags[i];
-                tagname = tag.Value.ToLower();
-
-                if (!_whitelist.IsMatch(tagname)) {
-
-
-                    // not on our whitelist? Replace < and > with html entities
-                    //html = html.Remove(tag.Index, tag.Length);
-
-                    try {
-                        replacePoints.Add(new ReplacePoint(
-                        html.IndexOf('<', tag.Index, tag.Length),
-                        html.LastIndexOf('>', tag.Index, tag.Length)));
-                    } catch { }
-
-
-                } else if (tagname.StartsWith("<img")) {
-                    // detailed <img> tag checking
-                    if (!IsMatch(tagname,
-                        @"<img\s
-              src=""https?://[-A-Za-z0-9+&@#/%?=~_|!:,.;]+""
-              (\swidth=""\d{1,3}"")?
-              (\sheight=""\d{1,3}"")?
-              (\salt=""[^""]*"")?
-              (\stitle=""[^""]*"")?
-              \s?/?>")) {
-
-                        try {
-                            replacePoints.Add(new ReplacePoint(
-                           html.IndexOf('<', tag.Index, tag.Length),
-                           html.IndexOf('>', tag.Index, tag.Length)));
-                        } catch { }
-                    }
-
-
-                } else if (tagname.StartsWith("<a") && tagname.Contains("{")) {
-                    try {
-                        replacePoints.Add(new ReplacePoint(
-                           html.IndexOf('<', tag.Index, tag.Length),
-                           html.IndexOf('>', tag.Index, tag.Length)));
-                    } catch { }
-
-                }
-            }
-
-
-            char[] htmlchars = html.ToCharArray();
-
-            foreach (ReplacePoint rp in replacePoints) {
-                if (rp.open > -1) {
-                    htmlchars[rp.open] = '°';
-                }
-
-                if (rp.close > -1) {
-                    htmlchars[rp.close] = '³';
-                }
-            }
-
-
-            html = string.Empty;
-            foreach (char character in htmlchars) {
-                html += character;
-            }
-
-            html = html.Replace("°", "&lt;");
-            html = html.Replace("³", "&gt;");
-
-
-            html = html.Replace("[code]", "<pre>");
-            html = html.Replace("[/code]", "</pre>");
-
-            return html;
-        }
-
-        */
-
         /// <summary>
         /// Utility function to match a regex pattern: case, whitespace, and line insensitive
         /// </summary>
@@ -146,10 +58,6 @@ namespace our {
                 m = new Member(id);
 
             return m;
-        }
-
-        public static bool IsMember(int id) {
-            return (uForum.Businesslogic.Data.SqlHelper.ExecuteScalar<int>("select count(nodeid) from cmsMember where nodeid = '" + id + "'") > 0);
         }
 
         public static bool IsAdmin(int id)
@@ -239,6 +147,7 @@ namespace our {
 
         }
 
+        /*
         public static XPathNodeIterator ProjectsContributing(int memberId)
         {
             return uForum.Businesslogic.Data.GetDataSet
@@ -249,7 +158,7 @@ namespace our {
         {
             return uForum.Businesslogic.Data.GetDataSet
                 ("SELECT * FROM projectContributors WHERE projectId = " + projectId, "contributors");
-        }
+        }*/
     }
 
     public struct ReplacePoint {

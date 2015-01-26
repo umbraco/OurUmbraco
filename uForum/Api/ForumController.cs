@@ -1,164 +1,122 @@
-﻿using System.Linq;
-using System.Web;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Web.Http;
-using uForum.Library;
-using umbraco.cms.businesslogic.web;
-using umbraco.NodeFactory;
+using uForum.Models;
+using uForum.Services;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
 {
+    [MemberAuthorize( AllowType="member" )]
     public class ForumController : UmbracoApiController
-    {        
-        private const string ModeratorRoles = "admin,HQ,Core,MVP";
-
-        [HttpGet]
-        public string TopicUrl(int topicId)
-        {
-            HttpContext.Current.Response.Redirect(Xslt.NiceTopicUrl(topicId));
-            HttpContext.Current.Response.End();
-            return "";
-        }
+    {
+        /* COMMENTS */
 
         [HttpPost]
-        public string NewTopic(int forumId)
+        public void Comment(CommentViewModel model)
         {
-            var node = new Node(forumId);
-
-            var currentMemberId = Members.GetCurrentMember().Id;
-            if (currentMemberId > 0 && Access.HasAccces(node.Id, currentMemberId))
+            using (var cs = new CommentService())
             {
-                var title = HttpContext.Current.Request["title"];
-                var body = HttpContext.Current.Request["body"];
-                var tags = HttpContext.Current.Request["tags"];
-
-                var topic = Businesslogic.Topic.Create(forumId, title, body, currentMemberId);
-
-                return Xslt.NiceTopicUrl(topic.Id);
+                var c = new Comment();
+                c.Body = model.Body;
+                c.MemberId = Members.GetCurrentMemberId();
+                c.Created = DateTime.Now;
+                c.ParentCommentId = model.Parent;
+                c.TopicId = model.Topic;
+                cs.Save(c);
             }
-
-            return "0";
         }
 
-        [HttpPost]
-        public string EditTopic(int topicId)
+        [HttpPut]
+        public void Comment(int id, CommentViewModel model)
         {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-
-            if (topic.Editable(Members.GetCurrentMember().Id) == false)
-                return "0";
-
-            var title = HttpContext.Current.Request["title"];
-            var body = HttpContext.Current.Request["body"];
-            var tags = HttpContext.Current.Request["tags"];
-            topic.Body = body;
-            topic.Title = title;
-            //topic.Tags = tags;
-            topic.Save(false);
-
-            return Xslt.NiceTopicUrl(topic.Id);
-        }
-
-        [HttpPost]
-        public string NewComment(int topicId, int itemsPerPage)
-        {
-            var currentMemberId = Members.GetCurrentMember().Id;
-            if (currentMemberId > 0 && topicId > 0)
+            using (var cs = new CommentService())
             {
-                var body = HttpContext.Current.Request["body"];
-                var comment = Businesslogic.Comment.Create(topicId, body, currentMemberId);
+                var c = cs.GetById(id);
+                
+                if (c == null)
+                    throw new Exception("Comment not found");
 
-                return Xslt.NiceCommentUrl(comment.TopicId, comment.Id, itemsPerPage);
+                if(c.MemberId != Members.GetCurrentMemberId())
+                    throw new Exception("You cannot edit this comment");
+                
+                c.Body = model.Body;
+                cs.Save(c);
             }
-
-            return "";
         }
 
-        [HttpPost]
-        public string EditComment(int commentId, int itemsPerPage)
+        [HttpDelete]
+        public void Comment(int id)
         {
-            var comment = new Businesslogic.Comment(commentId);
-
-            if (comment.Editable(Members.GetCurrentMember().Id))
+            using (var cs = new CommentService())
             {
-                var body = HttpContext.Current.Request["body"];
-                comment.Body = body;
-                comment.Save();
+                var c = cs.GetById(id);
 
-                return Xslt.NiceCommentUrl(comment.TopicId, comment.Id, itemsPerPage);
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                if (c.MemberId != Members.GetCurrentMemberId())
+                    throw new Exception("You cannot delete this comment");
+
+                cs.Delete(c);
             }
-
-            return "";
         }
 
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = "admin")]
-        public string DeleteTopic(int topicId)
-        {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-            topic.Delete();
 
-            return "true";
+
+        /* TOPICS */
+        [HttpPost]
+        public void Topic(TopicViewModel model)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = new Topic();
+                t.Body = model.Body;
+                t.MemberId = Members.GetCurrentMemberId();
+                t.Created = DateTime.Now;
+                t.ParentId = model.Forum;
+                ts.Save(t);
+            }
         }
 
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public string MarkTopicAsSpam(int topicId)
-        {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-            topic.MarkAsSpam();
 
-            return "true";
+        [HttpPut]
+        public void Topic(int id, TopicViewModel model)
+        {
+            using (var cs = new TopicService())
+            {
+                var c = cs.GetById(id);
+
+                if (c == null)
+                    throw new Exception("Topic not found");
+
+                if (c.MemberId != Members.GetCurrentMemberId())
+                    throw new Exception("You cannot edit this topic");
+
+                c.Body = model.Body;
+                cs.Save(c);
+            }
         }
 
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public string MarkTopicAsHam(int topicId)
+
+        [HttpDelete]
+        public void Topic(int id)
         {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-            topic.MarkAsHam();
+            using (var cs = new TopicService())
+            {
+                var c = cs.GetById(id);
 
-            return "true";
-        }
+                if (c == null)
+                    throw new Exception("Topic not found");
 
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = "admin")]
-        public string MoveTopic(int topicId, int newForumId)
-        {
-            var topic = Businesslogic.Topic.GetTopic(topicId);
-            topic.Move(newForumId);
+                if (c.MemberId != Members.GetCurrentMemberId())
+                    throw new Exception("You cannot delete this topic");
 
-            return Xslt.NiceTopicUrl(topic.Id);
-        }
-
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = "admin")]
-        public string DeleteComment(int commentId)
-        {
-            var comment = new Businesslogic.Comment(commentId);
-            comment.Delete();
-
-            return "true";
-        }
-
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public string MarkCommentAsSpam(int commentId)
-        {
-            var comment = new Businesslogic.Comment(commentId);
-            comment.MarkAsSpam();
-
-            return "true";
-        }
-
-        [HttpGet]
-        [MemberAuthorize(AllowGroup = ModeratorRoles)]
-        public string MarkCommentAsHam(int commentId)
-        {
-            var comment = new Businesslogic.Comment(commentId);
-            comment.MarkAsHam();
-
-            return "true";
+                cs.Delete(c);
+            }
         }
     }
 }

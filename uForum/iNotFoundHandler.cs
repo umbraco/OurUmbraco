@@ -57,6 +57,7 @@ namespace uForum {
 
                     var cookie = new HttpCookie("altTemplate", "displaytopic");
                     HttpContext.Current.Request.Cookies.Add(cookie);
+
                     HttpContext.Current.Items["altTemplate"] = "displaytopic";
                     HttpContext.Current.Items["topicID"] = topicId;
                     HttpContext.Current.Items["topicTitle"] = topicTitle.Replace('-',' ');

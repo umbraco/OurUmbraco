@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using uForum.Services;
 using uPowers.BusinessLogic;
-using uForum.Businesslogic;
 
 
 namespace our.custom_Handlers {
@@ -37,17 +37,25 @@ namespace our.custom_Handlers {
 
             uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
-            if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment") {
-                Comment c = new Comment(e.ItemId);
-                if (c != null) {
-                    e.ReceiverId = c.MemberId;
-                }
-            } else if (a.Alias == "TopicSolved") {
-                Topic t = Topic.GetTopic(new Comment(e.ItemId).TopicId);
-                bool hasAnswer = (our.Data.SqlHelper.ExecuteScalar<int>("SELECT answer FROM forumTopics where id = @id", Data.SqlHelper.CreateParameter("@id", t.Id)) > 0);
 
-                e.Cancel = hasAnswer;
+            using (var ts = new TopicService())
+            using(var cs = new CommentService())
+            {
+                if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment")
+                {
+                    var c = cs.GetById(e.ItemId);
+                    if (c != null)
+                    {
+                        e.ReceiverId = c.MemberId;
+                    }
+                }
+                else if (a.Alias == "TopicSolved")
+                {
+                    var t = ts.GetById(e.ItemId);
+                    e.Cancel = t.Answer > 0;
+                }
             }
+           
         }
       
     }

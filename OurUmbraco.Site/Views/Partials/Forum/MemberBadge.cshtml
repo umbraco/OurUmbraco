@@ -1,0 +1,19 @@
+﻿@model IMember
+@using uForum;
+
+<div class="author vcard">
+    <div class="memberBadge rounded">
+      <a href="/member/@Model.Id}">
+        <img alt="Avatar" class="photo" src="@Model.Avatar()" style="width: 32px; height: 32px;" />
+      </a>
+
+      <span class="posts">
+        @Model.ForumPosts()
+        <small>posts</small>
+      </span>
+      <span class="karma">
+        @Model.Karma()
+        <small>karma</small>
+      </span>
+    </div>
+</div>

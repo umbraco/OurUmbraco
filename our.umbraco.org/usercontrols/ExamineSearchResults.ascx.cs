@@ -93,7 +93,8 @@ namespace our.usercontrols
                 return result["url"];
             }
             else if (result["__IndexType"] == "documents")
-                return uForum.Library.Xslt.NiceTopicUrl(result.Id);
+                return "TODO";
+            //return uForum.Library.NiceTopicUrl(result.Id);
             else
                 return string.Empty;
         }

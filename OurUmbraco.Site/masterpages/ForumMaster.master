@@ -1,0 +1,10 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+	<!-- FORUM OVERVIEW START -->
+    <section class="forum-overview">
+		<asp:contentplaceholder id="main" runat="server"/>
+	</section>
+	
+	<umbraco:Macro Alias="[Forum]Form" runat="server"></umbraco:Macro>
+</asp:content>

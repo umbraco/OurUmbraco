@@ -1,183 +1,164 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
-<%@ Register Assembly="AjaxControlToolkit" Namespace="AjaxControlToolkit" TagPrefix="cc1" %>
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
-  <head runat="server">
-    <meta http-equiv="Content-type" content="text/html; charset=utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" >
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js" lang="en">
+<!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
     <link rel="alternate" type="application/rss+xml" title="Latest packages" href="http://our.umbraco.org/rss/projects" />
     <link rel="alternate" type="application/rss+xml" title="Package updates" href="http://our.umbraco.org/rss/projectsupdate" />
     <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="http://our.umbraco.org/rss/activetopics" />
     <link rel="alternate" type="application/rss+xml" title="Community blogs" href="http://pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
-  
-    
+
+
     <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
-    <link rel="shortcut icon" type="image/x-icon" href="/css/img/our.favicon.png"/>
+    <link rel="shortcut icon" type="image/x-icon" href="/css/img/our.favicon.png" />
 
     <title><umbraco:Macro Alias="Title" runat="server"></umbraco:Macro></title>
-    <link rel="stylesheet" type="text/css" href="/css/community.css?v=11&update=yes" />
-    <link rel="stylesheet" type="text/css" href="/css/forum.css?v=3" />  
-    <link rel="stylesheet" type="text/css" href="/css/wiki.css?v=5" />
-    <link rel="stylesheet" type="text/css" href="/css/new-deli.css?v=4" />
-    <link rel="stylesheet" type="text/css" href="/css/fonts.css?v=5" />
-    <link rel="stylesheet" type="text/css" href="/css/jquery.tabs.css?v=4" />
-    <link rel="stylesheet" type="text/css" href="/css/events.css?v=4" />
-    <link rel="stylesheet" type="text/css" href="/css/notifications.css?v=4&u=yes" />
+    <meta name="description" content="">
+    <meta name="author" content="">
 
+    <meta name="robots" content="noindex">
 
-    <!-- New MBD Styles -->
-    <link media="screen" type="text/css" rel="stylesheet" href="/css/new-projects-mbd.css?v=4" />
+    <link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/assets/css/style.min.css" />
 
     <!--[if lt IE 9]>
-        <link rel="stylesheet" type="text/css" href="/css/new-projects-mbd-ie.css?v=3">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
     <![endif]-->
 
-    <!-- MBD iPad CSS -->
-    <link rel="stylesheet" type="text/css" href="/css/mbd.forum.iPad.css?v=4" media="screen and (min-device-width: 768px) and (max-device-width: 1024px)"/>
-
-    
-    <!-- iOS Icons -->
-    <link rel="apple-touch-icon-precomposed" href="/touch-icon-iphone-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/touch-icon-ipad-precomposed.png" />
-    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/touch-icon-iphone4-precomposed.png" />
-
-    <script type="text/javascript" src="/scripts/mapr/jquery-1.6.4.js"></script>
-    <script type="text/javascript" src="/scripts/community.js?v=3"></script>
-    <script type="text/javascript" src="/scripts/powers/uPowers.js?v=6"></script>
-    <script type="text/javascript" src="/scripts/jquery.validation.js?v=3"></script>
-    <script type="text/javascript" src="/scripts/notifications/notifications.js?ay=y&v=3"></script>
-    <script src="/scripts/libs/jquery-ui-1.7.1.custom.min.js?v=3" type="text/javascript"></script>
-    <script type="text/javascript" src="/scripts/libs/SimpleModal.js?v=3"></script>
-    <script type="text/javascript" src="http://www.google.com/jsapi"></script>
-    <script type="text/javascript" src="/scripts/new-mbd.js?v=3"></script>
-
-    <script type="text/javascript">
-      google.load('visualization', '1', {packages: ['corechart']});
+    <umbraco:Macro Alias="[Members]JsValues" runat="server" />
+	
+    <asp:ContentPlaceHolder ID="Head" runat="server"></asp:ContentPlaceHolder>
+    <script>
+        var _prum = [['id', '529dbcf6abe53d055a000000'],
+                        ['mark', 'firstbyte', (new Date()).getTime()]];
+        (function () {
+            var s = document.getElementsByTagName('script')[0]
+                , p = document.createElement('script');
+            p.async = 'async';
+            p.src = '//rum-static.pingdom.net/prum.min.js';
+            s.parentNode.insertBefore(p, s);
+        })();
     </script>
-    
-    <umbraco:Macro Alias="Member-JsValues" runat="server"></umbraco:Macro>
-    
-    <asp:ContentPlaceHolder Id="Head" runat="server"></asp:ContentPlaceHolder>
-	  <script>
-var _prum = [['id', '529dbcf6abe53d055a000000'],
-             ['mark', 'firstbyte', (new Date()).getTime()]];
-(function() {
-    var s = document.getElementsByTagName('script')[0]
-      , p = document.createElement('script');
-    p.async = 'async';
-    p.src = '//rum-static.pingdom.net/prum.min.js';
-    s.parentNode.insertBefore(p, s);
+</head>
+<body>
+	
+	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
+
+    <header>
+
+        <div class="navigation">
+
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-3">
+                        <a class="logo" href="index.html">Our Umbraco
+                        </a>
+                    </div>
+
+                    <nav class="col-md-9">
+						<umbraco:Macro Alias="[Navigation]TopNavigation" runat="server" />
+					</nav>
+
+                </div>
+            </div>
+
+        </div>
+        
+        <asp:ContentPlaceHolder ID="Search" runat="server" />
+        
+    </header>
+
+    <form runat="server">
+        <asp:ContentPlaceHolder ID="Main" runat="server" />
+    </form>
+
+    <footer>
+	<div class="container">
+		<div class="row">
+
+			<div class="col-xs-6 col-md-3">
+				<ul>
+					<strong>Klara</strong>
+					<li><a href="#">Lore</a></li>
+					<li><a href="#">Lora</a></li>
+					<li><a href="#">Klaurmsi</a></li>
+					<li><a href="#">Wrapuerdu</a></li>
+				</ul>
+			</div>
+
+			<div class="col-xs-6 col-md-3">
+				<ul>
+					<strong>Klara</strong>
+					<li><a href="#">Lore</a></li>
+					<li><a href="#">Lora</a></li>
+					<li><a href="#">Klaurmsi</a></li>
+					<li><a href="#">Wrapuerdu</a></li>
+				</ul>
+			</div>
+
+			<div class="col-xs-6 col-md-3">
+				<ul>
+					<strong>Klara</strong>
+					<li><a href="#">Lore</a></li>
+					<li><a href="#">Lora</a></li>
+					<li><a href="#">Klaurmsi</a></li>
+					<li><a href="#">Wrapuerdu</a></li>
+				</ul>
+			</div>
+
+			<div class="col-xs-6 col-md-3">
+				<ul>
+					<strong>Klara</strong>
+					<li><a href="#">Lore</a></li>
+					<li><a href="#">Lora</a></li>
+					<li><a href="#">Klaurmsi</a></li>
+					<li><a href="#">Wrapuerdu</a></li>
+				</ul>
+			</div>
+
+		</div>
+	</div>
+</footer>
+
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js">> </script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
+
+<script src="/assets/js/app.min.js"></script>
+<script src="/assets/js/editor.min.js"></script>
+
+<script type="text/javascript">
+    classOnScroll('header', 'sticky', 10);
+</script>
+
+<script type="text/javascript">
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-120590-4']);
+_gaq.push(['_trackPageview']);
+
+(function () {
+var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
 </script>
-    
-  </head>
-  <body>
-  <div id="main">
-    <form runat="server">
-
-		
-  <cc1:ToolkitScriptManager ID="ToolkitScriptManager1" runat="server"></cc1:ToolkitScriptManager>
-   
-
-    <div id="topNotificationContainer">
-      <div class="topNotification">
-        <span class="notifyClose">
-          x
-        </span>
-        First time here? Check out the <a href="#">FAQ</a>
-      </div>
-    </div>
-
-    <asp:ContentPlaceHolder Id="Top" runat="server">
-    <div id="top">
-      
-      <div id="memberInfo">
-        <div class="wrapper">
-        <div id="memberHeaderProfile">
-        <umbraco:Macro ProfilePage="1057" LoginPage="1056" CreatePage="1071" BlockedPage="5571" Alias="MemberTopProfile" runat="server"></umbraco:Macro>
-          
-          </div>
-        </div>
-      </div>
-      
-      <div class="wrapper">
-      <a href="/" id="logo" title="Our umbraco dot org">our.umbraco.org</a>
-      <umbraco:Macro Alias="TopNavigation" runat="server"></umbraco:Macro>
-      </div>
-    </div>
-
-     <umbraco:Macro Alias="SearchField" runat="server"></umbraco:Macro>
-    </asp:ContentPlaceHolder>
-  
-   
-    <umbraco:Item field="mainNotification" insertTextBefore="&lt;div id=&quot;alertBar&quot;&gt;" insertTextAfter="&lt;/div&gt;" recursive="true" runat="server"></umbraco:Item>
-    
-
-    <div id="contentArea">  
-    <asp:ContentPlaceHolder Id="SpecialContent" runat="server"/>
-
-    <asp:ContentPlaceHolder Id="Main" runat="server">    
-    <div id="body" class="subpage wrapper">
-    <div style="margin-top: 25px;">
-      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
-    </div>
-    <h1><umbraco:Item field="alternativeHeadline" useIfEmpty="pageName" runat="server"></umbraco:Item></h1>
-    
-
-    <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
-    
-    </div>
-    </asp:ContentPlaceHolder>
-    
-    </div>
-
-      <div class="push"></div>
-    
-    </form>
-     
-    </div>
-    
-
-    <div id="footer">
-      Our.umbraco.org is the community mothership for <a href="http://umbraco.org" title="Go to umbraco.org">Umbraco, the open source asp.net cms</a>.
-      With a <a href="/forum">friendly forum</a> for all your questions, a comprehensive <a href="/documentation">documentation wiki</a> and the a ton of <a href="/projects">packages, extensions and extras</a> from the community.
-    </div>
-    
-    
-  
 
 
-<div id="votingModal" style="display: none;">
-<h3></h3><p></p>
-<textarea rows="4" cols="10"></textarea>
-<small>Please enter atleast 50 characters (<em class="counter">50</em> remaining)
-<input type="button" value="submit" /> <em> or </em> <a href="#" class="simplemodal-close">cancel</a>
-</small>
-</div>
-    
-<script type="text/javascript">
-  var _gaq = _gaq || [];
-  _gaq.push(['_setAccount', 'UA-120590-4']);
-  _gaq.push(['_trackPageview']);
 
-  (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
-  })();
-</script>
-   
-    
-   
-<asp:ContentPlaceHolder Id="EndScripts" runat="server">
- 
-</asp:ContentPlaceHolder>
+<asp:ContentPlaceHolder ID="EndScripts" runat="server" />
 
-
-  </body>
-
-  </html>
- 
+</body>
+</html>
 </asp:Content>

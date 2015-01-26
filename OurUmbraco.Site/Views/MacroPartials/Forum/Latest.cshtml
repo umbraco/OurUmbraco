@@ -1,0 +1,16 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum;
+
+
+@{
+    var topics = uForum.Services.TopicService.Instance().GetLatestTopics();
+}
+
+<ul>
+    @foreach (var topic in topics)
+    {
+        <li>
+            @topic.Title
+        </li>
+    }
+</ul>

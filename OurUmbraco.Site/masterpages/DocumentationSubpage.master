@@ -1,47 +1,43 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/DocumentationMaster.master" AutoEventWireup="true" %>
+
 <%@ Register Src="~/usercontrols/DocumentationShowMarkdown.ascx" TagPrefix="markdown" TagName="Doc" %>
-<%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb"%>
+<%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb" %>
 <%@ Register Src="~/usercontrols/DocumentationEditButton.ascx" TagPrefix="markdown" TagName="DocumentationEditButton" %>
 
 
-<asp:Content ContentPlaceHolderId="main" runat="server">
-    <div id="documentation" class="subpage">
-        
-        <umbraco:Macro runat="server" language="cshtml">
-            @if(Model.NodeTypeAlias != "Projects"){
-                <div style="margin-top: 20px; padding: 7px;" class="notice">
-                    <strong>Please note</strong>: this is work in progress. Broken links, placeholder text, and a few things 
-                    not working can be expected. <a href="https://github.com/umbraco/Umbraco4Docs"><strong>You can help out. get involved!</strong></a>
+<asp:Content ContentPlaceHolderID="main" runat="server">
+    <span class="sidebar-bg"></span>
+    <span class="content-bg"></span>
+    <div class="container">
+        <div class="row">
+            <nav class="sidebar col-md-4">
+                <div class="row">
+                    <div class="col-md-12">
+                    </div>
                 </div>
-            }
-        </umbraco:Macro>
+            </nav>
+            <div class="content markdown-syntax col-md-8  col-md-offset-4">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="body">
 
-        <markdown:DocumentationEditButton runat="server" ID="DocumentationEditButton" />
+                            <div>
+                                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                            </div>
 
-        <div id="toc">
-            <a href="#" class="toggle">Table of contents <small>(click to show/hide)</small></a>
-            <ul></ul>
-        </div>
-        
-        <div id="body">
-            <asp:ContentPlaceHolder Id="Main" runat="server">
-                <div style="margin-top: 25px;">
-                    <markdown:Breadcrumb runat="server" />
+                            <div id="markdown-docs">
+                                <markdown:Doc ID="Markdown" runat="server" AddHeader="False" PrefixLinks="False" />
+                            </div>
+
+                            <br style="clear: both">
+                            <div class="divider"></div>
+
+                        </div>
+                    </div>
                 </div>
-                <div id="markdown-docs">
-                    <markdown:Doc ID="Markdown" runat="server" AddHeader="False" PrefixLinks="False" />
-                </div>
-                
-                <br style="clear: both"/>
-                <div class="divider"></div>
-            </asp:ContentPlaceHolder>
+            </div>
         </div>
     </div>
+    </div>
     
-    <script type="text/javascript" src="/scripts/wiki/toc.js?u=yes"></script>
-</asp:Content>
-  
-<asp:Content ContentPlaceHolderId="Head" runat="server">
-    <!-- Documentation styles -->
-    <link media="screen" type="text/css" rel="stylesheet" href="/css/docs.css?u=y" />
 </asp:Content>

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Web.UI.WebControls;
-using uForum.Businesslogic;
+using uForum;
 using umbraco.cms.businesslogic.member;
 
 namespace uForum.usercontrols
@@ -16,8 +16,9 @@ namespace uForum.usercontrols
         protected void NotSpamComment(Object sender, CommandEventArgs e)
         {
             var id = int.Parse(e.CommandArgument.ToString());
-            var comment = Comment.GetComment(id, true);
+            var comment = Services.CommentService.Instance().GetById(id);
             comment.IsSpam = false;
+            
             comment.Save(true);
 
             // Set reputation to at least 50 so their next posts won't be automatically marked as spam

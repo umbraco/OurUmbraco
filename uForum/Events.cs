@@ -17,6 +17,13 @@ namespace uForum
         public string CancellationReason { get; set; }
     }
 
+    public class ForumEventArgs : System.ComponentModel.CancelEventArgs
+    {
+        public Models.Forum Forum { get; set; }
+        public string CancellationReason { get; set; }
+    }
+
+
     /* Events */
     public class CreateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class UpdateEventArgs : System.ComponentModel.CancelEventArgs { }

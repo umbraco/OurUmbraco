@@ -24,8 +24,7 @@ namespace our.usercontrols {
             if (m != null) {
                 umbraco.cms.businesslogic.member.Member.AddMemberToCache(m, false, new TimeSpan(30, 0, 0, 0));
 
-                uForum.Businesslogic.ForumEditor.SetEditorChoiceFromMemberProfile(m.Id);
-
+                
                 if (!string.IsNullOrEmpty(redirectUrl))
                     Response.Redirect(redirectUrl);
 

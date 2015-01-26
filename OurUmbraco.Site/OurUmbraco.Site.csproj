@@ -318,6 +318,33 @@
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
+    <Content Include="Assets\css\style.min.css" />
+    <Content Include="Assets\images\breadcrumb.png" />
+    <Content Include="Assets\images\close.png" />
+    <Content Include="Assets\images\compass.png" />
+    <Content Include="Assets\images\documentation\cells.png" />
+    <Content Include="Assets\images\documentation\dirty-shade.png" />
+    <Content Include="Assets\images\documentation\editor.png" />
+    <Content Include="Assets\images\documentation\Grid-layout-NO-SIDEBAR-rows.jpg" />
+    <Content Include="Assets\images\documentation\Grid-layout-rows.jpg" />
+    <Content Include="Assets\images\documentation\Grid-layout-scenarios.jpg" />
+    <Content Include="Assets\images\documentation\layouts.png" />
+    <Content Include="Assets\images\documentation\para.png" />
+    <Content Include="Assets\images\documentation\rows.png" />
+    <Content Include="Assets\images\documentation\settings.png" />
+    <Content Include="Assets\images\editor.png" />
+    <Content Include="Assets\images\forum.gif" />
+    <Content Include="Assets\images\forum.png" />
+    <Content Include="Assets\images\imagegen %281%29.png" />
+    <Content Include="Assets\images\imagegen %282%29.png" />
+    <Content Include="Assets\images\imagegen %283%29.png" />
+    <Content Include="Assets\images\imagegen %285%29.png" />
+    <Content Include="Assets\images\imagegen.png" />
+    <Content Include="Assets\images\package2.png" />
+    <Content Include="Assets\images\solved.gif" />
+    <Content Include="Assets\images\tools.png" />
+    <Content Include="Assets\js\app.min.js" />
+    <Content Include="Assets\js\editor.min.js" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
@@ -1747,6 +1774,19 @@
     <Content Include="usercontrols\umbracoContour\EditForm.ascx" />
     <Content Include="usercontrols\umbracoContour\Installer.ascx" />
     <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
+    <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
+    <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
+    <Content Include="Views\MacroPartials\Members\QuickMenu.cshtml" />
+    <Content Include="Views\MacroPartials\Members\JsValues.cshtml" />
+    <Content Include="Views\Partials\Forum\Comment.cshtml" />
+    <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
+    <Content Include="Assets\css\fonts\our-icon\our-umbraco.svg" />
+    <Content Include="Assets\css\fonts\our-icon\our-umbraco.ttf" />
+    <Content Include="Assets\css\fonts\our-icon\our-umbraco.woff" />
+    <Content Include="Assets\images\logo.svg" />
+    <Content Include="Assets\images\magnifier.svg" />
+    <Content Include="Views\MacroPartials\Navigation\TopNavigation.cshtml" />
+    <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4600,6 +4640,10 @@
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
+    <Content Include="Views\MacroPartials\Forum\Latest.cshtml" />
+    <Content Include="Views\MacroPartials\Forum\Forum.cshtml" />
+    <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
+    <Content Include="Views\Partials\Forum\Question.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -4663,13 +4707,12 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Code\" />
     <Folder Include="App_Plugins\" />
     <Folder Include="css\img\Cached\" />
+    <Folder Include="Old_App_Code\" />
     <Folder Include="umbraco\dashboard\air\" />
     <Folder Include="umbraco\dashboard\swfs\" />
     <Folder Include="usercontrols\Deli\Admin\" />
-    <Folder Include="Views\MacroPartials\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

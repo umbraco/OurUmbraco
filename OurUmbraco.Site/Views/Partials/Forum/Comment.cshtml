@@ -1,0 +1,67 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.Comment>
+@using uForum;
+
+@{
+    var answer = (int)ViewData["answer"];
+    var commentAuthor = Model.Author();
+}
+
+<li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
+	<div class="meta">
+		<div class="profile">
+			<a href="#">@commentAuthor.Name</a> has in total, @commentAuthor.Karma() karma points – <span class="roles">Admin</span>
+		</div>
+		<div class="time">
+			@Model.Created.ConvertToRelativeTime()
+		</div>
+	</div>
+
+	<div class="comment-inner">
+
+		<a href="#" class="photo">
+		<img src="@commentAuthor.Avatar()">
+		</a>
+
+		<div class="body markdown-syntax">
+            @Model.Body.Sanitize()
+		</div>
+	</div>
+
+    @if(Members.IsLoggedIn()){
+        var mem = Members.GetCurrentMember();
+        
+	<div class="actions">
+  	  	
+        <div class="link">
+			<a href="#">
+				<img src="https://cdn0.iconfinder.com/data/icons/entypo/80/link5-16.png" alt=""> Copy link
+			</a>
+		</div>
+
+        @if(Members.IsAdmin() || mem.Id == Model.MemberId){
+        <div class="solved">
+  	  	  	<a href="#"> <img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/checkmark-16.png" alt=""> Mark as solution</a>
+  	  	</div>
+        }
+
+
+        @if(mem.Id != Model.MemberId){
+  	  	<div class="karma">
+  	  	  	<a href="#"><img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/like_outline-16.png" alt=""> Give Karma</a>
+  	  	</div>
+        }
+
+
+        @if(Model.ParentCommentId <= 0){
+		<div class="reply">
+            <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment"  class="forum-reply">
+				<img src="https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519627-127_ArrowLeft-16.png" alt=""> Reply
+			</a>
+		</div>
+        }
+
+
+		
+	</div>
+    }
+</li>

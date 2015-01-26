@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using uForum.Businesslogic;
 
 namespace NotificationsWeb.BusinessLogic
 {
@@ -34,6 +33,7 @@ namespace NotificationsWeb.BusinessLogic
         }
 
 
+        /*
         public static List<uForum.Businesslogic.Forum> GetSubscribedForums(int memberId)
         {
             List<uForum.Businesslogic.Forum> lt = new List<uForum.Businesslogic.Forum>();
@@ -64,6 +64,6 @@ namespace NotificationsWeb.BusinessLogic
             }
             dr.Close();
             return lt;
-        }
+        }*/
     }
 }

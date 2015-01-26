@@ -3,42 +3,43 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Core.Persistence;
 
 namespace uForum.Models
 {
-    [PetaPoco.TableName("forumComments")]
-    [PetaPoco.PrimaryKey("id")]
-    [PetaPoco.ExplicitColumns]
+    [TableName("forumComments")]
+    [PrimaryKey("id")]
+    [ExplicitColumns]
     public class Comment
     {
-        [PetaPoco.Column("id")]
+        [Column("id")]
         public int Id { get; set; }
         
-        [PetaPoco.Column("topicId")]
+        [Column("topicId")]
         public int TopicId { get; set; }
 
-        [PetaPoco.Column("parentCommentId")]
+        [Column("parentCommentId")]
         public int ParentCommentId { get; set; }
 
-        [PetaPoco.Column("memberId")]
+        [Column("memberId")]
         public int MemberId { get; set; }
         
-        [PetaPoco.Column("position")]
+        [Column("position")]
         public int Position { get; set; }
 
-        [PetaPoco.Column("body")]
+        [Column("body")]
         public string Body { get; set; }
         
-        [PetaPoco.Column("created")]
+        [Column("created")]
         public DateTime Created { get; set; }
 
-        [PetaPoco.Column("score")]
+        [Column("score")]
         public int Score { get; set; }
 
-        [PetaPoco.Column("isSpam")]
+        [Column("isSpam")]
         public bool IsSpam { get; set; }
 
-        [PetaPoco.Column("hasChildren")]
+        [Column("hasChildren")]
         public bool HasChildren { get; set; }
     }
 }

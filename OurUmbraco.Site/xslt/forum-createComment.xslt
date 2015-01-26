@@ -37,7 +37,6 @@
 
             <xsl:if test="uForum:UseMarkdownEditor()">
               <xsl:value-of select="umbraco.library:RegisterStyleSheetFile('Markdown.Styles', '/css/forum/pagedown.css')"/>
-
               <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Converter', '/scripts/forum/Markdown.Converter.js')"/>
               <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Sanitizer', '/scripts/forum/Markdown.Sanitizer.js')"/>
               <xsl:value-of select="umbraco.library:RegisterJavaScriptFile('Markdown.Editor', '/scripts/forum/Markdown.Editor.js')"/>
@@ -45,7 +44,7 @@
 
             <script type="text/javascript">
               uForum.ForumEditor("commentBody");
-
+              
               jQuery(document).ready(function(){
               <xsl:choose>
                 <xsl:when test="uForum:UseMarkdownEditor()">

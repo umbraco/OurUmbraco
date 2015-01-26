@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Mail;
-using uForum.Businesslogic;
+using uForum.Models;
 using System.Data.SqlClient;
 using umbraco.cms.businesslogic.member;
 using System.Web;
+using Umbraco.Core.Models;
 
 namespace NotificationsCore.NotificationTypes
 {
@@ -22,43 +23,44 @@ namespace NotificationsCore.NotificationTypes
             try
             {
                 Comment com = (Comment)args[0];
+                Topic topic = (Topic)args[1];
+                IMember mem = (IMember)args[2];
+
+
                 if (com.IsSpam)
                 {
                     umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, string.Format("[Notifications] Comment Id {{0}} is marked as spam, no notification sent{0}", com.Id));
                     return true;
                 }
 
+
+                //SMTP SETTINGS
                 SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
                 c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
+                //SENDER ADDRESS
                 MailAddress from = new MailAddress(
                     details.SelectSingleNode("//from/email").InnerText,
                     details.SelectSingleNode("//from/name").InnerText);
 
-                var subject = details.SelectSingleNode("//subject").InnerText;
-                var body = details.SelectSingleNode("//body").InnerText;
-                
-                var topic = Topic.GetTopic(com.TopicId);
-                subject = string.Format(subject, topic.Title);
-
-                var member = (Member)args[2];
-
+                //Notification details
                 var domain = details.SelectSingleNode("//domain").InnerText;
+                var subject = string.Format(details.SelectSingleNode("//subject").InnerText, topic.Title);
+                var body = details.SelectSingleNode("//body").InnerText;
+                body = string.Format(body, topic.Title, "http://" + domain + args[1], mem.Name,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
 
-                body = string.Format(body, topic.Title, "http://" + domain + args[1], member.Text,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
-
-                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
                 
+                //connect to DB
+                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
                 SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers where topicId = @topicId", conn);
                 comm.Parameters.AddWithValue("@topicId", topic.Id);
-
                 conn.Open();
-
-                SqlDataReader dr = comm.ExecuteReader();
                 
+
+                //shit this must be so fucking slow
+                SqlDataReader dr = comm.ExecuteReader();
                 while (dr.Read())
                 {
-
                     int mid = dr.GetInt32(0);
                     try
                     {

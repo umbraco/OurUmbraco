@@ -57,21 +57,17 @@ namespace our.Rest
             //Check if member is an admin (in group 'admin')
             if (Utills.IsAdmin(_currentMember))
             {
-                //Lets check the memberID of the member we are blocking passed into /base is a valid member..
-                if (Utills.IsMember(memberId))
-                {
-                    //Yep - it's valid, lets get that member
-                    Member MemberToBlock = Utills.GetMember(memberId);
+                //Yep - it's valid, lets get that member
+                Member MemberToBlock = Utills.GetMember(memberId);
 
-                    //Now we have the member - lets update the 'blocked' property on the member
-                    MemberToBlock.getProperty("blocked").Value = true;
+                //Now we have the member - lets update the 'blocked' property on the member
+                MemberToBlock.getProperty("blocked").Value = true;
 
-                    //Save the changes
-                    MemberToBlock.Save();
+                //Save the changes
+                MemberToBlock.Save();
 
-                    //It's all good...
-                    return "true";
-                }
+                //It's all good...
+                return "true";
             }
 
             //Member not authorised or memberID passed in is not valid
@@ -89,9 +85,7 @@ namespace our.Rest
             //Check if member is an admin (in group 'admin')
             if (Utills.IsAdmin(_currentMember))
             {
-                //Lets check the memberID of the member we are blocking passed into /base is a valid member..
-                if (Utills.IsMember(memberId))
-                {
+               
                     //Yep - it's valid, lets get that member
                     Member MemberToBlock = Utills.GetMember(memberId);
 
@@ -103,7 +97,7 @@ namespace our.Rest
 
                     //It's all good...
                     return "true";
-                }
+                
             }
 
             //Member not authorised or memberID passed in is not valid
@@ -119,8 +113,6 @@ namespace our.Rest
             if (Utills.IsHq(_currentMember))
             {
                 //Lets check the memberID of the member we are blocking passed into /base is a valid member..
-                if (Utills.IsMember(memberId))
-                {
                     //Yep - it's valid, lets get that member
                     var member = Utills.GetMember(memberId);
 
@@ -131,7 +123,7 @@ namespace our.Rest
 
                     //It's all good...
                     return "true";
-                }
+                
             }
 
             //Member not authorised or memberID passed in is not valid

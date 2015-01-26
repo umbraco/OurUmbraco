@@ -173,6 +173,7 @@ namespace our.usercontrols
                         if (spamResult != null && spamResult.TotalScore >= int.Parse(ConfigurationManager.AppSettings["PotentialSpammerThreshold"]))
                         {
                             spamResult.MemberId = _member.Id;
+
                             uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
                             uForum.Library.Utills.SendPotentialSpamMemberMail(spamResult);
                         }

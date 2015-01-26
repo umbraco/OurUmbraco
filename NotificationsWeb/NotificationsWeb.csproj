@@ -238,7 +238,6 @@
     <Compile Include="BusinessLogic\ForumTopic.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers\Forum.cs" />
-    <Compile Include="Library\Xslt.cs" />
     <Compile Include="Pages\SheduledTaskTrigger.aspx.cs">
       <DependentUpon>SheduledTaskTrigger.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -266,6 +265,9 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Library\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

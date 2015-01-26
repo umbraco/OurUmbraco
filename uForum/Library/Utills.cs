@@ -8,7 +8,6 @@ using System.Web;
 using System.Web.Security;
 using RestSharp;
 using RestSharp.Deserializers;
-using uForum.Businesslogic;
 using umbraco;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
@@ -67,11 +66,6 @@ namespace uForum.Library
             return null;
         }
 
-        public static bool IsMember(int id)
-        {
-            return (Businesslogic.Data.SqlHelper.ExecuteScalar<int>("select count(nodeid) from cmsMember where nodeid = '" + id + "'") > 0);
-        }
-
         public static bool IsModerator()
         {
             var isModerator = false;
@@ -82,40 +76,40 @@ namespace uForum.Library
             {
                 var moderatorRoles = new[] { "admin", "HQ", "Core", "MVP" };
 
-                isModerator = moderatorRoles.Any(moderatorRole => Xslt.IsMemberInGroup(moderatorRole, currentMemberId));
+                isModerator = moderatorRoles.Any(moderatorRole => IsMemberInGroup(moderatorRole, currentMemberId));
             }
 
             return isModerator;
         }
 
-        public static bool CanSeeTopic(int topicId)
+        public static bool IsMemberInGroup(string GroupName, int memberid)
         {
-            var topic = Topic.GetTopic(topicId);
-            if (topic != null && topic.IsSpam == false)
-                return true;
+            Member m;
+            try
+            {
+                m = Utills.GetMember(memberid);
+            }
+            catch (Exception ex)
+            {
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Utills.GetMember({0}) failed - {1} {2} {3}", memberid, ex.Message, ex.StackTrace, ex.InnerException));
+                return false;
+            }
 
-            var currentMember = Member.GetCurrentMember();
-
-            if (topic != null && currentMember != null && topic.IsSpam)
-                if (IsModerator() || topic.MemberId == currentMember.Id)
+            foreach (MemberGroup mg in m.Groups.Values)
+            {
+                if (mg.Text == GroupName)
                     return true;
-
+            }
             return false;
         }
 
-        public static bool CanSeeComment(int commentId)
+        public static bool IsInGroup(string GroupName)
         {
-            var comment = new Comment(commentId);
-            if (comment.IsSpam == false)
-                return true;
 
-            var currentMember = Member.GetCurrentMember();
-
-            if (currentMember != null && comment.IsSpam)
-                if (IsModerator() || comment.MemberId == currentMember.Id)
-                    return true;
-
-            return false;
+            if (umbraco.library.IsLoggedOn())
+                return IsMemberInGroup(GroupName, Member.CurrentMemberId());
+            else
+                return false;
         }
 
         public static void AddMemberToPotentialSpamGroup(Member member)

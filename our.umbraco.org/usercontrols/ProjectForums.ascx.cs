@@ -4,13 +4,15 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using uForum.Models;
+using uForum.Services;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
-using uForum.Businesslogic;
 using umbraco.presentation.nodeFactory;
 
 namespace our.usercontrols {
     public partial class ProjectForums : System.Web.UI.UserControl {
+
         protected void Page_Load(object sender, EventArgs e) {
             if (!Page.IsPostBack) {
 
@@ -24,30 +26,36 @@ namespace our.usercontrols {
                     if ((int)d.getProperty("owner").Value == m.Id) {
                         holder.Visible = true;
 
-                        
-                        rp_forums.DataSource = uForum.Businesslogic.Forum.Forums(pId);
-                        rp_forums.DataBind();
-
-                        int fId = 0;
-
-                        if (!string.IsNullOrEmpty(Request.QueryString["forum"]) && int.TryParse(Request.QueryString["forum"], out fId)) {
-                        
-                            uForum.Businesslogic.Forum f = new Forum(fId);
-                            tb_desc.Text = f.Description;
-                            tb_name.Text = f.Title;
-
-                            bt_submit.CommandArgument = f.Id.ToString();
-                            bt_delete.CommandArgument = f.Id.ToString();
-
-                            bt_submit.CommandName = "edit";
-
-                            ph_add.Visible = true;
-                            ph_edit.Visible = true;
+                        using (var fs = new ForumService())
+                        {
+                            rp_forums.DataSource = fs.GetForums(pId);
+                            rp_forums.DataBind();
 
 
-                        } else if (!string.IsNullOrEmpty(Request.QueryString["add"])) {
-                            ph_add.Visible = true;
-                            ph_edit.Visible = false;
+
+                            int fId = 0;
+
+                            if (!string.IsNullOrEmpty(Request.QueryString["forum"]) && int.TryParse(Request.QueryString["forum"], out fId))
+                            {
+                                var f = fs.GetById(fId);
+                                tb_desc.Text = f.Description;
+                                tb_name.Text = f.Title;
+
+                                bt_submit.CommandArgument = f.Id.ToString();
+                                bt_delete.CommandArgument = f.Id.ToString();
+
+                                bt_submit.CommandName = "edit";
+
+                                ph_add.Visible = true;
+                                ph_edit.Visible = true;
+
+
+                            }
+                            else if (!string.IsNullOrEmpty(Request.QueryString["add"]))
+                            {
+                                ph_add.Visible = true;
+                                ph_edit.Visible = false;
+                            }
                         }
                     }
                 }
@@ -59,7 +67,7 @@ namespace our.usercontrols {
         protected void bindForum(object sender, RepeaterItemEventArgs e) {
 
             if (e.Item.ItemType == ListItemType.AlternatingItem || e.Item.ItemType == ListItemType.Item) {
-                uForum.Businesslogic.Forum f = (uForum.Businesslogic.Forum)e.Item.DataItem;
+                var f = (Forum)e.Item.DataItem;
                 Literal _title = (Literal)e.Item.FindControl("lt_titel");
                 Literal _desc = (Literal)e.Item.FindControl("lt_desc");
                 Literal _link = (Literal)e.Item.FindControl("lt_link");
@@ -120,11 +128,13 @@ namespace our.usercontrols {
 
                     }
 
-                    var forum = new uForum.Businesslogic.Forum(fId);
-                    if (forum.Exists)
+                    using (var fs = new ForumService())
                     {
-                        forum.Delete();
+                        var f = fs.GetById(fnode.Id);
+                        if (f != null)
+                            fs.Delete(f);
                     }
+                    
                     
 
                    

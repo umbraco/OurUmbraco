@@ -1,0 +1,48 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum;
+
+@{
+    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, 1);
+}
+
+<!-- FORUM LIST START -->
+<table class="table table-striped topic-list">
+
+	<!-- FORUM LIST HEADER START -->
+	<thead>
+		<tr>
+			<th class="topic">Topic</th>
+			<th class="category">Category</th>
+			<th class="posts">Posts</th>
+			<th class="activity">Activity</th>
+		</tr>
+	</thead>
+	<!-- FORUM LIST HEADER END -->
+
+	<!-- FORUM LIST OF THREADS START -->
+	<tbody>
+
+		<!-- FORUM THREAD START -->
+
+        @foreach (var topic in topics.Items)
+        {
+            <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
+                
+                @{
+                    var forum = Umbraco.TypedContent(topic.ParentId);
+                }
+
+				<td class="topic">
+					<a href="@topic.Url">@topic.Title</a>
+					<span>last edited by <a href="#">@topic.LastActiveMember().Name</a></span>
+				</td>
+
+				<td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
+				<td class="posts">@topic.Replies</td>
+				<td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
+			</tr>
+        }
+	</tbody>
+	<!-- FORUM LIST OF THREADS START -->
+</table>
+<!-- FORUM LIST END -->
