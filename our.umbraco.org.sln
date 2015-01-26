@@ -38,6 +38,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3A30E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uWiki", "uWiki\uWiki.csproj", "{996601FA-5C0E-46A6-B39D-2863BADC80D8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -168,6 +170,16 @@ Global
 		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|x86.ActiveCfg = Release|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
