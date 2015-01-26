@@ -83,6 +83,10 @@ namespace uForum.Services
 
             if (!eventArgs.Cancel)
             {
+                //spam filtering
+                topic.DetectSpam();
+
+                //save entity
                 DatabaseContext.Database.Save(topic);
 
 

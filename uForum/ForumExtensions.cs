@@ -111,5 +111,17 @@ namespace uForum
 
             return new HtmlString(Utills.Sanitize(html));
         }
+
+        public static bool DetectSpam(this Comment comment)
+        {
+            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(comment.Author(), comment.Body, "comment", comment.TopicId);
+            return comment.IsSpam;
+        }
+
+        public static bool DetectSpam(this Topic topic)
+        {
+            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(topic.Author(), topic.Body, "comment", topic.Id);
+            return topic.IsSpam;
+        }
     }
 }

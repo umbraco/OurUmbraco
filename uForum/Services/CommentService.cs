@@ -98,9 +98,17 @@ namespace uForum.Services
 
             if (!eventArgs.Cancel)
             {
+
+                //spam filtering
+                comment.DetectSpam();
+
+                //save comment
                 DatabaseContext.Database.Save(comment);
+
+                //topic post count
                 UpdateTopicPostsCount(comment);
 
+                //parent comment state
                 if (comment.ParentCommentId > 0)
                 {
                     var p = GetById(comment.ParentCommentId);

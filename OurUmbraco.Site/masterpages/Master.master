@@ -61,8 +61,7 @@
                 <div class="row">
 
                     <div class="col-md-3">
-                        <a class="logo" href="index.html">Our Umbraco
-                        </a>
+                        <a class="logo" href="/">Our Umbraco</a>
                     </div>
 
                     <nav class="col-md-9">

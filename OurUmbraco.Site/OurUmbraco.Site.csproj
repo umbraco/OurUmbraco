@@ -1783,6 +1783,10 @@
     <Content Include="Assets\images\logo.svg" />
     <Content Include="Assets\images\magnifier.svg" />
     <Content Include="Views\MacroPartials\Navigation\TopNavigation.cshtml" />
+    <Content Include="masterpages\ForumMaster.master" />
+    <Content Include="masterpages\DocumentationMaster.master" />
+    <Content Include="masterpages\AddMarkdownProp.master" />
+    <Content Include="masterpages\ComRepositoryFrontpage.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
