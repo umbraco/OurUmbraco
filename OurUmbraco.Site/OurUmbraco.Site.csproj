@@ -318,6 +318,7 @@
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
+    <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
     <Content Include="Assets\css\style.min.css" />
     <Content Include="Assets\images\breadcrumb.png" />
     <Content Include="Assets\images\close.png" />
@@ -1788,6 +1789,9 @@
     <Content Include="masterpages\DocumentationMaster.master" />
     <Content Include="masterpages\AddMarkdownProp.master" />
     <Content Include="masterpages\ComRepositoryFrontpage.master" />
+    <Content Include="Assets\css\fonts\icomoon\icomoon.eot" />
+    <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
+    <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">

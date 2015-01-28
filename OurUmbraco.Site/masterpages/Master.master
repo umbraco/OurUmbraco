@@ -53,81 +53,85 @@
 	
 	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
 
-    <header>
+    <div class="wrapper">
 
-        <div class="navigation">
+        <header>
 
-            <div class="container">
-                <div class="row">
+            <div class="navigation">
 
-                    <div class="col-md-3">
-                        <a class="logo" href="/">Our Umbraco</a>
+                <div class="container">
+                    <div class="row">
+
+                        <div class="col-md-3">
+                            <a class="logo" href="/">Our Umbraco</a>
+                        </div>
+
+                        <nav class="col-md-9">
+						    <umbraco:Macro Alias="[Navigation]TopNavigation" runat="server" />
+					    </nav>
+
                     </div>
-
-                    <nav class="col-md-9">
-						<umbraco:Macro Alias="[Navigation]TopNavigation" runat="server" />
-					</nav>
-
                 </div>
+
             </div>
-
-        </div>
         
-        <asp:ContentPlaceHolder ID="Search" runat="server" />
+            <asp:ContentPlaceHolder ID="Search" runat="server" />
         
-    </header>
+        </header>
 
-    <form runat="server">
-        <asp:ContentPlaceHolder ID="Main" runat="server" />
-    </form>
+        <form runat="server">
+            <asp:ContentPlaceHolder ID="Main" runat="server" />
+        </form>
 
-    <footer>
-	<div class="container">
-		<div class="row">
+        <footer>
+	        <div class="container">
+		        <div class="row">
 
-			<div class="col-xs-6 col-md-3">
-				<ul>
-					<strong>Klara</strong>
-					<li><a href="#">Lore</a></li>
-					<li><a href="#">Lora</a></li>
-					<li><a href="#">Klaurmsi</a></li>
-					<li><a href="#">Wrapuerdu</a></li>
-				</ul>
-			</div>
+			        <div class="col-xs-6 col-md-3">
+				        <ul>
+					        <strong>Klara</strong>
+					        <li><a href="#">Lore</a></li>
+					        <li><a href="#">Lora</a></li>
+					        <li><a href="#">Klaurmsi</a></li>
+					        <li><a href="#">Wrapuerdu</a></li>
+				        </ul>
+			        </div>
 
-			<div class="col-xs-6 col-md-3">
-				<ul>
-					<strong>Klara</strong>
-					<li><a href="#">Lore</a></li>
-					<li><a href="#">Lora</a></li>
-					<li><a href="#">Klaurmsi</a></li>
-					<li><a href="#">Wrapuerdu</a></li>
-				</ul>
-			</div>
+			        <div class="col-xs-6 col-md-3">
+				        <ul>
+					        <strong>Klara</strong>
+					        <li><a href="#">Lore</a></li>
+					        <li><a href="#">Lora</a></li>
+					        <li><a href="#">Klaurmsi</a></li>
+					        <li><a href="#">Wrapuerdu</a></li>
+				        </ul>
+			        </div>
 
-			<div class="col-xs-6 col-md-3">
-				<ul>
-					<strong>Klara</strong>
-					<li><a href="#">Lore</a></li>
-					<li><a href="#">Lora</a></li>
-					<li><a href="#">Klaurmsi</a></li>
-					<li><a href="#">Wrapuerdu</a></li>
-				</ul>
-			</div>
+			        <div class="col-xs-6 col-md-3">
+				        <ul>
+					        <strong>Klara</strong>
+					        <li><a href="#">Lore</a></li>
+					        <li><a href="#">Lora</a></li>
+					        <li><a href="#">Klaurmsi</a></li>
+					        <li><a href="#">Wrapuerdu</a></li>
+				        </ul>
+			        </div>
 
-			<div class="col-xs-6 col-md-3">
-				<ul>
-					<strong>Klara</strong>
-					<li><a href="#">Lore</a></li>
-					<li><a href="#">Lora</a></li>
-					<li><a href="#">Klaurmsi</a></li>
-					<li><a href="#">Wrapuerdu</a></li>
-				</ul>
-			</div>
+			        <div class="col-xs-6 col-md-3">
+				        <ul>
+					        <strong>Klara</strong>
+					        <li><a href="#">Lore</a></li>
+					        <li><a href="#">Lora</a></li>
+					        <li><a href="#">Klaurmsi</a></li>
+					        <li><a href="#">Wrapuerdu</a></li>
+				        </ul>
+			        </div>
 
-		</div>
-	</div>
-</footer>
+		        </div>
+	        </div>
+        </footer>
+
+    </div> <!--.wrapper-->
 
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
