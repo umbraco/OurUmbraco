@@ -1,6 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
@@ -117,6 +123,51 @@ namespace uForum.Api
 
                 cs.Delete(c);
             }
+        }
+
+        /* MEDIA */
+
+        [HttpPost]
+        public  HttpResponseMessage EditorUpload()
+        {
+            dynamic result = new ExpandoObject();
+            var httpRequest = System.Web.HttpContext.Current.Request;
+            if (httpRequest.Files.Count > 0)
+            {
+                string filename = string.Empty;
+
+                Guid g = Guid.NewGuid();
+
+                foreach (string file in httpRequest.Files)
+                {
+                   
+                    DirectoryInfo updir = new DirectoryInfo(System.Web.HttpContext.Current.Server.MapPath("/media/upload/" + g));
+                  
+                    if (!updir.Exists)
+                        updir.Create();
+                    
+                    var postedFile = httpRequest.Files[file];
+                    
+                    var filePath = updir.FullName + "/" +  postedFile.FileName;
+                    postedFile.SaveAs(filePath);
+                    filename = postedFile.FileName;
+
+                }
+
+                result.success = true;
+                result.imagePath = "/media/upload/" + g + "/" + filename;
+            }
+            else
+            {
+                result.success = false;
+                result.message = "No images found";
+            }
+
+            //jquery ajax file uploader expects html, it parses to json client side
+            var response = new HttpResponseMessage();
+            response.Content = new StringContent(JsonConvert.SerializeObject(result));
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            return response;
         }
     }
 }
