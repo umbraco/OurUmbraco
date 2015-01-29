@@ -22,11 +22,38 @@
     
     <li>
         @if(Members.IsLoggedIn()){
+            var member = Members.GetCurrentMember();
             <div class="user">
-                <img src="@Members.GetCurrentMember().Avatar()" alt="">
+                @avatar(member, 40)
             </div>
         }else{
             <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>   
         }
         </li>
 </ul>
+
+@helper avatar(IPublishedContent member, int avatarSize)
+{
+    if (member.HasValue("avatar"))
+    {
+        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
+    }
+    else
+    {
+        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
+    }
+}
+
+
+@helper gravatar(string email, int size)
+{
+    var emailId = email.ToLower();
+    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+
+    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
+}
+
+@helper localAvatar(string imgPath, int size)
+{
+    <img src="@imgPath?width=@size" alt="Alternate Text" />
+}
