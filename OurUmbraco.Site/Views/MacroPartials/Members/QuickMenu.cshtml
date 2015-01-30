@@ -1,67 +1,115 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum
 <div class="quick-menu">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				<div class="close">
-					<img src="assets/images/close.png" alt="">
-				</div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="close">
+                    <img src="assets/images/close.png" alt="">
+                </div>
 
-				<div class="user-image">
-					<img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
-				</div>
+                @if (Members.IsLoggedIn())
+                {
+                    var member = @Members.GetCurrentMember();
 
-				<div class="user-profile">
-					<h2>Darth Vader</h2>
-					<div class="karma">
-						2410
-					</div>
-					<div class="user-twitter">
-						<a href="#">@@Darth</a>
-					</div>
-				</div>
+                    <div class="user-image">
+                        @avatar(member, 100)
+                    </div>
 
-				<small>
-					Activity in threads you participated in
-				</small>
+                    <div class="user-profile">
+                        <h2>@member.Name</h2>
+                        <div class="karma">
+                            @member.Karma()
+                        </div>
+                        @if (member.HasValue("twitter"))
+                        {
+                            <div class="user-twitter">
+                                <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
+                            </div>
+                        }
+                    </div>
 
-				<div class="user-latest-posts">
 
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
+                }
+                else
+                {
+                    <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+                }
 
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
+                <small>
+                    Activity in threads you participated in
+                </small>
 
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
+                <div class="user-latest-posts">
 
-				</div>
-			</div>
-		</div>
-	</div>
+                    <a href="#" class="forum-thread">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="forum-thread-text">
+                                    <h3>RE: Allow user to change site design</h3>
+                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="forum-thread">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="forum-thread-text">
+                                    <h3>RE: Allow user to change site design</h3>
+                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                    <a href="#" class="forum-thread">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="forum-thread-text">
+                                    <h3>RE: Allow user to change site design</h3>
+                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+
+                </div>
+                <div class="loader-placeholder">
+
+                    <div class="span">
+                        <div class="loader"></div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
+@helper avatar(IPublishedContent member, int avatarSize)
+{
+    if (member.HasValue("avatar"))
+    {
+        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
+    }
+    else
+    {
+        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
+    }
+}
+
+
+@helper gravatar(string email, int size)
+{
+    var emailId = email.ToLower();
+    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+
+    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
+}
+
+@helper localAvatar(string imgPath, int size)
+{
+    <img src="@imgPath?width=@size" alt="Alternate Text" />
+}

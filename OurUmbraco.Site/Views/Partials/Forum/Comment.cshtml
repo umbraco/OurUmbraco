@@ -32,32 +32,34 @@
         
 	<div class="actions">
   	  	
-        <div class="link">
-			<a href="#">
-				<img src="https://cdn0.iconfinder.com/data/icons/entypo/80/link5-16.png" alt=""> Copy link
-			</a>
-		</div>
+        <a href="#" class="solved">
+            <i class="icon-Check"></i><span>Mark as solution</span>
+        </a>
+		
 
-        @if(Members.IsAdmin() || mem.Id == Model.MemberId){
-        <div class="solved">
-  	  	  	<a href="#"> <img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/checkmark-16.png" alt=""> Mark as solution</a>
-  	  	</div>
+        @if (Members.IsAdmin() || mem.Id == Model.MemberId)
+        {
+            <a href="#" class="solved">
+                <i class="icon-Check"></i><span>Mark as solution</span>
+            </a>
         }
 
-
-        @if(mem.Id != Model.MemberId){
-  	  	<div class="karma">
-  	  	  	<a href="#"><img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/like_outline-16.png" alt=""> Give Karma</a>
-  	  	</div>
-        }
-
+@*
+    @if(mem.Id != Model.MemberId){
+    <div class="karma">
+        <a href="#"><img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/like_outline-16.png" alt=""> Give Karma</a>
+    </div>
+    }
+*@
+    
+        <a href="#" class="copy-link">
+            <i class="icon-Out"></i><span>Copy Link</span>
+        </a>
 
         @if(Model.ParentCommentId <= 0){
-		<div class="reply">
-            <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment"  class="forum-reply">
-				<img src="https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519627-127_ArrowLeft-16.png" alt=""> Reply
+            <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment"  class="reply forum-reply">
+                <i class="icon-Reply-arrow"></i><span>Reply</span>
 			</a>
-		</div>
         }
 
 
