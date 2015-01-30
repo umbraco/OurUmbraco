@@ -19,17 +19,20 @@
             <a href="@page.Url">@page.Name</a>
         </li>
     }
-    
+
     <li>
-        @if(Members.IsLoggedIn()){
+        @if (Members.IsLoggedIn())
+        {
             var member = Members.GetCurrentMember();
             <div class="user">
                 @avatar(member, 40)
             </div>
-        }else{
-            <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>   
         }
-        </li>
+        else
+        {
+            <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+        }
+    </li>
 </ul>
 
 @helper avatar(IPublishedContent member, int avatarSize)

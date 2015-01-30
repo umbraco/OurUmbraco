@@ -6,54 +6,78 @@
     var forum = Umbraco.TypedContent(Model.ParentId);
 }
 
-<li class="comment question"> <!-- Start of question -->
-        <div class="meta">
-			<div class="profile">
-				<a href="#">@topicAuthor.Name</a> has in total, @topicAuthor.Karma() karma points
-			</div>
-			<div class="time">
-				@Model.Created.ConvertToRelativeTime()
-			</div>
-		</div>
+<li class="comment question">
+    <!-- Start of question -->
+    <div class="meta">
+        <div class="profile">
+            <a href="#">@topicAuthor.Name</a> has in total, @topicAuthor.Karma() karma points
+        </div>
+        <div class="time">
+            @Model.Created.ConvertToRelativeTime()
+        </div>
+    </div>
 
-		<div class="comment-inner">
-			<a href="#" class="photo">
-				<img src="@topicAuthor.Avatar()">
-				<span class="karma">Recieved 5 <br>Karma points</span>
-			</a>
-			<div class="body-meta">
-				<div class="topic">
-					<h2>@Model.Title</h2>
-				</div>
-				<div class="categories">
-					<div class="category core">
-						<a href="@forum.Url">@forum.Name</a>
-					</div>
+    <div class="comment-inner">
+        <a href="#" class="photo">
+            @avatar(topicAuthor, 48)
+            <span class="karma">Recieved 5 <br>Karma points</span>
+        </a>
+        <div class="body-meta">
+            <div class="topic">
+                <h2>@Model.Title</h2>
+            </div>
+            <div class="categories">
+                <div class="category core">
+                    <a href="@forum.Url">@forum.Name</a>
+                </div>
 
-                    @if(Model.Version > 0){
-					    <div class="version">
-						    <a href="#">Umbraco @Model.Version</a>
-					    </div>
-                    }
-				</div>
-			</div>
+                @if (Model.Version > 0)
+                {
+                    <div class="version">
+                        <a href="#">Umbraco @Model.Version</a>
+                    </div>
+                }
+            </div>
+        </div>
 
-			<div class="body">
-				@Model.Body.Sanitize()
-			</div>
-		</div>
+        <div class="body">
+            @Model.Body.Sanitize()
+        </div>
+    </div>
 
-		<div class="actions">
-			<div class="link">
-				<a href="#">
-					<img src="https://cdn0.iconfinder.com/data/icons/entypo/80/link5-16.png" alt=""> Copy link
-				</a>
-			</div>
+    <div class="actions">
+        <a href="#" class="copy-link">
+            <i class="icon-Out"></i><span>Copy Link</span>
+        </a>
 
-            <div class="reply">
-                <a href="#" data-topic="@Model.Id" data-controller="comment" class="forum-reply">
-					<img src="https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519627-127_ArrowLeft-16.png" alt=""> Reply
-				</a>
-			</div>
-		</div>
+        <a href="#" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
+            <img src="https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519627-127_ArrowLeft-16.png" alt=""> Reply
+        </a>
+
+    </div>
 </li> <!-- End of question -->
+@helper avatar(IPublishedContent member, int avatarSize)
+{
+    if (member.HasValue("avatar"))
+    {
+        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
+    }
+    else
+    {
+        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
+    }
+}
+
+
+@helper gravatar(string email, int size)
+{
+    var emailId = email.ToLower();
+    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+
+    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
+}
+
+@helper localAvatar(string imgPath, int size)
+{
+    <img src="@imgPath" alt="Alternate Text" />
+}
