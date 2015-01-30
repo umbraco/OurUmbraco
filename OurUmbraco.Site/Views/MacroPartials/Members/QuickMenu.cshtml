@@ -5,7 +5,7 @@
 		<div class="row">
 			<div class="col-md-12">
 				<div class="close">
-					<img src="assets/images/close.png" alt="">
+					<img src="/assets/images/close.png" alt="">
 				</div>
 
                 @if (Members.IsLoggedIn())
@@ -18,64 +18,90 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
+                        
                         <div class="karma">
                             @member.Karma()
                         </div>
+                        
                         @if (member.HasValue("twitter"))
                         {
                             <div class="user-twitter">
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
+                        <span class="roles">
+                            <span class="core">core</span>
+                            <span class="mvp">mvp</span>
+                            <span class="admin">admin</span>
+                            <span class="hq">hq</span>
+                            <span class="c-trib">c-trib</span>
+                        </span>
                     </div>
-                    
-                    
+
+                    <small>
+                        Activity in threads you participated in
+                    </small>
+
+                    <div class="user-latest-posts">
+
+                        <a href="forum-thread.html" class="forum-thread">
+                            <div class="row">
+                                <div class="col-xs-10 col-md-8">
+                                    <div class="forum-thread-text">
+                                        <h3>Allow user to change site design</h3>
+                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-2 col-md-4">
+                                    <div class="category frontend"><span class="cat">Frontend</span></div>
+                                </div>
+
+                            </div>
+                        </a>
+
+                        <a href="forum-thread.html" class="forum-thread">
+                            <div class="row">
+                                <div class="col-xs-10 col-md-8">
+                                    <div class="forum-thread-text">
+                                        <h3>Allow user to change site design</h3>
+                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-2 col-md-4">
+                                    <div class="category frontend"><span class="cat">Frontend</span></div>
+                                </div>
+
+                            </div>
+                        </a>
+
+                        <a href="forum-thread.html" class="forum-thread">
+                            <div class="row">
+                                <div class="col-xs-10 col-md-8">
+                                    <div class="forum-thread-text">
+                                        <h3>Allow user to change site design</h3>
+                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-xs-2 col-md-4">
+                                    <div class="category frontend"><span class="cat">Frontend</span></div>
+                                </div>
+
+                            </div>
+                        </a>
+
+                    </div>
+
+
                 }
                 else
                 {
                     <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
                 }
 
-				<small>
-					Activity in threads you participated in
-				</small>
-
-				<div class="user-latest-posts">
-
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
-
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
-
-					<a href="#" class="forum-thread">
-						<div class="row">
-							<div class="col-xs-12">
-								<div class="forum-thread-text">
-									<h3>RE: Allow user to change site design</h3>
-									<p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-								</div>
-							</div>
-						</div>
-					</a>
-
-				</div>
+				
 			</div>
 		</div>
 	</div>
@@ -104,5 +130,5 @@
 
 @helper localAvatar(string imgPath, int size)
 {
-    <img src="@imgPath?width=@size" alt="Alternate Text" />
+    <img src="@imgPath" alt="Alternate Text" />
 }
