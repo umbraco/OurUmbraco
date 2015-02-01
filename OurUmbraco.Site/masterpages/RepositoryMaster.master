@@ -16,7 +16,7 @@
     </script>
     
     <script type="text/javascript" src="/scripts/libs/jquery-1.6.1.min.js"></script> 
-    <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src="//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
     
     <script type="text/javascript" src="/scripts/repo/typewatch.js"></script>
 

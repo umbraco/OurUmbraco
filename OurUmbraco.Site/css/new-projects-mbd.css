@@ -18,7 +18,7 @@
 }
 
 #top ul li.current {
-    background: url("http://our.umbraco.org/css/img/top_nav_a_bg.png") no-repeat center bottom !important;
+    background: url("//our.umbraco.org/css/img/top_nav_a_bg.png") no-repeat center bottom !important;
 }
 
 #top ul li {

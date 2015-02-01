@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderId="Head" runat="server">
-  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+  <script type="text/javascript" src="//ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
   <script id="listing-result" type="text/x-jquery-tmpl">
         <li class="clearfix">
             <div class="deliPackage">

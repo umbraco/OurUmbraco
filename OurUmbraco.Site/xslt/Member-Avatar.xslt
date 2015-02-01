@@ -42,7 +42,7 @@
             <h2>Use your twitter image as buddy icon</h2>
             <p>
 
-              <xsl:variable name="avatarUrl" select="concat('http://api.twitter.com/1/users/profile_image?screen_name=', $mem/twitter)" />
+              <xsl:variable name="avatarUrl" select="concat('//api.twitter.com/1/users/profile_image?screen_name=', $mem/twitter)" />
               <img id="twitterIcon" src="{$avatarUrl}" style="border: 1px solid #ccc;" />
               Use this image as an avatar?
             </p>
@@ -62,7 +62,7 @@
       <div id="gravatarSection" class="section" style="display: none;">
         <h2>Use gravatar as buddy icon</h2>
         <p>
-          <img src="http://gravatar.com/avatar/{umbraco.library:md5($mem/@email)}?s=48&amp;d=monsterid" style="border: 1px solid #ccc;" />
+          <img src="//gravatar.com/avatar/{umbraco.library:md5($mem/@email)}?s=48&amp;d=monsterid" style="border: 1px solid #ccc;" />
           Use this image as an avatar?
         </p>
         <p>
