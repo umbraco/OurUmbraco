@@ -46,14 +46,9 @@
 
         <div class="actions">
 
-            <a href="#" class="solved">
-                <i class="icon-Check"></i><span>Mark as solution</span>
-            </a>
-
-
             @if (Members.IsAdmin() || mem.Id == Model.MemberId)
             {
-                <a href="#" class="solved">
+                <a href="#" class="solved" data-id="@Model.Id" data-topic="@Model.TopicId">
                     <i class="icon-Check"></i><span>Mark as solution</span>
                 </a>
             }
