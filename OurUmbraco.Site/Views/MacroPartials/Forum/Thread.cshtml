@@ -8,6 +8,17 @@
     var forum = Umbraco.TypedContent(topic.ParentId);
 }
 
+<!-- COPY LINK -->
+
+<div id="copy-link-wrapper" class="copy-link-wrapper">
+    <h2>Copy link</h2>
+    <p>Press Ctrl / CMD + C to copy this to your clipboard.</p>
+    <input class="getLink" readonly="readonly" type="text" value='' />
+</div>
+
+<div id="overlay" class="overlay"></div>
+
+<!-- COPY LINK END -->
 
 <ul class="comments">
     @Html.Partial("forum/question", topic)

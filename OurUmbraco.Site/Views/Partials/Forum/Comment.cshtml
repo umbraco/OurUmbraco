@@ -4,6 +4,7 @@
 @{
     var answer = (int)ViewData["answer"];
     var commentAuthor = Model.Author();
+    var roles = System.Web.Security.Roles.GetRolesForUser();
 }
 
 <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
@@ -11,13 +12,22 @@
         <div class="profile">
             <a href="#">@commentAuthor.Name</a> has in total, @commentAuthor.Karma() karma points 
 
-            <span class="roles">
-                <span class="core">core</span>
-                <span class="mvp">mvp</span>
-                <span class="admin">admin</span>
-                <span class="hq">hq</span>
-                <span class="c-trib">c-trib</span>
-            </span>
+            @if (roles.Length > 1)
+            {
+                <span class="roles">
+                    @foreach (var role in roles.Skip(1))
+                    {
+                        if (role == "CoreContrib")
+                        {
+                            <span class="c-trib">C-trib</span>
+                        }
+                        else
+                        {
+                            <span class="@role.ToLower()">@role</span>
+                        }
+                    }
+                </span>
+            }
 
         </div>
         <div class="time">

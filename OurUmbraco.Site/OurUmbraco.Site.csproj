@@ -321,8 +321,10 @@
     <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
     <Content Include="Assets\css\style.min.css" />
     <Content Include="Assets\images\breadcrumb.png" />
+    <Content Include="Assets\images\checkmark.svg" />
     <Content Include="Assets\images\close.png" />
     <Content Include="Assets\images\compass.png" />
+    <Content Include="Assets\images\copylink.svg" />
     <Content Include="Assets\images\documentation\cells.png" />
     <Content Include="Assets\images\documentation\dirty-shade.png" />
     <Content Include="Assets\images\documentation\editor.png" />
@@ -336,12 +338,15 @@
     <Content Include="Assets\images\editor.png" />
     <Content Include="Assets\images\forum.gif" />
     <Content Include="Assets\images\forum.png" />
+    <Content Include="Assets\images\highfive.svg" />
     <Content Include="Assets\images\imagegen %281%29.png" />
     <Content Include="Assets\images\imagegen %282%29.png" />
     <Content Include="Assets\images\imagegen %283%29.png" />
     <Content Include="Assets\images\imagegen %285%29.png" />
     <Content Include="Assets\images\imagegen.png" />
+    <Content Include="Assets\images\karma.svg" />
     <Content Include="Assets\images\package2.png" />
+    <Content Include="Assets\images\reply.svg" />
     <Content Include="Assets\images\solved.gif" />
     <Content Include="Assets\images\tools.png" />
     <Content Include="Assets\js\app.min.js" />

@@ -11,6 +11,8 @@
                 @if (Members.IsLoggedIn())
                 {
                     var member = @Members.GetCurrentMember();
+
+                    var roles = System.Web.Security.Roles.GetRolesForUser();
                     
                     <div class="user-image">
                         @avatar(member, 100)
@@ -29,13 +31,23 @@
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
-                        <span class="roles">
-                            <span class="core">core</span>
-                            <span class="mvp">mvp</span>
-                            <span class="admin">admin</span>
-                            <span class="hq">hq</span>
-                            <span class="c-trib">c-trib</span>
-                        </span>
+                        
+                        @if (roles.Length > 1)
+                        {
+                            <span class="roles">
+                                @foreach (var role in roles.Skip(1))
+                                {
+                                    if (role == "CoreContrib")
+                                    {
+                                        <span class="c-trib">C-trib</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="@role.ToLower()">@role</span>
+                                    }
+                                }
+                            </span>
+                        }
                     </div>
 
                     <small>

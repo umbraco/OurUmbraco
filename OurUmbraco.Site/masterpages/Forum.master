@@ -11,20 +11,25 @@
                 <!-- FORUM BREADCRUMB END -->
 
 			    <!-- FORUM SORTING START -->
-			    <div class="sorting">
-                    <ul>
-					    <li>
-					    Category
-						    <ul>
-							    <li class="frontend"><a href="#"></a>Frontend</li>
-							    <li class="core"><a href="#"></a>Core</li>
-							    <li class="azure"><a href="#"></a>Azure</li>
-						    </ul>
-					    </li>
-				    </ul>
+				<div class="sorting">
+					<select>
+						<option class="category">Category</option>
+					  	<option value="frontend" class="category frontend">Frontend</option>
+					   	<option value="azure" class="category azure">Azure</option>
+					   	<option value="core" class="category core">Core</option>
+					   	<option value="frontend" class="category frontend">Frontend</option>
+					   	<option value="azure" class="category azure">Azure</option>
+					   	<option value="core" class="category core">Core</option>
+                        <option value="frontend" class="category frontend">Frontend</option>
+					   	<option value="azure" class="category azure">Azure</option>
+					   	<option value="core" class="category core">Core</option>
+                        <option value="frontend" class="category frontend">Frontend</option>
+					   	<option value="azure" class="category azure">Azure</option>
+					   	<option value="core" class="category core">Core</option>
+					</select>
+				</div>
+				<!-- FORUM SORTING END -->
 
-			    </div>
-			    <!-- FORUM SORTING END -->
 			    <div class="clear"></div>
 		    </div>
 		    <!-- FORUM HEADER END -->
