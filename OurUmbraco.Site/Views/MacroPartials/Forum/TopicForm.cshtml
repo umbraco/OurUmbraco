@@ -37,16 +37,10 @@
 </div>
 <div id="insert-image-dialog" class="wmd-prompt-dialog" style="position: fixed; width: 400px; z-index: 1001; top: 50%; left: 50%; display: none; margin-top: -86px; margin-left: -200px;">
     <div style="padding: 5px;">
-        @*<h4>
-                From the web
-            </h4>
-            <p>
-                <input type="text" placeholder="Enter url e.g. http://yoursite.com/image.jpg" />
-            </p>*@
         <h4>
             Upload an image
         </h4>
-        <span class="loading-small"></span>
+        <div class="span"><div class=" loader"></div></div>
         <input type="file" name="file" id="file" data-action="/umbraco/api/forum/editorupload" />
         <div style="text-align:center;">
             <input type="button" value="Cancel" style="margin: 10px; display: inline; width: 7em;">
