@@ -9,7 +9,16 @@
 <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
     <div class="meta">
         <div class="profile">
-            <a href="#">@commentAuthor.Name</a> has in total, @commentAuthor.Karma() karma points – <span class="roles">Admin</span>
+            <a href="#">@commentAuthor.Name</a> has in total, @commentAuthor.Karma() karma points 
+
+            <span class="roles">
+                <span class="core">core</span>
+                <span class="mvp">mvp</span>
+                <span class="admin">admin</span>
+                <span class="hq">hq</span>
+                <span class="c-trib">c-trib</span>
+            </span>
+
         </div>
         <div class="time">
             @Model.Created.ConvertToRelativeTime()
@@ -21,6 +30,10 @@
         <a href="#" class="photo">
             <img src="@commentAuthor.Avatar()">
         </a>
+
+        <div class="highfive">
+            <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
+        </div>
 
         <div class="body markdown-syntax">
             @Model.Body.Sanitize()
@@ -59,7 +72,7 @@
 
             @if (Model.ParentCommentId <= 0)
             {
-                <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="reply forum-reply">
+                <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                     <i class="icon-Reply-arrow"></i><span>Reply</span>
                 </a>
             }
