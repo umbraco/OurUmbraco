@@ -6,11 +6,11 @@
     var forum = Umbraco.TypedContent(Model.ParentId);
 }
 
-<li class="comment question">
+<li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title">
     <!-- Start of question -->
     <div class="meta">
         <div class="profile">
-            <a href="#">@topicAuthor.Name</a> has in total, @topicAuthor.Karma() karma points
+            <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> has in total, @topicAuthor.Karma() karma points
         </div>
         <div class="time">
             @Model.Created.ConvertToRelativeTime()
@@ -18,7 +18,7 @@
     </div>
 
     <div class="comment-inner">
-        <a href="#" class="photo">
+        <a href="/member/@topicAuthor.Id" class="photo">
             @avatar(topicAuthor, 48)
             <span class="karma">Recieved 5 <br>Karma points</span>
         </a>
