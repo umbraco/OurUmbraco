@@ -6,10 +6,13 @@
 		<!-- FORUM HEADER START -->
 		<div class="forum-archive-header">
 			
-			<!-- FORUM BREADCRUMB START -->
-			<umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-			<!-- FORUM BREADCRUMB END -->
-			
+			<div class="container">
+				<div class="row">
+					<!-- FORUM BREADCRUMB START -->
+					<umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+					<!-- FORUM BREADCRUMB END -->
+				</div>
+			</div>
 			<div class="clear"></div>
 		</div>
 		<!-- FORUM HEADER END -->
