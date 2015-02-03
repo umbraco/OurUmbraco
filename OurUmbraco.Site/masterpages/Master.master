@@ -49,7 +49,8 @@
         })();
     </script>
 </head>
-<body>
+
+<umbraco:macro runat="server" language="razor"><body class="@Model.NodeTypeAlias.ToLower().Replace(" ","-")"></umbraco:macro>
 	
 	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
 
@@ -75,9 +76,9 @@
 
             </div>
         
-            <asp:ContentPlaceHolder ID="Search" runat="server" />
-        
         </header>
+
+        <asp:ContentPlaceHolder ID="Search" runat="server" />
 
         <form runat="server">
             <asp:ContentPlaceHolder ID="Main" runat="server" />
