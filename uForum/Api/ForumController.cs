@@ -87,7 +87,19 @@ namespace uForum.Api
             }
         }
 
+        [HttpGet]
+        public string CommentMarkdown(int id)
+        {
+            using (var cs = new CommentService())
+            {
+                var c = cs.GetById(id);
 
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                return c.Body;
+            }
+        }
 
         /* TOPICS */
         [HttpPost]

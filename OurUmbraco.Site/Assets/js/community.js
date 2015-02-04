@@ -19,6 +19,23 @@
                 }
             });
             
+        },
+
+        deleteThread: function (id) {
+            $.ajax({
+                url: "/umbraco/api/Forum/Thread/" + id,
+                type: 'DELETE',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
+        },
+
+        getCommentMarkdown: function (id) {
+            return $.get("/umbraco/api/Forum/CommentMarkDown/" + id).pipe(function (p) {
+                return p;
+            });
+            
         }
     };
 }();
@@ -62,5 +79,12 @@ $(function () {
         community.deleteComment(id);
         $(this).closest(".comment").fadeOut( function () { $(this).closest(".comment").remove(); });
         
+    });
+
+    //Delete thread
+    $(".delete-thread").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
     });
 });
