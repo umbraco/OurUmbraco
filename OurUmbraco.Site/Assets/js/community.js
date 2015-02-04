@@ -27,7 +27,13 @@ $(function () {
 
     $(".comment .highfive").click(function (e) {
         e.preventDefault();
-        alert("you rock");
+        var data = $(this).data();
+        var id = parseInt(data.id);
         community.highFiveComment(id);
+        $(this).empty();
+        var img = $("<img>"); 
+        img.attr("src", "/assets/images/yourock.svg");
+        $(this).append(img);
+        $(this).append("You Rock");
     });
 });

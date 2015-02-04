@@ -44,10 +44,11 @@
 
     @if (Members.IsLoggedIn())
     {
-        if(mem.Id != Model.MemberId) { 
-        <div class="highfive">
-            <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
-        </div>
+        if (mem.Id != Model.MemberId)
+        {
+            <div class="highfive" data-id="@Model.Id">
+                <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
+            </div>
         }
     }
         <div class="body markdown-syntax">
