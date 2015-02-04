@@ -15,6 +15,8 @@
 $(function () {
 
     /*FORUM*/
+
+    //Mark as solution
     $(".comment").on("click","a.solved",function (e) {
         e.preventDefault();
         var data = $(this).data();
@@ -25,6 +27,7 @@ $(function () {
 
     });
 
+    //High five
     $(".comment .highfive a").on("click",function (e) {
         e.preventDefault();
         var data = $(this).data();
