@@ -48,3 +48,64 @@
     </div>
 
 </div>
+
+<!-- Mustache template-->
+<script id="comment-template" type="x-tmpl-mustache">
+    <li class="comment  " id="comment-{{id}}">
+        <div class="meta">
+            <div class="profile">
+                <a href="/member/1072">heZ9ocYun0C9c3Z9Ula/uQ</a> has in total, 90 karma points
+
+                <span class="roles">
+                    <span class="admin">admin</span>
+                    <span class="core">Core</span>
+                    <span class="hq">HQ</span>
+                    <span class="wiki editor">wiki editor</span>
+                </span>
+
+            </div>
+            <div class="time">
+                16 minutes ago
+            </div>
+        </div>
+
+        <div class="comment-inner">
+
+            <a href="/member/1072" class="photo">
+                <img src="/media/avatar/1072.jpg">
+            </a>
+
+
+            <div class="highfive">
+
+                <div class="highfive-count">
+                    0
+                </div>
+            </div>
+
+            <div class="body markdown-syntax">
+                {{body}}
+
+            </div>
+        </div>
+
+        <div class="actions">
+
+
+            <a href="#" class="solved" data-id="{{id}}">
+                <i class="icon-Check"></i><span>Mark as solution</span>
+            </a>
+
+            <a href="#" class="copy-link" data-id="{{id}}">
+                <i class="icon-Out"></i><span>Copy Link</span>
+            </a>
+
+            <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
+                <i class="icon-Reply-arrow"></i><span>Reply</span>
+            </a>
+
+
+
+        </div>
+    </li>
+</script>

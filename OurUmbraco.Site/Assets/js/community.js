@@ -15,7 +15,7 @@
 $(function () {
 
     /*FORUM*/
-    $(".comment a.solved").click(function (e) {
+    $(".comment a.solved").on("click",function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -25,14 +25,14 @@ $(function () {
 
     });
 
-    $(".comment .highfive a").click(function (e) {
+    $(".comment .highfive a").on("click",function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
         community.highFiveComment(id);
         $(this).empty();
         var cont = $(this).parent();
-        cont.append("You Rock");
+        cont.append("You Rock!");
         var count = parseInt($(".highfive-count", cont).html());
         count++;
         $(".highfive-count", cont).html(count);

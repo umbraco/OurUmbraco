@@ -22,7 +22,7 @@ namespace uForum.Api
         /* COMMENTS */
 
         [HttpPost]
-        public void Comment(CommentViewModel model)
+        public Comment Comment(CommentViewModel model)
         {
             using (var cs = new CommentService())
             {
@@ -32,7 +32,7 @@ namespace uForum.Api
                 c.Created = DateTime.Now;
                 c.ParentCommentId = model.Parent;
                 c.TopicId = model.Topic;
-                cs.Save(c);
+                return cs.Save(c);
             }
         }
 

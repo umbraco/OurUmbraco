@@ -140,6 +140,8 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js">> </script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
 
+<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
+
 <script src="/assets/js/jquery.ajaxfileupload.js"></script>
 
 <script src="/assets/js/community.js"></script>
