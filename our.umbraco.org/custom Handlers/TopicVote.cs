@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Security;
 using uForum.Services;
 using uPowers.BusinessLogic;
 
@@ -19,6 +20,7 @@ namespace our.custom_Handlers {
             uPowers.BusinessLogic.Action.AfterPerform +=new EventHandler<ActionEventArgs>(TopicScoring);
         }
 
+        private const string ModeratorRoles = "admin,HQ,Core,MVP";
 
         void TopicSolved(object sender, ActionEventArgs e) {
            
@@ -34,7 +36,7 @@ namespace our.custom_Handlers {
                             var t = ts.GetById(c.TopicId);
 
                             //if performer and author of the topic is the same... go ahead..
-                            if (e.PerformerId == t.MemberId && t.Answer == 0)
+                            if ((e.PerformerId == t.MemberId || ModeratorRoles.Split(',').Any(x => Roles.IsUserInRole(x))) && t.Answer == 0)
                             {
 
                                 //receiver of points is the comment author.

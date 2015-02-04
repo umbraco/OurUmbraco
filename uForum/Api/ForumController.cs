@@ -125,31 +125,7 @@ namespace uForum.Api
             }
         }
 
-        [HttpPost]
-        public void MarkAsSolution(int id, int topicId)
-        {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
-
-                if (c == null)
-                    throw new Exception("Comment not found");
-
-               
-                using(var ts = new TopicService())
-                {
-                    var t = ts.GetById(topicId);
-
-                    if(t == null)
-                        throw new Exception("Topic not found");
-
-                    t.Answer = id;
-
-                    ts.Save(t);
-                }
-
-            }
-        }
+        
         /* MEDIA */
         [HttpPost]
         public  HttpResponseMessage EditorUpload()

@@ -1,8 +1,8 @@
 ﻿var community = function () {
     return {
         /* FORUM */
-        markCommentAsSolution: function (commentId, topicId) {
-            $.post("/umbraco/api/forum/MarkAsSolution/"+commentId + "?topicId=" + topicId);
+        markCommentAsSolution: function (commentId) {
+            $.get("/umbraco/api/Powers/Action/?alias=TopicSolved&pageId=" + commentId);
         }
     };
 }();
@@ -15,8 +15,7 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
-        var topicId = parseInt(data.topic);
-        community.markCommentAsSolution(id, topicId);
+        community.markCommentAsSolution(id);
         $(this).closest(".comment").addClass('solution');
         $(".comment a.solved").remove();
 

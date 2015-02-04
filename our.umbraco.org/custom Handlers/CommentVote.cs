@@ -51,7 +51,8 @@ namespace our.custom_Handlers {
                 }
                 else if (a.Alias == "TopicSolved")
                 {
-                    var t = ts.GetById(e.ItemId);
+                    var c = cs.GetById(e.ItemId);
+                    var t = ts.GetById(c.TopicId);
                     e.Cancel = t.Answer > 0;
                 }
             }

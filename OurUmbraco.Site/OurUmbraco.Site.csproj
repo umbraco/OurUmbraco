@@ -176,9 +176,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="our.mapR">
-      <HintPath>..\dependencies\Our\our.mapR.dll</HintPath>
-    </Reference>
     <Reference Include="Our.Umbraco.uTwit.DataType, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\uTwit\Our.Umbraco.uTwit.DataType.dll</HintPath>

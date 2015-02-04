@@ -59,7 +59,7 @@
            
             @if (answer == 0 && (Members.IsAdmin() || mem.Id == Model.MemberId))
             {
-                <a href="#" class="solved" data-id="@Model.Id" data-topic="@Model.TopicId">
+                <a href="#" class="solved" data-id="@Model.Id">
                     <i class="icon-Check"></i><span>Mark as solution</span>
                 </a>
             }
