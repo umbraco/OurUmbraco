@@ -25,7 +25,7 @@ $(function () {
 
     });
 
-    $(".comment .highfive").click(function (e) {
+    $(".comment .highfive a").click(function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -33,7 +33,12 @@ $(function () {
         $(this).empty();
         var img = $("<img>"); 
         img.attr("src", "/assets/images/yourock.svg");
-        $(this).append(img);
-        $(this).append("You Rock");
+        var cont = $(this).parent();
+        cont.append(img);
+        cont.append("You Rock");
+        var count = parseInt($(".highfive-count", cont).html());
+        count++;
+        $(".highfive-count", cont).html(count);
+
     });
 });

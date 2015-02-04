@@ -42,15 +42,22 @@
             <img src="@commentAuthor.Avatar()">
         </a>
 
-    @if (Members.IsLoggedIn())
-    {
-        if (mem.Id != Model.MemberId)
-        {
+   
             <div class="highfive" data-id="@Model.Id">
-                <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
+
+                <div class="highfive-count">
+                    @Model.Score
+                </div>
+                @if (Members.IsLoggedIn())
+                {
+                    if (mem.Id != Model.MemberId)
+                    {
+                    <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
+    
+                    }
+                }
             </div>
-        }
-    }
+      
         <div class="body markdown-syntax">
             @Model.Body.Sanitize()
         </div>
