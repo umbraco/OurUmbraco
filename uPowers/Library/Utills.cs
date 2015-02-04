@@ -23,5 +23,11 @@ namespace uPowers.Library {
             }
             return false;
         }
+
+        public static bool HasVoted(int memberId, int id, string dataBaseTable)
+        {
+            return (BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
+                BusinessLogic.Data.SqlHelper.CreateParameter("@id", id), BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
+        }
     }
 }

@@ -48,11 +48,11 @@
                 <div class="highfive-count">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn())
+                @if (Members.IsLoggedIn() && !uPowers.Library.Utills.HasVoted(mem.Id,Model.Id,"powersComment"))
                 {
                     if (mem.Id != Model.MemberId)
                     {
-                    <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
+                    <a href="#"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
     
                     }
                 }
