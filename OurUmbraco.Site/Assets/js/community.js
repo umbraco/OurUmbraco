@@ -60,7 +60,7 @@ $(function () {
         var data = $(this).data();
         var id = parseInt(data.id);
         community.deleteComment(id);
-        $(this).closest(".comment").slideUp( function () { $(this).closest(".comment").remove(); });
+        $(this).closest(".comment").fadeOut( function () { $(this).closest(".comment").remove(); });
         
     });
 });
