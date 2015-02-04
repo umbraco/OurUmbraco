@@ -86,7 +86,7 @@
                 </a>
             }
 
-            <a href="#" class="delete-reply">
+            <a href="#" class="delete-reply" data-id="@Model.Id">
                 <i class="icon-Delete-key"></i><span>Delete post</span>
             </a>
 
@@ -98,6 +98,14 @@
                 <i class="icon-Edit"></i><span>Edit post</span>
             </a>
 
+        </div>
+    }
+    else
+    {
+        <div class="actions">
+            <a href="#" id="copy-link" class="copy-link" data-id="@Model.Id">
+                <i class="icon-Link"></i><span>Copy Link</span>
+            </a>
         </div>
     }
 </li>

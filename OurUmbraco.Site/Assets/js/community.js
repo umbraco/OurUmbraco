@@ -7,6 +7,18 @@
 
         highFiveComment: function (id) {
             $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + id);
+        },
+
+        deleteComment: function (id) {
+
+            $.ajax({
+                url: "/umbraco/api/Forum/Comment/" + id,
+                type: 'DELETE',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
+            
         }
     };
 }();
@@ -17,7 +29,7 @@ $(function () {
     /*FORUM*/
 
     //Mark as solution
-    $(".comment").on("click","a.solved",function (e) {
+    $(".comments").on("click","a.solved",function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -40,5 +52,15 @@ $(function () {
         count++;
         $(".highfive-count", cont).html(count);
 
+    });
+
+    //Delete comment
+    $(".comments").on("click", "a.delete-reply", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        community.deleteComment(id);
+        $(this).closest(".comment").slideUp( function () { $(this).closest(".comment").remove(); });
+        
     });
 });
