@@ -5,17 +5,11 @@
 
 		    <!-- FORUM HEADER START -->
 		    <div class="forum-archive-header">
-                <div class="container">
-                    <div class="row">
-			            <!-- FORUM BREADCRUMB START -->
-                        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-                        <!-- FORUM BREADCRUMB END -->
+			    <!-- FORUM BREADCRUMB START -->
+                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                <!-- FORUM BREADCRUMB END -->
 
-                        <div class="col-xs-6 col-md-2">
-					        <a href="forum-create.html" class="button green">Create Topic</a>
-				        </div>
-                    </div>
-                </div>
+				<a href="forum-create.html" class="button green">Create Topic</a>
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->
