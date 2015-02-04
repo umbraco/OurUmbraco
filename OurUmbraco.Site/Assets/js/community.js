@@ -31,10 +31,7 @@ $(function () {
         var id = parseInt(data.id);
         community.highFiveComment(id);
         $(this).empty();
-        var img = $("<img>"); 
-        img.attr("src", "/assets/images/yourock.svg");
         var cont = $(this).parent();
-        cont.append(img);
         cont.append("You Rock");
         var count = parseInt($(".highfive-count", cont).html());
         count++;
