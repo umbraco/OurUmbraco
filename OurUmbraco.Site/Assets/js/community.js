@@ -15,7 +15,7 @@
 $(function () {
 
     /*FORUM*/
-    $(".comment a.solved").on("click",function (e) {
+    $(".comment").on("click","a.solved",function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);

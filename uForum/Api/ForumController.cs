@@ -22,8 +22,10 @@ namespace uForum.Api
         /* COMMENTS */
 
         [HttpPost]
-        public Comment Comment(CommentViewModel model)
+        public ExpandoObject Comment(CommentViewModel model)
         {
+            dynamic o = new ExpandoObject();
+
             using (var cs = new CommentService())
             {
                 var c = new Comment();
@@ -32,8 +34,22 @@ namespace uForum.Api
                 c.Created = DateTime.Now;
                 c.ParentCommentId = model.Parent;
                 c.TopicId = model.Topic;
-                return cs.Save(c);
+                cs.Save(c);
+
+                o.id = c.Id;
+                o.body = c.Body;
+                o.topicId = c.TopicId;
+                o.authorId = c.MemberId;
+                o.created = c.Created.ConvertToRelativeTime();
+                var author = c.Author();
+                o.authorKarma = author.Karma();
+                o.authorName = author.Name;
+                o.roles = System.Web.Security.Roles.GetRolesForUser();
+                o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
+                o.parent = model.Parent;
             }
+
+            return o;
         }
 
         [HttpPut]
