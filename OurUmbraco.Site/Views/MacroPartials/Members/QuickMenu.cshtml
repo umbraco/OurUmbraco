@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum
+
 <div class="quick-menu">
 	<div class="container">
 		<div class="row">
@@ -13,7 +14,9 @@
                     var member = @Members.GetCurrentMember();
 
                     var roles = System.Web.Security.Roles.GetRolesForUser();
-                    
+
+                    var latestTopics = uForum.Services.TopicService.Instance.GetAll();
+
                     <div class="user-image">
                         @avatar(member, 100)
                     </div>
@@ -49,60 +52,37 @@
                             </span>
                         }
                     </div>
-
+                    
                     <small>
                         Activity in threads you participated in
                     </small>
 
                     <div class="user-latest-posts">
-
-                        <a href="forum-thread.html" class="forum-thread">
-                            <div class="row">
-                                <div class="col-xs-10 col-md-8">
-                                    <div class="forum-thread-text">
-                                        <h3>Allow user to change site design</h3>
-                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
+                     
+                        @foreach (var topic in latestTopics)
+                        {
+                            if (topic.MemberId == member.Id || topic.LatestReplyAuthor == member.Id)
+                            {
+                                var forum = Umbraco.TypedContent(@topic.ParentId);
+                                
+                            <a href="@topic.Url" class="forum-thread">
+                                <div class="row">
+                                    <div class="col-xs-10 col-md-8">
+                                        <div class="forum-thread-text">
+                                            <h3>@topic.Title</h3>
+                                            <p>Reply by @Members.GetById(topic.LatestReplyAuthor).Name @topic.Updated.Day</p>
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="col-xs-2 col-md-4">
-                                    <div class="category frontend"><span class="cat">Frontend</span></div>
-                                </div>
-
-                            </div>
-                        </a>
-
-                        <a href="forum-thread.html" class="forum-thread">
-                            <div class="row">
-                                <div class="col-xs-10 col-md-8">
-                                    <div class="forum-thread-text">
-                                        <h3>Allow user to change site design</h3>
-                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
+                                    <div class="col-xs-2 col-md-4">
+                                        <div class="category frontend"><span class="cat">@forum.Name</span></div>
                                     </div>
+
                                 </div>
-
-                                <div class="col-xs-2 col-md-4">
-                                    <div class="category frontend"><span class="cat">Frontend</span></div>
-                                </div>
-
-                            </div>
-                        </a>
-
-                        <a href="forum-thread.html" class="forum-thread">
-                            <div class="row">
-                                <div class="col-xs-10 col-md-8">
-                                    <div class="forum-thread-text">
-                                        <h3>Allow user to change site design</h3>
-                                        <p>Reply by Dennis Aaen 7 minutes ago</p>
-                                    </div>
-                                </div>
-
-                                <div class="col-xs-2 col-md-4">
-                                    <div class="category frontend"><span class="cat">Frontend</span></div>
-                                </div>
-
-                            </div>
-                        </a>
+                            </a>
+                            }
+                        
+                        }
 
                     </div>
 
