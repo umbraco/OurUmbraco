@@ -54,7 +54,7 @@ namespace uForum.Services
 
         public Forum Save(Forum forum, bool raiseEvents = true)
         {
-            var newForum = forum.Id < 0;
+            var newForum = forum.Id <= 0;
             var eventArgs = new ForumEventArgs() { Forum = forum };
 
             if (raiseEvents)

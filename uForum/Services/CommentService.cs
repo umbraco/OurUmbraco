@@ -85,7 +85,7 @@ namespace uForum.Services
         /* Crud */
         public Comment Save(Comment comment, bool raiseEvents = true)
         {
-            var newComment = comment.Id < 0;
+            var newComment = comment.Id <= 0;
             var eventArgs = new CommentEventArgs() { Comment =comment };
 
             if (raiseEvents)

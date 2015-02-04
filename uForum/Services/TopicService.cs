@@ -70,7 +70,7 @@ namespace uForum.Services
         /* CRUD */
         public Topic Save(Topic topic, bool raiseEvents = true)
         {
-            var newTopic = topic.Id < 0;
+            var newTopic = topic.Id <= 0;
             var eventArgs = new TopicEventArgs() { Topic = topic };
 
             if (raiseEvents)

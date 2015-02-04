@@ -1,8 +1,12 @@
 ﻿var community = function () {
     return {
         /* FORUM */
-        markCommentAsSolution: function (commentId) {
-            $.get("/umbraco/api/Powers/Action/?alias=TopicSolved&pageId=" + commentId);
+        markCommentAsSolution: function (id) {
+            $.get("/umbraco/api/Powers/Action/?alias=TopicSolved&pageId=" + id);
+        },
+
+        highFiveComment: function (id) {
+            $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + id);
         }
     };
 }();
@@ -19,5 +23,11 @@ $(function () {
         $(this).closest(".comment").addClass('solution');
         $(".comment a.solved").remove();
 
+    });
+
+    $(".comment .highfive").click(function (e) {
+        e.preventDefault();
+        alert("you rock");
+        community.highFiveComment(id);
     });
 });
