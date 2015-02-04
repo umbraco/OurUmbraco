@@ -5,6 +5,7 @@
     var answer = (int)ViewData["answer"];
     var commentAuthor = Model.Author();
     var roles = System.Web.Security.Roles.GetRolesForUser();
+    var mem = Members.GetCurrentMember();
 }
 
 <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
@@ -41,10 +42,14 @@
             <img src="@commentAuthor.Avatar()">
         </a>
 
+    @if (Members.IsLoggedIn())
+    {
+        if(mem.Id != Model.MemberId) { 
         <div class="highfive">
             <a href="#"><img src="/assets/images/highfive.svg" alt="" />High Five</a>
         </div>
-
+        }
+    }
         <div class="body markdown-syntax">
             @Model.Body.Sanitize()
         </div>
@@ -52,7 +57,7 @@
 
     @if (Members.IsLoggedIn())
     {
-        var mem = Members.GetCurrentMember();
+       
 
         <div class="actions">
            
