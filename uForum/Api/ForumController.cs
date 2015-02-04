@@ -37,7 +37,7 @@ namespace uForum.Api
                 cs.Save(c);
 
                 o.id = c.Id;
-                o.body = c.Body;
+                o.body = c.Body.Sanitize().ToString();
                 o.topicId = c.TopicId;
                 o.authorId = c.MemberId;
                 o.created = c.Created.ConvertToRelativeTime();
