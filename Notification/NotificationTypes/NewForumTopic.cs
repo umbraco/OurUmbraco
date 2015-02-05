@@ -25,6 +25,9 @@ namespace NotificationsCore.NotificationTypes
             {
 
                 var topic = (Topic)args[0];
+                string url = (string)args[1];
+                Member member = (Member)args[2];
+
                 if (topic.IsSpam)
                 {
                     umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, -1, string.Format("[Notifications] Topic ID {0} is marked as spam, no notification sent{0}", topic.Id));
@@ -42,7 +45,7 @@ namespace NotificationsCore.NotificationTypes
                 string subject = details.SelectSingleNode("//subject").InnerText;
                 string body = details.SelectSingleNode("//body").InnerText;
               
-                Member member = (Member)args[2];
+               
 
                 //currently using document api instead of nodefactory
                 Document forum = new Document(topic.ParentId);
@@ -52,7 +55,7 @@ namespace NotificationsCore.NotificationTypes
 
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 
-                body = string.Format(body, forum.Text, "http://" + domain + args[1], member.Text, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
+                body = string.Format(body, forum.Text, "http://" + domain + url, member.Text, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
 
                 SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["umbracoDbDSN"].ConnectionString);
