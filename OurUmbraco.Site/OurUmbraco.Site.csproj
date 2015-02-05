@@ -350,6 +350,7 @@
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
+    <Content Include="Assets\js\jquery.jscroll.min.js" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />

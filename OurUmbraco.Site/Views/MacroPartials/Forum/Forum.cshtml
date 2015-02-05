@@ -2,65 +2,76 @@
 @using uForum;
 
 @{
-    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, 1);
+    var page = 1;
+    if(Request["p"] != null)
+    {
+        int.TryParse(Request["p"], out page);
+    }
+    
+    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, page);
 }
 
-<!-- FORUM LIST START -->
-<table class="table table-striped topic-list">
 
-	<!-- FORUM LIST HEADER START -->
-	<thead>
-		<tr>
-			<th class="topic">Topic</th>
-            <th class="category">
-                <div class="sorting">
-                    <select id="selectCategory" data-placeholder="Choose&hellip;">
-                        <option class="category" selected disabled>Category</option>
-                        <option class="category frontend">Frontend</option>
-                        <option class="category azure">Azure</option>
-                        <option class="category core">Core</option>
-                        <option class="category frontend">Frontend</option>
-                        <option class="category azure">Azure</option>
-                        <option class="category core">Core</option>
-                        <option class="category frontend">Frontend</option>
-                        <option class="category azure">Azure</option>
-                        <option class="category core">Core</option>
-                        <option class="category frontend">Frontend</option>
-                        <option class="category azure">Azure</option>
-                        <option class="category core">Core</option>
-                    </select>
-                </div>
-            </th>
-			<th class="posts">Posts</th>
-			<th class="activity">Activity</th>
-		</tr>
-	</thead>
-	<!-- FORUM LIST HEADER END -->
+    <!-- FORUM LIST START -->
+    <table class="table table-striped topic-list">
 
-	<!-- FORUM LIST OF THREADS START -->
-	<tbody>
+        <!-- FORUM LIST HEADER START -->
+        <thead>
+            <tr>
+                <th class="topic">Topic</th>
+                <th class="category">
+                    <div class="sorting">
+                        <select id="selectCategory" data-placeholder="Choose&hellip;">
+                            <option class="category" selected disabled>Category</option>
+                            <option class="category frontend">Frontend</option>
+                            <option class="category azure">Azure</option>
+                            <option class="category core">Core</option>
+                            <option class="category frontend">Frontend</option>
+                            <option class="category azure">Azure</option>
+                            <option class="category core">Core</option>
+                            <option class="category frontend">Frontend</option>
+                            <option class="category azure">Azure</option>
+                            <option class="category core">Core</option>
+                            <option class="category frontend">Frontend</option>
+                            <option class="category azure">Azure</option>
+                            <option class="category core">Core</option>
+                        </select>
+                    </div>
+                </th>
+                <th class="posts">Posts</th>
+                <th class="activity">Activity</th>
+            </tr>
+        </thead>
+        <!-- FORUM LIST HEADER END -->
+        <!-- FORUM LIST OF THREADS START -->
+        <tbody>
 
-		<!-- FORUM THREAD START -->
+            <!-- FORUM THREAD START -->
+            @foreach (var topic in topics.Items)
+            {
+                <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
 
-        @foreach (var topic in topics.Items)
-        {
-            <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
-                
-                @{
-                    var forum = Umbraco.TypedContent(topic.ParentId);
-                }
+                    @{
+                var forum = Umbraco.TypedContent(topic.ParentId);
+                    }
 
-				<td class="topic">
-					<a href="@topic.Url">@topic.Title</a>
-					<span>last edited by <a href="#">@topic.LastActiveMember().Name</a></span>
-				</td>
+                    <td class="topic">
+                        <a href="@topic.Url">@topic.Title</a>
+                        <span>last edited by <a href="#">@topic.LastActiveMember().Name</a></span>
+                    </td>
 
-				<td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
-				<td class="posts">@topic.Replies</td>
-				<td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
-			</tr>
-        }
-	</tbody>
-	<!-- FORUM LIST OF THREADS START -->
-</table>
+                    <td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
+                    <td class="posts">@topic.Replies</td>
+                    <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
+                </tr>
+            }
+
+
+            
+        </tbody>
+
+        <!-- FORUM LIST OF THREADS START -->
+    </table>
+
 <!-- FORUM LIST END -->
+
