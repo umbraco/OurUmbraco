@@ -1,4 +1,6 @@
-﻿<div class="markdown-spacer"></div>
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+<div class="markdown-spacer"></div>
 <div id="markdown-editor" class="markdown-editor">
 	<div class="container">
 		<div class="row reply-to">
@@ -6,6 +8,33 @@
 				<p>Write your reply to: <a class="reply-name" href=""></a></p>
 			</div>
 		</div>
+
+        <div class="row create-topic">
+            <div class="col-sm-6">
+                <input id="topic-title" class="markdown-control" name="topic-title" type="text" placeholder="Enter topic title">
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <select name="topic-category" id="topic-category" class="markdown-control">
+                    <option value="Choose a category" selected="" disabled="">Choose a category</option>
+                    @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                    {
+                        foreach(var cat in main.Children)
+                        { 
+                        <option class="@cat.Name.ToLower().Replace(" ","")" value="@cat.Id">@cat.Name</option>
+                        }
+                    }
+                </select>
+            </div>
+            <div class="col-sm-3 col-xs-6">
+                <select name="topic-version" id="topic-version" class="markdown-control">
+                    <option value="Choose a version" selected="" disabled="">Choose version</option>
+                    <option value="7">Umbraco v7</option>
+                    <option value="6">Umrbaco v6</option>
+                    <option value="4">Umbraco v4</option>
+                </select>
+            </div>
+        </div>
+
 		<div class="row hidden-xs">
 			<div class="col-md-12">
 				<div id="wmd-button-bar"></div>

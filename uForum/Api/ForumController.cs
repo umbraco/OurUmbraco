@@ -109,9 +109,20 @@ namespace uForum.Api
             {
                 var t = new Topic();
                 t.Body = model.Body;
+                t.Title = model.Title;
                 t.MemberId = Members.GetCurrentMemberId();
                 t.Created = DateTime.Now;
                 t.ParentId = model.Forum;
+                t.UrlName  = umbraco.cms.helpers.url.FormatUrl(model.Title);
+                t.Updated = DateTime.Now;
+                t.Version = model.Version;
+                t.Locked = false;
+                t.LatestComment = 0;
+                t.LatestReplyAuthor = 0;
+                t.Replies = 0;
+                t.Score = 0;
+                t.Answer = 0;
+                t.LatestComment = 0;
                 ts.Save(t);
             }
         }
@@ -130,6 +141,7 @@ namespace uForum.Api
                 if (c.MemberId != Members.GetCurrentMemberId())
                     throw new Exception("You cannot edit this topic");
 
+                c.Updated = DateTime.Now;
                 c.Body = model.Body;
                 cs.Save(c);
             }

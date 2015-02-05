@@ -19,5 +19,8 @@ namespace uForum.Models
         [DataMember(Name = "title")]
         public string Title { get; set; }
 
+        [DataMember(Name = "version")]
+        public int Version { get; set; }
+
     }
 }
