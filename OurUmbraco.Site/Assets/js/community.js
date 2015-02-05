@@ -30,6 +30,14 @@
                 return p;
             });
             
+        },
+
+        followThread: function (id) {
+            $.get("/umbraco/api/Notifications/SubscribeToForumTopic/?topicId=" + id);
+        },
+
+        unfollowThread: function (id) {
+            $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + id);
         }
     };
 }();
@@ -124,5 +132,26 @@ $(function () {
         var data = $(this).data();
         var id = parseInt(data.id);
         community.deleteThread(id);
+    });
+
+    //follow thread
+
+    //unfollow thread
+    $(".follow").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        if ($(this).hasClass("following")) {
+
+            community.unfollowThread(id);
+            $(this).removeClass("following");
+            $("span", $(this)).text("Follow");
+        }
+        else
+        {
+            community.followThread(id);
+            $(this).addClass("following");
+            $("span", $(this)).text("Following");
+        }
     });
 });

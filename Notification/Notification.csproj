@@ -229,10 +229,8 @@
     <Compile Include="InstantNotification.cs" />
     <Compile Include="Interfaces\INotification.cs" />
     <Compile Include="Notification.cs" />
-    <Compile Include="NotificationTypes\DailyDigest.cs" />
     <Compile Include="NotificationTypes\NewForumTopic.cs" />
-    <Compile Include="NotificationTypes\VoteForProjectReminder.cs" />
-    <Compile Include="NotificationTypes\VoteForProjectReminderSingle.cs" />
+    <Compile Include="NotificationTypes\NewForumTopicComment.cs" />
     <Compile Include="SheduledNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

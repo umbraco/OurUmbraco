@@ -32,8 +32,8 @@ namespace NotificationsCore.NotificationTypes
                 }
                     
 
-                SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
-                c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
+                SmtpClient c = new SmtpClient();
+                //c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
                 MailAddress from = new MailAddress(
                     details.SelectSingleNode("//from/email").InnerText,
@@ -55,7 +55,7 @@ namespace NotificationsCore.NotificationTypes
                 body = string.Format(body, forum.Text, "http://" + domain + args[1], member.Text, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
 
-                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
+                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["umbracoDbDSN"].ConnectionString);
 
                
                 SqlCommand comm = new SqlCommand("Select memberId from forumSubscribers where forumId = @forumId", conn);
