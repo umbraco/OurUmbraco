@@ -99,11 +99,13 @@ namespace uForum.Services
             if (!eventArgs.Cancel)
             {
 
-                //spam filtering
-                comment.DetectSpam();
+                
 
                 //save comment
                 DatabaseContext.Database.Save(comment);
+
+                //spam filtering
+                comment.DetectSpam();
 
                 //topic post count
                 UpdateTopicPostsCount(comment);
