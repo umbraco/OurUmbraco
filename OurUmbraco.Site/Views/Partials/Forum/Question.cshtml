@@ -50,6 +50,7 @@
             <i class="icon-Link"></i><span>Copy Link</span>
         </a>
 
+        @if (Members.IsLoggedIn()){
         <a href="#" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
             <i class="icon-Reply-arrow"></i><span>Reply</span>
         </a>
@@ -61,7 +62,7 @@
         <a href="#" class="edit-post" data-id="@Model.Id">
             <i class="icon-Edit"></i><span>Edit post</span>
         </a>
-
+        }
     </div>
 </li> <!-- End of question -->
 @helper avatar(IPublishedContent member, int avatarSize)

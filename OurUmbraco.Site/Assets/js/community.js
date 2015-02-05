@@ -13,21 +13,15 @@
 
             $.ajax({
                 url: "/umbraco/api/Forum/Comment/" + id,
-                type: 'DELETE',
-                success: function (result) {
-                    // Do something with the result
-                }
+                type: 'DELETE'
             });
             
         },
 
         deleteThread: function (id) {
             $.ajax({
-                url: "/umbraco/api/Forum/Thread/" + id,
-                type: 'DELETE',
-                success: function (result) {
-                    // Do something with the result
-                }
+                url: "/umbraco/api/Topic/Delete/" + id,
+                type: 'DELETE'
             });
         },
 
@@ -129,5 +123,6 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
+        community.deleteThread(id);
     });
 });

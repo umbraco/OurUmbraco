@@ -80,7 +80,7 @@ namespace uForum.Api
                 if (c == null)
                     throw new Exception("Comment not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
+                if (!Library.Utills.IsModerator() || c.MemberId != Members.GetCurrentMemberId())
                     throw new Exception("You cannot delete this comment");
 
                 cs.Delete(c);
