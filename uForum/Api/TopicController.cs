@@ -52,7 +52,7 @@ namespace uForum.Api
                 if (c == null)
                     throw new Exception("Topic not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
+                if (!Library.Utills.IsModerator() || c.MemberId != Members.GetCurrentMemberId())
                     throw new Exception("You cannot delete this topic");
 
                 cs.Delete(c);
