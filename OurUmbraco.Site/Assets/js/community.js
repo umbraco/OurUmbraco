@@ -56,6 +56,49 @@ $(function () {
 
     });
 
+    //Copy link
+    var deepLinking = false;
+    var getLink = $(".getLink");
+    var body = $("body");
+    var thankYou = $("#thankYou");
+
+    $(".comments").on("click", "a.copy-link", function (e) {
+        e.preventDefault
+
+        if (deepLinking === false) {
+            body.addClass("active");
+            getLink.val(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
+            getLink.focus().select();
+            deepLinking = true;
+        } else {
+            body.removeClass("active");
+            deepLinking = false;
+        }
+    });
+
+    getLink.keydown(function (e) {
+        if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
+            body.removeClass("active");
+
+            thankyou.style.opacity = 1;
+            thankyou.style.top = "10%";
+            setTimeout(function () {
+                thankyou.style.opacity = 0;
+                setTimeout(function () {
+                    thankyou.style.top = "50%";
+                }, 600);
+            }, 600);
+            deepLinking = false;
+        }
+    });
+
+    $('.overlay').on('click', function () {
+        body.removeClass('active');
+        deepLinking = false;
+    });
+
+
+
     //High five
     $(".comment .highfive a").on("click",function (e) {
         e.preventDefault();
