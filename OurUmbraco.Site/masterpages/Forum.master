@@ -18,3 +18,4 @@
             <umbraco:Macro Alias="[Forum]Forum" runat="server"></umbraco:Macro>
         </div>
 </asp:Content>
+	

@@ -12,22 +12,7 @@
 			
 			<!-- THREAD ACTIONS START -->
 			
-        <umbraco:Macro runat="server" language="cshtml">
-	        @{
-                var topic = uForum.Services.TopicService.Instance.CurrentTopic( this.Context );
-	        }
-            <a href="#" class="delete-thread btn" data-id="@topic.Id">
-				<i class="icon-Delete-key"></i><span>Delete thread</span>
-			</a>
-			
-			<a href="#" class="follow btn following">
-				<i class="icon-Bookmark"></i><span>Following</span>
-			</a>
-			
-			<a href="#" class="follow btn">
-				<i class="icon-Bookmark"></i><span>Follow</span>
-			</a>
-        </umbraco:Macro>
+        	<umbraco:Macro Alias="[Forum]TopicActions" runat="server" />
 
 			
 			<!-- THREAD ACTIONS END -->

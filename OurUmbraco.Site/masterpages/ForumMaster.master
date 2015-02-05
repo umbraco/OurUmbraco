@@ -8,3 +8,8 @@
 	
 	<umbraco:Macro Alias="[Forum]Form" runat="server"></umbraco:Macro>
 </asp:content>
+	
+	
+<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
+	<asp:contentplaceholder id="Scripts" runat="server"/>
+</asp:Content>

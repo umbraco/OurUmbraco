@@ -394,6 +394,10 @@
     <Content Include="usercontrols\SignupSimple.ascx" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
+      <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
+      <Name>NotificationsWeb</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uDocumentation\uDocumentation.csproj">
       <Project>{2040BDAF-A804-462F-8D5F-CA0DF141BF89}</Project>
       <Name>uDocumentation</Name>
