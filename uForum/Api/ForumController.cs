@@ -181,6 +181,9 @@ namespace uForum.Api
 
                 c.Updated = DateTime.Now;
                 c.Body = model.Body;
+                c.Version = model.Version;
+                c.ParentId = model.Forum;
+                c.Title = model.Title;
                 cs.Save(c);
             }
         }
@@ -203,7 +206,20 @@ namespace uForum.Api
             }
         }
 
-        
+        [HttpGet]
+        public string TopicMarkdown(int id)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(id);
+
+                if (t == null)
+                    throw new Exception("Topic not found");
+
+                return t.Body;
+            }
+        }
+
         /* MEDIA */
         [HttpPost]
         public  HttpResponseMessage EditorUpload()

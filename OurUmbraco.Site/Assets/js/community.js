@@ -32,6 +32,12 @@
             
         },
 
+        getThreadMarkdown: function (id) {
+            return $.get("/umbraco/api/Forum/TopicMarkDown/" + id).pipe(function (p) {
+                return p;
+            });
+
+        },
         followThread: function (id) {
             $.get("/umbraco/api/Notifications/SubscribeToForumTopic/?topicId=" + id);
         },
