@@ -114,13 +114,13 @@ namespace uForum
 
         public static bool DetectSpam(this Comment comment)
         {
-            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(comment.Author(), comment.Body, "comment", comment.TopicId);
+            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(comment.Author(), comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
-            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(topic.Author(), topic.Body, "comment", topic.Id);
+            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(topic.Author(), topic.Body);
             return topic.IsSpam;
         }
     }

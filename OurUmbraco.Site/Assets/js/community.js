@@ -38,7 +38,24 @@
 
         unfollowThread: function (id) {
             $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + id);
+        },
+
+        markCommentAsSpam: function (id) {
+            $.post("/umbraco/api/Forum/CommentAsSpam/" + id);
+        },
+
+        markCommentAsHam: function (id) {
+            $.post("/umbraco/api/Forum/CommentAsHam/" + id);
+        },
+
+        markThreadAsSpam: function (id) {
+
+        },
+
+        markThreadAsHam: function (id) {
+
         }
+
     };
 }();
 
@@ -153,5 +170,24 @@ $(function () {
             $(this).addClass("following");
             $("span", $(this)).text("Following");
         }
+    });
+
+    //mark as spam
+
+    $(".comments").on("click", "a.mark-as-spam", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+
+        community.markCommentAsSpam(id);
+    });
+
+    //mark as spa
+    $(".comments").on("click", "a.mark-as-ham", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+
+        community.markCommentAsHam(id);
     });
 });

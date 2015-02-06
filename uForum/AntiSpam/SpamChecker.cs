@@ -21,7 +21,7 @@ namespace uForum.AntiSpam
 {
     internal class SpamChecker
     {
-        public static bool IsSpam(Umbraco.Core.Models.IPublishedContent member, string body, string commentType, int topicId)
+        public static bool IsSpam(Umbraco.Core.Models.IPublishedContent member, string body)
         {
             int reputationTotal;
 
@@ -31,22 +31,22 @@ namespace uForum.AntiSpam
 
             var isSpam = TextContainsSpam(body) || IsSuspiciousBehavior(body);
 
-            if (isSpam)
-            {
-                // Deduct karma
-                //member getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
+            //if (isSpam)
+            //{
+            //    // Deduct karma
+            //    //member getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
 
-                //int reputationCurrent;
-                //int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
-                //member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
-                //member.Save();
-                SendSlackSpamReport(body, topicId, commentType, member.Id);
-            }
+            //    //int reputationCurrent;
+            //    //int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
+            //    //member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
+            //    //member.Save();
+            //    SendSlackSpamReport(body, topicId, commentType, member.Id);
+            //}
 
             return isSpam;
         }
 
-        private static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
+        public static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
         {
             using (var ts = new TopicService())
             using (var client = new WebClient())

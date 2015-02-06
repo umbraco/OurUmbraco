@@ -34,7 +34,10 @@ namespace uForum.Api
                 c.Created = DateTime.Now;
                 c.ParentCommentId = model.Parent;
                 c.TopicId = model.Topic;
+                c.IsSpam = c.DetectSpam();
                 cs.Save(c);
+                if (c.IsSpam)
+                    AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
 
                 o.id = c.Id;
                 o.body = c.Body.Sanitize().ToString();
@@ -101,6 +104,37 @@ namespace uForum.Api
             }
         }
 
+        [HttpPost]
+        public void CommentAsSpam(int id)
+        {
+            using (var cs = new CommentService())
+            {
+                var c = cs.GetById(id);
+
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                c.IsSpam = true;
+
+                cs.Save(c);
+            }
+        }
+
+        [HttpPost]
+        public void CommentAsHam(int id)
+        {
+            using (var cs = new CommentService())
+            {
+                var c = cs.GetById(id);
+
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                c.IsSpam = false;
+
+                cs.Save(c);
+            }
+        }
         /* TOPICS */
         [HttpPost]
         public void Topic(TopicViewModel model)
@@ -123,7 +157,11 @@ namespace uForum.Api
                 t.Score = 0;
                 t.Answer = 0;
                 t.LatestComment = 0;
+                t.IsSpam = t.DetectSpam();
                 ts.Save(t);
+
+                if (t.IsSpam)
+                    AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
             }
         }
 
