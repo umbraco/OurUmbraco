@@ -25,6 +25,19 @@
 
 <!-- COPY LINK END -->
 
+<!-- DELETE THREAD/COMMENT START -->
+@if (Members.IsLoggedIn())
+{
+<div id="confirm-wrapper" class="confirm-wrapper">
+    <h4>Are you sure?</h4>
+    <p>This <span class="type-of"></span> will be gone forever and ever</p>
+    <br />
+    <button class="button green tiny" href="#">Yes</button>
+    <button class="button red tiny" href="#">No</button>
+</div>
+}
+<!-- DELETE THREAD END -->
+
 <ul class="comments">
     @Html.Partial("forum/question", topic)
 

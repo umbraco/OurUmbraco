@@ -9,11 +9,14 @@
             $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + id);
         },
 
-        deleteComment: function (id) {
+        deleteComment: function (id, thisComment) {
 
             $.ajax({
                 url: "/umbraco/api/Forum/Comment/" + id,
                 type: 'DELETE'
+            })
+            .done(function () {
+                thisComment
             });
             
         },
@@ -21,7 +24,10 @@
         deleteThread: function (id) {
             $.ajax({
                 url: "/umbraco/api/Topic/Delete/" + id,
-                type: 'DELETE'
+                type: 'DELETE',
+            })
+            .done(function () {
+                window.location = "/forum";
             });
         },
 
@@ -60,19 +66,19 @@ $(function () {
         e.preventDefault
 
         if (deepLinking === false) {
-            body.addClass("active");
+            body.addClass("active copy-prompt");
             getLink.val(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
             getLink.focus().select();
             deepLinking = true;
         } else {
-            body.removeClass("active");
+            body.removeClass("active copy-prompt");
             deepLinking = false;
         }
     });
 
     getLink.keydown(function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
-            body.removeClass("active");
+            body.removeClass("active copy-prompt");
 
             thankyou.style.opacity = 1;
             thankyou.style.top = "10%";
@@ -87,7 +93,7 @@ $(function () {
     });
 
     $('.overlay').on('click', function () {
-        body.removeClass('active');
+        body.removeClass('active copy-prompt');
         deepLinking = false;
     });
 
@@ -111,11 +117,13 @@ $(function () {
     //Delete comment
     $(".comments").on("click", "a.delete-reply", function (e) {
         e.preventDefault();
+
         var data = $(this).data();
         var id = parseInt(data.id);
-        community.deleteComment(id);
-        $(this).closest(".comment").fadeOut( function () { $(this).closest(".comment").remove(); });
-        
+        var $thisComment = $(this).closest(".comment");
+        // $(this).closest(".comment").fadeOut(function () { $(this).closest(".comment").remove(); });
+
+        terminateConfirm("comment", id, $thisComment);
     });
 
     //Delete thread
@@ -123,6 +131,44 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
-        community.deleteThread(id);
+
+        terminateConfirm("thread", id);
     });
+
+    function terminateConfirm(typeOfPost, id, thisComment) {
+        var $confirm = $('#confirm-wrapper');
+        var $confirmType = $('#confirm-wrapper .type-of')
+        var $body = $('body');
+
+        $body.addClass('active confirm-prompt');
+
+        $confirmType.html(typeOfPost);
+
+        $('#confirm-wrapper .green').on('click', function (e) {
+            e.preventDefault;
+
+            terminatePost(typeOfPost, id, thisComment);
+            $body.removeClass('active confirm-prompt');
+        });
+
+        $('#confirm-wrapper .red').on('click', function (e) {
+            e.preventDefault;
+
+            $body.removeClass('active confirm-prompt');
+        });
+    }
+
+    function terminatePost(typeOfPost, id, thisComment) {
+        switch (typeOfPost) {
+            case "comment":
+                community.deleteComment(id);
+                thisComment.closest(".comment").fadeOut(function () { thisComment.closest(".comment").remove(); });
+                break;
+            case "thread":
+                community.deleteThread(id);
+                break;
+            default:
+                alert('Something went wrong')
+        }
+    }
 });

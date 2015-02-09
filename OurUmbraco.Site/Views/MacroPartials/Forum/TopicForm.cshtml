@@ -35,11 +35,11 @@
     <span class="markdown-close icon-Page-down"></span>
 	<div class="draft">Draft</div>
 </div>
-<div id="insert-image-dialog" class="wmd-prompt-dialog" style="position: fixed; width: 400px; z-index: 1001; top: 50%; left: 50%; display: none; margin-top: -86px; margin-left: -200px;">
+
+<div id="insert-image-dialog" class="wmd-prompt-dialog" style="display: none;">
     <div style="padding: 5px;">
-        <h4>
-            Upload an image
-        </h4>
+        <p><b>Upload image</b></p>
+        <p>Image will be uploaded when post is submitted</p>
         <div class="span" style="display:none;"><div class=" loader"></div></div>
         <input type="file" name="file" id="file" data-action="/umbraco/api/forum/editorupload" />
         <div style="text-align:center;">
@@ -89,7 +89,6 @@
         </div>
 
         <div class="actions">
-            
             
             <a href="#" class="copy-link" data-id="{{id}}">
                 <i class="icon-Out"></i><span>Copy Link</span>
