@@ -16,7 +16,7 @@
                 type: 'DELETE'
             })
             .done(function () {
-                thisComment
+                thisComment.closest(".comment").fadeOut(function () { thisComment.closest(".comment").remove(); });
             });
             
         },
@@ -160,6 +160,7 @@ $(function () {
     //Delete thread
     $(".delete-thread").on("click", function (e) {
         e.preventDefault();
+
         var data = $(this).data();
         var id = parseInt(data.id);
 
@@ -192,8 +193,7 @@ $(function () {
     function terminatePost(typeOfPost, id, thisComment) {
         switch (typeOfPost) {
             case "comment":
-                community.deleteComment(id);
-                thisComment.closest(".comment").fadeOut(function () { thisComment.closest(".comment").remove(); });
+                community.deleteComment(id, thisComment);
                 break;
             case "thread":
                 community.deleteThread(id);
