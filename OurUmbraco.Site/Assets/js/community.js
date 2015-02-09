@@ -36,7 +36,38 @@
                 return p;
             });
             
+        },
+
+        getThreadMarkdown: function (id) {
+            return $.get("/umbraco/api/Forum/TopicMarkDown/" + id).pipe(function (p) {
+                return p;
+            });
+
+        },
+        followThread: function (id) {
+            $.get("/umbraco/api/Notifications/SubscribeToForumTopic/?topicId=" + id);
+        },
+
+        unfollowThread: function (id) {
+            $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + id);
+        },
+
+        markCommentAsSpam: function (id) {
+            $.post("/umbraco/api/Forum/CommentAsSpam/" + id);
+        },
+
+        markCommentAsHam: function (id) {
+            $.post("/umbraco/api/Forum/CommentAsHam/" + id);
+        },
+
+        markThreadAsSpam: function (id) {
+
+        },
+
+        markThreadAsHam: function (id) {
+
         }
+
     };
 }();
 
@@ -171,4 +202,43 @@ $(function () {
                 alert('Something went wrong')
         }
     }
+    //follow thread
+
+    //unfollow thread
+    $(".follow").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        if ($(this).hasClass("following")) {
+
+            community.unfollowThread(id);
+            $(this).removeClass("following");
+            $("span", $(this)).text("Follow");
+        }
+        else
+        {
+            community.followThread(id);
+            $(this).addClass("following");
+            $("span", $(this)).text("Following");
+        }
+    });
+
+    //mark as spam
+
+    $(".comments").on("click", "a.mark-as-spam", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+
+        community.markCommentAsSpam(id);
+    });
+
+    //mark as spa
+    $(".comments").on("click", "a.mark-as-ham", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+
+        community.markCommentAsHam(id);
+    });
 });

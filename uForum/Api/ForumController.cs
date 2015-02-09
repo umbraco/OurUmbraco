@@ -34,7 +34,10 @@ namespace uForum.Api
                 c.Created = DateTime.Now;
                 c.ParentCommentId = model.Parent;
                 c.TopicId = model.Topic;
+                c.IsSpam = c.DetectSpam();
                 cs.Save(c);
+                if (c.IsSpam)
+                    AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
 
                 o.id = c.Id;
                 o.body = c.Body.Sanitize().ToString();
@@ -101,6 +104,37 @@ namespace uForum.Api
             }
         }
 
+        [HttpPost]
+        public void CommentAsSpam(int id)
+        {
+            using (var cs = new CommentService())
+            {
+                var c = cs.GetById(id);
+
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                c.IsSpam = true;
+
+                cs.Save(c);
+            }
+        }
+
+        [HttpPost]
+        public void CommentAsHam(int id)
+        {
+            using (var cs = new CommentService())
+            {
+                var c = cs.GetById(id);
+
+                if (c == null)
+                    throw new Exception("Comment not found");
+
+                c.IsSpam = false;
+
+                cs.Save(c);
+            }
+        }
         /* TOPICS */
         [HttpPost]
         public void Topic(TopicViewModel model)
@@ -109,10 +143,25 @@ namespace uForum.Api
             {
                 var t = new Topic();
                 t.Body = model.Body;
+                t.Title = model.Title;
                 t.MemberId = Members.GetCurrentMemberId();
                 t.Created = DateTime.Now;
                 t.ParentId = model.Forum;
+                t.UrlName  = umbraco.cms.helpers.url.FormatUrl(model.Title);
+                t.Updated = DateTime.Now;
+                t.Version = model.Version;
+                t.Locked = false;
+                t.LatestComment = 0;
+                t.LatestReplyAuthor = 0;
+                t.Replies = 0;
+                t.Score = 0;
+                t.Answer = 0;
+                t.LatestComment = 0;
+                t.IsSpam = t.DetectSpam();
                 ts.Save(t);
+
+                if (t.IsSpam)
+                    AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
             }
         }
 
@@ -130,7 +179,11 @@ namespace uForum.Api
                 if (c.MemberId != Members.GetCurrentMemberId())
                     throw new Exception("You cannot edit this topic");
 
+                c.Updated = DateTime.Now;
                 c.Body = model.Body;
+                c.Version = model.Version;
+                c.ParentId = model.Forum;
+                c.Title = model.Title;
                 cs.Save(c);
             }
         }
@@ -153,7 +206,20 @@ namespace uForum.Api
             }
         }
 
-        
+        [HttpGet]
+        public string TopicMarkdown(int id)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(id);
+
+                if (t == null)
+                    throw new Exception("Topic not found");
+
+                return t.Body;
+            }
+        }
+
         /* MEDIA */
         [HttpPost]
         public  HttpResponseMessage EditorUpload()

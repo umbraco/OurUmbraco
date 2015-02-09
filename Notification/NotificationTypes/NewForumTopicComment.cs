@@ -8,6 +8,9 @@ using System.Data.SqlClient;
 using umbraco.cms.businesslogic.member;
 using System.Web;
 using Umbraco.Core.Models;
+using Umbraco.Web;
+using Umbraco.Core;
+using Umbraco.Web.Security;
 
 namespace NotificationsCore.NotificationTypes
 {
@@ -22,9 +25,13 @@ namespace NotificationsCore.NotificationTypes
         {
             try
             {
+                
+               
+
                 Comment com = (Comment)args[0];
                 Topic topic = (Topic)args[1];
-                IMember mem = (IMember)args[2];
+                string url = (string)args[2];
+                IMember mem = (IMember)args[3];
 
 
                 if (com.IsSpam)
@@ -35,8 +42,8 @@ namespace NotificationsCore.NotificationTypes
 
 
                 //SMTP SETTINGS
-                SmtpClient c = new SmtpClient(details.SelectSingleNode("//smtp").InnerText);
-                c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
+                SmtpClient c = new SmtpClient();
+                //c.Credentials = new System.Net.NetworkCredential(details.SelectSingleNode("//username").InnerText, details.SelectSingleNode("//password").InnerText);
 
                 //SENDER ADDRESS
                 MailAddress from = new MailAddress(
@@ -47,11 +54,12 @@ namespace NotificationsCore.NotificationTypes
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 var subject = string.Format(details.SelectSingleNode("//subject").InnerText, topic.Title);
                 var body = details.SelectSingleNode("//body").InnerText;
-                body = string.Format(body, topic.Title, "http://" + domain + args[1], mem.Name,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
+                body = string.Format(body, topic.Title, "http://" + domain + url + "#comment-" + com.Id, mem.Name,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
 
                 
                 //connect to DB
-                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
+
+                SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["umbracoDbDSN"].ConnectionString);
                 SqlCommand comm = new SqlCommand("Select memberId from forumTopicSubscribers where topicId = @topicId", conn);
                 comm.Parameters.AddWithValue("@topicId", topic.Id);
                 conn.Open();
@@ -64,7 +72,7 @@ namespace NotificationsCore.NotificationTypes
                     int mid = dr.GetInt32(0);
                     try
                     {
-                        Member m = new Member(mid);
+                        var m = new umbraco.cms.businesslogic.member.Member(mid);
 
                         if (m.Id != com.MemberId
                             && m.getProperty("bugMeNot").Value.ToString() != "1")

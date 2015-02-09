@@ -9,7 +9,8 @@
                 <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                 <!-- FORUM BREADCRUMB END -->
 
-				<a href="forum-create.html" class="button green">Create Topic</a>
+
+				<a href="#" class="button green create-topic" data-controller="topic">Create Topic</a>
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->

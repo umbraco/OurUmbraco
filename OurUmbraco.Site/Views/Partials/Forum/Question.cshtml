@@ -6,7 +6,7 @@
     var forum = Umbraco.TypedContent(Model.ParentId);
 }
 
-<li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title">
+<li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
     <!-- Start of question -->
     <div class="meta">
         <div class="profile">
@@ -59,7 +59,7 @@
             <i class="icon-Alert-alt"></i><span>Mark as spam</span>
         </a>
 
-        <a href="#" class="edit-post" data-id="@Model.Id">
+        <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
             <i class="icon-Edit"></i><span>Edit post</span>
         </a>
         }
