@@ -52,7 +52,7 @@
 		</div>
         <div class="row">
             <div class="col-xs-8">
-                <input class="button tiny" type="button" value="Post reply" id="topic-submit" class="markdown-control">
+                <input class="button tiny markdown-control" type="button" value="Post reply" id="topic-submit">
             </div>
             <div class="col-xs-4 visible-xs visible-sm">
                 <button id="mobile-preview" class="markdown-control">
@@ -120,7 +120,7 @@
         <div class="actions">
             
             <a href="#" class="copy-link" data-id="{{id}}">
-                <i class="icon-Out"></i><span>Copy Link</span>
+                <i class="icon-Link"></i><span>Copy Link</span>
             </a>
             {{#canHaveChildren}}
             <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">

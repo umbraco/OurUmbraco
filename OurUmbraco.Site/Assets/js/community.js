@@ -14,11 +14,7 @@
             $.ajax({
                 url: "/umbraco/api/Forum/Comment/" + id,
                 type: 'DELETE'
-            })
-            .done(function () {
-                thisComment.closest(".comment").fadeOut(function () { thisComment.closest(".comment").remove(); });
-            });
-            
+            });            
         },
 
         deleteThread: function (id) {
@@ -94,8 +90,7 @@ $(function () {
     var thankYou = $("#thankYou");
 
     $(".comments").on("click", "a.copy-link", function (e) {
-        e.preventDefault
-
+        e.preventDefault();
         if (deepLinking === false) {
             body.addClass("active copy-prompt");
             getLink.val(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
@@ -112,13 +107,9 @@ $(function () {
             body.removeClass("active copy-prompt");
 
             thankyou.style.opacity = 1;
-            thankyou.style.top = "10%";
             setTimeout(function () {
                 thankyou.style.opacity = 0;
-                setTimeout(function () {
-                    thankyou.style.top = "50%";
-                }, 600);
-            }, 600);
+            }, 900);
             deepLinking = false;
         }
     });
@@ -176,15 +167,13 @@ $(function () {
 
         $confirmType.html(typeOfPost);
 
-        $('#confirm-wrapper .green').on('click', function (e) {
-            e.preventDefault;
+        $('#confirm-wrapper .green').on('click', function () {
 
             terminatePost(typeOfPost, id, thisComment);
             $body.removeClass('active confirm-prompt');
         });
 
-        $('#confirm-wrapper .red').on('click', function (e) {
-            e.preventDefault;
+        $('#confirm-wrapper .red').on('click', function () {
 
             $body.removeClass('active confirm-prompt');
         });
@@ -193,6 +182,7 @@ $(function () {
     function terminatePost(typeOfPost, id, thisComment) {
         switch (typeOfPost) {
             case "comment":
+                thisComment.closest(".comment").fadeOut(function () { thisComment.closest(".comment").remove(); });
                 community.deleteComment(id, thisComment);
                 break;
             case "thread":
