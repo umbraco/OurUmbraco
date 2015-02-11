@@ -233,6 +233,38 @@ namespace uForum.Api
             }
         }
 
+        [HttpPost]
+        public void TopicAsHam(int id)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(id);
+
+                if (t == null)
+                    throw new Exception("Topic not found");
+
+                t.IsSpam = false;
+
+                ts.Save(t);
+            }
+        }
+
+        [HttpPost]
+        public void TopicAsSpam(int id)
+        {
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(id);
+
+                if (t == null)
+                    throw new Exception("Topic not found");
+
+                t.IsSpam = true;
+
+                ts.Save(t);
+            }
+        }
+
         /* MEDIA */
         [HttpPost]
         public  HttpResponseMessage EditorUpload()

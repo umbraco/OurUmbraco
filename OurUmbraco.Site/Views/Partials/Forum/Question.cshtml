@@ -64,10 +64,19 @@
             <i class="icon-Reply-arrow"></i><span>Reply</span>
         </a>
 
-        <a href="#" class="mark-as-spam">
-            <i class="icon-Alert-alt"></i><span>Mark as spam</span>
-        </a>
+        if (Model.IsSpam) { 
+            
+            <a href="#" class="mark-as-ham">
+                <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+            </a>
 
+        }
+        else
+        {
+            <a href="#" class="mark-as-spam">
+                <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+            </a>
+        }
         <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
             <i class="icon-Edit"></i><span>Edit post</span>
         </a>
