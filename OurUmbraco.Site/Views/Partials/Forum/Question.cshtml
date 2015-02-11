@@ -41,6 +41,15 @@
         </div>
 
         <div class="body">
+
+            @if (Model.IsSpam) { 
+            <div class="alert">
+                Sorry if we're causing you any inconvenience but this topic has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your topic. When this topic has been marked as clean, this topic will be shown as normal.
+                <br/><br/>
+                You can see this topic because you're a moderator of the forum. Only moderators and the topic starter can see this topic.
+            </div>
+            }
+            
             @Model.Body.Sanitize()
         </div>
     </div>
