@@ -137,8 +137,10 @@ namespace uForum.Api
         }
         /* TOPICS */
         [HttpPost]
-        public void Topic(TopicViewModel model)
+        public ExpandoObject Topic(TopicViewModel model)
         {
+            dynamic o = new ExpandoObject();
+
             using (var ts = new TopicService())
             {
                 var t = new Topic();
@@ -162,7 +164,12 @@ namespace uForum.Api
 
                 if (t.IsSpam)
                     AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+
+                o.url = string.Format("{0}/{1}-{2}",umbraco.library.NiceUrl(t.ParentId), t.Id,t.UrlName);
+                
             }
+
+            return o;
         }
 
 
