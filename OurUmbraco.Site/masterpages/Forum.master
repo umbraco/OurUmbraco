@@ -10,7 +10,9 @@
                 <!-- FORUM BREADCRUMB END -->
 
 
-				<a href="#" class="button green create-topic" data-controller="topic">Create Topic</a>
+				<a href="#" class="button create-new-thread">
+					<i class="icon-Add"></i><span>Create new</span>
+				</a>
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->
