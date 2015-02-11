@@ -10,17 +10,17 @@
     
     var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id,mem.Id);
         
-    <a href="#" class="delete-thread btn" data-id="@topic.Id">
+    <a href="#" class="delete-thread button" data-id="@topic.Id">
         <i class="icon-Delete-key"></i><span>Delete thread</span>
     </a>
 
     if (subscribed) { 
-    <a href="#" class="follow btn following" data-id="@topic.Id">
+    <a href="#" class="follow button following" data-id="@topic.Id">
         <i class="icon-Bookmark"></i><span>Following</span>
     </a>
     }
     else { 
-    <a href="#" class="follow btn" data-id="@topic.Id">
+    <a href="#" class="follow button transparent" data-id="@topic.Id">
         <i class="icon-Bookmark"></i><span>Follow</span>
     </a>
     }
