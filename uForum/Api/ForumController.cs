@@ -174,25 +174,31 @@ namespace uForum.Api
 
 
         [HttpPut]
-        public void Topic(int id, TopicViewModel model)
+        public ExpandoObject Topic(int id, TopicViewModel model)
         {
-            using (var cs = new TopicService())
-            {
-                var c = cs.GetById(id);
+            dynamic o = new ExpandoObject();
 
-                if (c == null)
+            using (var ts = new TopicService())
+            {
+                var t = ts.GetById(id);
+
+                if (t == null)
                     throw new Exception("Topic not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
+                if (t.MemberId != Members.GetCurrentMemberId())
                     throw new Exception("You cannot edit this topic");
 
-                c.Updated = DateTime.Now;
-                c.Body = model.Body;
-                c.Version = model.Version;
-                c.ParentId = model.Forum;
-                c.Title = model.Title;
-                cs.Save(c);
+                t.Updated = DateTime.Now;
+                t.Body = model.Body;
+                t.Version = model.Version;
+                t.ParentId = model.Forum;
+                t.Title = model.Title;
+                ts.Save(t);
+
+                o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
             }
+
+            return o;
         }
 
 
