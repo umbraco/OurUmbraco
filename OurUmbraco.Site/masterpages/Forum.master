@@ -9,10 +9,10 @@
                 <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                 <!-- FORUM BREADCRUMB END -->
 
+                
 
-				<a href="#" class="button create-new-thread" data-controller="topic">
-					<i class="icon-Add"></i><span>Create new</span>
-				</a>
+				<umbraco:Macro Alias="[Forum]ForumActions" runat="server"></umbraco:Macro>
+
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->

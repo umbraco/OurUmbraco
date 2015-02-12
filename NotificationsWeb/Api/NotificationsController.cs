@@ -7,12 +7,12 @@ namespace NotificationsWeb.Api
     public class NotificationsController:UmbracoApiController
     {
         [HttpGet]
-        public string SubscribeToForumTopic(int topicId)
+        public string SubscribeToForumTopic(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.Subscribe(topicId, currentMemberId);
+                BusinessLogic.ForumTopic.Subscribe(id, currentMemberId);
 
                 return "true";
             }
@@ -21,12 +21,12 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string UnSubscribeFromForumTopic(int topicId)
+        public string UnSubscribeFromForumTopic(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.UnSubscribe(topicId, currentMemberId);
+                BusinessLogic.ForumTopic.UnSubscribe(id, currentMemberId);
 
                 return "true";
             }
@@ -35,12 +35,12 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string SubscribeToForum(int forumId)
+        public string SubscribeToForum(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.Subscribe(forumId, currentMemberId);
+                BusinessLogic.Forum.Subscribe(id, currentMemberId);
 
                 return "true";
             }
@@ -49,12 +49,12 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string UnSubscribeFromForum(int forumId)
+        public string UnSubscribeFromForum(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.UnSubscribe(forumId, currentMemberId);
+                BusinessLogic.Forum.UnSubscribe(id, currentMemberId);
 
                 return "true";
             }

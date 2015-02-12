@@ -40,12 +40,12 @@
             });
 
         },
-        followThread: function (id) {
-            $.get("/umbraco/api/Notifications/SubscribeToForumTopic/?topicId=" + id);
+        follow: function (id,controller) {
+            $.get("/umbraco/api/Notifications/SubscribeToForum"+controller+"/?id=" + id);
         },
 
-        unfollowThread: function (id) {
-            $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + id);
+        unfollow: function (id,controller) {
+            $.get("/umbraco/api/Notifications/UnSubscribeFromForum"+controller+"/?id=" + id);
         },
 
         markAsSpam: function (id,controller) {
@@ -197,15 +197,16 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
+        var controller = data.controller;
         if ($(this).hasClass("following")) {
 
-            community.unfollowThread(id);
+            community.unfollow(id,controller);
             $(this).removeClass("following");
             $("span", $(this)).text("Follow");
         }
         else
         {
-            community.followThread(id);
+            community.follow(id,controller);
             $(this).addClass("following");
             $("span", $(this)).text("Following");
         }
