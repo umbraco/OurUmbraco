@@ -66,14 +66,14 @@
 
         if (Model.IsSpam) { 
             
-            <a href="#" class="mark-as-ham">
+            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="topic">
                 <i class="icon-Alert-alt"></i><span>Mark as ham</span>
             </a>
 
         }
         else
         {
-            <a href="#" class="mark-as-spam">
+            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="topic">
                 <i class="icon-Alert-alt"></i><span>Mark as spam</span>
             </a>
         }
