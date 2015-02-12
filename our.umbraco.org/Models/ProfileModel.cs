@@ -7,7 +7,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace our.Models
 {
-    public class ProfileViewModel
+    public class ProfileModel
     {
         public string Avatar { get; set; }
 
