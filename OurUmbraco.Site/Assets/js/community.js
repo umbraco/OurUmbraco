@@ -48,21 +48,14 @@
             $.get("/umbraco/api/Notifications/UnSubscribeFromForumTopic/?topicId=" + id);
         },
 
-        markCommentAsSpam: function (id) {
-            $.post("/umbraco/api/Forum/CommentAsSpam/" + id);
+        markAsSpam: function (id,controller) {
+            $.post("/umbraco/api/Forum/"+controller+"AsSpam/" + id);
         },
 
-        markCommentAsHam: function (id) {
-            $.post("/umbraco/api/Forum/CommentAsHam/" + id);
+        markAsHam: function (id,controller) {
+            $.post("/umbraco/api/Forum/"+controller+"AsHam/" + id);
         },
 
-        markThreadAsSpam: function (id) {
-
-        },
-
-        markThreadAsHam: function (id) {
-
-        }
 
     };
 }();
@@ -224,8 +217,14 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
+        var controller = data.controller;
 
-        community.markCommentAsSpam(id);
+        community.markAsSpam(id, controller);
+
+        $(this).removeClass("mark-as-spam");
+        $(this).addClass("mark-as-ham");
+
+        $("span", $(this)).text("Mark as ham");
     });
 
     //mark as spa
@@ -233,7 +232,14 @@ $(function () {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
+        var controller = data.controller;
 
-        community.markCommentAsHam(id);
+        community.markAsHam(id, controller);
+
+        $(this).removeClass("mark-as-ham");
+        $(this).addClass("mark-as-spam");
+
+        $("span", $(this)).text("Mark as spam");
+
     });
 });
