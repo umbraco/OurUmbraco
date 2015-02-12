@@ -7,8 +7,13 @@
     {
         int.TryParse(Request["p"], out page);
     }
-    
-    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, page);
+
+    var cat = -1;
+    if (CurrentPage.Level == 4)
+    {
+        cat = CurrentPage.Id;
+    }
+    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, page,true,cat);
 }
 <div id="overlay" class="overlay"></div>
     <!-- FORUM LIST START -->
