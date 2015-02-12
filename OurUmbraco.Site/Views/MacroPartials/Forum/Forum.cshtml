@@ -22,18 +22,13 @@
                     <div class="sorting">
                         <select id="selectCategory" data-placeholder="Choose&hellip;">
                             <option class="category" selected disabled>Category</option>
-                            <option class="category frontend">Frontend</option>
-                            <option class="category azure">Azure</option>
-                            <option class="category core">Core</option>
-                            <option class="category frontend">Frontend</option>
-                            <option class="category azure">Azure</option>
-                            <option class="category core">Core</option>
-                            <option class="category frontend">Frontend</option>
-                            <option class="category azure">Azure</option>
-                            <option class="category core">Core</option>
-                            <option class="category frontend">Frontend</option>
-                            <option class="category azure">Azure</option>
-                            <option class="category core">Core</option>
+                            @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                            {
+                                foreach (var cat in main.Children)
+                                {
+                                    <option class="@cat.Name.ToLower().Replace(" ","")" value="@cat.Id">@cat.Name</option>
+                                }
+                            }
                         </select>
                     </div>
                 </th>
@@ -48,6 +43,9 @@
             <!-- FORUM THREAD START -->
             @foreach (var topic in topics.Items)
             {
+                
+                    
+                
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
 
                     @{
@@ -66,6 +64,7 @@
                     <td class="posts">@topic.Replies</td>
                     <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
+                
             }
 
 
