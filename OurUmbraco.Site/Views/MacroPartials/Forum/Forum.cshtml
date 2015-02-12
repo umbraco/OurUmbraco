@@ -56,7 +56,10 @@
 
                     <td class="topic">
                         <a href="@topic.Url">@topic.Title</a>
-                        <span>last edited by <a href="#">@topic.LastActiveMember().Name</a></span>
+                        @{
+                        var mem = topic.LastActiveMember();
+                        }
+                        <span>last edited by <a href="/member/@mem.Id">@mem.Name</a></span>
                     </td>
 
                     <td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
