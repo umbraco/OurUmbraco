@@ -243,6 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
+    <Compile Include="Api\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="controls\DateTimePicker.cs" />
     <Compile Include="custom Handlers\CommentVote.cs" />
@@ -264,7 +265,7 @@
     <Compile Include="Examine\DocumentationIndexDataService\Model\FileIndexerConfig.cs" />
     <Compile Include="ForumIndexer.cs" />
     <Compile Include="library.cs" />
-    <Compile Include="Models\ProfileViewModel.cs" />
+    <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
