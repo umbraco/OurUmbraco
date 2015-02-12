@@ -323,7 +323,7 @@
                         <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                     </div>
 
-                    <div id="markdown-docs markdown-syntax">
+                    <div id="markdown-docs" class="markdown-syntax">
                         <markdown:Doc ID="Markdown" runat="server" AddHeader="False" PrefixLinks="False" />
                     </div>
         		</div><!-- .content-wrapper -->

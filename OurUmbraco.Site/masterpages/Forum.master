@@ -10,7 +10,7 @@
                 <!-- FORUM BREADCRUMB END -->
 
 
-				<a href="#" class="button create-new-thread">
+				<a href="#" class="button create-new-thread" data-controller="topic">
 					<i class="icon-Add"></i><span>Create new</span>
 				</a>
 		    </div>

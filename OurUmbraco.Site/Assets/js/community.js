@@ -148,7 +148,8 @@ $(function () {
         terminateConfirm("comment", id, $thisComment);
     });
 
-    //Delete thread
+    /*Delete thread
+    ==========================*/
     $(".delete-thread").on("click", function (e) {
         e.preventDefault();
 
@@ -158,6 +159,7 @@ $(function () {
         terminateConfirm("thread", id);
     });
 
+    // Ask for confirmation
     function terminateConfirm(typeOfPost, id, thisComment) {
         var $confirm = $('#confirm-wrapper');
         var $confirmType = $('#confirm-wrapper .type-of')
@@ -179,6 +181,7 @@ $(function () {
         });
     }
 
+    // Terminate upon confirmation
     function terminatePost(typeOfPost, id, thisComment) {
         switch (typeOfPost) {
             case "comment":
@@ -192,6 +195,8 @@ $(function () {
                 alert('Something went wrong')
         }
     }
+
+
     //follow thread
 
     //unfollow thread

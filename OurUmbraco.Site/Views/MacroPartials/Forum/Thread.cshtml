@@ -59,7 +59,7 @@
 
 @if (Members.IsLoggedIn()) { 
 <div class="replybutton">
-    <a href="#" class="button green large reply forum-reply" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
+    <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor.Name" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
 </div>
 }
 else { 
