@@ -86,30 +86,35 @@
                 </a>
             }
 
-            <a href="#" class="delete-reply" data-id="@Model.Id">
-                <i class="icon-Delete-key"></i><span>Delete post</span>
-            </a>
-
-            @if (Model.IsSpam)
+            @if (Members.IsAdmin() || mem.Id == Model.MemberId)
             {
-                <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
-                    <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                <a href="#" class="delete-reply" data-id="@Model.Id">
+                    <i class="icon-Delete-key"></i><span>Delete post</span>
                 </a>
+
+
+                if (Members.IsAdmin()){
+                    if (Model.IsSpam)
+                    {
+                        <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
+                            <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
+                            <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+                        </a>
+                    }
+                }
             }
-            else
-            {
-                <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
-                    <i class="icon-Alert-alt"></i><span>Mark as spam</span>
-                </a>
-            }
-            
 
             
-
+            @if (mem.Id == Model.MemberId) { 
             <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
                 <i class="icon-Edit"></i><span>Edit post</span>
             </a>
-
+            }
         </div>
     }
     else

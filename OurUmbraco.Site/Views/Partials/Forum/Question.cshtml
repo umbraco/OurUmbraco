@@ -64,22 +64,29 @@
             <i class="icon-Reply-arrow"></i><span>Reply</span>
         </a>
 
-        if (Model.IsSpam) { 
+        if (Members.IsAdmin()) { 
+            if (Model.IsSpam) { 
             
-            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="topic">
-                <i class="icon-Alert-alt"></i><span>Mark as ham</span>
-            </a>
+                <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="topic">
+                    <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                </a>
 
+            }
+            else
+            {
+                <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="topic">
+                    <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+                </a>
+            }
         }
-        else
+
+        if (Members.GetCurrentMember().Id == topicAuthor.Id)
         {
-            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="topic">
-                <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+            <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
+                <i class="icon-Edit"></i><span>Edit post</span>
             </a>
         }
-        <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
-            <i class="icon-Edit"></i><span>Edit post</span>
-        </a>
+        
         }
     </div>
 </li> <!-- End of question -->

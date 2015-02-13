@@ -4656,6 +4656,7 @@
     <Content Include="Views\MacroPartials\Forum\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
+    <Content Include="Views\Partials\Profile\Profile.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
