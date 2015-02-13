@@ -7,7 +7,8 @@
     {
         int.TryParse(Request["p"], out page);
     }
-
+    var nextPage = page + 1;
+    
     var cat = -1;
     if (CurrentPage.Level == 4)
     {
@@ -72,7 +73,7 @@
                 
             }
 
-
+            <a href="?p=@nextPage" style="display:none;">next page</a>
             
         </tbody>
 

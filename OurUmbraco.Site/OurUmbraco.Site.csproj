@@ -1798,6 +1798,7 @@
     <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
     <Content Include="Views\MacroPartials\Forum\TopicActions.cshtml" />
     <Content Include="Views\MacroPartials\Forum\ForumActions.cshtml" />
+    <Content Include="Assets\js\jquery.scrolly.js" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
