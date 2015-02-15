@@ -136,6 +136,15 @@ namespace uForum.Api
             }
         }
         /* TOPICS */
+        [HttpGet]
+        public IEnumerable<Topic> LatestPaged(int page)
+        {
+            using(var ts = new TopicService())
+            {
+                return ts.GetLatestTopics(50, page).Items;
+            }
+        }
+
         [HttpPost]
         public ExpandoObject Topic(TopicViewModel model)
         {

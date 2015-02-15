@@ -21,4 +21,12 @@
             <umbraco:Macro Alias="[Forum]Forum" runat="server"></umbraco:Macro>
         </div>
 </asp:Content>
+
+<asp:Content ContentPlaceHolderId="Scripts" runat="server">
+    <script type="text/javascript">
+  
+        $('table').scrolly({ dataUrl: '/umbraco/api/Forum/LatestPaged/' });
+   
+	</script>
+</asp:Content>
 	

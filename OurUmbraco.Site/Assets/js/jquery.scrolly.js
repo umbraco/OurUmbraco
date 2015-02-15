@@ -3,6 +3,8 @@
 	$.scrolly = {
 		defaults: {
 			page: 1,
+			pageKey: 'page',
+			dataUrl : '',
 			loadingHtml: '<small>Loading...</small>',
 			callback: false
 		}
@@ -27,7 +29,7 @@
 
 		// Observe the scroll event for when to trigger the next load
 		function _observe() {
-
+			
 			var $inner = $e.find('tr').last(),
                 data = $e.data('scrolly'),
                 borderTopWidth = parseInt($e.css('borderTopWidth')),
@@ -56,6 +58,7 @@
 
 
 		function _load() {
+
 			var $inner = $e.find('tbody').last(),
                 data = $e.data('scrolly');
 
@@ -64,25 +67,27 @@
 
 			return $e.animate({ scrollTop: $inner.outerHeight() }, 0, function () {
 				
-				console.log("loading " + _options.page);
+				_options.page++;
 
-				//needs to be replaced with ajax call and the actual content we want to fetch
-				var i = 0;
-				while (i < 50) {
-					$inner.append("<tr><td>test "+_options.page +"</td></tr>");
+				$.ajax({
+					url: _options.dataUrl + '?'+ _options.pageKey +'=' + _options.page,
+					type: 'GET',
+				})
+				.done(function (dat) {
+
+					var template = $('#forum-template').html();
+					var rendered = Mustache.render(template, dat);
+					$inner.append(rendered);
+
+					data.waiting = false;
+					$e.find('.scrolly-loading').remove();
 					
-					i++;
-				}
+
+					if (_options.callback) {
+						_options.callback.call(this);
+					}
+				});
 				
-				_options.page ++;
-				
-					
-				var $next = $(this).find(_options.nextSelector).first();
-				data.waiting = false;
-				
-				if (_options.callback) {
-					_options.callback.call(this);
-				}
 				
 			});
 		}

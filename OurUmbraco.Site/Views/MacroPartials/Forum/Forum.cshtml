@@ -81,6 +81,18 @@
     </table>
 
 <!-- FORUM LIST END -->
+<script id="forum-template" type="x-tmpl-mustache">
+    {{#.}}
+    <tr class="">
+        <td class="topic">
+            <a href="{{Url}}">{{Title}}</a>
+        </td>
+        <td class="category frontend"><a href=""></a></td>
+        <td class="posts">{{Replies}}</td>
+        <td class="activity" title="{{Updated}}">{{Updated}}</td>
+    </tr>
+    {{/.}}
+</script>
 
 
 
