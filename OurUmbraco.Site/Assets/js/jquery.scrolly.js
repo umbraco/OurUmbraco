@@ -1,5 +1,5 @@
 ﻿(function ($) {
-	// Define the jscroll namespace and default settings
+	// Define the scrolly namespace and default settings
 	$.scrolly = {
 		defaults: {
 			page: 1,
