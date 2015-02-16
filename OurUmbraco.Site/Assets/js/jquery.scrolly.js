@@ -86,8 +86,12 @@
 
 					$e.find('.scrolly-loading').remove();
 					
-					if (!data.done)
-					    history.replaceState(null, null, '?' + _options.pageKey + '=' + _options.page);
+					if (!data.done) {
+                        //set browser address bar to reflect page
+					    try {
+					        history.replaceState(null, null, '?' + _options.pageKey + '=' + _options.page);
+					    } catch (err) { /*fail silently*/ }
+					}
 
 					if (_options.callback) {
 						_options.callback.call(this);
