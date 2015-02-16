@@ -202,12 +202,14 @@ $(function () {
 
             community.unfollow(id,controller);
             $(this).removeClass("following");
+            $(this).addClass("transparent");
             $("span", $(this)).text("Follow");
         }
         else
         {
             community.follow(id,controller);
             $(this).addClass("following");
+            $(this).removeClass("transparent");
             $("span", $(this)).text("Following");
         }
     });
