@@ -27,6 +27,7 @@
   
         $('table').scrolly({
             dataUrl: '/umbraco/api/Forum/LatestPaged/',
+            template: '#forum-template',
             loadingHtml: '<div class="span"><div class=" loader"></div></div>'
 
         });

@@ -4,7 +4,8 @@
 		defaults: {
 			page: 1,
 			pageKey: 'page',
-			dataUrl : '',
+			dataUrl: '',
+            template: '',
 			loadingHtml: '<small>Loading...</small>',
 			callback: false
 		}
@@ -75,7 +76,7 @@
 				})
 				.done(function (dat) {
 
-					var template = $('#forum-template').html();
+					var template = $(_options.template).html();
 					var rendered = Mustache.render(template, dat);
 					$inner.append(rendered);
 
