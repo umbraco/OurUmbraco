@@ -32,10 +32,17 @@
     	{
         cat = Model.Id;
     	}
+
+        var page = 1;
+        if(Request["page"] != null)
+        {
+            int.TryParse(Request["page"], out page);
+        }
 	}
     <script type="text/javascript">
   
         $('table').scrolly({
+            page: @page,
             dataUrl: '/umbraco/api/Forum/LatestPaged/?cat=@cat',
             template: '#forum-template',
             loadingHtml: '<div class="span"><div class=" loader"></div></div>'
