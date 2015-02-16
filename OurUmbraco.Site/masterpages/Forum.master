@@ -23,15 +23,28 @@
 </asp:Content>
 
 <asp:Content ContentPlaceHolderId="Scripts" runat="server">
+	
+<umbraco:Macro runat="server" language="cshtml">
+	
+	@{
+	 	var cat = -1;
+    	if (Model.Level == 4)
+    	{
+        cat = Model.Id;
+    	}
+	}
     <script type="text/javascript">
   
         $('table').scrolly({
-            dataUrl: '/umbraco/api/Forum/LatestPaged/',
+            dataUrl: '/umbraco/api/Forum/LatestPaged/?cat=@cat',
             template: '#forum-template',
             loadingHtml: '<div class="span"><div class=" loader"></div></div>'
-
         });
    
 	</script>
+</umbraco:Macro>
+
+	
+
 </asp:Content>
 	

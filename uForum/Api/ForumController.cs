@@ -139,12 +139,12 @@ namespace uForum.Api
         }
         /* TOPICS */
         [HttpGet]
-        public IEnumerable<ExpandoObject> LatestPaged(int page)
+        public IEnumerable<ExpandoObject> LatestPaged(int page,int cat)
         {
             var l = new List<ExpandoObject>();
             using(var ts = new TopicService())
             {
-               foreach(var topic in ts.GetLatestTopics(50, page).Items)
+               foreach(var topic in ts.GetLatestTopics(50, page,true,cat).Items)
                {
                     dynamic o = new ExpandoObject();
 

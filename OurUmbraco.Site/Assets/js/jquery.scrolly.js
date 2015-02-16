@@ -71,10 +71,12 @@
 				_options.page++;
 
 				$.ajax({
-					url: _options.dataUrl + '?'+ _options.pageKey +'=' + _options.page,
+					url: _options.dataUrl + '&'+ _options.pageKey +'=' + _options.page,
 					type: 'GET',
 				})
 				.done(function (dat) {
+
+				    if (dat.length == 0) { data.done = true };
 
 					var template = $(_options.template).html();
 					var rendered = Mustache.render(template, dat);
