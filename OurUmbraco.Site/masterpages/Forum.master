@@ -28,7 +28,7 @@
 	
 	@{
 	 	var cat = -1;
-    	if (Model.Level == 4)
+    	if (Model.Level > 3)
     	{
         cat = Model.Id;
     	}
