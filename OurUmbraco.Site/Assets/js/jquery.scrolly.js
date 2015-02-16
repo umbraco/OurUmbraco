@@ -85,6 +85,7 @@
 					data.waiting = false;
 					$e.find('.scrolly-loading').remove();
 					
+					history.replaceState(null, null, '?'+_options.pageKey+'='+ _options.page);
 
 					if (_options.callback) {
 						_options.callback.call(this);

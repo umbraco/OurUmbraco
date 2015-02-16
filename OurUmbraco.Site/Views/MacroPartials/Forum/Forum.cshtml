@@ -3,9 +3,9 @@
 
 @{
     var page = 1;
-    if(Request["p"] != null)
+    if(Request["page"] != null)
     {
-        int.TryParse(Request["p"], out page);
+        int.TryParse(Request["page"], out page);
     }
     var nextPage = page + 1;
     
@@ -73,7 +73,7 @@
                 
             }
 
-            <a href="?p=@nextPage" style="display:none;">next page</a>
+            <a href="?page=@nextPage" style="display:none;">next page</a>
             
         </tbody>
 
