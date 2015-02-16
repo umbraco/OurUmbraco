@@ -83,13 +83,14 @@
 <!-- FORUM LIST END -->
 <script id="forum-template" type="x-tmpl-mustache">
     {{#.}}
-    <tr class="">
+    <tr class="{{#hasAnswer}}solved{{/hasAnswer}}">
         <td class="topic">
-            <a href="{{Url}}">{{Title}}</a>
+            <a href="{{url}}">{{title}}</a>
+            <span>last edited by <a href="{{memId}}">{{memName}}</a></span>
         </td>
-        <td class="category frontend"><a href=""></a></td>
-        <td class="posts">{{Replies}}</td>
-        <td class="activity" title="{{Updated}}">{{Updated}}</td>
+        <td class="category frontend"><a href="{{forumUrl}}">{{forumName}}</a></td>
+        <td class="posts">{{replies}}</td>
+        <td class="activity" title="{{updated}}">{{updated}}</td>
     </tr>
     {{/.}}
 </script>

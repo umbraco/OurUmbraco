@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using uForum.Models;
 using uForum.Services;
+using Umbraco.Core.Services;
+using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
@@ -137,12 +139,42 @@ namespace uForum.Api
         }
         /* TOPICS */
         [HttpGet]
-        public IEnumerable<Topic> LatestPaged(int page)
+        public IEnumerable<ExpandoObject> LatestPaged(int page)
         {
+            var l = new List<ExpandoObject>();
             using(var ts = new TopicService())
             {
-                return ts.GetLatestTopics(50, page).Items;
+               foreach(var topic in ts.GetLatestTopics(50, page).Items)
+               {
+                    dynamic o = new ExpandoObject();
+
+                    o.url = topic.Url;
+                    o.title = topic.Title;
+                    o.replies = topic.Replies;
+                    o.hasAnswer = topic.Answer > 0;
+                    o.updated = topic.Updated.ConvertToRelativeTime();
+                    if (topic.LatestReplyAuthor > 0)
+                    {
+                        var ms = Services.MemberService;
+                        var mem =  ms.GetById(topic.LatestReplyAuthor);
+                        o.memId = mem.Id;
+                        o.memName = mem.Name;
+                    }
+                        else{
+                        o.memId = topic.Author().Id;
+                        o.memName = topic.Author().Name;
+                    }
+
+
+                    var forum = Umbraco.TypedContent(topic.ParentId);
+                    o.forumUrl = forum.Url;
+                    o.forumName = forum.Name;
+                   
+
+                    l.Add(o);
+               }
             }
+            return l;
         }
 
         [HttpPost]

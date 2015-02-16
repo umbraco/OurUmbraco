@@ -25,7 +25,11 @@
 <asp:Content ContentPlaceHolderId="Scripts" runat="server">
     <script type="text/javascript">
   
-        $('table').scrolly({ dataUrl: '/umbraco/api/Forum/LatestPaged/' });
+        $('table').scrolly({
+            dataUrl: '/umbraco/api/Forum/LatestPaged/',
+            loadingHtml: '<div class="span"><div class=" loader"></div></div>'
+
+        });
    
 	</script>
 </asp:Content>
