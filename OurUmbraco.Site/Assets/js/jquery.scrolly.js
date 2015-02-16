@@ -1,5 +1,5 @@
 ﻿(function ($) {
-	// Define the jscroll namespace and default settings
+	// Define the scrolly namespace and default settings
 	$.scrolly = {
 		defaults: {
 			page: 1,
@@ -83,8 +83,15 @@
 					$inner.append(rendered);
 
 					data.waiting = false;
+
 					$e.find('.scrolly-loading').remove();
 					
+					if (!data.done) {
+                        //set browser address bar to reflect page
+					    try {
+					        history.replaceState(null, null, '?' + _options.pageKey + '=' + _options.page);
+					    } catch (err) { /*fail silently*/ }
+					}
 
 					if (_options.callback) {
 						_options.callback.call(this);
