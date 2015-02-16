@@ -40,7 +40,7 @@
                 innerTop = $inner.length ? $inner.offset().top : 0,
                 iTotalHeight = Math.ceil(iTopHeight - innerTop + _$scroll.height() + iContainerTop);
 
-			if (!data.waiting && iTotalHeight >= $inner.outerHeight()) {			
+			if (!data.done && !data.waiting && iTotalHeight >= $inner.outerHeight()) {			
 				_load();
 			}
 		}
