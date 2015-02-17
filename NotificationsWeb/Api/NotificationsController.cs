@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using NotificationsWeb.Services;
+using System.Linq;
 using System.Web.Http;
 using Umbraco.Web.WebApi;
 
@@ -12,7 +13,10 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.Subscribe(id, currentMemberId);
+                using(var ns = new NotificationService())
+                {
+                    ns.SubscribeToForumTopic(id, currentMemberId);
+                }
 
                 return "true";
             }
@@ -26,7 +30,11 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.UnSubscribe(id, currentMemberId);
+                using (var ns = new NotificationService())
+                {
+                    ns.UnSubscribeFromForumTopic(id, currentMemberId);
+                }
+                
 
                 return "true";
             }
@@ -40,7 +48,10 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.Subscribe(id, currentMemberId);
+                using(var ns = new NotificationService())
+                {
+                    ns.SubscribeToForum(id, currentMemberId);
+                }
 
                 return "true";
             }
@@ -54,7 +65,11 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.UnSubscribe(id, currentMemberId);
+                using (var ns = new NotificationService())
+                {
+                    ns.UnSubscribeFromForum(id, currentMemberId);
+                }
+                
 
                 return "true";
             }
