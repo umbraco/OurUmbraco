@@ -249,6 +249,7 @@
   <ItemGroup>
     <Compile Include="AntiSpam\SpamChecker.cs" />
     <Compile Include="Api\ForumController.cs" />
+    <Compile Include="Api\PublicForumController.cs" />
     <Compile Include="Api\TopicController.cs" />
     <Compile Include="EventExtensions.cs" />
     <Compile Include="Events.cs" />

@@ -137,45 +137,7 @@ namespace uForum.Api
                 cs.Save(c);
             }
         }
-        /* TOPICS */
-        [HttpGet]
-        public IEnumerable<ExpandoObject> LatestPaged(int page,int cat)
-        {
-            var l = new List<ExpandoObject>();
-            using(var ts = new TopicService())
-            {
-               foreach(var topic in ts.GetLatestTopics(50, page,true,cat).Items)
-               {
-                    dynamic o = new ExpandoObject();
-
-                    o.url = topic.Url;
-                    o.title = topic.Title;
-                    o.replies = topic.Replies;
-                    o.hasAnswer = topic.Answer > 0;
-                    o.updated = topic.Updated.ConvertToRelativeTime();
-                    if (topic.LatestReplyAuthor > 0)
-                    {
-                        var ms = Services.MemberService;
-                        var mem =  ms.GetById(topic.LatestReplyAuthor);
-                        o.memId = mem.Id;
-                        o.memName = mem.Name;
-                    }
-                        else{
-                        o.memId = topic.Author().Id;
-                        o.memName = topic.Author().Name;
-                    }
-
-
-                    var forum = Umbraco.TypedContent(topic.ParentId);
-                    o.forumUrl = forum.Url;
-                    o.forumName = forum.Name;
-                   
-
-                    l.Add(o);
-               }
-            }
-            return l;
-        }
+        
 
         [HttpPost]
         public ExpandoObject Topic(TopicViewModel model)
