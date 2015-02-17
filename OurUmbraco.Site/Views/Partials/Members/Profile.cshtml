@@ -1,1 +1,95 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<our.Models.ProfileModel>
+@{
+    Html.EnableClientValidation(true);
+    Html.EnableUnobtrusiveJavaScript(true);
+}
+
+@if (TempData["success"] != null)
+{
+    <p>Your profile has been updated.</p>
+}
+else
+{
+    <div class="profile-settings-forms">
+
+        @using (Html.BeginUmbracoForm<our.Controllers.ProfileController>("HandleSubmit")){
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
+
+            <div class="avatar" id="avatar">
+                <label for="avatar">
+                    Avatar
+                </label>
+
+                <div class="avatar-image inked">
+                    <img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
+                    <span>Change image</span>
+                </div>
+            </div>
+
+            <div class="profile-input" id="username">
+                <label for="username">
+                    Username
+                </label>
+                @Html.TextBoxFor(m => m.Name)
+
+            </div>
+
+
+            <div class="profile-input" id="email">
+                <label for="email">
+                    E-mail
+                </label>
+                @Html.TextBoxFor(m => m.Email)
+
+            </div>
+
+
+            <div class="profile-input" id="password">
+                <label for="password">
+                    Password
+                </label>
+                @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
+            </div>
+
+            <div class="profile-input confirm-password" id="password">
+                <label for="confirm-password">
+                    Confirm
+                </label>
+                @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
+
+            </div>
+
+
+            <div class="profile-input" id="bio">
+                <label for="bio">
+                    Bio
+                </label>
+                @Html.TextBoxFor(m => m.Bio)
+
+            </div>
+
+
+            <div class="profile-input" id="twitter-alias">
+                <label for="twitter-alias">
+                    Twitter
+                </label>
+                @Html.TextBoxFor(m => m.twitter)
+            </div>
+
+
+            <div class="profile-input" id="located-at">
+                <label for="located-at">
+                    Location
+                </label>
+                @Html.TextBoxFor(m => m.Location)
+            </div>
+
+
+            <input class="button green" type="submit" value="Save changes">
+
+
+            }
+
+</div>
+}

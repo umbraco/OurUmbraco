@@ -243,7 +243,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
-    <Compile Include="Api\ProfileController.cs" />
+    <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="controls\DateTimePicker.cs" />
     <Compile Include="custom Handlers\CommentVote.cs" />
