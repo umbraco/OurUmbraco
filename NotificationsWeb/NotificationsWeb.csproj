@@ -239,8 +239,8 @@
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers\Forum.cs" />
     <Compile Include="Library\Utils.cs" />
-    <Compile Include="Models\ForumSubscribers.cs" />
-    <Compile Include="Models\ForumTopicSubscribers.cs" />
+    <Compile Include="Models\ForumSubscriber.cs" />
+    <Compile Include="Models\ForumTopicSubscriber.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\NotificationService.cs" />
     <Compile Include="Singleton.cs" />
@@ -276,7 +276,7 @@
   -->
   <ProjectExtensions />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)pages\*.aspx" "$(ProjectDir)..\OurUmbraco.Site\umbraco\plugins\Notifications\" /y
+    <PostBuildEvent>
 </PostBuildEvent>
   </PropertyGroup>
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

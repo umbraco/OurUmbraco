@@ -33,46 +33,5 @@ namespace NotificationsWeb.BusinessLogic
                 Data.SqlHelper.CreateParameter("@memberId", memberId));
         }
 
-
-        
-        public static List<uForum.Models.Forum> GetSubscribedForums(int memberId)
-        {
-            var lt = new List<uForum.Models.Forum>();
-
-            using (var fs = new ForumService())
-            {
-                umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                    "SELECT forumId FROM forumSubscribers WHERE memberId = " + memberId.ToString()
-                );
-
-                while (dr.Read())
-                {
-                    lt.Add(fs.GetById(dr.GetInt("forumId")));
-                }
-                dr.Close();
-                dr.Dispose();
-            }
-            return lt;
-        }
-
-        public static List<uForum.Models.Topic> GetSubscribedTopics(int memberId)
-        {
-            var lt = new List<uForum.Models.Topic>();
-
-            using (var ts = new TopicService())
-            {
-
-                umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                    "SELECT topicId FROM forumTopicSubscribers WHERE memberId = " + memberId.ToString()
-                );
-
-                while (dr.Read())
-                {
-                    lt.Add(ts.GetById(dr.GetInt("topicId")));
-                }
-                dr.Close();
-            }
-            return lt;
-        }
     }
 }

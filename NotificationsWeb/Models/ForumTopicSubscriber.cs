@@ -8,7 +8,7 @@ using Umbraco.Core.Persistence;
 namespace NotificationsWeb.Models
 {
     [TableName("forumTopicSubscribers")]
-    public class ForumTopicSubscribers
+    public class ForumTopicSubscriber
     {
         [Column("topicId")]
         public int TopicId { get; set; }
