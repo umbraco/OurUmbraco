@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace uForum
+namespace NotificationsWeb
 {
     public class Singleton<T> where T : class, new()
     {
