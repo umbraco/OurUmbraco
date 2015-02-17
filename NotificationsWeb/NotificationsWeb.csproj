@@ -239,14 +239,11 @@
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers\Forum.cs" />
     <Compile Include="Library\Utils.cs" />
-    <Compile Include="Pages\SheduledTaskTrigger.aspx.cs">
-      <DependentUpon>SheduledTaskTrigger.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Pages\SheduledTaskTrigger.aspx.designer.cs">
-      <DependentUpon>SheduledTaskTrigger.aspx</DependentUpon>
-    </Compile>
+    <Compile Include="Models\ForumSubscribers.cs" />
+    <Compile Include="Models\ForumTopicSubscribers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Notification\Notification.csproj">
@@ -257,11 +254,6 @@
       <Project>{547C2D0D-1B55-493B-AE0B-E031A5B8EE77}</Project>
       <Name>uForum</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="Pages\SheduledTaskTrigger.aspx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
