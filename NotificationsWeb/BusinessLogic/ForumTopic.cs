@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using uForum.Services;
 
 namespace NotificationsWeb.BusinessLogic
 {
@@ -33,37 +34,45 @@ namespace NotificationsWeb.BusinessLogic
         }
 
 
-        /*
-        public static List<uForum.Businesslogic.Forum> GetSubscribedForums(int memberId)
+        
+        public static List<uForum.Models.Forum> GetSubscribedForums(int memberId)
         {
-            List<uForum.Businesslogic.Forum> lt = new List<uForum.Businesslogic.Forum>();
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT forumId FROM forumSubscribers WHERE memberId = " + memberId.ToString()
-            );
+            var lt = new List<uForum.Models.Forum>();
 
-            while (dr.Read())
+            using (var fs = new ForumService())
             {
-                lt.Add(new uForum.Businesslogic.Forum(dr.GetInt("forumId")));
-            }
-            dr.Close();
-            dr.Dispose();
+                umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
+                    "SELECT forumId FROM forumSubscribers WHERE memberId = " + memberId.ToString()
+                );
 
+                while (dr.Read())
+                {
+                    lt.Add(fs.GetById(dr.GetInt("forumId")));
+                }
+                dr.Close();
+                dr.Dispose();
+            }
             return lt;
         }
 
-        public static List<Topic> GetSubscribedTopics(int memberId)
+        public static List<uForum.Models.Topic> GetSubscribedTopics(int memberId)
         {
-            List<Topic> lt = new List<Topic>();
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
-                "SELECT topicId FROM forumTopicSubscribers WHERE memberId = " + memberId.ToString()
-            );
+            var lt = new List<uForum.Models.Topic>();
 
-            while (dr.Read())
+            using (var ts = new TopicService())
             {
-                lt.Add(Topic.GetTopic(dr.GetInt("topicId")));
+
+                umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader(
+                    "SELECT topicId FROM forumTopicSubscribers WHERE memberId = " + memberId.ToString()
+                );
+
+                while (dr.Read())
+                {
+                    lt.Add(ts.GetById(dr.GetInt("topicId")));
+                }
+                dr.Close();
             }
-            dr.Close();
             return lt;
-        }*/
+        }
     }
 }
