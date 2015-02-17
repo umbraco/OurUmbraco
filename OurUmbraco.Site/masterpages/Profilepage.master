@@ -2,6 +2,9 @@
 
 
 <asp:content ContentPlaceHolderId="Main" runat="server">
+
+    
+
   	<div class="page-content">
 		
 		<div class="sidebar-area">
@@ -50,77 +53,7 @@
 		<div class="main-area">
 			<div class="main-content">
 				<div class="content-wrapper">
-				
-				<div class="profile-settings">
-					
-					<strong>Change your profile</strong>
-					
-					<div class="profile-settings-forms">
-
-						<form action="">
-
-							<div class="avatar">
-								<img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
-								<span>Change image</span>
-							</div>
-
-							<div class="profile-input" id="username">
-								<label for="username">
-									Username
-								</label>
-								<input type="text" name="" value="simonbusborg" id="">
-							</div>
-
-
-							<div class="profile-input" id="email">
-								<label for="email">
-									E-mail
-								</label>
-								<input type="email" name="" value="simon@umbraco.com" id="">
-							</div>
-
-
-							<div class="profile-input warning" id="password">
-								<label for="password">
-									Password
-								</label>
-								<input type="password" name="" value="simonbusborg" id="">
-							</div>
-
-
-							<div class="profile-input warning" id="bio">
-								<label for="bio">
-									Bio
-								</label>
-								<textarea>Frontend developer at Umbraco HQ</textarea>
-							</div>
-
-
-							<div class="profile-input" id="twitter-alias">
-								<label for="twitter-alias">
-									Twitter
-								</label>
-								<input type="text" name="" value="@simonbusborg" id="">
-							</div>
-
-
-							<div class="profile-input" id="located-at">
-								<label for="located-at">
-									Location
-								</label>
-								<input type="text" name="" value="Odense, Denmark" id="">
-							</div>
-
-
-							<input class="button green" type="submit" value="Save changes">
-
-
-						</form>
-
-					</div>
-
-				</div>
-
+				<umbraco:Item field="bodyText" runat="server"></umbraco:Item>
 
         		</div><!-- .content-wrapper -->
 			</div><!-- .main-content -->

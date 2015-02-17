@@ -23,7 +23,7 @@ namespace our.Controllers
             m.Company = mem.GetValue<string>("company");
             m.TwitterAlias = mem.GetValue<string>("twitter");
 
-            return PartialView("Profile", m);
+            return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
         }
 
         [HttpPost]
@@ -52,7 +52,7 @@ namespace our.Controllers
 
             ms.Save(mem);
 
-            if(model.Password != string.Empty && model.RepeatPassword != string.Empty && model.Password == model.RepeatPassword)
+            if(!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)
                 ms.SavePassword(mem, model.Password);       
 
             TempData["success"] = true;
