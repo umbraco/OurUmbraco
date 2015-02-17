@@ -233,7 +233,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\NotificationsController.cs" />
-    <Compile Include="BusinessLogic\Data.cs" />
     <Compile Include="Config.cs" />
     <Compile Include="EventHandlers\Forum.cs" />
     <Compile Include="Library\Utils.cs" />

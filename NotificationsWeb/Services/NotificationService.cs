@@ -28,17 +28,17 @@ namespace NotificationsWeb.Services
             DatabaseContext = dbContext;
         }
 
-        public void SubscribeToForumTopic(int topicId, int memberid)
+        public void SubscribeToForumTopic(int topicId, int memberId)
         {
             var r = DatabaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
                 "SELECT * FROM forumtopicsubscribers WHERE topicId=@0 and memberId=@1", 
                 topicId,
-                memberid);
+                memberId);
 
             if(r == null)
             {
                 var rec = new ForumTopicSubscriber();
-                rec.MemberId = memberid;
+                rec.MemberId = memberId;
                 rec.TopicId = topicId;
 
                 DatabaseContext.Database.Insert(rec);
@@ -64,20 +64,23 @@ namespace NotificationsWeb.Services
 
         public bool IsSubscribedToTopic(int topicId, int memberId)
         {
-            throw new NotImplementedException();
+            return DatabaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
+                 "SELECT * FROM forumtopicsubscribers WHERE topicId=@0 and memberId=@1",
+                 topicId,
+                 memberId) != null;
 
         }
-        public void SubscribeToForum(int forumId, int memberid)
+        public void SubscribeToForum(int forumId, int memberId)
         {
             var r = DatabaseContext.Database.SingleOrDefault<ForumSubscriber>(
                 "SELECT * FROM forumsubscribers WHERE forumId=@0 and memberId=@1",
                 forumId,
-                memberid);
+                memberId);
 
             if (r == null)
             {
                 var rec = new ForumSubscriber();
-                rec.MemberId = memberid;
+                rec.MemberId = memberId;
                 rec.ForumId = forumId;
 
                 DatabaseContext.Database.Insert(rec);
@@ -101,7 +104,10 @@ namespace NotificationsWeb.Services
 
         public bool IsSubscribedToForum(int forumId, int memberId)
         {
-            throw new NotImplementedException();
+            return DatabaseContext.Database.SingleOrDefault<ForumSubscriber>(
+                 "SELECT * FROM forumsubscribers WHERE forumId=@0 and memberId=@1",
+                 forumId,
+                 memberId) != null;
         }
         public Page<ForumSubscriber> GetForumSubscriptionsFromMember(int memberId, long take = 50, long page = 1)
         {
