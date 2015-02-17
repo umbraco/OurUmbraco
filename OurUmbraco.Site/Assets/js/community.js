@@ -56,6 +56,11 @@
             $.post("/umbraco/api/Forum/"+controller+"AsHam/" + id);
         },
 
+        getCategoryUrl: function (id) {
+            return $.get("/umbraco/api/PublicForum/CategoryUrl/" + id).pipe(function (p) {
+                return p;
+            });
+        }
 
     };
 }();
@@ -216,8 +221,11 @@ $(function () {
 
     //Category filter
     $('.sorting select').on('change', function () {
-        var hey = $(this).val();
-        alert(hey);
+        var id = $(this).val();
+        community.getCategoryUrl(id).done(function (data) {
+            window.location.replace(data);
+           
+        });;
     });
 
     //mark as spam

@@ -53,5 +53,11 @@ namespace uForum.Api
             }
             return l;
         }
+
+        [HttpGet]
+        public string CategoryUrl(int id)
+        {
+            return Umbraco.TypedContent(id).Url;
+        }
     }
 }
