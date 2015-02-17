@@ -36,7 +36,7 @@ namespace our.Controllers
             var ms = Services.MemberService;
             var mem = ms.GetById(Members.GetCurrentMemberId());
 
-            if (mem.Email != model.Email && memberService.GetByEmail(model.Email) != null)
+            if (mem.Email != model.Email && ms.GetByEmail(model.Email) != null)
             {
                 ModelState.AddModelError("", "A Member with that email already exists");
                 return CurrentUmbracoPage();
@@ -53,7 +53,7 @@ namespace our.Controllers
             ms.Save(mem);
 
             if(model.Password != string.Empty && model.RepeatPassword != string.Empty && model.Password == model.RepeatPassword)
-                memberService.SavePassword(member, model.Password);       
+                ms.SavePassword(mem, model.Password);       
 
             TempData["success"] = true;
 
