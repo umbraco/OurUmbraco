@@ -28,7 +28,45 @@ namespace NotificationsWeb.Services
             DatabaseContext = dbContext;
         }
 
+        public void SubscribeToForumTopic(int topicId, int memberid)
+        {
 
+        }
+
+        public void UnSubscribeFromForumTopic(int topicId, int memberId)
+        {
+
+        }
+
+        public void RemoveAllTopicSubscriptions(int topicId)
+        {
+
+        }
+
+        public bool IsSubscribedToTopic(int memberId)
+        {
+            throw new NotImplementedException();
+
+        }
+        public void SubscribeToForum(int forumId, int memberid)
+        {
+
+        }
+
+        public void UnSubscribeFromForum(int forumId, int memberId)
+        {
+
+        }
+
+        public void RemoveAllForumSubscriptions(int forumId)
+        {
+
+        }
+
+        public bool IsSubscribedToForum(int memberId)
+        {
+            throw new NotImplementedException();
+        }
         public Page<ForumSubscriber> GetForumSubscriptionsFromMember(int memberId, long take = 50, long page = 1)
         {
             var sql = new Sql()
