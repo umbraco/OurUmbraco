@@ -156,14 +156,6 @@
 </script>
 
 <script type="text/javascript">
-    /* Testing!! */
-    $('.sorting select').on('change', function () {
-        var hey = $(this).val();
-        alert(hey);
-    });
-</script>
-
-<script type="text/javascript">
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-120590-4']);
 _gaq.push(['_trackPageview']);
