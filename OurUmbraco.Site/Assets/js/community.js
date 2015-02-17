@@ -214,6 +214,12 @@ $(function () {
         }
     });
 
+    //Category filter
+    $('.sorting select').on('change', function () {
+        var hey = $(this).val();
+        alert(hey);
+    });
+
     //mark as spam
 
     $(".comments").on("click", "a.mark-as-spam", function (e) {
