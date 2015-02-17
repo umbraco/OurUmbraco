@@ -7,6 +7,7 @@ using umbraco.cms.businesslogic.member;
 using Umbraco.Core;
 using uForum.Services;
 using uForum;
+using NotificationsWeb.Services;
 
 namespace NotificationsWeb.EventHandlers
 {
@@ -29,7 +30,11 @@ namespace NotificationsWeb.EventHandlers
 
         void ForumService_Deleted(object sender, uForum.ForumEventArgs e)
         {
-            BusinessLogic.Forum.RemoveAllSubscriptions(e.Forum.Id);
+            using (var ns = new NotificationService())
+            {
+                ns.RemoveAllForumSubscriptions(e.Forum.Id);
+            }
+            
         }
 
         void ForumService_Created(object sender, uForum.ForumEventArgs e)
@@ -38,13 +43,21 @@ namespace NotificationsWeb.EventHandlers
             if (content.ContentType.Alias == "Project")
             {
                 var owner = content.GetValue<int>("owner");
-                NotificationsWeb.BusinessLogic.Forum.Subscribe(e.Forum.Id, owner);
+                //NotificationsWeb.BusinessLogic.Forum.Subscribe(e.Forum.Id, owner);
+                using(var ns = new NotificationService())
+                {
+                    ns.SubscribeToForum(e.Forum.Id, owner);
+                }
             }
         }
 
         void TopicService_Created(object sender, uForum.TopicEventArgs e)
         {
-            NotificationsWeb.BusinessLogic.ForumTopic.Subscribe(e.Topic.Id, e.Topic.MemberId);
+           
+            using(var ns = new NotificationService())
+            {
+                ns.SubscribeToForumTopic(e.Topic.Id, e.Topic.MemberId);
+            }
 
             //send notification
             InstantNotification not = new InstantNotification();
@@ -59,8 +72,10 @@ namespace NotificationsWeb.EventHandlers
         void CommentService_Created(object sender, uForum.CommentEventArgs e)
         {
             //Subscribe to topic
-            NotificationsWeb.BusinessLogic.ForumTopic.Subscribe(e.Comment.TopicId, e.Comment.MemberId);
-
+            using(var ns = new NotificationService())
+            {
+                ns.SubscribeToForumTopic(e.Comment.TopicId, e.Comment.MemberId);
+            }
             //data for notification:
             var member = e.Comment.AuthorAsMember();
             var topic = TopicService.Instance.GetById(e.Comment.TopicId);

@@ -30,40 +30,76 @@ namespace NotificationsWeb.Services
 
         public void SubscribeToForumTopic(int topicId, int memberid)
         {
+            var r = DatabaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
+                "SELECT * FROM forumtopicsubscribers WHERE topicId=@0 and memberId=@1", 
+                topicId,
+                memberid);
+
+            if(r == null)
+            {
+                var rec = new ForumTopicSubscriber();
+                rec.MemberId = memberid;
+                rec.TopicId = topicId;
+
+                DatabaseContext.Database.Insert(rec);
+            }
 
         }
 
         public void UnSubscribeFromForumTopic(int topicId, int memberId)
         {
-
+            DatabaseContext.Database.Delete<ForumTopicSubscriber>(
+                "Where topicId=@0 and memberId=@1",
+                topicId,
+                memberId);
+                
         }
 
         public void RemoveAllTopicSubscriptions(int topicId)
         {
-
+            DatabaseContext.Database.Delete<ForumTopicSubscriber>(
+               "Where topicId=@0",
+               topicId);
         }
 
-        public bool IsSubscribedToTopic(int memberId)
+        public bool IsSubscribedToTopic(int topicId, int memberId)
         {
             throw new NotImplementedException();
 
         }
         public void SubscribeToForum(int forumId, int memberid)
         {
+            var r = DatabaseContext.Database.SingleOrDefault<ForumSubscriber>(
+                "SELECT * FROM forumsubscribers WHERE forumId=@0 and memberId=@1",
+                forumId,
+                memberid);
 
+            if (r == null)
+            {
+                var rec = new ForumSubscriber();
+                rec.MemberId = memberid;
+                rec.ForumId = forumId;
+
+                DatabaseContext.Database.Insert(rec);
+            }
         }
 
         public void UnSubscribeFromForum(int forumId, int memberId)
         {
-
+            DatabaseContext.Database.Delete<ForumSubscriber>(
+               "Where forumId=@0 and memberId=@1",
+               forumId,
+               memberId);
         }
 
         public void RemoveAllForumSubscriptions(int forumId)
         {
-
+            DatabaseContext.Database.Delete<ForumSubscriber>(
+                "Where forumId=@0",
+                forumId);
         }
 
-        public bool IsSubscribedToForum(int memberId)
+        public bool IsSubscribedToForum(int forumId, int memberId)
         {
             throw new NotImplementedException();
         }
