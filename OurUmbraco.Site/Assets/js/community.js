@@ -323,4 +323,12 @@ $(function () {
             });
         }
     });
+
+    $('form').each(function () {
+        $(this).find('div.profile-input').each(function () {
+            if ($(this).find('.input-validation-error').length > 0) {
+                $(this).addClass('warning');
+            }
+        });
+    });
 });

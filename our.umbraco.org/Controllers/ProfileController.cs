@@ -42,7 +42,16 @@ namespace our.Controllers
                 ModelState.AddModelError("", "A Member with that email already exists");
                 return CurrentUmbracoPage();
 
+            
             }
+
+            if(model.Password != model.RepeatPassword)
+            {
+                ModelState.AddModelError("Password", "Passwords need to match");
+                ModelState.AddModelError("RepeatPassword", "Passwords need to match");
+                return CurrentUmbracoPage();
+            }
+
             mem.Name = model.Name ;
             mem.Email = model.Email;
             mem.Username = model.Email;
