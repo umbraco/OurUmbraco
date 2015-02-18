@@ -185,6 +185,7 @@
 
 			<div class="col-md-12">
 				<h1>People on Our</h1>
+				<p>Umbraco users are located across the globe and around the corner from you. Sign in as an umbraco community member to find umbraco users near you</p>
 			</div>
 
 			<div class="col-xs-3 col-md-1">
@@ -331,28 +332,11 @@
 				<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/kevin_granger/128.jpg" alt=""></a>
 			</div>
 
-			<a class="button green large" href="#">Go to People &rarr;</a>
+			<a class="button green large" href="map.html">Go to People &rarr;</a>
 
 		</div>
 	</div>
 </section>
-
-<section class="events">
-	<div class="event-map">
-	     <div id="map" data-mapStyle="0"></div>
-
-	     <div class="event-info">
-	     	<img src="/assets/images/compass.png" alt="">
-	     	<h1>Activity on Our</h1>
-	     	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-	     	tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,
-	     	quis nostrud.</p>
-
-	   		<a href="#">Sign up  &rarr;</a>
-	     </div>
-	</div>
-</section>
-
 
 </asp:Content>
 

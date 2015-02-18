@@ -92,52 +92,16 @@
         </form>
 
         <footer>
-	        <div class="container">
-		        <div class="row">
+		    <div class="container">
+			    <div class="row">
 
-			        <div class="col-xs-6 col-md-3">
-				        <ul>
-					        <strong>Klara</strong>
-					        <li><a href="#">Lore</a></li>
-					        <li><a href="#">Lora</a></li>
-					        <li><a href="#">Klaurmsi</a></li>
-					        <li><a href="#">Wrapuerdu</a></li>
-				        </ul>
-			        </div>
+				    <div class="col-xs-12">
+					    Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and the a ton of packages from the community.
+				    </div>
 
-			        <div class="col-xs-6 col-md-3">
-				        <ul>
-					        <strong>Klara</strong>
-					        <li><a href="#">Lore</a></li>
-					        <li><a href="#">Lora</a></li>
-					        <li><a href="#">Klaurmsi</a></li>
-					        <li><a href="#">Wrapuerdu</a></li>
-				        </ul>
-			        </div>
-
-			        <div class="col-xs-6 col-md-3">
-				        <ul>
-					        <strong>Klara</strong>
-					        <li><a href="#">Lore</a></li>
-					        <li><a href="#">Lora</a></li>
-					        <li><a href="#">Klaurmsi</a></li>
-					        <li><a href="#">Wrapuerdu</a></li>
-				        </ul>
-			        </div>
-
-			        <div class="col-xs-6 col-md-3">
-				        <ul>
-					        <strong>Klara</strong>
-					        <li><a href="#">Lore</a></li>
-					        <li><a href="#">Lora</a></li>
-					        <li><a href="#">Klaurmsi</a></li>
-					        <li><a href="#">Wrapuerdu</a></li>
-				        </ul>
-			        </div>
-
-		        </div>
-	        </div>
-        </footer>
+			    </div>
+		    </div>
+	    </footer>
 
     </div> <!--.wrapper-->
 
