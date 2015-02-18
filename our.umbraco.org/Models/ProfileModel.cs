@@ -20,6 +20,7 @@ namespace our.Models
 
         public string Password { get; set; }
 
+        [Display(Name="Confirm")]
         public string RepeatPassword { get; set; }
 
         public string Company { get; set; }
