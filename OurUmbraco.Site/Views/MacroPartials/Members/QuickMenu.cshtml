@@ -5,9 +5,10 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
-				<div class="close">
-					<img src="/assets/images/close.png" alt="">
-				</div>
+
+                <div class="close">
+                    <i class="icon-Delete"></i>Close
+                </div>
 
                 @if (Members.IsLoggedIn())
                 {
@@ -17,9 +18,6 @@
 
                     var latestTopics = uForum.Services.TopicService.Instance.GetAll();
 
-                    <div class="close">
-                        <i class="icon-Delete"></i>Close
-                    </div>
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>
