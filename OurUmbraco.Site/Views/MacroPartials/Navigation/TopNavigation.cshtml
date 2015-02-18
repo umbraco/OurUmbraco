@@ -21,7 +21,7 @@
     }
 
     <li>
-        @if (Members.IsLoggedIn())
+        @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
         {
             var member = Members.GetCurrentMember();
             <div class="user">

@@ -5,19 +5,19 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-md-12">
+				
 
-                <div class="close">
-                    <i class="icon-Delete"></i>Close
-                </div>
-
-                @if (Members.IsLoggedIn())
+                @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
-                    var member = @Members.GetCurrentMember();
+                    var member = Members.GetCurrentMember();
 
                     var roles = System.Web.Security.Roles.GetRolesForUser();
 
                     var latestTopics = uForum.Services.TopicService.Instance.GetAll();
 
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
+                    </div>
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>

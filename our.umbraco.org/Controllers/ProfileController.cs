@@ -22,6 +22,7 @@ namespace our.Controllers
             m.Location = mem.GetValue<string>("location");
             m.Company = mem.GetValue<string>("company");
             m.TwitterAlias = mem.GetValue<string>("twitter");
+            m.Avatar = mem.GetValue<string>("avatar");
 
             return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
         }
@@ -49,7 +50,7 @@ namespace our.Controllers
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
-
+            mem.SetValue("avatar", model.Avatar);
             ms.Save(mem);
 
             if(!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)

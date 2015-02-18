@@ -1,6 +1,15 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    var items = NotificationsWeb.Services.NotifcationService.Instance.GetForumSubscriptionsFromMember();
-
+    var items = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
+    
 }
+
+<ul>
+    @foreach (var not in items)
+    {
+        var forum = Umbraco.TypedContent(not.ForumId);
+
+        <li>@forum.Name</li>
+    }
+</ul>
 
