@@ -50,7 +50,14 @@
     </script>
 </head>
 
-<umbraco:macro runat="server" language="razor"><body class="@Model.NodeTypeAlias.ToLower().Replace(" ","-")"></umbraco:macro>
+<umbraco:macro runat="server" language="razor">
+    @{
+        var css = Model.Id == 1057 ? "profile has-sidebar" : Model.NodeTypeAlias.ToLower().Replace(" ","-");
+
+    }
+
+    <body class="@css">
+</umbraco:macro>
 	
 	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
 

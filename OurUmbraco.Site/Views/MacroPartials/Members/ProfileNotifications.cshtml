@@ -1,1 +1,6 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    var items = NotificationsWeb.Services.NotifcationService.Instance.GetForumSubscriptionsFromMember();
+
+}
+
