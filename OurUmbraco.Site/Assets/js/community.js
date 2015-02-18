@@ -302,4 +302,25 @@ $(function () {
 
         $dialog.show();
     });
+
+    /* FORMS */
+
+    //make sure surrounding element get's warning class
+    $("form").submit(function () {
+        
+        if ($(this).valid()) {
+            $(this).find('div.profile-input').each(function () {
+                if ($(this).find('.input-validation-error').length == 0) {
+                    $(this).removeClass('warning');
+                }
+            });
+        }
+        else {
+            $(this).find('div.profile-input').each(function () {
+                if ($(this).find('.input-validation-error').length > 0) {
+                    $(this).addClass('warning');
+                }
+            });
+        }
+    });
 });
