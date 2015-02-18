@@ -17,9 +17,13 @@
 
                     var latestTopics = uForum.Services.TopicService.Instance.GetAll();
 
-                    <div class="settings">
-                        <a class="icon-Settings" href="/member/profile"></a>
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
                     </div>
+                    <div class="settings">
+                        <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
+                    </div>
+                   
 
                     <div class="user-image">
                         @avatar(member, 100)
