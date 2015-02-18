@@ -259,4 +259,47 @@ $(function () {
         $("span", $(this)).text("Mark as spam");
 
     });
+
+
+    /* PROFILE */
+
+    //upload avatar
+    $(".profile-settings-forms").on("click", ".avatar-image", function(e)
+    {
+        var $dialog = $("#update-avatar-dialog");
+        var $loader = $('.span', $dialog);
+        var $file = $("input[type=file]", $dialog);
+        var $cancel = $("input[type=button]", $dialog);
+       
+        var uploadStart = function () {
+            $loader.show();
+        };
+
+        var uploadComplete = function (response) {
+            
+            $loader.hide();
+
+            if (response.success) {                
+                $("img", $(".profile-settings-forms")).attr("src", response.imagePath);
+                $("#Avatar", $(".profile-settings-forms")).val(response.imagePath);
+                $dialog.hide();
+            } else {
+                alert(response.message);
+                $file.val('');
+            }
+        };
+
+        $file.unbind('change').ajaxfileupload({
+            action: $file.attr('data-action'),
+            onStart: uploadStart,
+            onComplete: uploadComplete
+        });
+
+        $cancel.click(function () {
+            $dialog.hide();
+            callback(null);
+        });
+
+        $dialog.show();
+    });
 });

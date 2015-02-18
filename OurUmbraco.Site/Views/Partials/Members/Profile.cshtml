@@ -4,12 +4,19 @@
     Html.EnableUnobtrusiveJavaScript(true);
 }
 
-@if (TempData["success"] != null)
-{
-    <p>Your profile has been updated.</p>
-}
-else
-{
+
+ <div id="update-avatar-dialog" style="display:none;">
+    <div style="padding: 5px;">
+        <p><b>Upload image</b></p>
+        <div class="span" style="display:none;"><div class=" loader"></div></div>
+        <input type="file" name="file" id="file" data-action="/umbraco/api/community/imageupload" />
+        <div style="text-align:center;">
+            <input type="button" value="Cancel" style="margin: 10px; display: inline; width: 7em;">
+        </div>
+    </div>
+
+</div>
+
     <div class="profile-settings">
         <strong>Change your profile</strong>
         <div class="profile-settings-forms">
@@ -25,9 +32,10 @@ else
                     </label>
 
                     <div class="avatar-image inked">
-                        <img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
+                        <img src="@Model.Avatar" alt="">
                         <span>Change image</span>
                     </div>
+                    @Html.HiddenFor(m => m.Avatar)
                 </div>
 
                 <div class="profile-input" id="username">
@@ -90,10 +98,17 @@ else
 
 
                 <input class="button green" type="submit" value="Save changes">
-
+                
+                if (TempData["success"] != null)
+                {
+                    <small class="notification success">
+                        Changes saved
+                    </small>
+                }
 
             }
 
         </div>
     </div>
-}
+
+
