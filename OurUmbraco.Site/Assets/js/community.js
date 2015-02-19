@@ -266,6 +266,7 @@ $(function () {
     //upload avatar
     $(".profile-settings-forms").on("click", ".avatar-image", function(e)
     {
+        var $body = $('body');
         var $dialog = $("#update-avatar-dialog");
         var $loader = $('.span', $dialog);
         var $file = $("input[type=file]", $dialog);
@@ -280,11 +281,12 @@ $(function () {
             $loader.hide();
 
             if (response.success) {                
-                $("img", $(".profile-settings-forms")).attr("src", response.imagePath);
+                $("img", $(".profile-settings-forms")).attr("src", response.imagePath + "?width=100&height=100&mode=crop");
                 $("#Avatar", $(".profile-settings-forms")).val(response.imagePath);
-                $dialog.hide();
+                $body.removeClass('active uploading-image');
             } else {
-                alert(response.message);
+                $dialog.addClass('invalid');
+                setTimeout(function () { $dialog.removeClass('invalid') }, 3000);
                 $file.val('');
             }
         };
@@ -296,11 +298,10 @@ $(function () {
         });
 
         $cancel.click(function () {
-            $dialog.hide();
+            $body.removeClass('active uploading-image');
             callback(null);
         });
-
-        $dialog.show();
+        $body.addClass('active uploading-image');
     });
 
     //password repeat
