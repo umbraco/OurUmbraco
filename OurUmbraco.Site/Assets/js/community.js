@@ -303,6 +303,10 @@ $(function () {
         $dialog.show();
     });
 
+    //password repeat
+    $(".profile-settings-forms #password input").focus(function (e) {
+        $(".profile-settings-forms #repeat-password").show();
+    });
     /* FORMS */
 
     //make sure surrounding element get's warning class
@@ -322,5 +326,13 @@ $(function () {
                 }
             });
         }
+    });
+
+    $('form').each(function () {
+        $(this).find('div.profile-input').each(function () {
+            if ($(this).find('.input-validation-error').length > 0) {
+                $(this).addClass('warning');
+            }
+        });
     });
 });

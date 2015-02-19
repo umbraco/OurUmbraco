@@ -39,18 +39,14 @@
                 </div>
 
                 <div class="profile-input" id="username">
-                    <label for="username">
-                        Username
-                    </label>
+                    @Html.LabelFor(m => m.Name)
                     @Html.TextBoxFor(m => m.Name)
 
                 </div>
 
 
                 <div class="profile-input" id="email">
-                    <label for="email">
-                        E-mail
-                    </label>
+                    @Html.LabelFor(m => m.Email)
                     @Html.TextBoxFor(m => m.Email)
                     
 
@@ -58,42 +54,32 @@
 
 
                 <div class="profile-input" id="password">
-                    <label for="password">
-                        Password
-                    </label>
+                    @Html.LabelFor(m => m.Password)
                     @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
                 </div>
 
-                <div class="profile-input confirm-password" id="password">
-                    <label for="confirm-password">
-                        Confirm
-                    </label>
+                <div class="profile-input confirm-password" id="repeat-password">
+                    @Html.LabelFor(m => m.RepeatPassword)
                     @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
 
                 </div>
 
 
                 <div class="profile-input" id="bio">
-                    <label for="bio">
-                        Bio
-                    </label>
+                    @Html.LabelFor(m => m.Bio)
                     @Html.TextAreaFor(m => m.Bio)
 
                 </div>
 
 
                 <div class="profile-input" id="twitter-alias">
-                    <label for="twitter-alias">
-                        Twitter
-                    </label>
+                    @Html.LabelFor(m => m.TwitterAlias)
                     @Html.TextBoxFor(m => m.TwitterAlias)
                 </div>
 
 
                 <div class="profile-input" id="located-at">
-                    <label for="located-at">
-                        Location
-                    </label>
+                    @Html.LabelFor(m => m.Location)
                     @Html.TextBoxFor(m => m.Location)
                 </div>
 
