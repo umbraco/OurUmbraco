@@ -52,7 +52,7 @@
 
 <umbraco:macro runat="server" language="razor">
     @{
-        var css = Model.Id == 1057 ? "profile has-sidebar" : Model.NodeTypeAlias.ToLower().Replace(" ","-");
+        var css = Model.Level > 2 && Model.AncestorOrSelf(3).Id == 1057 ? "profile has-sidebar" : Model.NodeTypeAlias.ToLower().Replace(" ","-");
 
     }
 

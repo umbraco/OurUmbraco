@@ -1,15 +1,39 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    var items = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
-    
+    var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
+
+    var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
 }
 
-<ul>
-    @foreach (var not in items)
-    {
-        var forum = Umbraco.TypedContent(not.ForumId);
+<div class="profile-settings">
 
-        <li>@forum.Name</li>
+    <strong>Following</strong> <br/>
+    @if (forumItems.Any()) { 
+    <strong>Forums</strong>
+    <ul class="profile-settings-following">
+        @foreach (var not in forumItems)
+        {
+            var forum = Umbraco.TypedContent(not.ForumId);
+
+            <li>
+                <a href="@forum.Url">@forum.Name</a><span class="hidden-xs">–</span>
+                <a class="unfollow button transparent" href="" data-controller="forum" data-id="@forum.Id">Unfollow</a>
+            </li>
+        }
+    </ul>
     }
-</ul>
+    @if (topicItems.Any()) { 
+    <strong>Topics</strong>
+    <ul class="profile-settings-following">
+        @foreach (var not in topicItems)
+        {
+            var topic = uForum.Services.TopicService.Instance.GetById(not.TopicId);
 
+            <li>
+                <a href="@topic.Url">@topic.Title</a><span class="hidden-xs">–</span>
+                <a class="unfollow button transparent" href="" data-controller="topic" data.id="@topic.Id">Unfollow</a>
+            </li>
+        }
+    </ul>
+    }
+</div>

@@ -274,11 +274,13 @@ $(function () {
        
         var uploadStart = function () {
             $loader.show();
+            $file.hide();
         };
 
         var uploadComplete = function (response) {
             
             $loader.hide();
+            $file.show();
 
             if (response.success) {                
                 $("img", $(".profile-settings-forms")).attr("src", response.imagePath + "?width=100&height=100&mode=crop");
@@ -299,7 +301,7 @@ $(function () {
 
         $cancel.click(function () {
             $body.removeClass('active uploading-image');
-            callback(null);
+            
         });
         $body.addClass('active uploading-image');
     });
