@@ -74,6 +74,10 @@
                             <a class="logo" href="/">Our Umbraco</a>
                         </div>
 
+                        <div id="toggle" class="menu-toggle">
+                            <a href="#" class="toggle cross"><span></span></a>
+                        </div>
+
                         <nav class="col-md-9">
 						    <umbraco:Macro Alias="[Navigation]TopNavigation" runat="server" />
 					    </nav>
