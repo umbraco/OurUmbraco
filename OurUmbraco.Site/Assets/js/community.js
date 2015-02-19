@@ -280,7 +280,7 @@ $(function () {
             $loader.hide();
 
             if (response.success) {                
-                $("img", $(".profile-settings-forms")).attr("src", response.imagePath);
+                $("img", $(".profile-settings-forms")).attr("src", response.imagePath + "?width=100&height=100&mode=crop");
                 $("#Avatar", $(".profile-settings-forms")).val(response.imagePath);
                 $dialog.hide();
             } else {
