@@ -25,7 +25,7 @@
         {
             var member = Members.GetCurrentMember();
             <div class="user">
-                @avatar(member, 40)
+                @avatar(member, 75)
             </div>
         }
         else
@@ -58,5 +58,5 @@
 
 @helper localAvatar(string imgPath, int size)
 {
-    <img src="@imgPath?width=40&height=40&mode=crop" alt="Alternate Text" />
+    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Alternate Text" />
 }
