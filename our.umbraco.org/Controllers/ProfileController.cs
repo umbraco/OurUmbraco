@@ -39,7 +39,7 @@ namespace our.Controllers
 
             if (mem.Email != model.Email && ms.GetByEmail(model.Email) != null)
             {
-                ModelState.AddModelError("", "A Member with that email already exists");
+                ModelState.AddModelError("Email", "A Member with that email already exists");
                 return CurrentUmbracoPage();
 
             
