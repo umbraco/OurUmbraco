@@ -4,6 +4,7 @@
 @{
     var topicAuthor = Model.Author();
     var forum = Umbraco.TypedContent(Model.ParentId);
+    var roles = System.Web.Security.Roles.GetRolesForUser();
 }
 
 <li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
@@ -11,7 +12,25 @@
     <div class="meta">
         <div class="profile">
             <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span class="hide-xs">has in total, </span>@topicAuthor.Karma() karma points
+
+            @if (roles.Length > 1)
+            {
+                <span class="roles">
+                    @foreach (var role in roles.Skip(1))
+                    {
+                        if (role == "CoreContrib")
+                        {
+                            <span class="c-trib">C-trib</span>
+                        }
+                        else
+                        {
+                            <span class="@role.ToLower()">@role</span>
+                        }
+                    }
+                </span>
+            }
         </div>
+
         <div class="time">
             @Model.Created.ConvertToRelativeTime()
         </div>
