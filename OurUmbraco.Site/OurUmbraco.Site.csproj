@@ -1800,6 +1800,7 @@
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
+    <Content Include="Views\Layout.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4659,6 +4660,7 @@
     <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />
+    <Content Include="Views\Profilepage.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

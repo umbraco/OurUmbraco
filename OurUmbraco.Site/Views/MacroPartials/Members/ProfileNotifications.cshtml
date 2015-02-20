@@ -1,11 +1,22 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
+    
+    var member = Members.GetCurrentMember();
 
-    var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(Members.GetCurrentMemberId()).Items;
+    var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(member.Id).Items;
+
+    var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(member.Id).Items;
+
+    var canBug = member.GetPropertyValue<bool>("bugMeNot");
+    
 }
 
 <div class="profile-settings">
+
+    <div class="profile-input" id="username">
+        <label for="bug-me-not">Don't bug me:</label>
+        <input type="checkbox" id="bug-me-not" />
+    </div>
 
     <strong>Following</strong> <br/>
     @if (forumItems.Any()) { 
