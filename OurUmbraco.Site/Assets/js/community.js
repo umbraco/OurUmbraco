@@ -146,8 +146,8 @@ $(function () {
         terminateConfirm("comment", id, $thisComment);
     });
 
-    /*Delete thread
-    ==========================*/
+    // Delete thread
+
     $(".delete-thread").on("click", function (e) {
         e.preventDefault();
 
@@ -198,7 +198,7 @@ $(function () {
     //follow thread
 
     //unfollow thread
-    $(".follow").on("click", function (e) {
+    $(".forum-overview .follow").on("click", function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -310,7 +310,8 @@ $(function () {
     $(".profile-settings-forms #password input").focus(function (e) {
         $(".profile-settings-forms #repeat-password").show();
     });
-    /* FORMS */
+
+    /* profile form */
 
     //make sure surrounding element get's warning class
     $(".profile-settings-forms form").submit(function () {
@@ -338,4 +339,15 @@ $(function () {
             }
         });
     });
+
+    /* profile notifications */
+    $(".profile-settings .unfollow").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        var controller = data.controller;
+        community.unfollow(id, controller);
+        $(this).parent("li").fadeOut();
+    });
+
 });

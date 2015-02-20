@@ -7,7 +7,7 @@
 
     var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(member.Id).Items;
 
-    var canBug = member.GetPropertyValue<bool>("bugMeNot");
+    var dontBug = member.GetPropertyValue<bool>("bugMeNot");
     
 }
 
@@ -15,7 +15,13 @@
 
     <div class="profile-input" id="username">
         <label for="bug-me-not">Don't bug me:</label>
-        <input type="checkbox" id="bug-me-not" />
+        @if (dontBug) { 
+            <input type="checkbox" id="bug-me-not" checked />
+        }
+        else
+        {
+            <input type="checkbox" id="bug-me-not" />
+        }
     </div>
 
     <strong>Following</strong> <br/>
@@ -28,7 +34,7 @@
 
             <li>
                 <a href="@forum.Url">@forum.Name</a><span class="hidden-xs">–</span>
-                <a class="unfollow button transparent" href="" data-controller="forum" data-id="@forum.Id">Unfollow</a>
+                <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
             </li>
         }
     </ul>
@@ -42,7 +48,7 @@
 
             <li>
                 <a href="@topic.Url">@topic.Title</a><span class="hidden-xs">–</span>
-                <a class="unfollow button transparent" href="" data-controller="topic" data.id="@topic.Id">Unfollow</a>
+                <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
             </li>
         }
     </ul>
