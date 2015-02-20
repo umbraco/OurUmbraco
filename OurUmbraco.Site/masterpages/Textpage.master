@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="/masterpages/Master.master" AutoEventWireup="true" %>
 	
 <asp:content ContentPlaceHolderId="Main" runat="server">
-  <div id="body" class="page wrapper">
+  <div id="body" class="page wrapper markdown-syntax">
   <div style="margin-top: 25px;">
       <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
   </div>

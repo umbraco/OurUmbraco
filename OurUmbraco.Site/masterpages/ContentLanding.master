@@ -2,9 +2,9 @@
 
 <asp:Content ContentPlaceHolderID="Main" runat="server">
  
-<div id="wiki" class="subpage">
+<div id="contribute" class="subpage">
 
-<div id="body">
+<div id="body" class="markdown-syntax">
 
 <div style="margin-top: 25px;">
 <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
