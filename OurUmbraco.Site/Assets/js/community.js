@@ -313,7 +313,7 @@ $(function () {
     /* FORMS */
 
     //make sure surrounding element get's warning class
-    $("form").submit(function () {
+    $(".profile-settings-forms form").submit(function () {
         
         if ($(this).valid()) {
             $(this).find('div.profile-input').each(function () {
@@ -331,7 +331,7 @@ $(function () {
         }
     });
 
-    $('form').each(function () {
+    $('.profile-settings-forms form').each(function () {
         $(this).find('div.profile-input').each(function () {
             if ($(this).find('.input-validation-error').length > 0) {
                 $(this).addClass('warning');
