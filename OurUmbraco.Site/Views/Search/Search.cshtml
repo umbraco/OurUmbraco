@@ -1,0 +1,29 @@
+﻿@using our
+@inherits UmbracoTemplatePage<our.Models.SearchResultModel>
+
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+
+<div class="subpage">
+    <h1>Search results</h1>
+    
+    @foreach (var result in Model.Content.SearchResults)
+    {
+        <div class="result @result.CssClassName()">
+            <h3>
+                <a href='@result.FullUrl()'>
+                    @result.GetTitle()
+                </a>
+            </h3>
+            <p>
+                @result.GenerateBlurb(250)
+            </p>
+            <cite>@result.GetDate()<br />http://our.umbraco.org/@result.FullUrl()</cite>
+        </div>
+
+    }
+
+
+    <p>Processed in @Model.Content.Totalmilliseconds milliseconds</p>
+</div>

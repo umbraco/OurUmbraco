@@ -1,0 +1,95 @@
+﻿@using Marketplace.Interfaces
+@using Marketplace.Providers
+
+@{
+    IMemberProvider memberProvider = (IMemberProvider)MarketplaceProviderManager.Providers["MemberProvider"];
+    IMember member = memberProvider.GetCurrentMember();
+    IListingProvider provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+    IEnumerable<IListingItem> projects = provider.GetListingsByVendor(member.Id,true,true);
+
+    string editUrl = umbraco.library.NiceUrl(Int32.Parse(Parameter.Edit));
+    string forumUrl = umbraco.library.NiceUrl(Int32.Parse(Parameter.Forum));
+    string licenseUrl = umbraco.library.NiceUrl(Int32.Parse(Parameter.Licenses));
+    string teamUrl = umbraco.library.NiceUrl(Int32.Parse(Parameter.Team));
+}
+
+<h3>Your existing projects</h3>
+
+<ul class="profileProjects">
+@foreach (var project in projects)
+{ 
+    <li>
+    <h3><a href="@project.NiceUrl">
+      @project.Name
+    </a></h3>
+    @if (!string.IsNullOrEmpty(project.DefaultScreenshot))
+    {
+        <img src="/umbraco/imagegen.ashx?image=@project.DefaultScreenshot&pad=true&width=50&height=50" alt="@project.Name" class="projectIcon" style="border:1px solid #ddd"/>
+    }
+    else 
+    { 
+                <img src="/css/img/package2.png" alt="@project.Name" class="projectIcon" />
+    }
+    <small>
+      @project.CreateDate.ToString("D")
+    </small>
+    <ul class="projectNav">
+        <li><a href="@editUrl?id=@project.Id">Edit</a></li>
+        <li><a href="@forumUrl?id=@project.Id">Forums</a></li>
+        @if (project.ListingType == ListingType.commercial)
+        {
+            <li><a href="@licenseUrl?id=@project.Id">Licenses</a></li> 
+        }
+        
+        @if (project.OpenForCollab)
+        { 
+            <li><a href="@teamUrl?id=@project.Id">Team</a></li>       
+        }
+    </ul>
+  </li>
+    
+}
+<li class="add"><h3>
+<a href="@editUrl">Add new project</a>
+</h3>
+<img src="/css/img/add.png" alt="Add new project" />
+</li>
+</ul>
+
+
+
+
+
+@{
+    var contribProjects = provider.GetListingsForContributor(member.Id);
+}
+
+@if (contribProjects.Count() > 0)
+{ 
+<h3>Project where you are contributor</h3>
+<ul class="profileProjects">
+@foreach (var project in contribProjects)
+{ 
+    <li>
+    <h3><a href="@project.NiceUrl">
+      @project.Name
+    </a></h3>
+    <img src="/css/img/package2.png" alt="@project.Name" class="projectIcon" />
+    <small>
+      @project.CreateDate.ToString("D")<br />
+      Owner: <a href="mailto:@project.Vendor.Member.Email">@project.Vendor.Member.Name</a>
+    </small>
+    <ul class="projectNav">
+        <li><a href="@editUrl?id=@project.Id">Edit</a></li>
+        <li><a href="@forumUrl?id=@project.Id">Forums</a></li>
+        @if (project.ListingType == ListingType.commercial)
+        {
+            <li><a href="@licenseUrl?id=@project.Id">Licenses</a></li> 
+        }
+    </ul>
+  </li>
+    
+}
+</ul>
+}
+

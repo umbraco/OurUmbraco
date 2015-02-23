@@ -82,9 +82,9 @@
       <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Examine, Version=0.1.57.2941, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Examine.0.1.57.2941\lib\Examine.dll</HintPath>
+    <Reference Include="Examine">
+      <HintPath>..\packages\Examine.0.1.60.2941\lib\Examine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FergusonMoriyama.ConfigFormRenderer">
       <HintPath>..\dependencies\Our\FergusonMoriyama.ConfigFormRenderer.dll</HintPath>
@@ -4662,6 +4662,7 @@
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Profilepage.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
+    <Content Include="Views\Search\Search.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -4715,7 +4716,6 @@
   <ItemGroup>
     <Folder Include="App_Plugins\" />
     <Folder Include="css\img\Cached\" />
-    <Folder Include="Old_App_Code\" />
     <Folder Include="umbraco\dashboard\air\" />
     <Folder Include="umbraco\dashboard\swfs\" />
     <Folder Include="usercontrols\Deli\Admin\" />

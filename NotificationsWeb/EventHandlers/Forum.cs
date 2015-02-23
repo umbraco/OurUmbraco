@@ -13,7 +13,7 @@ namespace NotificationsWeb.EventHandlers
 {
     public class Forum : ApplicationEventHandler
     {
-        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             //sub comment author to topic
             CommentService.Created += CommentService_Created;

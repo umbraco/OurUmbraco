@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ExamineSearchResults.ascx.cs" Inherits="our.usercontrols.ExamineSearchResults" %>
 <%@ Import Namespace="our.usercontrols" %>
+<%@ Import Namespace="our" %>
 
 <asp:PlaceHolder ID="phNotValid" runat="server" Visible="false">
 <p>Please provide a longer search term</p>
@@ -23,16 +24,16 @@
             <div id="results" class="ui-tabs ui-widget ui-widget-content ui-corner-all">
         </HeaderTemplate>
         <ItemTemplate>
-            <div class="result <%# ((Examine.SearchResult)Container.DataItem).cssClassName() %>">
+            <div class="result <%# ((Examine.SearchResult)Container.DataItem).CssClassName() %>">
                 <h3>
-                    <a href='<%# ((Examine.SearchResult)Container.DataItem).fullURL()%>'>
-                        <%# ((Examine.SearchResult)Container.DataItem).getTitle() %>
+                    <a href='<%# ((Examine.SearchResult)Container.DataItem).FullUrl()%>'>
+                        <%# ((Examine.SearchResult)Container.DataItem).GetTitle() %>
                     </a>
                 </h3>
                 <p>
-                   <%# ((Examine.SearchResult)Container.DataItem).generateBlurb(250) %>
+                   <%# ((Examine.SearchResult)Container.DataItem).GenerateBlurb(250) %>
                 </p>
-                <cite><%# ((Examine.SearchResult)Container.DataItem).getDate() %><br />http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).fullURL()%></cite>
+                <cite><%# ((Examine.SearchResult)Container.DataItem).GetDate() %><br />http://our.umbraco.org/<%# ((Examine.SearchResult)Container.DataItem).FullUrl()%></cite>
             </div>            
         </ItemTemplate>
         <FooterTemplate>

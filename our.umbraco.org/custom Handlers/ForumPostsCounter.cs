@@ -16,7 +16,7 @@ namespace our.custom_Handlers {
          * This handler updates the members forum posts counter
          * So the forum doesnt know about where and how the member stores these counts
          */
-        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             TopicService.Created += TopicService_Created;
             CommentService.Created += CommentService_Created;
