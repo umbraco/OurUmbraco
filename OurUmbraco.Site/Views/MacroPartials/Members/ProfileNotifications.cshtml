@@ -3,6 +3,8 @@
     
     var member = Members.GetCurrentMember();
 
+    var dontBug = member.GetPropertyValue<bool>("bugMeNot");
+
     var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(member.Id).Items;
 
 
@@ -30,8 +32,9 @@
 
     @Html.Action("Render", "ProfileNotification") 
 
+    @if (!dontBug) { 
     <strong>Following</strong> <br/>
-    @if (forumItems.Any()) { 
+    if (forumItems.Any()) { 
     <strong>Forums</strong>
     <ul class="profile-settings-following">
         @foreach (var not in forumItems)
@@ -45,7 +48,7 @@
         }
     </ul>
     }
-    @if (topicItems.Any()) { 
+    if (topicItems.Any()) { 
     <strong>Topics</strong>
     <ul class="profile-settings-following">
         @foreach (var not in topicItems)
@@ -78,6 +81,7 @@
             <a class="next" href="?p=@nextPage">Next</a>
             }
         </nav>
+    }
     }
     }
 </div>
