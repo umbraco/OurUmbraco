@@ -1,0 +1,25 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Head" runat="server">
+  <script type="text/javascript" src="/scripts/projects/jquery.tagger.js"></script>
+  <script type="text/javascript" src="/scripts/projects/jquery.autocomplete.js"></script>
+</asp:Content>
+
+  
+  
+<asp:content ContentPlaceHolderId="Main" runat="server">
+  <div id="body" class="subpage wrapper">
+  <div style="margin-top: 25px;">
+      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
+  </div>
+    
+  <h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
+  <div class="options">
+      <umbraco:Macro source="1057" Alias="Member-ProfileNavigation" runat="server"></umbraco:Macro>
+  </div>
+  <umbraco:Macro Alias="Deli-CreateProject" runat="server"></umbraco:Macro>
+    
+  <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+  
+  </div>
+</asp:content>

@@ -1,0 +1,10 @@
+<%@ Master Language="C#" MasterPageFile="Master.master" AutoEventWireup="true" %>
+  
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage">
+<div class="deliPromoBox popular clearfix">
+<h2><umbraco:Item field="alternativeHeadline" useIfEmpty="pageName" runat="server"></umbraco:Item></h2>
+<umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+  </div>
+  </div>
+</asp:Content>

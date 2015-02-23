@@ -1,0 +1,11 @@
+<%@ Master Language="C#" MasterPageFile="Master.master" AutoEventWireup="true" %>
+
+
+<asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
+<div id="body" class="subpage">
+
+<umbraco:Macro ID="Macro1" Alias="DeliRepoProjectView" runat="server"></umbraco:Macro>
+
+
+</div>
+</asp:Content>

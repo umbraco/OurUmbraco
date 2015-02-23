@@ -1,0 +1,12 @@
+﻿<?xml version='1.0' encoding='utf-8'?>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Marketplace.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="Marketplace_com_umbraco_MemberLookUp" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://umbraco.com/umbraco/plugins/memberlookup/memberlookup.asmx</Value>
+    </Setting>
+    <Setting Name="Marketplace_com_umbraco_orders_Orders" Type="(Web Service URL)" Scope="Application">
+      <Value Profile="(Default)">http://umbraco.com/webservices/orders.asmx</Value>
+    </Setting>
+  </Settings>
+</SettingsFile>
