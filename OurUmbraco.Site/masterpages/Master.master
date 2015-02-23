@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
+<%@ Import Namespace="Umbraco.Web" %>
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
 <!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -50,14 +51,11 @@
     </script>
 </head>
 
-<umbraco:macro runat="server" language="razor">
-    @{
-        var css = Model.Level > 2 && Model.AncestorOrSelf(3).Id == 1057 ? "profile has-sidebar" : Model.NodeTypeAlias.ToLower().Replace(" ","-");
-
-    }
-
-    <body class="@css">
-</umbraco:macro>
+<%
+    var model = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
+%>   
+    
+    <body class="<%= model.Level > 2 && model.AncestorOrSelf(3).Id == 1057 ? "profile has-sidebar" : model.DocumentTypeAlias.ToLower().Replace(" ","-") %>">
 	
 	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
 
@@ -116,7 +114,7 @@
 <script src="http://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js">> </script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
 <script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
