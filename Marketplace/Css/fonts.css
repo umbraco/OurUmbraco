@@ -1,0 +1,109 @@
+/*FONTS */
+
+body{font-family: Arial, Helvetica, sans-serif; font-size: 13px;}
+
+h1, h2, h3, h4, h5, p{font-family: Arial, Helvetica, sans-serif; color: #333;}
+a{color: #1A6AB3;}
+
+p{font-size: 13px; margin-top: 7px; margin-bottom: 15px; color: #333; line-height: 18px}
+small{font-size: 11px; color: #5b5b5b;}
+
+em{color: #332e2e; font-style: normal; font-weight: bold;}
+h1{font-size: 28px; font-weight: bold;  margin-bottom: 7px;}
+h2{font-size: 18px; font-weight: bold; margin-top: 0px; margin-bottom: 3px;}
+h3{font-size: 14px; font-weight: bold;}
+h4{font-size: 12px; font-weight: bold; }
+h5{font-size: 11px; font-weight: bold; }
+
+code, pre {
+background-color:#F2F2F2;
+border:1px solid #E3E3E3;
+border-left: 4px solid #e3e3e3;
+display:block !Important;
+font-family:monospace;
+font-size:12px;
+line-height:1.4em;
+margin:0 6em 1em 1em;
+padding: 0.5em;
+max-width: 650px;
+overflow: auto;
+}
+
+code pre{padding: 0px; border: none}
+
+
+a.act{padding: 2px; padding-left: 20px; color: #252525; background: no-repeat center left;}
+
+
+a.topics{background-image: url(img/ico/balloons.png);}
+a.yourtopics{background-image: url(img/ico/balloon-smiley.png);}
+
+a.edit{background-image: url(img/ico/pencil-small.png);}
+a.delete{background-image: url(img/ico/cross-small.png);}
+a.move{background-image: url(img/ico/document-tree.png);}
+
+a.subscribe{background-image: url(img/ico/mail--plus.png);}
+a.UnSubscribeTopic, a.UnSubscribeForum{background-image: url(img/ico/mail--delete.png);}
+a.upload{background-image: url(img/ico/document--plus.png);}
+#options a.history{background-image: url(img/ico/clock-history.png);}
+
+
+.options{padding: 3px !Important;}
+
+a.add{background: #8ECA56 2px 2px url(img/ico/plus-button.png) no-repeat; padding: 3px 3px 3px 25px;
+border: 1px solid #618A3B; color: #fff; text-decoration: none; margin-top: 2px;
+    -webkit-border-radius: 3px; /* Safari prototype */
+  -moz-border-radius: 3px; /* Gecko browsers */
+  border-radius: 3px; /* Everything else - limited support at the moment */
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* EDITOR PROPERTIES - PLEASE DON'T DELETE THIS LINE TO AVOID DUPLICATE PROPERTIES */

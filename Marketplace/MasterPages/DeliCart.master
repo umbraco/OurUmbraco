@@ -1,0 +1,20 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:content ContentPlaceHolderId="Head" runat="server">
+  
+</asp:content>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+  <div id="body" class="subpage">
+
+    <div style="margin-top: 25px;">
+    <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    </div>
+    
+    <h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
+    <umbraco:Macro CurrentStepIndex="[#stepIndex]" Alias="Deli-CartProgress" runat="server"></umbraco:Macro>
+    <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+    
+  </div>
+  
+</asp:content>

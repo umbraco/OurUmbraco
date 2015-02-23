@@ -1,0 +1,98 @@
+<%@ Master Language="C#" MasterPageFile="Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+
+<div id="dashboard" class="subpage">
+
+<div style="text-align: center">
+<h1>The friendliest CMS community on the planet</h1>
+
+<div style="margin-bottom: 40px;">
+<p>
+our.umbraco.org is the central hub for the friendly umbraco community. Search for documentation, get 
+help and guidance from seasoned experts, download and collaborate on plugins and extensions.
+</p>
+
+  <%if(!umbraco.library.IsLoggedOn()){ %>
+    <p><a href="/member/signup">Register an account</a> <em> or </em> <a href="/member/login">Login</a></p>
+    <%}%>
+  </div>
+
+</div>
+
+
+<div style="width: 315px; float: left; overflow: hidden; clear: none; ">
+<div class="spotlight" id="latestForumTopics">
+<h4><span class="entry-title">Forum talk</span> <a class="rss_small" href="/rss/activetopics">rss</a></h4>
+<div id="data_forum"><small>Loading forum list...</small></div>
+<a class="more" href="/forum">More..</a>
+</div>
+</div>
+
+<div style="width: 315px; overflow: hidden; clear: none; float: left; margin-left: 17px">
+
+<div class="spotlight">
+<h4>New projects <a class="rss_small" href="/rss/projects">rss</a></h4>
+<div id="data_projects"><small>Loading the newest projects...</small></div>
+<a class="more" href="/projects">More..</a>
+</div>
+
+<div class="spotlight">
+<h4>New documentation <a class="rss_small" href="/rss/wiki">rss</a></h4>
+<div id="data_wiki"><small>Loading the latest documentation...</small></div>
+<a class="more" href="/wiki">More..</a>
+</div>
+</div>
+
+<div style="width: 315px; float: right; clear: none; overflow: hidden;">
+
+<div class="spotlight">
+<h4>Community blogs <a class="rss_small" href="http://pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&amp;_render=rss">rss</a></h4>
+<div id="data_blogs"><small>Loading blog list...</small></div>
+</div>
+
+<div class="spotlight">
+<h4>Twitter <a class="rss_small" href="http://search.twitter.com/search.atom?q=%23umbraco">rss</a></h4>
+<div id="data_twitter"><small>Loading tweets...</small></div>
+</div>
+
+</div>
+
+
+</div>
+
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+  
+$.post("/html/forum",
+  function(data){
+    jQuery("#data_forum").html(data);
+  });
+
+$.post("/html/projects",
+  function(data){
+    jQuery("#data_projects").html(data);
+  });
+
+$.post("/html/wiki",
+  function(data){
+    jQuery("#data_wiki").html(data);
+  });
+
+$.post("/html/blogs",
+  function(data){
+    jQuery("#data_blogs").html(data);
+  });
+
+$.post("/html/twitter",
+  function(data){
+    jQuery("#data_twitter").html(data);
+  });
+
+});
+
+</script>
+
+</asp:Content>
