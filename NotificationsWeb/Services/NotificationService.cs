@@ -121,6 +121,11 @@ namespace NotificationsWeb.Services
 
         }
 
+        public long GetNumberOfForumSubscriptionsFromMember(int memberId)
+        {
+            return DatabaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumSubscribers where memberId=@0",memberId);
+        }
+
         public Page<ForumTopicSubscriber> GetTopicSubscriptionsFromMember(int memberId, long take = 50, long page = 1)
         {
             var sql = new Sql()
@@ -133,6 +138,12 @@ namespace NotificationsWeb.Services
 
         }
 
+        public long GetNumberOfTopicSubscriptionsFromMember(int memberId)
+        {
+            return DatabaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumTopicSubscribers where memberId=@0",memberId);
+        }
+
+        
         public static NotificationService Instance
         {
             get

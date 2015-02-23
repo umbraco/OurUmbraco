@@ -5,13 +5,30 @@
 
     var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(member.Id).Items;
 
-    var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(member.Id).Items;
+    
 
+    var numberOfTopicItems = NotificationsWeb.Services.NotificationService.Instance.GetNumberOfTopicSubscriptionsFromMember(member.Id);
+
+    var pages = Math.Ceiling(((double)numberOfTopicItems / 50));
+
+    var currentPage = 1;
+    
+    if (Request["p"] != null) { 
+        int.TryParse(Request["p"], out currentPage);
+    }
+
+    var prevPage = currentPage - 1;
+    var nextPage = currentPage + 1;
+
+    var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(member.Id,50,currentPage).Items;
+    
     var dontBug = member.GetPropertyValue<bool>("bugMeNot");
     
 }
 
 <div class="profile-settings">
+
+    
 
     <div class="profile-input" id="username">
         <label for="bug-me-not">Don't bug me:</label>
@@ -52,5 +69,26 @@
             </li>
         }
     </ul>
+
+    if (pages > 1) { 
+        <nav class="pagination" role="navigation">
+            @if (currentPage > 1) { 
+            <a class="prev" href="@prevPage">Prev</a>
+            }
+            @for (int i = 1; i <= pages; i++)
+            {
+                if(i == currentPage){
+                    <a class="active" href="?p=@i">@i</a>
+                }
+                else
+                {
+                <a href="?p=@i">@i</a>
+                }
+            }
+            @if (currentPage < pages) { 
+            <a class="next" href="?p=@nextPage">Next</a>
+            }
+        </nav>
+    }
     }
 </div>
