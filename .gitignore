@@ -50,3 +50,4 @@ OurUmbraco.Site/App_Data/cache/
 *.sln.ide/
 NuGetBackup
 OurUmbraco.Site/web.config
+OurUmbraco.Site/usercontrols/Deli/
