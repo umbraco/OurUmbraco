@@ -6,7 +6,7 @@ namespace uRepo
 {
     public class AppStart : ApplicationEventHandler
     {
-        protected override void ApplicationInitialized(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             RouteTable.Routes.MapHttpRoute(
                 name: "RepoApi", 

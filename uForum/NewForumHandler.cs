@@ -13,7 +13,7 @@ namespace uForum {
          * This handler creates a forum entry in the forumForums table
          * When a forum node is created in the content tree, all forums are connected to a node
          */
-        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             ContentService.Published += ContentService_Published;
             ContentService.Deleted += ContentService_Deleted;
