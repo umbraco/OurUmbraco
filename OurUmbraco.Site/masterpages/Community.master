@@ -1,9 +1,8 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+<%@ Import Namespace="System.Web.Routing" %>
+<%@ Import Namespace="System.Web.Mvc" %>
 
 <asp:Content ContentPlaceHolderId="Main" runat="server">
-
-
-
 
 <section class="docs">
 	<div class="container">
@@ -341,12 +340,17 @@
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="Search" runat="server" >
+
+<%
+    var urlHelper = new UrlHelper(new RequestContext(new HttpContextWrapper(Context), new RouteData()));
+%>
+
     <!-- Search start -->
         <div id="search-all" class="search-all">
 
-            <form class="search-all-form" action="">
+            <form class="search-all-form" action="/search2" method="GET">
                 <div class="search-fieldset">
-                    <input class="search-input" type="search" placeholder="Search..">
+                    <input class="search-input" type="search" placeholder="Search.." name="term">
                     <input class="search-submit" type="submit" value="&#xe085;">
                 </div>
                 <span class="search-all-close"></span>
