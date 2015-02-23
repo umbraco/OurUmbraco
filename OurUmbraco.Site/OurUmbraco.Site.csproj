@@ -4661,6 +4661,7 @@
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Profilepage.cshtml" />
+    <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

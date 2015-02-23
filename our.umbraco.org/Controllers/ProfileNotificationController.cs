@@ -23,7 +23,7 @@ namespace our.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult HandleSubmit(ProfileModel model)
+        public ActionResult HandleSubmit(ProfileNotificationModel model)
         {
             if (!ModelState.IsValid)
                 return CurrentUmbracoPage();

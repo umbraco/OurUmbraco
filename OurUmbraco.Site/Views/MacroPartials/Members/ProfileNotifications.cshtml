@@ -5,7 +5,6 @@
 
     var forumItems = NotificationsWeb.Services.NotificationService.Instance.GetForumSubscriptionsFromMember(member.Id).Items;
 
-    
 
     var numberOfTopicItems = NotificationsWeb.Services.NotificationService.Instance.GetNumberOfTopicSubscriptionsFromMember(member.Id);
 
@@ -22,7 +21,6 @@
 
     var topicItems = NotificationsWeb.Services.NotificationService.Instance.GetTopicSubscriptionsFromMember(member.Id,50,currentPage).Items;
     
-    var dontBug = member.GetPropertyValue<bool>("bugMeNot");
     
 }
 
@@ -30,16 +28,7 @@
 
     
 
-    <div class="profile-input" id="username">
-        <label for="bug-me-not">Don't bug me:</label>
-        @if (dontBug) { 
-            <input type="checkbox" id="bug-me-not" checked />
-        }
-        else
-        {
-            <input type="checkbox" id="bug-me-not" />
-        }
-    </div>
+    @Html.Action("Render", "ProfileNotification") 
 
     <strong>Following</strong> <br/>
     @if (forumItems.Any()) { 
