@@ -14,7 +14,7 @@
     <RootNamespace>OurUmbraco.Site</RootNamespace>
     <AssemblyName>OurUmbraco.Site</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -1766,7 +1766,6 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
-    <Content Include="usercontrols\DocumentationEditButton.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
@@ -1801,6 +1800,9 @@
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
     <Content Include="Views\Layout.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4329,8 +4331,6 @@
     <Content Include="usercontrols\Deli\Support\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
-    <Content Include="usercontrols\DocumentationBreadcrumb.ascx" />
-    <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
     <Content Include="usercontrols\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\FergusonMoriyama\FeedCache\PostInstall.ascx" />
     <Content Include="usercontrols\ImageGenInstaller.ascx" />
@@ -4699,6 +4699,10 @@
       <Project>{00f050b9-e3ed-49a7-ab97-e8bec2513553}</Project>
       <Name>uPowers</Name>
     </ProjectReference>
+    <ProjectReference Include="..\uRelease\uRelease.csproj">
+      <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
+      <Name>uRelease</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uRepo\uRepo.csproj">
       <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>
       <Name>uRepo</Name>
@@ -4734,7 +4738,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:24217/</IISUrl>
+          <IISUrl>http://our.local</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

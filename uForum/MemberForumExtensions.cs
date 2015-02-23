@@ -79,7 +79,18 @@ namespace uForum
         {
             var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
             if (topic.LatestReplyAuthor > 0)
-                return memberShipHelper.GetById(topic.LatestReplyAuthor);
+            {
+                try
+                {
+                    return memberShipHelper.GetById(topic.LatestReplyAuthor);
+                }
+                catch (Exception ex)
+                {
+                    var wat = ex;
+                    return null;
+                }
+
+            }
             else
                 return topic.Author();
         }

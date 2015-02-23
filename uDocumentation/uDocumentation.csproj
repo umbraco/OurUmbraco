@@ -243,17 +243,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\DocumentationEditButton.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="usercontrols\DocumentationBreadcrumb.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="usercontrols\DocumentationShowMarkdown.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <Compile Include="Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Busineslogic\DefaultVersion.cs" />
     <Compile Include="Busineslogic\Events.cs" />
@@ -261,27 +250,6 @@
     <Compile Include="Busineslogic\MarkdownLogic.cs" />
     <Compile Include="DocumentationContentFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="usercontrols\DocumentationEditButton.ascx.cs">
-      <DependentUpon>DocumentationEditButton.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\DocumentationEditButton.ascx.designer.cs">
-      <DependentUpon>DocumentationEditButton.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\DocumentationBreadcrumb.ascx.cs">
-      <DependentUpon>DocumentationBreadcrumb.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\DocumentationBreadcrumb.ascx.designer.cs">
-      <DependentUpon>DocumentationBreadcrumb.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\DocumentationShowMarkdown.ascx.cs">
-      <DependentUpon>DocumentationShowMarkdown.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\DocumentationShowMarkdown.ascx.designer.cs">
-      <DependentUpon>DocumentationShowMarkdown.ascx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -299,7 +267,8 @@
   <ProjectExtensions />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
   <PropertyGroup>
-    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\" /y</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
