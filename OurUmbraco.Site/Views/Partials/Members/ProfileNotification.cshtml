@@ -5,8 +5,8 @@
 }
 
 
-<div class="profile-settings">
-    <strong>Change your profile</strong>
+
+    
     <div class="profile-settings-forms">
 
         @using (Html.BeginUmbracoForm<our.Controllers.ProfileNotificationController>("HandleSubmit"))
@@ -15,10 +15,9 @@
 
             <div class="profile-input" id="dont-bug">
                 @Html.LabelFor(m => m.DontBug)
-                @Html.TextBoxFor(m => m.DontBug)
+                @Html.CheckBoxFor(m => m.DontBug, new { onchange = "this.form.submit();" })
             </div>
             
         }
 
     </div>
-</div>
