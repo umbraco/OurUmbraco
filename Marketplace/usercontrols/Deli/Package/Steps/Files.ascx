@@ -193,15 +193,17 @@
                 <option value="source">Source Code</option>
               </select>
         </p>
+        
+        <div class="pickversionWrapper">        
+            <p id="pickVersion">
+                  <label class="inputLabel">Choose umbraco version</label>
                 
-        <p id="pickVersion">
-              <label class="inputLabel">Choose umbraco version</label>
-                <div class="pickVersion">
+         
+            </p>
+            <div class="pickVersion">
                 <asp:literal ID="lt_versions" runat="server" />
                 </div>
-         
-        </p>
-
+        </div>
         <p id="pickNetVersion">
               <label class="inputLabel">Choose supported .NET runtime</label>
             
