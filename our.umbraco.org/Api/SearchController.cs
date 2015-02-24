@@ -10,7 +10,7 @@ using Umbraco.Web.WebApi;
 
 namespace our.Api
 {
-    public class SearchController : UmbracoApiController
+    public class OurSearchController : UmbracoApiController
     {
         public dynamic GetGlobalSearchResults(string term)
         {
