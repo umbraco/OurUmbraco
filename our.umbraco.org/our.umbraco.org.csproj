@@ -245,6 +245,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
+    <Compile Include="Api\SearchController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
@@ -257,10 +258,12 @@
     <Compile Include="custom Handlers\ProjectsEnsureGuid.cs" />
     <Compile Include="custom Handlers\projectVote.cs" />
     <Compile Include="custom Handlers\TopicVote.cs" />
+    <Compile Include="Examine\OurSearcher.cs" />
+    <Compile Include="Examine\ProjectsIndexDataService\ProjectNodeIndexDataService.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Examine\CustomDataService.cs" />
+    <Compile Include="Examine\ForumDataService.cs" />
     <Compile Include="data.cs" />
     <Compile Include="DefaultMemberAvatarHandler.cs" />
     <Compile Include="DocumentationIndexer.cs" />
@@ -273,6 +276,7 @@
     <Compile Include="Models\ProfileNotificationModel.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
+    <Compile Include="ProjectIndexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="Startup.cs" />
@@ -380,7 +384,9 @@
     <Content Include="usercontrols\acceptTos.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="usercontrols\ExamineSearchResults.ascx" />
+    <Content Include="usercontrols\ExamineSearchResults.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="usercontrols\Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>

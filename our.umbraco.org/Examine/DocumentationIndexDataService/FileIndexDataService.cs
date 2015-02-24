@@ -29,9 +29,7 @@ namespace our.ExamineServices
                 try
                 {
                     var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-
                     simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
-
                     dataSets.Add(simpleDataSet);
                 }
                 catch (Exception ex)
