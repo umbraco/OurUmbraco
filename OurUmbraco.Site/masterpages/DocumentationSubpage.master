@@ -1,10 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/DocumentationMaster.master" AutoEventWireup="true" %>
 
-<%@ Register Src="~/usercontrols/DocumentationShowMarkdown.ascx" TagPrefix="markdown" TagName="Doc" %>
-<%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb" %>
-<%@ Register Src="~/usercontrols/DocumentationEditButton.ascx" TagPrefix="markdown" TagName="DocumentationEditButton" %>
-
-
 <asp:Content ContentPlaceHolderID="main" runat="server">
     
     <div class="page-content">
