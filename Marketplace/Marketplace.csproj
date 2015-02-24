@@ -280,6 +280,7 @@
     </Compile>
     <Compile Include="Controls\CountryDropDown.cs" />
     <Compile Include="Events\DeliNotificationEvents.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="HttpHandlers\PayPalIPN.cs" />

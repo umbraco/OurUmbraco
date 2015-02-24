@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyProjects.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Profile.MyProjects" %>
 <%@ Import Namespace="Marketplace.Interfaces" %>
+<%@ Import Namespace="Marketplace" %>
 <div class="profile-settings">
     <strong>My Packages</strong>
     <div class="profile-settings-packages packages-content">
@@ -19,7 +20,7 @@
                             <div class="forum-thread-text">
                                 <h3><a href="<%# Eval("NiceUrl") %>"><%# Eval("Name") %></a></h3>
                                 <p>
-                                     <%# umbraco.library.StripHtml(Eval("Description").ToString()).Substring(0,45) %> ...
+                                     <%#  Eval("Description").ToString().StripHtmlAndLimit(45) %> ...
                                     <br />
                                     <a href="<%= editUrl %>?id=<%# Eval("Id") %>">Edit</a>
                                     <a href="<%= forumUrl %>?id=<%# Eval("Id") %>">Forums</a>
@@ -78,7 +79,7 @@
                             <div class="forum-thread-text">
                                 <h3><a href="<%# Eval("NiceUrl") %>"><%# Eval("Name") %></a></h3>
                                 <p>
-                                    <%# umbraco.library.StripHtml(Eval("Description").ToString()).Substring(0,45) %> ...
+                                     <%#  Eval("Description").ToString().StripHtmlAndLimit(45) %>
 
                                     <br />
                                     <a href="<%= editUrl %>?id=<%# Eval("Id") %>">Edit</a>
