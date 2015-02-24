@@ -36,7 +36,9 @@
     <![endif]-->
 
     <umbraco:Macro Alias="[Members]JsValues" runat="server" />
-	
+
+	<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
     <asp:ContentPlaceHolder ID="Head" runat="server"></asp:ContentPlaceHolder>
     <script>
         var _prum = [['id', '529dbcf6abe53d055a000000'],
@@ -108,7 +110,7 @@
     </div> <!--.wrapper-->
 
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
 <script src="http://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>

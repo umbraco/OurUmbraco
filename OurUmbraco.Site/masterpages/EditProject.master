@@ -8,18 +8,68 @@
   
   
 <asp:content ContentPlaceHolderId="Main" runat="server">
-  <div id="body" class="subpage wrapper">
-  <div style="margin-top: 25px;">
-      <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
-  </div>
+<div class="page-content">
+
+    <div class="sidebar-area">
+        <div class="sidebar-content">
+            <div class="content-wrapper">
+
+                <nav>
+                    <ul class="level-1">
+                        <li class="open">
+                            <a href=""><h3>Profile</h3></a>
+                            <ul class="level-2">
+                                <li><h4>Avatar</h4></li>
+                                <li><h4>Name</h4></li>
+                                <li><h4>Email</h4></li>
+                                <li><h4>Password</h4></li>
+                                <li><h4>Company</h4></li>
+                                <li><h4>Bio</h4></li>
+                                <li><h4>Twitter Alias</h4></li>
+                                <li><h4>Location</h4></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href=""><h3>Packages</h3></a>
+                            <ul class="level-2">
+                                <li><h4>Create package</h4></li>
+                                <li><h4>Existing</h4></li>
+                                <li><h4>Contributions</h4></li>
+                            </ul>
+                        </li>
+
+                        <li>
+                            <a href=""><h3>Following</h3></a>
+                            <ul class="level-2">
+                                <li><h4>View followed threads</h4></li>
+                            </ul>
+                        </li>
+
+                    </ul>
+                </nav>
+
+            </div><!-- .content-wrapper -->
+        </div><!-- .sidebar-content -->
+    </div><!-- .sidebar-area -->
+
+    <div class="main-area">
+        <div class="main-content">
+            <div class="content-wrapper">
+
+                
+                
+
+                <umbraco:Macro Alias="Deli-CreateProject" runat="server"></umbraco:Macro>
     
-  <h1><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
-  <div class="options">
-      <umbraco:Macro source="1057" Alias="Member-ProfileNavigation" runat="server"></umbraco:Macro>
-  </div>
-  <umbraco:Macro Alias="Deli-CreateProject" runat="server"></umbraco:Macro>
-    
-  <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+                
+                
+
+            </div><!-- .content-wrapper -->
+        </div><!-- .main-content -->
+    </div><!-- .main-area -->
+
+</div><!-- .page-content -->
+
   
-  </div>
 </asp:content>
