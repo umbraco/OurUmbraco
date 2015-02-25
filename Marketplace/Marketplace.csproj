@@ -152,15 +152,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NotificationsCore">
-      <HintPath>..\forigndlls\NotificationsCore.dll</HintPath>
-    </Reference>
-    <Reference Include="NotificationsWeb">
-      <HintPath>..\forigndlls\NotificationsWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="our.umbraco.org, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\our.umbraco.org.dll</HintPath>
-    </Reference>
     <Reference Include="SQLCE4Umbraco">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\SQLCE4Umbraco.dll</HintPath>
     </Reference>
@@ -718,6 +709,20 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="usercontrols\Deli\Repository\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
+      <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
+      <Name>NotificationsWeb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Notification\Notification.csproj">
+      <Project>{80e5f59d-a7a0-4cee-aeb6-6c626c44b2b2}</Project>
+      <Name>Notification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\our.umbraco.org\our.umbraco.org.csproj">
+      <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
+      <Name>our.umbraco.org</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
