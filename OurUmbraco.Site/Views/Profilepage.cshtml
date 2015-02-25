@@ -3,47 +3,14 @@
     Layout = "Layout.cshtml";
 }
 
-<div id="overlay" class="overlay"></div>
+
 <div class="page-content">
 
     <div class="sidebar-area">
         <div class="sidebar-content">
             <div class="content-wrapper">
 
-                <nav>
-                    <ul class="level-1">
-                        <li class="open">
-                            <a href=""><h3>Profile</h3></a>
-                            <ul class="level-2">
-                                <li><h4>Avatar</h4></li>
-                                <li><h4>Name</h4></li>
-                                <li><h4>Email</h4></li>
-                                <li><h4>Password</h4></li>
-                                <li><h4>Company</h4></li>
-                                <li><h4>Bio</h4></li>
-                                <li><h4>Twitter Alias</h4></li>
-                                <li><h4>Location</h4></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href=""><h3>Packages</h3></a>
-                            <ul class="level-2">
-                                <li><h4>Create package</h4></li>
-                                <li><h4>Existing</h4></li>
-                                <li><h4>Contributions</h4></li>
-                            </ul>
-                        </li>
-
-                        <li>
-                            <a href=""><h3>Following</h3></a>
-                            <ul class="level-2">
-                                <li><h4>View followed threads</h4></li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                </nav>
+               @Umbraco.RenderMacro("[Member]ProfileNavigation", new { source = 1057 })
 
             </div><!-- .content-wrapper -->
         </div><!-- .sidebar-content -->
@@ -52,6 +19,9 @@
     <div class="main-area">
         <div class="main-content">
             <div class="content-wrapper">
+                <div>
+                    @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = 1 })
+                </div>
                 @Umbraco.Field("bodyText")
 
             </div><!-- .content-wrapper -->

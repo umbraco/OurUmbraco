@@ -107,9 +107,9 @@
 
 <%--
     // temporary notification code.
-    umbraco.library.SendMail("gregory@umbraco.dk", "gregory@umbraco.dk", "Payout requested", "Hey Niels, There's a payout requested. Check <a href=\"http://our.umbraco.org/umbraco/\">our.umbraco.org/umbraco/</a>",true);
+    umbraco.library.SendMail("nh@umbraco.dk", "nh@umbraco.dk", "Payout requested", "Hey Niels, There's a payout requested. Check <a href=\"http://our.umbraco.org/umbraco/\">our.umbraco.org/umbraco/</a>",true);
     
-     --%>
+    --%>
 
 
 
