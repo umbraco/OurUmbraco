@@ -751,8 +751,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(TargetDir)marketplace*.*" "$(SolutionDir)OurUmbraco.Site\bin\"
-xcopy /s /y "$(ProjectDir)*.ascx" "$(SolutionDir)OurUmbraco.Site\"
+    <PostBuildEvent>xcopy /s /y "$(ProjectDir)*.ascx" "$(SolutionDir)OurUmbraco.Site\"
+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
