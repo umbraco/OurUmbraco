@@ -10,10 +10,10 @@
 					<nav>
 						<ul class="level-1">
 							<li class="open">
-								<a><h3>Packages</h3></a>
+								<a><h3>Projects</h3></a>
 									<ul class="level-2">
-										<li><h4><a href="#">Newest packages</a></h4></li>
-										<li><h4><a href="#">Popular packages</a></h4></li>
+										<li><h4><a href="?orderBy=updateDate">Newest projects</a></h4></li>
+										<li><h4><a href="?orderBy=popularity">Popular projects</a></h4></li>
 									</ul>
 							</li>
 

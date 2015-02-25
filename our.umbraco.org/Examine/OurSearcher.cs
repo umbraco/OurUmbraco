@@ -39,7 +39,7 @@ namespace our.Examine
 
             if (string.IsNullOrEmpty(OrderBy) == false)
             {
-                criteria.OrderByDescending(OrderBy);    
+                criteria.OrderByDescending(OrderBy);  
             }
 
 

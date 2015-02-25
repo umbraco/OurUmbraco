@@ -426,7 +426,6 @@
     <Content Include="masterpages\ConfigureProjectLicenses.master" />
     <Content Include="masterpages\ContentLanding.master" />
     <Content Include="masterpages\CreateWikiPage.master" />
-    <Content Include="masterpages\debugger.master" />
     <Content Include="masterpages\Deli.master" />
     <Content Include="masterpages\DeliCart.master" />
     <Content Include="masterpages\DeliCartDetails.master" />
@@ -1766,6 +1765,9 @@
     <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
+    <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
+    <Content Include="masterpages\search.master" />
+    <Content Include="masterpages\Download.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">

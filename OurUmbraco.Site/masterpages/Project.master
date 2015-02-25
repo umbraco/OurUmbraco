@@ -4,12 +4,14 @@
 <div id="body" class="subpage">
 
     <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-    <h1><umbraco:Item Field="nodeName" runat="server" /></h1>
+
+    <h1><umbraco:Item Field="name" runat="server" /></h1>
+
     <div id="forum" style="width:620px; margin-left: 75px">
 
     <% if( umbraco.presentation.nodeFactory.Node.GetCurrent().Children.Count > 0 ){ %>
     <h3>Package discussions</h3>
-    <umbraco:Macro Alias="Forum-overview" runat="server"></umbraco:Macro>
+        
     <%
     }
     %>

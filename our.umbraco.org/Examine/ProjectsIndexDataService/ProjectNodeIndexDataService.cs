@@ -45,6 +45,10 @@ namespace our.ExamineServices
                             .Where(x => int.TryParse(x, out o))
                             .Select(x => (decimal.Parse(x.PadRight(3, '0') ) / 100));
 
+            //popularity for sorting number = downloads + karma * 100;
+            var pop = downloads + (karma * 100);
+
+            simpleDataSet.RowData.Add("popularity", pop.ToString("D8"));
             simpleDataSet.RowData.Add("karma", karma.ToString());
             simpleDataSet.RowData.Add("downloads", downloads.ToString());
             simpleDataSet.RowData.Add("image", imageFile);
