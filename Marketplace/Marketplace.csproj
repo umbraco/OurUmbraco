@@ -753,7 +753,6 @@
   <PropertyGroup>
     <PostBuildEvent>xcopy /s /y "$(TargetDir)marketplace*.*" "$(SolutionDir)OurUmbraco.Site\bin\"
 xcopy /s /y "$(ProjectDir)*.ascx" "$(SolutionDir)OurUmbraco.Site\"
-xcopy /s /y "$(ProjectDir)razor\*.cshtml" "$(SolutionDir)OurUmbraco.Site\macroscripts\"
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
