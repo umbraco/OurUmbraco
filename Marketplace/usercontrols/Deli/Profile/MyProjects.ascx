@@ -4,7 +4,7 @@
 <div class="profile-settings">
     <strong>My Packages</strong>
     <div class="profile-settings-packages packages-content">
-        <div class="button green"><a href="<%= editUrl %>"><i class="icon-Add"></i>Add package</a></div>
+        <a href="<%= editUrl %>" class="button green"><i class="icon-Add"></i>Add package</a>
         <asp:Repeater runat="server" ID="myProjects">
             <ItemTemplate>
 
