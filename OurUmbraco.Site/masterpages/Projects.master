@@ -1,94 +1,59 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
-<asp:Content ContentPlaceHolderId="Head" runat="server">
-  <script type="text/javascript" src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-  <script id="listing-result" type="text/x-jquery-tmpl">
-        <li class="clearfix">
-            <div class="deliPackage">
-            
-            <div class="brief">
-              <a href="{{= NiceUrl}}" class="packageIcon" style="background:url({{= DefaultScreenShot}}) no-repeat top left;">Package</a>
-              
-              <h3><a href="{{= NiceUrl}}">
-                  {{= Name}}
-              </a></h3>
-
-              <div class="category">{{= CategoryName}}</div>
-
-
-              <div class='commercialIndicator {{= ListingType}}'>{{= ListingType}}</div>
-            </div>
-
-            <div class="hiLite">
-                
-                <p><a href="{{= NiceUrl}}">{{= Description}}</a></p>
-                
-            </div>
-
-            <div class="popularity">
-                <div class="karma">
-                    {{= Karma}}    
-                    <small>Karma</small>
-                </div>
-                <div class="downloads">
-                    {{= Downloads}}    
-                    <small>Downloads</small>
-                </div>
-            </div>
-        </div>
-</li>
-  </script>
-</asp:Content>
-
 <asp:Content ContentPlaceHolderId="Main" runat="server">
-<h2 class="sectionTitle">Welcome to Projects. The home for Umbraco packages, add-ons and extensions</h2>
-<div id="body" class="subpage">  
+    <div class="page-content">
+		
+		<div class="sidebar-area">
+			<div class="sidebar-content">
+				<div class="content-wrapper">
 
-<div class="options">
-   <%if(umbraco.library.IsLoggedOn()){ %>
-      <a class="act add" href="/member/profile/projects">Create a new project</a>
-  <% } %>
-</div>
+					<nav>
+						<ul class="level-1">
+							<li class="open">
+								<a><h3>Packages</h3></a>
+									<ul class="level-2">
+										<li><h4><a href="#">Newest packages</a></h4></li>
+										<li><h4><a href="#">Popular packages</a></h4></li>
+									</ul>
+							</li>
 
-<div class="deliLeft">
-    <div class="deliNav">
-        <h3>Packages</h3>
-        <ul>
-            <li><a href="/projects/popular">Popular packages</a></li>
-            <li><a href="projects/newest">Newest packages</a></li>
-        </ul>        
-    </div>    
-    <div class="deliNav">
-        <umbraco:Macro Alias="Deli-ProjectCategories" runat="server"></umbraco:Macro>
-    </div>
-    <div class="deliNav">
-        <h3>By Umbraco Version</h3>
-        <p><small>Choose your Umbraco version to get a list of packages that have been marked as compatible for that version.</small></p>
-        <umbraco:Macro runat="server" Language="cshtml" Cache="600" FileLocation="~/macroScripts/ProjectsVersionList.cshtml"/>
-    </div>
-</div>
+							<li>
+								<a href><h3>By Version</h3></a>
+									<ul class="level-2">
+										<li><h4><a href="#">Version 7</a></h4></li>
+										<li><h4><a href="#">Version 6</a></h4></li>
+										<li><h4><a href="#">Version 4</a></h4></li>
+									</ul>
+							</li>
 
-<div class="deliRightWrapper">    
-  
-<div class="deliRight">
-    <div class="deliFeatureBox clearfix">
-        <umbraco:Macro projectId="[#featuredProject]" FeatureImage="[#featuredProjectImage]" Alias="Deli-FeatureProject" runat="server"></umbraco:Macro>
-    </div>
-    <div class="deliPromoArea projectWidgets">
-    
-        <umbraco:Macro MaxPageSize="8" paged="0" ListingType="[@pplt]" Alias="Deli-PopularProjects" runat="server"></umbraco:Macro>
-        <umbraco:Macro MaxPageSize="4" paged="0" ListingType="[@nplt]" Alias="Deli-NewestProjects" runat="server"></umbraco:Macro>
+							<li >
+								<a href><h3>By Category</h3></a>
+									<umbraco:Macro Alias="[Projects]ListCategories" runat="server"></umbraco:Macro>
+							</li>
 
-    </div>
-    <div class="deliPromoBox deliTags">
-        <h2>Browse by Tag</h2>
-        <umbraco:Macro ID="Macro1" Alias="Deli-TagCloud" runat="server"></umbraco:Macro>
-    </div>
-</div>
-   
-</div>
-</div>
-  
+						
 
-</div>
+						</ul>
+					</nav>
+
+				</div><!-- .content-wrapper -->
+			</div><!-- .sidebar-content -->
+		</div><!-- .sidebar-area -->
+
+		<div class="main-area">
+			<div class="main-content">
+				<div class="content-wrapper">
+					<div>
+                        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                    </div>
+
+					<div class="packages-content">
+						<umbraco:Macro Alias="[Projects]ListProjects" runat="server"></umbraco:Macro>
+					</div>
+
+        		</div><!-- .content-wrapper -->
+			</div><!-- .main-content -->
+		</div><!-- .main-area -->
+
+	</div><!-- .page-content -->
 </asp:Content>

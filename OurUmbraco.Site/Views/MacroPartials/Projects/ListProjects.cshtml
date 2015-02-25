@@ -1,0 +1,135 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+
+<div class="search-big">
+	<input type="search" class="project-search-input" required placeholder="Search for packages">
+	<label for="search">Search packages</label>
+</div>
+
+<h1>Browse packages</h1>
+
+@{
+    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher();
+    searcher.NodeTypeAlias = "project";
+    searcher.OrderBy = "updateDate";
+    var result = searcher.Search().Take(50);
+}
+
+@functions{
+    public string ParseVersion(string version){
+
+        var versions = version.Trim(',').Split(',').Select(x => decimal.Parse(x));
+        
+        if (versions.Count() == 0)
+            return string.Empty;
+        
+        if (versions.Count() == 1)
+            return (versions.First())+ "+";
+
+        var high = versions.Max();
+        var low = versions.Min();
+
+        return high.ToString("N2") + "-" + low.ToString("N2");
+    }    
+}
+
+<script type="text/template" class="search-item-project">
+<div class="box">					
+	    <div class="row">
+            <div class="col-xs-2 col-md-1">
+			    <img src="{{image}}" alt="">
+		    </div>
+
+		    <div class="col-xs-10 col-md-6">
+			    <div class="forum-thread-text">
+				    <h3><a href="{{url}}">{{nodeName}}</a></h3>
+				    <p>{{body}}</p>
+                </div>
+		    </div>
+
+		    <div class="col-xs-12 col-md-5">
+			    <div class="other">
+				    <div class="package-badge">
+					    <span class="package-name">version</span>
+					    <span class="package-number">{{versions}}</span>
+				    </div>
+
+				    <span class="stats">
+					    <span class="downloads">
+						    {{downloads}}<span><i class="icon-Download-alt"></i></span>
+					    </span>
+
+					    <span class="karma">
+						   {{karma}}<span><i class="icon-Hearts"></i></span>
+					    </span>
+				    </span>
+			    </div>
+		    </div>
+
+	    </div>
+    </div>
+</script>
+<div class="projects-search-listing"></div>
+<div class="projects-default-listing">
+    @foreach (var childPage in result)
+    {
+        <div class="box">					
+	        <div class="row">
+                <div class="col-xs-2 col-md-1">
+			        <img src="@childPage.Fields["image"]" alt="">
+		        </div>
+
+		        <div class="col-xs-10 col-md-6">
+			        <div class="forum-thread-text">
+				        <h3><a href="@childPage.Fields["url"]">@childPage.Fields["nodeName"]</a></h3>
+				        <p>@childPage.Fields["body"].Truncate(150)</p>
+                    </div>
+		        </div>
+
+		        <div class="col-xs-12 col-md-5">
+			        <div class="other">
+				        <div class="package-badge">
+					        <span class="package-name">version</span>
+					        <span class="package-number">@ParseVersion(childPage.Fields["versions"])</span>
+				        </div>
+
+				        <span class="stats">
+					        <span class="downloads">
+						        @childPage.Fields["downloads"]<span><i class="icon-Download-alt"></i></span>
+					        </span>
+
+					        <span class="karma">
+						        @childPage.Fields["karma"]<span><i class="icon-Hearts"></i></span>
+					        </span>
+				        </span>
+			        </div>
+		        </div>
+
+	        </div>
+        </div>
+    }							
+
+
+    <nav class="pagination" role="navigation">
+	    <a class="prev" href="#">Prev</a>
+		    <a class="active" href="#">1</a>
+		    <a href="#">2</a>
+		    <a href="#">3</a>
+		    <a href="#">4</a>
+		    <a href="#">5</a>
+		    <a href="#">6</a>
+		    <a href="#">7</a>
+	    <a class="next" href="#">Next</a>
+    </nav>
+</div>
+
+
+
+@* Ensure that the Current Page has children, where the property umbracoNaviHide is not True *@
+@if (CurrentPage.Children.Where("Visible").Any())
+{
+    <ul>            
+        @* For each child page under the root node, where the property umbracoNaviHide is not True *@
+        
+    </ul>
+}

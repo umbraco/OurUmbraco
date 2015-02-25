@@ -22,9 +22,22 @@ namespace our.Api
             result.total = searchResult.TotalItemCount;
             result.items = searchResult.Take(5);
             result.term = term;
-
             return result;
         }
 
+
+        public dynamic GetProjectSearchResults(string term)
+        {
+            var searcher = new OurSearcher();
+            searcher.Term = term;
+            searcher.NodeTypeAlias = "project";
+            var searchResult = searcher.Search();
+
+            dynamic result = new ExpandoObject();
+            result.total = searchResult.TotalItemCount;
+            result.items = searchResult.Take(20);
+            result.term = term;
+            return result;
+        }
     }
 }
