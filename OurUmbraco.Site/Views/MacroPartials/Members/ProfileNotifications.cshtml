@@ -43,7 +43,7 @@
 
             if (forum != null) { 
             <li>
-                <a href="@forum.Url">@forum.Name</a><span class="hidden-xs">–</span>
+                <a href="@forum.Url">@forum.Name</a> <span class="hidden-xs">–</span>
                 <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
             </li>
             }
@@ -59,7 +59,7 @@
 
             if (topic != null) { 
             <li>
-                <a href="@topic.Url">@topic.Title</a><span class="hidden-xs">–</span>
+                <a href="@topic.Url">@topic.Title</a> <span class="hidden-xs">–</span>
                 <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
             </li>
             }
