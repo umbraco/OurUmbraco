@@ -604,7 +604,6 @@
     <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
     <Content Include="usercontrols\Deli\ProjectsList.ascx" />
     <Content Include="usercontrols\our.umbraco.org\Login_novalidationscript.ascx" />
-    <Content Include="xslt\Deli-repository.xslt" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
@@ -709,6 +708,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="usercontrols\Deli\Repository\" />
+    <Folder Include="xslt\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
