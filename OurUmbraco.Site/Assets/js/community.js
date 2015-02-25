@@ -270,7 +270,7 @@ $(function () {
         var $dialog = $("#update-avatar-dialog");
         var $loader = $('.span', $dialog);
         var $file = $("input[type=file]", $dialog);
-        var $cancel = $("input[type=button]", $dialog);
+        var $cancel = $("button", $dialog);
        
         var uploadStart = function () {
             $loader.show();
