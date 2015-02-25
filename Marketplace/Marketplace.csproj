@@ -751,7 +751,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(ProjectDir)*.ascx" "$(SolutionDir)OurUmbraco.Site\"
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\Deli\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\Deli" /y /s
 
 </PostBuildEvent>
   </PropertyGroup>
