@@ -99,26 +99,30 @@
     </Reference>
     <Reference Include="Marketplace.BusinessLogic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.Presentation">
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
+    <Reference Include="Marketplace.Presentation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Providers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Umbraco, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
+    </Reference>
+    <Reference Include="MarketPlace.Webservices">
+      <HintPath>..\dependencies\MarketPlace\MarketPlace.Webservices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
