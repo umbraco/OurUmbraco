@@ -72,6 +72,9 @@
     <Reference Include="CookComputing.XmlRpcV2">
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\dependencies\Our\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="Examine">
       <HintPath>..\packages\Examine.0.1.57.2941\lib\Examine.dll</HintPath>
     </Reference>
@@ -220,9 +223,6 @@
     <Reference Include="TidyNet">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\TidyNet.dll</HintPath>
     </Reference>
-    <Reference Include="uComponents.Core, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\uComponents.Core.dll</HintPath>
-    </Reference>
     <Reference Include="uForum, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\forigndlls\uForum.dll</HintPath>
     </Reference>
@@ -236,8 +236,8 @@
     <Reference Include="umbraco.DataLayer">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.DataLayer.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Ecommerce, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\Umbraco.Ecommerce.dll</HintPath>
+    <Reference Include="Umbraco.Ecommerce">
+      <HintPath>..\dependencies\Our\Umbraco.Ecommerce.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.5350.25721, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -250,7 +250,7 @@
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.providers.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Support">
-      <HintPath>..\forigndlls\Umbraco.Support.dll</HintPath>
+      <HintPath>..\dependencies\Our\Umbraco.Support.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Umbraco.Web.UI.dll</HintPath>
@@ -261,8 +261,8 @@
     <Reference Include="UmbracoExamine">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\UmbracoExamine.dll</HintPath>
     </Reference>
-    <Reference Include="umbracoMemberControls, Version=1.0.2259.24439, Culture=neutral">
-      <HintPath>..\forigndlls\umbracoMemberControls.dll</HintPath>
+    <Reference Include="umbracoMemberControls">
+      <HintPath>..\dependencies\Our\umbracoMemberControls.dll</HintPath>
     </Reference>
     <Reference Include="uPowers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\forigndlls\uPowers.dll</HintPath>
@@ -302,7 +302,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Razor\VersionCompatibilityReport.cs" />
-    <Compile Include="Rest.cs" />
     <Compile Include="usercontrols\Deli\Admin\OrderReview.ascx.cs">
       <DependentUpon>OrderReview.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -520,13 +519,6 @@
     <Compile Include="usercontrols\Deli\ProjectsList.ascx.designer.cs">
       <DependentUpon>ProjectsList.ascx</DependentUpon>
     </Compile>
-    <Compile Include="usercontrols\Deli\ProjectView.ascx.cs">
-      <DependentUpon>ProjectView.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ProjectView.ascx.designer.cs">
-      <DependentUpon>ProjectView.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx.cs">
       <DependentUpon>PayPalConfirm.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -540,13 +532,6 @@
     </Compile>
     <Compile Include="usercontrols\Deli\Purchase\PayPalPayment.ascx.designer.cs">
       <DependentUpon>PayPalPayment.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Repository\RepoProjectView.ascx.cs">
-      <DependentUpon>RepoProjectView.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Repository\RepoProjectView.ascx.designer.cs">
-      <DependentUpon>RepoProjectView.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\Deli\Support\Member\RefundRequest.ascx.cs">
       <DependentUpon>RefundRequest.ascx</DependentUpon>
@@ -631,10 +616,8 @@
     <Content Include="xslt\Deli-repository.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\Deli\ProjectView.ascx" />
     <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
     <Content Include="usercontrols\Deli\Purchase\PayPalPayment.ascx" />
-    <Content Include="usercontrols\Deli\Repository\RepoProjectView.ascx" />
     <Content Include="usercontrols\Deli\Support\Member\RefundRequest.ascx" />
     <Content Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
@@ -733,7 +716,9 @@
       <CachedSettingsPropName>Marketplace_com_umbraco_orders_Orders</CachedSettingsPropName>
     </WebReferenceUrl>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="usercontrols\Deli\Repository\" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
