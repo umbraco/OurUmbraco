@@ -14,7 +14,7 @@
     <RootNamespace>OurUmbraco.Site</RootNamespace>
     <AssemblyName>OurUmbraco.Site</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -1763,6 +1763,8 @@
     <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
     <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
     <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
@@ -4703,7 +4705,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5555</IISUrl>
+          <IISUrl>http://our.local</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

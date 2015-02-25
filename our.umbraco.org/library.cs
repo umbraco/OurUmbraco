@@ -76,9 +76,19 @@ namespace our {
         {
             try
             {
-                return Application.SqlHelper.ExecuteScalar<int>(
-                    " select count(*) from projectDownload where projectId = @id;",
-                    Application.SqlHelper.CreateParameter("@id", projectId));
+                return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @0", projectId);
+            }
+            catch
+            {
+                return 0;
+            }
+        }
+
+        public static int GetProjectTotalKarma(int projectId)
+        {
+            try
+            {
+                return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("SELECT sum([points]) FROM [powersProject] where id = @0", projectId);
             }
             catch
             {
@@ -90,10 +100,7 @@ namespace our {
         {
             try
             {
-                return Application.SqlHelper.ExecuteScalar<int>(
-                    "Select downloads from wikiFiles where id = @id;",
-                    Application.SqlHelper.CreateParameter("@id", fileId));                   
-               
+                return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("Select downloads from wikiFiles where id = @0", fileId);
             }
             catch
             {

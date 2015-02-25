@@ -1,7 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Complete.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Complete" %>
 
-
-<h1>Complete and Send Live</h1>
 <asp:PlaceHolder ID="eligibilityNotice" runat="server">
 <div class='eligibilityNotification <%=NotificationClass %>'>
     <asp:Literal runat="server" ID="NotificationMessage" />
@@ -18,5 +16,5 @@
 
     <div class="buttons">
         <asp:linkbutton runat="server" Text="Previous" ID="MovePrevious" OnClick="MoveLast"/>&nbsp;
-        <asp:Button runat="server" Text="Save" ID="MoveNext" OnClick="Complete_Click"  CssClass="submitButton"/>
+        <asp:Button runat="server" Text="Save" ID="MoveNext" OnClick="Complete_Click"  CssClass="submitButton button tiny green"/>
     </div>

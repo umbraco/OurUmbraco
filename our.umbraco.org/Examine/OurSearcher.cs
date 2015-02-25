@@ -29,12 +29,6 @@ namespace our.Examine
 
         public ISearchResults Search()
         {
-            var originalTerm = Term;
-            Term = Term.Replace(" OR ", " ").Replace(" or ", " ");
-
-            // Replace double whitespaces with single space as they were giving errors
-            Term = Regex.Replace(Term, @"\s{2,}", " ");
-
             var multiIndexSearchProvider = (MultiIndexSearcher)ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
 
             var criteria = multiIndexSearchProvider.CreateSearchCriteria();
@@ -48,10 +42,20 @@ namespace our.Examine
                 criteria.OrderByDescending(OrderBy);    
             }
 
-           var compiled = criteria
-                .GroupedOr(new[] { "nodeName", "body", "description" }, Term)
-                .Compile();
 
+            ISearchCriteria compiled;
+
+            if (string.IsNullOrEmpty(Term))
+                compiled = criteria.NodeTypeAlias(NodeTypeAlias).Compile();
+            else
+            {
+                Term = Term.Replace(" OR ", " ").Replace(" or ", " ");
+                // Replace double whitespaces with single space as they were giving errors
+                Term = Regex.Replace(Term, @"\s{2,}", " ");
+                compiled = criteria
+                            .GroupedOr(new[] { "nodeName", "body", "description" }, Term)
+                            .Compile();
+            }
 
             //TODO: The result.TotalSearchResults will yield a max of 100 which is incorrect, this  is an issue 
             // in Examine, it needs to limit the results to 100 but still tell you how many in total

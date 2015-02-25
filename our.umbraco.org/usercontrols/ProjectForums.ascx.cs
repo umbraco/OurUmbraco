@@ -149,6 +149,24 @@ namespace our.usercontrols {
                     fnode.Publish(new umbraco.BusinessLogic.User(0));
                     fnode.Save();
                     umbraco.library.UpdateDocumentCache(fnode.Id);
+
+                    using (var fs = new ForumService())
+                    {
+                        Forum f = fs.GetById(fnode.Id);
+
+                        if (f == null)
+                        {
+                            f = new Forum();
+                            f.Id = fnode.Id;
+                            f.ParentId = fnode.ParentId;
+                            f.SortOrder = 0;
+                            f.TotalTopics = 0;
+                            f.TotalComments = 0;
+                            f.LatestPostDate = DateTime.Now;
+                            fs.Save(f);
+                        }
+
+                    }
                 }
 
                 

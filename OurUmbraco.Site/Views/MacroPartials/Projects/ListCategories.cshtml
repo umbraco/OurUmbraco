@@ -1,0 +1,13 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+
+@* Ensure that the Current Page has children, where the property umbracoNaviHide is not True *@
+    <ul class="level-2">
+	    @* For each child page under the root node, where the property umbracoNaviHide is not True *@
+        @foreach (var childPage in CurrentPage.ProjectGroups.Where("Visible"))
+        {
+            <li>
+                <h4><a href="@childPage.Url">@childPage.Name</a></h4>
+            </li>
+        }
+    </ul>
