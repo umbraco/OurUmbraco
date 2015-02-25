@@ -257,7 +257,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
                         string selected = "checked='true'";
                         if (uv.Version != defaultVersion)
                             selected = "";
-                        umboptions += string.Format("<input type='checkbox' name='wiki_version' value='{0}' {2}/> {1}</br>", uv.Version, uv.Name, selected);
+                        umboptions += string.Format("<input type='checkbox' name='wiki_version' value='{0}' {2}/><span> {1}</span></br>", uv.Version, uv.Name, selected);
                     }
 
                     lt_versions.Text = umboptions;

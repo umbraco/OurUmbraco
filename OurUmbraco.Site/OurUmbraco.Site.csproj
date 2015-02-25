@@ -14,7 +14,7 @@
     <RootNamespace>OurUmbraco.Site</RootNamespace>
     <AssemblyName>OurUmbraco.Site</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <UseIISExpress>false</UseIISExpress>
+    <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -344,12 +344,16 @@
     <Content Include="Assets\images\karma.svg" />
     <Content Include="Assets\images\package2.png" />
     <Content Include="Assets\images\reply.svg" />
+    <Content Include="Assets\images\selectdown_our.svg" />
+    <Content Include="Assets\images\selectdown_unfocus.svg" />
+    <Content Include="Assets\images\sign-in-with-google.png" />
     <Content Include="Assets\images\solved.gif" />
     <Content Include="Assets\images\tools.png" />
     <Content Include="Assets\js\app.min.js" />
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
+    <Content Include="Assets\js\lodash.min.js" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
@@ -1762,6 +1766,7 @@
     <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
     <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
     <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
+    <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4697,7 +4702,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://our.local</IISUrl>
+          <IISUrl>http://localhost:5555</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

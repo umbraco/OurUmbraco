@@ -38,7 +38,8 @@
     <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
 
     <umbraco:Macro Alias="[Members]JsValues" runat="server" />
-	
+
+
     <asp:ContentPlaceHolder ID="Head" runat="server"></asp:ContentPlaceHolder>
     <script>
         var _prum = [['id', '529dbcf6abe53d055a000000'],
@@ -121,6 +122,7 @@
 
 <script src="/assets/js/jquery.ajaxfileupload.js"></script>
 <script src="/assets/js/jquery.scrolly.js"></script>
+<script src="/assets/js/lodash.min.js"></script>
 
 
 <script src="/assets/js/community.js"></script>

@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Files.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Files" %>
-<h1>Files</h1>
+<div class="files">
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
 <script type="text/javascript">
     var swfu;
@@ -161,7 +161,7 @@
     <fieldset>
     <legend>Upload file</legend>
     
-    <div id="swfu_container" style="margin: 0px 10px;">
+    <div id="swfu_container">
     
     <div id="swfu_controls">
     
@@ -193,15 +193,17 @@
                 <option value="source">Source Code</option>
               </select>
         </p>
+        
+        <div class="pickversionWrapper">        
+            <p id="pickVersion">
+                  <label class="inputLabel">Choose umbraco version</label>
                 
-        <p id="pickVersion">
-              <label class="inputLabel">Choose umbraco version</label>
-                <div style="float:left">
+         
+            </p>
+            <div class="pickVersion">
                 <asp:literal ID="lt_versions" runat="server" />
                 </div>
-         
-        </p>
-
+        </div>
         <p id="pickNetVersion">
               <label class="inputLabel">Choose supported .NET runtime</label>
             
@@ -219,13 +221,13 @@
         </p>
         
         <p>
-            <input type="button" value="Upload file" id="btn_submit" />
+            <input type="button" value="Upload file" id="btn_submit" class="button tiny" />
         </p>
 
     </div>
     <div class="buttons">
 <asp:linkbutton runat="server" Text="Previous" ID="MovePrevious" OnClick="MoveLast"/>&nbsp;
-<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton"/>
+<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton button green tiny"/>
 </div>
     </div>
     </fieldset>
@@ -235,3 +237,4 @@
     			       
  </div>
  </asp:PlaceHolder>
+</div>

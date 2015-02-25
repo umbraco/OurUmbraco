@@ -11,14 +11,16 @@ using System.Xml;
 using System.Text;
 using uForum.Models;
 using uForum.Services;
+using System.Globalization;
+using our.Examine.DocumentationIndexDataService.Helper;
 
 namespace our
 {
-
+   
     /// <summary>
     /// The data service used by the LuceneEngine in order for it to reindex all data
     /// </summary>
-    public class CustomDataService : ISimpleDataService
+    public class ForumDataService : ISimpleDataService
     {
         private static int m_CurrentId = 0;
 
@@ -32,6 +34,9 @@ namespace our
         /// </summary>
         /// <param name="indexType"></param>
         /// <returns></returns>
+        /// 
+        
+
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
             var data = new List<SimpleDataSet>();
@@ -39,7 +44,7 @@ namespace our
             using(var ts = new TopicService())
             using (var cs = new CommentService())
             {
-                foreach (var currentTopic in ts.GetAll())
+                foreach (var currentTopic in ts.GetAll().Take(1000))
                 {
                     //First generate the accumulated comment text:
                     string commentText = String.Empty;
@@ -47,6 +52,7 @@ namespace our
                     foreach (var currentComment in cs.GetComments(currentTopic.Id))
                         commentText += umbraco.library.StripHtml(currentComment.Body);
 
+                    var body = currentTopic.Body + commentText;
 
                     //Add the item to the index..
                     data.Add(new SimpleDataSet()
@@ -55,27 +61,30 @@ namespace our
                         NodeDefinition = new IndexedNode()
                         {
                             NodeId = currentTopic.Id,
-                            Type = "ForumPosts"
+                            Type = "forum"
                         },
                         //add the data to the row
                         RowData = new Dictionary<string, string>() 
-                    {
-                        { "Title", SanitizeXmlString(currentTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                        { "Body", SanitizeXmlString(currentTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                        { "Created", currentTopic.Created.ToString()},
-                        { "LatestComment", currentTopic.LatestComment.ToString()},
-                        { "LatestReplyAuthor", currentTopic.LatestReplyAuthor.ToString()},
-                        { "Locked", currentTopic.Locked.ToString()},
-                        { "MemberId", currentTopic.MemberId.ToString()},
-                        { "ParentId", currentTopic.ParentId.ToString()},
-                        { "Replies", currentTopic.Replies.ToString()},
-                        { "Updated", currentTopic.Updated.ToString()},
-                        { "UrlName", currentTopic.UrlName.ToString()},
-                        {"nodeTypeAlias","forumPost"},
-                        { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
-                    }
+                        {
+                            { "nodeName", SanitizeXmlString(currentTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
+                            { "body", SanitizeXmlString(umbraco.library.StripHtml(body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
+                            { "updateDate", currentTopic.Updated.SerializeForLucene()},
+                            { "url", currentTopic.Url},
+                            { "nodeTypeAlias","forum"},
+
+
+                            { "Created", currentTopic.Created.ToString()},
+                            { "LatestComment", currentTopic.LatestComment.ToString()},
+                            { "LatestReplyAuthor", currentTopic.LatestReplyAuthor.ToString()},
+                            { "Locked", currentTopic.Locked.ToString()},
+                            { "MemberId", currentTopic.MemberId.ToString()},
+                            { "ParentId", currentTopic.ParentId.ToString()},
+                            { "Replies", currentTopic.Replies.ToString()},
+                            { "UrlName", currentTopic.UrlName.ToString()}
+                        }
                     });
 
+                    // 
                 }
 
                 return data;
@@ -95,11 +104,11 @@ namespace our
                 string commentText = String.Empty;
                 return new SimpleDataSet()
                 {
-                    NodeDefinition = new IndexedNode() { NodeId = (++m_CurrentId), Type = "ForumPosts" },
+                    NodeDefinition = new IndexedNode() { NodeId = (++m_CurrentId), Type = "forum" },
                     RowData = new Dictionary<string, string>() 
                     {
                         { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                        { "Body", SanitizeXmlString(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
+                        { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
                         { "Created", forumTopic.Created.ToString()},
                         { "LatestComment", forumTopic.LatestComment.ToString()},
                         { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
@@ -107,9 +116,9 @@ namespace our
                         { "MemberId", forumTopic.MemberId.ToString()},
                         { "ParentId", forumTopic.ParentId.ToString()},
                         { "Replies", forumTopic.Replies.ToString()},
-                        { "Updated", forumTopic.Updated.ToString()},
                         { "UrlName", forumTopic.UrlName.ToString()},
-                        {"nodeTypeAlias","forumPost"},
+                        {"nodeTypeAlias","forum"},
+                        { "updateDate", forumTopic.Updated.SerializeForLucene()},
                         { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                     }
                 };
@@ -135,11 +144,11 @@ namespace our
 
                     return new SimpleDataSet()
                     {
-                        NodeDefinition = new IndexedNode() { NodeId = (id), Type = "ForumPosts" },
+                        NodeDefinition = new IndexedNode() { NodeId = (id), Type = "forum" },
                         RowData = new Dictionary<string, string>() 
                         {
                             { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                            { "Body", SanitizeXmlString(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
+                            { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
                             { "Created", forumTopic.Created.ToString()},
                             { "LatestComment", forumTopic.LatestComment.ToString()},
                             { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
@@ -147,9 +156,9 @@ namespace our
                             { "MemberId", forumTopic.MemberId.ToString()},
                             { "ParentId", forumTopic.ParentId.ToString()},
                             { "Replies", forumTopic.Replies.ToString()},
-                            { "Updated", forumTopic.Updated.ToString()},
                             { "UrlName", forumTopic.UrlName.ToString()},
-                            {"nodeTypeAlias","forumPost"},
+                            {"nodeTypeAlias","forum"},
+                            { "updateDate", forumTopic.Updated.SerializeForLucene()},
                             { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                         }
                     };
