@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-
-//WB Added
+using System.Text;
 using Examine;
 using Examine.LuceneEngine;
-using System.Data;
-using System.Xml;
-using System.Text;
 using uForum.Models;
 using uForum.Services;
-using System.Globalization;
-using our.Examine.DocumentationIndexDataService.Helper;
+//WB Added
 
-namespace our
+namespace our.Examine
 {
    
     /// <summary>

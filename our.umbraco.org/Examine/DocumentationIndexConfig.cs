@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace our.Examine.DocumentationIndexDataService
+namespace our.Examine
 {
     public sealed class DocumentationIndexConfig : ConfigurationSection
     {

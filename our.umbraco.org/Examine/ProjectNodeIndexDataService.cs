@@ -1,21 +1,18 @@
-﻿using Examine;
-using Examine.LuceneEngine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
-using Umbraco.Core.Models;
-using our.Examine.DocumentationIndexDataService.Helper;
+using Examine;
+using Examine.LuceneEngine;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
-namespace our.ExamineServices
+namespace our.Examine
 {
     /// <summary>
     /// Data service used for projects

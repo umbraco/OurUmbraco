@@ -1,14 +1,13 @@
-﻿using System.Globalization;
-using System.IO;
-using System.Linq;
-using Examine.LuceneEngine;
-using System;
-using System.Text.RegularExpressions;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Text.RegularExpressions;
 using Examine;
+using Examine.LuceneEngine;
 using Umbraco.Core.Logging;
 
-namespace our.Examine.DocumentationIndexDataService.Helper
+namespace our.Examine
 {
     public static class ExamineHelper
     {

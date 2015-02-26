@@ -4,11 +4,10 @@ using System.IO;
 using System.Web;
 using Examine;
 using Examine.LuceneEngine;
-using our.Examine.DocumentationIndexDataService.Helper;
 using uDocumentation.Busineslogic.GithubSourcePull;
 using umbraco.BusinessLogic;
 
-namespace our.Examine.DocumentationIndexDataService
+namespace our.Examine
 {
     /// <summary>
     /// Used to index the documentation 
