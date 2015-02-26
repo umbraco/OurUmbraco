@@ -58,80 +58,12 @@
 			    </div>
 
                 <div class="markdown-syntax">
-                    <h1>All Releases</h1>
-                    <p><em>This page lists all of the available Umbraco releases. Past, present and future.</em></p>
-                </div><!-- #markdown-docs -->
 
-				<div class="row">
-					<div class="col-xs-3">
-						<span class="dot big icon-untitled">
-							<span class="line v-line"></span>
-							<span class="line h-line"></span>
-						</span>
-                        <umbraco:Macro ID="Macro1" runat="server" Language="cshtml">
-                                    @using uRelease
-                                    @{
-                                        var properlySortedVersions = new Dictionary<System.Version, umbraco.MacroEngines.DynamicNode>();
-                                        int result = 0;
-                                        foreach(var release in Model.Children) {
-                                            if(release.ReleaseStatus == "Released" && release.RecommendedRelease == false) {
-                                                result++;    
-                                            }
-                                        }
+                    <div data-bind="template: { name: 'releases-template', foreach: currentReleases }"></div>
 
-                                        for (int i = 0; i < result; i += 2) {
-                                             
-                                            if (i != result-2 || i != result-3) {
-                                                <span class="dot small">
-                                                    <span class="line v-line"></span>
-                                                    <span class="line h-line"></span> 
-							                    </span>
-                                            }else{
-                                                <span class="dot small">
-                                                    <span class="line h-line"></span> 
-                                                </span>
-                                            }
-                                        }
-                                    }
-                        </umbraco:Macro>
-						
-					</div>
-						
-					<div class="col-xs-9">
-                        <div class="row explain">    
-                            <div class="dl-content" data-bind="template: { name: 'releases-template', foreach: currentReleases }">
-
-					        </div>
-                            
-                            <umbraco:Macro ID="Macro2" runat="server" Language="cshtml">
-                                @{
-                                        var properlySortedVersions = new Dictionary<System.Version, umbraco.MacroEngines.DynamicNode>();
-                                        foreach(var release in Model.Children) {
-                                            if(release.ReleaseStatus == "Released" && release.RecommendedRelease == false) {
-                                                properlySortedVersions.Add(new System.Version(release.Name), release);
-                                            }
-                                        }
-                                    }
-
-                                    @foreach(var item in properlySortedVersions.OrderByDescending(x => x.Key)) {
-                                        umbraco.MacroEngines.DynamicNode release = item.Value;
-                                        <div class="col-xs-6">
-                                            @* Archived releases don't exist on YouTrack, so they need an alternative template *@
-                                            @if(release.GetProperty("Archived") != null && release.GetProperty("Archived").Value == "1"){
-                                                <h5><a href="/contribute/releases/@(release.Name.Replace(".", ""))/ArchivedRelease/">v @release.Name</a></h5>
-									            <small>What is needed to run Umbraco?</small>
-                                            } else {
-                                                <h5><a href="/contribute/releases/@(release.Name.Replace(".", ""))/"> @release.Name</a></h5>
-							                    <small>What is needed to run Umbraco?</small>
-                                            }
-                                        </div>
-                                    }
-                            </umbraco:Macro>
-                            </div>
-						</div>
-                        
-					</div>
-			
+				    <umbraco:Macro Alias="[Releases]AllReleases" runat="server" />
+			    
+                </div>
 
 
 
@@ -143,12 +75,22 @@
   </div>
 
     <script type="text/html" id="releases-template">
+        <h1>Recommended release</h1>
+        <em>Want the latest stable release - we recommend this one</em>
 
-        <div class="col-xs-12">
-		    <h4><a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }">v6.2.4</a></h5>
-		    <small data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></small>
-	    </div>
-
+        <div class="row">
+            <div class="col-xs-3">
+                <span class="dot big icon-untitled"><span class="line h-line"></span></span>
+            </div>
+            <div class="col-xs-9">
+                <div class="row explain">    
+                    <div class="col-xs-12">
+		                <h4><a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }">v6.2.4</a></h4>
+		                <small data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></small>
+	                </div>
+	            </div>
+            </div>
+        </div>
     </script>
     
     <script type="text/javascript">
