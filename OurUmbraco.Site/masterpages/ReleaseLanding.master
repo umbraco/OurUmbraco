@@ -158,7 +158,6 @@
             ko.applyBindings(viewModel);
             // Load data
             loadAllData();
-            console.log(viewModel);
         })();
         </script>
 </asp:Content>

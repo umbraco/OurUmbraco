@@ -81,9 +81,7 @@
                                 v<umbraco:Item ID="Item1" field="pageName" runat="server" />
                                 <umbraco:Macro ID="Macro5" Language="cshtml" runat="server">
 	                                @if(Model.HasValue("releaseNotes")) {
-		                                <small>
-                                            <p>@Model.releaseNotes</p>
-                                        </small>
+		                                <small><p>@Model.releaseNotes</p></small>
 	                                }
                                 </umbraco:Macro>
                             </h4>
