@@ -35,7 +35,7 @@ namespace Marketplace.usercontrols.Deli.Profile
             var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
 
 
-            var projects = provider.GetListingsByVendor(member.Id, true, true);
+            var projects = provider.GetListingsByVendor(member.Id, true, true).OrderBy(x=> x.Name);
             myProjects.DataSource = projects;
             myProjects.DataBind();
 

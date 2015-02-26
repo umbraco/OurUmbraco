@@ -1,0 +1,71 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+  
+  
+<asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
+  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />
+  <!-- release scripts -->
+  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
+  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
+  <script src="/Scripts/humane.js" type="text/javascript"></script>
+  <script src="/Scripts/app.js?v=5" type="text/javascript"></script>
+</asp:Content>
+
+<asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
+
+    <section class="download-umbraco">
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-xs-12">
+
+					<div class="dl-content" data-bind="template: { name: 'download-template', foreach: currentReleases }">
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="archive">
+			<a href="/contribute/releases/">See releases</a>
+		</div>
+
+	</section>
+
+    <script type="text/html" id="download-template">
+
+			<h1>Download Umbraco</h1>
+			<p>If you're new to Umbraco you might want to start your install with the versions on the <a href="/documentation/getting-started/installation/">Web Platform Installer or WebMatrix</a>. These tools will automatically download and install any dependencies to give you a flying start.</p>
+					
+			<a data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" class="button white">
+                <i class="icon-Download-alt"></i>
+                <span data-bind="text: releaseStatus() === null ? 'Download Umbraco v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase()"></span>
+			</a>
+
+			<p class="small">or, install via nuget</p>
+
+			<span class="pm-nuget"><input class="pre nuget" value="Install-Package UmbracoCms" READONLY></input><span>
+
+    </script>
+
+    <script type="text/javascript">
+        (function () {
+
+            // Apply bindings
+            ko.applyBindings(viewModel);
+            // Load data
+            loadAllData();
+            console.log(viewModel);
+        })();
+
+        </script>
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
+  
+</asp:Content>

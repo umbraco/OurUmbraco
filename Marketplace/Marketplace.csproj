@@ -72,6 +72,9 @@
     <Reference Include="CookComputing.XmlRpcV2">
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
     </Reference>
+    <Reference Include="Elmah">
+      <HintPath>..\dependencies\Our\Elmah.dll</HintPath>
+    </Reference>
     <Reference Include="Examine">
       <HintPath>..\packages\Examine.0.1.57.2941\lib\Examine.dll</HintPath>
     </Reference>
@@ -99,26 +102,30 @@
     </Reference>
     <Reference Include="Marketplace.BusinessLogic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.Presentation">
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
+    <Reference Include="Marketplace.Presentation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Providers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Umbraco, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Our\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
+      <HintPath>..\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
+    </Reference>
+    <Reference Include="MarketPlace.Webservices">
+      <HintPath>..\dependencies\MarketPlace\MarketPlace.Webservices.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
@@ -144,15 +151,6 @@
     <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NotificationsCore">
-      <HintPath>..\forigndlls\NotificationsCore.dll</HintPath>
-    </Reference>
-    <Reference Include="NotificationsWeb">
-      <HintPath>..\forigndlls\NotificationsWeb.dll</HintPath>
-    </Reference>
-    <Reference Include="our.umbraco.org, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\our.umbraco.org.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\SQLCE4Umbraco.dll</HintPath>
@@ -216,9 +214,6 @@
     <Reference Include="TidyNet">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\TidyNet.dll</HintPath>
     </Reference>
-    <Reference Include="uComponents.Core, Version=2.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\uComponents.Core.dll</HintPath>
-    </Reference>
     <Reference Include="uForum, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\forigndlls\uForum.dll</HintPath>
     </Reference>
@@ -232,8 +227,8 @@
     <Reference Include="umbraco.DataLayer">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.DataLayer.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Ecommerce, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\forigndlls\Umbraco.Ecommerce.dll</HintPath>
+    <Reference Include="Umbraco.Ecommerce">
+      <HintPath>..\dependencies\Our\Umbraco.Ecommerce.dll</HintPath>
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.5350.25721, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -246,7 +241,7 @@
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.providers.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Support">
-      <HintPath>..\forigndlls\Umbraco.Support.dll</HintPath>
+      <HintPath>..\dependencies\Our\Umbraco.Support.dll</HintPath>
     </Reference>
     <Reference Include="Umbraco.Web.UI">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Umbraco.Web.UI.dll</HintPath>
@@ -257,8 +252,8 @@
     <Reference Include="UmbracoExamine">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\UmbracoExamine.dll</HintPath>
     </Reference>
-    <Reference Include="umbracoMemberControls, Version=1.0.2259.24439, Culture=neutral">
-      <HintPath>..\forigndlls\umbracoMemberControls.dll</HintPath>
+    <Reference Include="umbracoMemberControls">
+      <HintPath>..\dependencies\Our\umbracoMemberControls.dll</HintPath>
     </Reference>
     <Reference Include="uPowers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\forigndlls\uPowers.dll</HintPath>
@@ -271,24 +266,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="adhoc\setalllive.aspx.cs">
-      <DependentUpon>setalllive.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="adhoc\setalllive.aspx.designer.cs">
-      <DependentUpon>setalllive.aspx</DependentUpon>
-    </Compile>
     <Compile Include="Controls\CountryDropDown.cs" />
-    <Compile Include="Events\DeliNotificationEvents.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
-    <Compile Include="HttpHandlers\PayPalIPN.cs" />
-    <Compile Include="HttpHandlers\PayPalIPNHandler.cs" />
     <Compile Include="library.cs" />
-    <Compile Include="NotificationTypes\DeliNotifyVendor.cs" />
-    <Compile Include="NotificationTypes\DeliNewMember.cs" />
-    <Compile Include="NotificationTypes\DeliOrderComplete.cs" />
-    <Compile Include="NotificationTypes\DeliPayoutRequest.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -297,91 +279,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Razor\VersionCompatibilityReport.cs" />
-    <Compile Include="Rest.cs" />
-    <Compile Include="usercontrols\Deli\Admin\OrderReview.ascx.cs">
-      <DependentUpon>OrderReview.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\OrderReview.ascx.designer.cs">
-      <DependentUpon>OrderReview.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\ProcessRefund.ascx.cs">
-      <DependentUpon>ProcessRefund.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\ProcessRefund.ascx.designer.cs">
-      <DependentUpon>ProcessRefund.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\VendorPayout.ascx.cs">
-      <DependentUpon>VendorPayout.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\VendorPayout.ascx.designer.cs">
-      <DependentUpon>VendorPayout.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\VendorPayoutReport.ascx.cs">
-      <DependentUpon>VendorPayoutReport.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Admin\VendorPayoutReport.ascx.designer.cs">
-      <DependentUpon>VendorPayoutReport.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\Cart.ascx.cs">
-      <DependentUpon>Cart.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\Cart.ascx.designer.cs">
-      <DependentUpon>Cart.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartDetails.ascx.cs">
-      <DependentUpon>CartDetails.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartDetails.ascx.designer.cs">
-      <DependentUpon>CartDetails.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartProgress.ascx.cs">
-      <DependentUpon>CartProgress.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartProgress.ascx.designer.cs">
-      <DependentUpon>CartProgress.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartReview.ascx.cs">
-      <DependentUpon>CartReview.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\CartReview.ascx.designer.cs">
-      <DependentUpon>CartReview.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\MicroCart.ascx.cs">
-      <DependentUpon>MicroCart.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Cart\MicroCart.ascx.designer.cs">
-      <DependentUpon>MicroCart.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Customers\VendorCustomers.ascx.cs">
-      <DependentUpon>VendorCustomers.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Customers\VendorCustomers.ascx.designer.cs">
-      <DependentUpon>VendorCustomers.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Dashboard\VendorBIOverview.ascx.cs">
-      <DependentUpon>VendorBIOverview.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Dashboard\VendorBIOverview.ascx.designer.cs">
-      <DependentUpon>VendorBIOverview.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Dashboard\VendorProjectBI.ascx.cs">
-      <DependentUpon>VendorProjectBI.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Dashboard\VendorProjectBI.ascx.designer.cs">
-      <DependentUpon>VendorProjectBI.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\FeaturedProject.ascx.cs">
       <DependentUpon>FeaturedProject.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -395,20 +292,6 @@
     </Compile>
     <Compile Include="usercontrols\Deli\HQStaffPickProjects.ascx.designer.cs">
       <DependentUpon>HQStaffPickProjects.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\License\Member\MyLicenses.ascx.cs">
-      <DependentUpon>MyLicenses.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\License\Member\MyLicenses.ascx.designer.cs">
-      <DependentUpon>MyLicenses.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\License\Vendor\ProjectLicenses.ascx.cs">
-      <DependentUpon>ProjectLicenses.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\License\Vendor\ProjectLicenses.ascx.designer.cs">
-      <DependentUpon>ProjectLicenses.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\Deli\ListPagination.ascx.cs">
       <DependentUpon>ListPagination.ascx</DependentUpon>
@@ -466,33 +349,12 @@
     <Compile Include="usercontrols\Deli\Package\Steps\Files.ascx.designer.cs">
       <DependentUpon>Files.ascx</DependentUpon>
     </Compile>
-    <Compile Include="usercontrols\Deli\Payout\VendorPayout.ascx.cs">
-      <DependentUpon>VendorPayout.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Payout\VendorPayout.ascx.designer.cs">
-      <DependentUpon>VendorPayout.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx.cs">
-      <DependentUpon>VendorPayoutHistory.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx.designer.cs">
-      <DependentUpon>VendorPayoutHistory.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\PopularProjects.ascx.cs">
       <DependentUpon>PopularProjects.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="usercontrols\Deli\PopularProjects.ascx.designer.cs">
       <DependentUpon>PopularProjects.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Profile\MemberDataLookup.ascx.cs">
-      <DependentUpon>MemberDataLookup.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Profile\MemberDataLookup.ascx.designer.cs">
-      <DependentUpon>MemberDataLookup.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\Deli\Profile\MyProjects.ascx.cs">
       <DependentUpon>MyProjects.ascx</DependentUpon>
@@ -515,48 +377,6 @@
     <Compile Include="usercontrols\Deli\ProjectsList.ascx.designer.cs">
       <DependentUpon>ProjectsList.ascx</DependentUpon>
     </Compile>
-    <Compile Include="usercontrols\Deli\ProjectView.ascx.cs">
-      <DependentUpon>ProjectView.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ProjectView.ascx.designer.cs">
-      <DependentUpon>ProjectView.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx.cs">
-      <DependentUpon>PayPalConfirm.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx.designer.cs">
-      <DependentUpon>PayPalConfirm.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Purchase\PayPalPayment.ascx.cs">
-      <DependentUpon>PayPalPayment.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Purchase\PayPalPayment.ascx.designer.cs">
-      <DependentUpon>PayPalPayment.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Repository\RepoProjectView.ascx.cs">
-      <DependentUpon>RepoProjectView.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Repository\RepoProjectView.ascx.designer.cs">
-      <DependentUpon>RepoProjectView.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Support\Member\RefundRequest.ascx.cs">
-      <DependentUpon>RefundRequest.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Support\Member\RefundRequest.ascx.designer.cs">
-      <DependentUpon>RefundRequest.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx.cs">
-      <DependentUpon>VendorSupportRequest.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx.designer.cs">
-      <DependentUpon>VendorSupportRequest.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\TopPaidProjectsList.ascx.cs">
       <DependentUpon>TopPaidProjectsList.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -573,40 +393,15 @@
     </Compile>
     <Compile Include="uVersion\config.cs" />
     <Compile Include="uVersion\uVersion.cs" />
-    <Compile Include="Web References\com.umbraco.orders\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
-    <Compile Include="Web References\com.umbraco\Reference.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Reference.map</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="adhoc\setalllive.aspx" />
     <Content Include="Css\Deli.css" />
     <Content Include="Css\DeliAdmin.css" />
     <Content Include="Razor\versionCompatibilityReport.cshtml" />
     <Content Include="packages.config" />
     <None Include="Razor\versionCompatibility.cshtml" />
-    <Content Include="usercontrols\Deli\Admin\OrderReview.ascx" />
-    <Content Include="usercontrols\Deli\Admin\ProcessRefund.ascx" />
-    <Content Include="usercontrols\Deli\Admin\VendorPayout.ascx" />
-    <Content Include="usercontrols\Deli\Admin\VendorPayoutReport.ascx" />
-    <Content Include="usercontrols\Deli\Cart\Cart.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartDetails.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartProgress.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartReview.ascx" />
-    <Content Include="usercontrols\Deli\Cart\MicroCart.ascx" />
-    <Content Include="usercontrols\Deli\Customers\VendorCustomers.ascx" />
-    <Content Include="usercontrols\Deli\Dashboard\VendorBIOverview.ascx" />
-    <Content Include="usercontrols\Deli\Dashboard\VendorProjectBI.ascx" />
     <Content Include="usercontrols\Deli\FeaturedProject.ascx" />
     <Content Include="usercontrols\Deli\HQStaffPickProjects.ascx" />
-    <Content Include="usercontrols\Deli\License\Member\MyLicenses.ascx" />
-    <Content Include="usercontrols\Deli\License\Vendor\ProjectLicenses.ascx" />
     <Content Include="usercontrols\Deli\ListPagination.ascx" />
     <Content Include="usercontrols\Deli\NewestProjects.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Complete.ascx" />
@@ -615,23 +410,13 @@
     <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
     <Content Include="usercontrols\Deli\Package\Editor.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Files.ascx" />
-    <Content Include="usercontrols\Deli\Payout\VendorPayout.ascx" />
-    <Content Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx" />
     <Content Include="usercontrols\Deli\PopularProjects.ascx" />
-    <Content Include="usercontrols\Deli\Profile\MemberDataLookup.ascx" />
     <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
     <Content Include="usercontrols\Deli\ProjectsList.ascx" />
     <Content Include="usercontrols\our.umbraco.org\Login_novalidationscript.ascx" />
-    <Content Include="xslt\Deli-repository.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\Deli\ProjectView.ascx" />
-    <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
-    <Content Include="usercontrols\Deli\Purchase\PayPalPayment.ascx" />
-    <Content Include="usercontrols\Deli\Repository\RepoProjectView.ascx" />
-    <Content Include="usercontrols\Deli\Support\Member\RefundRequest.ascx" />
-    <Content Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
     <Content Include="usercontrols\our.umbraco.org\HeaderLogin.ascx" />
     <Content Include="usercontrols\umbracoMemberControls\umbLogin.ascx" />
@@ -650,30 +435,9 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <None Include="Web References\com.umbraco.orders\BuyerProxy.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\com.umbraco.orders\OrderProxy.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\com.umbraco.orders\orders.wsdl" />
-    <None Include="Web References\com.umbraco.orders\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
-    <None Include="Web References\com.umbraco\MemberData.datasource">
-      <DependentUpon>Reference.map</DependentUpon>
-    </None>
-    <None Include="Web References\com.umbraco\memberlookup.disco" />
-    <None Include="Web References\com.umbraco.orders\orders.disco" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Web References\com.umbraco\memberlookup.wsdl" />
-    <None Include="Web References\com.umbraco\Reference.map">
-      <Generator>MSDiscoCodeGenerator</Generator>
-      <LastGenOutput>Reference.cs</LastGenOutput>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Razor\Deli-TagCloud.cshtml" />
@@ -697,38 +461,23 @@
     <Content Include="Razor\Deli-MyProjects.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="NotificationTypes\Notification.config">
-      <SubType>Designer</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
     <WebReferences Include="Web References\" />
   </ItemGroup>
-  <ItemGroup>
-    <WebReferenceUrl Include="http://umbraco.com/umbraco/plugins/memberlookup/memberlookup.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\com.umbraco\</RelPath>
-      <UpdateFromURL>http://umbraco.com/umbraco/plugins/memberlookup/memberlookup.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Marketplace_com_umbraco_MemberLookUp</CachedSettingsPropName>
-    </WebReferenceUrl>
-    <WebReferenceUrl Include="http://umbraco.com/webservices/orders.asmx">
-      <UrlBehavior>Dynamic</UrlBehavior>
-      <RelPath>Web References\com.umbraco.orders\</RelPath>
-      <UpdateFromURL>http://umbraco.com/webservices/orders.asmx</UpdateFromURL>
-      <ServiceLocationURL>
-      </ServiceLocationURL>
-      <CachedDynamicPropName>
-      </CachedDynamicPropName>
-      <CachedAppSettingsObjectName>Settings</CachedAppSettingsObjectName>
-      <CachedSettingsPropName>Marketplace_com_umbraco_orders_Orders</CachedSettingsPropName>
-    </WebReferenceUrl>
-  </ItemGroup>
   <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
+      <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
+      <Name>NotificationsWeb</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Notification\Notification.csproj">
+      <Project>{80e5f59d-a7a0-4cee-aeb6-6c626c44b2b2}</Project>
+      <Name>Notification</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\our.umbraco.org\our.umbraco.org.csproj">
+      <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
+      <Name>our.umbraco.org</Name>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -756,9 +505,8 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
-    <PostBuildEvent>xcopy /s /y "$(TargetDir)marketplace*.*" "$(SolutionDir)OurUmbraco.Site\bin\"
-xcopy /s /y "$(ProjectDir)*.ascx" "$(SolutionDir)OurUmbraco.Site\"
-xcopy /s /y "$(ProjectDir)razor\*.cshtml" "$(SolutionDir)OurUmbraco.Site\macroscripts\"
+    <PostBuildEvent>XCOPY "$(ProjectDir)usercontrols\Deli\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\Deli" /y /s
+
 </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

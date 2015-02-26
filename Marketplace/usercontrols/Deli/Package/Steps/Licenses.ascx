@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Licenses.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Licenses" %>
-<h1>Licenses</h1>
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
     <div class="form simpleForm" id="registrationForm">
     

@@ -30,7 +30,7 @@ namespace uDocumentation
             url = url.Replace(".aspx", string.Empty);
 
 
-            if (url.Length > 0 && (url.StartsWith(MarkdownLogic.BaseUrl) || url.Contains("/documentation/")) && !IsImage(url))
+            if (url.Length > 0 && (url.ToLower().StartsWith(MarkdownLogic.BaseUrl) || url.ToLower().Contains("/documentation/")) && !IsImage(url))
             {
                 bool redirect = false;
                 //take care of those versioned urls
@@ -87,6 +87,7 @@ namespace uDocumentation
                 {
                     XmlAttribute legacyNodeTypeAliasAttribute = urlNode.Attributes["nodeTypeAlias"];
                     string nodeTypeAlias = legacyNodeTypeAliasAttribute == null ? string.Empty : legacyNodeTypeAliasAttribute.Value;
+                    
                     if (urlNode.Name == MarkdownLogic.DocumentTypeAlias || nodeTypeAlias == MarkdownLogic.DocumentTypeAlias || urlNode.Name == "Projects")
                     {
                         HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey] = markdownPath;

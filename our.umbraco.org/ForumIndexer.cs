@@ -10,6 +10,8 @@ using Examine.LuceneEngine.Providers;
 using our;
 using umbraco.BusinessLogic;
 
+
+
 namespace our
 {
     public class ForumIndexer : ApplicationBase
@@ -30,9 +32,9 @@ namespace our
         void TopicService_Updated(object sender, uForum.TopicEventArgs e)
         {
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["ForumIndexer"];
-            var dataSet = ((CustomDataService)indexer.DataService).CreateNewDocument(e.Topic.Id);
+            var dataSet = ((ForumDataService)indexer.DataService).CreateNewDocument(e.Topic.Id);
             var xml = dataSet.RowData.ToExamineXml(dataSet.NodeDefinition.NodeId, dataSet.NodeDefinition.Type);
-            indexer.ReIndexNode(xml, "documents");
+            indexer.ReIndexNode(xml, "forum");
         }
 
     }

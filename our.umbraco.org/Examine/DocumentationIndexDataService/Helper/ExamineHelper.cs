@@ -47,22 +47,23 @@ namespace our.Examine.DocumentationIndexDataService.Helper
             {
                 headLine = RemoveSpecialCharacters(lines[0]);
                 lines.RemoveAt(0);
-                body = RemoveSpecialCharacters(string.Join("", lines));
+                body = umbraco.library.StripHtml( RemoveSpecialCharacters(string.Join("", lines)) );
             }
 
             simpleDataSet.NodeDefinition.NodeId = index;
             simpleDataSet.NodeDefinition.Type = indexType;
-            simpleDataSet.RowData.Add("Body", body);
-            simpleDataSet.RowData.Add("Title", headLine);
+
+            simpleDataSet.RowData.Add("body", body);
+            simpleDataSet.RowData.Add("nodeName", headLine);
+            simpleDataSet.RowData.Add("updateDate", file.CreationTime.SerializeForLucene());
+            simpleDataSet.RowData.Add("nodeTypeAlias", "documentation");
+
             simpleDataSet.RowData.Add("dateCreated", file.CreationTime.ToString("yyyy-MM-dd-HH:mm:ss"));
 
             //TODO: This will always be exactly the same since all files are written at the same time IIRC
-            simpleDataSet.RowData.Add("dateCreatedSearchAble", file.CreationTime.SerializeForLucene());
             simpleDataSet.RowData.Add("Path", file.FullName);
             simpleDataSet.RowData.Add("searchAblePath", file.FullName.Replace("\\", " ").Replace(":", ""));
-            simpleDataSet.RowData.Add("nodeTypeAlias", "document");
             simpleDataSet.RowData.Add("url", BuildUrl(file.FullName));
-            
             return simpleDataSet;
         }
 

@@ -34,7 +34,7 @@
             <a href="{umbraco.library:NiceUrl(@id)}">
               <xsl:value-of select="@nodeName"/>
             </a>
-            <xsl:if test="$linkToCurrent = 1 or position() &lt; last()">&separator;</xsl:if>
+           
           </li>
         </xsl:for-each>
         <!-- print currentpage? -->

@@ -14,7 +14,7 @@
     <RootNamespace>OurUmbraco.Site</RootNamespace>
     <AssemblyName>OurUmbraco.Site</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
-    <UseIISExpress>true</UseIISExpress>
+    <UseIISExpress>false</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
@@ -131,9 +131,6 @@
     </Reference>
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace">
-      <HintPath>..\dependencies\MarketPlace\Marketplace.dll</HintPath>
     </Reference>
     <Reference Include="Marketplace.Data">
       <HintPath>..\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
@@ -344,12 +341,16 @@
     <Content Include="Assets\images\karma.svg" />
     <Content Include="Assets\images\package2.png" />
     <Content Include="Assets\images\reply.svg" />
+    <Content Include="Assets\images\selectdown_our.svg" />
+    <Content Include="Assets\images\selectdown_unfocus.svg" />
+    <Content Include="Assets\images\sign-in-with-google.png" />
     <Content Include="Assets\images\solved.gif" />
     <Content Include="Assets\images\tools.png" />
     <Content Include="Assets\js\app.min.js" />
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
+    <Content Include="Assets\js\lodash.min.js" />
     <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
@@ -404,47 +405,6 @@
     <Content Include="ImageGen.ashx" />
     <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="images\releases\download.png" />
-    <Content Include="jqtouch\jqtouch.css" />
-    <Content Include="jqtouch\jqtouch.js" />
-    <Content Include="jqtouch\jqtouch.min.css" />
-    <Content Include="jqtouch\jqtouch.min.js" />
-    <Content Include="jqtouch\jqtouch.transitions.js" />
-    <Content Include="jqtouch\jquery.1.3.2.min.js" />
-    <Content Include="jqtouch\themes\apple\img\backButton.png" />
-    <Content Include="jqtouch\themes\apple\img\blueButton.png" />
-    <Content Include="jqtouch\themes\apple\img\cancel.png" />
-    <Content Include="jqtouch\themes\apple\img\chevron.png" />
-    <Content Include="jqtouch\themes\apple\img\grayButton.png" />
-    <Content Include="jqtouch\themes\apple\img\listArrowSel.png" />
-    <Content Include="jqtouch\themes\apple\img\listGroup.png" />
-    <Content Include="jqtouch\themes\apple\img\loading.gif" />
-    <Content Include="jqtouch\themes\apple\img\on_off.png" />
-    <Content Include="jqtouch\themes\apple\img\pinstripes.png" />
-    <Content Include="jqtouch\themes\apple\img\selection.png" />
-    <Content Include="jqtouch\themes\apple\img\thumb.png" />
-    <Content Include="jqtouch\themes\apple\img\toggle.png" />
-    <Content Include="jqtouch\themes\apple\img\toggleOn.png" />
-    <Content Include="jqtouch\themes\apple\img\toolbar.png" />
-    <Content Include="jqtouch\themes\apple\img\toolButton.png" />
-    <Content Include="jqtouch\themes\apple\img\whiteButton.png" />
-    <Content Include="jqtouch\themes\apple\theme.css" />
-    <Content Include="jqtouch\themes\apple\theme.min.css" />
-    <Content Include="jqtouch\themes\jqt\img\back_button.png" />
-    <Content Include="jqtouch\themes\jqt\img\back_button_clicked.png" />
-    <Content Include="jqtouch\themes\jqt\img\button.png" />
-    <Content Include="jqtouch\themes\jqt\img\button_clicked.png" />
-    <Content Include="jqtouch\themes\jqt\img\chevron.png" />
-    <Content Include="jqtouch\themes\jqt\img\chevron_circle.png" />
-    <Content Include="jqtouch\themes\jqt\img\grayButton.png" />
-    <Content Include="jqtouch\themes\jqt\img\loading.gif" />
-    <Content Include="jqtouch\themes\jqt\img\on_off.png" />
-    <Content Include="jqtouch\themes\jqt\img\rowhead.png" />
-    <Content Include="jqtouch\themes\jqt\img\toggle.png" />
-    <Content Include="jqtouch\themes\jqt\img\toggleOn.png" />
-    <Content Include="jqtouch\themes\jqt\img\toolbar.png" />
-    <Content Include="jqtouch\themes\jqt\img\whiteButton.png" />
-    <Content Include="jqtouch\themes\jqt\theme.css" />
-    <Content Include="jqtouch\themes\jqt\theme.min.css" />
     <Content Include="macroScripts\ContentLanding-Summary.cshtml" />
     <Content Include="macroScripts\Deli-MyProjects.cshtml" />
     <Content Include="macroScripts\Deli-ProjectCategories.cshtml" />
@@ -466,7 +426,6 @@
     <Content Include="masterpages\ConfigureProjectLicenses.master" />
     <Content Include="masterpages\ContentLanding.master" />
     <Content Include="masterpages\CreateWikiPage.master" />
-    <Content Include="masterpages\debugger.master" />
     <Content Include="masterpages\Deli.master" />
     <Content Include="masterpages\DeliCart.master" />
     <Content Include="masterpages\DeliCartDetails.master" />
@@ -1766,7 +1725,6 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
-    <Content Include="usercontrols\DocumentationEditButton.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
@@ -1801,6 +1759,15 @@
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
     <Content Include="Views\Layout.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
+    <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
+    <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
+    <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
+    <Content Include="masterpages\search.master" />
+    <Content Include="masterpages\Download.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4329,8 +4296,6 @@
     <Content Include="usercontrols\Deli\Support\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx" />
     <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
-    <Content Include="usercontrols\DocumentationBreadcrumb.ascx" />
-    <Content Include="usercontrols\DocumentationShowMarkdown.ascx" />
     <Content Include="usercontrols\ExamineSearchResults.ascx" />
     <Content Include="usercontrols\FergusonMoriyama\FeedCache\PostInstall.ascx" />
     <Content Include="usercontrols\ImageGenInstaller.ascx" />
@@ -4672,6 +4637,10 @@
     <Content Include="xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Marketplace\Marketplace.csproj">
+      <Project>{6a2b659e-8bae-4cd5-8764-851dfbe95fbf}</Project>
+      <Name>Marketplace</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
       <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
       <Name>NotificationsWeb</Name>
@@ -4699,6 +4668,10 @@
     <ProjectReference Include="..\uPowers\uPowers.csproj">
       <Project>{00f050b9-e3ed-49a7-ab97-e8bec2513553}</Project>
       <Name>uPowers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uRelease\uRelease.csproj">
+      <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
+      <Name>uRelease</Name>
     </ProjectReference>
     <ProjectReference Include="..\uRepo\uRepo.csproj">
       <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>
@@ -4734,7 +4707,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:24217/</IISUrl>
+          <IISUrl>http://our.local</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

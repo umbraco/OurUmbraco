@@ -1,0 +1,10 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uDocumentation.Busineslogic;
+
+@{
+    var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+    MarkdownLogic ml = new MarkdownLogic(path) { PrefixLinks = false };
+    var markdown = ml.DoTransformation();
+}
+
+@Html.Raw(markdown)

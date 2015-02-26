@@ -11,147 +11,40 @@
   <script src="/Scripts/app.js?v=5" type="text/javascript"></script>
 </asp:Content>
 
-<asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
-<div id="body" class="subpage wrapper">
-    <div style="margin-top: 25px;">
-      <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-    </div>
-	
-	<umbraco:Macro ID="Macro2" runat="server" Language="cshtml">
-		@{
-		   var pageName = Model.Name;
-		   if(Request.Url.AbsoluteUri.EndsWith("download")) 
-		   {
-				pageName = "Download";
-		   }
-		}
-		<h1>@pageName</h1>
-	</umbraco:Macro>
-
-    <umbraco:Item ID="Item2" field="bodyText" runat="server"></umbraco:Item>
+<asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">    
     
-  <div class="releaseTable">
+    <div class="releaseTable">
     <h2>Current:</h2>
     <div class="releaseHeaders">
       <div class="header version">Version</div>
       <div class="header changes">Changes</div>
       <div class="header releaseDate">Release Date</div>
     </div>
-    <div class="released" data-bind="template: { name: 'version-template', foreach: currentReleases }"></div>
+    <div class="released" data-bind="template: { name: 'releases-template', foreach: releasedReleases }"></div>
   </div>
-  <div class="releaseTable"  data-bind="slideVisible: inProgressReleases().length > 0">
-    <h2>In Progress:</h2>
-    <div class="releaseHeaders">
-      <div class="header version">Version</div>
-      <div class="header changes">Changes</div>
-      <div class="header releaseDate">Release Date</div>
-    </div>
-    <div class="inprogress" data-bind="template: { name: 'version-template', foreach: inProgressReleases }"></div>
-  </div>
-  <div class="releaseTable"  data-bind="slideVisible: futureReleases().length > 0">
-    <h2>Planned:</h2>
-    <div class="releaseHeaders">
-      <div class="header version">Version</div>
-      <div class="header changes">Changes</div>
-      <div class="header releaseDate">Release Date</div>
-    </div>
-    <div class="future" data-bind="template: { name: 'version-template', foreach: futureReleases }"></div>
-  </div>
-  <div class="releaseTable"  data-bind="slideVisible: patchReleases().length > 0">
-    <h2>Upcoming patch releases:</h2>
-    <div class="releaseHeaders">
-      <div class="header version">Version</div>
-      <div class="header changes">Changes</div>
-      <div class="header releaseDate">Release Date</div>
-    </div>
-    <div class="future" data-bind="template: { name: 'version-template', foreach: patchReleases }"></div>
-  </div>
+  
 
-    <style type="text/css">
-        .manyReleases { margin-bottom: 50px; border-bottom: 1px solid #efefef; }
-        .manyReleases ul { margin: 0; padding: 0; display: inline-block; }
-        .manyReleases li { float: left;list-style-type: none; width: 160px; }
-        .manyReleases li .version { width: auto; }
-        .manyReleases .releaseRow { border-bottom: none; }
-    </style>
-      
-  <div class="releaseTable manyReleases">
+    <script type="text/html" id="releases-template">
 
-    <h2>Historical releases:</h2>
-    <umbraco:Macro ID="Macro3" runat="server" Language="cshtml">
-        <ul>
-        @using uRelease
-        @{
-            var properlySortedVersions = new Dictionary<System.Version, umbraco.MacroEngines.DynamicNode>();
-            foreach(var release in Model.Children) {
-                 if(release.ReleaseStatus == "Released" && release.RecommendedRelease == false) {
-                    properlySortedVersions.Add(new System.Version(release.Name), release);
-                }
-            }
-        }
 
-        @foreach(var item in properlySortedVersions.OrderByDescending(x => x.Key)) 
-        {
-            umbraco.MacroEngines.DynamicNode release = item.Value;
-            <li>
-                <div class="released">
-                <div class="releaseRow">
-                <div class="version">
-                    <h2 style="padding-top: 8px;">
-                    @* Archived releases don't exist on YouTrack, so they need an alternative template *@
-                    @if(release.GetProperty("Archived") != null && release.GetProperty("Archived").Value == "1"){
-                        <a href="/contribute/releases/@(release.Name.Replace(".", ""))/ArchivedRelease/">@release.Name</a>
-                    } else {
-                        <a href="/contribute/releases/@(release.Name.Replace(".", ""))/">@release.Name</a>
-                    }
-                    </h2>
-                </div>
-                </div>
-                </div>
-            </li>
-         }
-    </ul>
-    </umbraco:Macro>
-</div>
 
-    </div>
-<script type="text/html" id="version-template">
-    <div class="releaseRow" data-bind="attr: { id: id }">
-      <div class="version">
-        <h2>
-          <a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }"></a>
-        </h2>
-        <p data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></p> 
-      </div>
-      <div class="changes">
-        <div class="progress" data-bind="visible: percentComplete() > 0 || percentComplete() > 0">
-          <span data-bind="attr: { id: id, title: percentComplete() }">0</span>%
-        </div>
-        <div class="changesDetail">
-            Features: <span data-bind="text: featureIssues().length"></span><br/>
-            Issues: <span data-bind="text: issueIssues().length"></span><br/>
-            <span class="breakingChange">Breaking Changes: <span data-bind="text: breakingIssues().length"></span></span>
-        </div>
-      </div>
-      <div class="releaseDate">
-           <span data-bind="text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></span>
-      </div>        
-    </div>
-</script>
+    </script>
+    
+    <script type="text/javascript">
+        (function () {
+
+            // Apply bindings
+            ko.applyBindings(viewModel);
+            // Load data
+            loadAllData();
+            console.log(viewModel);
+        })();
+
+        </script>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
   <umbraco:Macro ID="Macro4" runat="server" Language="cshtml">
-      <script type="text/javascript">
-          $(function () {
-
-              // Apply bindings
-              ko.applyBindings(viewModel);
-              // Load data
-              loadAllData();
-
-          });
-
-        </script>
+      
     </umbraco:Macro>
 </asp:Content>
