@@ -19,6 +19,7 @@ namespace Marketplace.Api
             }
 
             var response = new HttpResponseMessage(HttpStatusCode.Accepted);
+            return response;
         }
     }
 }
