@@ -26,7 +26,7 @@ namespace our.Examine
         /// </summary>
         public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null)
         {
-            if (string.IsNullOrWhiteSpace(term)) throw new ArgumentNullException("term", "term cannot be empty");
+            //if (string.IsNullOrWhiteSpace(term)) throw new ArgumentNullException("term", "term cannot be empty");
 
             Term = term;
             NodeTypeAlias = nodeTypeAlias;

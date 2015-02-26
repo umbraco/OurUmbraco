@@ -27,7 +27,7 @@ namespace our.CustomHandlers
 
         private void CreateRoutes()
         {
-            RouteTable.Routes.MapUmbracoRoute("Search", "search2/{term}",
+            RouteTable.Routes.MapUmbracoRoute("Search", "search/{term}",
                 new
                 {
                     Controller = "Search",

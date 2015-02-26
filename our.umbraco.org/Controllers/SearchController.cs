@@ -21,7 +21,7 @@ namespace our.Controllers
 
             var criteria = multiIndexSearchProvider.CreateSearchCriteria();
             var compiled = criteria
-                .GroupedOr(new[] { "Body", "Body", "Title", "description", "nodeName" }, term)
+                .GroupedOr(new[] { "Body", "bodyText", "description", "nodeName" }, term)
                 .Compile();
 
             var watch = new Stopwatch();
