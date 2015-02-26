@@ -27,5 +27,12 @@ namespace our.Api
             var searchResult = searcher.Search();
             return searchResult;
         }
+
+        public SearchResultModel GetDocsSearchResults(string term)
+        {
+            var searcher = new OurSearcher(term, nodeTypeAlias: "documentation");
+            var searchResult = searcher.Search();
+            return searchResult;
+        }
     }
 }
