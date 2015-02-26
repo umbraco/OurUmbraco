@@ -20,17 +20,20 @@ namespace our.Examine
         public string Term { get; private set; }
         public string NodeTypeAlias { get; set; }
         public string OrderBy { get; set; }
+        public int MaxResults { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.
         /// </summary>
-        public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null)
+        public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20)
         {
             //if (string.IsNullOrWhiteSpace(term)) throw new ArgumentNullException("term", "term cannot be empty");
 
             Term = term;
             NodeTypeAlias = nodeTypeAlias;
             OrderBy = orderBy;
+         
+            MaxResults = maxResults;
         }
 
         public SearchResultModel Search()
@@ -70,8 +73,7 @@ namespace our.Examine
 
             //TODO: The result.TotalSearchResults will yield a max of 100 which is incorrect, this  is an issue 
             // in Examine, it needs to limit the results to 100 but still tell you how many in total
-            var result = multiIndexSearchProvider.Search(criteria, 100);
-
+            var result = multiIndexSearchProvider.Search(criteria, MaxResults);
             watch.Stop();
 
             

@@ -5,7 +5,7 @@
     Layout = "~/Views/Layout.cshtml";
 }
 
-
+<div class="plain">
 <!-- search OVERVIEW START -->
 	<section class="search-results">
 		<div>
@@ -33,8 +33,7 @@
 				<div class="search-all-results equalizer">
 
                     @foreach (var result in Model.Content.Results.SearchResults)
-                    {
-                        
+                    {   
                          <a href="@result.FullUrl()">
 							<div class="type-icon">
 								<i class="@result.GetIcon()"></i>
@@ -53,3 +52,4 @@
 		</div>
 	</section>
 	<!-- search OVERVIEW END -->
+</div>

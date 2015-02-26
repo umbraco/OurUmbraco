@@ -8,6 +8,8 @@ using uForum.Models;
 using uForum.Services;
 //WB Added
 
+using uForum;
+
 namespace our.Examine
 {
    
@@ -20,16 +22,44 @@ namespace our.Examine
 
         private static readonly object _locker = new object();
 
+        public static SimpleDataSet MapTopicToSimpleDataIndexItem(Topic topic, IEnumerable<Comment> comments, SimpleDataSet simpleDataSet, int id, string indexType)
+        {
+            //First generate the accumulated comment text:
+            string commentText = String.Empty;
 
-        #region ISimpleDataService Members
+            foreach (var currentComment in comments)
+                commentText += currentComment.Body;
 
-        /// <summary>
-        /// Returns a list of type SimpleDataSet based on the SampleData.xml data
-        /// </summary>
-        /// <param name="indexType"></param>
-        /// <returns></returns>
-        /// 
-        
+            var body = umbraco.library.StripHtml(topic.Body + commentText);
+
+            simpleDataSet.NodeDefinition.NodeId = id;
+            simpleDataSet.NodeDefinition.Type = indexType;
+
+            simpleDataSet.RowData.Add("body", body);
+            simpleDataSet.RowData.Add("nodeName", topic.Title);
+            simpleDataSet.RowData.Add("updateDate", topic.Updated.ToString("yyyy-MM-dd HH:mm:ss"));
+            simpleDataSet.RowData.Add("nodeTypeAlias", "forum");
+            simpleDataSet.RowData.Add("url", topic.Url);
+
+            simpleDataSet.RowData.Add("createDate", topic.Created.ToString("yyyy-MM-dd HH:mm:ss"));
+
+            simpleDataSet.RowData.Add("latestCommentId", topic.LatestComment.ToString());
+            simpleDataSet.RowData.Add("latestReplyAuthorId", topic.LatestReplyAuthor.ToString());
+            simpleDataSet.RowData.Add("latestReplyAuthorName", topic.LastActiveMember().Name);
+
+            simpleDataSet.RowData.Add("authorId", topic.MemberId.ToString());
+            simpleDataSet.RowData.Add("authorName", topic.Author().Name);
+            
+            simpleDataSet.RowData.Add("parentId", topic.ParentId.ToString());
+            simpleDataSet.RowData.Add("replies", topic.Replies.ToString());
+
+            simpleDataSet.RowData.Add("locked", topic.Locked.ToString());
+            simpleDataSet.RowData.Add("solved", topic.Answer.ToString());
+
+            simpleDataSet.RowData.Add("version", topic.Version.ToString());
+
+            return simpleDataSet;
+        }
 
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
@@ -38,47 +68,13 @@ namespace our.Examine
             using(var ts = new TopicService())
             using (var cs = new CommentService())
             {
-                foreach (var currentTopic in ts.GetAll().Take(1000))
+                foreach (var topic in ts.GetAll().Take(1000))
                 {
-                    //First generate the accumulated comment text:
-                    string commentText = String.Empty;
 
-                    foreach (var currentComment in cs.GetComments(currentTopic.Id))
-                        commentText += umbraco.library.StripHtml(currentComment.Body);
-
-                    var body = currentTopic.Body + commentText;
-
+                    var comments = cs.GetComments(topic.Id);
                     //Add the item to the index..
-                    data.Add(new SimpleDataSet()
-                    {
-                        //Create the node definition, ensure that it is the same type as referenced in the config
-                        NodeDefinition = new IndexedNode()
-                        {
-                            NodeId = currentTopic.Id,
-                            Type = "forum"
-                        },
-                        //add the data to the row
-                        RowData = new Dictionary<string, string>() 
-                        {
-                            { "nodeName", SanitizeXmlString(currentTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                            { "body", SanitizeXmlString(umbraco.library.StripHtml(body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                            { "updateDate", currentTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
-                            { "url", currentTopic.Url},
-                            { "nodeTypeAlias","forum"},
-
-
-                            { "Created", currentTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
-                            { "LatestComment", currentTopic.LatestComment.ToString()},
-                            { "LatestReplyAuthor", currentTopic.LatestReplyAuthor.ToString()},
-                            { "Locked", currentTopic.Locked.ToString()},
-                            { "MemberId", currentTopic.MemberId.ToString()},
-                            { "ParentId", currentTopic.ParentId.ToString()},
-                            { "Replies", currentTopic.Replies.ToString()},
-                            { "UrlName", currentTopic.UrlName.ToString()}
-                        }
-                    });
-
-                    // 
+                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                    data.Add(MapTopicToSimpleDataIndexItem(topic, comments, simpleDataSet, topic.Id, "forum"));
                 }
 
                 return data;
@@ -87,37 +83,6 @@ namespace our.Examine
             
         }
 
-        public SimpleDataSet CreateNewDocument()
-        {
-            lock (_locker)
-            {
-                //JobDetailItem jobDetails = new JobDetailItem();
-                Topic forumTopic = new Topic();
-
-                //First generate the accumulated comment text:
-                string commentText = String.Empty;
-                return new SimpleDataSet()
-                {
-                    NodeDefinition = new IndexedNode() { NodeId = (++_currentId), Type = "forum" },
-                    RowData = new Dictionary<string, string>() 
-                    {
-                        { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                        { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                        { "Created", forumTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
-                        { "LatestComment", forumTopic.LatestComment.ToString()},
-                        { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
-                        { "Locked", forumTopic.Locked.ToString()},
-                        { "MemberId", forumTopic.MemberId.ToString()},
-                        { "ParentId", forumTopic.ParentId.ToString()},
-                        { "Replies", forumTopic.Replies.ToString()},
-                        { "UrlName", forumTopic.UrlName.ToString()},
-                        {"nodeTypeAlias","forum"},
-                        { "updateDate", forumTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
-                        { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
-                    }
-                };
-            }
-        }
 
         public SimpleDataSet CreateNewDocument(int id)
         {
@@ -127,80 +92,13 @@ namespace our.Examine
                 using(var ts = new TopicService())
                 using (var cs = new CommentService())
                 {
-
                     var forumTopic = ts.GetById(id);
-
-                    //First generate the accumulated comment text:
-                    string commentText = String.Empty;
-
-                    foreach (var currentComment in cs.GetComments(forumTopic.Id))
-                        commentText += umbraco.library.StripHtml(currentComment.Body);
-
-                    return new SimpleDataSet()
-                    {
-                        NodeDefinition = new IndexedNode() { NodeId = (id), Type = "forum" },
-                        RowData = new Dictionary<string, string>() 
-                        {
-                            { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
-                            { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                            { "Created", forumTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
-                            { "LatestComment", forumTopic.LatestComment.ToString()},
-                            { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
-                            { "Locked", forumTopic.Locked.ToString()},
-                            { "MemberId", forumTopic.MemberId.ToString()},
-                            { "ParentId", forumTopic.ParentId.ToString()},
-                            { "Replies", forumTopic.Replies.ToString()},
-                            { "UrlName", forumTopic.UrlName.ToString()},
-                            {"nodeTypeAlias","forum"},
-                            { "updateDate", forumTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
-                            { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
-                        }
-                    };
+                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                    return MapTopicToSimpleDataIndexItem(forumTopic, cs.GetComments(forumTopic.Id), simpleDataSet, forumTopic.Id, "forum");
                 }
             }
         }
 
-        /// <summary>
-        /// Remove illegal XML characters from a string.
-        /// </summary>
-        public string SanitizeXmlString(string xml)
-        {
-            if (xml == null)
-            {
-                throw new ArgumentNullException("xml");
-            }
-
-            StringBuilder buffer = new StringBuilder(xml.Length);
-
-            foreach (char c in xml)
-            {
-                if (IsLegalXmlChar(c))
-                {
-                    buffer.Append(c);
-                }
-            }
-
-            return buffer.ToString();
-        }
-
-        /// <summary>
-        /// Whether a given character is allowed by XML 1.0.
-        /// </summary>
-        public bool IsLegalXmlChar(int character)
-        {
-            return
-            (
-                 character == 0x9 /* == '\t' == 9   */          ||
-                 character == 0xA /* == '\n' == 10  */          ||
-                 character == 0xD /* == '\r' == 13  */          ||
-                (character >= 0x20 && character <= 0xD7FF) ||
-                (character >= 0xE000 && character <= 0xFFFD) ||
-                (character >= 0x10000 && character <= 0x10FFFF)
-            );
-        }
-
-
-        #endregion
 
 
     }
