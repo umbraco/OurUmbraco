@@ -160,6 +160,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -274,6 +275,7 @@
     <Compile Include="library.cs" />
     <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Models\ProfileNotificationModel.cs" />
+    <Compile Include="Models\SearchResultContentModel.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="ProjectIndexer.cs" />

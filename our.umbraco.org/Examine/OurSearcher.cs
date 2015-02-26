@@ -4,30 +4,36 @@ using Examine.Providers;
 using Examine.SearchCriteria;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using our.Models;
 
 namespace our.Examine
 {
     public class OurSearcher
     {
-        static readonly Dictionary<Tuple<bool, bool, bool, bool>, Func<IEnumerable<SearchResult>, IEnumerable<SearchResult>>> lookup = new Dictionary<Tuple<bool, bool, bool, bool>, Func<IEnumerable<SearchResult>, IEnumerable<SearchResult>>>();
-        protected BaseSearchProvider Searcher;
 
-        public string Term { get; set; }
+        public string Term { get; private set; }
         public string NodeTypeAlias { get; set; }
         public string OrderBy { get; set; }
 
-
-        public OurSearcher()
+        /// <summary>
+        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
+        /// </summary>
+        public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null)
         {
-            
+            if (string.IsNullOrWhiteSpace(term)) throw new ArgumentNullException("term", "term cannot be empty");
+
+            Term = term;
+            NodeTypeAlias = nodeTypeAlias;
+            OrderBy = orderBy;
         }
 
-        public ISearchResults Search()
+        public SearchResultModel Search()
         {
             var multiIndexSearchProvider = (MultiIndexSearcher)ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
 
@@ -39,7 +45,7 @@ namespace our.Examine
 
             if (string.IsNullOrEmpty(OrderBy) == false)
             {
-                criteria.OrderByDescending(OrderBy);  
+                criteria.OrderByDescending(OrderBy);
             }
 
 
@@ -57,15 +63,21 @@ namespace our.Examine
                             .Compile();
             }
 
+            var watch = new Stopwatch();
+            watch.Start();
+
             //TODO: The result.TotalSearchResults will yield a max of 100 which is incorrect, this  is an issue 
             // in Examine, it needs to limit the results to 100 but still tell you how many in total
-           var result = multiIndexSearchProvider.Search(compiled);
-           return result;
+            var result = multiIndexSearchProvider.Search(compiled, 100);
+
+            watch.Stop();
+
+            return new SearchResultModel(result, watch.ElapsedMilliseconds, Term, OrderBy);
         }
 
 
 
-        
+
 
     }
 }

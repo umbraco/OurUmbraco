@@ -6,38 +6,26 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using our.Models;
 using Umbraco.Web.WebApi;
 
 namespace our.Api
 {
     public class OurSearchController : UmbracoApiController
     {
-        public dynamic GetGlobalSearchResults(string term)
+        public SearchResultModel GetGlobalSearchResults(string term)
         {
-            var searcher = new OurSearcher();
-            searcher.Term = term;
+            var searcher = new OurSearcher(term);
             var searchResult = searcher.Search();
-
-            dynamic result = new ExpandoObject();
-            result.total = searchResult.TotalItemCount;
-            result.items = searchResult.Take(5);
-            result.term = term;
-            return result;
+            return searchResult;
         }
 
 
-        public dynamic GetProjectSearchResults(string term)
+        public SearchResultModel GetProjectSearchResults(string term)
         {
-            var searcher = new OurSearcher();
-            searcher.Term = term;
-            searcher.NodeTypeAlias = "project";
+            var searcher = new OurSearcher(term, nodeTypeAlias:"project");
             var searchResult = searcher.Search();
-
-            dynamic result = new ExpandoObject();
-            result.total = searchResult.TotalItemCount;
-            result.items = searchResult.Take(20);
-            result.term = term;
-            return result;
+            return searchResult;
         }
     }
 }
