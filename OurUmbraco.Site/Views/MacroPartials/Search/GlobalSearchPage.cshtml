@@ -7,12 +7,8 @@
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 50;
-    
-    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher();
-    searcher.OrderBy = orderMode;
-    if(string.IsNullOrEmpty(term) == false){
-        searcher.Term = term;
-    }
+
+    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher(term, orderBy: orderMode);
     
     IEnumerable<SearchResult> result = new List<SearchResult>();
     var url = "orderBy=" + orderMode + "&term=" + term + "&version=" + version;
@@ -20,9 +16,9 @@
     
     if(string.IsNullOrEmpty(term) == false){
         var search = searcher.Search();
-        var total = search.TotalItemCount;
+        var total = search.SearchResults.TotalItemCount;
         pages = (total / pageSize) + 1;
-        result = search.Skip((page-1) * pageSize).Take(pageSize);
+        result = search.SearchResults.Skip((page-1) * pageSize).Take(pageSize);
     }
 }
 
