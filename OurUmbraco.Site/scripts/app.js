@@ -135,11 +135,46 @@ viewModel.futureReleases = ko.computed(function(){
             });
     },viewModel);
 
-viewModel.releasedReleases = ko.computed(function(){
-    return ko.utils.arrayFilter(viewModel.versions(), function (ver) {
+viewModel.releasedReleases = ko.computed(function () {
+    return ko.utils.arrayFilter(viewModel.versions().reverse(), function (ver) {
                 return ver.released();
             });
-    },viewModel);
+}, viewModel);
+
+viewModel.majorFilterReleases = function (thisVersion) {
+    return ko.utils.arrayFilter(viewModel.versions().reverse(), function (ver) {
+        var versionCheck = ver.version();
+        versionCheck = versionCheck.charAt(0);
+        if (versionCheck==thisVersion) {
+            return ver.released();
+        }
+        
+    });
+};
+
+viewModel.releasedTotalReleases = ko.computed(function () {
+    var total = 0;
+    ko.utils.arrayForEach(this.versions(), function (ver) {
+        var vers = ver.released();
+        if (vers != null) {
+            total += 1;
+        }
+    });
+    return total;
+}, viewModel);
+
+viewModel.releasedFilterReleases = ko.computed(function () {
+    var filteredReleases = [];
+
+    ko.utils.arrayForEach(this.versions(), function (ver) {
+        var thisRelease = ver.released();
+        filteredReleases.push(thisRelease);
+    });
+    filteredReleases.reverse();
+    for (var i = 0; i < filteredReleases.length; i++) {
+        return filteredReleases[i];
+    }
+}, viewModel);
 
 viewModel.comingReleases = ko.computed(function(){
     return ko.utils.arrayFilter(viewModel.versions(), function (ver) {

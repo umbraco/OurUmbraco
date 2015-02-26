@@ -1764,6 +1764,7 @@
     <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
     <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
+    <Content Include="masterpages\Download.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
