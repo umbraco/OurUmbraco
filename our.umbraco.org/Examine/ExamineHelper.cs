@@ -6,12 +6,25 @@ using System;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using Examine;
+using Umbraco.Core.Logging;
 
 namespace our.Examine.DocumentationIndexDataService.Helper
 {
     public static class ExamineHelper
     {
         public const string DocumentationIndexer = "documentationIndexer";
+
+        /// <summary>
+        /// Event handler to log errors for any non-umbraco indexer
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void LogErrors(object sender, IndexingErrorEventArgs e)
+        {
+            LogHelper.Error(sender.GetType(),
+                "Indexing error occurred",
+                new Exception(e.Message, e.InnerException));
+        }
 
         public static string SerializeForLucene(this DateTime dateTime)
         {

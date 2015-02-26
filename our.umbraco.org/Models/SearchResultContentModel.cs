@@ -13,12 +13,12 @@ namespace our.Models
     /// </summary>
     public class SearchResultContentModel : PublishedContentWrapped
     {
-        public SearchResultModel SearchResultModel { get; private set; }
+        public SearchResultModel Results { get; private set; }
 
-        public SearchResultContentModel(IPublishedContent content, SearchResultModel searchResultModel)
+        public SearchResultContentModel(IPublishedContent content, SearchResultModel results)
             : base(content)
         {
-            SearchResultModel = searchResultModel;
+            Results = results;
         }
     }
 }

@@ -260,17 +260,16 @@
     <Compile Include="CustomHandlers\projectVote.cs" />
     <Compile Include="CustomHandlers\TopicVote.cs" />
     <Compile Include="Examine\OurSearcher.cs" />
-    <Compile Include="Examine\ProjectsIndexDataService\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Examine\ProjectNodeIndexDataService.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Examine\ForumDataService.cs" />
     <Compile Include="data.cs" />
     <Compile Include="DefaultMemberAvatarHandler.cs" />
-    <Compile Include="DocumentationIndexer.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\FileIndexDataService.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\Helper\ExamineHelper.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\Model\FileIndexerConfig.cs" />
+    <Compile Include="Examine\DocumentationIndexDataService.cs" />
+    <Compile Include="Examine\ExamineHelper.cs" />
+    <Compile Include="Examine\DocumentationIndexConfig.cs" />
     <Compile Include="ForumIndexer.cs" />
     <Compile Include="library.cs" />
     <Compile Include="Models\ProfileModel.cs" />
@@ -281,7 +280,7 @@
     <Compile Include="ProjectIndexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
-    <Compile Include="Startup.cs" />
+    <Compile Include="CustomHandlers\OurApplicationStartupHandler.cs" />
     <Compile Include="usercontrols\acceptTos.ascx.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

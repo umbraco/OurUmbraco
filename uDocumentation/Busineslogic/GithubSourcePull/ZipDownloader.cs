@@ -67,6 +67,29 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             IsProjectDocumentation = true;
         }
 
+        /// <summary>
+        /// This will ensure that the docs exist, this checks by the existence of the /Documentation/sitemap.js file
+        /// </summary>
+        public static void EnsureGitHubDocs()
+        {
+            var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
+            var configPath = HttpContext.Current.Server.MapPath(config);
+
+            //Check if it exists, if it does then exit
+            if (File.Exists(Path.Combine(rootFolderPath, "sitemap.js"))) return;
+
+            if (!Directory.Exists(rootFolderPath))
+            {
+                Directory.CreateDirectory(rootFolderPath);
+            }
+
+            var unzip = new ZipDownloader(rootFolderPath, configPath)
+            {
+                IsProjectDocumentation = true
+            };
+            unzip.Run();
+        }
+
         public void Run()
         {
             Trace.WriteLine("Started git sync", "Gitsyncer");

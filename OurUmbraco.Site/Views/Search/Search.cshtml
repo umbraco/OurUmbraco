@@ -8,7 +8,7 @@
 <div class="subpage">
     <h1>Search results</h1>
     
-    @foreach (var result in Model.Content.SearchResults)
+    @foreach (var result in Model.Content.Results.SearchResults)
     {
         <div class="result @result.CssClassName()">
             <h3>
@@ -25,5 +25,5 @@
     }
 
 
-    <p>Processed in @Model.Content.Totalmilliseconds milliseconds</p>
+    <p>Processed in @Model.Content.Results.Totalmilliseconds milliseconds</p>
 </div>
