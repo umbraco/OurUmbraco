@@ -160,6 +160,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.4.0.30506.0\lib\net40\System.Net.Http.Formatting.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -250,36 +251,36 @@
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
-    <Compile Include="controls\DateTimePicker.cs" />
-    <Compile Include="custom Handlers\CommentVote.cs" />
-    <Compile Include="custom Handlers\ExternalVote.cs" />
-    <Compile Include="custom Handlers\ForumPostsCounter.cs" />
-    <Compile Include="custom Handlers\memberSave.cs" />
-    <Compile Include="custom Handlers\ProjectsEnsureGuid.cs" />
-    <Compile Include="custom Handlers\projectVote.cs" />
-    <Compile Include="custom Handlers\TopicVote.cs" />
+    <Compile Include="Controls\DateTimePicker.cs" />
+    <Compile Include="CustomHandlers\CommentVote.cs" />
+    <Compile Include="CustomHandlers\ExternalVote.cs" />
+    <Compile Include="CustomHandlers\ForumPostsCounter.cs" />
+    <Compile Include="CustomHandlers\memberSave.cs" />
+    <Compile Include="CustomHandlers\ProjectsEnsureGuid.cs" />
+    <Compile Include="CustomHandlers\projectVote.cs" />
+    <Compile Include="CustomHandlers\TopicVote.cs" />
     <Compile Include="Examine\OurSearcher.cs" />
-    <Compile Include="Examine\ProjectsIndexDataService\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Examine\ProjectNodeIndexDataService.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Examine\ForumDataService.cs" />
     <Compile Include="data.cs" />
     <Compile Include="DefaultMemberAvatarHandler.cs" />
-    <Compile Include="DocumentationIndexer.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\FileIndexDataService.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\Helper\ExamineHelper.cs" />
-    <Compile Include="Examine\DocumentationIndexDataService\Model\FileIndexerConfig.cs" />
+    <Compile Include="Examine\DocumentationIndexDataService.cs" />
+    <Compile Include="Examine\ExamineHelper.cs" />
+    <Compile Include="Examine\DocumentationIndexConfig.cs" />
     <Compile Include="ForumIndexer.cs" />
     <Compile Include="library.cs" />
     <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Models\ProfileNotificationModel.cs" />
+    <Compile Include="Models\SearchResultContentModel.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="ProjectIndexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
-    <Compile Include="Startup.cs" />
+    <Compile Include="CustomHandlers\OurApplicationStartupHandler.cs" />
     <Compile Include="usercontrols\acceptTos.ascx.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

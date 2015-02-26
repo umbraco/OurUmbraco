@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Details" %>
 
-<h1>Project Details</h1>
 <div class="form simpleForm" id="registrationForm">
 <fieldset>
     <legend>Project Information</legend>
@@ -118,7 +117,7 @@
 </asp:PlaceHolder>
 
 <div class="buttons">
-<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton"/>
+<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton button green tiny"/>
 </div>
 </div>
 
@@ -141,8 +140,13 @@
         elements: "<%= Description.ClientID %>",
         content_css: "/css/fonts.css",
         auto_resize: false,
-        theme: "simple",
+        theme: "advanced",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_buttons1: "bold,italic,underline,bullist,numlist",
+        theme_advanced_buttons2: "",
+        theme_advanced_buttons3: "",
         remove_linebreaks: false
     });
   
 </script>
+

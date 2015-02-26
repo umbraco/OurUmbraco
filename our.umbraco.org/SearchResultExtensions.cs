@@ -9,27 +9,26 @@ namespace our
     {
         public static string GetTitle(this SearchResult result)
         {
-            if (result["__IndexType"] == "content")
-                return HttpContext.Current.Server.HtmlEncode(result["nodeName"]);
-            else if (result["__IndexType"] == "documents" || result["__IndexType"] == "documentation")
-                return HttpContext.Current.Server.HtmlEncode(result["Title"]);
-            else
-                return string.Empty;
+            return HttpContext.Current.Server.HtmlEncode(result["nodeName"]);
+        }
 
+        public static string GetIcon(this SearchResult result)
+        {
+            var icon = "icon-Chat";
+            if(result.Fields["nodeTypeAlias"] == "project"){
+                icon = "icon-Box";
+            }else if(result.Fields["nodeTypeAlias"] == "documentation"){
+                icon = "icon-Book-alt";   
+            }
+
+            return icon;
         }
 
         public static string GetDate(this SearchResult result)
         {
             try
             {
-                if (result["__IndexType"] == "content")
-                    return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
-
-                if (result["__IndexType"] == "documents")
-                    return HttpContext.Current.Server.HtmlEncode(string.Format("Created: {0} / Last update: {1}", DateTime.Parse(result["Created"]).ToString("MMMM dd, yyyy HH:mm"), DateTime.Parse(result["Updated"]).ToString("MMMM dd, yyyy HH:mm")));
-
-                if (result["__IndexType"] == "documentation")
-                    return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["dateCreatedSearchAble"], "MMMM dd, yyyy")));
+                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
             }
             catch (FormatException ex)
             {
@@ -44,14 +43,7 @@ namespace our
         {
             try
             {
-                if (result["__IndexType"] == "content")
-                    return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
-
-                if (result["__IndexType"] == "documents")
-                    return DateTime.Parse(result["Updated"]).ToString("yyyy-MM-dd HH:mm");
-
-                if (result["__IndexType"] == "documentation")
-                    return GetFormattedDateTime(result["dateCreatedSearchAble"], "yyyy-MM-dd HH:mm");
+                return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
             }
             catch (FormatException ex) 
             {
@@ -78,16 +70,12 @@ namespace our
         {
             if (result["__IndexType"] == "content")
                 return umbraco.library.NiceUrl(result.Id);
-
-            else if (result["__IndexType"] == "documentation")
+            else if(result.Fields.ContainsKey("url"))
             {
                 return result["url"];
             }
-            else if (result["__IndexType"] == "documents")
-                return "TODO";
-            //return uForum.Library.NiceTopicUrl(result.Id);
-            else
-                return string.Empty;
+
+            return "TODO";
         }
 
         public static string GenerateBlurb(this SearchResult result, int noOfChars)

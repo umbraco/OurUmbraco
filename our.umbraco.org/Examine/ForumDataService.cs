@@ -1,20 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-
-//WB Added
+using System.Text;
 using Examine;
 using Examine.LuceneEngine;
-using System.Data;
-using System.Xml;
-using System.Text;
 using uForum.Models;
 using uForum.Services;
-using System.Globalization;
-using our.Examine.DocumentationIndexDataService.Helper;
+//WB Added
 
-namespace our
+namespace our.Examine
 {
    
     /// <summary>
@@ -22,9 +16,9 @@ namespace our
     /// </summary>
     public class ForumDataService : ISimpleDataService
     {
-        private static int m_CurrentId = 0;
+        private static int _currentId = 0;
 
-        private static readonly object m_Locker = new object();
+        private static readonly object _locker = new object();
 
 
         #region ISimpleDataService Members
@@ -68,12 +62,12 @@ namespace our
                         {
                             { "nodeName", SanitizeXmlString(currentTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
                             { "body", SanitizeXmlString(umbraco.library.StripHtml(body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                            { "updateDate", currentTopic.Updated.SerializeForLucene()},
+                            { "updateDate", currentTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
                             { "url", currentTopic.Url},
                             { "nodeTypeAlias","forum"},
 
 
-                            { "Created", currentTopic.Created.ToString()},
+                            { "Created", currentTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
                             { "LatestComment", currentTopic.LatestComment.ToString()},
                             { "LatestReplyAuthor", currentTopic.LatestReplyAuthor.ToString()},
                             { "Locked", currentTopic.Locked.ToString()},
@@ -95,7 +89,7 @@ namespace our
 
         public SimpleDataSet CreateNewDocument()
         {
-            lock (m_Locker)
+            lock (_locker)
             {
                 //JobDetailItem jobDetails = new JobDetailItem();
                 Topic forumTopic = new Topic();
@@ -104,12 +98,12 @@ namespace our
                 string commentText = String.Empty;
                 return new SimpleDataSet()
                 {
-                    NodeDefinition = new IndexedNode() { NodeId = (++m_CurrentId), Type = "forum" },
+                    NodeDefinition = new IndexedNode() { NodeId = (++_currentId), Type = "forum" },
                     RowData = new Dictionary<string, string>() 
                     {
                         { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
                         { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                        { "Created", forumTopic.Created.ToString()},
+                        { "Created", forumTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
                         { "LatestComment", forumTopic.LatestComment.ToString()},
                         { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
                         { "Locked", forumTopic.Locked.ToString()},
@@ -118,7 +112,7 @@ namespace our
                         { "Replies", forumTopic.Replies.ToString()},
                         { "UrlName", forumTopic.UrlName.ToString()},
                         {"nodeTypeAlias","forum"},
-                        { "updateDate", forumTopic.Updated.SerializeForLucene()},
+                        { "updateDate", forumTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
                         { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                     }
                 };
@@ -127,7 +121,7 @@ namespace our
 
         public SimpleDataSet CreateNewDocument(int id)
         {
-            lock (m_Locker)
+            lock (_locker)
             {
                 //JobDetailItem jobDetails = new JobDetailItem();
                 using(var ts = new TopicService())
@@ -149,7 +143,7 @@ namespace our
                         {
                             { "Title", SanitizeXmlString(forumTopic.Title.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))},
                             { "Body", SanitizeXmlString(umbraco.library.StripHtml(forumTopic.Body.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty)))},
-                            { "Created", forumTopic.Created.ToString()},
+                            { "Created", forumTopic.Created.ToString("yyyy-MM-dd HH:mm:ss")},
                             { "LatestComment", forumTopic.LatestComment.ToString()},
                             { "LatestReplyAuthor", forumTopic.LatestReplyAuthor.ToString()},
                             { "Locked", forumTopic.Locked.ToString()},
@@ -158,7 +152,7 @@ namespace our
                             { "Replies", forumTopic.Replies.ToString()},
                             { "UrlName", forumTopic.UrlName.ToString()},
                             {"nodeTypeAlias","forum"},
-                            { "updateDate", forumTopic.Updated.SerializeForLucene()},
+                            { "updateDate", forumTopic.Updated.ToString("yyyy-MM-dd HH:mm:ss")},
                             { "CommentsContent", SanitizeXmlString(commentText.Replace("<![CDATA[", string.Empty).Replace("]]>",string.Empty))}
                         }
                     };

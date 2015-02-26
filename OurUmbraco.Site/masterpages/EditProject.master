@@ -14,6 +14,8 @@
         <div class="sidebar-content">
             <div class="content-wrapper">
 
+				
+				
                 <umbraco:Macro source="1057" Alias="[Member]ProfileNavigation" runat="server"></umbraco:Macro>
 
             </div><!-- .content-wrapper -->
@@ -25,8 +27,9 @@
             <div class="content-wrapper">
 
                 
-                
-
+                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+				
+				
                 <umbraco:Macro Alias="Deli-CreateProject" runat="server"></umbraco:Macro>
     
                 

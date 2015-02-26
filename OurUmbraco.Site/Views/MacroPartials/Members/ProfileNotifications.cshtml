@@ -33,7 +33,7 @@
     @Html.Action("Render", "ProfileNotification") 
 
     @if (!dontBug) { 
-    <strong>Following</strong> <br/>
+  
     if (forumItems.Any()) { 
     <strong>Forums</strong>
     <ul class="profile-settings-following">
@@ -41,10 +41,12 @@
         {
             var forum = Umbraco.TypedContent(not.ForumId);
 
+            if (forum != null) { 
             <li>
-                <a href="@forum.Url">@forum.Name</a><span class="hidden-xs">–</span>
+                <a href="@forum.Url">@forum.Name</a> <span class="hidden-xs">–</span>
                 <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
             </li>
+            }
         }
     </ul>
     }
@@ -55,10 +57,12 @@
         {
             var topic = uForum.Services.TopicService.Instance.GetById(not.TopicId);
 
+            if (topic != null) { 
             <li>
-                <a href="@topic.Url">@topic.Title</a><span class="hidden-xs">–</span>
+                <a href="@topic.Url">@topic.Title</a> <span class="hidden-xs">–</span>
                 <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
             </li>
+            }
         }
     </ul>
 

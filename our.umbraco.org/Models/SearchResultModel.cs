@@ -1,26 +1,32 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Runtime.Serialization;
 using Examine;
-using Umbraco.Core.Models;
-using Umbraco.Core.Models.PublishedContent;
 
 namespace our.Models
 {
-    public class SearchResultModel : PublishedContentWrapped
+    /// <summary>
+    /// A model to display search results
+    /// </summary>
+    [DataContract]
+    public class SearchResultModel
     {
-        public ISearchResults SearchResults { get; private set; }
-        public double Totalmilliseconds { get; private set; }
-        public string SearchTerm { get; private set; }
-
-        public SearchResultModel(IPublishedContent content, ISearchResults searchResults, double totalmilliseconds, string searchTerm)
-            : base(content)
+        public SearchResultModel(ISearchResults searchResults, double totalmilliseconds, string searchTerm, string orderBy)
         {
             SearchResults = searchResults;
             Totalmilliseconds = totalmilliseconds;
             SearchTerm = searchTerm;
+            OrderBy = orderBy;
         }
+
+        [DataMember(Name = "orderBy")]
+        public string OrderBy { get; set; }
+
+        [DataMember(Name = "items")]
+        public ISearchResults SearchResults { get; private set; }
+
+        [DataMember(Name = "milliseconds")]
+        public double Totalmilliseconds { get; private set; }
+
+        [DataMember(Name = "term")]
+        public string SearchTerm { get; private set; }
     }
 }

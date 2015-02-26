@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="EventEditor.ascx.cs" Inherits="our.usercontrols.EventEditor" %>
-<%@ Register TagPrefix="our" Assembly="our.umbraco.org" Namespace="our.controls" %>
 <link rel="stylesheet" media="all" type="text/css" href="/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 
 <script src="/scripts/libs/jquery-ui-timepicker-addon.js" type="text/javascript"></script>

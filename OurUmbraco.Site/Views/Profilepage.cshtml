@@ -3,11 +3,11 @@
     Layout = "Layout.cshtml";
 }
 
-<div id="overlay" class="overlay"></div>
+
 <div class="page-content">
 
     <div class="sidebar-area">
-        <div class="sidebar-content" style="position:relative;top:110px;">
+        <div class="sidebar-content">
             <div class="content-wrapper">
 
                @Umbraco.RenderMacro("[Member]ProfileNavigation", new { source = 1057 })
@@ -19,6 +19,9 @@
     <div class="main-area">
         <div class="main-content">
             <div class="content-wrapper">
+                <div>
+                    @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = 1 })
+                </div>
                 @Umbraco.Field("bodyText")
 
             </div><!-- .content-wrapper -->

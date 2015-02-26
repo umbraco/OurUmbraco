@@ -21,7 +21,7 @@ namespace our.Controllers
 
             var criteria = multiIndexSearchProvider.CreateSearchCriteria();
             var compiled = criteria
-                .GroupedOr(new[] { "Body", "Body", "Title", "description", "nodeName" }, term)
+                .GroupedOr(new[] { "Body", "bodyText", "description", "nodeName" }, term)
                 .Compile();
 
             var watch = new Stopwatch();
@@ -31,8 +31,8 @@ namespace our.Controllers
             var result = multiIndexSearchProvider.Search(compiled, 100);
             watch.Stop();
 
-            return View(new RenderModel<SearchResultModel>(
-                new SearchResultModel(model.Content, result, watch.ElapsedMilliseconds, term)));
+            return View(new RenderModel<SearchResultContentModel>(
+                new SearchResultContentModel(model.Content, new SearchResultModel(result, watch.ElapsedMilliseconds, term, ""))));
         }
 
     }

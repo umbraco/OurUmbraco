@@ -9,8 +9,8 @@ using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using our;
+using our.Examine;
 using Umbraco.Core.Services;
-using our.ExamineServices;
 using Umbraco.Web;
 
 namespace our

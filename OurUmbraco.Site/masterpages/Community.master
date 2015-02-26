@@ -218,12 +218,7 @@
 		</form>
 
 		<div class="search-all-results equalizer">
-			<ul>
-				<li class="searc-view-all">
-					<a href="#">View All 281 results</a>
-				</li>
-			</ul>
-
+			<ul></ul>
 		</div>
 
 

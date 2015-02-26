@@ -1,0 +1,147 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+<div class="search-big">
+	<input type="search" class="project-search-input" required placeholder="Search for projects">
+	<label for="search">Search projects</label>
+</div>
+
+@{
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "updateDate";
+    var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
+    var category = Request["category"];
+    var version = Request["version"];
+    var term = Request["term"];
+    var pageSize = 50;
+    var headline = orderMode == "updateDate" ? "latest" : "most popular";
+
+    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher(term, "project", orderMode);
+    
+    var search = searcher.Search();
+    var total = search.SearchResults.TotalItemCount;
+    var pages = (total / pageSize) + 1;
+
+    var url = "orderBy=" + orderMode + "&term=" + term +"&version="+version;
+    var result = search.SearchResults.Skip( (page-1) * pageSize).Take(pageSize);
+}
+
+@functions{ 
+    public string GetField(IDictionary<string,string> fields,  string field, string defaultVal = ""){
+       if(fields != null && fields.ContainsKey(field))
+           return fields[field];
+        
+        return defaultVal;
+    }
+
+    public string ParseVersion(string version){
+        if (string.IsNullOrEmpty(version))
+            return version;
+            
+        var versions = version.Trim(',').Split(',').Select(decimal.Parse).ToArray();
+        
+        if (!versions.Any())
+            return string.Empty;
+        
+        if (versions.Count() == 1)
+            return (versions.First())+ "+";
+
+        var high = versions.Max();
+        var low = versions.Min();
+
+        return high.ToString("N2") + "-" + low.ToString("N2");
+    }    
+}
+
+<h1>Browse @headline projects</h1>
+
+<script type="text/template" class="search-item-project">
+<div class="box">					
+	    <div class="row">
+            <div class="col-xs-2 col-md-1">
+			    <img src="{{image}}" alt="">
+		    </div>
+
+		    <div class="col-xs-10 col-md-6">
+			    <div class="forum-thread-text">
+				    <h3><a href="{{url}}">{{nodeName}}</a></h3>
+				    <p>{{body}}</p>
+                </div>
+		    </div>
+
+		    <div class="col-xs-12 col-md-5">
+			    <div class="other">
+				    <div class="package-badge">
+					    <span class="package-name">version</span>
+					    <span class="package-number">{{versions}}</span>
+				    </div>
+
+				    <span class="stats">
+					    <span class="downloads">
+						    {{downloads}}<span><i class="icon-Download-alt"></i></span>
+					    </span>
+
+					    <span class="karma">
+						   {{karma}}<span><i class="icon-Hearts"></i></span>
+					    </span>
+				    </span>
+			    </div>
+		    </div>
+
+	    </div>
+    </div>
+</script>
+
+<div class="projects-search-listing"></div>
+
+<div class="projects-default-listing">
+    @foreach (var childPage in result)
+    {
+        <div class="box">					
+	        <div class="row">
+                <div class="col-xs-2 col-md-1">
+			        <img src="@GetField(childPage.Fields,"image")" alt="">
+		        </div>
+		        <div class="col-xs-10 col-md-6">
+			        <div class="forum-thread-text">
+				        <h3><a href="@GetField(childPage.Fields,"url")">@GetField(childPage.Fields,"nodeName")</a></h3>
+				        <p>@GetField(childPage.Fields,"body", "No description available").Truncate(150)</p>
+                    </div>
+		        </div>
+
+		        <div class="col-xs-12 col-md-5">
+			        <div class="other">
+				        <div class="package-badge">
+					        <span class="package-name">version</span>
+					        <span class="package-number">@ParseVersion(@GetField(childPage.Fields,"versions"))</span>
+				        </div>
+
+				        <span class="stats">
+					        <span class="downloads">
+						        @GetField(childPage.Fields,"downloads", "0")<span><i class="icon-Download-alt"></i></span>
+					        </span>
+
+					        <span class="karma">
+						        @GetField(childPage.Fields,"karma", "0")<span><i class="icon-Hearts"></i></span>
+					        </span>
+				        </span>
+			        </div>
+		        </div>
+
+	        </div>
+        </div>
+    }
+
+    <nav class="pagination" role="navigation">
+        @if(page > 1){
+	        <a class="prev" href="?page=@(page-1)&@url">Prev</a>
+        }
+
+        @for (int i = 1; i < pages; i++)
+        {
+             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
+        }
+		
+        @if(page < pages){
+            <a class="next" href="?page=@(page+1)&@url">Next</a>
+        }
+    </nav>
+</div>

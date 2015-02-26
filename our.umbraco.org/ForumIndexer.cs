@@ -8,6 +8,7 @@ using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using our;
+using our.Examine;
 using umbraco.BusinessLogic;
 
 

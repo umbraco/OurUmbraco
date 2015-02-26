@@ -101,7 +101,7 @@
 
         jQuery.validator.addMethod("CompareFields", function (value, element) { return value == $("#<%= UserEmail.ClientID %>").val(); }, $("#<%= UserEmail.ClientID %>").attr("tooltip"));
 
-        jQuery.validator.addMethod("ValidateVatFormat", function (value, element) { if(value.length > 0){return checkVATNumber (value);}else{ return true;} }, $("#<%= CompanyVat.ClientID %>").attr("tooltip"));
+        jQuery.validator.addMethod("ValidateVatFormat", function (value, element) { if (value.length > 0) { return checkVATNumber(value); } else { return true; } }, $("#<%= CompanyVat.ClientID %>").attr("tooltip"));
 
         $("form").validate({
             invalidHandler: function (f, v) {

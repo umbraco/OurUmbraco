@@ -1,0 +1,35 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    
+    var projectId = Request["Id"];
+    int id = 0;
+}
+
+@if(!string.IsNullOrEmpty(projectId) && int.TryParse(projectId,out id))
+{
+
+    var contris = new List<Marketplace.Models.ProjectContributor>();
+
+    using(var cs = new Marketplace.Services.ContributionService())
+    {
+        contris = cs.GetContributions(id).ToList();
+    }
+    
+    if (contris.Any())
+    { 
+    <strong>Current contributors</strong>
+    <ul>
+        @foreach (var contri in contris)
+        {
+           var member = Members.GetById(contri.MemberId);
+           if (member != null) { 
+               <li>
+                <a href="/member/@member.Id">@member.Name</a> - <a data-id="@member.Id" class="removeContri" href="#" >Remove</a>
+               </li> 
+            }
+        }
+    </ul>
+    }
+    
+}
