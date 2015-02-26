@@ -19,7 +19,16 @@
                         <umbraco:Macro Alias="[Docs]Breadcrumb" runat="server"></umbraco:Macro>
                     </div>
                     
-                    <div id="markdown-docs" class="markdown-syntax">
+                    <div class="search-big">
+					    <input type="search" class="docs-search-input" required placeholder="Search for documentation">
+					    <label for="search">Search for documentation</label>
+				    </div>
+
+                    <ul class="docs-search-listing">
+
+                    </ul>
+
+                    <div id="markdown-docs" class="docs-default-listing markdown-syntax">
                         <umbraco:Macro Alias="[Docs]DisplayMarkdown" runat="server"></umbraco:Macro>
                     </div>
         		</div><!-- .content-wrapper -->
@@ -27,5 +36,26 @@
 		</div><!-- .main-area -->
 
 	</div><!-- .page-content -->
+    
+    
+    <script type="text/template" class="search-item-docs">
+        <li>
+			<a href="{{ url }}">
+				<div class="type-icon">
+					<i class="icon-Book-alt"></i>
+				</div>
+
+				<div class="type-context">
+					<div class="type-name">
+						{{ name }}
+					</div>
+					<div class="type-description">
+						{{ body }}
+					</div>
+				</div>
+			</a>
+		</li>
+    </script>
+    
                             
 </asp:Content>
