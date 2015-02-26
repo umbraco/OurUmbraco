@@ -13,20 +13,15 @@
     var term = Request["term"];
     var pageSize = 50;
     var headline = orderMode == "updateDate" ? "latest" : "most popular";
-    
-    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher();
-    searcher.NodeTypeAlias = "project";
-    searcher.OrderBy = orderMode;
-    if(string.IsNullOrEmpty(term) == false){
-        searcher.Term = term;
-    }
+
+    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher(term, "project", orderMode);
     
     var search = searcher.Search();
-    var total = search.TotalItemCount;
+    var total = search.SearchResults.TotalItemCount;
     var pages = (total / pageSize) + 1;
 
     var url = "orderBy=" + orderMode + "&term=" + term +"&version="+version;
-    var result = search.Skip( (page-1) * pageSize).Take(pageSize);
+    var result = search.SearchResults.Skip( (page-1) * pageSize).Take(pageSize);
 }
 
 @functions{ 
@@ -41,9 +36,9 @@
         if (string.IsNullOrEmpty(version))
             return version;
             
-        var versions = version.Trim(',').Split(',').Select(x => decimal.Parse(x));
+        var versions = version.Trim(',').Split(',').Select(decimal.Parse).ToArray();
         
-        if (versions.Count() == 0)
+        if (!versions.Any())
             return string.Empty;
         
         if (versions.Count() == 1)
