@@ -250,7 +250,7 @@
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
-    <Compile Include="controls\DateTimePicker.cs" />
+    <Compile Include="Controls\DateTimePicker.cs" />
     <Compile Include="custom Handlers\CommentVote.cs" />
     <Compile Include="custom Handlers\ExternalVote.cs" />
     <Compile Include="custom Handlers\ForumPostsCounter.cs" />
