@@ -4,7 +4,7 @@ namespace our.Examine
 {
     public sealed class DocumentationIndexConfig : ConfigurationSection
     {
-        private static DocumentationIndexConfig settings = ConfigurationManager.GetSection("FileIndexerConfig") as DocumentationIndexConfig;
+        private static DocumentationIndexConfig settings = ConfigurationManager.GetSection("DocumentationIndexConfig") as DocumentationIndexConfig;
 
         public static DocumentationIndexConfig Settings { get { return settings; } }
         

@@ -25,16 +25,6 @@ namespace our.Examine
                 new Exception(e.Message, e.InnerException));
         }
 
-        public static string SerializeForLucene(this DateTime dateTime)
-        {
-            return dateTime.ToString("yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-        }
-
-        public static DateTime DeserializeFromLucene(this string str)
-        {
-            return DateTime.ParseExact(str, "yyyyMMddHHmmss", CultureInfo.InvariantCulture);
-        }
-
         /// <summary>
         /// get dataset for single item reindex via event
         /// </summary>
@@ -67,7 +57,7 @@ namespace our.Examine
 
             simpleDataSet.RowData.Add("body", body);
             simpleDataSet.RowData.Add("nodeName", headLine);
-            simpleDataSet.RowData.Add("updateDate", file.CreationTime.SerializeForLucene());
+            simpleDataSet.RowData.Add("updateDate", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "documentation");
 
             simpleDataSet.RowData.Add("dateCreated", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));

@@ -26,7 +26,7 @@ namespace our.Examine
 
             simpleDataSet.RowData.Add("body", umbraco.library.StripHtml( project.GetProperty("description").Value.ToString() )) ;
             simpleDataSet.RowData.Add("nodeName", project.Name);
-            simpleDataSet.RowData.Add("updateDate", project.UpdateDate.SerializeForLucene());
+            simpleDataSet.RowData.Add("updateDate", project.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url );
 
