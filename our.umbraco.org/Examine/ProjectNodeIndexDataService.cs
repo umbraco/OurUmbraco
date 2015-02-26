@@ -35,7 +35,7 @@ namespace our.Examine
             var files = uWiki.Businesslogic.WikiFile.CurrentFiles(project.Id);
             var downloads = our.Utills.GetProjectTotalDownloadCount(project.Id);
 
-            var image = files.Where(x => x.FileType == "screenshot").FirstOrDefault();
+            var image = files.FirstOrDefault(x => x.FileType == "screenshot");
             var imageFile = "";
             if (image != null)
                 imageFile = image.Path;
@@ -66,7 +66,7 @@ namespace our.Examine
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
             var dataSets = new List<SimpleDataSet>();
-            var projects = Umbraco.Web.UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']");
+            var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']");
            
             //index all projects
             for (int i = 0; i < projects.Count(); i++)
