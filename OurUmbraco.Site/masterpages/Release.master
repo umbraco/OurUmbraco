@@ -1,7 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
-  <link rel="stylesheet" type="text/css" href="/css/releases.css?v=6" />
+  <!-- <link rel="stylesheet" type="text/css" href="/css/releases.css?v=6" /> -->
   <!-- release scripts -->
   <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
   <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
@@ -11,142 +11,225 @@
 </asp:Content>
   
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
-  <div id="body" class="subpage wrapper">
-    <div style="margin-top: 25px;">
-      <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-    </div>
-<h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
-<!-- ko foreach: versions -->
-<h1>
-    Umbraco v<umbraco:Item ID="Item1" field="pageName" runat="server" />
-    <small data-bind="visible: !released()">Status: <span data-bind="    text: inProgressRelease() === true ? 'In progress' : 'Planned'"></span></small>
-    <small data-bind="visible: released()">Status: Released</small>
-</h1>
-<div class="version" data-bind="css: { released: released() }, attr: { id: id }">
-          <h3>
-          <span data-bind="text: (released() ? '100' : percentComplete()) + '% Complete' "></span>
-            <span data-bind="text: percentInProgress() + '% In Progress' "></span>  
-        </h3>
-        <!-- Progress Bar -->    
-        <div class="progressbar">
-          <div class="bar bar1 rl" data-bind="style: { width: (released() ? '100' : percentComplete()) + '%' }, visible: percentComplete() > 0 || released(), css: { rr: percentInProgress() == 0 }">&nbsp;</div>
-            <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
-        </div>
-  <h3 data-bind="visible: !released()">Target release date: <span data-bind="    text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
-  <!--<h3 data-bind="visible: released()"><a href="http://umbraco.codeplex.com/releases">Download it now!</a></h3>-->
-  <umbraco:Macro ID="Macro2" Language="cshtml" runat="server">
-			@{ 
-				var downloads = Model.ReleaseDownload.Where("Visible"); 	
-				var countIsOdd = ((downloads.Count() & 1) != 0) ? true : false;				
-				if(downloads.Any())
-				{
-					<br /><br />
-					<h2>Available downloads</h2>
-					<ul class="projectGroups" style="">
-						@foreach (var item in downloads)
-						{							
-							var background = item.IsFirst() ? "/images/releases/download.png" : "/media/2483095/download.png"; 
-							var width = (item.IsLast() && countIsOdd) ? 895 : 380;
-							var numberOfDownloads = 0;
-							int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
-                            numberOfDownloads = numberOfDownloads + our.Utills.GetProjectTotalDownloadCount(item.Id);
-							
-						<li class="@(item.IsFirst() == false ? "release" : "main-release")">
-								<div style="background-image: url('@background');width: @(width)px;height: 60px;">
-									<h3><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></h3>
-									@if(item.IsFirst())
-									{
-									    <strong>This is the main Umbraco download, generally you won't need anything else.</strong>
-									}
-									<p>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</p>
-								</div>
+  <div class="has-sidebar latest page-content">
+			
+			<div class="sidebar-area">
+				<div class="sidebar-content">
+					<div class="content-wrapper">
+					
+					<nav>
+						<ul class="level-1">
+							<li class="active open">
+								<a class="active" href=""><h3>Latest Release</h3></a>
+								<ul class="level-2">
+									<li>
+										<a href=""><h4>7.2.2</h4></a>
+									</li>
+								</ul>
 							</li>
-						}
+							<li>
+								<a href=""><h3>In Progress</h3></a>
+								<ul class="level-2">
+									<li>
+										<a href=""><h4>7.2.3</h4></a>
+									</li>
+									<li>
+										<a href=""><h4>7.3</h4></a>
+									</li>
+									<li>
+										<a href=""><h4>8.0</h4></a>
+									</li>
+									
+								</ul>
+							</li>
+							<li>
+								<a href=""><h3>All Releases</h3></a>
+								<ul class="level-2">
+									<li>
+										<a href=""><h4>Umbraco 7</h4></a>
+									</li>
+									<li>
+										<a href=""><h4>Umbraco 6</h4></a>
+									</li>
+									<li>
+										<a href=""><h4>Umbraco 4</h4></a>
+									</li>
+									
+								
+							</ul>
+						</li>
 					</ul>
-				}
-			} 
-  </umbraco:Macro>
+				</nav>
 
-  <div style="width: 500px; float: left; padding-top: 15px;">
-      <span data-bind="visible: releaseDescription() != ''">
-    <h2>Summary</h2>
-    <p><span data-bind="html: releaseDescription"></span></p>
-  </span>
+				</div><!-- .content-wrapper -->
+			</div><!-- .sidebar-content -->
+		</div>
+		<div class="main-area">
+			<div class="main-content">
+				<div class="content-wrapper">
+
+                    <div>
+                        <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                    </div>
+
+                    <h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
+                    
+                    <!-- ko foreach: versions -->
+                    <div class="row explain">
+                        <div class="col-xs-12">
+                            <h4>
+                                v<umbraco:Item ID="Item1" field="pageName" runat="server" />
+                                <umbraco:Macro ID="Macro5" Language="cshtml" runat="server">
+	                                @if(Model.HasValue("releaseNotes")) {
+		                                <small><p>@Model.releaseNotes</p></small>
+	                                }
+                                </umbraco:Macro>
+                            </h4>
+                        </div>
+                    </div>
+                    
+
+                        <div class="" data-bind="css: { released: released() }, attr: { id: id }">
+                            <h3>
+                                <span data-bind="text: (released() ? '100' : percentComplete()) + '% Complete' "></span>
+                                <span data-bind="text: percentInProgress() + '% In Progress' "></span>  
+                            </h3>
+                            <!-- Progress Bar -->    
+                            <div class="progressbar">
+                                <div class="bar bar1 rl" data-bind="style: { width: (released() ? '100' : percentComplete()) + '%' }, visible: percentComplete() > 0 || released(), css: { rr: percentInProgress() == 0 }">&nbsp;</div>
+                                <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
+                            </div>
+                        <small data-bind="visible: !released()">Status: <span data-bind="    text: inProgressRelease() === true ? 'In progress' : 'Planned'"></span></small>
+                        <small data-bind="visible: released()">Status: Released</small>
+                        <h3 data-bind="visible: !released()">Target release date: <span data-bind="    text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
+                        <!--<h3 data-bind="visible: released()"><a href="http://umbraco.codeplex.com/releases">Download it now!</a></h3>-->
+                        <umbraco:Macro ID="Macro2" Language="cshtml" runat="server">
+		                    @{ 
+			                    var downloads = Model.ReleaseDownload.Where("Visible"); 	
+			                    var countIsOdd = ((downloads.Count() & 1) != 0) ? true : false;				
+			                    if(downloads.Any())
+			                    {
+				                    <div class="get-release row">
+					                    @foreach (var item in downloads)
+					                    {							
+						                    var background = item.IsFirst() ? "/images/releases/download.png" : "/media/2483095/download.png"; 
+						                    var width = (item.IsLast() && countIsOdd) ? 895 : 380;
+						                    var numberOfDownloads = 0;
+						                    int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
+                                            numberOfDownloads = numberOfDownloads + our.Utills.GetProjectTotalDownloadCount(item.Id);
+							
+                                        <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-sm-1">
+							                    <i class="icon-Download-alt"></i>
+					                    </div>
+					                    <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-md-5">
+	
+						                    <h3><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.7.2.2.zip']);">UmbracoCms.7.2.2.zip</a></h3>
+                                            @if(item.IsFirst())
+						                    {
+							                    <p>This is the main Umbraco download, generally you won't need anything else.</p>
+						                    }
+						                    <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
+					                    </div>
+					                    }
+				                    </div>
+			                    }
+		                    } 
+                        </umbraco:Macro>
+
+                        <div class="row markdown-syntax">
+
+                            <div class="col-md-5">
+
+                            <span data-bind="visible: releaseDescription() != ''">
+                                <h2>Summary</h2>
+                                <p><span data-bind="html: releaseDescription"></span></p>
+                            </span>
       
-  <umbraco:Macro ID="Macro3" Language="cshtml" runat="server">
-		@if(Model.HasValue("bodyText")) {
-			<h2>Release notes</h2>
-			@Model.BodyText
-		}
-  </umbraco:Macro>
+                            <umbraco:Macro ID="Macro3" Language="cshtml" runat="server">
+		                        @if(Model.HasValue("bodyText")) {
+			                        <h2>Release notes</h2>
+			                        @Model.BodyText
+		                        }
+                            </umbraco:Macro>
       
 	  
-  <h2>Related changes from the issue tracker</h2>
-  <div class="panel-wrapper">
-    <div class="panel-left">
-        <!-- Columns for statuses -->
-        <div class="statuses group">
-            <div class="status features">
-                <h3>Features</h3>
-                <p data-bind="visible: featureIssues().length == 0">No items to display</p>
-                <ul data-bind="template: { name: 'issue-template', foreach: featureIssues }"></ul>                
-            </div>
-            <div class="status breaking">
-                <h3>Breaking Changes</h3>
-                <p data-bind="visible: breakingIssues().length == 0">No items to display</p>
-                <ul data-bind="template: { name: 'issue-template', foreach: breakingIssues }"></ul>
-            </div>
-            <div class="status issues">
-                <h3>Issues &amp; Tasks</h3>
-                <p data-bind="visible: issueIssues().length == 0">No items to display</p>
-                <ul data-bind="template: { name: 'issue-template', foreach: issueIssues }"></ul>
-            </div>
-        </div>
+                            <h2>Related changes from the issue tracker</h2>
+                            <div class="panel-wrapper">
+                            <div class="panel-left">
+                                <!-- Columns for statuses -->
+                                <div class="statuses group">
+                                    <div class="status features">
+                                        <h3>Features</h3>
+                                        <p data-bind="visible: featureIssues().length == 0">No items to display</p>
+                                        <ul data-bind="template: { name: 'issue-template', foreach: featureIssues }"></ul>                
+                                    </div>
+                                    <div class="status breaking">
+                                        <h3>Breaking Changes</h3>
+                                        <p data-bind="visible: breakingIssues().length == 0">No items to display</p>
+                                        <ul data-bind="template: { name: 'issue-template', foreach: breakingIssues }"></ul>
+                                    </div>
+                                    <div class="status issues">
+                                        <h3>Issues &amp; Tasks</h3>
+                                        <p data-bind="visible: issueIssues().length == 0">No items to display</p>
+                                        <ul data-bind="template: { name: 'issue-template', foreach: issueIssues }"></ul>
+                                    </div>
+                                </div>
           
-          </div>
-    </div>
-  </div>
-    <div style="width: 400px; float: right; padding-top: 15px;">
-        <h2>Getting started</h2>
-        <p>Make sure to give the <a href="http://our.umbraco.org/documentation/Installation/">installation instructions a read</a>.</p>
-        <p>Check the <strong>free</strong> <a href="http://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
-            <ul>
-                <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
-                <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
-                <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
-                <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
-            </ul>
-        <h2>World's best community</h2>
-        <p>You'll find our über active community working hard to help each other at Our Umbraco: <a href="http://our.umbraco.org">http://our.umbraco.org</a></p>
-        <h2>Upgrading from older versions</h2>
-        <p>Make sure to read the <a href="http://our.umbraco.org/documentation/Installation/Upgrading/">upgrade instructions</a> before you attempt an upgrade.</p>
-        
-        <umbraco:Macro ID="Macro4" runat="server" Language="cshtml">
-            <h2>Found a bug?</h2>
-            <p>We're happy to help you with any problems you encounter, so please report them in <a href="http://issues.umbraco.org/issues/U4">the issue tracker</a> and use the “Affected versions” field to set it to @Model.Name. <br />Do a search first though, if the issue already exists, give it an extra vote.</p>
-        
-            @if(Model.HasValue("linkToChangeset")) {
-                <h2>Source code</h2>
-                <p>The source for <a href="@Model.LinkToChangeset">this specific release is available for download from the repository</a> (click the "ZIP" button).</p>
-            }
-            
-            @if(Model.HasNuGet) {
-                <h2>Also available on NuGet</h2>
-                
-                <div class="nuget-badge">
-                    <a href="https://nuget.org/packages/UmbracoCms/@Model.Name">
-                        <p><code>PM&gt; Install-Package UmbracoCms -Version @Model.Name</code></p>
-                    </a>
-                </div>
-                
-            }
-        </umbraco:Macro>
+                                    </div>
+                            </div>
 
-    </div>
-  
-</div>
-<!-- /ko -->
-  </div>
+                            </div><!-- col-md-5 -->
+                                
+                            <div class="col-md-5 col-md-offset-2">
+
+                                <h2>Getting started</h2>
+                                <p>Make sure to give the <a href="http://our.umbraco.org/documentation/Installation/">installation instructions a read</a>.</p>
+                                <p>Check the <strong>free</strong> <a href="http://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
+                                    <ul>
+                                        <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
+                                        <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
+                                        <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
+                                        <li><a href="http://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
+                                    </ul>
+                                <h2>World's best community</h2>
+                                <p>You'll find our über active community working hard to help each other at Our Umbraco: <a href="http://our.umbraco.org">http://our.umbraco.org</a></p>
+                                <h2>Upgrading from older versions</h2>
+                                <p>Make sure to read the <a href="http://our.umbraco.org/documentation/Installation/Upgrading/">upgrade instructions</a> before you attempt an upgrade.</p>
+        
+                                <umbraco:Macro ID="Macro4" runat="server" Language="cshtml">
+                                    <h2>Found a bug?</h2>
+                                    <p>We're happy to help you with any problems you encounter, so please report them in <a href="http://issues.umbraco.org/issues/U4">the issue tracker</a> and use the “Affected versions” field to set it to @Model.Name. <br />Do a search first though, if the issue already exists, give it an extra vote.</p>
+        
+                                    @if(Model.HasValue("linkToChangeset")) {
+                                        <h2>Source code</h2>
+                                        <p>The source for <a href="@Model.LinkToChangeset">this specific release is available for download from the repository</a> (click the "ZIP" button).</p>
+                                    }
+            
+                                    @if(Model.HasNuGet) {
+                                        <h2>Also available on NuGet</h2>
+                
+                                        <div class="nuget-badge">
+                                            <a href="https://nuget.org/packages/UmbracoCms/@Model.Name">
+                                                <p><code>PM&gt; Install-Package UmbracoCms -Version @Model.Name</code></p>
+                                            </a>
+                                        </div>
+                
+                                    }
+                                </umbraco:Macro>
+
+                            </div><!-- col-md-5 col-md-offset-2 -->
+
+                        </div><!-- .row .markdown-syntax -->
+
+                    </div>
+                    <!-- /ko -->
+
+                    </div><!-- .content-wrapper -->
+				</div><!-- .main-content -->
+			</div><!-- .main-area -->
+	
+		</div><!-- .page-content -->
+
 <script type="text/html" id="issue-template">
     <li data-bind="attr: { 'class': state().replace(/\s/g, '') }">
         <a data-bind="text: id() + ' ' + title(), attr: { href: 'http://issues.umbraco.org/issue/' + id() }" target="_blank"></a>
@@ -162,14 +245,15 @@
             var inProgressVersions = [];
             var futureVersions = [];
             var patchReleases = [];
-            $(function () {
+            alert("sadlkjasldjlasd");
 
+
+                alert("tye");
                 // Apply bindings
                 ko.applyBindings(viewModel);
                 // Load data
                 loadData('@Model.Name');
 
-            });
 
     </script>
     </umbraco:Macro>

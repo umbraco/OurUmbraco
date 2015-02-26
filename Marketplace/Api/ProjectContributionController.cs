@@ -9,6 +9,7 @@ using Umbraco.Web.WebApi;
 
 namespace Marketplace.Api
 {
+    [MemberAuthorize(AllowType = "member")]
     public class ProjectContributionController : UmbracoApiController
     {
         public HttpResponseMessage Delete(int projectId, int memberId)

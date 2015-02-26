@@ -12,21 +12,142 @@
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">    
-    
-    <div class="releaseTable">
-    <h2>Current:</h2>
-    <div class="releaseHeaders">
-      <div class="header version">Version</div>
-      <div class="header changes">Changes</div>
-      <div class="header releaseDate">Release Date</div>
-    </div>
-    <div class="released" data-bind="template: { name: 'releases-template', foreach: releasedReleases }"></div>
+<div class="has-sidebar"><!-- Apply to body -->
+
+<div class="page-content">
+    	
+	<div class="sidebar-area">
+		<div class="sidebar-content">
+			<div class="content-wrapper">
+				
+			<nav>
+				<ul class="level-1">
+					<li>
+						<a class="active" href=""><h3>Latest Release</h3></a>
+					</li>
+					<li>
+						<a href=""><h3>In Progress</h3></a>
+					</li>
+					<li class="active open">
+						<a href=""><h3>All Releases</h3></a>
+						<!--<ul class="level-2">
+							<li>
+								<a href=""><h4>Umbraco 7</h4></a>
+							</li>
+							<li>
+								<a href=""><h4>Umbraco 6</h4></a>
+							</li>
+							<li>
+								<a href=""><h4>Umbraco 4</h4></a>
+							</li>
+								
+						</ul>-->
+					</li>
+				</ul>
+			</nav>
+
+			</div><!-- .content-wrapper -->
+		</div><!-- .sidebar-content -->
+	</div>
+	<div class="main-area">
+		<div class="main-content">
+			<div class="content-wrapper">
+						
+				<div>
+				    <umbraco:Macro ID="Macro3" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+			    </div>
+
+                <div class="markdown-syntax">
+                    <h1>All Releases</h1>
+                    <p><em>This page lists all of the available Umbraco releases. Past, present and future.</em></p>
+                </div><!-- #markdown-docs -->
+
+				<div class="row">
+					<div class="col-xs-3">
+						<span class="dot big icon-untitled">
+							<span class="line v-line"></span>
+							<span class="line h-line"></span>
+						</span>
+                        <umbraco:Macro ID="Macro1" runat="server" Language="cshtml">
+                                    @using uRelease
+                                    @{
+                                        var properlySortedVersions = new Dictionary<System.Version, umbraco.MacroEngines.DynamicNode>();
+                                        int result = 0;
+                                        foreach(var release in Model.Children) {
+                                            if(release.ReleaseStatus == "Released" && release.RecommendedRelease == false) {
+                                                result++;    
+                                            }
+                                        }
+
+                                        for (int i = 0; i < result; i += 2) {
+                                             
+                                            if (i != result-2 || i != result-3) {
+                                                <span class="dot small">
+                                                    <span class="line v-line"></span>
+                                                    <span class="line h-line"></span> 
+							                    </span>
+                                            }else{
+                                                <span class="dot small">
+                                                    <span class="line h-line"></span> 
+                                                </span>
+                                            }
+                                        }
+                                    }
+                        </umbraco:Macro>
+						
+					</div>
+						
+					<div class="col-xs-9">
+                        <div class="row explain">    
+                            <div class="dl-content" data-bind="template: { name: 'releases-template', foreach: currentReleases }">
+
+					        </div>
+                            
+                            <umbraco:Macro ID="Macro2" runat="server" Language="cshtml">
+                                @{
+                                        var properlySortedVersions = new Dictionary<System.Version, umbraco.MacroEngines.DynamicNode>();
+                                        foreach(var release in Model.Children) {
+                                            if(release.ReleaseStatus == "Released" && release.RecommendedRelease == false) {
+                                                properlySortedVersions.Add(new System.Version(release.Name), release);
+                                            }
+                                        }
+                                    }
+
+                                    @foreach(var item in properlySortedVersions.OrderByDescending(x => x.Key)) {
+                                        umbraco.MacroEngines.DynamicNode release = item.Value;
+                                        <div class="col-xs-6">
+                                            @* Archived releases don't exist on YouTrack, so they need an alternative template *@
+                                            @if(release.GetProperty("Archived") != null && release.GetProperty("Archived").Value == "1"){
+                                                <h5><a href="/contribute/releases/@(release.Name.Replace(".", ""))/ArchivedRelease/">v @release.Name</a></h5>
+									            <small>What is needed to run Umbraco?</small>
+                                            } else {
+                                                <h5><a href="/contribute/releases/@(release.Name.Replace(".", ""))/"> @release.Name</a></h5>
+							                    <small>What is needed to run Umbraco?</small>
+                                            }
+                                        </div>
+                                    }
+                            </umbraco:Macro>
+                            </div>
+						</div>
+                        
+					</div>
+			
+
+
+
+        	</div><!-- .content-wrapper -->
+		</div><!-- .main-content -->
+	</div><!-- .main-area -->
+
+</div><!-- .page-content -->
   </div>
-  
 
     <script type="text/html" id="releases-template">
 
-
+        <div class="col-xs-12">
+		    <h4><a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }">v6.2.4</a></h5>
+		    <small data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></small>
+	    </div>
 
     </script>
     
@@ -37,14 +158,10 @@
             ko.applyBindings(viewModel);
             // Load data
             loadAllData();
-            console.log(viewModel);
         })();
-
         </script>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
-  <umbraco:Macro ID="Macro4" runat="server" Language="cshtml">
-      
-    </umbraco:Macro>
+  
 </asp:Content>

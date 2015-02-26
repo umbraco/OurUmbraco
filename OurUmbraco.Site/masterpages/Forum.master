@@ -9,17 +9,17 @@
                 <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                 <!-- FORUM BREADCRUMB END -->
 
-                <!-- FORUM Search START -->
-                <div class="search-big">
-					<input type="search" class="forum-search-input" required placeholder="Search for threads">
-					<label for="search">Search for threads</label>
-				</div>
-
-				<umbraco:Macro Alias="[Forum]ForumActions" runat="server"></umbraco:Macro>
-
+                <umbraco:Macro Alias="[Forum]ForumActions" runat="server"></umbraco:Macro>
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->
+
+            <!-- FORUM Search START -->
+            <div class="search-big">
+		        <input type="search" class="forum-search-input" required placeholder="Search for threads">
+		        <label for="search">Search for threads</label>
+	        </div>
+    
 
             <!-- FORUM TOPICS -->
             <umbraco:Macro Alias="[Forum]Forum" runat="server"></umbraco:Macro>

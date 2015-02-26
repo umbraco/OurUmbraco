@@ -1767,6 +1767,7 @@
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
     <Content Include="masterpages\Download.master" />
+    <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
