@@ -55,6 +55,8 @@ namespace our.Examine.DocumentationIndexDataService.Helper
             simpleDataSet.RowData.Add("Body", body);
             simpleDataSet.RowData.Add("Title", headLine);
             simpleDataSet.RowData.Add("dateCreated", file.CreationTime.ToString("yyyy-MM-dd-HH:mm:ss"));
+
+            //TODO: This will always be exactly the same since all files are written at the same time IIRC
             simpleDataSet.RowData.Add("dateCreatedSearchAble", file.CreationTime.SerializeForLucene());
             simpleDataSet.RowData.Add("Path", file.FullName);
             simpleDataSet.RowData.Add("searchAblePath", file.FullName.Replace("\\", " ").Replace(":", ""));
