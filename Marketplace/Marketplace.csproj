@@ -279,34 +279,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Razor\VersionCompatibilityReport.cs" />
-    <Compile Include="usercontrols\Deli\FeaturedProject.ascx.cs">
-      <DependentUpon>FeaturedProject.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\FeaturedProject.ascx.designer.cs">
-      <DependentUpon>FeaturedProject.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\HQStaffPickProjects.ascx.cs">
-      <DependentUpon>HQStaffPickProjects.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\HQStaffPickProjects.ascx.designer.cs">
-      <DependentUpon>HQStaffPickProjects.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ListPagination.ascx.cs">
-      <DependentUpon>ListPagination.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ListPagination.ascx.designer.cs">
-      <DependentUpon>ListPagination.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\NewestProjects.ascx.cs">
-      <DependentUpon>NewestProjects.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\NewestProjects.ascx.designer.cs">
-      <DependentUpon>NewestProjects.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\Package\Steps\Complete.ascx.cs">
       <DependentUpon>Complete.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -349,13 +321,6 @@
     <Compile Include="usercontrols\Deli\Package\Steps\Files.ascx.designer.cs">
       <DependentUpon>Files.ascx</DependentUpon>
     </Compile>
-    <Compile Include="usercontrols\Deli\PopularProjects.ascx.cs">
-      <DependentUpon>PopularProjects.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\PopularProjects.ascx.designer.cs">
-      <DependentUpon>PopularProjects.ascx</DependentUpon>
-    </Compile>
     <Compile Include="usercontrols\Deli\Profile\MyProjects.ascx.cs">
       <DependentUpon>MyProjects.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -369,20 +334,6 @@
     </Compile>
     <Compile Include="usercontrols\Deli\Profile\Signup.ascx.designer.cs">
       <DependentUpon>Signup.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ProjectsList.ascx.cs">
-      <DependentUpon>ProjectsList.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\ProjectsList.ascx.designer.cs">
-      <DependentUpon>ProjectsList.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\TopPaidProjectsList.ascx.cs">
-      <DependentUpon>TopPaidProjectsList.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\TopPaidProjectsList.ascx.designer.cs">
-      <DependentUpon>TopPaidProjectsList.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\our.umbraco.org\Login_novalidationscript.ascx.cs">
       <DependentUpon>Login_novalidationscript.ascx</DependentUpon>
@@ -400,24 +351,17 @@
     <Content Include="Razor\versionCompatibilityReport.cshtml" />
     <Content Include="packages.config" />
     <None Include="Razor\versionCompatibility.cshtml" />
-    <Content Include="usercontrols\Deli\FeaturedProject.ascx" />
-    <Content Include="usercontrols\Deli\HQStaffPickProjects.ascx" />
-    <Content Include="usercontrols\Deli\ListPagination.ascx" />
-    <Content Include="usercontrols\Deli\NewestProjects.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Complete.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Licenses.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Screenshots.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
     <Content Include="usercontrols\Deli\Package\Editor.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Files.ascx" />
-    <Content Include="usercontrols\Deli\PopularProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
-    <Content Include="usercontrols\Deli\ProjectsList.ascx" />
     <Content Include="usercontrols\our.umbraco.org\Login_novalidationscript.ascx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
     <Content Include="usercontrols\our.umbraco.org\HeaderLogin.ascx" />
     <Content Include="usercontrols\umbracoMemberControls\umbLogin.ascx" />
     <Content Include="MasterPages\newest.master" />
