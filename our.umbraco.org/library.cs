@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using umbraco.cms.businesslogic.member;
@@ -8,7 +9,7 @@ using System.Xml.XPath;
 
 namespace our {
     [Umbraco.Core.Macros.XsltExtension("our.library")]
-    public class Utills {
+    public class Utils {
         private static Regex _tags = new Regex("<[^>]*(>|$)", RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
         private static Regex _whitelist = new Regex(@"
             ^</?(a|b(lockquote)?|code|em|h(1|2|3)|i|li|ol|p(re)?|s(ub|up|trong|trike)?|ul)>$
@@ -94,6 +95,26 @@ namespace our {
             {
                 return 0;
             }
+        }
+
+        /// <summary>
+        /// Returns a dictionary of project id => total karma
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, int> GetProjectTotalKarma()
+        {
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("SELECT id, sum([points]) as points FROM [powersProject] GROUP BY id")
+                .ToDictionary(x => (int)x.id, x => (int)x.points);
+        }
+
+        /// <summary>
+        /// Returns a dictionary of project id => total downloads
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, int> GetProjectTotalDownload()
+        {
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("select projectId, count(*) as total from projectDownload GROUP BY projectId")
+                .ToDictionary(x => (int)x.projectId, x => (int)x.total);
         }
 
         public static int GetProjectFileDownloadCount(int fileId)

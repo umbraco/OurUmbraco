@@ -4,6 +4,7 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Examine;
+using Examine.LuceneEngine.Providers;
 using our.Examine;
 using uDocumentation.Busineslogic;
 using Umbraco.Core;
@@ -40,11 +41,16 @@ namespace our.CustomHandlers
 
         private void BindExamineEvents()
         {
-            ExamineManager.Instance.IndexProviderCollection["projectIndexer"].GatheringNodeData += ProjectNodeIndexDataService.ProjectIndexer_GatheringNodeData;
+            var projectIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
+            projectIndexer.GatheringNodeData += ProjectNodeIndexDataService.ProjectIndexer_GatheringNodeData;
+            projectIndexer.DocumentWriting += ProjectNodeIndexDataService.ProjectIndexer_DocumentWriting;
+
+            //handle errors for non-umbraco indexers
             ExamineManager.Instance.IndexProviderCollection["projectIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["ForumIndexer"].IndexingError += ExamineHelper.LogErrors;
         }
+
 
         /// <summary>
         /// Whenever the github zip downloader completes and docs index is rebuilt
