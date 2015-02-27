@@ -18,8 +18,10 @@ namespace our.Models
         [EmailAddress]
         public string Email { get; set; }
 
+        [Required]
         public string Password { get; set; }
 
+        [Required]
         [Display(Name = "Confirm")]
         [Compare("Password")]
         public string RepeatPassword { get; set; }

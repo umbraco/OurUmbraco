@@ -18,7 +18,7 @@
 </div>
 
 <div class="profile-settings">
-    <strong>Change your profile</strong>
+    <strong>Your details</strong>
     <div class="profile-settings-forms">
 
         @using (Html.BeginUmbracoForm<our.Controllers.RegisterController>("HandleSubmit"))
@@ -41,14 +41,14 @@
             <div class="profile-input" id="username">
                 @Html.LabelFor(m => m.Name)
                 @Html.TextBoxFor(m => m.Name)
-
+                @Html.ValidationMessageFor(m => m.Name)
             </div>
 
 
             <div class="profile-input" id="email">
                 @Html.LabelFor(m => m.Email)
                 @Html.TextBoxFor(m => m.Email)
-
+                @Html.ValidationMessageFor(m => m.Email)
 
             </div>
 
@@ -56,11 +56,13 @@
             <div class="profile-input" id="password">
                 @Html.LabelFor(m => m.Password)
                 @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
+                @Html.ValidationMessageFor(m => m.Password)
             </div>
 
             <div class="profile-input confirm-password" id="repeat-password">
                 @Html.LabelFor(m => m.RepeatPassword)
                 @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
+                @Html.ValidationMessageFor(m => m.Password)
 
             </div>
 

@@ -1,3 +1,9 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 
+@{
+    if (Members.IsLoggedIn())
+    {
+        Response.Redirect("/member/profile");
+    }
+}
 @Html.Action("Render", "Register") 
