@@ -412,7 +412,9 @@
   <ItemGroup>
     <WebReferences Include="Web References\" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Controllers\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
       <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
