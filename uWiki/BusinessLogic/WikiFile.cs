@@ -37,7 +37,7 @@ namespace uWiki.Businesslogic
             if (File.Exists(HttpContext.Current.Server.MapPath(Path)))
                 File.Delete(HttpContext.Current.Server.MapPath(Path));
 
-            Data.SqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id", Data.SqlHelper.CreateParameter("@id", Id));
+            Application.SqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id", Application.SqlHelper.CreateParameter("@id", Id));
         }
 
 
@@ -45,12 +45,14 @@ namespace uWiki.Businesslogic
         {
             var wikiFiles = new List<WikiFile>();
 
-            var reader = Data.SqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", Data.SqlHelper.CreateParameter("@nodeId", nodeId));
+            using (var reader = Application.SqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", Application.SqlHelper.CreateParameter("@nodeId", nodeId)))
+            {
+                while (reader.Read())
+                    wikiFiles.Add(new WikiFile(reader.GetInt("id")));
 
-            while (reader.Read())
-                wikiFiles.Add(new WikiFile(reader.GetInt("id")));
-
-            return wikiFiles;
+                return wikiFiles;
+            }
+           
         }
 
         private readonly Events _events = new Events();
@@ -176,23 +178,23 @@ namespace uWiki.Businesslogic
                 if (e.Cancel)
                     return;
 
-                Data.SqlHelper.ExecuteNonQuery(
+                Application.SqlHelper.ExecuteNonQuery(
                     "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified)",
-                    Data.SqlHelper.CreateParameter("@path", Path),
-                    Data.SqlHelper.CreateParameter("@name", Name),
-                    Data.SqlHelper.CreateParameter("@createdBy", CreatedBy),
-                    Data.SqlHelper.CreateParameter("@nodeId", NodeId),
-                    Data.SqlHelper.CreateParameter("@type", FileType),
-                    Data.SqlHelper.CreateParameter("@nodeVersion", NodeVersion),
-                    Data.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Data.SqlHelper.CreateParameter("@archived", Archived),
-                    Data.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Data.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@path", Path),
+                    Application.SqlHelper.CreateParameter("@name", Name),
+                    Application.SqlHelper.CreateParameter("@createdBy", CreatedBy),
+                    Application.SqlHelper.CreateParameter("@nodeId", NodeId),
+                    Application.SqlHelper.CreateParameter("@type", FileType),
+                    Application.SqlHelper.CreateParameter("@nodeVersion", NodeVersion),
+                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
+                    Application.SqlHelper.CreateParameter("@archived", Archived),
+                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                    Application.SqlHelper.CreateParameter("@verified", Verified)
                     );
 
                 CreateDate = DateTime.Now;
 
-                Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy", Data.SqlHelper.CreateParameter("@createdBy", CreatedBy));
+                Id = Application.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy", Application.SqlHelper.CreateParameter("@createdBy", CreatedBy));
 
                 FireAfterCreate(e);
             }
@@ -204,19 +206,19 @@ namespace uWiki.Businesslogic
                 if (e.Cancel)
                     return;
 
-                Data.SqlHelper.ExecuteNonQuery(
+                Application.SqlHelper.ExecuteNonQuery(
                     "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified WHERE id = @id",
-                    Data.SqlHelper.CreateParameter("@path", Path),
-                    Data.SqlHelper.CreateParameter("@name", Name),
-                    Data.SqlHelper.CreateParameter("@type", FileType),
-                    Data.SqlHelper.CreateParameter("@current", Current),
-                    Data.SqlHelper.CreateParameter("@removedBy", RemovedBy),
-                    Data.SqlHelper.CreateParameter("@version", NodeVersion),
-                    Data.SqlHelper.CreateParameter("@id", Id),
-                    Data.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Data.SqlHelper.CreateParameter("@archived", Archived),
-                    Data.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Data.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@path", Path),
+                    Application.SqlHelper.CreateParameter("@name", Name),
+                    Application.SqlHelper.CreateParameter("@type", FileType),
+                    Application.SqlHelper.CreateParameter("@current", Current),
+                    Application.SqlHelper.CreateParameter("@removedBy", RemovedBy),
+                    Application.SqlHelper.CreateParameter("@version", NodeVersion),
+                    Application.SqlHelper.CreateParameter("@id", Id),
+                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
+                    Application.SqlHelper.CreateParameter("@archived", Archived),
+                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                    Application.SqlHelper.CreateParameter("@verified", Verified)
                     );
 
                 FireAfterUpdate(e);
@@ -271,7 +273,7 @@ namespace uWiki.Businesslogic
 
         public WikiFile(int id)
         {
-            using (var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId",
+            using (var reader = Application.SqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId",
                     Application.SqlHelper.CreateParameter("@fileId", id)))
             {
                 if (reader.Read())
