@@ -24,7 +24,7 @@
         
     <h2>Version @mayorV.Key</h2>
     
-    <div class="row">
+    <div class="row releaseTable">
         @{
             var versions = mayorV.OrderByDescending(x => x.Key );
             var latest = versions.First();
@@ -37,18 +37,18 @@
             
             <!-- the rest -->
 
-            @for (int i = 0; i < versions.Count() / 3; i++)
+            @for (int i = 0; i < versions.Count(); i++)
             {
-                <span class="dot small">
-                    <span class="line v-line"></span>
-                    <span class="line h-line"></span> 
-				</span>
+                if (i % 3 == 0)
+                {
+                    <span class="dot small">
+                        <span class="line v-line"></span>
+                        <span class="line h-line"></span>
+                    </span>
+                }
             }
 
-            <span class="dot small">
-                <span class="line v-line"></span>
-                <span class="line v-line"></span>  
-            </span>
+            
         </div>
 
 
@@ -64,11 +64,16 @@
 		        </div>
 
                 <!-- the rest -->
-                @foreach (var minorRelease in versions)
-                {
-                <div class="col-xs-4" style="min-height: 133px">
-                    <h5><a href="@minorRelease.Value.Url">@minorRelease.Key.ToString()</a></h5>
-                </div>
+               
+              
+                @{
+                    foreach (var minorRelease in versions)
+                    {
+                        
+                        <div class="col-xs-4" style="min-height: 133px">
+                            <h5><a href="@minorRelease.Value.Url">@minorRelease.Key.ToString()</a></h5>
+                        </div>
+                    }
                 }
 
             </div>
