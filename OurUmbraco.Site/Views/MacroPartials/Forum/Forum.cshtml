@@ -44,13 +44,11 @@
         </thead>
         <!-- FORUM LIST HEADER END -->
         <!-- FORUM LIST OF THREADS START -->
-        <tbody>
+        <tbody class="forum-default-listing">
 
             <!-- FORUM THREAD START -->
             @foreach (var topic in topics.Items)
-            {
-                
-                    
+            {       
                 
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
 
@@ -77,10 +75,14 @@
             
         </tbody>
 
+        <tbody class="forum-search-listing">
+        </tbody>
         <!-- FORUM LIST OF THREADS START -->
     </table>
 
+
 <!-- FORUM LIST END -->
+<!-- Template for scrolling - yes these 2 should be merged together -->
 <script id="forum-template" type="x-tmpl-mustache">
     {{#.}}
     <tr class="{{#hasAnswer}}solved{{/hasAnswer}}">
@@ -95,5 +97,16 @@
     {{/.}}
 </script>
 
+<!-- Template for search -->
+<script type="text/template" class="search-item-forum">
+    <tr class="{[if(hasAnswer === 1){]}solved{[ } ]}">
+        <td class="topic">
+            <a href="{{url}}">{{name}}</a>
+            <span>{{body}}</span>
+        </td>
 
-
+        <td class="category frontend"><a href="{{forumUrl}}">{{forumName}}</a></td>
+        <td class="posts">{{replies}}</td>
+        <td class="activity" title="{{updateDate}}">{{updateDate}}</td>
+    </tr>
+</script>

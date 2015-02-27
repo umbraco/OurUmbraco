@@ -260,7 +260,10 @@
     <Compile Include="CustomHandlers\projectVote.cs" />
     <Compile Include="CustomHandlers\TopicVote.cs" />
     <Compile Include="Examine\OurSearcher.cs" />
+    <Compile Include="Examine\ProjectAnalyzer.cs" />
     <Compile Include="Examine\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Examine\VersionAnalyzer.cs" />
+    <Compile Include="Examine\VersionTokenizer.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>

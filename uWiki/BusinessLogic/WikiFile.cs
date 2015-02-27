@@ -7,6 +7,7 @@ using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic;
 using umbraco.BusinessLogic;
 using System.Xml;
+using Umbraco.Core;
 
 namespace uWiki.Businesslogic
 {
@@ -37,20 +38,73 @@ namespace uWiki.Businesslogic
             if (File.Exists(HttpContext.Current.Server.MapPath(Path)))
                 File.Delete(HttpContext.Current.Server.MapPath(Path));
 
-            Data.SqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id", Data.SqlHelper.CreateParameter("@id", Id));
+            Application.SqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id", Application.SqlHelper.CreateParameter("@id", Id));
         }
 
+        /// <summary>
+        /// Gets all wiki files for all nodes
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, IEnumerable<WikiFile>> CurrentFiles(IEnumerable<int> nodeIds)
+        {
+            var wikiFiles = new Dictionary<int, List<WikiFile>>();
+
+            //we can only have 2000 (actually 2100) SQL parameters used at once, so we need to group them
+            var nodeBatches = nodeIds.InGroupsOf(2000);
+
+            foreach (var nodeBatch in nodeBatches)
+            {
+                foreach (var result in ApplicationContext.Current.DatabaseContext.Database.Query<dynamic>("SELECT * FROM wikiFiles WHERE nodeId IN (@nodeIds)", new { nodeIds = nodeBatch }))
+                {
+                    var file = new WikiFile
+                    {
+                        Id = result.id,
+                        Path = result.path,
+                        Name = result.name,
+                        FileType = result.type,
+                        RemovedBy = result.removedBy,
+                        CreatedBy = result.createdBy,
+                        NodeVersion = result.version,
+                        NodeId = result.nodeId,
+                        CreateDate = result.createDate,
+                        Current = result.current,
+                        Downloads = result.downloads,
+                        Archived = result.archived,
+                        Verified = result.verified,
+                        Versions = GetVersionsFromString(result.umbracoVersion)
+                    };
+
+                    file.Version = file.Versions.Any()
+                        ? GetVersionsFromString(result.umbracoVersion)[0]
+                        : UmbracoVersion.DefaultVersion();
+
+                    if (wikiFiles.ContainsKey(result.nodeId))
+                    {
+                        var list = wikiFiles[result.nodeId];
+                        list.Add(file);
+                    }
+                    else
+                    {
+                        wikiFiles.Add(result.nodeId, new List<WikiFile>(new[] {file}));
+                    }
+                }
+            }
+
+            return wikiFiles.ToDictionary(x => x.Key, x => (IEnumerable<WikiFile>)x.Value);
+
+        }
 
         public static List<WikiFile> CurrentFiles(int nodeId)
         {
             var wikiFiles = new List<WikiFile>();
 
-            var reader = Data.SqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", Data.SqlHelper.CreateParameter("@nodeId", nodeId));
+            using (var reader = Application.SqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", Application.SqlHelper.CreateParameter("@nodeId", nodeId)))
+            {
+                while (reader.Read())
+                    wikiFiles.Add(new WikiFile(reader.GetInt("id")));
 
-            while (reader.Read())
-                wikiFiles.Add(new WikiFile(reader.GetInt("id")));
-
-            return wikiFiles;
+                return wikiFiles;
+            }
         }
 
         private readonly Events _events = new Events();
@@ -65,7 +119,7 @@ namespace uWiki.Businesslogic
 
                 if (ExtensionNotAllowed(extension))
                     return null;
-                
+
                 var content = Content.GetContentFromVersion(node);
 
                 var member = new Member(memberGuid);
@@ -90,7 +144,7 @@ namespace uWiki.Businesslogic
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
                         Directory.CreateDirectory(HttpContext.Current.Server.MapPath(path));
-                    
+
                     path = string.Format("{0}/{1}_{2}.{3}", path, DateTime.Now.Ticks, umbraco.cms.helpers.url.FormatUrl(filename), extension);
 
                     file.SaveAs(HttpContext.Current.Server.MapPath(path));
@@ -176,23 +230,23 @@ namespace uWiki.Businesslogic
                 if (e.Cancel)
                     return;
 
-                Data.SqlHelper.ExecuteNonQuery(
+                Application.SqlHelper.ExecuteNonQuery(
                     "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified)",
-                    Data.SqlHelper.CreateParameter("@path", Path),
-                    Data.SqlHelper.CreateParameter("@name", Name),
-                    Data.SqlHelper.CreateParameter("@createdBy", CreatedBy),
-                    Data.SqlHelper.CreateParameter("@nodeId", NodeId),
-                    Data.SqlHelper.CreateParameter("@type", FileType),
-                    Data.SqlHelper.CreateParameter("@nodeVersion", NodeVersion),
-                    Data.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Data.SqlHelper.CreateParameter("@archived", Archived),
-                    Data.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Data.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@path", Path),
+                    Application.SqlHelper.CreateParameter("@name", Name),
+                    Application.SqlHelper.CreateParameter("@createdBy", CreatedBy),
+                    Application.SqlHelper.CreateParameter("@nodeId", NodeId),
+                    Application.SqlHelper.CreateParameter("@type", FileType),
+                    Application.SqlHelper.CreateParameter("@nodeVersion", NodeVersion),
+                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
+                    Application.SqlHelper.CreateParameter("@archived", Archived),
+                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                    Application.SqlHelper.CreateParameter("@verified", Verified)
                     );
 
                 CreateDate = DateTime.Now;
 
-                Id = Data.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy", Data.SqlHelper.CreateParameter("@createdBy", CreatedBy));
+                Id = Application.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy", Application.SqlHelper.CreateParameter("@createdBy", CreatedBy));
 
                 FireAfterCreate(e);
             }
@@ -204,19 +258,19 @@ namespace uWiki.Businesslogic
                 if (e.Cancel)
                     return;
 
-                Data.SqlHelper.ExecuteNonQuery(
+                Application.SqlHelper.ExecuteNonQuery(
                     "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified WHERE id = @id",
-                    Data.SqlHelper.CreateParameter("@path", Path),
-                    Data.SqlHelper.CreateParameter("@name", Name),
-                    Data.SqlHelper.CreateParameter("@type", FileType),
-                    Data.SqlHelper.CreateParameter("@current", Current),
-                    Data.SqlHelper.CreateParameter("@removedBy", RemovedBy),
-                    Data.SqlHelper.CreateParameter("@version", NodeVersion),
-                    Data.SqlHelper.CreateParameter("@id", Id),
-                    Data.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Data.SqlHelper.CreateParameter("@archived", Archived),
-                    Data.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Data.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@path", Path),
+                    Application.SqlHelper.CreateParameter("@name", Name),
+                    Application.SqlHelper.CreateParameter("@type", FileType),
+                    Application.SqlHelper.CreateParameter("@current", Current),
+                    Application.SqlHelper.CreateParameter("@removedBy", RemovedBy),
+                    Application.SqlHelper.CreateParameter("@version", NodeVersion),
+                    Application.SqlHelper.CreateParameter("@id", Id),
+                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
+                    Application.SqlHelper.CreateParameter("@archived", Archived),
+                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                    Application.SqlHelper.CreateParameter("@verified", Verified)
                     );
 
                 FireAfterUpdate(e);
@@ -271,7 +325,7 @@ namespace uWiki.Businesslogic
 
         public WikiFile(int id)
         {
-            using (var reader = Data.SqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId",
+            using (var reader = Application.SqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId",
                     Application.SqlHelper.CreateParameter("@fileId", id)))
             {
                 if (reader.Read())
@@ -379,16 +433,16 @@ namespace uWiki.Businesslogic
             {
                 packageByteArray = new byte[fileStream.Length];
 
-                fileStream.Read(packageByteArray, 0, (int) fileStream.Length);
+                fileStream.Read(packageByteArray, 0, (int)fileStream.Length);
             }
 
             return packageByteArray;
         }
-        
+
         public XmlNode ToXml(XmlDocument d)
         {
             XmlNode toXml = d.CreateElement("wikiFile");
-            
+
             toXml.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "id", Id.ToString()));
             toXml.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "name", Name));
             toXml.Attributes.Append(umbraco.xmlHelper.addAttribute(d, "created", CreateDate.ToString()));
@@ -435,6 +489,7 @@ namespace uWiki.Businesslogic
             if (AfterUpdate != null)
                 AfterUpdate(this, e);
         }
+
 
     }
 }

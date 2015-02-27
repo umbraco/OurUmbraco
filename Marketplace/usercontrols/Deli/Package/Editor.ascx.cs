@@ -119,7 +119,7 @@ namespace Marketplace.usercontrols.Deli.Package
 
 
                 //check security to make sure the project belongs to the vendor
-                if (!((_project.Vendor.Member.Id == _vendor.Member.Id) || Utills.IsProjectContributor(_vendor.Member.Id, (int)_projectId)))
+                if (!((_project.Vendor.Member.Id == _vendor.Member.Id) || Utils.IsProjectContributor(_vendor.Member.Id, (int)_projectId)))
                 {
                     //this project does not belong to this member so kick them back to the project list in their profile.
                     Response.Redirect("~/member/profile/projects/");

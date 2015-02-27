@@ -1,21 +1,239 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
-<asp:Content ContentPlaceHolderId="Main" runat="server">
-<div id="body" class="subpage">
+<asp:Content ContentPlaceHolderID="Main" runat="server">
 
-    <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+    <section class="search-results">
+        <div>
+            <!-- FORUM HEADER START -->
+            <div class="forum-archive-header">
+                <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                <div class="clear"></div>
+            </div>
 
-    <h1><umbraco:Item Field="name" runat="server" /></h1>
+            <section class="package-detail">
+                <div class="container">
+                    <div class="row">
 
-    <div id="forum" style="width:620px; margin-left: 75px">
+                        <div class="col-md-7">
+                            <div class="package-detail-content">
 
-    <% if( umbraco.presentation.nodeFactory.Node.GetCurrent().Children.Count > 0 ){ %>
-    <h3>Package discussions</h3>
-        
-    <%
-    }
-    %>
+                                <div class="vote"><i class="icon-Hearts"></i><span>431 votes</span></div>
 
-    </div>
-</div>
+                                <div class="package-detail-description">
+                                    <h1>Umbraco Forms</h1>
+
+                                    <img class="hero-image" src="https://s3.amazonaws.com/f.cl.ly/items/3q1w1O3m3r0L202i1H0o/Untitled-2.gif" alt="">
+
+                                    <p class="hero">Everyone deserves a form creator that's as easy to use as Umbraco, so we built just that. Whether it's a simple contact form or an advanced multi-step questionaire that integrates with 3rd party services - it'll be a breeze. <a href="#">http://umbraco.com/forms</a></p>
+
+                                    <h3>Intuitive</h3>
+                                    <p>Creating forms is as easy as editing content in Umbraco and it's a seamlessly integrated experience. You can select from a range of well known input types, select validation rules, and even conditions - for instance "only show this field if the visitor answered 'Yes'". All through an intuitive and robust user interface.</p>
+
+                                    <h3>Workflows</h3>
+                                    <p>While it's nice to gather data, it's even better when it's put to use. That's why Umbraco Forms lets you setup advanced workflows that can send e-mails, update webservices, save in CRM systems, and much more.</p>
+
+                                    <h3>Reporting</h3>
+                                    <p>Once your visitors have filled out forms, you can easily browse and search through the data using the built-in reporting tool or download the data for more advanced processing in Microsoft Excel or Google Spreadsheets.</p>
+                                </div>
+
+                                <div class="package-detail-screenshots">
+                                    <h3>Screenshots</h3>
+
+                                    <div class="row">
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                        <div class="col-xs-4 col-md-3">
+                                            <a href="#">
+                                                <img src="https://our.umbraco.org/media/wiki/22596/635520271386064649_CourierContextMenuPNG.PNG" alt="">
+                                            </a>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="package-misc">
+                                    <ul class="tabs">
+                                        <li>
+                                            <input type="radio" name="tabs" id="tab1" checked />
+                                            <label for="tab1">Package files</label>
+                                            <div id="tab-content1" class="tab-content">
+                                                <h3>Package files</h3>
+                                                <p>"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <input type="radio" name="tabs" id="tab2" />
+                                            <label for="tab2">Upgrade files</label>
+                                            <div id="tab-content2" class="tab-content">
+                                                <h3>Upgrade files</h3>
+                                                <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla?</p>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <input type="radio" name="tabs" id="tab3" />
+                                            <label for="tab3">Documentation</label>
+                                            <div id="tab-content2" class="tab-content">
+                                                <h3>Documentation</h3>
+                                                <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla?</p>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <input type="radio" name="tabs" id="tab4" />
+                                            <label for="tab4">Resources</label>
+                                            <div id="tab-content2" class="tab-content">
+                                                <h3>Resources</h3>
+                                                <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla?</p>
+                                            </div>
+                                        </li>
+
+                                        <li>
+                                            <input type="radio" name="tabs" id="tab5" />
+                                            <label for="tab5">Archived files</label>
+                                            <div id="tab-content2" class="tab-content">
+                                                <h3>Archived files</h3>
+                                                <p>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla?</p>
+                                            </div>
+                                        </li>
+                                    </ul>
+
+                                    <br style="clear: both;" />
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <div class="col-md-4 col-md-offset-1">
+                            <div class="package-detail-sidebar">
+
+                                <a href="" class="button green">Download package
+                                </a>
+
+                                <div class="package-creator">
+                                    <h3>Project owner</h3>
+
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="package-creator-information">
+                                                <img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
+                                                <div class="text">
+                                                    <h3>
+                                                        <a href="#">Emmaline Von Dominica
+                                                        </a>
+                                                    </h3>
+                                                    <small>Emmaline has godt 1 billion karma points</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <div class="package-compatibility">
+                                    <h3>Project Compatibility</h3>
+                                    <small>This project is compatible with the following versions as reported by community members who have downloaded this package:</small>
+
+                                    <div class="package-compatibility-versions">
+                                        <div class="versions">
+                                            <span class="smiley untested">7.2.x (untested)</span>
+                                            <span class="smiley  happy">7.1.x (91%)</span>
+                                            <span class="smiley  joyous">7.0.x (100%)</span>
+                                            <span class="smiley untested">6.2.x (untested)</span>
+                                            <span class="smiley  superUnhappy">6.1.x (0%)</span>
+                                            <span class="smiley  superUnhappy">6.0.x (0%)</span>
+                                            <span class="smiley  superUnhappy">4.11.x (0%)</span>
+                                            <span class="smiley  superUnhappy">4.10.0 (0%)</span>
+                                            <span class="smiley  superUnhappy">4.9.1 (0%)</span>
+                                            <span class="smiley  superUnhappy">4.9.0 (0%)</span>
+                                        </div>
+
+                                        <strong>.NET Version:</strong>4.0
+                                        <br>
+                                        <strong>Supports Medium Trust:</strong>No
+                                    </div>
+                                </div>
+
+                                <div class="package-compatibility-information">
+                                    <h3>Project Information</h3>
+
+                                    <ul>
+                                        <li>
+                                            <span>Project owner:</span> Per Ploug
+                                        </li>
+                                        <li>
+                                            <span>Contributors:</span> Tim Geyssens
+                                        </li>
+                                        <li>
+                                            <span>Created:</span> Sunday, March 21, 2010
+                                        </li>
+                                        <li>
+                                            <span>Is Stable:</span> Current version
+                                        </li>
+                                        <li>
+                                            <span>Current version</span> Current version
+                                        </li>
+                                        <li>
+                                            <span>License</span> MIT
+                                        </li>
+                                        <li>
+                                            <span>Tags</span> Contour
+                                        </li>
+                                        <li>
+                                            <span>Downloads:</span>4482
+                                        </li>
+                                    </ul>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+
 </asp:Content>

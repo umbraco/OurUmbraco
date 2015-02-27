@@ -13,23 +13,17 @@ namespace uWiki.Businesslogic {
         private static string _ConnString = umbraco.GlobalSettings.DbDSN;
         private static ISqlHelper _sqlHelper;
 
-        /// <summary>
-        /// Gets the SQL helper.
-        /// </summary>
-        /// <value>The SQL helper.</value>
-        public static ISqlHelper SqlHelper {
-            get {
-                if (_sqlHelper == null) {
-                    try {
-                        _sqlHelper = DataLayerHelper.CreateSqlHelper(_ConnString);
-                    } catch { }
-                }
-                return _sqlHelper;
-            }
-        }
+       /// <summary>
+       /// Gets the SQL helper.
+       /// </summary>
+       /// <value>The SQL helper.</value>
+       public static ISqlHelper SqlHelper
+       {
+           get { return _sqlHelper ?? (_sqlHelper = DataLayerHelper.CreateSqlHelper(_ConnString)); }
+       }
 
 
-        public static XmlNode GetDataSetAsNode(string sql, string elementName) {
+       public static XmlNode GetDataSetAsNode(string sql, string elementName) {
             try {
                 DataSet ds = getDataSetFromSql(_ConnString, sql, elementName);
                 XmlDataDocument dataDoc = new XmlDataDocument(ds);

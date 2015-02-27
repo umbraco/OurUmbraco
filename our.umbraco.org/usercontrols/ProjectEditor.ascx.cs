@@ -82,7 +82,7 @@ namespace our.usercontrols
 
                     Document d = new Document(pId);
 
-                    if ((int)d.getProperty("owner").Value == m.Id || Utills.IsProjectContributor(m.Id,d.Id))
+                    if ((int)d.getProperty("owner").Value == m.Id || Utils.IsProjectContributor(m.Id,d.Id))
                     {
 
                         lt_title.Text = "Edit project";
@@ -199,7 +199,7 @@ namespace our.usercontrols
 
                 d = new Document(pId);
 
-                if ((int)d.getProperty("owner").Value == m.Id || Utills.IsProjectContributor(m.Id,d.Id))
+                if ((int)d.getProperty("owner").Value == m.Id || Utils.IsProjectContributor(m.Id,d.Id))
                 {
                     d.Text = tb_name.Text;
                     d.getProperty("version").Value = tb_version.Text;

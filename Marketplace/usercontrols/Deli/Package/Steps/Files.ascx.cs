@@ -75,7 +75,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
            
             var mem = Member.GetCurrentMember();
 
-            if (f.CreatedBy == mem.Id || Utills.IsProjectContributor(mem.Id, (int)ProjectId))
+            if (f.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id, (int)ProjectId))
 
                 //if the file is the default file we need to clear it out of the system to stop it showing as the default download
                 if (f.Id.ToString() == _defaultFile)
@@ -237,7 +237,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
 
 
                 if ((project.Vendor.Member.Id == mem.Id) ||
-                    Utills.IsProjectContributor(mem.Id, (int)ProjectId))
+                    Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 {
                     holder.Visible = true;
                     RebindFiles();

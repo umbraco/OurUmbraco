@@ -10,7 +10,7 @@
 					<nav>
 						<ul class="level-1">
 							<li class="open">
-								<a><h3>Projects</h3></a>
+								<h3>Projects</h3>
 									<ul class="level-2">
 										<li><h4><a href="?orderBy=updateDate">Newest projects</a></h4></li>
 										<li><h4><a href="?orderBy=popularity">Popular projects</a></h4></li>
@@ -18,7 +18,7 @@
 							</li>
 
 							<li>
-								<a href><h3>By Version</h3></a>
+								<h3>By Version</h3>
 									<ul class="level-2">
 										<li><h4><a href="#">Version 7</a></h4></li>
 										<li><h4><a href="#">Version 6</a></h4></li>
@@ -27,7 +27,7 @@
 							</li>
 
 							<li >
-								<a href><h3>By Category</h3></a>
+								<h3>By Category</h3>
 									<umbraco:Macro Alias="[Projects]ListCategories" runat="server"></umbraco:Macro>
 							</li>
 

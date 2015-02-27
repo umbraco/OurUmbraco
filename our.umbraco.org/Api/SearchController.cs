@@ -15,7 +15,7 @@ namespace our.Api
     {
         public SearchResultModel GetGlobalSearchResults(string term)
         {
-            var searcher = new OurSearcher(term);
+            var searcher = new OurSearcher(term, maxResults: 5);
             var searchResult = searcher.Search();
             return searchResult;
         }
@@ -31,6 +31,13 @@ namespace our.Api
         public SearchResultModel GetDocsSearchResults(string term)
         {
             var searcher = new OurSearcher(term, nodeTypeAlias: "documentation");
+            var searchResult = searcher.Search();
+            return searchResult;
+        }
+
+        public SearchResultModel GetForumSearchResults(string term)
+        {
+            var searcher = new OurSearcher(term, nodeTypeAlias: "forum");
             var searchResult = searcher.Search();
             return searchResult;
         }

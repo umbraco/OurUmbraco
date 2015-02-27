@@ -42,7 +42,7 @@ namespace Marketplace
 
         public static string ShortenText(string text)
         {
-            text = Utills.StripHTML(text).Replace("&nbsp;", "");
+            text = Utils.StripHTML(text).Replace("&nbsp;", "");
             if (text.Length > 210)
             {
 

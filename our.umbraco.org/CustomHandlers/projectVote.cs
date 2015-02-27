@@ -43,7 +43,7 @@ namespace our.CustomHandlers {
 
                 e.ReceiverId = (int)d.getProperty("owner").Value;
 
-                e.ExtraReceivers = Utills.GetProjectContributors(d.Id);
+                e.ExtraReceivers = Utils.GetProjectContributors(d.Id);
             }
         }
     }

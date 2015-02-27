@@ -81,7 +81,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
 
             var mem = Member.GetCurrentMember();
 
-            if (f.CreatedBy == mem.Id || Utills.IsProjectContributor(mem.Id, (int)ProjectId))
+            if (f.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 fileProvider.Remove(f);
 
             RebindFiles();
@@ -167,7 +167,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
 
 
                 if ((project.Vendor.Member.Id == mem.Id) ||
-                    Utills.IsProjectContributor(mem.Id, (int)ProjectId))
+                    Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 {
                     holder.Visible = true;
                     RebindFiles();

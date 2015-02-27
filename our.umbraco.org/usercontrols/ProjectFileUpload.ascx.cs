@@ -27,7 +27,7 @@ namespace our.usercontrols {
             uWiki.Businesslogic.WikiFile wf = new uWiki.Businesslogic.WikiFile( int.Parse(e.CommandArgument.ToString()) );
             Member mem = Member.GetCurrentMember();
             
-            if(wf.CreatedBy == mem.Id || Utills.IsProjectContributor(mem.Id,pageId))
+            if(wf.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id,pageId))
                 wf.Delete();
 
             RebindFiles();
@@ -101,7 +101,7 @@ namespace our.usercontrols {
                 Document d = new Document(pageId);
 
                 if((d.getProperty("owner") != null && d.getProperty("owner").Value.ToString() == mem.Id.ToString()) ||
-                    Utills.IsProjectContributor(mem.Id,pageId)){
+                    Utils.IsProjectContributor(mem.Id,pageId)){
                     holder.Visible = true;
                     RebindFiles();
 
