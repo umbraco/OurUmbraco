@@ -33,22 +33,25 @@ namespace our
 
         void ContentService_Published(Umbraco.Core.Publishing.IPublishingStrategy sender, Umbraco.Core.Events.PublishEventArgs<Umbraco.Core.Models.IContent> e)
         {
-            var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["ForumIndexer"];
+            var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             
             foreach (var item in e.PublishedEntities.Where(x => x.ContentType.Alias == "Project"))
             {
-                var content = umbracoHelper.TypedContent(item.Id);
-                var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                if (item.GetValue<bool>("projectLive"))
+                {
+                    var content = umbracoHelper.TypedContent(item.Id);
+                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
 
-                var karma = our.Utils.GetProjectTotalKarma(content.Id);
-                var files = uWiki.Businesslogic.WikiFile.CurrentFiles(content.Id);
-                var downloads = our.Utils.GetProjectTotalDownloadCount(content.Id);
+                    var karma = our.Utils.GetProjectTotalKarma(content.Id);
+                    var files = uWiki.Businesslogic.WikiFile.CurrentFiles(content.Id);
+                    var downloads = our.Utils.GetProjectTotalDownloadCount(content.Id);
 
-                simpleDataSet = ((ProjectNodeIndexDataService) indexer.DataService).MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads);
+                    simpleDataSet = ((ProjectNodeIndexDataService)indexer.DataService).MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads);
 
-                var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
-                indexer.ReIndexNode(xml, "project");
+                    var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
+                    indexer.ReIndexNode(xml, "project");
+                }
             }
         }
 
