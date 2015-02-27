@@ -55,10 +55,10 @@ namespace our.Rest
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
             //Check if member is an admin (in group 'admin')
-            if (Utills.IsAdmin(_currentMember))
+            if (Utils.IsAdmin(_currentMember))
             {
                 //Yep - it's valid, lets get that member
-                Member MemberToBlock = Utills.GetMember(memberId);
+                Member MemberToBlock = Utils.GetMember(memberId);
 
                 //Now we have the member - lets update the 'blocked' property on the member
                 MemberToBlock.getProperty("blocked").Value = true;
@@ -83,11 +83,11 @@ namespace our.Rest
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
             //Check if member is an admin (in group 'admin')
-            if (Utills.IsAdmin(_currentMember))
+            if (Utils.IsAdmin(_currentMember))
             {
                
                     //Yep - it's valid, lets get that member
-                    Member MemberToBlock = Utills.GetMember(memberId);
+                    Member MemberToBlock = Utils.GetMember(memberId);
 
                     //Now we have the member - lets update the 'blocked' property on the member
                     MemberToBlock.getProperty("blocked").Value = false;
@@ -110,11 +110,11 @@ namespace our.Rest
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
             //Check if member is an admin (in group 'admin')
-            if (Utills.IsHq(_currentMember))
+            if (Utils.IsHq(_currentMember))
             {
                 //Lets check the memberID of the member we are blocking passed into /base is a valid member..
                     //Yep - it's valid, lets get that member
-                    var member = Utills.GetMember(memberId);
+                    var member = Utils.GetMember(memberId);
 
                     Membership.DeleteUser(member.LoginName, true);
 
@@ -136,7 +136,7 @@ namespace our.Rest
             int _currentMember = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
 
             //Check if member is an admin (in group 'admin')
-            if (Utills.IsHq(_currentMember))
+            if (Utils.IsHq(_currentMember))
             {
                 var returnValue = string.Empty;
 

@@ -205,7 +205,7 @@ namespace Marketplace.usercontrols.Deli.Package.Steps
                 _projectGuid = project.ProjectGuid;
 
                 if ((project.Vendor.Member.Id == mem.Id) ||
-                    Utills.IsProjectContributor(mem.Id, (int)ProjectId))
+                    Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 {
                     holder.Visible = true;
                     ReBindLicenses();

@@ -55,7 +55,7 @@ namespace Marketplace {
                 var p = provider.GetListing(new Guid(projectguid));
                 Member mem = new Member(new Guid(userguid));
 
-                if (p.Vendor != null && p.Vendor.Member.Id == mem.Id || Utills.IsProjectContributor(mem.Id, p.Id))
+                if (p.Vendor != null && p.Vendor.Member.Id == mem.Id || Utils.IsProjectContributor(mem.Id, p.Id))
                 {
 
                     var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
