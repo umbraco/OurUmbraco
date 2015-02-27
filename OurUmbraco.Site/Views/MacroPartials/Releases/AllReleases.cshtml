@@ -1,0 +1,78 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uRelease
+
+@{
+    var sortedVersions = new Dictionary<System.Version, IPublishedContent>();
+    foreach(var release in Model.Content.Children.Where( x => x.GetPropertyValue<string>("releaseStatus") == "Released")) {
+           sortedVersions.Add(new System.Version(release.Name), release);
+    }
+    
+    var mayorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending( x => x.Key);
+}
+
+
+
+
+
+
+<h1>All Releases</h1>
+<em>This page lists all of the available Umbraco releases. Past, present and future.</em>
+
+
+@foreach(var mayorV in mayorVersionGroups){
+
+        
+    <h2>Version @mayorV.Key</h2>
+    
+    <div class="row">
+        @{
+            var versions = mayorV.OrderByDescending(x => x.Key );
+            var latest = versions.First();
+        }
+            
+        <div class="col-xs-3">
+	        
+            <!-- latest release -->
+            <span class="dot big icon-untitled"><span class="line v-line"></span><span class="line h-line"></span></span>
+            
+            <!-- the rest -->
+
+            @for (int i = 0; i < versions.Count() / 3; i++)
+            {
+                <span class="dot small">
+                    <span class="line v-line"></span>
+                    <span class="line h-line"></span> 
+				</span>
+            }
+
+            <span class="dot small">
+                <span class="line v-line"></span>
+                <span class="line v-line"></span>  
+            </span>
+        </div>
+
+
+        <div class="col-xs-9">
+            <div class="row explain"> 
+
+                <!-- latest release -->   
+                <div class="col-xs-12">
+                    <h4><a href="@latest.Value.Url">v @latest.Key.ToString()</a></h4>
+                    <p> 
+                        Bug fixing on the 7.2.1 release. Note: This is a scheduled patch release, it will be released on the specified date, not when 100% of the issues are fixed (we might pull in more).
+                         @latest.Value.GetPropertyValue("releaseDescription") </p>
+		        </div>
+
+                <!-- the rest -->
+                @foreach (var minorRelease in versions)
+                {
+                <div class="col-xs-4" style="min-height: 133px">
+                    <h5><a href="@minorRelease.Value.Url">@minorRelease.Key.ToString()</a></h5>
+                </div>
+                }
+
+            </div>
+        </div>
+    </div>
+}
+
