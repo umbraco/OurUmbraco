@@ -247,6 +247,7 @@
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
     <Compile Include="Api\SearchController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
