@@ -20,18 +20,25 @@
 		        <div class="sidebar-content">
 			        <div class="content-wrapper">
 				
-			        <nav>
-				        <ul class="level-1">
-					        <li>
-						        <a class="active" href=""><h3>Latest Release</h3></a>
-					        </li>
-						        <a href=""><h3>In Progress</h3></a>
-					        </li>
-					        <li>
-						        <a href=""><h3>All Releases</h3></a>
-					        </li>
-				        </ul>
-			        </nav>
+			            <nav>
+				            <ul class="level-1">
+                                <li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
+					            <li data-bind="foreach: currentReleases()">
+						            <a class="active" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" href="/contribute/latest"><h3>Latest Release</h3></a>
+					            </li>
+					            <li class="active open">
+						            <a href="/contribute/progress"><h3>In Progress</h3></a>
+						            <ul class="level-2" data-bind="foreach: inProgressReleases">
+							            <li>
+								            <a href=""><h4 data-bind="text: version()"></h4></a>
+							            </li>
+						            </ul>
+					            </li>
+					            <li>
+						            <a href="/contribute/releases"><h3>All Releases</h3></a>
+					            </li>
+				            </ul>
+			            </nav>
 
 			        </div><!-- .content-wrapper -->
 		        </div><!-- .sidebar-content -->
@@ -63,6 +70,7 @@
         </div><!-- .page-content -->
 
     </div>
+
 <script type="text/html" id="version-template">
 
    
