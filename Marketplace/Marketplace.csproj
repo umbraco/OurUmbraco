@@ -247,9 +247,6 @@
     <Reference Include="Umbraco.Web.UI">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\Umbraco.Web.UI.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.XmlSerializers">
-      <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\umbraco.XmlSerializers.dll</HintPath>
-    </Reference>
     <Reference Include="UmbracoExamine">
       <HintPath>..\packages\UmbracoCms.Core.7.1.6\lib\UmbracoExamine.dll</HintPath>
     </Reference>
