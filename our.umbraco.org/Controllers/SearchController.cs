@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using Examine;
 using Examine.LuceneEngine.Providers;
+using our.Examine;
 using our.Models;
 using Umbraco.Web.Models;
 
@@ -17,22 +18,12 @@ namespace our.Controllers
 
         public ActionResult Search(RenderModel model, string term)
         {
-            var multiIndexSearchProvider = (MultiIndexSearcher)ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
+            var ourSearcher = new OurSearcher(term, maxResults: 100);
 
-            var criteria = multiIndexSearchProvider.CreateSearchCriteria();
-            var compiled = criteria
-                .GroupedOr(new[] { "Body", "bodyText", "description", "nodeName" }, term)
-                .Compile();
-
-            var watch = new Stopwatch();
-            watch.Start();
-            //TODO: The result.TotalSearchResults will yield a max of 100 which is incorrect, this  is an issue 
-            // in Examine, it needs to limit the results to 100 but still tell you how many in total
-            var result = multiIndexSearchProvider.Search(compiled, 100);
-            watch.Stop();
+            var results = ourSearcher.Search();
 
             return View(new RenderModel<SearchResultContentModel>(
-                new SearchResultContentModel(model.Content, new SearchResultModel(result, watch.ElapsedMilliseconds, term, ""))));
+                new SearchResultContentModel(model.Content, results)));
         }
 
     }
