@@ -104,21 +104,24 @@ namespace our.Examine
         /// <param name="e"></param>
         public static void ProjectIndexer_DocumentWriting(object sender, DocumentWritingEventArgs e)
         {
-            //If there is a versions field, we'll split it and index the same field on each version
-            if (e.Fields.ContainsKey("versions"))
-            {
-                //split into separate versions
-                var versions = e.Fields["versions"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
 
-                //remove the current version field from the lucene doc
-                e.Document.RemoveField("versions");
+            //TODO: This will be good to do but we need the bleeding edge version of examine v1.x which i haven't released yet
 
-                foreach (var version in versions)
-                {
-                    //add a 'versions' field for each version (same field name but different values)
-                    e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
-                }
-            }
+            ////If there is a versions field, we'll split it and index the same field on each version
+            //if (e.Fields.ContainsKey("versions"))
+            //{
+            //    //split into separate versions
+            //    var versions = e.Fields["versions"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+
+            //    //remove the current version field from the lucene doc
+            //    e.Document.RemoveField("versions");
+
+            //    foreach (var version in versions)
+            //    {
+            //        //add a 'versions' field for each version (same field name but different values)
+            //        e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+            //    }
+            //}
         }
 
         /// <summary>

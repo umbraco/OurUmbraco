@@ -22,6 +22,9 @@ namespace our.Examine
         {
             if (char.IsNumber(c)) return true;
             if (c == '.') return true;
+            //TODO: remove this when we start indexing versions with multiple values in the same field, see TODO in ProjectIndexer_DocumentWriting
+            // until then we'll also accept commas since that is what it is delimited by.
+            if (c == ',') return true;
             return false;
         }
     }
