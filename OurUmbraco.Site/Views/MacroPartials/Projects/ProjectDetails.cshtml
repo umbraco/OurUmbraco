@@ -32,10 +32,8 @@
 
                                 <div class="vote"><i class="icon-Hearts"></i><span>@karma votes</span></div>
 
-                                <div class="package-detail-description">
+                                <div class="package-detail-description markdown-syntax">
                                     <h1>@project.Name</h1>
-
-                                    <img class="hero-image" src="https://s3.amazonaws.com/f.cl.ly/items/3q1w1O3m3r0L202i1H0o/Untitled-2.gif" alt="">
 
                                     @project.GetPropertyValue("description");
 
@@ -48,11 +46,11 @@
                                     <div class="row">
 
                                         @foreach(var image in screenshots){
-                                            <div class="col-xs-4 col-md-3">
-                                                <a href="#">
-                                                    <img src="@image.Path" alt="">
-                                                </a>
-                                            </div>
+                                            image.Path = "/media/Chrysanthemum.jpg";
+                                            
+                                            <a class="fancybox" rel="gallery1" href="@image.Path" title="">
+										        <img src="@image.Path" alt="" />
+									        </a>
                                         }
 
                                     </div>
