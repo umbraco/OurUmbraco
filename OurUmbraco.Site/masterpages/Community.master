@@ -42,136 +42,20 @@
 
 			<div class="col-md-6">
 
-				<small>
-					Recent threads
-				</small>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category frontend"><span class="cat">Frontend</span></div>
-						</div>
-
-					</div>
-				</a>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category azure"><span class="cat">Azure</span></div>
-						</div>
-
-					</div>
-				</a>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category core"><span class="cat">Core</span></div>
-						</div>
-
-					</div>
-				</a>
+				
+				<umbraco:Macro topicpage="1" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
+				
 
 			</div>
 
 			<div class="col-md-6">
 
-				<small>
-					Activity in threads you participated in
-				</small>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category frontend"><span class="cat">Frontend</span></div>
-						</div>
-
-					</div>
-				</a>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category azure"><span class="cat">Azure</span></div>
-						</div>
-
-					</div>
-				</a>
-
-				<a href="forum-thread.html" class="forum-thread">
-					<div class="row">
-						<div class="col-xs-2 col-md-2">
-							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-						</div>
-						<div class="col-xs-8 col-md-8">
-							<div class="forum-thread-text">
-								<h3>Allow user to change site design</h3>
-								<p>Reply by Dennis Aaen 7 minutes ago</p>
-							</div>
-						</div>
-
-						<div class="col-xs-2 col-md-2">
-							<div class="category core"><span class="cat">Core</span></div>
-						</div>
-
-					</div>
-				</a>
+				<umbraco:Macro topicpage="2" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
 				
 			</div>
 
 			<div class="col-md-12 goto-forum">
-				<a href="#">Go to Forum &rarr;</a>
+				<a href="/forum">Go to Forum &rarr;</a>
 			</div>
 
 		</div>
