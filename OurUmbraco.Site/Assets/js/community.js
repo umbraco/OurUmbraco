@@ -60,6 +60,28 @@
             return $.get("/umbraco/api/PublicForum/CategoryUrl/" + id).pipe(function (p) {
                 return p;
             });
+        },
+
+        removeContributor: function (projectId, memberId) {
+            $.ajax({
+                url: "/umbraco/api/ProjectContribution/DeleteContributor/?projectId=" + projectId + "&memberId="+ memberId,
+                type: 'DELETE',
+            })
+           
+        },
+
+        updateCollaborationStatus: function(projectId, status){
+            $.ajax({
+                url: "/umbraco/api/ProjectContribution/UpdateCollaborationStatus/?projectId=" + projectId + "&status="+status,
+                type: 'PUT',
+            })
+        },
+
+        addContributor: function(projectId, email)
+        {
+            return $.get("/umbraco/api/ProjectContribution/AddContributor/?projectId=" + projectId + "&email=" + email).pipe(function (p) {
+                return p;
+            });
         }
 
     };
@@ -348,6 +370,49 @@ $(function () {
         var controller = data.controller;
         community.unfollow(id, controller);
         $(this).parent("li").fadeOut();
+    });
+
+    /* profile contribution */
+    $(".main-content .remove-contri").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var projectId = parseInt(data.projectid);
+        var memberId = parseInt(data.memberid);
+
+        community.removeContributor(projectId, memberId);
+        $(this).parent("li").fadeOut();
+    });
+
+    $(".main-content #open-for-collab").on("change", function (e) {
+        var data = $(this).data();
+        var projectId = parseInt(data.id);
+        var status  =$(this).is(":checked");
+
+        community.updateCollaborationStatus(projectId,status)
+    });
+
+    $(".main-content #add-contri").on("click", function (e) {
+        $("#contri-feedback").html("");
+
+        if ($("#contri-email").val()){
+            e.preventDefault();
+            var data = $(this).data();
+            var projectId = parseInt(data.id);
+            var email = $("#contri-email").val();
+
+            community.addContributor(projectId, email).done(function (data) {
+               
+                if (data.success) {
+                    $("#contris").append('<li><a href="/member/' + data.memberId + '">' + data.memberName + '</a> - <a data-projectid="' + projectId + '"  data-memberid="' + data.memberId + '" class="remove-contri" href="#">Remove</a></li>');
+                }else
+                {
+                    console.log(data.error);
+                    $("#contri-feedback").html(data.error);
+                }
+
+                $("#contri-email").val("");
+            });
+        }
     });
 
 });

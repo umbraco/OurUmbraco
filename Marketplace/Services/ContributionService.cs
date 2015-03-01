@@ -41,7 +41,7 @@ namespace Marketplace.Services
         public void DeleteContributor(int projectId, int memberId)
         {
             DatabaseContext.Database.Delete<ProjectContributor>(
-              "Where projectId=@0 and memberId=@#",
+              "Where projectId=@0 and memberId=@1",
               projectId,memberId);
         }
 

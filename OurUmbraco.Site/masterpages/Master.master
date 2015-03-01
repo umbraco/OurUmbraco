@@ -60,7 +60,8 @@
 %>   
     
     <body class="<%= model.Level > 2 && model.AncestorOrSelf(3).Id == 1057 ? "profile has-sidebar" : model.DocumentTypeAlias.ToLower().Replace(" ","-")+"-page" %>">
-	
+	 <form runat="server">
+
 	<umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
 
     <div class="wrapper">
@@ -93,9 +94,9 @@
 
         <asp:ContentPlaceHolder ID="Search" runat="server" />
 
-        <form runat="server">
-            <asp:ContentPlaceHolder ID="Main" runat="server" />
-        </form>
+       
+       <asp:ContentPlaceHolder ID="Main" runat="server" />
+       
 
         <footer>
 		    <div class="container">
@@ -120,6 +121,10 @@
 <script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
 
 <script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
 
 <script src="/assets/js/jquery.ajaxfileupload.js"></script>
 <script src="/assets/js/jquery.scrolly.js"></script>
@@ -151,6 +156,7 @@ var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga
 
 <asp:ContentPlaceHolder ID="EndScripts" runat="server" />
 
+          </form>
 </body>
 </html>
 </asp:Content>

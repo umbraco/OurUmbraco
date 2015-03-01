@@ -24,6 +24,7 @@
                                     <br />
                                     <a href="<%= editUrl %>?id=<%# Eval("Id") %>">Edit</a>
                                     <a href="<%= forumUrl %>?id=<%# Eval("Id") %>">Forums</a>
+                                    <a href="<%= teamUrl %>?id=<%# Eval("Id") %>">Team</a>
                                 </p>
                             </div>
                         </div>

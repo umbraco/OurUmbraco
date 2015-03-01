@@ -24,7 +24,7 @@
 					    <label for="search">Search for documentation</label>
 				    </div>
 
-                    <ul class="docs-search-listing">
+                    <ul class="search-all-results docs-search-listing">
 
                     </ul>
 

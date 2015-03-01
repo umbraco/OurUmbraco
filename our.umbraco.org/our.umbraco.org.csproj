@@ -247,9 +247,11 @@
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
     <Compile Include="Api\SearchController.cs" />
+    <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
+    <Compile Include="Controllers\RegisterController.cs" />
     <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controls\DateTimePicker.cs" />
     <Compile Include="CustomHandlers\CommentVote.cs" />
@@ -277,6 +279,7 @@
     <Compile Include="library.cs" />
     <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Models\ProfileNotificationModel.cs" />
+    <Compile Include="Models\RegisterModel.cs" />
     <Compile Include="Models\SearchResultContentModel.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />

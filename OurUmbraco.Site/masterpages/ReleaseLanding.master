@@ -20,31 +20,43 @@
 		<div class="sidebar-content">
 			<div class="content-wrapper">
 				
-			<nav>
-				<ul class="level-1">
-					<li>
-						<a class="active" href=""><h3>Latest Release</h3></a>
-					</li>
-					<li>
-						<a href=""><h3>In Progress</h3></a>
-					</li>
-					<li class="active open">
-						<a href=""><h3>All Releases</h3></a>
-						<!--<ul class="level-2">
-							<li>
-								<a href=""><h4>Umbraco 7</h4></a>
-							</li>
-							<li>
-								<a href=""><h4>Umbraco 6</h4></a>
-							</li>
-							<li>
-								<a href=""><h4>Umbraco 4</h4></a>
-							</li>
-								
-						</ul>-->
-					</li>
-				</ul>
-			</nav>
+			    <nav>
+				    <ul class="level-1">
+					    <li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
+					    <li data-bind="foreach: currentReleases()">
+						    <a class="active" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" href="/contribute/latest"><h3>Latest Release</h3></a>
+					    </li>
+					    <li>
+						    <a href="/contribute/progress"><h3>In Progress</h3></a>
+						    <ul class="level-2">
+							    <li>
+								    <a href=""><h4>7.2.3</h4></a>
+							    </li>
+							    <li>
+								    <a href=""><h4>7.3</h4></a>
+							    </li>
+							    <li>
+								    <a href=""><h4>8.0</h4></a>
+							    </li>
+									
+						    </ul>
+					    </li>
+					    <li class="active open">
+						    <a href="/contribute/releases"><h3>All Releases</h3></a>
+						    <ul class="level-2" data-bind="foreach: majorFilterReleases">
+							    <li>
+								    <a href=""><h4>Umbraco 7</h4></a>
+							    </li>
+							    <li>
+								    <a href=""><h4>Umbraco 6</h4></a>
+							    </li>
+							    <li>
+								    <a href=""><h4>Umbraco 4</h4></a>
+							    </li>
+						    </ul>
+					    </li>
+				    </ul>
+			    </nav>
 
 			</div><!-- .content-wrapper -->
 		</div><!-- .sidebar-content -->
@@ -93,17 +105,21 @@
         </div>
     </script>
     
-    <script type="text/javascript">
-        (function () {
-
-            // Apply bindings
-            ko.applyBindings(viewModel);
-            // Load data
-            loadAllData();
-        })();
-        </script>
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
+    <umbraco:Macro runat="server" Language="cshtml">
+ 
+        <script type="text/javascript">
+            (function () {
+
+                // Apply bindings
+                ko.applyBindings(viewModel);
+                // Load data
+                loadAllData();
+            })();
+
+    </script>
+    </umbraco:Macro>
   
 </asp:Content>

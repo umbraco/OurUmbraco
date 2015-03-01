@@ -6,30 +6,61 @@
     int id = 0;
 }
 
-@if(!string.IsNullOrEmpty(projectId) && int.TryParse(projectId,out id))
+@if (!string.IsNullOrEmpty(projectId) && int.TryParse(projectId, out id))
 {
-
+    var project = Umbraco.TypedContent(projectId);
+    
+    var openForCollab = project.GetPropertyValue<bool>("openForCollab");
+        
     var contris = new List<Marketplace.Models.ProjectContributor>();
 
-    using(var cs = new Marketplace.Services.ContributionService())
+    using (var cs = new Marketplace.Services.ContributionService())
     {
         contris = cs.GetContributions(id).ToList();
     }
+
+    <strong>@project.Name</strong>
+    <div class="profile-settings-forms">
+
+        <div class="profile-input">
+            <label for="open-for-collab">Is open for collaboration</label>
+            @if (openForCollab)
+            {
+                <input checked="checked" id="open-for-collab" name="open-for-collab" type="checkbox" data-id="@projectId">
+            }
+            else
+            {
+                <input id="open-for-collab" name="open-for-collab" type="checkbox" data-id="@projectId">
+            }
+        </div>
+        
+    </div>
     
     if (contris.Any())
-    { 
+    {
     <strong>Current contributors</strong>
-    <ul>
+    <ul id="contris">
         @foreach (var contri in contris)
         {
            var member = Members.GetById(contri.MemberId);
            if (member != null) { 
                <li>
-                <a href="/member/@member.Id">@member.Name</a> - <a data-id="@member.Id" class="removeContri" href="#" >Remove</a>
+                <a href="/member/@member.Id">@member.Name</a> - <a data-projectid="@contri.ProjectId"  data-memberid="@member.Id" class="remove-contri" href="#">Remove</a>
                </li> 
             }
         }
     </ul>
     }
+    
+    <strong>Add contributor</strong>
+    <div class="profile-settings-forms">
+        
+        <div class="profile-input">
+            <label for="contri-email">Email</label>
+            <input type="text" id="contri-email" name="contri-email" />
+        </div>
+        <a class="button tiny" id="add-contri" data-id="@projectId">Add</a>
+        <small id="contri-feedback"></small>
+    </div>
     
 }

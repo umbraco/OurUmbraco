@@ -30,10 +30,12 @@
 
 			<section>
 
-				<div class="search-all-results equalizer">
+				<ul class="search-all-results docs-search-listing">
 
+				
                     @foreach (var result in Model.Content.Results.SearchResults)
-                    {   
+                    {
+                        <li>   
                          <a href="@result.FullUrl()">
 							<div class="type-icon">
 								<i class="@result.GetIcon()"></i>
@@ -44,8 +46,10 @@
 								<div class="type-description">@result.Fields["body"].Truncate(300)</div>
 							</div>
 						 </a>
+                            </li>
                     }
-				</div>
+                    </ul>
+				
 
 			</section> <!-- Search end -->
 

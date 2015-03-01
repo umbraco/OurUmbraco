@@ -1768,6 +1768,10 @@
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
     <Content Include="masterpages\Download.master" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
+    <Content Include="Views\MacroPartials\Releases\AllReleases.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\ProjectDetails.cshtml" />
+    <Content Include="Views\MacroPartials\Members\Register.cshtml" />
+    <Content Include="Views\MacroPartials\Forum\LatestActivity.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4628,6 +4632,7 @@
     <Content Include="Views\Profilepage.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
     <Content Include="Views\Search\Search.cshtml" />
+    <Content Include="Views\Partials\Members\Register.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

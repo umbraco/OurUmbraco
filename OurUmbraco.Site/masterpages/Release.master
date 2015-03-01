@@ -19,16 +19,12 @@
 					
 					<nav>
 						<ul class="level-1">
-							<li class="active open">
-								<a class="active" href=""><h3>Latest Release</h3></a>
-								<ul class="level-2">
-									<li>
-										<a href=""><h4>7.2.2</h4></a>
-									</li>
-								</ul>
-							</li>
+							<li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
+					        <li data-bind="foreach: currentReleases()">
+						        <a class="active" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" href="/contribute/latest"><h3>Latest Release</h3></a>
+					        </li>
 							<li>
-								<a href=""><h3>In Progress</h3></a>
+								<a href="/contribute/progress"><h3>In Progress</h3></a>
 								<ul class="level-2">
 									<li>
 										<a href=""><h4>7.2.3</h4></a>
@@ -43,7 +39,7 @@
 								</ul>
 							</li>
 							<li>
-								<a href=""><h3>All Releases</h3></a>
+								<a href="/contribute/releases"><h3>All Releases</h3></a>
 								<ul class="level-2">
 									<li>
 										<a href=""><h4>Umbraco 7</h4></a>
@@ -54,12 +50,10 @@
 									<li>
 										<a href=""><h4>Umbraco 4</h4></a>
 									</li>
-									
-								
-							</ul>
-						</li>
-					</ul>
-				</nav>
+							    </ul>
+						    </li>
+					    </ul>
+				    </nav>
 
 				</div><!-- .content-wrapper -->
 			</div><!-- .sidebar-content -->
@@ -116,7 +110,7 @@
 						                    var width = (item.IsLast() && countIsOdd) ? 895 : 380;
 						                    var numberOfDownloads = 0;
 						                    int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
-                                            numberOfDownloads = numberOfDownloads + our.Utills.GetProjectTotalDownloadCount(item.Id);
+                                            numberOfDownloads = numberOfDownloads + our.Utils.GetProjectTotalDownloadCount(item.Id);
 							
                                         <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-sm-1">
 							                    <i class="icon-Download-alt"></i>

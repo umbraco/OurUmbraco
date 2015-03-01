@@ -51,3 +51,4 @@ OurUmbraco.Site/App_Data/cache/
 NuGetBackup
 OurUmbraco.Site/web.config
 OurUmbraco.Site/usercontrols/Deli/
+*.DS_Store
