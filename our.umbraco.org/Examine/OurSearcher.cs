@@ -27,8 +27,6 @@ namespace our.Examine
         /// </summary>
         public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20)
         {
-            //if (string.IsNullOrWhiteSpace(term)) throw new ArgumentNullException("term", "term cannot be empty");
-
             Term = term;
             NodeTypeAlias = nodeTypeAlias;
             OrderBy = orderBy;
@@ -43,20 +41,33 @@ namespace our.Examine
 
             var criteria = multiIndexSearchProvider.CreateSearchCriteria();
 
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
+            
             if (string.IsNullOrEmpty(NodeTypeAlias) == false)
             {
-                sb.Append("nodeTypeAlias:" + NodeTypeAlias + " ");
-                //criteria.NodeTypeAlias(NodeTypeAlias);
+                //if node type alias is specified, make it a MUST
+                sb.Append("+nodeTypeAlias:" + NodeTypeAlias);
+
+                //if the term is also specified then  group the next queries as a sub MUST query
+                if (!string.IsNullOrEmpty(Term))
+                {
+                    sb.Append(" +(");
+                }
             }
 
-            if (!string.IsNullOrEmpty(Term)){
+            if (!string.IsNullOrEmpty(Term))
+            {
                 Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*');
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
                 sb.Append(string.Format("nodeName:*{0}* body:*{0}* ", Term));
             }
 
+            //if the node type alias and term is specified we need to close the sub query
+            if (!string.IsNullOrEmpty(NodeTypeAlias) && !string.IsNullOrEmpty(Term))
+            {
+                sb.Append(")");
+            }
 
             criteria.RawQuery(sb.ToString());
 
@@ -64,9 +75,6 @@ namespace our.Examine
             {
                 criteria.OrderByDescending(OrderBy);
             }
-
-            
-           // var compiled = criteria.Field("meh", "*").Compile();
 
             var watch = new Stopwatch();
             watch.Start();
