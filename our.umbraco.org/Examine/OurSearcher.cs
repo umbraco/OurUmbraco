@@ -57,15 +57,36 @@ namespace our.Examine
 
             if (!string.IsNullOrEmpty(Term))
             {
-                Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*');
+                Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*').Trim('\'').Trim('"');
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
 
-                //do standard match with boost
-                sb.Append(string.Format("(nodeName:{0} body:{0} )^100", Term));
+                //now we need to split the phrase into individual terms so the query parser can understand
+                var split = Term.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                //do prefix/suffix wildcards
-                sb.Append(string.Format("(nodeName:*{0}* body:*{0}* )", Term));
+                if (split.Length > 0)
+                {
+                    //do an exact phrase match with boost
+                    sb.Append(string.Format("(nodeName:\"{0}\" body:\"{0}\")^100 ", Term));
+                    
+                    //do standard match with boost on each term
+                    sb.Append("(");
+                    foreach (var s in split)
+                    {
+                        sb.Append(string.Format("nodeName:{0} body:{0} ", s));    
+                    }
+                    sb.Append(")^50 ");
+
+                    //do prefix/suffix phrase with wildcards
+                    sb.Append("(");
+                    foreach (var s in split)
+                    {
+                        sb.Append(string.Format("nodeName:*{0}* body:*{0}* ", s));
+                    }
+                    sb.Append(") ");
+
+                }
+
             }
 
             //if the node type alias and term is specified we need to close the sub query
