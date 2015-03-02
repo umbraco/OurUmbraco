@@ -49,16 +49,28 @@ namespace Marketplace.Api
 
            }
            
-            using(var cs = new  ContributionService())
+             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
+            var project = help.TypedContent(projectId);
+
+            if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
-                cs.AddContributor(projectId, member.Id);
-                o.success = true;
-                o.memberName = member.Name;
-                o.memberId = member.Id;
+
+                using (var cs = new ContributionService())
+                {
+                    cs.AddContributor(projectId, member.Id);
+                    o.success = true;
+                    o.memberName = member.Name;
+                    o.memberId = member.Id;
+                    return o;
+                }
+
+            }
+            else
+            {
+                o.success = false;
+                o.error = "You aren't the project owner";
                 return o;
             }
-
-
 
 
         }
