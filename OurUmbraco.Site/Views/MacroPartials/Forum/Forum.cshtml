@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum;
+@using uForum.Services
 
 @{
     var page = 1;
@@ -14,7 +15,9 @@
     {
         cat = CurrentPage.Id;
     }
-    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, page,true,cat);
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+
+    var topics = topicService.GetLatestTopics(50, page, true, cat);
 }
 <div id="overlay" class="overlay"></div>
     <!-- FORUM LIST START -->

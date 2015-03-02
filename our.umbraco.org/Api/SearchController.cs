@@ -39,6 +39,11 @@ namespace our.Api
         {
             var searcher = new OurSearcher(term, nodeTypeAlias: "forum");
             var searchResult = searcher.Search();
+
+            //Since these results are going to be displayed in the forum, we need to convert the date field to 
+            // the 'relative' value that is normally shown for the forum date
+
+
             return searchResult;
         }
     }

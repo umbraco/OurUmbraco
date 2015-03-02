@@ -14,6 +14,7 @@ using uForum.Models;
 using uForum.Services;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
+using Umbraco.Core;
 using Umbraco.Web;
 
 
@@ -48,7 +49,7 @@ namespace uForum.AntiSpam
 
         public static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
         {
-            using (var ts = new TopicService())
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             using (var client = new WebClient())
             {
                 var topic = ts.GetById(topicId);
@@ -60,9 +61,14 @@ namespace uForum.AntiSpam
 
                 if (memberId != 0)
                 {
-                    var member = new Member(memberId);
-                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utills.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
-                    body = body + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                    var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
+
+                    if (member != null)
+                    {
+                        var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+                        body = body + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                    }
+                    
                 }
 
                 body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");

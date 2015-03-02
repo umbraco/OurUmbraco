@@ -1,24 +1,30 @@
 ﻿using System;
 using uForum.Services;
 using uPowers.BusinessLogic;
+using Umbraco.Core;
 
-namespace our.CustomHandlers {
+namespace our.CustomHandlers
+{
     /// <summary>
     /// This is a custom handler to catch all voting events on topics
     /// It uses some custom fields on the forum topics so this is why it is not included in the standard uForum
     /// </summary>
-    public class CommentVoteHandler : umbraco.BusinessLogic.ApplicationBase {
+    public class CommentVoteHandler : ApplicationEventHandler
+    {
 
-        public CommentVoteHandler() {
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
             uPowers.BusinessLogic.Action.BeforePerform += new EventHandler<ActionEventArgs>(CommentVote);
             uPowers.BusinessLogic.Action.AfterPerform += new EventHandler<ActionEventArgs>(CommentScoring);
         }
 
 
-        void CommentScoring(object sender, ActionEventArgs e) {
+        void CommentScoring(object sender, ActionEventArgs e)
+        {
             uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
-            if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment" || a.Alias == "TopicSolved") {
+            if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment" || a.Alias == "TopicSolved")
+            {
 
                 int score = uPowers.Library.Xslt.Score(e.ItemId, a.DataBaseTable);
 
@@ -29,31 +35,30 @@ namespace our.CustomHandlers {
 
 
 
-        void CommentVote(object sender, ActionEventArgs e) {
+        void CommentVote(object sender, ActionEventArgs e)
+        {
 
             uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
 
-            using (var ts = new TopicService())
-            using(var cs = new CommentService())
+            if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment")
             {
-                if (a.Alias == "LikeComment" || a.Alias == "DisLikeComment")
+                var c = cs.GetById(e.ItemId);
+                if (c != null)
                 {
-                    var c = cs.GetById(e.ItemId);
-                    if (c != null)
-                    {
-                        e.ReceiverId = c.MemberId;
-                    }
-                }
-                else if (a.Alias == "TopicSolved")
-                {
-                    var c = cs.GetById(e.ItemId);
-                    var t = ts.GetById(c.TopicId);
-                    e.Cancel = t.Answer > 0;
+                    e.ReceiverId = c.MemberId;
                 }
             }
-           
+            else if (a.Alias == "TopicSolved")
+            {
+                var c = cs.GetById(e.ItemId);
+                var t = ts.GetById(c.TopicId);
+                e.Cancel = t.Answer > 0;
+            }
+
         }
-      
+
     }
 }

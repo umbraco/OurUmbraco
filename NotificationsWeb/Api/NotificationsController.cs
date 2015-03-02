@@ -7,16 +7,20 @@ namespace NotificationsWeb.Api
 {
     public class NotificationsController:UmbracoApiController
     {
+        public NotificationsController()
+        {
+            _notificationService = new NotificationService(DatabaseContext);
+        }
+
+        private readonly NotificationService _notificationService;
+
         [HttpGet]
         public string SubscribeToForumTopic(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                using(var ns = new NotificationService())
-                {
-                    ns.SubscribeToForumTopic(id, currentMemberId);
-                }
+                _notificationService.SubscribeToForumTopic(id, currentMemberId);
 
                 return "true";
             }
@@ -30,11 +34,7 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                using (var ns = new NotificationService())
-                {
-                    ns.UnSubscribeFromForumTopic(id, currentMemberId);
-                }
-                
+                _notificationService.UnSubscribeFromForumTopic(id, currentMemberId);
 
                 return "true";
             }
@@ -48,10 +48,7 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                using(var ns = new NotificationService())
-                {
-                    ns.SubscribeToForum(id, currentMemberId);
-                }
+                _notificationService.SubscribeToForum(id, currentMemberId);
 
                 return "true";
             }
@@ -65,10 +62,7 @@ namespace NotificationsWeb.Api
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                using (var ns = new NotificationService())
-                {
-                    ns.UnSubscribeFromForum(id, currentMemberId);
-                }
+                _notificationService.UnSubscribeFromForum(id, currentMemberId);
                 
 
                 return "true";

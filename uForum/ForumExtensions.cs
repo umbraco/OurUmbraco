@@ -9,6 +9,7 @@ using System.Web;
 using uForum.Library;
 using uForum.Models;
 using uForum.Services;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Services;
 
@@ -21,10 +22,8 @@ namespace uForum
         {
             if (comment.HasChildren)
             {
-                using (var cs = new CommentService())
-                {
-                    return cs.GetChildComments(comment.Id);
-                }
+                var cs = new CommentService(ApplicationContext.Current.DatabaseContext, new TopicService(ApplicationContext.Current.DatabaseContext));
+                return cs.GetChildComments(comment.Id);
             }
 
             return new List<Comment>();
@@ -109,7 +108,7 @@ namespace uForum
                 }
             }
 
-            return new HtmlString(Utills.Sanitize(html));
+            return new HtmlString(Utils.Sanitize(html));
         }
 
         public static bool DetectSpam(this Comment comment)

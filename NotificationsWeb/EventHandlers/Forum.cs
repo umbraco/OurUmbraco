@@ -30,11 +30,8 @@ namespace NotificationsWeb.EventHandlers
 
         void ForumService_Deleted(object sender, uForum.ForumEventArgs e)
         {
-            using (var ns = new NotificationService())
-            {
-                ns.RemoveAllForumSubscriptions(e.Forum.Id);
-            }
-            
+            var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
+            ns.RemoveAllForumSubscriptions(e.Forum.Id);
         }
 
         void ForumService_Created(object sender, uForum.ForumEventArgs e)
@@ -44,20 +41,16 @@ namespace NotificationsWeb.EventHandlers
             {
                 var owner = content.GetValue<int>("owner");
                 //NotificationsWeb.BusinessLogic.Forum.Subscribe(e.Forum.Id, owner);
-                using(var ns = new NotificationService())
-                {
-                    ns.SubscribeToForum(e.Forum.Id, owner);
-                }
+                var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
+                ns.SubscribeToForum(e.Forum.Id, owner);
             }
         }
 
         void TopicService_Created(object sender, uForum.TopicEventArgs e)
         {
            
-            using(var ns = new NotificationService())
-            {
-                ns.SubscribeToForumTopic(e.Topic.Id, e.Topic.MemberId);
-            }
+            var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
+            ns.SubscribeToForumTopic(e.Topic.Id, e.Topic.MemberId);
 
             //send notification
             InstantNotification not = new InstantNotification();
@@ -71,14 +64,15 @@ namespace NotificationsWeb.EventHandlers
 
         void CommentService_Created(object sender, uForum.CommentEventArgs e)
         {
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+
             //Subscribe to topic
-            using(var ns = new NotificationService())
-            {
-                ns.SubscribeToForumTopic(e.Comment.TopicId, e.Comment.MemberId);
-            }
+           var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
+            ns.SubscribeToForumTopic(e.Comment.TopicId, e.Comment.MemberId);
+            
             //data for notification:
             var member = e.Comment.AuthorAsMember();
-            var topic = TopicService.Instance.GetById(e.Comment.TopicId);
+            var topic = ts.GetById(e.Comment.TopicId);
 
             //send notifications
             InstantNotification not = new InstantNotification();

@@ -10,7 +10,7 @@ using Umbraco.Web.WebApi;
 
 namespace uForum.Api
 {
-    public class PublicForumController: UmbracoApiController
+    public class PublicForumController : ForumControllerBase
     {
 
         /* TOPICS */
@@ -18,45 +18,42 @@ namespace uForum.Api
         public IEnumerable<ExpandoObject> LatestPaged(int page, int cat)
         {
             var l = new List<ExpandoObject>();
-            using (var ts = new TopicService())
+            foreach (var topic in TopicService.GetLatestTopics(50, page, true, cat).Items)
             {
-                foreach (var topic in ts.GetLatestTopics(50, page, true, cat).Items)
+                dynamic o = new ExpandoObject();
+
+                o.url = topic.Url;
+                o.title = topic.Title;
+                o.replies = topic.Replies;
+                o.hasAnswer = topic.Answer > 0;
+                o.updated = topic.Updated.ConvertToRelativeTime();
+                if (topic.LatestReplyAuthor > 0)
                 {
-                    dynamic o = new ExpandoObject();
-
-                    o.url = topic.Url;
-                    o.title = topic.Title;
-                    o.replies = topic.Replies;
-                    o.hasAnswer = topic.Answer > 0;
-                    o.updated = topic.Updated.ConvertToRelativeTime();
-                    if (topic.LatestReplyAuthor > 0)
+                    var mem = Members.GetById(topic.LatestReplyAuthor);
+                    if (mem != null)
                     {
-                        var mem = Members.GetById(topic.LatestReplyAuthor);
-                        if (mem != null)
-                        {
-                            o.memId = mem.Id;
-                            o.memName = mem.Name;    
-                        }
+                        o.memId = mem.Id;
+                        o.memName = mem.Name;
                     }
-                    else
-                    {
-                        var author = Members.GetById(topic.MemberId);
-                        if (author != null)
-                        {
-                            o.memId = author.Id;
-                            o.memName = author.Name;    
-                        }
-                    }
-
-                    var forum = Umbraco.TypedContent(topic.ParentId);
-                    if (forum != null)
-                    {
-                        o.forumUrl = forum.Url;
-                        o.forumName = forum.Name;    
-                    }
-
-                    l.Add(o);
                 }
+                else
+                {
+                    var author = Members.GetById(topic.MemberId);
+                    if (author != null)
+                    {
+                        o.memId = author.Id;
+                        o.memName = author.Name;
+                    }
+                }
+
+                var forum = Umbraco.TypedContent(topic.ParentId);
+                if (forum != null)
+                {
+                    o.forumUrl = forum.Url;
+                    o.forumName = forum.Name;
+                }
+
+                l.Add(o);
             }
             return l;
         }

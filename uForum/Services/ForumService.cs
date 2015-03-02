@@ -9,20 +9,14 @@ using Umbraco.Core.Persistence;
 
 namespace uForum.Services
 {
-    public class ForumService : IDisposable
+    public class ForumService
     {
-        private DatabaseContext DatabaseContext;
-        public ForumService()
-        {
-            init(ApplicationContext.Current.DatabaseContext);
-        }
+        private readonly DatabaseContext _databaseContext;
+
         public ForumService(DatabaseContext dbContext)
         {
-            init(dbContext);
-        }
-        private void init(DatabaseContext dbContext)
-        {
-            DatabaseContext = dbContext;
+            if (dbContext == null) throw new ArgumentNullException("dbContext");
+            _databaseContext = dbContext;
         }
 
         public IEnumerable<Forum> GetForums(int rootId)
@@ -30,22 +24,20 @@ namespace uForum.Services
             var sql = new Sql();
             sql.Where<Forum>(x => x.ParentId == rootId);
             sql.OrderBy<Forum>(x => x.SortOrder);
-            return DatabaseContext.Database.Fetch<Forum>(sql);
+            return _databaseContext.Database.Fetch<Forum>(sql);
         }
 
         public Forum GetById(int nodeId)
         {
-            return DatabaseContext.Database.SingleOrDefault<Forum>(nodeId);
+            return _databaseContext.Database.SingleOrDefault<Forum>(nodeId);
         }
-
-        
 
         public void Delete(Forum forum)
         {
             var eventArgs = new ForumEventArgs() { Forum = forum };
             if (Deleting.RaiseAndContinue(this, eventArgs))
             {
-                DatabaseContext.Database.Delete(forum);
+                _databaseContext.Database.Delete(forum);
                 Deleted.Raise(this, eventArgs);
             }
             else
@@ -67,7 +59,7 @@ namespace uForum.Services
 
             if (!eventArgs.Cancel)
             {
-                DatabaseContext.Database.Save(forum);
+                _databaseContext.Database.Save(forum);
 
                 if (raiseEvents)
                 {
@@ -86,14 +78,7 @@ namespace uForum.Services
             return forum;
         }
 
-        public static ForumService Instance
-        {
-            get
-            {
-                return Singleton<ForumService>.UniqueInstance;
-            }
-        }
-
+    
         public static event EventHandler<ForumEventArgs> Created;
         public static event EventHandler<ForumEventArgs> Creating;
 
@@ -105,9 +90,6 @@ namespace uForum.Services
 
         public static event EventHandler<ForumEventArgs> CancelledByEvent;
 
-        public void Dispose()
-        {
-            
-        }
+       
     }
 }

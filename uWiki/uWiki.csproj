@@ -247,7 +247,7 @@
     <Compile Include="Businesslogic\WikiHelpRequest.cs" />
     <Compile Include="Businesslogic\WikiPage.cs" />
     <Compile Include="iNotFoundHandler.cs" />
-    <Compile Include="Library\Utills.cs" />
+    <Compile Include="Library\Utils.cs" />
     <Compile Include="Library\xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="usercontrols\FileUpload.ascx.cs">

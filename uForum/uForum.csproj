@@ -255,13 +255,14 @@
   <ItemGroup>
     <Compile Include="AntiSpam\SpamChecker.cs" />
     <Compile Include="Api\ForumController.cs" />
+    <Compile Include="Api\ForumControllerBase.cs" />
     <Compile Include="Api\PublicForumController.cs" />
     <Compile Include="Api\TopicController.cs" />
     <Compile Include="EventExtensions.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="ForumExtensions.cs" />
     <Compile Include="iNotFoundHandler.cs" />
-    <Compile Include="Library\Utills.cs">
+    <Compile Include="Library\Utils.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="MemberForumExtensions.cs" />

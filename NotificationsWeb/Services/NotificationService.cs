@@ -9,28 +9,20 @@ using Umbraco.Core.Persistence;
 
 namespace NotificationsWeb.Services
 {
-    public class NotificationService: IDisposable
+    public class NotificationService
     {
-        private DatabaseContext DatabaseContext;
-
-        public NotificationService()
-        {
-            init(ApplicationContext.Current.DatabaseContext);
-        }
+        private readonly DatabaseContext _databaseContext;
 
         public NotificationService(DatabaseContext dbContext)
         {
-            init(dbContext);
+            if (dbContext == null) throw new ArgumentNullException("dbContext");
+            _databaseContext = dbContext;
         }
 
-        private void init(DatabaseContext dbContext)
-        {
-            DatabaseContext = dbContext;
-        }
 
         public void SubscribeToForumTopic(int topicId, int memberId)
         {
-            var r = DatabaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
+            var r = _databaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
                 "SELECT * FROM forumtopicsubscribers WHERE topicId=@0 and memberId=@1", 
                 topicId,
                 memberId);
@@ -41,14 +33,14 @@ namespace NotificationsWeb.Services
                 rec.MemberId = memberId;
                 rec.TopicId = topicId;
 
-                DatabaseContext.Database.Insert(rec);
+                _databaseContext.Database.Insert(rec);
             }
 
         }
 
         public void UnSubscribeFromForumTopic(int topicId, int memberId)
         {
-            DatabaseContext.Database.Delete<ForumTopicSubscriber>(
+            _databaseContext.Database.Delete<ForumTopicSubscriber>(
                 "Where topicId=@0 and memberId=@1",
                 topicId,
                 memberId);
@@ -57,14 +49,14 @@ namespace NotificationsWeb.Services
 
         public void RemoveAllTopicSubscriptions(int topicId)
         {
-            DatabaseContext.Database.Delete<ForumTopicSubscriber>(
+            _databaseContext.Database.Delete<ForumTopicSubscriber>(
                "Where topicId=@0",
                topicId);
         }
 
         public bool IsSubscribedToTopic(int topicId, int memberId)
         {
-            return DatabaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
+            return _databaseContext.Database.SingleOrDefault<ForumTopicSubscriber>(
                  "SELECT * FROM forumtopicsubscribers WHERE topicId=@0 and memberId=@1",
                  topicId,
                  memberId) != null;
@@ -72,7 +64,7 @@ namespace NotificationsWeb.Services
         }
         public void SubscribeToForum(int forumId, int memberId)
         {
-            var r = DatabaseContext.Database.SingleOrDefault<ForumSubscriber>(
+            var r = _databaseContext.Database.SingleOrDefault<ForumSubscriber>(
                 "SELECT * FROM forumsubscribers WHERE forumId=@0 and memberId=@1",
                 forumId,
                 memberId);
@@ -83,13 +75,13 @@ namespace NotificationsWeb.Services
                 rec.MemberId = memberId;
                 rec.ForumId = forumId;
 
-                DatabaseContext.Database.Insert(rec);
+                _databaseContext.Database.Insert(rec);
             }
         }
 
         public void UnSubscribeFromForum(int forumId, int memberId)
         {
-            DatabaseContext.Database.Delete<ForumSubscriber>(
+            _databaseContext.Database.Delete<ForumSubscriber>(
                "Where forumId=@0 and memberId=@1",
                forumId,
                memberId);
@@ -97,14 +89,14 @@ namespace NotificationsWeb.Services
 
         public void RemoveAllForumSubscriptions(int forumId)
         {
-            DatabaseContext.Database.Delete<ForumSubscriber>(
+            _databaseContext.Database.Delete<ForumSubscriber>(
                 "Where forumId=@0",
                 forumId);
         }
 
         public bool IsSubscribedToForum(int forumId, int memberId)
         {
-            return DatabaseContext.Database.SingleOrDefault<ForumSubscriber>(
+            return _databaseContext.Database.SingleOrDefault<ForumSubscriber>(
                  "SELECT * FROM forumsubscribers WHERE forumId=@0 and memberId=@1",
                  forumId,
                  memberId) != null;
@@ -117,13 +109,13 @@ namespace NotificationsWeb.Services
 
             sql.Where<ForumSubscriber>(x => x.MemberId == memberId);
 
-            return DatabaseContext.Database.Page<ForumSubscriber>(page, take, sql);
+            return _databaseContext.Database.Page<ForumSubscriber>(page, take, sql);
 
         }
 
         public long GetNumberOfForumSubscriptionsFromMember(int memberId)
         {
-            return DatabaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumSubscribers where memberId=@0",memberId);
+            return _databaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumSubscribers where memberId=@0",memberId);
         }
 
         public Page<ForumTopicSubscriber> GetTopicSubscriptionsFromMember(int memberId, long take = 50, long page = 1)
@@ -134,27 +126,14 @@ namespace NotificationsWeb.Services
 
             sql.Where<ForumTopicSubscriber>(x => x.MemberId == memberId);
 
-            return DatabaseContext.Database.Page<ForumTopicSubscriber>(page, take, sql);
+            return _databaseContext.Database.Page<ForumTopicSubscriber>(page, take, sql);
 
         }
 
         public long GetNumberOfTopicSubscriptionsFromMember(int memberId)
         {
-            return DatabaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumTopicSubscribers where memberId=@0",memberId);
+            return _databaseContext.Database.ExecuteScalar<long>("SELECT Count(*) FROM forumTopicSubscribers where memberId=@0",memberId);
         }
 
-        
-        public static NotificationService Instance
-        {
-            get
-            {
-                return Singleton<NotificationService>.UniqueInstance;
-            }
-        }
-
-        public void Dispose()
-        {
-            DatabaseContext.DisposeIfDisposable();
-        }
     }
 }

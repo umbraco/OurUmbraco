@@ -1,9 +1,13 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Web.Mvc.Html
 @using uForum;
+@using uForum.Services
 
 @{
-    var topic = uForum.Services.TopicService.Instance.CurrentTopic( this.Context );
-    var comments = uForum.Services.CommentService.Instance.GetComments(topic.Id);
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var commentService = new CommentService(ApplicationContext.DatabaseContext, topicService);
+    var topic = topicService.CurrentTopic(this.Context);
+    var comments = commentService.GetComments(topic.Id);
     var topicAuthor = topic.Author();
     var forum = Umbraco.TypedContent(topic.ParentId);
 
@@ -47,7 +51,7 @@
 
         if (comment.HasChildren)
         {
-            var children = uForum.Services.CommentService.Instance.GetChildComments(comment.Id);
+            var children = commentService.GetChildComments(comment.Id);
             foreach (var child in children)
             {
                 Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });

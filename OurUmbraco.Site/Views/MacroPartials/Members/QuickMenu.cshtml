@@ -1,6 +1,11 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum
+@using uForum.Services
 
+@{
+
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+}
 <div class="quick-menu">
 	<div class="container">
 		<div class="row">
@@ -13,7 +18,7 @@
 
                     var roles = System.Web.Security.Roles.GetRolesForUser();
 
-                    var latestTopics = uForum.Services.TopicService.Instance.GetAll();
+                    var latestTopics = topicService.GetAll();
 
                     <div class="close">
                         <i class="icon-Delete"></i>Close

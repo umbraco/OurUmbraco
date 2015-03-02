@@ -46,7 +46,7 @@
                 <div class="highfive-count">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn() && !uPowers.Library.Utills.HasVoted(mem.Id, Model.Id, "powersComment"))
+                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(mem.Id, Model.Id, "powersComment"))
                 {
                     if (mem.Id != Model.MemberId)
                     {

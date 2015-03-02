@@ -9,6 +9,7 @@ using uForum.Services;
 //WB Added
 
 using uForum;
+using Umbraco.Core;
 
 namespace our.Examine
 {
@@ -18,9 +19,6 @@ namespace our.Examine
     /// </summary>
     public class ForumDataService : ISimpleDataService
     {
-        private static int _currentId = 0;
-
-        private static readonly object _locker = new object();
 
         public static SimpleDataSet MapTopicToSimpleDataIndexItem(Topic topic, IEnumerable<Comment> comments, SimpleDataSet simpleDataSet, int id, string indexType)
         {
@@ -65,38 +63,32 @@ namespace our.Examine
         {
             var data = new List<SimpleDataSet>();
 
-            using(var ts = new TopicService())
-            using (var cs = new CommentService())
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
+
+            foreach (var topic in ts.QueryAll())
             {
-                foreach (var topic in ts.GetAll().Take(1000))
-                {
 
-                    var comments = cs.GetComments(topic.Id);
-                    //Add the item to the index..
-                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                    data.Add(MapTopicToSimpleDataIndexItem(topic, comments, simpleDataSet, topic.Id, "forum"));
-                }
-
-                return data;
+                var comments = cs.GetComments(topic.Id);
+                //Add the item to the index..
+                var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                data.Add(MapTopicToSimpleDataIndexItem(topic, comments, simpleDataSet, topic.Id, "forum"));
             }
 
+            return data;
             
         }
 
 
         public SimpleDataSet CreateNewDocument(int id)
         {
-            lock (_locker)
-            {
-                //JobDetailItem jobDetails = new JobDetailItem();
-                using(var ts = new TopicService())
-                using (var cs = new CommentService())
-                {
-                    var forumTopic = ts.GetById(id);
-                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                    return MapTopicToSimpleDataIndexItem(forumTopic, cs.GetComments(forumTopic.Id), simpleDataSet, forumTopic.Id, "forum");
-                }
-            }
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
+
+            //JobDetailItem jobDetails = new JobDetailItem();
+            var forumTopic = ts.GetById(id);
+            var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+            return MapTopicToSimpleDataIndexItem(forumTopic, cs.GetComments(forumTopic.Id), simpleDataSet, forumTopic.Id, "forum");
         }
 
 

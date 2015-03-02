@@ -132,7 +132,7 @@ namespace uPowers.BusinessLogic {
                 {
                     bool allowed = false;
                     foreach(string group in AllowedGroups)
-                        if(Library.Utills.IsMemberInGroup(group, performer)){
+                        if(Library.Utils.IsMemberInGroup(group, performer)){
                             allowed = true;
                             break;
                         }

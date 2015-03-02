@@ -10,25 +10,15 @@ using Umbraco.Core.Persistence;
 
 namespace uForum.Services
 {
-    public class TopicService : IDisposable
-    {   
-        private DatabaseContext DatabaseContext;
-        
-        public TopicService()
-        {
-            init(ApplicationContext.Current.DatabaseContext);
-        }
+    public class TopicService
+    {
+        private readonly DatabaseContext _databaseContext;
 
         public TopicService(DatabaseContext dbContext)
         {
-            init(dbContext);
+            _databaseContext = dbContext;
         }
 
-        private void init(DatabaseContext dbContext)
-        {
-            DatabaseContext = dbContext;
-        }
-        
         /* Query */
         public Page<Topic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
@@ -36,17 +26,22 @@ namespace uForum.Services
                 .Select("*")
                 .From<Topic>();
 
-        //    if (ignoreSpam)
-        //        sql.Where<Topic>(x => x.IsSpam != true);
+            //    if (ignoreSpam)
+            //        sql.Where<Topic>(x => x.IsSpam != true);
 
             if (category > 0)
                 sql.Where<Topic>(x => x.ParentId == category);
 
-            
+
             sql.OrderByDescending("updated");
-            return DatabaseContext.Database.Page<Topic>(page, take, sql);
+            return _databaseContext.Database.Page<Topic>(page, take, sql);
         }
 
+        /// <summary>
+        /// Returns a dataset in-memory of all topics
+        /// </summary>
+        /// <param name="ignoreSpam"></param>
+        /// <returns></returns>
         public IEnumerable<Topic> GetAll(bool ignoreSpam = true)
         {
             var sql = new Sql();
@@ -55,12 +50,28 @@ namespace uForum.Services
 
             sql.OrderBy<Topic>(x => x.Updated);
 
-            return DatabaseContext.Database.Fetch<Topic>(sql);
+            return _databaseContext.Database.Fetch<Topic>(sql);
+        }
+
+        /// <summary>
+        /// Returns a reader of all topics to be iterated over
+        /// </summary>
+        /// <param name="ignoreSpam"></param>
+        /// <returns></returns>
+        public IEnumerable<Topic> QueryAll(bool ignoreSpam = true)
+        {
+            var sql = new Sql();
+            if (ignoreSpam)
+                sql.Where<Topic>(x => x.IsSpam != true);
+
+            sql.OrderBy<Topic>(x => x.Updated);
+
+            return _databaseContext.Database.Query<Topic>(sql);
         }
 
         public Topic GetById(int id)
         {
-            return DatabaseContext.Database.SingleOrDefault<Topic>(id);
+            return _databaseContext.Database.SingleOrDefault<Topic>(id);
         }
 
 
@@ -83,10 +94,10 @@ namespace uForum.Services
 
             if (!eventArgs.Cancel)
             {
-               
+
 
                 //save entity
-                DatabaseContext.Database.Save(topic);
+                _databaseContext.Database.Save(topic);
 
                 if (raiseEvents)
                 {
@@ -96,7 +107,9 @@ namespace uForum.Services
                         Updated.Raise(this, eventArgs);
                 }
 
-            }else{
+            }
+            else
+            {
                 CancelledByEvent.Raise(this, eventArgs);
             }
 
@@ -110,7 +123,7 @@ namespace uForum.Services
             if (Moving.RaiseAndContinue(this, eventArgs))
             {
                 topic.ParentId = newCategory;
-                DatabaseContext.Database.Save(topic);
+                _databaseContext.Database.Save(topic);
 
                 Moved.Raise(this, eventArgs);
             }
@@ -125,7 +138,7 @@ namespace uForum.Services
             if (Locking.RaiseAndContinue(this, eventArgs))
             {
                 topic.Locked = true;
-                DatabaseContext.Database.Save(topic);
+                _databaseContext.Database.Save(topic);
                 Locked.Raise(this, eventArgs);
             }
             else
@@ -137,7 +150,7 @@ namespace uForum.Services
             var eventArgs = new TopicEventArgs() { Topic = topic };
             if (Deleting.RaiseAndContinue(this, eventArgs))
             {
-                DatabaseContext.Database.Delete(topic);
+                _databaseContext.Database.Delete(topic);
                 Deleted.Raise(this, eventArgs);
             }
             else
@@ -160,16 +173,16 @@ namespace uForum.Services
 
         public static event EventHandler<TopicEventArgs> Created;
         public static event EventHandler<TopicEventArgs> Creating;
-        
+
         public static event EventHandler<TopicEventArgs> Deleted;
         public static event EventHandler<TopicEventArgs> Deleting;
-        
+
         public static event EventHandler<TopicEventArgs> Moved;
         public static event EventHandler<TopicEventArgs> Moving;
-        
+
         public static event EventHandler<TopicEventArgs> Locked;
         public static event EventHandler<TopicEventArgs> Locking;
-        
+
         public static event EventHandler<TopicEventArgs> Updated;
         public static event EventHandler<TopicEventArgs> Updating;
 
@@ -180,18 +193,6 @@ namespace uForum.Services
         public static event EventHandler<TopicEventArgs> MarkingAsHam;
 
         public static event EventHandler<TopicEventArgs> CancelledByEvent;
-
-        public static TopicService Instance {
-            get
-            {
-                return Singleton<TopicService>.UniqueInstance;
-            }
-        }
-
-        public void Dispose()
-        {
-            DatabaseContext.DisposeIfDisposable();
-        }
 
     }
 }

@@ -105,7 +105,7 @@ namespace our.usercontrols
                 Member.RemoveMemberFromCache(_member);
                 Member.AddMemberToCache(_member);
 
-                uForum.Library.Utills.CheckForSpam(_member);
+                uForum.Library.Utils.CheckForSpam(_member);
 
                 Response.Redirect(library.NiceUrl(NextPage));
 
@@ -118,7 +118,7 @@ namespace our.usercontrols
                     if (_member == null)
                     {
                         // If spammer then this will stop account creation
-                        var spamResult = uForum.Library.Utills.CheckForSpam(tb_email.Text, tb_name.Text, true);
+                        var spamResult = uForum.Library.Utils.CheckForSpam(tb_email.Text, tb_name.Text, true);
                         if (spamResult != null && spamResult.Blocked)
                             return;
 
@@ -174,12 +174,12 @@ namespace our.usercontrols
                         {
                             spamResult.MemberId = _member.Id;
 
-                            uForum.Library.Utills.AddMemberToPotentialSpamGroup(_member);
-                            uForum.Library.Utills.SendPotentialSpamMemberMail(spamResult);
+                            uForum.Library.Utils.AddMemberToPotentialSpamGroup(_member);
+                            uForum.Library.Utils.SendPotentialSpamMemberMail(spamResult);
                         }
                         else
                         {
-                            uForum.Library.Utills.SendMemberSignupMail(_member);
+                            uForum.Library.Utils.SendMemberSignupMail(_member);
                         }
 
                         Response.Redirect(library.NiceUrl(NextPage));

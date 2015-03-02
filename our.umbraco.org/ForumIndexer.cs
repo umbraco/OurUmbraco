@@ -10,19 +10,21 @@ using Examine.LuceneEngine.Providers;
 using our;
 using our.Examine;
 using umbraco.BusinessLogic;
-
+using Umbraco.Core;
 
 
 namespace our
 {
-    public class ForumIndexer : ApplicationBase
+    public class ForumIndexer : ApplicationEventHandler
     {
-        public ForumIndexer()
+     
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             uForum.Services.TopicService.Created += TopicService_Updated;
             uForum.Services.TopicService.Updated += TopicService_Updated;
             uForum.Services.TopicService.Deleting += TopicService_Deleted;
         }
+
 
         void TopicService_Deleted(object sender, uForum.TopicEventArgs e)
         {

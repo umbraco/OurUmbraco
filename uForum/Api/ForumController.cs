@@ -19,7 +19,7 @@ using Umbraco.Web.WebApi;
 namespace uForum.Api
 {
     [MemberAuthorize( AllowType="member" )]
-    public class ForumController : UmbracoApiController
+    public class ForumController : ForumControllerBase
     {
         /* COMMENTS */
 
@@ -27,32 +27,28 @@ namespace uForum.Api
         public ExpandoObject Comment(CommentViewModel model)
         {
             dynamic o = new ExpandoObject();
+            var c = new Comment();
+            c.Body = model.Body;
+            c.MemberId = Members.GetCurrentMemberId();
+            c.Created = DateTime.Now;
+            c.ParentCommentId = model.Parent;
+            c.TopicId = model.Topic;
+            c.IsSpam = c.DetectSpam();
+            CommentService.Save(c);
+            if (c.IsSpam)
+                AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
 
-            using (var cs = new CommentService())
-            {
-                var c = new Comment();
-                c.Body = model.Body;
-                c.MemberId = Members.GetCurrentMemberId();
-                c.Created = DateTime.Now;
-                c.ParentCommentId = model.Parent;
-                c.TopicId = model.Topic;
-                c.IsSpam = c.DetectSpam();
-                cs.Save(c);
-                if (c.IsSpam)
-                    AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
-
-                o.id = c.Id;
-                o.body = c.Body.Sanitize().ToString();
-                o.topicId = c.TopicId;
-                o.authorId = c.MemberId;
-                o.created = c.Created.ConvertToRelativeTime();
-                var author = c.Author();
-                o.authorKarma = author.Karma();
-                o.authorName = author.Name;
-                o.roles = System.Web.Security.Roles.GetRolesForUser();
-                o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
-                o.parent = model.Parent;
-            }
+            o.id = c.Id;
+            o.body = c.Body.Sanitize().ToString();
+            o.topicId = c.TopicId;
+            o.authorId = c.MemberId;
+            o.created = c.Created.ConvertToRelativeTime();
+            var author = c.Author();
+            o.authorKarma = author.Karma();
+            o.authorName = author.Name;
+            o.roles = System.Web.Security.Roles.GetRolesForUser();
+            o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
+            o.parent = model.Parent;
 
             return o;
         }
@@ -60,82 +56,67 @@ namespace uForum.Api
         [HttpPut]
         public void Comment(int id, CommentViewModel model)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
-                
-                if (c == null)
-                    throw new Exception("Comment not found");
+            var c = CommentService.GetById(id);
 
-                if(c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot edit this comment");
-                
-                c.Body = model.Body;
-                cs.Save(c);
-            }
+            if (c == null)
+                throw new Exception("Comment not found");
+
+            if (c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot edit this comment");
+
+            c.Body = model.Body;
+            CommentService.Save(c);
         }
 
         [HttpDelete]
         public void Comment(int id)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Comment not found");
+            if (c == null)
+                throw new Exception("Comment not found");
 
-                if (!Library.Utills.IsModerator() && c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot delete this comment");
+            if (!Library.Utils.IsModerator() && c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot delete this comment");
 
-                cs.Delete(c);
-            }
+            CommentService.Delete(c);
         }
 
         [HttpGet]
         public string CommentMarkdown(int id)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Comment not found");
+            if (c == null)
+                throw new Exception("Comment not found");
 
-                return c.Body;
-            }
+            return c.Body;
         }
 
         [HttpPost]
         public void CommentAsSpam(int id)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Comment not found");
+            if (c == null)
+                throw new Exception("Comment not found");
 
-                c.IsSpam = true;
+            c.IsSpam = true;
 
-                cs.Save(c);
-            }
+            CommentService.Save(c);
         }
 
         [HttpPost]
         public void CommentAsHam(int id)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Comment not found");
+            if (c == null)
+                throw new Exception("Comment not found");
 
-                c.IsSpam = false;
+            c.IsSpam = false;
 
-                cs.Save(c);
-            }
+            CommentService.Save(c);
         }
         
 
@@ -144,33 +125,29 @@ namespace uForum.Api
         {
             dynamic o = new ExpandoObject();
 
-            using (var ts = new TopicService())
-            {
-                var t = new Topic();
-                t.Body = model.Body;
-                t.Title = model.Title;
-                t.MemberId = Members.GetCurrentMemberId();
-                t.Created = DateTime.Now;
-                t.ParentId = model.Forum;
-                t.UrlName  = umbraco.cms.helpers.url.FormatUrl(model.Title);
-                t.Updated = DateTime.Now;
-                t.Version = model.Version;
-                t.Locked = false;
-                t.LatestComment = 0;
-                t.LatestReplyAuthor = 0;
-                t.Replies = 0;
-                t.Score = 0;
-                t.Answer = 0;
-                t.LatestComment = 0;
-                t.IsSpam = t.DetectSpam();
-                ts.Save(t);
+            var t = new Topic();
+            t.Body = model.Body;
+            t.Title = model.Title;
+            t.MemberId = Members.GetCurrentMemberId();
+            t.Created = DateTime.Now;
+            t.ParentId = model.Forum;
+            t.UrlName = umbraco.cms.helpers.url.FormatUrl(model.Title);
+            t.Updated = DateTime.Now;
+            t.Version = model.Version;
+            t.Locked = false;
+            t.LatestComment = 0;
+            t.LatestReplyAuthor = 0;
+            t.Replies = 0;
+            t.Score = 0;
+            t.Answer = 0;
+            t.LatestComment = 0;
+            t.IsSpam = t.DetectSpam();
+            TopicService.Save(t);
 
-                if (t.IsSpam)
-                    AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+            if (t.IsSpam)
+                AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
 
-                o.url = string.Format("{0}/{1}-{2}",umbraco.library.NiceUrl(t.ParentId), t.Id,t.UrlName);
-                
-            }
+            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
         }
@@ -181,25 +158,22 @@ namespace uForum.Api
         {
             dynamic o = new ExpandoObject();
 
-            using (var ts = new TopicService())
-            {
-                var t = ts.GetById(id);
+            var t = TopicService.GetById(id);
 
-                if (t == null)
-                    throw new Exception("Topic not found");
+            if (t == null)
+                throw new Exception("Topic not found");
 
-                if (t.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot edit this topic");
+            if (t.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot edit this topic");
 
-                t.Updated = DateTime.Now;
-                t.Body = model.Body;
-                t.Version = model.Version;
-                t.ParentId = model.Forum;
-                t.Title = model.Title;
-                ts.Save(t);
+            t.Updated = DateTime.Now;
+            t.Body = model.Body;
+            t.Version = model.Version;
+            t.ParentId = model.Forum;
+            t.Title = model.Title;
+            TopicService.Save(t);
 
-                o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
-            }
+            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
         }
@@ -208,64 +182,52 @@ namespace uForum.Api
         [HttpDelete]
         public void Topic(int id)
         {
-            using (var cs = new TopicService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Topic not found");
+            if (c == null)
+                throw new Exception("Topic not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot delete this topic");
+            if (c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot delete this topic");
 
-                cs.Delete(c);
-            }
+            CommentService.Delete(c);
         }
 
         [HttpGet]
         public string TopicMarkdown(int id)
         {
-            using (var ts = new TopicService())
-            {
-                var t = ts.GetById(id);
+            var t = TopicService.GetById(id);
 
-                if (t == null)
-                    throw new Exception("Topic not found");
+            if (t == null)
+                throw new Exception("Topic not found");
 
-                return t.Body;
-            }
+            return t.Body;
         }
 
         [HttpPost]
         public void TopicAsHam(int id)
         {
-            using (var ts = new TopicService())
-            {
-                var t = ts.GetById(id);
+            var t = TopicService.GetById(id);
 
-                if (t == null)
-                    throw new Exception("Topic not found");
+            if (t == null)
+                throw new Exception("Topic not found");
 
-                t.IsSpam = false;
+            t.IsSpam = false;
 
-                ts.Save(t);
-            }
+            TopicService.Save(t);
         }
 
         [HttpPost]
         public void TopicAsSpam(int id)
         {
-            using (var ts = new TopicService())
-            {
-                var t = ts.GetById(id);
+            var t = TopicService.GetById(id);
 
-                if (t == null)
-                    throw new Exception("Topic not found");
+            if (t == null)
+                throw new Exception("Topic not found");
 
-                t.IsSpam = true;
+            t.IsSpam = true;
 
-                ts.Save(t);
-            }
+            TopicService.Save(t);
         }
 
         /* MEDIA */
