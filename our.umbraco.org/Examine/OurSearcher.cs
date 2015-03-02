@@ -60,7 +60,12 @@ namespace our.Examine
                 Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*');
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
-                sb.Append(string.Format("nodeName:*{0}* body:*{0}* ", Term));
+
+                //do standard match with boost
+                sb.Append(string.Format("(nodeName:{0} body:{0} )^100", Term));
+
+                //do prefix/suffix wildcards
+                sb.Append(string.Format("(nodeName:*{0}* body:*{0}* )", Term));
             }
 
             //if the node type alias and term is specified we need to close the sub query
@@ -85,7 +90,11 @@ namespace our.Examine
             watch.Stop();
 
             
-            return new SearchResultModel(result, watch.ElapsedMilliseconds, Term, OrderBy);
+            return new SearchResultModel(result, watch.ElapsedMilliseconds, Term, string.IsNullOrEmpty(OrderBy) ? "score" : OrderBy)
+            {
+                //NOTE: used for debugging
+                LuceneQuery = criteria.ToString()
+            };
         }
 
 

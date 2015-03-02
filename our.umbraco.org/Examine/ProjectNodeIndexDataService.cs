@@ -66,6 +66,9 @@ namespace our.Examine
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
             var dataSets = new List<SimpleDataSet>();
+
+            EnsureUmbracoContext();
+
             var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
             var allProjectIds = projects.Select(x => x.Id).ToArray();
@@ -124,16 +127,8 @@ namespace our.Examine
             //}
         }
 
-        /// <summary>
-        /// Need to ensures some custom data is added to this index
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        public static void ProjectIndexer_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
+        private static void EnsureUmbracoContext()
         {
-            //Need to add category, which is a parent folder if it has one, we only care about published data
-            // so we can just look this up from the published cache
-
             //TODO: To get at the IPublishedCaches it is only available on the UmbracoContext (which we need to fix)
             // but since this method operates async, there isn't one, so we need to make our own to get at the cache
             // object by creating a fake HttpContext. Not pretty but it works for now.
@@ -146,6 +141,19 @@ namespace our.Examine
                     ApplicationContext.Current,
                     new WebSecurity(dummyHttpContext, ApplicationContext.Current), false);
             }
+        }
+
+        /// <summary>
+        /// Need to ensures some custom data is added to this index
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public static void ProjectIndexer_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
+        {
+            //Need to add category, which is a parent folder if it has one, we only care about published data
+            // so we can just look this up from the published cache
+
+            EnsureUmbracoContext();
 
             var node = UmbracoContext.Current.ContentCache.GetById(e.NodeId);
             if (node == null) return;

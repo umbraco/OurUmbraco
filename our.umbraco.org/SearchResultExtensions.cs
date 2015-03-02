@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Web;
 using Examine;
+using Umbraco.Web;
 
 namespace our
 {
@@ -78,57 +79,27 @@ namespace our
             return "TODO";
         }
 
-        public static string GenerateBlurb(this SearchResult result, int noOfChars)
+        public static IHtmlString GenerateBlurb(this SearchResult result, int noOfChars)
         {
             var text = string.Empty;
 
-            if (result["__IndexType"] == "content")
+            switch (result["__IndexType"])
             {
-                switch (result.Fields["nodeTypeAlias"])
-                {
-                    case "WikiPage":
-                        //Wiki uses bodyText field
-                        if (result.Fields.ContainsKey("bodyText"))
-                            text = result.Fields["bodyText"];
-                        break;
-                    case "Project":
-                        //Project uses description field
-                        if (result.Fields.ContainsKey("descripiton"))
-                            text = result.Fields["description"];
-                        break;
-                }
-
-            }
-            else if (result["__IndexType"] == "documents")
-            {
-
-                try
-                {
-                    if (result.Fields.ContainsKey("Body"))
-                        text = result["Body"];
-                }
-                catch { }
-            }
-            else if (result["__IndexType"] == "documentation")
-            {
-
-                try
-                {
-                    if (result.Fields.ContainsKey("Body"))
-                        text = result["Body"];
-                }
-                catch { }
+                case "content":
+                    if (result.Fields.ContainsKey("bodyText"))
+                        text = result.Fields["bodyText"];
+                    break;
+                case "project":
+                case "documentation":
+                case "forum":
+                    if (result.Fields.ContainsKey("body"))
+                        text = result.Fields["body"];
+                    break;
             }
 
-            text = umbraco.library.StripHtml(text);
-
-            if (text.Length > noOfChars && text.Length > 0)
-            {
-                text = text.Substring(0, noOfChars) + "...";
-            }
-
-            return text;
-
+            var helper = new UmbracoHelper(UmbracoContext.Current);
+            
+            return helper.Truncate(text, noOfChars);
         }
 
         public static string CssClassName(this SearchResult result)

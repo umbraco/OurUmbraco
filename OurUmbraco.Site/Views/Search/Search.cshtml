@@ -17,8 +17,14 @@
 					<li><a href="#" rel="nofollow">@Model.Content.Results.SearchTerm</a></li>
 				</ul>
 
-				
-                <form action="/search" >
+			    <p>
+                    <h5>Debugging output</h5>
+			        Query: @Model.Content.Results.LuceneQuery <br/>
+			        Order by: @Model.Content.Results.OrderBy<br/>
+                    Time elapsed: @Model.Content.Results.Totalmilliseconds
+                </p>
+
+			    <form action="/search" >
 				    <div class="search-big">
                         <input type="search" name="term" required value="@Model.Content.Results.SearchTerm">
 					    <label for="search">Search</label>
@@ -43,7 +49,7 @@
 
 							<div class="type-context">
 								<div class="type-name">@result.GetTitle()</div>
-								<div class="type-description">@result.Fields["body"].Truncate(300)</div>
+								<div class="type-description">@result.GenerateBlurb(300)</div>
 							</div>
 						 </a>
                             </li>
