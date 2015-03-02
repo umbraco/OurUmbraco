@@ -13,10 +13,10 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="http://our.umbraco.org/rss/projects" />
-    <link rel="alternate" type="application/rss+xml" title="Package updates" href="http://our.umbraco.org/rss/projectsupdate" />
-    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="http://our.umbraco.org/rss/activetopics" />
-    <link rel="alternate" type="application/rss+xml" title="Community blogs" href="http://pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
+    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="//our.umbraco.org/rss/projects" />
+    <link rel="alternate" type="application/rss+xml" title="Package updates" href="//our.umbraco.org/rss/projectsupdate" />
+    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.org/rss/activetopics" />
+    <link rel="alternate" type="application/rss+xml" title="Community blogs" href="//pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
 
 
     <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
@@ -28,14 +28,14 @@
 
     <meta name="robots" content="noindex">
 
-    <link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='//fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="/assets/css/style.min.css" />
 
     <!--[if lt IE 9]>
     <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
     <![endif]-->
 
-    <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.7.2.min.js"></script>
 
     <umbraco:Macro Alias="[Members]JsValues" runat="server" />
 
@@ -112,18 +112,18 @@
     </div> <!--.wrapper-->
 
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
-<script src="http://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+<script src="//ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
 
-<script src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
 
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
 
 <script src="/assets/js/jquery.ajaxfileupload.js"></script>
 <script src="/assets/js/jquery.scrolly.js"></script>
