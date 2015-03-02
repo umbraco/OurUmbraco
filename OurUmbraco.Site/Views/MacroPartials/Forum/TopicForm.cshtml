@@ -16,11 +16,18 @@
             <div class="col-sm-3 col-xs-6">
                 <select name="topic-category" id="topic-category" class="markdown-control">
                     <option value="Choose a category" selected="" disabled="">Choose a category</option>
-                    @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                    @if (CurrentPage.Parent.DocumentTypeAlias == "Project")
                     {
-                        foreach(var cat in main.Children)
-                        { 
-                        <option class="@cat.Name.ToLower().Replace(" ","")" value="@cat.Id">@cat.Name</option>
+                        <option class="@CurrentPage.Name.ToLower().Replace(" ","")" value="@CurrentPage.Id" selected>@CurrentPage.Name.</option>
+                    }
+                    else
+                    {
+                        foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                        {
+                            foreach (var cat in main.Children)
+                            {
+                            <option class="@cat.Name.ToLower().Replace(" ","")" value="@cat.Id">@cat.Name</option>
+                            }
                         }
                     }
                 </select>

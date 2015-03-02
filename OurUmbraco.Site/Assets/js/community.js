@@ -82,6 +82,20 @@
             return $.get("/umbraco/api/ProjectContribution/AddContributor/?projectId=" + projectId + "&email=" + email).pipe(function (p) {
                 return p;
             });
+        },
+
+        removeProjectForum: function(forumId)
+        {
+            $.ajax({
+                url: "/umbraco/api/ProjectForum/DeleteProjectForum/?forumId=" + forumId,
+                type: 'DELETE',
+            })
+        },
+
+        addProjectForum: function(title, description, parentId)
+        {
+
+            $.post("/umbraco/api/ProjectForum/PostProjectForum/", { title: title, description: description, parentId: parentId });
         }
 
     };
@@ -372,7 +386,7 @@ $(function () {
         $(this).parent("li").fadeOut();
     });
 
-    /* profile contribution */
+    /* profile project contribution */
     $(".main-content .remove-contri").on("click", function (e) {
         e.preventDefault();
         var data = $(this).data();
@@ -392,10 +406,11 @@ $(function () {
     });
 
     $(".main-content #add-contri").on("click", function (e) {
+        e.preventDefault();
         $("#contri-feedback").html("");
 
         if ($("#contri-email").val()){
-            e.preventDefault();
+           
             var data = $(this).data();
             var projectId = parseInt(data.id);
             var email = $("#contri-email").val();
@@ -414,5 +429,35 @@ $(function () {
             });
         }
     });
+
+    /* profile project forums ¨*/
+    $(".main-content .remove-forum").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var forumId = parseInt(data.id);
+
+        community.removeProjectForum(forumId);
+        $(this).parent("li").fadeOut();
+    });
+
+    $(".main-content #add-forum").on("click", function (e) {
+        e.preventDefault();
+
+        if ($("#forum-title").val() && $("#forum-description").val()) {
+            
+            var data = $(this).data();
+            var projectId = parseInt(data.id);
+            var title = $("#forum-title").val();
+            var description = $("#forum-description").val();
+
+            community.addProjectForum(title, description, projectId);
+
+            $("#forums").append('<li>' + title + '<small>' + description + '</small><a data-id="" class="remove-forum" href="#">Remove</a></li>');
+
+            $("#forum-title").val("");
+            $("#forum-description").val("");
+        }
+    });
+
 
 });
