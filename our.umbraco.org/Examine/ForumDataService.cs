@@ -20,12 +20,14 @@ namespace our.Examine
     public class ForumDataService : ISimpleDataService
     {
 
-        public static SimpleDataSet MapTopicToSimpleDataIndexItem(Topic topic, IEnumerable<Comment> comments, SimpleDataSet simpleDataSet, int id, string indexType)
+        public static SimpleDataSet MapTopicToSimpleDataIndexItem(ReadOnlyTopic topic, SimpleDataSet simpleDataSet, int id, string indexType)
         {
             //First generate the accumulated comment text:
             string commentText = String.Empty;
 
-            foreach (var currentComment in comments)
+            //TODO: I don't think this is a great idea... the body should remain as-is and the comments should be concat'd to another field
+            // This would allow us to boost correctly for the body field
+            foreach (var currentComment in topic.Comments)
                 commentText += currentComment.Body;
 
             var body = umbraco.library.StripHtml(topic.Body + commentText);
@@ -43,10 +45,10 @@ namespace our.Examine
 
             simpleDataSet.RowData.Add("latestCommentId", topic.LatestComment.ToString());
             simpleDataSet.RowData.Add("latestReplyAuthorId", topic.LatestReplyAuthor.ToString());
-            simpleDataSet.RowData.Add("latestReplyAuthorName", topic.LastActiveMember().Name);
+            simpleDataSet.RowData.Add("latestReplyAuthorName", topic.LastReplyAuthorName);
 
             simpleDataSet.RowData.Add("authorId", topic.MemberId.ToString());
-            simpleDataSet.RowData.Add("authorName", topic.Author().Name);
+            simpleDataSet.RowData.Add("authorName", topic.AuthorName);
             
             simpleDataSet.RowData.Add("parentId", topic.ParentId.ToString());
             simpleDataSet.RowData.Add("replies", topic.Replies.ToString());
@@ -64,15 +66,12 @@ namespace our.Examine
             var data = new List<SimpleDataSet>();
 
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
-            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
 
             foreach (var topic in ts.QueryAll())
             {
-
-                var comments = cs.GetComments(topic.Id);
                 //Add the item to the index..
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                data.Add(MapTopicToSimpleDataIndexItem(topic, comments, simpleDataSet, topic.Id, "forum"));
+                data.Add(MapTopicToSimpleDataIndexItem(topic, simpleDataSet, topic.Id, "forum"));
             }
 
             return data;
@@ -82,13 +81,11 @@ namespace our.Examine
 
         public SimpleDataSet CreateNewDocument(int id)
         {
-            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
-            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);           
 
-            //JobDetailItem jobDetails = new JobDetailItem();
-            var forumTopic = ts.GetById(id);
+            var forumTopic = ts.QueryGetById(id);
             var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-            return MapTopicToSimpleDataIndexItem(forumTopic, cs.GetComments(forumTopic.Id), simpleDataSet, forumTopic.Id, "forum");
+            return MapTopicToSimpleDataIndexItem(forumTopic, simpleDataSet, forumTopic.Id, "forum");
         }
 
 

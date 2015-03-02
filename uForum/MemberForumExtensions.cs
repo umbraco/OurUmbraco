@@ -75,27 +75,6 @@ namespace uForum
             return memberShipHelper.GetById(topic.MemberId);
         }
 
-        public static IPublishedContent LastActiveMember(this uForum.Models.Topic topic)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            if (topic.LatestReplyAuthor > 0)
-            {
-                try
-                {
-                    return memberShipHelper.GetById(topic.LatestReplyAuthor);
-                }
-                catch (Exception ex)
-                {
-                    var wat = ex;
-                    return null;
-                }
-
-            }
-            else
-                return topic.Author();
-        }
-
-
         /* ACCCESS TO AUTHOR AS IMEMBER */
 
         public static IMember AuthorAsMember(this uForum.Models.Topic topic)

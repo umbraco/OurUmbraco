@@ -19,12 +19,20 @@ namespace uForum.Services
             _databaseContext = dbContext;
         }
 
-        /* Query */
-        public Page<Topic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
+        /// <summary>
+        /// Returns a paged set of topics with the author information - without the comments loaded
+        /// </summary>
+        /// <param name="take"></param>
+        /// <param name="page"></param>
+        /// <param name="ignoreSpam"></param>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public Page<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
-            var sql = new Sql()
-                .Select("*")
-                .From<Topic>();
+            var sql = new Sql().Select(@"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+                .From("forumTopics")
+                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
 
             //    if (ignoreSpam)
             //        sql.Where<Topic>(x => x.IsSpam != true);
@@ -34,7 +42,7 @@ namespace uForum.Services
 
 
             sql.OrderByDescending("updated");
-            return _databaseContext.Database.Page<Topic>(page, take, sql);
+            return _databaseContext.Database.Page<ReadOnlyTopic>(page, take, sql);
         }
 
         /// <summary>
@@ -54,29 +62,60 @@ namespace uForum.Services
         }
 
         /// <summary>
-        /// Returns a reader of all topics to be iterated over
+        /// Returns a READER of all topics to be iterated over
         /// </summary>
         /// <param name="ignoreSpam"></param>
         /// <returns></returns>
-        public IEnumerable<Topic> QueryAll(bool ignoreSpam = true)
+        public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true)
         {
-            var sql = new Sql();
+            var sql = new Sql().Select(@"forumTopics.*, forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
+	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
+	forumComments.position, forumComments.score, forumComments.topicId, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+                .From("forumTopics")
+                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
+                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
+
             if (ignoreSpam)
+            {
                 sql.Where<Topic>(x => x.IsSpam != true);
+                sql.Where("forumComments.id IS NULL OR (forumComments.isSpam <> 1)");
+            }
 
-            sql.OrderBy<Topic>(x => x.Updated);
+            sql.Where("forumComments.id IS NULL OR (forumComments.[parentCommentId] = 0)");
 
-            return _databaseContext.Database.Query<Topic>(sql);
+            sql.OrderBy<Topic>(x => x.Updated).OrderByDescending<Comment>(comment => comment.Created);
+
+            var result = _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+                new TopicCommentRelator().Map,
+                sql);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Returns a single topic including it's comments and author information
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public ReadOnlyTopic QueryGetById(int id)
+        {
+            var sql = new Sql().Select(@"forumTopics.*, forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
+	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
+	forumComments.position, forumComments.score, forumComments.topicId, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+                .From("forumTopics")
+                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
+                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .Where<ReadOnlyTopic>(topic => topic.Id == id);
+
+            return _databaseContext.Database.SingleOrDefault<ReadOnlyTopic>(sql);
         }
 
         public Topic GetById(int id)
         {
             return _databaseContext.Database.SingleOrDefault<Topic>(id);
         }
-
-
-
-
 
         /* CRUD */
         public Topic Save(Topic topic, bool raiseEvents = true)

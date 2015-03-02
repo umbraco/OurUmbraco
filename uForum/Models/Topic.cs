@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,6 +60,7 @@ namespace uForum.Models
         [Column("version")]
         public int Version { get; set; }
 
+        [ResultColumn]
         public string Url
         {
             get
@@ -71,5 +71,6 @@ namespace uForum.Models
                     : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), Id, UrlName);
             }
         }
+
     }
 }

@@ -61,12 +61,10 @@
 
                     <td class="topic">
                         <a href="@topic.Url">@topic.Title</a>
-                        @{
-                            var mem = topic.LastActiveMember();
-                        }
-                        @if (mem != null)
+                        
+                        @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
                         {
-                            <span>last edited by <a href="/member/@mem.Id">@mem.Name</a></span>
+                            <span>last edited by <a href="/member/@topic.LatestReplyAuthor">@topic.LastReplyAuthorName</a></span>
                         }
                     </td>
 
