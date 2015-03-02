@@ -49,7 +49,7 @@ namespace Marketplace.Api
 
            }
            
-             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
+            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
             var project = help.TypedContent(projectId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
