@@ -11,10 +11,10 @@ namespace uForum.Models
         [ResultColumn]
         public List<ReadOnlyComment> Comments { get; set; }
 
-        [ResultColumn]
+        [ResultColumn("AuthorName")]
         public string AuthorName { get; set; }
 
-        [ResultColumn]
+        [ResultColumn("LastReplyAuthorName")]
         public string LastReplyAuthorName { get; set; } 
     }
 }

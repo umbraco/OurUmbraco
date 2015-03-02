@@ -6,7 +6,7 @@
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var commentService = new CommentService(ApplicationContext.DatabaseContext, topicService);
-    var topic = topicService.CurrentTopic(this.Context);
+    var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
     var topicAuthor = topic.AuthorName;
     var forum = Umbraco.TypedContent(topic.ParentId);
 

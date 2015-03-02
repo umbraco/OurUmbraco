@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Web;
 using uForum.Models;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Persistence;
 
 namespace uForum.Services
@@ -68,9 +69,10 @@ namespace uForum.Services
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true)
         {
-            var sql = new Sql().Select(@"forumTopics.*, forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
+            var sql = new Sql().Select(@"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+    forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+	forumComments.position, forumComments.score, forumComments.topicId")
                 .From("forumTopics")
                 .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
                 .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
@@ -100,9 +102,10 @@ namespace uForum.Services
         /// <returns></returns>
         public ReadOnlyTopic QueryById(int id)
         {
-            var sql = new Sql().Select(@"forumTopics.*, forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
+            var sql = new Sql().Select(@"forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+    forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+	forumComments.position, forumComments.score, forumComments.topicId")
                 .From("forumTopics")
                 .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
                 .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
@@ -198,18 +201,29 @@ namespace uForum.Services
                 CancelledByEvent.Raise(this, eventArgs);
         }
 
-        /* Context */
-        public ReadOnlyTopic CurrentTopic(HttpContextBase context)
+        /// <summary>
+        /// Get the current forum topic based on the id in the context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// So that we don't have to look this up multiple times in a single request, this will use the given ICacheProvider to cache it
+        /// </remarks>
+        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache)
         {
-            var contextId = context.Items["topicID"];
-            if (contextId != null)
+            return (ReadOnlyTopic)cache.GetCacheItem(typeof (TopicService) + "-CurrentTopic", () =>
             {
-                int topicId = 0;
-                if (int.TryParse(contextId.ToString(), out topicId))
-                    return QueryById(topicId);
-            }
+                var contextId = context.Items["topicID"];
+                if (contextId != null)
+                {
+                    int topicId = 0;
+                    if (int.TryParse(contextId.ToString(), out topicId))
+                        return QueryById(topicId);
+                }
 
-            return null;
+                return null;
+            });
         }
 
         public static event EventHandler<TopicEventArgs> Created;

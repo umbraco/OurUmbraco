@@ -2,7 +2,7 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(this.Context);
+    var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
     
 }
 
