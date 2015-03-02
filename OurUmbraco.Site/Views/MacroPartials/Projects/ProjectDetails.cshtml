@@ -177,50 +177,21 @@
                                     
 									<div class="package-forum-activity hidden-xs">
 										<h3>Forum Activity</h3>
-										<a href="forum-thread.html" class="forum-thread">
-											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
-													<div class="forum-thread-text">
-														<h3>Allow user to change site design</h3>
-														<p>Reply by Dennis Aaen 7 minutes ago</p>
-													</div>
-												</div>
-
-											</div>
-										</a>
-
-										<a href="forum-thread.html" class="forum-thread">
-											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
-													<div class="forum-thread-text">
-														<h3>Allow user to change site design</h3>
-														<p>Reply by Dennis Aaen 7 minutes ago</p>
-													</div>
-												</div>
-
-											</div>
-										</a>
-
-										<a href="forum-thread.html" class="forum-thread">
-											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
-													<div class="forum-thread-text">
-														<h3>Allow user to change site design</h3>
-														<p>Reply by Dennis Aaen 7 minutes ago</p>
-													</div>
-												</div>
-
-											</div>
-										</a>
+                                        @{
+                                            var forums = CurrentPage.Children.Where("Visible");
+                                        }
+                                        @if (forums.Any())
+                                        {
+                                            <ul>
+                                                @foreach (var forum in forums)
+                                                {
+                                                    <li><a href="@forum.Url">@forum.Name</a>
+                                                    <small>@forum.forumDescription</small>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        }
+										
 
 									</div>
 
