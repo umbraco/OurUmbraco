@@ -93,13 +93,13 @@
     <!-- Search start -->
 	<section id="search-all" class="search-all">
 
-		<form class="search-all-form" action="">
+		<div class="search-all-form">
 			<div class="search-fieldset">
 				<input class="search-input" type="search" placeholder="Search..">
 				<input class="search-submit" type="submit" value="&#xe085;">
 			</div>
 			<span class="search-all-close"></span>
-		</form>
+		</div>
 
 		<div class="search-all-results equalizer">
 			<ul></ul>

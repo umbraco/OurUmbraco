@@ -10,16 +10,16 @@
                 <!-- FORUM BREADCRUMB END -->
 
                 <umbraco:Macro Alias="[Forum]ForumActions" runat="server"></umbraco:Macro>
+
+                <!-- FORUM Search START -->
+                <div class="search-big">
+	                <input type="search" class="forum-search-input" required placeholder="Search for threads">
+	                <label for="search">Search for threads</label>
+                </div>
+                <!-- FORUM Search END -->
 		    </div>
             <div class="clear"></div>
 		    <!-- FORUM HEADER END -->
-
-            <!-- FORUM Search START -->
-            <div class="search-big">
-		        <input type="search" class="forum-search-input" required placeholder="Search for threads">
-		        <label for="search">Search for threads</label>
-	        </div>
-    
 
             <!-- FORUM TOPICS -->
             <umbraco:Macro Alias="[Forum]Forum" runat="server"></umbraco:Macro>
