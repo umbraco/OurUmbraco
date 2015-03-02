@@ -12,6 +12,9 @@ namespace Marketplace.Models
         public int Id { get; set; }
 
         [Required]
+        public int ParentId { get; set; }
+
+        [Required]
         public string Title { get; set; }
 
         [Required]
