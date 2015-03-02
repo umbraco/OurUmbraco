@@ -52,6 +52,9 @@ namespace uForum
                     f.TotalTopics = 0;
                     f.TotalComments = 0;
                     f.LatestPostDate = DateTime.Now;
+                    f.LatestAuthor = 0;
+                    f.LatestComment = 0;
+                    f.LatestTopic = 0;
                     fs.Save(f);
                 }
             }
