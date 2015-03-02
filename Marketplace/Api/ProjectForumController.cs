@@ -25,7 +25,7 @@ namespace Marketplace.Api
                 });
         }
 
-        public Status GetForum(int id)
+        public ProjectForum GetForum(int id)
         {
             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
             var content = help.TypedContent(id);
@@ -37,7 +37,7 @@ namespace Marketplace.Api
             };
         }
 
-        public Status PostProjectForum(ProjectForum forum, int parentId)
+        public ProjectForum PostProjectForum(ProjectForum forum, int parentId)
         {
             var cs = Services.ContentService;
             var content = cs.CreateContent(forum.Title, parentId, "Forum");
