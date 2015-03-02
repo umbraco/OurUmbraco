@@ -28,26 +28,15 @@ namespace our.Examine
 
             var files = config.Recursive ? directory.GetFiles(config.SupportedFileTypes, SearchOption.AllDirectories) : directory.GetFiles(config.SupportedFileTypes);
 
-            var dataSets = new List<SimpleDataSet>();
             var i = 1; //unique id for each doc
 
             foreach (var file in files)
             {
-                try
-                {
-                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                    simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
-                    dataSets.Add(simpleDataSet);
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(LogTypes.Error, i, "error processing file  " + file.FullName + " " + ex);
-                }
-
-                i++;
+                var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
+                yield return simpleDataSet;
             }
 
-            return dataSets;
         }
 
 

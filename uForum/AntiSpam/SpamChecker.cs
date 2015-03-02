@@ -53,7 +53,7 @@ namespace uForum.AntiSpam
             using (var client = new WebClient())
             {
                 var topic = ts.GetById(topicId);
-                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, topic.Url);
+                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, topic.GetUrl());
                 post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
                 post = post + string.Format("Go to member http://our.umbraco.org/member/{0}\n\n", memberId);
 

@@ -35,8 +35,10 @@ namespace uForum.Services
                 .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
                 .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
 
-            //    if (ignoreSpam)
-            //        sql.Where<Topic>(x => x.IsSpam != true);
+            if (ignoreSpam)
+            {
+                sql.Where<Topic>(x => x.IsSpam != true);
+            }
 
             if (category > 0)
                 sql.Where<Topic>(x => x.ParentId == category);
@@ -47,33 +49,16 @@ namespace uForum.Services
         }
 
         /// <summary>
-        /// Returns a dataset in-memory of all topics
-        /// </summary>
-        /// <param name="ignoreSpam"></param>
-        /// <returns></returns>
-        public IEnumerable<Topic> GetAll(bool ignoreSpam = true)
-        {
-            var sql = new Sql();
-            if (ignoreSpam)
-                sql.Where<Topic>(x => x.IsSpam != true);
-
-            sql.OrderBy<Topic>(x => x.Updated);
-
-            return _databaseContext.Database.Fetch<Topic>(sql);
-        }
-
-        /// <summary>
         /// Returns a READER of all topics to be iterated over
         /// </summary>
         /// <param name="ignoreSpam"></param>
         /// <param name="maxCount">
-        /// If not specified, returns all records, otherwise will limit the amount returned by this value
+        /// Default is 1000
         /// </param>
         /// <returns></returns>
-        public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = int.MinValue)
+        public IEnumerable<ReadOnlyTopic> GetAll(bool ignoreSpam = true, int maxCount = 1000)
         {
-            var sql = new Sql().Select(
-                maxCount == int.MinValue ? "" : ("TOP " + maxCount + " ") + 
+            var sql = new Sql().Select("TOP " + maxCount + " " + 
         @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,

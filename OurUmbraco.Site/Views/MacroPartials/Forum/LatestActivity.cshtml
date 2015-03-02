@@ -4,44 +4,40 @@
 @{
     int page = 0;
 
-   
-    int.TryParse(Model.MacroParameters["topicpage"].ToString(), out page);
-   
-    
-    using (var ts = new uForum.Services.TopicService())
-    {
-        var topics = ts.GetLatestTopics(6);
 
-        <ul>
-            @foreach (var topic in ts.GetLatestTopics(3, page).Items)
+    int.TryParse(Model.MacroParameters["topicpage"].ToString(), out page);
+
+
+    var ts = new uForum.Services.TopicService(ApplicationContext.DatabaseContext);
+
+    <ul>
+        @foreach (var topic in ts.GetLatestTopics(3, page).Items)
+        {
+            var cat = Umbraco.TypedContent(topic.ParentId);
+            var mem = Members.GetById(topic.LatestReplyAuthor);
+            if (mem == null)
             {
-                var cat = Umbraco.TypedContent(topic.ParentId);
-                var mem = Members.GetById(topic.LatestReplyAuthor);
-                if (mem == null)
-                {
-                    mem = Members.GetById(topic.MemberId);
-                }
-                
-                var avatar = mem.GetPropertyValue<string>("avatar");
-                
-                <a href="@topic.Url" class="forum-thread">
-                    <div class="row">
-                        <div class="col-xs-2 col-md-2">
-                            <img src="@avatar?width=100&height=100&mode=crop" alt="@mem.Name">
-                        </div>
-                        <div class="col-xs-8 col-md-8">
-                            <div class="forum-thread-text">
-                                <h3>@topic.Title</h3>
-                                <p>Reply by @mem.Name  @topic.Updated.ConvertToRelativeTime()</p>
-                            </div>
-                        </div>
-                        <div class="col-xs-2 col-md-2">
-                            <div class="category frontend"><span class="cat">@cat.Name</span></div>
+                mem = Members.GetById(topic.MemberId);
+            }
+
+            var avatar = mem.GetPropertyValue<string>("avatar");
+
+            <a href="@topic.GetUrl()" class="forum-thread">
+                <div class="row">
+                    <div class="col-xs-2 col-md-2">
+                        <img src="@avatar?width=100&height=100&mode=crop" alt="@mem.Name">
+                    </div>
+                    <div class="col-xs-8 col-md-8">
+                        <div class="forum-thread-text">
+                            <h3>@topic.Title</h3>
+                            <p>Reply by @mem.Name  @topic.Updated.ConvertToRelativeTime()</p>
                         </div>
                     </div>
-                </a>
-            }
-        </ul>
-
-    }
+                    <div class="col-xs-2 col-md-2">
+                        <div class="category frontend"><span class="cat">@cat.Name</span></div>
+                    </div>
+                </div>
+            </a>
+        }
+    </ul>
 }

@@ -60,7 +60,7 @@
                     }
 
                     <td class="topic">
-                        <a href="@topic.Url">@topic.Title</a>
+                        <a href="@topic.GetUrl()">@topic.Title</a>
                         
                         @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
                         {

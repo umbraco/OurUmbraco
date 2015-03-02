@@ -19,7 +19,7 @@
                     var roles = System.Web.Security.Roles.GetRolesForUser();
 
                     //TODO: This is apparently for topics that the current user has been active in?? This is certainly not the case.
-                    var latestTopics = topicService.QueryAll(maxCount: 100);
+                    var latestTopics = topicService.GetAll(maxCount: 100);
 
                     <div class="close">
                         <i class="icon-Delete"></i>Close
@@ -82,7 +82,7 @@
                             {
                                 var forum = Umbraco.TypedContent(topic.ParentId);
 
-                                <a href="@topic.Url" class="forum-thread">
+                                <a href="@topic.GetUrl()" class="forum-thread">
                                     <div class="row">
                                         <div class="col-xs-10 col-md-8">
                                             <div class="forum-thread-text">

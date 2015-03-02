@@ -64,7 +64,7 @@
 
             if (topic != null) { 
             <li>
-                <a href="@topic.Url">@topic.Title</a> <span class="hidden-xs">–</span>
+                <a href="@topic.GetUrl()">@topic.Title</a> <span class="hidden-xs">–</span>
                 <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
             </li>
             }

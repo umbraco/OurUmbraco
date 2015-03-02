@@ -22,7 +22,7 @@ namespace uForum.Api
             {
                 dynamic o = new ExpandoObject();
 
-                o.url = topic.Url;
+                o.url = topic.GetUrl();
                 o.title = topic.Title;
                 o.replies = topic.Replies;
                 o.hasAnswer = topic.Answer > 0;

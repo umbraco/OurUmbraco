@@ -39,16 +39,24 @@ namespace our.Examine
             simpleDataSet.RowData.Add("nodeName", topic.Title);
             simpleDataSet.RowData.Add("updateDate", topic.Updated.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "forum");
-            simpleDataSet.RowData.Add("url", topic.Url);
+            
+            simpleDataSet.RowData.Add("urlName", topic.UrlName);
 
             simpleDataSet.RowData.Add("createDate", topic.Created.ToString("yyyy-MM-dd HH:mm:ss"));
 
             simpleDataSet.RowData.Add("latestCommentId", topic.LatestComment.ToString());
             simpleDataSet.RowData.Add("latestReplyAuthorId", topic.LatestReplyAuthor.ToString());
-            simpleDataSet.RowData.Add("latestReplyAuthorName", topic.LastReplyAuthorName);
+            if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+            {
+                simpleDataSet.RowData.Add("latestReplyAuthorName", topic.LastReplyAuthorName);    
+            }
+            
 
             simpleDataSet.RowData.Add("authorId", topic.MemberId.ToString());
-            simpleDataSet.RowData.Add("authorName", topic.AuthorName);
+            if (!string.IsNullOrEmpty(topic.AuthorName))
+            {
+                simpleDataSet.RowData.Add("authorName", topic.AuthorName);    
+            }
             
             simpleDataSet.RowData.Add("parentId", topic.ParentId.ToString());
             simpleDataSet.RowData.Add("replies", topic.Replies.ToString());
@@ -62,20 +70,15 @@ namespace our.Examine
         }
 
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
-        {
-            var data = new List<SimpleDataSet>();
-
+        { 
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
 
-            foreach (var topic in ts.QueryAll())
+            foreach (var topic in ts.GetAll(maxCount:int.MaxValue))
             {
                 //Add the item to the index..
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                data.Add(MapTopicToSimpleDataIndexItem(topic, simpleDataSet, topic.Id, "forum"));
+                yield return MapTopicToSimpleDataIndexItem(topic, simpleDataSet, topic.Id, "forum");
             }
-
-            return data;
-            
         }
 
 

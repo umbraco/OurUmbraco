@@ -65,8 +65,6 @@ namespace our.Examine
 
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
-            var dataSets = new List<SimpleDataSet>();
-
             EnsureUmbracoContext();
 
             var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
@@ -78,26 +76,16 @@ namespace our.Examine
 
             foreach (var project in projects)
             {
-                try
-                {
-                    LogHelper.Debug(this.GetType(), "Indexing " + project.Name);
+                LogHelper.Debug(this.GetType(), "Indexing " + project.Name);
 
-                    var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+                var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
 
-                    var projectDownloads = allProjectDownloads.ContainsKey(project.Id) ? allProjectDownloads[project.Id] : 0;
-                    var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
-                    var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id] : Enumerable.Empty<WikiFile>();
+                var projectDownloads = allProjectDownloads.ContainsKey(project.Id) ? allProjectDownloads[project.Id] : 0;
+                var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
+                var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id] : Enumerable.Empty<WikiFile>();
 
-                    simpleDataSet = MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads);
-                    dataSets.Add(simpleDataSet);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error(this.GetType(), ex.Message, ex);
-                }
+                yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads);
             }
-
-            return dataSets;
         }
 
         /// <summary>

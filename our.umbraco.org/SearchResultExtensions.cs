@@ -2,6 +2,7 @@ using System;
 using System.Data.SqlClient;
 using System.Web;
 using Examine;
+using umbraco;
 using Umbraco.Web;
 
 namespace our
@@ -71,7 +72,16 @@ namespace our
         {
             if (result["__IndexType"] == "content")
                 return umbraco.library.NiceUrl(result.Id);
-            else if(result.Fields.ContainsKey("url"))
+
+            if (result["__IndexType"] == "forum" && result.Fields.ContainsKey("parentId") && result.Fields.ContainsKey("urlName"))
+            {
+                var url = library.NiceUrl(int.Parse(result.Fields["parentId"]));
+                return GlobalSettings.UseDirectoryUrls
+                    ? string.Format("/{0}/{1}-{2}", url.Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"])
+                    : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"]);
+            }
+
+            if(result.Fields.ContainsKey("url"))
             {
                 return result["url"];
             }

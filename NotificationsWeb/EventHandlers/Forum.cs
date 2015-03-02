@@ -59,7 +59,7 @@ namespace NotificationsWeb.EventHandlers
             var member = e.Topic.AuthorAsMember();
           
 
-            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewTopic", e.Topic,e.Topic.Url, member);
+            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewTopic", e.Topic,e.Topic.GetUrl(), member);
         }
 
         void CommentService_Created(object sender, uForum.CommentEventArgs e)
@@ -76,7 +76,7 @@ namespace NotificationsWeb.EventHandlers
 
             //send notifications
             InstantNotification not = new InstantNotification();
-            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewComment", e.Comment, topic, topic.Url, member);
+            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewComment", e.Comment, topic, topic.GetUrl(), member);
         }
 
 
