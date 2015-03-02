@@ -33,20 +33,28 @@ namespace uForum.Api
                     {
                         var ms = Services.MemberService;
                         var mem = ms.GetById(topic.LatestReplyAuthor);
-                        o.memId = mem.Id;
-                        o.memName = mem.Name;
+                        if (mem != null)
+                        {
+                            o.memId = mem.Id;
+                            o.memName = mem.Name;    
+                        }
                     }
                     else
                     {
-                        o.memId = topic.Author().Id;
-                        o.memName = topic.Author().Name;
+                        var author = topic.Author();
+                        if (author != null)
+                        {
+                            o.memId = author.Id;
+                            o.memName = author.Name;    
+                        }
                     }
 
-
                     var forum = Umbraco.TypedContent(topic.ParentId);
-                    o.forumUrl = forum.Url;
-                    o.forumName = forum.Name;
-
+                    if (forum != null)
+                    {
+                        o.forumUrl = forum.Url;
+                        o.forumName = forum.Name;    
+                    }
 
                     l.Add(o);
                 }
