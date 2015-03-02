@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using umbraco.BusinessLogic;
-
 using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
-using our;
 using our.Examine;
+using Umbraco.Core;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
-namespace our
+namespace our.CustomHandlers
 {
-    public class ProjectIndexer : ApplicationBase
+    public class ProjectIndexer : ApplicationEventHandler
     {
-        public ProjectIndexer()
+       
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             ContentService.Published += ContentService_Published;
             ContentService.Deleted += ContentService_Deleted;

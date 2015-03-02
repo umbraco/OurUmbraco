@@ -3,6 +3,7 @@ using Examine.LuceneEngine.Providers;
 using Examine.Providers;
 using Examine.SearchCriteria;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -95,6 +96,11 @@ namespace our.Examine
                 sb.Append(")");
             }
 
+            if (sb.Length == 0)
+            {
+                return new SearchResultModel(new EmptySearchResults(), 0, "", "");
+            }
+
             criteria.RawQuery(sb.ToString());
 
             if (string.IsNullOrEmpty(OrderBy) == false)
@@ -119,7 +125,31 @@ namespace our.Examine
         }
 
 
+        private class EmptySearchResults : ISearchResults
+        {
 
+            private readonly List<SearchResult> _results = new List<SearchResult>(); 
+
+            public IEnumerator<SearchResult> GetEnumerator()
+            {
+                return _results.GetEnumerator();
+            }
+
+            IEnumerator IEnumerable.GetEnumerator()
+            {
+                return GetEnumerator();
+            }
+
+            public IEnumerable<SearchResult> Skip(int skip)
+            {
+                return _results.Skip(skip);
+            }
+
+            public int TotalItemCount
+            {
+                get { return 0; }
+            }
+        }
 
 
     }

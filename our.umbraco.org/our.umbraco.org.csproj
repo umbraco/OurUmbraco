@@ -281,7 +281,7 @@
     <Compile Include="Examine\DocumentationIndexDataService.cs" />
     <Compile Include="Examine\ExamineHelper.cs" />
     <Compile Include="Examine\DocumentationIndexConfig.cs" />
-    <Compile Include="ForumIndexer.cs" />
+    <Compile Include="CustomHandlers\ForumIndexer.cs" />
     <Compile Include="library.cs" />
     <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Models\ProfileNotificationModel.cs" />
@@ -289,7 +289,7 @@
     <Compile Include="Models\SearchResultContentModel.cs" />
     <Compile Include="Models\SearchResultModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
-    <Compile Include="ProjectIndexer.cs" />
+    <Compile Include="CustomHandlers\ProjectIndexer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="CustomHandlers\OurApplicationStartupHandler.cs" />
