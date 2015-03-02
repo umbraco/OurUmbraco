@@ -356,7 +356,6 @@
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
     <Content Include="Assets\js\lodash.min.js" />
-    <Content Include="bin\legacy\Lucene.Net.dll" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
     <Content Include="config\BaseRestExtensions.config" />
