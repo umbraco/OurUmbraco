@@ -66,10 +66,15 @@ namespace uForum.Services
         /// Returns a READER of all topics to be iterated over
         /// </summary>
         /// <param name="ignoreSpam"></param>
+        /// <param name="maxCount">
+        /// If not specified, returns all records, otherwise will limit the amount returned by this value
+        /// </param>
         /// <returns></returns>
-        public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true)
+        public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = int.MinValue)
         {
-            var sql = new Sql().Select(@"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            var sql = new Sql().Select(
+                maxCount == int.MinValue ? "" : ("TOP " + maxCount + " ") + 
+        @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
 	forumComments.position, forumComments.score, forumComments.topicId")

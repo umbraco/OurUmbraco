@@ -7,10 +7,10 @@
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
 }
 <div class="quick-menu">
-	<div class="container">
-		<div class="row">
-			<div class="col-md-12">
-				
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+
 
                 @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
@@ -18,7 +18,8 @@
 
                     var roles = System.Web.Security.Roles.GetRolesForUser();
 
-                    var latestTopics = topicService.GetAll();
+                    //TODO: This is apparently for topics that the current user has been active in?? This is certainly not the case.
+                    var latestTopics = topicService.QueryAll(maxCount: 100);
 
                     <div class="close">
                         <i class="icon-Delete"></i>Close
@@ -26,7 +27,7 @@
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>
-                   
+
 
                     <div class="user-image">
                         @avatar(member, 100)
@@ -34,18 +35,18 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
-                        
+
                         <div class="karma">
                             @member.Karma()
                         </div>
-                        
+
                         @if (member.HasValue("twitter"))
                         {
                             <div class="user-twitter">
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
-                        
+
                         @if (roles.Length > 1)
                         {
                             <span class="roles">
@@ -65,41 +66,42 @@
                         <div class="log-out">
                             <a href="@Url.Action("Logout","Login")">Log out</a>
                         </div>
-                        
+
                     </div>
-                    
-                    
+
+
                     <small>
                         Activity in threads you participated in
                     </small>
 
                     <div class="user-latest-posts">
-                     
+
                         @foreach (var topic in latestTopics)
                         {
                             if (topic.MemberId == member.Id || topic.LatestReplyAuthor == member.Id)
                             {
-                                var forum = Umbraco.TypedContent(@topic.ParentId);
-                                
-                            <a href="@topic.Url" class="forum-thread">
-                                <div class="row">
-                                    <div class="col-xs-10 col-md-8">
-                                        <div class="forum-thread-text">
-                                            <h3>@topic.Title</h3>
-                                            @if (topic.LatestReplyAuthor > 0) { 
-                                            <p>Reply by @Members.GetById(topic.LatestReplyAuthor).Name @topic.Updated.Day</p>
-                                            }
+                                var forum = Umbraco.TypedContent(topic.ParentId);
+
+                                <a href="@topic.Url" class="forum-thread">
+                                    <div class="row">
+                                        <div class="col-xs-10 col-md-8">
+                                            <div class="forum-thread-text">
+                                                <h3>@topic.Title</h3>
+                                                @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                                {
+                                                    <p>Reply by @topic.LastReplyAuthorName @topic.Updated.Day</p>
+                                                }
+                                            </div>
                                         </div>
-                                    </div>
 
-                                    <div class="col-xs-2 col-md-4">
-                                        <div class="category frontend"><span class="cat">@forum.Name</span></div>
-                                    </div>
+                                        <div class="col-xs-2 col-md-4">
+                                            <div class="category frontend"><span class="cat">@forum.Name</span></div>
+                                        </div>
 
-                                </div>
-                            </a>
+                                    </div>
+                                </a>
                             }
-                        
+
                         }
 
                     </div>
@@ -111,10 +113,10 @@
                     <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
                 }
 
-				
-			</div>
-		</div>
-	</div>
+
+            </div>
+        </div>
+    </div>
 </div>
 
 @helper avatar(IPublishedContent member, int avatarSize)
