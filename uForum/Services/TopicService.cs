@@ -98,7 +98,7 @@ namespace uForum.Services
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public ReadOnlyTopic QueryGetById(int id)
+        public ReadOnlyTopic QueryById(int id)
         {
             var sql = new Sql().Select(@"forumTopics.*, forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
@@ -109,7 +109,9 @@ namespace uForum.Services
                 .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
                 .Where<ReadOnlyTopic>(topic => topic.Id == id);
 
-            return _databaseContext.Database.SingleOrDefault<ReadOnlyTopic>(sql);
+            return _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+                new TopicCommentRelator().Map,
+                sql).FirstOrDefault();
         }
 
         public Topic GetById(int id)
@@ -197,14 +199,14 @@ namespace uForum.Services
         }
 
         /* Context */
-        public Topic CurrentTopic(HttpContextBase context)
+        public ReadOnlyTopic CurrentTopic(HttpContextBase context)
         {
             var contextId = context.Items["topicID"];
             if (contextId != null)
             {
                 int topicId = 0;
                 if (int.TryParse(contextId.ToString(), out topicId))
-                    return GetById(topicId);
+                    return QueryById(topicId);
             }
 
             return null;

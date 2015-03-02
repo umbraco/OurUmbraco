@@ -68,6 +68,11 @@ namespace uForum
             var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
             return memberShipHelper.GetById(comment.MemberId);
         }
+        public static IPublishedContent Author(this uForum.Models.ReadOnlyComment comment)
+        {
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+            return memberShipHelper.GetById(comment.MemberId);
+        }
 
         public static IPublishedContent Author(this uForum.Models.Topic topic)
         {

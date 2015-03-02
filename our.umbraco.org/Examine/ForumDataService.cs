@@ -83,7 +83,7 @@ namespace our.Examine
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);           
 
-            var forumTopic = ts.QueryGetById(id);
+            var forumTopic = ts.QueryById(id);
             var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
             return MapTopicToSimpleDataIndexItem(forumTopic, simpleDataSet, forumTopic.Id, "forum");
         }

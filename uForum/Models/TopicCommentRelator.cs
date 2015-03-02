@@ -17,7 +17,10 @@ namespace uForum.Models
             if (_current != null && _current.Id == topic.Id)
             {
                 // Yes, just add this Comment to the current Topic's collection of Comments
-                _current.Comments.Add(comment);
+                if (comment.Id > 0)
+                {
+                    _current.Comments.Add(comment);    
+                }
 
                 // Return null to indicate we're not done with this Topic yet
                 return null;
@@ -32,7 +35,11 @@ namespace uForum.Models
             // Setup the new current topic
             _current = topic;
             _current.Comments = new List<ReadOnlyComment>();
-            _current.Comments.Add(comment);
+            if (comment.Id > 0)
+            {
+                _current.Comments.Add(comment);
+            }
+            
 
             // Return the now populated previous author (or null if first time through)
             return prev;

@@ -7,8 +7,7 @@
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var commentService = new CommentService(ApplicationContext.DatabaseContext, topicService);
     var topic = topicService.CurrentTopic(this.Context);
-    var comments = commentService.GetComments(topic.Id);
-    var topicAuthor = topic.Author();
+    var topicAuthor = topic.AuthorName;
     var forum = Umbraco.TypedContent(topic.ParentId);
 
 }
@@ -45,7 +44,7 @@
 <ul class="comments">
     @Html.Partial("forum/question", topic)
 
-    @foreach (var comment in comments)
+    @foreach (var comment in topic.Comments)
     {
         Html.RenderPartial("forum/comment", comment, new ViewDataDictionary { { "level", 1 }, { "answer",  topic.Answer } });
 
@@ -63,7 +62,7 @@
 
 @if (Members.IsLoggedIn()) { 
 <div class="replybutton">
-    <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor.Name" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
+    <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
 </div>
 }
 else { 
