@@ -31,8 +31,7 @@ namespace uForum.Api
                     o.updated = topic.Updated.ConvertToRelativeTime();
                     if (topic.LatestReplyAuthor > 0)
                     {
-                        var ms = Services.MemberService;
-                        var mem = ms.GetById(topic.LatestReplyAuthor);
+                        var mem = Members.GetById(topic.LatestReplyAuthor);
                         if (mem != null)
                         {
                             o.memId = mem.Id;
@@ -41,7 +40,7 @@ namespace uForum.Api
                     }
                     else
                     {
-                        var author = topic.Author();
+                        var author = Members.GetById(topic.MemberId);
                         if (author != null)
                         {
                             o.memId = author.Id;
