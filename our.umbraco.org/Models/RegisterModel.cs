@@ -9,6 +9,7 @@ namespace our.Models
 {
     public class RegisterModel
     {
+        [Required]
         public string Avatar { get; set; }
 
         [Required]

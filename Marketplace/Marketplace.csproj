@@ -171,6 +171,7 @@
       <HintPath>..\packages\UmbracoCms.Core.7.2.2\lib\SQLCE4Umbraco.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.Linq" />
@@ -292,12 +293,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ProjectContributionController.cs" />
+    <Compile Include="Api\ProjectForumController.cs" />
     <Compile Include="Controls\CountryDropDown.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="library.cs" />
     <Compile Include="Models\ProjectContributor.cs" />
+    <Compile Include="Models\ProjectForum.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
