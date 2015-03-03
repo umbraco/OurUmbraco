@@ -13,7 +13,7 @@
 
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
 
-    <section class="download-umbraco">
+    <section id="download" class="download-umbraco">
 
 		<div class="container">
 
@@ -37,12 +37,83 @@
 
 	</section>
 
+    <section id="install" class="download-umbraco" style="display:none">
+
+	    <div class="mac-notice">
+		    You're running MacOS, follow <a href="">this guide.</a>
+	    </div>
+
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-xs-12">
+
+					<div class="dl-content steps">
+
+						<h2>Almost there</h2>
+
+						<div class="guide">
+	
+							<div class="step step-one">
+								<span>
+									1
+								</span>
+
+								<div>
+									Unzip
+									
+								</div>
+							</div>	
+
+							<div class="step step-two">
+								<span>
+									2
+								</span>
+
+								<div>
+									Run with WebMatrix
+									
+								</div>
+							</div>	
+
+							<div class="step step-three">
+								<span>
+									3
+								</span>
+
+								<div>
+									Follow the installer
+									
+								</div>
+							</div>
+
+							<div class="clearfix"></div>
+
+						</div>
+
+						<img src="https://files.slack.com/files-pri/T025KPYEV-F03NBKE47/screener.gif" alt="">
+
+					</div>
+
+				</div>
+
+			</div>
+
+		</div>
+
+		<div class="archive">
+			See instructions for <a href="#">ISS</a> or <a href="#">Visual Studio</a>
+		</div>
+
+	</section>
+
     <script type="text/html" id="download-template">
 
 			<h1>Download Umbraco</h1>
 			<p>If you're new to Umbraco you might want to start your install with the versions on the <a href="/documentation/getting-started/installation/">Web Platform Installer or WebMatrix</a>. These tools will automatically download and install any dependencies to give you a flying start.</p>
 					
-			<a data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" class="button white">
+			<a id="downloadButton" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') + '?fromdownload=true' }" class="button white">
                 <i class="icon-Download-alt"></i>
                 <span data-bind="text: releaseStatus() === null ? 'Download Umbraco v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase()"></span>
 			</a>
@@ -60,7 +131,11 @@
             ko.applyBindings(viewModel);
             // Load data
             loadAllData();
-            console.log(viewModel);
+        
+                $('.dl-content').on('click', '#downloadButton', function (e) {
+                    $('section#download').fadeOut();
+                    $('section#install').fadeIn();
+                });
         })();
 
         </script>

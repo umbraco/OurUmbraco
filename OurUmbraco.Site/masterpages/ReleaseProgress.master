@@ -48,7 +48,7 @@
 			        <div class="content-wrapper">
 
                         <div style="margin-top: 25px;">
-                            <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                            <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                         </div>
 
                         <div class="markdown-syntax">
@@ -133,12 +133,14 @@
 
               //Animate progress when data is loaded
               viewModel.versions.subscribe(function (newValue) {
-                $('.chart').easyPieChart({
-                    size: 60,
-                    barColor: '#569327',
-                    scaleColor: false,
-                    trackColor: '#daf0c9'
-                });
+                  setTimeout(function () {
+                      $('.chart').easyPieChart({
+                          size: 60,
+                          barColor: '#569327',
+                          scaleColor: false,
+                          trackColor: '#daf0c9'
+                      });
+                  }, 1000);
               });
 
                  

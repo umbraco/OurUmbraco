@@ -11,12 +11,26 @@
 </asp:Content>
   
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
-  <div class="has-sidebar latest page-content">
-			
+    <umbraco:Macro ID="Macro6" Language="cshtml" runat="server">
+        @{
+            if(Request.Params["fromdownload"] != null) {
+                var downloads = Model.ReleaseDownload.Where("Visible");		
+			    if(downloads.Any())
+			    {
+				    foreach (var item in downloads)
+					{							
+                        Response.Redirect("/ReleaseDownload?id=" + item.id);
+			        }
+			    }
+            } 
+        }
+    </umbraco:Macro>
+  <div class="has-sidebar release">
+      <div class="page-content">
 			<div class="sidebar-area">
 				<div class="sidebar-content">
 					<div class="content-wrapper">
-					
+                        
 					<nav>
 						<ul class="level-1">
 							<li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
@@ -63,7 +77,7 @@
 				<div class="content-wrapper">
 
                     <div>
-                        <umbraco:Macro ID="Macro1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                     </div>
 
                     <h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
@@ -221,8 +235,8 @@
                     </div><!-- .content-wrapper -->
 				</div><!-- .main-content -->
 			</div><!-- .main-area -->
-	
-		</div><!-- .page-content -->
+	    </div><!-- .page-content -->
+	</div><!-- has-sidebar -->
 
 <script type="text/html" id="issue-template">
     <li data-bind="attr: { 'class': state().replace(/\s/g, '') }">
@@ -235,19 +249,19 @@
     <umbraco:Macro runat="server" Language="cshtml">
  
         <script type="text/javascript">
-            var currentVersions = [];
-            var inProgressVersions = [];
-            var futureVersions = [];
-            var patchReleases = [];
-            alert("sadlkjasldjlasd");
+            (function () {
+                var currentVersions = [];
+                var inProgressVersions = [];
+                var futureVersions = [];
+                var patchReleases = [];
 
-
-                alert("tye");
                 // Apply bindings
                 ko.applyBindings(viewModel);
                 // Load data
                 loadData('@Model.Name');
 
+            })();
+            
 
     </script>
     </umbraco:Macro>

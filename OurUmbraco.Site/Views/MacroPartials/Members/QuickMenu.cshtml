@@ -11,6 +11,9 @@
         <div class="row">
             <div class="col-md-12">
 
+                <div class="close">
+                    <i class="icon-Delete"></i>Close
+                </div>
 
                 @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
@@ -21,9 +24,7 @@
                     //TODO: This is apparently for topics that the current user has been active in?? This is certainly not the case.
                     var latestTopics = topicService.GetAll(maxCount: 100);
 
-                    <div class="close">
-                        <i class="icon-Delete"></i>Close
-                    </div>
+                    
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>
@@ -35,18 +36,15 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
-
                         <div class="karma">
                             @member.Karma()
                         </div>
-
                         @if (member.HasValue("twitter"))
                         {
                             <div class="user-twitter">
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
-
                         @if (roles.Length > 1)
                         {
                             <span class="roles">
@@ -66,7 +64,6 @@
                         <div class="log-out">
                             <a href="@Url.Action("Logout","Login")">Log out</a>
                         </div>
-
                     </div>
 
 
@@ -75,7 +72,6 @@
                     </small>
 
                     <div class="user-latest-posts">
-
                         @foreach (var topic in latestTopics)
                         {
                             if (topic.MemberId == member.Id || topic.LatestReplyAuthor == member.Id)
@@ -93,24 +89,40 @@
                                                 }
                                             </div>
                                         </div>
-
                                         <div class="col-xs-2 col-md-4">
                                             <div class="category frontend"><span class="cat">@forum.Name</span></div>
                                         </div>
-
                                     </div>
                                 </a>
                             }
 
                         }
-
                     </div>
 
 
                 }
                 else
                 {
-                    <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+                    
+
+
+                    <div class="row">
+                        <div class="col-md-12">
+
+                            <div class="login">
+
+
+                                <h2>Enter your email and password to log in.</h2>
+
+
+                                @Umbraco.RenderMacro("MemberLogin", new { NextPage = "", ErrorMessage = "Error message mayn!!" })
+                                <small>Can't remember your password? You can retrieve a new one by <a href="/member/forgot-password" title="Forgot Password">clicking here</a></small>
+                                <small>All forum.umbraco.org members has been migrated, but need a new password, <a href="/member/forgot-password" title="Forgot Password">please get it here</a>.</small>
+
+
+                            </div>
+                        </div>
+                    </div>
                 }
 
 

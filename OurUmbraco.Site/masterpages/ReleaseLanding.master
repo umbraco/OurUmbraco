@@ -66,7 +66,7 @@
 			<div class="content-wrapper">
 						
 				<div>
-				    <umbraco:Macro ID="Macro3" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+				    <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
 			    </div>
 
                 <div class="markdown-syntax">
