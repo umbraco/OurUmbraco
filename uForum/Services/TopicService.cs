@@ -142,7 +142,7 @@ namespace uForum.Services
                 .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
                 .Where<ReadOnlyTopic>(topic => topic.Id == id);
 
-            return _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+            return _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
                 sql).FirstOrDefault();
         }
