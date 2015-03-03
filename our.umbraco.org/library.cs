@@ -75,26 +75,20 @@ namespace our {
 
         public static int GetProjectTotalDownloadCount(int projectId)
         {
-            try
-            {
-                return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @0", projectId);
-            }
-            catch
-            {
-                return 0;
-            }
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select count(*) from projectDownload where projectId = @0", projectId);
+            return result ?? 0;
         }
 
         public static int GetProjectTotalKarma(int projectId)
         {
-            try
-            {
-                return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("SELECT sum([points]) FROM [powersProject] where id = @0", projectId);
-            }
-            catch
-            {
-                return 0;
-            }
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("SELECT sum([points]) FROM [powersProject] where id = @0", projectId);
+            return result ?? 0;
+        }
+
+        public static IEnumerable<string> GetProjectCompatibleVersions(int projectId)
+        {
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<string>(
+                "SELECT DISTINCT [version] FROM DeliVersionCompatibility WHERE isCompatible = 1 AND projectId = @projectId", new {projectId = projectId});
         }
 
         /// <summary>
@@ -115,6 +109,21 @@ namespace our {
         {
             return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("select projectId, count(*) as total from projectDownload GROUP BY projectId")
                 .ToDictionary(x => (int)x.projectId, x => (int)x.total);
+        }
+
+        /// <summary>
+        /// Returns a dictionary of project id => any version that has been flagged as being compatible
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, IEnumerable<string>> GetProjectCompatibleVersions()
+        {
+            var compatVersions = new Dictionary<int, IEnumerable<string>>();
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("SELECT DISTINCT projectId, [version] FROM DeliVersionCompatibility WHERE isCompatible = 1");
+            foreach (var project in result.GroupBy(x => x.projectId))
+            {
+                compatVersions.Add(project.Key, project.Select(x => (string)x.version).ToArray());
+            }
+            return compatVersions;
         }
 
         public static int GetProjectFileDownloadCount(int fileId)

@@ -21,7 +21,7 @@ namespace our.Examine
         public string NodeTypeAlias { get; set; }
         public string OrderBy { get; set; }
         public int MaxResults { get; set; }
-        public IEnumerable<SearchFilters> Filters { get; set; }
+        public IEnumerable<SearchFilters> Filters { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.

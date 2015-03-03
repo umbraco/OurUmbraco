@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using uWiki.Businesslogic;
+using Umbraco.Core;
 
 namespace our.CustomHandlers
 {
-    public class ProjectsEnsureGuid : ApplicationBase
+    public class ProjectsEnsureGuid : ApplicationEventHandler
     {
-        public ProjectsEnsureGuid() {
-
+       
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
             Document.BeforePublish += new Document.PublishEventHandler(Document_BeforePublish);
         }
 

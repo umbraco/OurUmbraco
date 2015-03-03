@@ -39,11 +39,13 @@ namespace our.CustomHandlers
                     var content = umbracoHelper.TypedContent(item.Id);
                     var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
 
-                    var karma = our.Utils.GetProjectTotalKarma(content.Id);
+                    var karma = Utils.GetProjectTotalKarma(content.Id);
                     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(content.Id);
-                    var downloads = our.Utils.GetProjectTotalDownloadCount(content.Id);
+                    var downloads = Utils.GetProjectTotalDownloadCount(content.Id);
+                    var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
 
-                    simpleDataSet = ((ProjectNodeIndexDataService)indexer.DataService).MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads);
+                    simpleDataSet = ((ProjectNodeIndexDataService)indexer.DataService).MapProjectToSimpleDataIndexItem(
+                        content, simpleDataSet, "project", karma, files, downloads, compatVersions);
 
                     var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
                     indexer.ReIndexNode(xml, "project");

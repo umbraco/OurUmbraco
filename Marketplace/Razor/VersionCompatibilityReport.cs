@@ -25,7 +25,7 @@ namespace Marketplace.Razor
             packageId = packageId;
             projectProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
             project = projectProvider.GetListing(pid, false);
-            file = project.PackageFile.Where(x => x.Id == Int32.Parse(project.CurrentReleaseFile)).FirstOrDefault();
+            file = project.PackageFile.FirstOrDefault(x => x.Id == Int32.Parse(project.CurrentReleaseFile));
         }
 
         public List<verCompat> GetCompatibilityReport()
@@ -38,9 +38,9 @@ namespace Marketplace.Razor
                 {
                     var reports = ctx.DeliVersionCompatibilities.Where(x => x.version == ver.Name && x.projectId == project.Id);
 
-                    if (reports.Count() > 0)
+                    if (reports.Any())
                     {
-                        float compats = reports.Where(x => x.isCompatible).Count();
+                        float compats = reports.Count(x => x.isCompatible);
                         float numReps = reports.Count();
                         var perc = Convert.ToInt32(((compats / numReps) * 100));
 
