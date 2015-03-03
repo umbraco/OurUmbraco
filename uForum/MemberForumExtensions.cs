@@ -62,24 +62,6 @@ namespace uForum
             return ModeratorRoles.Split(',').Any(x => Roles.IsUserInRole(x));
         }
 
-        /** GET ACCESS TO AUTHOR */
-        public static IPublishedContent Author(this uForum.Models.Comment comment)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            return memberShipHelper.GetById(comment.MemberId);
-        }
-        public static IPublishedContent Author(this uForum.Models.ReadOnlyComment comment)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            return memberShipHelper.GetById(comment.MemberId);
-        }
-
-        public static IPublishedContent Author(this uForum.Models.Topic topic)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            return memberShipHelper.GetById(topic.MemberId);
-        }
-
         /* ACCCESS TO AUTHOR AS IMEMBER */
 
         public static IMember AuthorAsMember(this uForum.Models.Topic topic)

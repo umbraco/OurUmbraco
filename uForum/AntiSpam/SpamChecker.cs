@@ -22,7 +22,7 @@ namespace uForum.AntiSpam
 {
     internal class SpamChecker
     {
-        public static bool IsSpam(Umbraco.Core.Models.IPublishedContent member, string body)
+        public static bool IsSpam(Umbraco.Core.Models.IMember member, string body)
         {
             int reputationTotal;
 

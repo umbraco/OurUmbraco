@@ -2,7 +2,7 @@
 @using uForum;
 
 @{
-    var topicAuthor = Model.Author();
+    var topicAuthor = Members.GetById(Model.MemberId);
     var forum = Umbraco.TypedContent(Model.ParentId);
     var roles = System.Web.Security.Roles.GetRolesForUser();
 }

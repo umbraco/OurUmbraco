@@ -115,13 +115,15 @@ namespace uForum
 
         public static bool DetectSpam(this Comment comment)
         {
-            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(comment.Author(), comment.Body);
+            var member = Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(comment.MemberId);
+            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(member, comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
-            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(topic.Author(), topic.Body);
+            var member = Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
+            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(member, topic.Body);
             return topic.IsSpam;
         }
     }
