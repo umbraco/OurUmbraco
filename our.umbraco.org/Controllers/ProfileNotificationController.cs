@@ -11,6 +11,7 @@ namespace our.Controllers
 {
     public class ProfileNotificationController: SurfaceController
     {
+        [ChildActionOnly]
         public ActionResult Render()
         {
             var ms = Services.MemberService;

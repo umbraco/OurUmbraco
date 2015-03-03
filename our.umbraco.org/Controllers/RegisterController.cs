@@ -11,6 +11,7 @@ namespace our.Controllers
 {
     public class RegisterController : SurfaceController
     {
+        [ChildActionOnly]
         public ActionResult Render()
         {
 

@@ -11,6 +11,7 @@ namespace our.Controllers
 {
     public class ProfileController: SurfaceController
     {
+        [ChildActionOnly]
         public ActionResult Render()
         {
             var ms = Services.MemberService;
