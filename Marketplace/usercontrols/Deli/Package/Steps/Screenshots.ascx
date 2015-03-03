@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Screenshots.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Screenshots" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Screenshots.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Screenshots" %>
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
 <script type="text/javascript">
     var swfu;

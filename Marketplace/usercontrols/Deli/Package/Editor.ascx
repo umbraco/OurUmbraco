@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Editor.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Editor" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Editor.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Editor" %>
 
 <div class="package-create">
 <asp:Repeater runat="server" ID="StepNavigation" OnItemDataBound="bindStep">
