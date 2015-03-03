@@ -1,4 +1,4 @@
-﻿using Marketplace.Models;
+﻿using uProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Web;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
 
-namespace Marketplace.Services
+namespace uProject.Services
 {
     public class ContributionService: IDisposable
     {

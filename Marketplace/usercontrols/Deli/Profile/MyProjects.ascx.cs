@@ -8,7 +8,7 @@ using System.Web.UI.WebControls;
 using Marketplace.Interfaces;
 using Marketplace.Providers;
 
-namespace Marketplace.usercontrols.Deli.Profile
+namespace uProject.usercontrols.Deli.Profile
 {
     public partial class MyProjects : System.Web.UI.UserControl
     {

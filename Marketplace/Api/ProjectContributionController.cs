@@ -1,4 +1,4 @@
-﻿using Marketplace.Services;
+﻿using uProject.Services;
 using System;
 using System.Collections.Generic;
 using System.Dynamic;
@@ -10,7 +10,7 @@ using System.Web.Http;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
 
-namespace Marketplace.Api
+namespace uProject.Api
 {
     [MemberAuthorize(AllowType = "member")]
     public class ProjectContributionController : UmbracoApiController

@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Marketplace.usercontrols.Deli.Profile {
+namespace uProject.usercontrols.Deli.Profile {
     
     
     public partial class MyProjects {

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Xml;
 
-namespace Marketplace.uVersion
+namespace uProject.uVersion
 {
     public class UVersion
     {

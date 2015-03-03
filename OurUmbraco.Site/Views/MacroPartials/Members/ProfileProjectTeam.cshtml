@@ -12,9 +12,9 @@
     
     var openForCollab = project.GetPropertyValue<bool>("openForCollab");
         
-    var contris = new List<Marketplace.Models.ProjectContributor>();
+    var contris = new List<uProject.Models.ProjectContributor>();
 
-    using (var cs = new Marketplace.Services.ContributionService())
+    using (var cs = new uProject.Services.ContributionService())
     {
         contris = cs.GetContributions(id).ToList();
     }

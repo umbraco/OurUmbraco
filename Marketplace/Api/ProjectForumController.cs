@@ -1,4 +1,4 @@
-﻿using Marketplace.Models;
+﻿using uProject.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +8,7 @@ using System.Web;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
 
-namespace Marketplace.Api
+namespace uProject.Api
 {
     [MemberAuthorize(AllowType = "member")]
     public class ProjectForumController : UmbracoApiController

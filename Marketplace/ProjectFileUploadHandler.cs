@@ -11,7 +11,8 @@ using our;
 using Marketplace.Providers.MediaFile;
 using Marketplace.Umbraco.BusinessLogic;
 
-namespace Marketplace {
+namespace uProject
+{
     public class ProjectFileUploadHandler : IHttpHandler {
 
         #region IHttpHandler Members

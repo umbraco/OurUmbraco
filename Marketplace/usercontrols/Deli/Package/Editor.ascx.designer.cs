@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Marketplace.usercontrols.Deli.Package {
+namespace uProject.usercontrols.Deli.Package {
     
     
     public partial class Editor {

@@ -4650,9 +4650,9 @@
     <Content Include="xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Marketplace\Marketplace.csproj">
+    <ProjectReference Include="..\Marketplace\uProject.csproj">
       <Project>{6a2b659e-8bae-4cd5-8764-851dfbe95fbf}</Project>
-      <Name>Marketplace</Name>
+      <Name>uProject</Name>
     </ProjectReference>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
       <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
