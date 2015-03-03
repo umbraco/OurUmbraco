@@ -27,9 +27,11 @@ namespace uForum.Api
         public ExpandoObject Comment(CommentViewModel model)
         {
             dynamic o = new ExpandoObject();
+            var currentMemberId = Members.GetCurrentMemberId();
+
             var c = new Comment();
             c.Body = model.Body;
-            c.MemberId = Members.GetCurrentMemberId();
+            c.MemberId = currentMemberId;
             c.Created = DateTime.Now;
             c.ParentCommentId = model.Parent;
             c.TopicId = model.Topic;
@@ -43,7 +45,7 @@ namespace uForum.Api
             o.topicId = c.TopicId;
             o.authorId = c.MemberId;
             o.created = c.Created.ConvertToRelativeTime();
-            var author = c.Author();
+            var author = Members.GetById(currentMemberId);
             o.authorKarma = author.Karma();
             o.authorName = author.Name;
             o.roles = System.Web.Security.Roles.GetRolesForUser();

@@ -1,6 +1,6 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Web.Mvc.Html
-@using uForum;
+@using uForum.Models
 @using uForum.Services
 
 @{
@@ -8,8 +8,6 @@
     var commentService = new CommentService(ApplicationContext.DatabaseContext, topicService);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
     var topicAuthor = topic.AuthorName;
-    var forum = Umbraco.TypedContent(topic.ParentId);
-
 }
 
 <!-- COPY LINK -->
@@ -27,17 +25,16 @@
 </div>
 
 <!-- COPY LINK END -->
-
 <!-- DELETE THREAD/COMMENT START -->
 @if (Members.IsLoggedIn())
 {
-<div id="confirm-wrapper" class="confirm-wrapper">
-    <h4>Are you sure?</h4>
-    <p>This <span class="type-of"></span> will be gone forever and ever</p>
-    <br />
-    <button type="button" class="button green tiny">Yes</button>
-    <button type="button" class="button red tiny">No</button>
-</div>
+    <div id="confirm-wrapper" class="confirm-wrapper">
+        <h4>Are you sure?</h4>
+        <p>This <span class="type-of"></span> will be gone forever and ever</p>
+        <br />
+        <button type="button" class="button green tiny">Yes</button>
+        <button type="button" class="button red tiny">No</button>
+    </div>
 }
 <!-- DELETE THREAD END -->
 
@@ -46,27 +43,36 @@
 
     @foreach (var comment in topic.Comments)
     {
-        Html.RenderPartial("forum/comment", comment, new ViewDataDictionary { { "level", 1 }, { "answer",  topic.Answer } });
-
-        if (comment.HasChildren)
+        var comm = comment;
+        if (comm.ParentCommentId == 0)
         {
-            var children = commentService.GetChildComments(comment.Id);
-            foreach (var child in children)
+            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
+        }
+
+        if (comm.HasChildren)
+        {
+            var children = commentService.GetChildComments(comm.Id);
+
+            foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
             {
-                Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
+                // TODO This is NOT how to fix this, but I need to get things done :)
+                var childComment = new ReadOnlyComment { Body = child.Body, Created = child.Created, HasChildren = false, Id = child.Id, IsSpam = child.IsSpam, MemberId = child.MemberId, ParentCommentId = child.ParentCommentId, Position = child.Position, Score = child.Score, TopicId = child.TopicId };
+                Html.RenderPartial("forum/comment", childComment, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
             }
         }
     }
 
 </ul>
 
-@if (Members.IsLoggedIn()) { 
-<div class="replybutton">
-    <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
-</div>
+@if (Members.IsLoggedIn())
+{
+    <div class="replybutton">
+        <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
+    </div>
 }
-else { 
-<div class="replybutton notloggedin">
-    Please <a href="/member/login?redirectUrl=@topic.GetUrl()">Log in</a> or <a href="/member/signup">sign up</a> to post replies
-</div>
+else
+{
+    <div class="replybutton notloggedin">
+        Please <a href="/member/login?redirectUrl=@topic.GetUrl()">Log in</a> or <a href="/member/signup">sign up</a> to post replies
+    </div>
 }

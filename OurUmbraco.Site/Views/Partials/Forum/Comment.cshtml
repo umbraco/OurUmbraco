@@ -1,10 +1,10 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.ReadOnlyComment>
+﻿@inherits UmbracoViewPage<uForum.Models.ReadOnlyComment>
 @using uForum;
 
 @{
     var answer = (int)ViewData["answer"];
-    var commentAuthor = Model.Author();
-    var roles = System.Web.Security.Roles.GetRolesForUser();
+    var commentAuthor = Members.GetById(Model.MemberId);
+    var roles = Roles.GetRolesForUser();
     var mem = Members.GetCurrentMember();
 }
 
@@ -79,7 +79,7 @@
 
             @if (Model.ParentCommentId <= 0)
             {
-                <a href="#" data-author="@Model.Author().Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
+                <a href="#" data-author="@Members.GetById(Model.MemberId).Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                     <i class="icon-Reply-arrow"></i><span>Reply</span>
                 </a>
             }
