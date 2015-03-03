@@ -20,7 +20,7 @@
     var total = search.SearchResults.TotalItemCount;
     var pages = (total / pageSize) + 1;
 
-    var url = "orderBy=" + orderMode + "&term=" + term +"&version="+version;
+    var url = "orderBy=" + orderMode + "&q=" + term +"&version="+version;
     var result = search.SearchResults.Skip( (page-1) * pageSize).Take(pageSize);
 }
 

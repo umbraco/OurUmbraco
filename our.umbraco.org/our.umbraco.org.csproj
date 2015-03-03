@@ -258,14 +258,14 @@
     <Compile Include="Businesslogic\ProjectContributor.cs" />
     <Compile Include="Controllers\ProfileNotificationController.cs" />
     <Compile Include="Controllers\RegisterController.cs" />
-    <Compile Include="Controllers\SearchController.cs" />
     <Compile Include="Controls\DateTimePicker.cs" />
     <Compile Include="CustomHandlers\CommentVote.cs" />
     <Compile Include="CustomHandlers\ExternalVote.cs" />
     <Compile Include="CustomHandlers\ForumPostsCounter.cs" />
-    <Compile Include="CustomHandlers\memberSave.cs" />
+    <Compile Include="CustomHandlers\MemberSave.cs" />
     <Compile Include="CustomHandlers\ProjectsEnsureGuid.cs" />
-    <Compile Include="CustomHandlers\projectVote.cs" />
+    <Compile Include="CustomHandlers\ProjectVote.cs" />
+    <Compile Include="CustomHandlers\SearchPageRouteHandler.cs" />
     <Compile Include="CustomHandlers\TopicVote.cs" />
     <Compile Include="Examine\OurSearcher.cs" />
     <Compile Include="Examine\ProjectAnalyzer.cs" />
@@ -306,13 +306,6 @@
     </Compile>
     <Compile Include="usercontrols\EventEditor.ascx.designer.cs">
       <DependentUpon>EventEditor.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\ExamineSearchResults.ascx.cs">
-      <DependentUpon>ExamineSearchResults.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\ExamineSearchResults.ascx.designer.cs">
-      <DependentUpon>ExamineSearchResults.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\FileDownloadProxy.ascx.cs">
       <DependentUpon>FileDownloadProxy.ascx</DependentUpon>
@@ -395,9 +388,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\acceptTos.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="usercontrols\ExamineSearchResults.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="usercontrols\Forgotpassword.ascx">
