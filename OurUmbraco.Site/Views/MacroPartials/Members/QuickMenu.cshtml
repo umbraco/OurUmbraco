@@ -23,7 +23,9 @@
 
                     var latestTopics = topicService.GetLatestTopicsForMember(member.Id, maxCount: 100);
 
-                    
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
+                    </div>
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>
@@ -35,15 +37,18 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
+
                         <div class="karma">
                             @member.Karma()
                         </div>
+
                         @if (member.HasValue("twitter"))
                         {
                             <div class="user-twitter">
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
+
                         @if (roles.Length > 1)
                         {
                             <span class="roles">
@@ -63,6 +68,7 @@
                         <div class="log-out">
                             <a href="@Url.Action("Logout","Login")">Log out</a>
                         </div>
+
                     </div>
 
 
@@ -71,41 +77,41 @@
                     </small>
 
                     <div class="user-latest-posts">
+
                         @foreach (var topic in latestTopics)
                         {
-                            if (topic.MemberId == member.Id || topic.LatestReplyAuthor == member.Id)
-                            {
-                                var forum = Umbraco.TypedContent(topic.ParentId);
+                            var forum = Umbraco.TypedContent(topic.ParentId);
 
-                                <a href="@topic.GetUrl()" class="forum-thread">
-                                    <div class="row">
-                                        <div class="col-xs-10 col-md-8">
-                                            <div class="forum-thread-text">
-                                                <h3>@topic.Title</h3>
-                                                @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                                {
-                                                    <p>
-                                                        Reply by @topic.LastReplyAuthorName <br />
-                                                        @topic.Updated.ConvertToRelativeTime()
-                                                    </p>
-                                                }
-                                            </div>
+                            <a href="@topic.GetUrl()" class="forum-thread">
+                                <div class="row">
+                                    <div class="col-xs-10 col-md-8">
+                                        <div class="forum-thread-text">
+                                            <h3>@topic.Title</h3>
+                                            @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                            {
+                                                <p>
+                                                    Reply by @topic.LastReplyAuthorName <br />
+                                                    @topic.Updated.ConvertToRelativeTime()
+                                                </p>
+                                            }
                                         </div>
-
-                                        <div class="col-xs-2 col-md-4">
-                                            <div class="category frontend"><span class="cat">@forum.Name</span></div>
-                                        </div>
-
                                     </div>
-                                </a>
-                            }
+
+                                    <div class="col-xs-2 col-md-4">
+                                        <div class="category frontend"><span class="cat">@forum.Name</span></div>
+                                    </div>
+
+                                </div>
+                            </a>
+                        }
+
                     </div>
 
 
                 }
                 else
                 {
-                    
+
 
 
                     <div class="row">
