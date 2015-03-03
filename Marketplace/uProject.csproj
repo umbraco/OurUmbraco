@@ -308,6 +308,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
+    <Compile Include="Razor\VersionCompatibilityReport.cs" />
     <Compile Include="Services\ContributionService.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="usercontrols\Deli\Package\Steps\Complete.ascx.cs">
@@ -380,6 +381,8 @@
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="Razor\versionCompatibility.cshtml" />
+    <Content Include="Razor\versionCompatibilityReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />

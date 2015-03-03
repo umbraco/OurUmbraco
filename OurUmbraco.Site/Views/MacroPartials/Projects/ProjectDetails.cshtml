@@ -35,7 +35,7 @@
                                 <div class="package-detail-description markdown-syntax">
                                     <h1>@project.Name</h1>
 
-                                    @project.GetPropertyValue("description");
+                                    @Html.Raw(project.GetPropertyValue("description"))
 
                                 </div>
 
@@ -176,11 +176,13 @@
 
                                     
 									<div class="package-forum-activity hidden-xs">
-										<h3>Forum Activity</h3>
                                         @{
                                             var forums = CurrentPage.Children.Where("Visible");
                                         }
-                                        @if (forums.Any())
+                                        @if (forums.Any()) { 
+										<h3>Forums</h3>
+                                       
+                                        if (forums.Any())
                                         {
                                             <ul>
                                                 @foreach (var forum in forums)
@@ -191,7 +193,7 @@
                                                 }
                                             </ul>
                                         }
-										
+										}
 
 									</div>
 

@@ -1,0 +1,46 @@
+@using uProject.uVersion;
+@{
+    var versions = UVersion.GetAllVersions();
+    var fileId = @Parameter.fileId;
+    var packageId = @Parameter.packageId;
+    
+    var memberProvider = (Marketplace.Interfaces.IMemberProvider)Marketplace.Providers.MarketplaceProviderManager.Providers["MemberProvider"];
+    var mem = memberProvider.GetCurrentMember();
+    
+    var projectProvider = (Marketplace.Interfaces.IListingProvider)Marketplace.Providers.MarketplaceProviderManager.Providers["ListingProvider"];
+    var Project = projectProvider.GetListing(Int32.Parse(packageId));
+
+}
+
+@if(umbraco.library.IsLoggedOn())
+{
+
+        if(Marketplace.library.HasDownloaded(mem.Id, Project.Id))
+        {
+            <input type="hidden" value="@fileId" id="packageFileId" />
+            <input type="hidden" value="@packageId" id="packageId" />
+            <table class="projectCompatList">
+            @foreach (var v in versions)
+            {
+                var alias = v.Name.Replace(".", "");
+                <tr>
+                    <td><span>@v.Name</span></td>
+                    <td><input type="radio" value="1" name="@Library.Concatenate("v",alias)" id="@Library.Concatenate("v",alias, "works")"/><label for="@Library.Concatenate("v",alias,"works")">Works</label></td>
+                    <td><input type="radio" value="0" name="@Library.Concatenate("v",alias)" id="@Library.Concatenate("v",alias, "doesntwork")"/><label for="@Library.Concatenate("v", alias, "doesntwork")">Doesn't work</label></td>
+                    <td><input type="radio" checked value="-1" name="@Library.Concatenate("v",alias)" id="@Library.Concatenate("v",alias, "nottried")"/><label for="@Library.Concatenate("v", alias, "nottried")">haven't tried</label></td>
+                </tr>
+            }
+            </table>
+
+            <input type="button" value="Report Compatibility" id="reportCompatibility" /> @:or <a href="#" class="simplemodal-close">Cancel</a>
+        } 
+        else
+        {
+            <br /><p><strong>You need to download this package before you can report on it's compatibility</strong></p>                                                                                  
+        }
+                                                                         
+} 
+else
+{
+    <br /><p><strong>You must login before you can report on package compatibility.</strong></p>
+}
