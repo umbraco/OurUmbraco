@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Files.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Files" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Files.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Files" %>
 <div class="files">
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
 <script type="text/javascript">

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Details" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Details" %>
 
 <div class="form simpleForm" id="registrationForm">
 <fieldset>
