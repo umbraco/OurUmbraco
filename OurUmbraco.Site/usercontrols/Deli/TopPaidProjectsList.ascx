@@ -3,7 +3,7 @@
 <asp:Repeater runat="server" ID="TopRepeater">
 <HeaderTemplate><ul></HeaderTemplate>
 <ItemTemplate><li><a href="<%# Eval("NiceUrl") %>"><%# Eval("Name") %></a><br />
-<%--<small><%# Marketplace.library.GetManufacturerName(((Marketplace.Interfaces.IVendor)Eval("Vendor"))) %></small>--%>
+<%--<small><%# uProject.library.GetManufacturerName(((Marketplace.Interfaces.IVendor)Eval("Vendor"))) %></small>--%>
 </li></ItemTemplate>
 <FooterTemplate></ul></FooterTemplate>
 </asp:Repeater>

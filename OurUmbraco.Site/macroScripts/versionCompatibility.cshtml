@@ -15,7 +15,7 @@
 @if(umbraco.library.IsLoggedOn())
 {
 
-        if(Marketplace.library.HasDownloaded(mem.Id, Project.Id))
+        if(uProject.library.HasDownloaded(mem.Id, Project.Id))
         {
             <input type="hidden" value="@fileId" id="packageFileId" />
             <input type="hidden" value="@packageId" id="packageId" />

@@ -2,77 +2,79 @@
 @using Marketplace.Providers
 
 @{
-  
- var id = int.Parse(Request.QueryString["category_id"]); 
- var categoryProvider = (ICategoryProvider)MarketplaceProviderManager.Providers["CategoryProvider"];
- var category = categoryProvider.GetCategory(id); 
- 
- var version = "v45";
- if(Request.QueryString["version"] != null){
-  version = Request.QueryString["version"].ToLower();
- }
 
- if (!string.IsNullOrEmpty(fullversion) && fullversion.Substring(0, 1) == "7")
- {
-     version = "v7";
- }
-  
- var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
- var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ).Replace("&category_id=" + id, ""); 
-  
- IEnumerable<IListingItem> Projects = ProjectsProvider.GetListingsByCategory(category, true,true).Where(x => !x.NotAPackage && x.Approved && ( string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) ));
- 
- var pUrl = "/repo_viewproject?" + qs + "&project_id=";
- }
+    var id = int.Parse(Request.QueryString["category_id"]);
+    var categoryProvider = (ICategoryProvider)MarketplaceProviderManager.Providers["CategoryProvider"];
+    var category = categoryProvider.GetCategory(id);
+    var fullversion = Request.QueryString["fullversion"];
+
+    var version = "v45";
+    if (Request.QueryString["version"] != null)
+    {
+        version = Request.QueryString["version"].ToLower();
+    }
+
+    if (!string.IsNullOrEmpty(fullversion) && fullversion.Substring(0, 1) == "7")
+    {
+        version = "v7";
+    }
+
+    var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+    var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&category_id=" + id, "");
+
+    IEnumerable<IListingItem> Projects = ProjectsProvider.GetListingsByCategory(category, true, true).Where(x => !x.NotAPackage && x.Approved && (string.Join("", x.UmbracoVerionsSupported).Contains("nan") || string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+
+    var pUrl = "/repo_viewproject?" + qs + "&project_id=";
+}
 
 <ul id="breadcrumb">
-  <li><a href="/repo?@qs">Repository</a> &rarr;</li>
-  <li>@category.Name</li>
+    <li><a href="/repo?@qs">Repository</a> &rarr;</li>
+    <li>@category.Name</li>
 </ul>
 
 
 <div id="category">
-<h1>@category.Name</h1>
+    <h1>@category.Name</h1>
 
-<ul class="projects">
-  @foreach(var project in @Projects)
-  {
-    <li class="clearfix">
-            <div class="deliPackage">
-            
-            <div class="brief">
-   
-   
-   
-              <a rel="@project.ProjectGuid" href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(Marketplace.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
-              
-              <h3><a href="@pUrl@project.Id">@project.Name</a></h3>
+    <ul class="projects">
+        @foreach (var project in @Projects)
+        {
+            <li class="clearfix">
+                <div class="deliPackage">
 
-              <div class="category">@Marketplace.library.GetCategoryName((int)project.Id)</div>
+                    <div class="brief">
 
 
-              <div class='commercialIndicator @project.ListingType'>@project.ListingType</div>
-            </div>
 
-            <div class="hiLite">
-                
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@Marketplace.library.ShortenText(project.Description)</a></p>
+                        <a rel="@project.ProjectGuid" href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(uProject.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
 
-            </div>
+                        <h3><a href="@pUrl@project.Id">@project.Name</a></h3>
 
-            <div class="popularity">
-                <div class="karma">
-                    @project.Karma    
-                    <small>Karma</small>
+                        <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
+
+
+                        <div class='commercialIndicator @project.ListingType'>@project.ListingType</div>
+                    </div>
+
+                    <div class="hiLite">
+
+                        <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
+
+                    </div>
+
+                    <div class="popularity">
+                        <div class="karma">
+                            @project.Karma
+                            <small>Karma</small>
+                        </div>
+                        <div class="downloads">
+                            @project.Downloads
+                            <small>Downloads</small>
+                        </div>
+                    </div>
                 </div>
-                <div class="downloads">
-                    @project.Downloads    
-                    <small>Downloads</small>
-                </div>
-            </div>
-        </div>
-</li>
-   
-  }
-</ul>
+            </li>
+
+        }
+    </ul>
 </div>
