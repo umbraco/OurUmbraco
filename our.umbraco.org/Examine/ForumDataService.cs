@@ -74,7 +74,7 @@ namespace our.Examine
         { 
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
 
-            foreach (var topic in ts.GetAll(maxCount:int.MaxValue))
+            foreach (var topic in ts.QueryAll(maxCount:int.MaxValue))
             {
                 //Add the item to the index..
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };

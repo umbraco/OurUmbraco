@@ -18,8 +18,7 @@
 
                     var roles = System.Web.Security.Roles.GetRolesForUser();
 
-                    //TODO: This is apparently for topics that the current user has been active in?? This is certainly not the case.
-                    var latestTopics = topicService.GetAll(maxCount: 100);
+                    var latestTopics = topicService.GetLatestTopicsForMember(member.Id, maxCount: 100);
 
                     <div class="close">
                         <i class="icon-Delete"></i>Close
@@ -78,30 +77,29 @@
 
                         @foreach (var topic in latestTopics)
                         {
-                            if (topic.MemberId == member.Id || topic.LatestReplyAuthor == member.Id)
-                            {
-                                var forum = Umbraco.TypedContent(topic.ParentId);
+                            var forum = Umbraco.TypedContent(topic.ParentId);
 
-                                <a href="@topic.GetUrl()" class="forum-thread">
-                                    <div class="row">
-                                        <div class="col-xs-10 col-md-8">
-                                            <div class="forum-thread-text">
-                                                <h3>@topic.Title</h3>
-                                                @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                                {
-                                                    <p>Reply by @topic.LastReplyAuthorName @topic.Updated.Day</p>
-                                                }
-                                            </div>
+                            <a href="@topic.GetUrl()" class="forum-thread">
+                                <div class="row">
+                                    <div class="col-xs-10 col-md-8">
+                                        <div class="forum-thread-text">
+                                            <h3>@topic.Title</h3>
+                                            @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                            {
+                                                <p>
+                                                    Reply by @topic.LastReplyAuthorName <br />
+                                                    @topic.Updated.ConvertToRelativeTime()
+                                                </p>
+                                            }
                                         </div>
-
-                                        <div class="col-xs-2 col-md-4">
-                                            <div class="category frontend"><span class="cat">@forum.Name</span></div>
-                                        </div>
-
                                     </div>
-                                </a>
-                            }
 
+                                    <div class="col-xs-2 col-md-4">
+                                        <div class="category frontend"><span class="cat">@forum.Name</span></div>
+                                    </div>
+
+                                </div>
+                            </a>
                         }
 
                     </div>
