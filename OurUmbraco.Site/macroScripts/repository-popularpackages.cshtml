@@ -66,15 +66,15 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(Marketplace.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(uProject.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@Marketplace.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@Marketplace.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">
@@ -104,17 +104,17 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(Marketplace.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(uProject.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@Marketplace.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
 
 
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@Marketplace.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">

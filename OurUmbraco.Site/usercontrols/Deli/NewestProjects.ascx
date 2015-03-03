@@ -32,13 +32,13 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="<%# Eval("NiceUrl") %>" class="packageIcon" style="background:url(<%# Marketplace.library.GetDefaultScreenshot((string)Eval("DefaultScreenShot")) %>) no-repeat top left;">Package</a>
+              <a href="<%# Eval("NiceUrl") %>" class="packageIcon" style="background:url(<%# uProject.library.GetDefaultScreenshot((string)Eval("DefaultScreenShot")) %>) no-repeat top left;">Package</a>
               
               <h3><a href="<%# Eval("NiceUrl") %>">
                   <%# Eval("Name") %>
               </a></h3>
 
-              <div class="category"><%# Marketplace.library.GetCategoryName((int)Eval("Id")) %></div>
+              <div class="category"><%# uProject.library.GetCategoryName((int)Eval("Id")) %></div>
 
 
               <div class='commercialIndicator <%# Eval("ListingType")%>'><%# Eval("ListingType")%></div>
@@ -46,7 +46,7 @@
 
             <div class="hiLite">
                 
-                <p><a href="<%# Eval("NiceUrl") %>"><%# Marketplace.library.ShortenText(Eval("Description").ToString())%></a></p>
+                <p><a href="<%# Eval("NiceUrl") %>"><%# uProject.library.ShortenText(Eval("Description").ToString())%></a></p>
                 
             </div>
 

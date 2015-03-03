@@ -61,7 +61,7 @@
 
 <ul id="breadcrumb">
   <li><a href="/repo?@qs">Repository</a> &rarr;</li>
-  <li><a href="/repo_category?@qs&category_id=@parentId">@Marketplace.library.GetCategoryName((int)Project.Id)</a> &rarr;</li>
+  <li><a href="/repo_category?@qs&category_id=@parentId">@uProject.library.GetCategoryName((int)Project.Id)</a> &rarr;</li>
   <li>@Project.Name</li>
 </ul>
 
@@ -137,7 +137,7 @@ Supports Medium Trust: @ProjectCompatitbleWithMediumTrust
     <h2>Screenshots</h2>
     @foreach(var image in Project.ScreenShots){    
         <a href="@image.Path" class="projectscreenshot" rel="shadowbox[gallery]">
-            <img src="/umbraco/imagegen.ashx?image=@image.Path&amp;path=true&amp;width=100&amp;height=100" style="border:0;"/>
+            <img src="@image.Path?width=100&height=100&bgcolor=fff" style="border:0;"/>
         </a>
     }
     </div>
