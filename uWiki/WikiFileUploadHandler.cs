@@ -17,6 +17,9 @@ namespace uWiki
 
         public void ProcessRequest(HttpContext context)
         {
+
+            //TODO: Authorize this request!!!
+
             var file = context.Request.Files["Filedata"];
             var userguid = context.Request.Form["USERGUID"];
             var nodeguid = context.Request.Form["NODEGUID"];
