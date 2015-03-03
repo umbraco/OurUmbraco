@@ -11,9 +11,6 @@
         <div class="row">
             <div class="col-md-12">
 
-                <div class="close">
-                    <i class="icon-Delete"></i>Close
-                </div>
 
                 @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
@@ -23,6 +20,9 @@
 
                     var latestTopics = topicService.GetLatestTopicsForMember(member.Id, maxCount: 100);
 
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
+                    </div>
                     <div class="settings">
                         <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
                     </div>

@@ -143,7 +143,7 @@
     var emailId = email.ToLower();
     var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
 
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
+    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" />
 }
 
 @helper localAvatar(string imgPath, int size)

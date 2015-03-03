@@ -32,7 +32,14 @@
                 </label>
 
                 <div class="avatar-image inked">
-                    <img src="@Model.Avatar?width=100&height=100&mode=crop" alt="">
+                    @if (Model.Avatar != null)
+                    {
+                        <img src="@Model.Avatar?width=100&height=100&mode=crop" alt="">
+                    }
+                    else
+                    {
+                        <img src="/media/avatar/default.gif?width=100&height=100&mode=crop" alt="Umbraco Logo">
+                    }
                     <span>Change image</span>
                 </div>
                 @Html.HiddenFor(m => m.Avatar)

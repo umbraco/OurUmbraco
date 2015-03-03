@@ -1,0 +1,52 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+    <div class="profile">
+    <div class="has-sidebar">
+  	<div class="page-content">
+        
+        <div id="overlay" class="overlay"></div>
+          		
+		<div class="sidebar-area">
+			<div class="sidebar-content">
+				<div class="content-wrapper">
+                    <nav>
+						<ul class="level-1">
+							<li class="open">
+                                <h3>Profile</h3>
+								<ul class="level-2">
+									<li><h4>Avatar</h4></li>
+									<li><h4>Name</h4></li>
+									<li><h4>Email</h4></li>
+									<li><h4>Password</h4></li>
+									<li><h4>Company</h4></li>
+									<li><h4>Bio</h4></li>
+									<li><h4>Twitter Alias</h4></li>
+									<li><h4>Location</h4></li>
+								</ul>
+							</li>
+
+						</ul>
+					</nav>
+
+				</div><!-- .content-wrapper -->
+			</div><!-- .sidebar-content -->
+		</div><!-- .sidebar-area -->
+
+		<div class="main-area">
+			<div class="main-content">
+				<div class="content-wrapper">
+
+                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+				
+				 <umbraco:Macro Alias="[Members]Register" runat="server"></umbraco:Macro>
+
+        		</div><!-- .content-wrapper -->
+			</div><!-- .main-content -->
+		</div><!-- .main-area -->
+
+	</div><!-- .page-content -->
+        </div><!-- .has-sidebar -->
+        </div><!-- .profile -->
+</asp:content>
