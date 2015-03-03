@@ -182,18 +182,26 @@
                                         @if (forums.Any()) { 
 										<h3>Forums</h3>
                                        
-                                        if (forums.Any())
+                                       
+                                           
+                                        foreach (var forum in forums)
                                         {
-                                            <ul>
-                                                @foreach (var forum in forums)
-                                                {
-                                                    <li><a href="@forum.Url">@forum.Name</a>
-                                                    <small>@forum.forumDescription</small>
-                                                    </li>
-                                                }
-                                            </ul>
+                                           
+                                            <a href="@forum.Url" class="forum-thread">
+                                                <div class="row">
+
+                                                    <div class="col-xs-10 col-md-0">
+                                                        <div class="forum-thread-text">
+                                                            <h3>@forum.Name</h3>
+                                                            <p>@forum.forumDescription</p>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                            </a>
                                         }
-										}
+                                            
+                                        }
 
 									</div>
 
