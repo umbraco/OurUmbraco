@@ -5,7 +5,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Web;
 
-namespace Marketplace.Models
+namespace uProject.Models
 {
     [DataContract(Name = "projectForum", Namespace = "")]
     public class ProjectForum

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Umbraco.Core.Persistence;
 
-namespace Marketplace.Models
+namespace uProject.Models
 {
     [TableName("projectContributors")]
     public class ProjectContributor

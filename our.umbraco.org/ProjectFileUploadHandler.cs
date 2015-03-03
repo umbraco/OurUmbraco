@@ -17,6 +17,8 @@ namespace our {
         }
 
         public void ProcessRequest(HttpContext context) {
+            
+            //TODO: Authorize this request!!!
 
             HttpPostedFile file = context.Request.Files["Filedata"];
             string userguid = context.Request.Form["USERGUID"];

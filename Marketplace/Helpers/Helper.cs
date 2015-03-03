@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Web.UI;
-using Marketplace.usercontrols.Deli.Package;
+using uProject.usercontrols.Deli.Package;
 
-namespace Marketplace.Helpers
+namespace uProject.Helpers
 {
     public static class ProjectCreatorHelper
     {

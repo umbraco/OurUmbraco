@@ -11,11 +11,11 @@ using Marketplace.Providers.ListingItem;
 using Marketplace.BusinessLogic.ListingCreator;
 using umbraco.cms.businesslogic.member;
 using Marketplace.BusinessLogic;
-using Marketplace.Helpers;
+using uProject.Helpers;
 using umbraco.NodeFactory;
 using System.Text.RegularExpressions;
 
-namespace Marketplace.usercontrols.Deli.Package.Steps
+namespace uProject.usercontrols.Deli.Package.Steps
 {
     public partial class Details : System.Web.UI.UserControl
     {

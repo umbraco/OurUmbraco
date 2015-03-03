@@ -10,9 +10,9 @@ using umbraco.cms.businesslogic.member;
 using our;
 using Marketplace.Umbraco.BusinessLogic;
 using Marketplace.Providers.Helpers;
-using Marketplace.Helpers;
+using uProject.Helpers;
 
-namespace Marketplace.usercontrols.Deli.Package.Steps
+namespace uProject.usercontrols.Deli.Package.Steps
 {
     public partial class Screenshots : System.Web.UI.UserControl
     {

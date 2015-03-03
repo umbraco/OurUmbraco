@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace Marketplace.usercontrols.Deli.Package.Steps {
+namespace uProject.usercontrols.Deli.Package.Steps {
     
     
     public partial class Licenses {

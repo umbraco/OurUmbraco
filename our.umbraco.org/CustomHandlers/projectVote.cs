@@ -1,11 +1,15 @@
 ﻿using System;
 using umbraco.cms.businesslogic.web;
 using uPowers.BusinessLogic;
+using Umbraco.Core;
 
-namespace our.CustomHandlers {
-    public class projectVoteHandler : umbraco.BusinessLogic.ApplicationBase {
+namespace our.CustomHandlers
+{
+    public class ProjectVoteHandler : ApplicationEventHandler
+    {
 
-        public projectVoteHandler(){
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
             uPowers.BusinessLogic.Action.BeforePerform += new EventHandler<ActionEventArgs>(ProjectVote);
             uPowers.BusinessLogic.Action.AfterPerform += new EventHandler<ActionEventArgs>(Action_AfterPerform);
         }
@@ -34,10 +38,12 @@ namespace our.CustomHandlers {
             }
         }
 
-        void ProjectVote(object sender, ActionEventArgs e) {
+        void ProjectVote(object sender, ActionEventArgs e)
+        {
             uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
 
-            if (a.Alias == "ProjectUp" || a.Alias == "ProjectDown") {
+            if (a.Alias == "ProjectUp" || a.Alias == "ProjectDown")
+            {
 
                 Document d = new Document(e.ItemId);
 

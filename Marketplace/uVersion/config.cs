@@ -7,7 +7,7 @@ using System.IO;
 using System.Web.Caching;
 using umbraco.BusinessLogic;
 
-namespace Marketplace.uVersion
+namespace uProject.uVersion
 {
     public class config
     {

@@ -1,0 +1,42 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+
+    var projectId = Request["Id"];
+    int id = 0;
+}
+
+@if (!string.IsNullOrEmpty(projectId) && int.TryParse(projectId, out id))
+{
+    var project = Umbraco.TypedContent(projectId);
+    var forums = project.Children.Where(x => x.DocumentTypeAlias == "Forum");
+
+
+    <strong>@project.Name</strong>
+   
+        <h4>Existing forums</h4>
+        <ul id="forums">
+            @foreach (var forum in forums)
+            {
+                <li>
+                    @forum.Name <small>@forum.GetPropertyValue("forumDescription")</small>
+                    <a data-id="@forum.Id" class="remove-forum" href="#">Remove</a>
+                </li>
+            }
+        </ul>
+    
+    <h4>Add forum</h4>
+    <div class="profile-settings-forms">
+
+        <div class="profile-input">
+            <label for="forum-title">Title</label>
+            <input type="text" id="forum-title" name="forum-title" />
+        </div>
+        <div class="profile-input">
+            <label for="forum-description">Description</label>
+            <input type="text" id="forum-description" name="forum-description" />
+        </div>
+        <a class="button tiny" id="add-forum" data-id="@projectId">Add</a>
+        <small id="forum-feedback"></small>
+    </div>
+}

@@ -8,6 +8,7 @@ using umbraco.cms.businesslogic;
 using umbraco.BusinessLogic;
 using System.Xml;
 using Umbraco.Core;
+using Umbraco.Core.Configuration;
 
 namespace uWiki.Businesslogic
 {
@@ -167,7 +168,7 @@ namespace uWiki.Businesslogic
 
         private static bool ExtensionNotAllowed(string extension)
         {
-            return extension == "html" || extension == "htm" || extension == "asp" || extension == "aspx";
+            return UmbracoConfig.For.UmbracoSettings().Content.DisallowedUploadFiles.Contains(extension.ToLowerInvariant());
         }
 
         public static WikiFile Create(string fileName, string extension, Guid node, Guid memberGuid, byte[] file, string filetype, List<UmbracoVersion> versions)

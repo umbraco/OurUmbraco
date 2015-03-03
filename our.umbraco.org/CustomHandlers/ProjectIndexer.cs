@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using umbraco.BusinessLogic;
-
 using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
-using our;
 using our.Examine;
+using Umbraco.Core;
 using Umbraco.Core.Services;
 using Umbraco.Web;
 
-namespace our
+namespace our.CustomHandlers
 {
-    public class ProjectIndexer : ApplicationBase
+    public class ProjectIndexer : ApplicationEventHandler
     {
-        public ProjectIndexer()
+       
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             ContentService.Published += ContentService_Published;
             ContentService.Deleted += ContentService_Deleted;
@@ -43,11 +39,13 @@ namespace our
                     var content = umbracoHelper.TypedContent(item.Id);
                     var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
 
-                    var karma = our.Utils.GetProjectTotalKarma(content.Id);
+                    var karma = Utils.GetProjectTotalKarma(content.Id);
                     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(content.Id);
-                    var downloads = our.Utils.GetProjectTotalDownloadCount(content.Id);
+                    var downloads = Utils.GetProjectTotalDownloadCount(content.Id);
+                    var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
 
-                    simpleDataSet = ((ProjectNodeIndexDataService)indexer.DataService).MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads);
+                    simpleDataSet = ((ProjectNodeIndexDataService)indexer.DataService).MapProjectToSimpleDataIndexItem(
+                        content, simpleDataSet, "project", karma, files, downloads, compatVersions);
 
                     var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
                     indexer.ReIndexNode(xml, "project");

@@ -1,15 +1,15 @@
 ﻿using System.IO;
-using System.Web;
+using System.Web.Compilation;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Routing;
+using System.Web.UI;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using our.Examine;
 using uDocumentation.Busineslogic;
 using Umbraco.Core;
 using Umbraco.Web;
-using Umbraco.Web.Mvc;
 using Umbraco.Web.Security;
 
 namespace our.CustomHandlers
@@ -29,14 +29,10 @@ namespace our.CustomHandlers
         private void CreateRoutes()
         {
             RouteTable.Routes.MapUmbracoRoute("Search", "search/{term}",
-                new
-                {
-                    Controller = "Search",
-                    Action = "Search",
-                    Term = UrlParameter.Optional
-                },
+                //NOTE: Even though we aren't routing to a 'controller', this syntax is required for the route to be registered in the table
+                new { Controller = "Search", Action = "Search", Term = UrlParameter.Optional },
                 //NOTE: This virtual page will be routed as if it were the root 'community' page
-                new UmbracoVirtualNodeByIdRouteHandler(1052));
+                new SearchPageRouteHandler(1052));
         }
 
         private void BindExamineEvents()

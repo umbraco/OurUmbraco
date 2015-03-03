@@ -4,7 +4,7 @@ using System.Linq;
 using System.Web;
 using Marketplace.Interfaces;
 
-namespace Marketplace.Helpers
+namespace uProject.Helpers
 {
     public static class ExtensionMethods
     {

@@ -11,10 +11,10 @@ using our;
 using Marketplace.BusinessLogic;
 using Marketplace.Umbraco.BusinessLogic;
 using Marketplace.Providers.Helpers;
-using Marketplace.Helpers;
+using uProject.Helpers;
 using Marketplace.Providers.MediaFile;
 
-namespace Marketplace.usercontrols.Deli.Package.Steps
+namespace uProject.usercontrols.Deli.Package.Steps
 {
     public partial class Files : System.Web.UI.UserControl
     {

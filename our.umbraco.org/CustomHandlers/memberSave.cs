@@ -1,17 +1,23 @@
 ﻿using umbraco.cms.businesslogic.member;
+using Umbraco.Core;
 
-namespace our.CustomHandlers {
-    public class memberSave : umbraco.BusinessLogic.ApplicationBase {
+namespace our.CustomHandlers
+{
+    public class MemberSave : ApplicationEventHandler
+    {
 
-        public memberSave() {
-            umbraco.cms.businesslogic.member.Member.AfterSave += new umbraco.cms.businesslogic.member.Member.SaveEventHandler(Member_AfterSave);
+        protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+            Member.AfterSave += Member_AfterSave;
         }
 
 
-        void Member_AfterSave(umbraco.cms.businesslogic.member.Member sender, umbraco.cms.businesslogic.SaveEventArgs e) {
+        void Member_AfterSave(Member sender, umbraco.cms.businesslogic.SaveEventArgs e)
+        {
 
             string groups = "";
-            foreach (MemberGroup mg in sender.Groups.Values) { 
+            foreach (MemberGroup mg in sender.Groups.Values)
+            {
                 groups += mg.Text + ",";
             }
 

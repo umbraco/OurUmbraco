@@ -49,6 +49,43 @@ namespace uForum.Services
         }
 
         /// <summary>
+        /// Returns an in-memory collection of topics that a given member has participated in
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="ignoreSpam"></param>
+        /// <param name="maxCount"></param>
+        /// <returns></returns>
+        public IEnumerable<ReadOnlyTopic> GetLatestTopicsForMember(int memberId, bool ignoreSpam = true, int maxCount = 100)
+        {
+            var sql = new Sql().Select("TOP " + maxCount + " " +
+                                       @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+    forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
+	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
+	forumComments.position, forumComments.score, forumComments.topicId")
+                .From("forumTopics")
+                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
+                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .Where<Topic>(topic => topic.LatestReplyAuthor == memberId || topic.MemberId == memberId);
+
+            if (ignoreSpam)
+            {
+                sql.Where<Topic>(x => x.IsSpam != true);
+                sql.Where("forumComments.id IS NULL OR (forumComments.isSpam <> 1)");
+            }
+
+            sql
+                .OrderByDescending<Topic>(x => x.Updated)
+                .OrderByDescending<Comment>(comment => comment.Created);
+
+            var result = _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+                new TopicCommentRelator().Map,
+                sql);
+
+            return result;
+        }
+
+        /// <summary>
         /// Returns a READER of all topics to be iterated over
         /// </summary>
         /// <param name="ignoreSpam"></param>
@@ -56,7 +93,7 @@ namespace uForum.Services
         /// Default is 1000
         /// </param>
         /// <returns></returns>
-        public IEnumerable<ReadOnlyTopic> GetAll(bool ignoreSpam = true, int maxCount = 1000)
+        public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = 1000)
         {
             var sql = new Sql().Select("TOP " + maxCount + " " + 
         @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
@@ -76,7 +113,10 @@ namespace uForum.Services
 
             sql.Where("forumComments.id IS NULL OR (forumComments.[parentCommentId] = 0)");
 
-            sql.OrderBy<Topic>(x => x.Updated).OrderByDescending<Comment>(comment => comment.Created);
+            //start with the most recent
+            sql
+                .OrderByDescending<Topic>(x => x.Updated)
+                .OrderByDescending<Comment>(comment => comment.Created);
 
             var result = _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,

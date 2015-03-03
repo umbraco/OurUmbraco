@@ -23,10 +23,7 @@ namespace our.Examine
         public static SimpleDataSet MapTopicToSimpleDataIndexItem(ReadOnlyTopic topic, SimpleDataSet simpleDataSet, int id, string indexType)
         {
             //First generate the accumulated comment text:
-            string commentText = String.Empty;
-
-            //TODO: I don't think this is a great idea... the body should remain as-is and the comments should be concat'd to another field
-            // This would allow us to boost correctly for the body field
+            string commentText = string.Empty;
             foreach (var currentComment in topic.Comments)
                 commentText += currentComment.Body;
 
@@ -36,6 +33,10 @@ namespace our.Examine
             simpleDataSet.NodeDefinition.Type = indexType;
 
             simpleDataSet.RowData.Add("body", body);
+            if (!string.IsNullOrEmpty(commentText))
+            {
+                simpleDataSet.RowData.Add("comments", commentText);    
+            }
             simpleDataSet.RowData.Add("nodeName", topic.Title);
             simpleDataSet.RowData.Add("updateDate", topic.Updated.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "forum");
@@ -73,7 +74,7 @@ namespace our.Examine
         { 
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
 
-            foreach (var topic in ts.GetAll(maxCount:int.MaxValue))
+            foreach (var topic in ts.QueryAll(maxCount:int.MaxValue))
             {
                 //Add the item to the index..
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };

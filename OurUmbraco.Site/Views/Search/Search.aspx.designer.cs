@@ -7,27 +7,18 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace uProject.usercontrols.Deli.Profile {
+namespace OurUmbraco.Site.Views.Search {
     
     
-    public partial class MyProjects {
+    public partial class Search {
         
         /// <summary>
-        /// myProjects control.
+        /// SearchText control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater myProjects;
-        
-        /// <summary>
-        /// myTeamProjects control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Repeater myTeamProjects;
+        protected global::System.Web.UI.WebControls.TextBox SearchText;
     }
 }

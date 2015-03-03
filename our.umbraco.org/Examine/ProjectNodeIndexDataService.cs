@@ -24,7 +24,7 @@ namespace our.Examine
     public class ProjectNodeIndexDataService : ISimpleDataService
     {
         public SimpleDataSet MapProjectToSimpleDataIndexItem(IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
-            int karma, IEnumerable<WikiFile> files, int downloads)
+            int karma, IEnumerable<WikiFile> files, int downloads, IEnumerable<string> compatVersions)
         {
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
@@ -58,7 +58,13 @@ namespace our.Examine
             simpleDataSet.RowData.Add("karma", karma.ToString());
             simpleDataSet.RowData.Add("downloads", downloads.ToString());
             simpleDataSet.RowData.Add("image", imageFile);
+
+            //now we need to add the versions and compat versions
+            // first, this is the versions that the project has files tagged against
             simpleDataSet.RowData.Add("versions", string.Join(",", versions));
+
+            //then we index the versions that the project has actually been flagged as compatible against
+            simpleDataSet.RowData.Add("compatVersions", string.Join(",", compatVersions));
 
             return simpleDataSet;
         }
@@ -70,9 +76,10 @@ namespace our.Examine
             var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
             var allProjectIds = projects.Select(x => x.Id).ToArray();
-            var allProjectKarma = our.Utils.GetProjectTotalKarma();
-            var allProjectWikiFiles = uWiki.Businesslogic.WikiFile.CurrentFiles(allProjectIds);
-            var allProjectDownloads = our.Utils.GetProjectTotalDownload();
+            var allProjectKarma = Utils.GetProjectTotalKarma();
+            var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
+            var allProjectDownloads = Utils.GetProjectTotalDownload();
+            var allCompatVersions = Utils.GetProjectCompatibleVersions();
 
             foreach (var project in projects)
             {
@@ -83,8 +90,9 @@ namespace our.Examine
                 var projectDownloads = allProjectDownloads.ContainsKey(project.Id) ? allProjectDownloads[project.Id] : 0;
                 var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
                 var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id] : Enumerable.Empty<WikiFile>();
+                var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
-                yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads);
+                yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
             }
         }
 
@@ -95,7 +103,6 @@ namespace our.Examine
         /// <param name="e"></param>
         public static void ProjectIndexer_DocumentWriting(object sender, DocumentWritingEventArgs e)
         {
-
             //TODO: This will be good to do but we need the bleeding edge version of examine v1.x which i haven't released yet
 
             ////If there is a versions field, we'll split it and index the same field on each version
@@ -149,7 +156,7 @@ namespace our.Examine
             //this has a project group which is it's category
             if (node.Parent.DocumentTypeAlias == "ProjectGroup")
             {
-                e.Fields["categoryFolder"] = node.Parent.Name;
+                e.Fields["categoryFolder"] = node.Parent.Name.ToLowerInvariant().Trim();
             }
 
 

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Complete.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Complete" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Complete.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Complete" %>
 
 <asp:PlaceHolder ID="eligibilityNotice" runat="server">
 <div class='eligibilityNotification <%=NotificationClass %>'>

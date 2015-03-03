@@ -12,7 +12,7 @@ using Marketplace.Interfaces;
 using umbraco.cms.businesslogic.member;
 using our;
 
-namespace Marketplace.usercontrols.Deli.Package
+namespace uProject.usercontrols.Deli.Package
 {
     public partial class Editor : System.Web.UI.UserControl
     {
@@ -47,7 +47,7 @@ namespace Marketplace.usercontrols.Deli.Package
             var controlToLoad = new System.Web.UI.UserControl().LoadControl(IOHelper.ResolveUrl(currentStep.UserControl));
 
             if (currentStep.Alias == "details")
-                ((Marketplace.usercontrols.Deli.Package.Steps.Details)controlToLoad).IsDeliVendor = _vendor.Member.IsDeliVendor;
+                ((uProject.usercontrols.Deli.Package.Steps.Details)controlToLoad).IsDeliVendor = _vendor.Member.IsDeliVendor;
 
             StepPlaceHolder.Controls.Add(controlToLoad);
             Step.Value = currentStep.Alias;

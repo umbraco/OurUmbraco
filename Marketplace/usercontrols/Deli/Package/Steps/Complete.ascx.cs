@@ -7,9 +7,9 @@ using System.Web.UI.WebControls;
 using Marketplace.Interfaces;
 using Marketplace.Providers;
 using Marketplace.BusinessLogic;
-using Marketplace.Helpers;
+using uProject.Helpers;
 
-namespace Marketplace.usercontrols.Deli.Package.Steps
+namespace uProject.usercontrols.Deli.Package.Steps
 {
     public partial class Complete : System.Web.UI.UserControl
     {

@@ -11,7 +11,7 @@
     our.Examine.OurSearcher searcher = new our.Examine.OurSearcher(term, orderBy: orderMode);
     
     IEnumerable<SearchResult> result = new List<SearchResult>();
-    var url = "orderBy=" + orderMode + "&term=" + term + "&version=" + version;
+    var url = "orderBy=" + orderMode + "&q=" + term + "&version=" + version;
     var pages = 0;
     
     if(string.IsNullOrEmpty(term) == false){

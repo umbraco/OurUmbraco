@@ -36,6 +36,7 @@
                     <span>Change image</span>
                 </div>
                 @Html.HiddenFor(m => m.Avatar)
+                @Html.ValidationMessageFor(m => m.Avatar)
             </div>
 
             <div class="profile-input" id="username">

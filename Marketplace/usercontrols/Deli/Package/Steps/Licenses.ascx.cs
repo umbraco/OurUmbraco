@@ -10,11 +10,11 @@ using umbraco.cms.businesslogic.member;
 using our;
 using Marketplace.Providers.License;
 using Marketplace.Providers.Helpers;
-using Marketplace.Helpers;
+using uProject.Helpers;
 using Marketplace.Providers.Accounting;
 using System.Text.RegularExpressions;
 
-namespace Marketplace.usercontrols.Deli.Package.Steps
+namespace uProject.usercontrols.Deli.Package.Steps
 {
     public partial class Licenses : System.Web.UI.UserControl
     {

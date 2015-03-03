@@ -11,7 +11,7 @@ using umbraco.NodeFactory;
 using System.Globalization;
 using Marketplace.Data;
 
-namespace Marketplace
+namespace uProject
 {
     [XsltExtension("deli.library")]
     public class library

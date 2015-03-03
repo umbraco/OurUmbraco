@@ -13,6 +13,8 @@ namespace our.Examine
         {
             //Add custom analyzer for versions field
             AddAnalyzer("versions", new VersionAnalyzer());
+            AddAnalyzer("compatVersions", new VersionAnalyzer());
+            AddAnalyzer("projectFolder", new KeywordAnalyzer());
         }
 
     }
