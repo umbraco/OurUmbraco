@@ -5,7 +5,6 @@
 
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var commentService = new CommentService(ApplicationContext.DatabaseContext, topicService);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
     var topicAuthor = topic.AuthorName;
 }
@@ -41,23 +40,19 @@
 <ul class="comments">
     @Html.Partial("forum/question", topic)
 
-    @foreach (var comment in topic.Comments)
+    @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
     {
         var comm = comment;
-        if (comm.ParentCommentId == 0)
-        {
-            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
-        }
+        
+        Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
 
         if (comm.HasChildren)
         {
-            var children = commentService.GetChildComments(comm.Id);
+            var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
 
             foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
             {
-                // TODO This is NOT how to fix this, but I need to get things done :)
-                var childComment = new ReadOnlyComment { Body = child.Body, Created = child.Created, HasChildren = false, Id = child.Id, IsSpam = child.IsSpam, MemberId = child.MemberId, ParentCommentId = child.ParentCommentId, Position = child.Position, Score = child.Score, TopicId = child.TopicId };
-                Html.RenderPartial("forum/comment", childComment, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
+                Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
             }
         }
     }
