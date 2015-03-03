@@ -9,26 +9,26 @@
 
 					<nav>
 						<ul class="level-1">
-							<li class="open">
+							<li class="filter-orderBy">
 								<h3>Projects</h3>
-									<ul class="level-2">
-										<li><h4><a href="?orderBy=updateDate">Newest projects</a></h4></li>
-										<li><h4><a href="?orderBy=popularity">Popular projects</a></h4></li>
-									</ul>
+								<ul class="level-2">
+									<li><h4><a href="?orderBy=updateDate">Newest projects</a></h4></li>
+									<li><h4><a href="?orderBy=popularity">Popular projects</a></h4></li>
+								</ul>
 							</li>
 
-							<li>
+							<li class="filter-version">
 								<h3>By Version</h3>
-									<ul class="level-2">
-										<li><h4><a href="#">Version 7</a></h4></li>
-										<li><h4><a href="#">Version 6</a></h4></li>
-										<li><h4><a href="#">Version 4</a></h4></li>
-									</ul>
+								<ul class="level-2">
+									<li><h4><a href="?version=7">Version 7</a></h4></li>
+									<li><h4><a href="?version=6">Version 6</a></h4></li>
+									<li><h4><a href="?version=4">Version 4</a></h4></li>
+								</ul>
 							</li>
 
-							<li >
+							<li class="filter-category">
 								<h3>By Category</h3>
-									<umbraco:Macro Alias="[Projects]ListCategories" runat="server"></umbraco:Macro>
+								<umbraco:Macro Alias="[Projects]ListCategories" runat="server"></umbraco:Macro>
 							</li>
 
 						
@@ -56,4 +56,27 @@
 		</div><!-- .main-area -->
 
 	</div><!-- .page-content -->
+</asp:Content>
+
+<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
+    <script>
+        function getUrlVars() {
+            var vars = [], hash;
+            var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+            for (var i = 0; i < hashes.length; i++) {
+                hash = hashes[i].split('=');
+                vars.push(hash[0]);
+                vars[hash[0]] = hash[1];
+            }
+            return vars;
+        }
+        var query = getUrlVars();
+        var filter = '.filter-' + query[0];
+        $(filter).addClass('open');
+
+        $('.level-1>li').on('click', function () {
+            $('.level-1>li').removeClass('open');
+            $(this).addClass('open');
+        });
+    </script>
 </asp:Content>
