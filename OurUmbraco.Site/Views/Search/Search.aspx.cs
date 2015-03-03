@@ -19,13 +19,23 @@ namespace OurUmbraco.Site.Views.Search
         {
             base.OnLoad(e);
 
-            var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
+            if (!IsPostBack)
+            {
+                var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
-            var ourSearcher = new OurSearcher(Request.QueryString["q"], maxResults: 100);
+                var ourSearcher = new OurSearcher(Request.QueryString["q"], maxResults: 100);
 
-            var results = ourSearcher.Search();
+                var results = ourSearcher.Search();
 
-            Model = new SearchResultContentModel(umbracoPage, results);
+                Model = new SearchResultContentModel(umbracoPage, results);
+
+                SearchText.Text = Model.Results.SearchTerm;
+            }
+            else
+            {
+                Response.Redirect("/search?q=" + SearchText.Text);
+            }
+            
         }
     }
 }

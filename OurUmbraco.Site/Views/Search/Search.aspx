@@ -29,12 +29,10 @@
                         Time elapsed: <%=Model.Results.Totalmilliseconds %>
                     </p>
 
-                    <form action="/search">
-                        <div class="search-big">
-                            <input type="search" name="term" required value="<%=Model.Results.SearchTerm %>">
-                            <label for="search">Search</label>
-                        </div>
-                    </form>
+                    <div class="search-big">
+                        <asp:TextBox runat="server" ID="SearchText" ></asp:TextBox>
+                        <label for="<%=SearchText.ClientID %>">Search</label>
+                    </div>
 
                     <div class="clear"></div>
                 </div>
