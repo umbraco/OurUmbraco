@@ -3,6 +3,36 @@
 <%@ Import Namespace="System.Web.Mvc" %>
 
 <asp:Content ContentPlaceHolderId="Main" runat="server">
+    
+<!-- Search start -->
+<section id="search-all" class="search-all">
+
+	<div class="search-all-form">
+		<div class="search-fieldset">
+			<input class="search-input" type="search" placeholder="Search..">
+			<input class="search-submit" type="submit" value="&#xe085;">
+		</div>
+		<span class="search-all-close"></span>
+	</div>
+
+	<div class="search-all-results equalizer">
+		<ul></ul>
+	</div>
+
+
+	<div class="search-text">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-6 col-md-offset-3">
+					<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
+					tempor incididunt ut labore et dolore magna aliqua.</p>
+				</div>
+			</div>
+		</div>
+	</div>
+
+</section> 
+<!-- Search end -->
 
 <section class="docs">
 	<div class="container">
@@ -90,32 +120,4 @@
 		</li>
     </script>
 
-    <!-- Search start -->
-	<section id="search-all" class="search-all">
-
-		<div class="search-all-form">
-			<div class="search-fieldset">
-				<input class="search-input" type="search" placeholder="Search..">
-				<input class="search-submit" type="submit" value="&#xe085;">
-			</div>
-			<span class="search-all-close"></span>
-		</div>
-
-		<div class="search-all-results equalizer">
-			<ul></ul>
-		</div>
-
-
-		<div class="search-text">
-			<div class="container">
-				<div class="row">
-					<div class="col-md-6 col-md-offset-3">
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-						tempor incididunt ut labore et dolore magna aliqua.</p>
-					</div>
-				</div>
-			</div>
-		</div>
-
-	</section> <!-- Search end -->
 </asp:Content>
