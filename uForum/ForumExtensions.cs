@@ -2,6 +2,7 @@
 using MarkdownSharp;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,7 +18,7 @@ namespace uForum
 {
     public static class ForumExtensions
     {
-        
+
         public static IEnumerable<Comment> ChildComments(this Comment comment)
         {
             if (comment.HasChildren)
@@ -33,37 +34,38 @@ namespace uForum
         public static string ConvertToRelativeTime(this DateTime date)
         {
             
-            var TS = DateTime.Now.Subtract(date);
-            var span = int.Parse(Math.Round(TS.TotalSeconds, 0).ToString());
+            var ts = DateTime.Now.Subtract(date);
+            int span;
+            int.TryParse(Math.Round(ts.TotalSeconds, 0).ToString(CultureInfo.InvariantCulture), out span);
 
             if (span < 60)
                 return "1 minute ago";
 
             if (span >= 60 && span < 3600)
-                return string.Concat(Math.Round(TS.TotalMinutes), " minutes ago");
+                return string.Concat(Math.Round(ts.TotalMinutes), " minutes ago");
 
             if (span >= 3600 && span < 7200)
                 return "1 hour ago";
 
             if (span >= 3600 && span < 86400)
-                return string.Concat(Math.Round(TS.TotalHours), " hours ago");
+                return string.Concat(Math.Round(ts.TotalHours), " hours ago");
 
             if (span >= 86400 && span < 172800)
                 return "1 day ago";
 
             if (span >= 172800 && span < 604800)
-                return string.Concat(Math.Round(TS.TotalDays), " days ago");
+                return string.Concat(Math.Round(ts.TotalDays), " days ago");
 
             if (span >= 604800 && span < 1209600)
                 return "1 week ago";
 
             if (span >= 1209600 && span < 2592000)
-                return string.Concat(Math.Round(TS.TotalDays), " days ago");
+                return string.Concat(Math.Round(ts.TotalDays), " days ago");
 
             if (span >= 2592000 && span < 26920000)
                 return "Several months ago";
 
-            return "More then a year ago";
+            return "More than a year ago";
         }
 
 
