@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace uForum.Models
 {
     [DataContract( Name="comment")]
-    public class CommentViewModel
+    public class CommentSaveModel
     {
         [DataMember( Name = "body")]
         public string Body { get; set; }

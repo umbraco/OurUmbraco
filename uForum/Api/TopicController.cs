@@ -12,7 +12,7 @@ namespace uForum.Api
     [MemberAuthorize(AllowType = "member")]
     public class TopicController : ForumControllerBase
     {
-        public void Post(TopicViewModel model)
+        public void Post(TopicSaveModel model)
         {
             var t = new Topic();
             t.Body = model.Body;
@@ -22,7 +22,7 @@ namespace uForum.Api
             TopicService.Save(t);
         }
 
-        public void Put(int id, TopicViewModel model)
+        public void Put(int id, TopicSaveModel model)
         {
             var c = TopicService.GetById(id);
 
