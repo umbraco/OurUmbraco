@@ -29,7 +29,8 @@
         var versionFilters = new SearchFilters(BooleanOperation.Or);
         //NOTE: We could add multiple version searches here if we wanted to match on multiple,
         // you'd need to split the 'version' query string into each version and add a filter per item
-        // since it is an "OR" clause above it will match any of the versions
+        // since it is an "OR" clause above it will match any of the versions, if however you wanted to filter 
+        // to only match projects that are tagged for the inclusive versions, you'd change the Boolean op to AND.
         //NOTE: We are doing a *wildcard* search here because versions are stored as comma delimited values in the index
         // when I release the next version of Examine this will be different since we'll store each version separately in the same version
         // field which will be nicer to query.
