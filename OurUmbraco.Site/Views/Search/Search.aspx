@@ -20,14 +20,16 @@
                         <li><a href="#" rel="nofollow">Search</a></li>
                         <li><a href="#" rel="nofollow"><%=Model.Results.SearchTerm %></a></li>
                     </ul>
-
-                    <p>
-                        <h5>Debugging output</h5>
-                        Query: <%=Model.Results.LuceneQuery %>
-                        <br />
-                        Order by: <%=Model.Results.OrderBy %><br />
-                        Time elapsed: <%=Model.Results.Totalmilliseconds %>
-                    </p>
+                    
+                    <% if (Context.IsDebuggingEnabled)
+                       { %>
+                        <p style="border: 1px solid orange;">
+                            <strong>Debugging output</strong><br/>
+                            <strong>Query:</strong> <%= Model.Results.LuceneQuery %><br />
+                            <strong>Order by:</strong> <%= Model.Results.OrderBy %><br />
+                            <strong>Time elapsed:</strong> <%= Model.Results.Totalmilliseconds %>
+                        </p>
+                    <% } %>
 
                     <div class="search-big">
                         <asp:TextBox runat="server" ID="SearchText" ></asp:TextBox>

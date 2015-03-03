@@ -270,6 +270,8 @@
     <Compile Include="Examine\OurSearcher.cs" />
     <Compile Include="Examine\ProjectAnalyzer.cs" />
     <Compile Include="Examine\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Examine\SearchFilter.cs" />
+    <Compile Include="Examine\SearchFilters.cs" />
     <Compile Include="Examine\VersionAnalyzer.cs" />
     <Compile Include="Examine\VersionTokenizer.cs" />
     <Compile Include="Hiccup.cs">

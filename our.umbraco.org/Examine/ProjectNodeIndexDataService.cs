@@ -70,9 +70,9 @@ namespace our.Examine
             var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
             var allProjectIds = projects.Select(x => x.Id).ToArray();
-            var allProjectKarma = our.Utils.GetProjectTotalKarma();
-            var allProjectWikiFiles = uWiki.Businesslogic.WikiFile.CurrentFiles(allProjectIds);
-            var allProjectDownloads = our.Utils.GetProjectTotalDownload();
+            var allProjectKarma = Utils.GetProjectTotalKarma();
+            var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
+            var allProjectDownloads = Utils.GetProjectTotalDownload();
 
             foreach (var project in projects)
             {
@@ -95,7 +95,6 @@ namespace our.Examine
         /// <param name="e"></param>
         public static void ProjectIndexer_DocumentWriting(object sender, DocumentWritingEventArgs e)
         {
-
             //TODO: This will be good to do but we need the bleeding edge version of examine v1.x which i haven't released yet
 
             ////If there is a versions field, we'll split it and index the same field on each version
@@ -149,7 +148,7 @@ namespace our.Examine
             //this has a project group which is it's category
             if (node.Parent.DocumentTypeAlias == "ProjectGroup")
             {
-                e.Fields["categoryFolder"] = node.Parent.Name;
+                e.Fields["categoryFolder"] = node.Parent.Name.ToLowerInvariant().Trim();
             }
 
 
