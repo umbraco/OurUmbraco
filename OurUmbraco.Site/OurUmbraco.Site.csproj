@@ -1782,6 +1782,7 @@
     <Content Include="Views\MacroPartials\Members\Register.cshtml" />
     <Content Include="Views\MacroPartials\Forum\LatestActivity.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
+    <Content Include="masterpages\ReleaseProgress.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

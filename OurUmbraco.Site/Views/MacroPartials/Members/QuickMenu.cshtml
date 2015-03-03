@@ -108,26 +108,7 @@
                 }
                 else
                 {
-
-
-
-                    <div class="row">
-                        <div class="col-md-12">
-
-                            <div class="login">
-
-
-                                <h2>Enter your email and password to log in.</h2>
-
-
-                                @Umbraco.RenderMacro("MemberLogin", new { NextPage = "", ErrorMessage = "Something went wrong" })
-                                <small>Can't remember your password? You can retrieve a new one by <a href="/member/forgot-password" title="Forgot Password">clicking here</a></small>
-                                <small>All forum.umbraco.org members has been migrated, but need a new password, <a href="/member/forgot-password" title="Forgot Password">please get it here</a>.</small>
-
-
-                            </div>
-                        </div>
-                    </div>
+                    <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
                 }
 
 
