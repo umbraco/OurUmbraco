@@ -1,4 +1,5 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uForum;
 
 @{
     var memberId = Request["id"];
@@ -8,30 +9,102 @@
 {
 
     var member = Members.GetById(id);
+
     
-    @member.Name
     
-    @member.GetPropertyValue("avatar")
     
-    @member.GetPropertyValue("profileText")
     
-    @member.GetPropertyValue("location")
     
-    @member.GetPropertyValue("company")
     
-    @member.GetPropertyValue("twitter")
+    
+    
 
     var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
 
     var topics = ts.GetLatestTopicsForMember(member.Id,true,10);
 
-    <ul>
-        @foreach (var topic in topics)
-        {
-            <li><a href="@topic.GetUrl()">@topic.Title</a></li>
-        }
-    </ul>
-}
+<div class="public-member">
 
-    
+    <div class="row">
+        <div class="col-md-8">
+
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <div class="member-details">
+                        <img src="@member.GetPropertyValue("avatar")" alt="">
+                        <div class="text">
+                            <h3>
+                                <a href="#">
+                                    @member.Name
+                                </a>
+                            </h3>
+                            <small><a href="http://twitter/@member.GetPropertyValue("twitter")">&commat;<span>@member.GetPropertyValue("twitter")</span></a></small>
+                        </div>
+                    </div> <!-- .member-details -->
+
+                </div>
+            </div>
+
+
+            <div class="row">
+                <div class="col-md-12">
+
+                    <div class="member-details">
+                        <small>Emmaline <span> is from <span>@member.GetPropertyValue("location"), </span></span><span> works at <span>@member.GetPropertyValue("company")</span></span> and has godt <span></span> karma points</small>
+                    </div>
+                    <div class="member-bio">
+                        <p>@member.GetPropertyValue("profileText")</p>
+                    </div>
+                </div>
+            </div>
+            <ul>
+                
+            </ul>
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="package-forum-activity hidden-xs">
+                        <h3>Activity</h3>
+                        
+                        @foreach (var topic in topics)
+                        {
+                            var cat = Umbraco.TypedContent(topic.ParentId);
+                            var mem = Members.GetById(topic.LatestReplyAuthor);
+                            if (mem == null)
+                            {
+                                mem = Members.GetById(topic.MemberId);
+                            }
+
+                            var avatar = mem.GetPropertyValue<string>("avatar");
+
+                            <a href="@topic.GetUrl()" class="forum-thread">
+                                <div class="row">
+                                    <div class="col-xs-2">
+                                        <img src="@avatar?width=100&height=100&mode=crop" alt="@mem.Name">
+                                    </div>
+                                    <div class="col-xs-10">
+                                        <div class="forum-thread-text">
+                                            <h3>@topic.Title</h3>
+                                            <p>Reply by @mem.Name  @topic.Updated.ConvertToRelativeTime()</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-10 col-offset-xs-2">
+                                        <div class="category frontend"><span class="cat">@cat.Name</span></div>
+                                    </div>
+                                </div>
+                            </a>
+                        }
+
+                        <a class="goto" href="/forum">Go to forum &rarr;</a>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div> <!-- .public-member -->
+
+}
 
