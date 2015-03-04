@@ -4,7 +4,7 @@
 @{
     var answer = (int)ViewData["answer"];
     var commentAuthor = Members.GetById(Model.MemberId);
-    var roles = Roles.GetRolesForUser();
+    var roles = Roles.GetRolesForUser(commentAuthor.GetPropertyValue<string>("UserName"));
     var currentMember = Members.GetCurrentMember();
 }
 
