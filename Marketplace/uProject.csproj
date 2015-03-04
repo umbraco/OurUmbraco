@@ -311,7 +311,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="Models\VersionCompatibility.cs" />
-    <Compile Include="Services\VersionCompatibilityReport.cs" />
+    <Compile Include="Services\VersionCompatibilityService.cs" />
     <Compile Include="Services\ContributionService.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="usercontrols\Deli\Package\Steps\Complete.ascx.cs">

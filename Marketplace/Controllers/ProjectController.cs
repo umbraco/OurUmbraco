@@ -12,14 +12,14 @@ namespace uProject.Controllers
         [ChildActionOnly]
         public ActionResult CompatibilityReport(int projectId, int fileId)
         {
-            var compatReport = new VersionCompatibilityReport(projectId);
+            var compatReport = new VersionCompatibilityService(DatabaseContext);
 
             var currentMember = Members.IsLoggedIn() ? Members.GetCurrentMember() : null;
 
             return PartialView("~/Views/Partials/Projects/CompatibilityReport.cshtml", 
                 new VersionCompatibilityReportModel
                 {
-                    VersionCompatibilities = compatReport.GetCompatibilityReport(),
+                    VersionCompatibilities = compatReport.GetCompatibilityReport(projectId),
                     CurrentMemberHasDownloaded = currentMember != null && uProject.library.HasDownloaded(currentMember.Id, projectId),
                     CurrentMemberIsLoggedIn = currentMember != null,
                     FileId = fileId,
