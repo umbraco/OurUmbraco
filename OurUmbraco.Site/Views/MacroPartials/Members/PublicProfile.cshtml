@@ -1,0 +1,15 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    var memberId = Request["id"];
+    int id = 0;
+}
+@if (!string.IsNullOrEmpty(memberId) && int.TryParse(memberId, out id))
+{
+
+    var member = Members.GetById(id);
+    
+    
+}
+    
+
