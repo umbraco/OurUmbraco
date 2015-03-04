@@ -19,18 +19,6 @@ namespace uForum
     public static class ForumExtensions
     {
 
-        public static IEnumerable<Comment> ChildComments(this Comment comment)
-        {
-            if (comment.HasChildren)
-            {
-                var cs = new CommentService(ApplicationContext.Current.DatabaseContext, new TopicService(ApplicationContext.Current.DatabaseContext));
-                return cs.GetChildComments(comment.Id);
-            }
-
-            return new List<Comment>();
-        }
-
-
         public static string ConvertToRelativeTime(this DateTime date)
         {
             
