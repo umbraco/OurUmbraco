@@ -251,8 +251,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BusinessLogic\Action.cs" />
     <Compile Include="BusinessLogic\Reputation.cs" />
-    <Compile Include="Tag\Tag.cs" />
-    <Compile Include="Vote\Vote.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="uPowers.config" />
