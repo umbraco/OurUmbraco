@@ -17,7 +17,7 @@ namespace uProject.Services
             _dbContext = dbContext;
         }
 
-        public IEnumerable<ProjectContributor> GetContributions(int projectId)
+        public IEnumerable<ProjectContributor> GetContributors(int projectId)
         {
             var sql = new Sql()
                 .Select("*")

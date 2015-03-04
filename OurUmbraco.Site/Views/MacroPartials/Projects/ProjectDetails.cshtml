@@ -290,6 +290,15 @@
                             @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab")) { 
                             <li>
                                 <span>Contributors:</span> 
+                                @{var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);}
+                                
+                                @foreach(var contri in  cs.GetContributors(project.Id)){
+                                    
+                                    @Members.GetById(@contri.MemberId).Name
+                                    
+                                }
+                                
+                                
                             </li>
                             }
                             <li>
