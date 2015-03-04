@@ -21,9 +21,9 @@
     
     @member.GetPropertyValue("twitter")
 
-    var ts = new uForum.Services.TopicService();
+    var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
 
-    var topics = ts.GetLatestTopicsForMember(member.id);
+    var topics = ts.GetLatestTopicsForMember(member.Id,true,10);
 
     <ul>
         @foreach (var topic in topics)
