@@ -8,7 +8,6 @@ using Umbraco.Web.Mvc;
 
 namespace uProject.Controllers
 {
-    [MemberAuthorize(AllowType = "member")]
     public class ProjectCompatibilityReportController : SurfaceController
     {
         [ChildActionOnly]
