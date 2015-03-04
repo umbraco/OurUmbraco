@@ -217,7 +217,7 @@
                 </HeaderTemplate>
                 <ItemTemplate>
                     <a href="<%# Eval("Path") %>" class="projectscreenshot" rel="shadowbox[gallery]">
-                        <img src="<%# Eval("Path") %>?width=100&amp;height=100&amp;bgcolor=fff"
+                        <img src="/umbraco/imagegen.ashx?image=<%# Eval("Path") %>&amp;path=true&amp;width=100&amp;height=100"
                             style="border: 0;" />
                     </a>
                 </ItemTemplate>
