@@ -28,7 +28,8 @@
         }
     }
 
-    var karma = our.Utils.GetProjectTotalKarma(project.Id);
+    var totalVotes = our.Utils.GetProjectTotalVotes(project.Id);
+    var hasMemberVoted = Members.IsLoggedIn() ? our.Utils.GetProjectMemberVotes(project.Id, Members.GetCurrentMemberId()) > 0 : false;
     var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
 
     var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
@@ -45,7 +46,17 @@
             <div class="col-md-7">
                 <div class="package-detail-content">
 
-                    <div class="vote"><i class="icon-Hearts"></i><a href data-id="@project.Id" data-votes="@karma">@karma votes</a></div>
+                    <div class="vote">
+                        <i class="icon-Hearts"></i>
+                        @if (hasMemberVoted)
+                        {
+                            <span>@totalVotes votes</span>
+                        }
+                        else
+                        {
+                            <a href="#" id="projectVote">@totalVotes votes</a>
+                        }
+                    </div>
 
                     <div class="package-detail-description markdown-syntax">
                         <h1>@project.Name</h1>
@@ -265,7 +276,7 @@
 
                     @if (currentRelease != null)
                     {
-                        @Html.Action("CompatibilityReport", "ProjectCompatibilityReport", new { projectId = project .Id, fileId = currentRelease.Id})
+                        @Html.Action("CompatibilityReport", "ProjectCompatibilityReport", new { projectId = project.Id, fileId = currentRelease.Id })
                     }
 
                     <div class="package-compatibility-information">
@@ -339,7 +350,7 @@
                             </ul>
                         </div>
                     }
-                    
+
 
                 </div>
             </div>
