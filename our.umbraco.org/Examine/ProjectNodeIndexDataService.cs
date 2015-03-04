@@ -80,7 +80,7 @@ namespace our.Examine
             var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
             var allProjectIds = projects.Select(x => x.Id).ToArray();
-            var allProjectKarma = Utils.GetProjectTotalKarma();
+            var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
             var allProjectDownloads = Utils.GetProjectTotalDownload();
             var allCompatVersions = Utils.GetProjectCompatibleVersions();
