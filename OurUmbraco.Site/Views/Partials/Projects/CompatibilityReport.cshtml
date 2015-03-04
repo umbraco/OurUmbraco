@@ -1,4 +1,61 @@
+@using uProject.Api
 @inherits UmbracoViewPage<uProject.Models.VersionCompatibilityReportModel>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $("#reportCompatibility").click(function () {
+            $(".report-compat-item").show();
+            $(this).hide();
+            $("#reportCompatibilityPanel").show();
+        });
+        $("#cancelCompatibility").click(function () {
+            $(".report-compat-item").hide();
+            $("#reportCompatibility").show();
+            $("#reportCompatibilityPanel").hide();
+        });
+        $("#reportCompatibilityPanel button").click(function (e) {
+            var apiUrl = "@(Url.GetUmbracoApiService<ProjectCompatibilityController>("UpdateCompatibility"))";
+            e.preventDefault();
+
+            var report = {};
+
+            $(".versions > div").each(function() {
+                var version = $(this).find("input").val();
+                var val = $(this).find("select").val();
+                if (val === "1") {
+                    report[version] = true;
+                }
+                else if (val === "2") {
+                    report[version] = false;
+                }
+            });
+
+            var model = {
+                "projectId": @Model.ProjectId,
+                "fileId": @Model.FileId,
+                "report": report
+            }
+
+            $.post(apiUrl, model,
+                function(data) {
+                    $(".report-compat-item").hide();
+                    $("#reportingTools").html("<strong>Thanks!</strong>");
+                    $(".versions > div").each(function() {
+                        var version = $(this).find("input").val();
+                        var found = _.find(data, function(item) {
+                            return item.version === version;
+                        });
+                        if (found) {
+                            var span = $(this).find("span.smiley");
+                            span.css("smiley " + found.smiley);
+                            span.html(found.version + " " + (found.smiley === "untested" ? "(untested)" : ("(" + found.percentage + "%)")));
+                        }
+                    });
+                });
+
+        });
+    });
+</script>
 
 <div class="package-compatibility">
     <h3>Project Compatibility</h3>
@@ -9,16 +66,48 @@
         <div class="versions">
             @foreach (var ver in Model.VersionCompatibilities)
             {
-                if (ver.Smiley != "untested")
-                {
-                    <span class="smiley  @ver.Smiley"> @ver.Version (@ver.Percentage%)</span>
-                }
-                else
-                {
-                    <span class="smiley @ver.Smiley"> @ver.Version (untested)</span>
-                }
+                <div>
+                    <input type="hidden" value="@ver.Version" />
+                    <span class="report-compat-item" style="display: none; float: right;">
+                        <select>
+                            <option value="0">Not sure</option>
+                            <option value="1">It works!</option>
+                            <option value="2">Doesn't work</option>
+                        </select>
+                    </span>
+                    @if (ver.Smiley != "untested")
+                    {
+                        <span class="smiley  @ver.Smiley"> @ver.Version (@ver.Percentage%)</span>
+                    }
+                    else
+                    {
+                        <span class="smiley @ver.Smiley"> @ver.Version (untested)</span>
+                    }
+                </div>
             }
         </div>
     </div>
+
+    @if (Model.CurrentMemberIsLoggedIn)
+    {
+        if (Model.CurrentMemberHasDownloaded)
+        {
+            <div id="reportingTools">
+                <a href="#" id="reportCompatibility">Report compatibility</a>
+                <div style="display: none;" id="reportCompatibilityPanel">
+                    <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
+                </div>
+                <br />
+            </div>
+        }
+        else
+        {
+            <p><small>You need to download this package before you can report on it's compatibility</small></p>
+        }
+    }
+    else
+    {
+        <p><small>You must login before you can report on package compatibility.</small></p>
+    }
 
 </div>

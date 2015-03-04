@@ -1,6 +1,5 @@
 ﻿using uProject.Services;
 using System;
-using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq;
 using System.Net;
@@ -21,17 +20,19 @@ namespace uProject.Api
             var cs = Services.ContentService;
             var project = cs.GetById(projectId);
 
+            if (project == null) return Request.CreateResponse(HttpStatusCode.NotFound);
+
             if (project.GetValue<int>("owner") == Members.GetCurrentMemberId())
             {
                 project.SetValue("openForCollab", status);
 
                 cs.Save(project);
 
-                return new HttpResponseMessage(HttpStatusCode.Accepted);
+                return Request.CreateResponse(HttpStatusCode.Accepted);
             }
             else
             {
-                return new HttpResponseMessage(HttpStatusCode.Forbidden);
+                return Request.CreateResponse(HttpStatusCode.Forbidden);
             }
         }
 
@@ -49,8 +50,7 @@ namespace uProject.Api
 
             }
 
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            var project = help.TypedContent(projectId);
+            var project = Umbraco.TypedContent(projectId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
@@ -74,19 +74,18 @@ namespace uProject.Api
 
         public HttpResponseMessage DeleteContributor(int projectId, int memberId)
         {
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            var project = help.TypedContent(projectId);
+            var project = Umbraco.TypedContent(projectId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
                 var cs = new ContributionService(DatabaseContext);
                 cs.DeleteContributor(projectId, memberId);
-                
-                return new HttpResponseMessage(HttpStatusCode.Accepted);
+
+                return Request.CreateResponse(HttpStatusCode.Accepted);
             }
             else
             {
-                return new HttpResponseMessage(HttpStatusCode.Forbidden);
+                return Request.CreateResponse(HttpStatusCode.Forbidden);
             }
         }
     }

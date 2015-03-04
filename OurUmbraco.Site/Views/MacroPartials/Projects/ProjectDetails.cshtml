@@ -265,7 +265,7 @@
 
                     @if (currentRelease != null)
                     {
-                        @Html.Action("CompatibilityReport", "Project", new { projectId = project .Id, fileId = currentRelease.Id})
+                        @Html.Action("CompatibilityReport", "ProjectCompatibilityReport", new { projectId = project .Id, fileId = currentRelease.Id})
                     }
 
                     <div class="package-compatibility-information">

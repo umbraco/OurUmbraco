@@ -293,9 +293,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ProjectCompatibilityController.cs" />
     <Compile Include="Api\ProjectContributionController.cs" />
     <Compile Include="Api\ProjectForumController.cs" />
-    <Compile Include="Controllers\ProjectController.cs" />
+    <Compile Include="Controllers\ProjectCompatibilityReportController.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />

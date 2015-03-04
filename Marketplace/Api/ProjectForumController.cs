@@ -15,8 +15,7 @@ namespace uProject.Api
     {
         public IEnumerable<ProjectForum> GetAllForums(int parentId)
         {
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            return help.TypedContent(parentId)
+            return Umbraco.TypedContent(parentId)
                 .Children
                 .Where(c => c.DocumentTypeAlias == "Forum")
                 .Select(obj => new ProjectForum()
@@ -30,8 +29,7 @@ namespace uProject.Api
 
         public ProjectForum GetForum(int id)
         {
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            var content = help.TypedContent(id);
+            var content = Umbraco.TypedContent(id);
             return new ProjectForum
             {
                 Id = content.Id,
@@ -43,8 +41,7 @@ namespace uProject.Api
 
         public ProjectForum PostProjectForum(ProjectForum forum)
         {
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            var project = help.TypedContent(forum.ParentId);
+            var project = Umbraco.TypedContent(forum.ParentId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
@@ -63,8 +60,7 @@ namespace uProject.Api
 
         public ProjectForum PutProjectForum(ProjectForum forum)
         {
-            UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-            var project = help.TypedContent(forum.ParentId);
+            var project = Umbraco.TypedContent(forum.ParentId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
@@ -81,8 +77,7 @@ namespace uProject.Api
 
         public void DeleteProjectForum(int forumId)
         {
-             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
-             var project = help.TypedContent(forumId).Parent;
+            var project = Umbraco.TypedContent(forumId).Parent;
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {

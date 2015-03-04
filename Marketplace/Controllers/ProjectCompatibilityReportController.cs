@@ -1,4 +1,5 @@
-﻿using System.Web.Mvc;
+﻿using System;
+using System.Web.Mvc;
 using uProject.Models;
 using uProject.Services;
 using uProject.uVersion;
@@ -7,7 +8,8 @@ using Umbraco.Web.Mvc;
 
 namespace uProject.Controllers
 {
-    public class ProjectController : SurfaceController
+    [MemberAuthorize(AllowType = "member")]
+    public class ProjectCompatibilityReportController : SurfaceController
     {
         [ChildActionOnly]
         public ActionResult CompatibilityReport(int projectId, int fileId)
@@ -27,5 +29,7 @@ namespace uProject.Controllers
                     AllVersions = UVersion.GetAllVersions()
                 });
         }
+
+       
     }
 }

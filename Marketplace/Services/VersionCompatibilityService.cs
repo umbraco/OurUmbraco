@@ -18,6 +18,22 @@ namespace uProject.Services
             _databaseContext = databaseContext;
         }
 
+        public void UpdateCompatibility(int projectId, int fileId, int memberId, Dictionary<string, bool> compatibilityDictionary)
+        {
+            foreach (var item in compatibilityDictionary)
+            {
+                _databaseContext.Database.Insert("DeliVersionCompatibility", "id", new
+                {
+                    fileId = fileId,
+                    memberId = memberId,
+                    projectId = projectId,
+                    version = item.Key,
+                    isCompatible = item.Value,
+                    dateStamp = DateTime.Now
+                });
+            }
+        }
+
         public IEnumerable<VersionCompatibility> GetCompatibilityReport(int projectId)
         {
             var uVersions = UVersion.GetAllVersions();
