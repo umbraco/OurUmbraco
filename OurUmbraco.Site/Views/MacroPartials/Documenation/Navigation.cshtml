@@ -31,7 +31,7 @@
                         @foreach(dynamic itemChild in item.directories){
                         <li class=" @IsActive(root+itemChild.path, "active open")">
 					        <a href="@(root + itemChild.path)/"><h4>@itemChild.name</h4></a>
-                            @if((bool)itemChild.hasChildren){
+                            @if(itemChild.hasChildren != null && (bool)itemChild.hasChildren) {
                                 <ul class="level-3 @IsActive(root+item.path, "open")"> 
                                     @foreach (dynamic itemGrandChild in itemChild.directories)
                                     {
