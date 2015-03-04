@@ -39,7 +39,7 @@ namespace our.CustomHandlers
                     var content = umbracoHelper.TypedContent(item.Id);
                     var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
 
-                    var karma = Utils.GetProjectTotalKarma(content.Id);
+                    var karma = Utils.GetProjectTotalVotes(content.Id);
                     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(content.Id);
                     var downloads = Utils.GetProjectTotalDownloadCount(content.Id);
                     var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
