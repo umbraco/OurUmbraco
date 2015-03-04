@@ -43,16 +43,6 @@ namespace our {
             return Regex.Replace(text, re, "");
         }
 
-
-
-        /// <summary>
-        /// Utility function to match a regex pattern: case, whitespace, and line insensitive
-        /// </summary>
-        private static bool IsMatch(string s, string pattern) {
-            return Regex.IsMatch(s, pattern, RegexOptions.Singleline | RegexOptions.IgnoreCase |
-                RegexOptions.IgnorePatternWhitespace | RegexOptions.ExplicitCapture);
-        }
-
         public static Member GetMember(int id) {
             Member m = Member.GetMemberFromCache(id);
             if (m == null)
@@ -79,9 +69,16 @@ namespace our {
             return result ?? 0;
         }
 
-        public static int GetProjectTotalKarma(int projectId)
+        public static int GetProjectTotalVotes(int projectId)
         {
             var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("SELECT sum([points]) FROM [powersProject] where id = @0", projectId);
+            return result ?? 0;
+        }
+
+        public static int GetProjectMemberVotes(int projectId, params int[] memberIds)
+        {
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>(
+                "SELECT sum([points]) FROM [powersProject] where id = @projectId AND memberId IN (@memberIds)", new {projectId = projectId, memberIds = memberIds});
             return result ?? 0;
         }
 
@@ -95,7 +92,7 @@ namespace our {
         /// Returns a dictionary of project id => total karma
         /// </summary>
         /// <returns></returns>
-        public static Dictionary<int, int> GetProjectTotalKarma()
+        public static Dictionary<int, int> GetProjectTotalVotes()
         {
             return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("SELECT id, sum([points]) as points FROM [powersProject] GROUP BY id")
                 .ToDictionary(x => (int)x.id, x => (int)x.points);
