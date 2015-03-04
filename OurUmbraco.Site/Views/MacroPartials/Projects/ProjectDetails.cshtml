@@ -287,10 +287,11 @@
                                 <span>Project owner:</span> @owner.Name
                             </li>
 
+                            @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab")) { 
                             <li>
-                                <span>Contributors:</span> Tim Geyssens
+                                <span>Contributors:</span> 
                             </li>
-
+                            }
                             <li>
                                 <span>Created:</span> @project.CreateDate.ToShortDateString()
                             </li>
