@@ -12,12 +12,11 @@
 
     var openForCollab = project.GetPropertyValue<bool>("openForCollab");
 
-    var contris = new List<uProject.Models.ProjectContributor>();
 
-    using (var cs = new uProject.Services.ContributionService())
-    {
-        contris = cs.GetContributions(id).ToList();
-    }
+    var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
+    
+    var contris = cs.GetContributions(id).ToList();
+    
     <dic class="profile-settings">
         <strong>@project.Name</strong>
         <div class="profile-settings-forms">

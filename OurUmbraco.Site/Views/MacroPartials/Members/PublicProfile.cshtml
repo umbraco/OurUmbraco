@@ -1,0 +1,37 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    var memberId = Request["id"];
+    int id = 0;
+}
+@if (!string.IsNullOrEmpty(memberId) && int.TryParse(memberId, out id))
+{
+
+    var member = Members.GetById(id);
+    
+    @member.Name
+    
+    @member.GetPropertyValue("avatar")
+    
+    @member.GetPropertyValue("profileText")
+    
+    @member.GetPropertyValue("location")
+    
+    @member.GetPropertyValue("company")
+    
+    @member.GetPropertyValue("twitter")
+
+    var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
+
+    var topics = ts.GetLatestTopicsForMember(member.Id,true,10);
+
+    <ul>
+        @foreach (var topic in topics)
+        {
+            <li><a href="@topic.GetUrl()">@topic.Title</a></li>
+        }
+    </ul>
+}
+
+    
+
