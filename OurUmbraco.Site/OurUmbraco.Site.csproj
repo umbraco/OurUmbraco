@@ -428,8 +428,6 @@
     <Content Include="macroScripts\repository-view-category.cshtml" />
     <Content Include="macroScripts\repository-view-project.cshtml" />
     <Content Include="macroScripts\testWikiFile.cshtml" />
-    <Content Include="macroScripts\versionCompatibility.cshtml" />
-    <Content Include="macroScripts\versionCompatibilityReport.cshtml" />
     <Content Include="masterpages\AttachFile.master" />
     <Content Include="masterpages\Authentication.master" />
     <Content Include="masterpages\blank.master" />
@@ -4644,6 +4642,7 @@
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
     <Content Include="Views\Partials\Members\Register.cshtml" />
+    <Content Include="Views\Partials\Projects\CompatibilityReport.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

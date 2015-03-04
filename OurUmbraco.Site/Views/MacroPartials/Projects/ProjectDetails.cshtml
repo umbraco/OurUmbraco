@@ -1,5 +1,7 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using our.Controllers
 @using uForum;
+@using uProject.Controllers
 
 @{
     var project = Model.Content;
@@ -29,10 +31,11 @@
     var karma = our.Utils.GetProjectTotalKarma(project.Id);
     var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
 
-    var sourceUrl = project.GetPropertyValue("sourceUrl");
-    var websiteUrl = project.GetPropertyValue("websiteUrl");
-    var demoUrl = project.GetPropertyValue("demoUrl");
-    var licenseUrl = project.GetPropertyValue("licenseUrl");
+    var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
+    var websiteUrl = project.GetPropertyValue<string>("websiteUrl");
+    var demoUrl = project.GetPropertyValue<string>("demoUrl");
+    var licenseUrl = project.GetPropertyValue<string>("licenseUrl");
+    var supportUrl = project.GetPropertyValue<string>("supportUrl");
 }
 
 <section class="package-detail">
@@ -235,6 +238,10 @@
                     {
                         <a href="/FileDownload?id=@currentRelease.Id" class="button green">Download package</a>
                     }
+                    else
+                    {
+                        <div class="button green">No current release</div>
+                    }
 
                     <div class="package-creator">
                         <h3>Project owner</h3>
@@ -247,88 +254,96 @@
                                         <h3>
                                             <a href="#">
                                                 @owner.Name
-                                        </a>
-                                    </h3>
-                                    <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                            </a>
+                                        </h3>
+                                        <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                @if (currentRelease != null)
-                {
-                    <div class="package-compatibility">
-                        <h3>Project Compatibility</h3>
-                        <div class="package-compatibility-versions" data-id="@project.Id" data-file="@currentRelease.Id">Loading...</div>
+                    @if (currentRelease != null)
+                    {
+                        @Html.Action("CompatibilityReport", "Project", new { projectId = project .Id, fileId = currentRelease.Id})
+                    }
+
+                    <div class="package-compatibility-information">
+                        <h3>Project Information</h3>
+
+                        <ul>
+                            <li>
+                                <span>Project owner:</span> @owner.Name
+                            </li>
+
+                            <li>
+                                <span>Contributors:</span> Tim Geyssens
+                            </li>
+
+                            <li>
+                                <span>Created:</span> @project.CreateDate.ToShortDateString()
+                            </li>
+
+                            <li>
+                                <span>Is Stable:</span> @project.GetPropertyValue("stable")
+                            </li>
+                            <li>
+                                <span>Current version</span> @project.GetPropertyValue("version")
+                            </li>
+
+                            <li>
+                                <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
+                            </li>
+
+                            <li>
+                                <span>License</span> @project.GetPropertyValue("licenseName")
+                            </li>
+                            <li>
+                                <span>Tags</span>
+
+                                @foreach (var tag in Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags"))
+                                {
+                                    <text>@tag.Text </text>
+                                }
+                            </li>
+                            <li>
+                                <span>Downloads:</span> @downloads
+                            </li>
+                        </ul>
                     </div>
-                }
 
-                <div class="package-compatibility-information">
-                    <h3>Project Information</h3>
+                    @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl))
+                    {
+                        <div class="package-compatibility-information">
+                            <h3>External resources</h3>
 
-                    <ul>
-                        <li>
-                            <span>Project owner:</span> @owner.Name
-                        </li>
+                            <ul>
+                                @if (!string.IsNullOrEmpty(sourceUrl))
+                                {
+                                    <li>
+                                        <span>Source code</span><a href="@sourceUrl">@sourceUrl</a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(websiteUrl))
+                                {
+                                    <li>
+                                        <span>Project website</span><a href="@websiteUrl">@websiteUrl</a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(supportUrl))
+                                {
+                                    <li>
+                                        <span>Issue tracker</span><a href="@supportUrl">@supportUrl</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    
 
-                        <li>
-                            <span>Contributors:</span> Tim Geyssens
-                        </li>
-
-                        <li>
-                            <span>Created:</span> @project.CreateDate.ToShortDateString()
-                        </li>
-
-                        <li>
-                            <span>Is Stable:</span> @project.GetPropertyValue("stable")
-                        </li>
-                        <li>
-                            <span>Current version</span> @project.GetPropertyValue("version")
-                        </li>
-
-                        <li>
-                            <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
-                        </li>
-
-                        <li>
-                            <span>License</span> @project.GetPropertyValue("licenseName")
-                        </li>
-                        <li>
-                            <span>Tags</span>
-
-                            @foreach (var tag in Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags"))
-                            {
-                                <text>@tag.Text </text>
-                            }
-                        </li>
-                        <li>
-                            <span>Downloads:</span> @downloads
-                        </li>
-                    </ul>
                 </div>
-
-                <div class="package-compatibility-information">
-                    <h3>External resources</h3>
-
-                    <ul>
-                        <li>
-                            <span>Source code</span>
-                        </li>
-
-                        <li>
-                            <span>Project website</span>
-                        </li>
-
-                        <li>
-                            <span>Issue tracker</span>
-                        </li>
-                    </ul>
-                </div>
-
             </div>
-        </div>
 
+        </div>
     </div>
-</div>
 </section>

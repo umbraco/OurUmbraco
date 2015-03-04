@@ -1,0 +1,24 @@
+@inherits UmbracoViewPage<uProject.Models.VersionCompatibilityReportModel>
+
+<div class="package-compatibility">
+    <h3>Project Compatibility</h3>
+
+    <small>This project is compatible with the following versions as reported by community members who have downloaded this package:</small>
+
+    <div class="package-compatibility-versions">
+        <div class="versions">
+            @foreach (var ver in Model.VersionCompatibilities)
+            {
+                if (ver.Smiley != "untested")
+                {
+                    <span class="smiley  @ver.Smiley"> @ver.Version (@ver.Percentage%)</span>
+                }
+                else
+                {
+                    <span class="smiley @ver.Smiley"> @ver.Version (untested)</span>
+                }
+            }
+        </div>
+    </div>
+
+</div>
