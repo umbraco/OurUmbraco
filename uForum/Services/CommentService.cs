@@ -32,23 +32,18 @@ namespace uForum.Services
         }
 
         /* Crud */
-        public Comment Save(Comment comment, bool raiseEvents = true)
+        public Comment Save(Comment comment)
         {
             var newComment = comment.Id <= 0;
             var eventArgs = new CommentEventArgs() { Comment = comment };
 
-            if (raiseEvents)
-            {
-                if (newComment)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newComment)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-
-
                 //save comment
                 _databaseContext.Database.Save(comment);
 
@@ -65,14 +60,10 @@ namespace uForum.Services
                     Save(p);
                 }
 
-                if (raiseEvents)
-                {
-                    if (newComment)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
-                }
-
+                if (newComment)
+                    Created.Raise(this, eventArgs);
+                else
+                    Updated.Raise(this, eventArgs);
             }
             else
             {

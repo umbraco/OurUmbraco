@@ -153,33 +153,25 @@ namespace uForum.Services
         }
 
         /* CRUD */
-        public Topic Save(Topic topic, bool raiseEvents = true)
+        public Topic Save(Topic topic)
         {
             var newTopic = topic.Id <= 0;
             var eventArgs = new TopicEventArgs() { Topic = topic };
 
-            if (raiseEvents)
-            {
-                if (newTopic)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newTopic)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-
-
                 //save entity
                 _databaseContext.Database.Save(topic);
 
-                if (raiseEvents)
-                {
-                    if (newTopic)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
-                }
+                if (newTopic)
+                    Created.Raise(this, eventArgs);
+                else
+                    Updated.Raise(this, eventArgs);
 
             }
             else

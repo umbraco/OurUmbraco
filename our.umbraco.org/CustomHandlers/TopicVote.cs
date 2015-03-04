@@ -48,7 +48,7 @@ namespace our.CustomHandlers
 
                         //this uses a non-standard coloumn in the forum schema, so this is added manually..
                         t.Answer = c.Id;
-                        ts.Save(t, false);
+                        ts.Save(t);
                     }
 
                 }

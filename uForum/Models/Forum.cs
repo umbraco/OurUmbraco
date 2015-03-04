@@ -8,7 +8,7 @@ using Umbraco.Core.Persistence;
 namespace uForum.Models
 {
     [TableName("forumForums")]
-    [PrimaryKey("id")]
+    [PrimaryKey("id", autoIncrement = false)]
     [ExplicitColumns]
     public class Forum
     {
