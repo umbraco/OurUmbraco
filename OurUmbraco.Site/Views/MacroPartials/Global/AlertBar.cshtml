@@ -1,0 +1,19 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    var home = Umbraco.TypedContentAtRoot().First();
+    var notificationText = home.GetPropertyValue<string>("mainNotification");
+    var showNotification = string.IsNullOrWhiteSpace(notificationText) == false;
+}
+
+@if (showNotification)
+{
+    <div id="alertBar">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.Raw(notificationText)
+                </div>
+            </div>
+        </div>
+    </div>
+}

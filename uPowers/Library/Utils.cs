@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Web;
 using umbraco.cms.businesslogic.member;
 
-namespace uPowers.Library {
-    public class Utils {
-        public static Member GetMember(int id) {
+namespace uPowers.Library
+{
+    public class Utils
+    {
+        public static Member GetMember(int id)
+        {
             Member m = Member.GetMemberFromCache(id);
             if (m == null)
                 m = new Member(id);

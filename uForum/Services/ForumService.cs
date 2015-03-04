@@ -44,31 +44,29 @@ namespace uForum.Services
                 CancelledByEvent.Raise(this, eventArgs);
         }
 
-        public Forum Save(Forum forum, bool raiseEvents = true)
+        public Forum Save(Forum forum)
         {
-            var newForum = forum.Id <= 0;
+            var newForum = _databaseContext.Database.ExecuteScalar<int>("SELECT COUNT(*) FROM forumForums WHERE id=@id", new {id = forum.Id}) == 0;
             var eventArgs = new ForumEventArgs() { Forum = forum };
 
-            if (raiseEvents)
-            {
-                if (newForum)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newForum)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-                _databaseContext.Database.Save(forum);
-
-                if (raiseEvents)
+                if (newForum)
                 {
-                    if (newForum)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
+                    _databaseContext.Database.Insert(forum);
+                    Created.Raise(this, eventArgs);
                 }
-
+                else
+                {
+                    _databaseContext.Database.Update(forum);
+                    Updated.Raise(this, eventArgs);
+                }
+                    
             }
             else
             {

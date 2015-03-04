@@ -29,7 +29,11 @@ namespace our.Examine
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
 
-            simpleDataSet.RowData.Add("body", umbraco.library.StripHtml( project.GetProperty("description").Value.ToString() )) ;
+            var desciption = project.GetPropertyValue<string>("description");
+            if (!string.IsNullOrEmpty(desciption))
+            {
+                simpleDataSet.RowData.Add("body", umbraco.library.StripHtml(desciption));
+            }
             simpleDataSet.RowData.Add("nodeName", project.Name);
             simpleDataSet.RowData.Add("updateDate", project.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");

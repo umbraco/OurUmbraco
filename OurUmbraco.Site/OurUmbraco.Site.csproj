@@ -428,8 +428,6 @@
     <Content Include="macroScripts\repository-view-category.cshtml" />
     <Content Include="macroScripts\repository-view-project.cshtml" />
     <Content Include="macroScripts\testWikiFile.cshtml" />
-    <Content Include="macroScripts\versionCompatibility.cshtml" />
-    <Content Include="macroScripts\versionCompatibilityReport.cshtml" />
     <Content Include="masterpages\AttachFile.master" />
     <Content Include="masterpages\Authentication.master" />
     <Content Include="masterpages\blank.master" />
@@ -1736,6 +1734,7 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
+    <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamListComments.ascx" />
@@ -1783,6 +1782,7 @@
     <Content Include="Views\MacroPartials\Forum\LatestActivity.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
     <Content Include="masterpages\ReleaseProgress.master" />
+    <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
@@ -4642,6 +4642,7 @@
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
     <Content Include="Views\Partials\Members\Register.cshtml" />
+    <Content Include="Views\Partials\Projects\CompatibilityReport.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

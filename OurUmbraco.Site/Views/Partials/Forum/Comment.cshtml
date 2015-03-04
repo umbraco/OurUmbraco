@@ -5,7 +5,7 @@
     var answer = (int)ViewData["answer"];
     var commentAuthor = Members.GetById(Model.MemberId);
     var roles = Roles.GetRolesForUser();
-    var mem = Members.GetCurrentMember();
+    var currentMember = Members.GetCurrentMember();
 }
 
 <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
@@ -46,9 +46,9 @@
                 <div class="highfive-count">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(mem.Id, Model.Id, "powersComment"))
+                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
                 {
-                    if (mem.Id != Model.MemberId)
+                    if (currentMember.Id != Model.MemberId)
                     {
                         <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
 
@@ -66,7 +66,7 @@
 
         <div class="actions">
 
-            @if (answer == 0 && (Members.IsAdmin() || mem.Id == Model.MemberId))
+            @if (answer == 0 && (Members.IsAdmin() || currentMember.Id == Model.MemberId))
             {
                 <a href="#" class="solved" data-id="@Model.Id">
                     <i class="icon-Check"></i><span>Mark as solution</span>
@@ -79,12 +79,12 @@
 
             @if (Model.ParentCommentId <= 0)
             {
-                <a href="#" data-author="@Members.GetById(Model.MemberId).Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
+                <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                     <i class="icon-Reply-arrow"></i><span>Reply</span>
                 </a>
             }
 
-            @if (Members.IsAdmin() || mem.Id == Model.MemberId)
+            @if (Members.IsAdmin() || currentMember.Id == Model.MemberId)
             {
                 <a href="#" class="delete-reply" data-id="@Model.Id">
                     <i class="icon-Delete-key"></i><span>Delete post</span>
@@ -108,7 +108,7 @@
             }
 
             
-            @if (mem.Id == Model.MemberId) { 
+            @if (currentMember.Id == Model.MemberId) { 
             <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
                 <i class="icon-Edit"></i><span>Edit post</span>
             </a>

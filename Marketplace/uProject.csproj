@@ -11,7 +11,7 @@
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Marketplace</RootNamespace>
+    <RootNamespace>uProject</RootNamespace>
     <AssemblyName>Marketplace</AssemblyName>
     <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <UseIISExpress>false</UseIISExpress>
@@ -293,14 +293,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Api\ProjectCompatibilityController.cs" />
     <Compile Include="Api\ProjectContributionController.cs" />
     <Compile Include="Api\ProjectForumController.cs" />
+    <Compile Include="Controllers\ProjectCompatibilityReportController.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
     <Compile Include="library.cs" />
     <Compile Include="Models\ProjectContributor.cs" />
     <Compile Include="Models\ProjectForum.cs" />
+    <Compile Include="Models\VersionCompatibilityReportModel.cs" />
     <Compile Include="ProjectFileUploadHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -308,7 +311,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="Razor\VersionCompatibilityReport.cs" />
+    <Compile Include="Models\VersionCompatibility.cs" />
+    <Compile Include="Services\VersionCompatibilityService.cs" />
     <Compile Include="Services\ContributionService.cs" />
     <Compile Include="Singleton.cs" />
     <Compile Include="usercontrols\Deli\Package\Steps\Complete.ascx.cs">
@@ -378,18 +382,11 @@
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Content Include="Web.config">
-      <SubType>Designer</SubType>
-    </Content>
-    <Content Include="Razor\versionCompatibility.cshtml" />
-    <Content Include="Razor\versionCompatibilityReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <WebReferences Include="Web References\" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
       <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>

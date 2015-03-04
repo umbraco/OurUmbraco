@@ -1,311 +1,349 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using our.Controllers
 @using uForum;
+@using uProject.Controllers
 
 @{
     var project = Model.Content;
-    
+
     var owner = Members.GetById(Model.Content.GetPropertyValue<int>("owner"));
-    
+
     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(project.Id);
-    var screenshots = files.Where(x => x.FileType == "screenshot");
+    var screenshots = files.Where(x => x.FileType == "screenshot").ToArray();
     var packages = files.Where(x => x.FileType == "package");
     var docs = files.Where(x => x.FileType == "docs");
     var source = files.Where(x => x.FileType == "source");
-    
-    var currentRelease = new uWiki.Businesslogic.WikiFile( project.GetPropertyValue<int>("file") );    
-    
+
+    var file = project.GetPropertyValue<int>("file");
+    uWiki.Businesslogic.WikiFile currentRelease = null;
+    if (file > 0)
+    {
+        try
+        {
+            currentRelease = new uWiki.Businesslogic.WikiFile(file);
+        }
+        catch (ArgumentException)
+        {
+            //Not found so swallow and it will remain null
+        }
+    }
+
     var karma = our.Utils.GetProjectTotalKarma(project.Id);
     var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
 
-    var sourceUrl = project.GetPropertyValue("sourceUrl");
-    var websiteUrl = project.GetPropertyValue("websiteUrl");
-    var demoUrl = project.GetPropertyValue("demoUrl");
-    var licenseUrl = project.GetPropertyValue("licenseUrl");
+    var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
+    var websiteUrl = project.GetPropertyValue<string>("websiteUrl");
+    var demoUrl = project.GetPropertyValue<string>("demoUrl");
+    var licenseUrl = project.GetPropertyValue<string>("licenseUrl");
+    var supportUrl = project.GetPropertyValue<string>("supportUrl");
 }
 
 <section class="package-detail">
-                <div class="container">
-                    <div class="row">
+    <div class="container">
+        <div class="row">
 
-                        <div class="col-md-7">
-                            <div class="package-detail-content">
+            <div class="col-md-7">
+                <div class="package-detail-content">
 
-                                <div class="vote"><i class="icon-Hearts"></i><span>@karma votes</span></div>
+                    <div class="vote"><i class="icon-Hearts"></i><a href data-id="@project.Id" data-votes="@karma">@karma votes</a></div>
 
-                                <div class="package-detail-description markdown-syntax">
-                                    <h1>@project.Name</h1>
+                    <div class="package-detail-description markdown-syntax">
+                        <h1>@project.Name</h1>
 
-                                    @Html.Raw(project.GetPropertyValue("description"))
+                        @Html.Raw(project.GetPropertyValue("description"))
 
-                                </div>
+                    </div>
 
-                                @if(screenshots.Any()){
-                                <div class="package-detail-screenshots">
-                                    <h3>Screenshots</h3>
+                    @if (screenshots.Any())
+                    {
+                        <div class="package-detail-screenshots">
+                            <h3>Screenshots</h3>
 
-                                    <div class="row">
+                            <div class="row">
 
-                                        @foreach(var image in screenshots){
-                                            <a class="fancybox" rel="gallery1" href="@image.Path" title="">
-										        <img src="@image.Path" alt="" />
-									        </a>
-                                        }
-
-                                    </div>
-                                </div>
+                                @foreach (var image in screenshots)
+                                {
+                                    <a class="fancybox" rel="gallery1" href="@image.Path" title="">
+                                        <img src="@image.Path" alt="" />
+                                    </a>
                                 }
-
-                                <div  class="package-misc">
-									<ul class="tabs">
-										<li class="tab-link current" data-tab="tab-package">Package Files</li>
-										<li class="tab-link" data-tab="tab-docs">Documentation</li>
-                                        @if(source.Any()){
-										<li class="tab-link" data-tab="tab-source">Source code</li>
-                                        }
-                                        <li class="tab-link" data-tab="tab-archive">Archived Files</li>
-									</ul>
-
-									<div id="tab-package" class="tab-content current">
-										<h3>Package files</h3>
-										
-										<ul class="search-all-results">
-											
-                                            @foreach(var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version)){
-                                            <li>
-												<a href="/FileDownload?id=@release.Id">
-													<div class="type-icon">
-														<i class="icon-Box"></i>
-													</div>
-
-													<div class="type-context">
-														<div class="type-name">
-															 @release.Name
-														</div>
-														<div class="type-description">
-															uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-															<span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											}
-										</ul>
-									</div>
-
-                                    <div id="tab-archive" class="tab-content">
-										<h3>Archived files</h3>
-										
-										<ul class="search-all-results">
-											
-                                            @foreach(var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version)){
-                                            <li>
-												<a href="/FileDownload?id=@release.Id">
-													<div class="type-icon">
-														<i class="icon-Box"></i>
-													</div>
-
-													<div class="type-context">
-														<div class="type-name">
-															 @release.Name
-														</div>
-														<div class="type-description">
-															uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-															<span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
-														</div>
-													</div>
-												</a>
-											</li>
-											}
-										</ul>
-									</div>
-
-                                    <div id="tab-docs" class="tab-content">
-										<h3>Documentation</h3>
-										
-										<ul class="search-all-results">
-											
-                                            @foreach(var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version)){
-                                            <li>
-												<a href="/FileDownload?id=@release.Id">
-													<div class="type-icon">
-														<i class="icon-Box"></i>
-													</div>
-
-													<div class="type-context">
-														<div class="type-name">
-															 @release.Name
-														</div>
-														<div class="type-description">
-															uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-														</div>
-													</div>
-												</a>
-											</li>
-											}
-										</ul>
-									</div>
-
-                                    <div id="tab-source" class="tab-content">
-										<h3>Source code</h3>
-										
-										<ul class="search-all-results">
-											
-                                            @foreach(var release in source.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version)){
-                                            <li>
-												<a href="/FileDownload?id=@release.Id">
-													<div class="type-icon">
-														<i class="icon-Box"></i>
-													</div>
-
-													<div class="type-context">
-														<div class="type-name">
-															 @release.Name
-														</div>
-														<div class="type-description">
-															uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-														</div>
-													</div>
-												</a>
-											</li>
-											}
-										</ul>
-									</div>
-								
-									</div>
-                                    
-
-                                    
-									<div class="package-forum-activity hidden-xs">
-                                        @{
-                                            var forums = CurrentPage.Children.Where("Visible");
-                                        }
-                                        @if (forums.Any()) { 
-										<h3>Forums</h3>
-                                       
-                                       
-                                           
-                                        foreach (var forum in forums)
-                                        {
-                                           
-                                            <a href="@forum.Url" class="forum-thread">
-                                                <div class="row">
-
-                                                    <div class="col-xs-10 col-md-0">
-                                                        <div class="forum-thread-text">
-                                                            <h3>@forum.Name</h3>
-                                                            <p>@forum.forumDescription</p>
-                                                        </div>
-                                                    </div>
-
-                                                </div>
-                                            </a>
-                                        }
-                                            
-                                        }
-
-									</div>
 
                             </div>
                         </div>
+                    }
 
-                        <div class="col-md-4 col-md-offset-1">
-                            <div class="package-detail-sidebar">
+                    <div class="package-misc">
+                        <ul class="tabs">
+                            <li class="tab-link current" data-tab="tab-package">Package Files</li>
+                            <li class="tab-link" data-tab="tab-docs">Documentation</li>
+                            @if (source.Any())
+                            {
+                                <li class="tab-link" data-tab="tab-source">Source code</li>
+                            }
+                            <li class="tab-link" data-tab="tab-archive">Archived Files</li>
+                        </ul>
 
-                                @if(currentRelease != null){
-                                    <a href="/FileDownload?id=@currentRelease.Id" class="button green">Download package</a>
-                                }
+                        <div id="tab-package" class="tab-content current">
+                            <h3>Package files</h3>
 
-                                <div class="package-creator">
-                                    <h3>Project owner</h3>
+                            <ul class="search-all-results">
 
-                                    <div class="row">
-                                        <div class="col-xs-12">
-                                            <div class="package-creator-information">
-                                                <img src="@owner.Avatar()" alt="">
-                                                <div class="text">
-                                                    <h3>
-                                                        <a href="#">@owner.Name
-                                                        </a>
-                                                    </h3>
-                                                    <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                @foreach (var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version))
+                                {
+                                    <li>
+                                        <a href="/FileDownload?id=@release.Id">
+                                            <div class="type-icon">
+                                                <i class="icon-Box"></i>
+                                            </div>
+
+                                            <div class="type-context">
+                                                <div class="type-name">
+                                                    @release.Name
+                                                </div>
+                                                <div class="type-description">
+                                                    uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
 
+                        <div id="tab-archive" class="tab-content">
+                            <h3>Archived files</h3>
 
-                                <div class="package-compatibility">
-                                    <h3>Project Compatibility</h3>
-                                    
-                                    <div class="package-compatibility-versions" data-id="@project.Id" data-file="@currentRelease.Id" >Loading...</div>
+                            <ul class="search-all-results">
 
-                                </div>
+                                @foreach (var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version))
+                                {
+                                    <li>
+                                        <a href="/FileDownload?id=@release.Id">
+                                            <div class="type-icon">
+                                                <i class="icon-Box"></i>
+                                            </div>
 
-                                <div class="package-compatibility-information">
-                                    <h3>Project Information</h3>
+                                            <div class="type-context">
+                                                <div class="type-name">
+                                                    @release.Name
+                                                </div>
+                                                <div class="type-description">
+                                                    uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
 
-                                    <ul>
-                                        <li>
-                                            <span>Project owner:</span> @owner.Name
-                                        </li>
+                        <div id="tab-docs" class="tab-content">
+                            <h3>Documentation</h3>
 
-                                        <li>
-                                            <span>Contributors:</span> Tim Geyssens
-                                        </li>
-                                        
-                                        <li>
-                                            <span>Created:</span> @project.CreateDate.ToShortDateString()
-                                        </li>
+                            <ul class="search-all-results">
 
-                                        <li>
-                                            <span>Is Stable:</span> @project.GetPropertyValue("stable")
-                                        </li>
-                                        <li>
-                                            <span>Current version</span> @project.GetPropertyValue("version")
-                                        </li>
+                                @foreach (var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
+                                {
+                                    <li>
+                                        <a href="/FileDownload?id=@release.Id">
+                                            <div class="type-icon">
+                                                <i class="icon-Box"></i>
+                                            </div>
 
-                                        <li>
-                                            <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
-                                        </li>
+                                            <div class="type-context">
+                                                <div class="type-name">
+                                                    @release.Name
+                                                </div>
+                                                <div class="type-description">
+                                                    uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
 
-                                        <li>
-                                            <span>License</span> @project.GetPropertyValue("licenseName")
-                                        </li>
-                                        <li>
-                                            <span>Tags</span>
-                                            
-                                            @foreach(var tag in Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags")){
-                                                <text>@tag.Text </text>
-                                            }
-                                        </li>
-                                        <li>
-                                            <span>Downloads:</span> @downloads
-                                        </li>
-                                    </ul>
-                                </div>
+                        <div id="tab-source" class="tab-content">
+                            <h3>Source code</h3>
 
-                                <div class="package-compatibility-information">
-                                    <h3>External resources</h3>
+                            <ul class="search-all-results">
 
-                                    <ul>
-                                        <li>
-                                            <span>Source code</span>
-                                        </li>
+                                @foreach (var release in source.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
+                                {
+                                    <li>
+                                        <a href="/FileDownload?id=@release.Id">
+                                            <div class="type-icon">
+                                                <i class="icon-Box"></i>
+                                            </div>
 
-                                        <li>
-                                            <span>Project website</span>
-                                        </li>
-
-                                        <li>
-                                            <span>Issue tracker</span>
-                                        </li>
-                                    </ul>
-                                </div>
-
-                            </div>
+                                            <div class="type-context">
+                                                <div class="type-name">
+                                                    @release.Name
+                                                </div>
+                                                <div class="type-description">
+                                                    uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </li>
+                                }
+                            </ul>
                         </div>
 
                     </div>
+
+
+
+                    <div class="package-forum-activity hidden-xs">
+                        @{
+                            var forums = CurrentPage.Children.Where("Visible");
+                        }
+                        @if (forums.Any())
+                        {
+                            <h3>Forums</h3>
+
+
+
+                            foreach (var forum in forums)
+                            {
+
+                                <a href="@forum.Url" class="forum-thread">
+                                    <div class="row">
+
+                                        <div class="col-xs-10 col-md-0">
+                                            <div class="forum-thread-text">
+                                                <h3>@forum.Name</h3>
+                                                <p>@forum.forumDescription</p>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </a>
+                            }
+
+                        }
+
+                    </div>
+
                 </div>
-            </section>
+            </div>
+
+            <div class="col-md-4 col-md-offset-1">
+                <div class="package-detail-sidebar">
+
+                    @if (currentRelease != null)
+                    {
+                        <a href="/FileDownload?id=@currentRelease.Id" class="button green">Download package</a>
+                    }
+                    else
+                    {
+                        <div class="button green">No current release</div>
+                    }
+
+                    <div class="package-creator">
+                        <h3>Project owner</h3>
+
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="package-creator-information">
+                                    <img src="@owner.Avatar()" alt="">
+                                    <div class="text">
+                                        <h3>
+                                            <a href="#">
+                                                @owner.Name
+                                            </a>
+                                        </h3>
+                                        <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    @if (currentRelease != null)
+                    {
+                        @Html.Action("CompatibilityReport", "ProjectCompatibilityReport", new { projectId = project .Id, fileId = currentRelease.Id})
+                    }
+
+                    <div class="package-compatibility-information">
+                        <h3>Project Information</h3>
+
+                        <ul>
+                            <li>
+                                <span>Project owner:</span> @owner.Name
+                            </li>
+
+                            <li>
+                                <span>Contributors:</span> Tim Geyssens
+                            </li>
+
+                            <li>
+                                <span>Created:</span> @project.CreateDate.ToShortDateString()
+                            </li>
+
+                            <li>
+                                <span>Is Stable:</span> @project.GetPropertyValue("stable")
+                            </li>
+                            <li>
+                                <span>Current version</span> @project.GetPropertyValue("version")
+                            </li>
+
+                            <li>
+                                <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
+                            </li>
+
+                            <li>
+                                <span>License</span> @project.GetPropertyValue("licenseName")
+                            </li>
+                            <li>
+                                <span>Tags</span>
+
+                                @foreach (var tag in Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags"))
+                                {
+                                    <text>@tag.Text </text>
+                                }
+                            </li>
+                            <li>
+                                <span>Downloads:</span> @downloads
+                            </li>
+                        </ul>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl))
+                    {
+                        <div class="package-compatibility-information">
+                            <h3>External resources</h3>
+
+                            <ul>
+                                @if (!string.IsNullOrEmpty(sourceUrl))
+                                {
+                                    <li>
+                                        <a href="@sourceUrl">Source code</a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(websiteUrl))
+                                {
+                                    <li>
+                                        <a href="@websiteUrl">Project website</a>
+                                    </li>
+                                }
+                                @if (!string.IsNullOrEmpty(supportUrl))
+                                {
+                                    <li>
+                                        <a href="@supportUrl">Issue tracker</a>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    }
+                    
+
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>

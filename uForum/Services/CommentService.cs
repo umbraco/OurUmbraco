@@ -9,7 +9,9 @@ using Umbraco.Core.Persistence;
 
 namespace uForum.Services
 {
-
+    /// <summary>
+    /// Used for CRUD of comments - There aren't any query methods for comments here, comments are resolved with a Topic in a single query be displayed in the view
+    /// </summary>
     public class CommentService
     {
 
@@ -24,77 +26,24 @@ namespace uForum.Services
             _topicService = topicService;
         }
 
-        public Page<Comment> GetPagedComments(int topicId, long number = 10, long page = 1, bool ignoreSpam = true)
-        {
-            var sql = new Sql()
-                 .Select("*")
-                 .From<Comment>();
-
-            // if (ignoreSpam)
-            //     sql.Where<Comment>(x => x.IsSpam != true);
-
-            if (topicId > 0)
-                sql.Where<Comment>(x => x.TopicId == topicId);
-
-            sql.Where<Comment>(x => x.ParentCommentId == 0);
-            sql.OrderByDescending("created");
-
-            return _databaseContext.Database.Page<Comment>(page, number, sql);
-        }
-
-        public IEnumerable<Comment> GetComments(int topicId, bool ignoreSpam = true)
-        {
-            var sql = new Sql()
-                 .Select("*")
-                 .From<Comment>();
-
-            if (ignoreSpam)
-                sql.Where<Comment>(x => x.IsSpam != true);
-
-            if (topicId > 0)
-                sql.Where<Comment>(x => x.TopicId == topicId);
-
-            sql.Where<Comment>(x => x.ParentCommentId == 0);
-            sql.OrderByDescending("created");
-
-            return _databaseContext.Database.Fetch<Comment>(sql);
-        }
-
-        public IEnumerable<Comment> GetChildComments(int commentId)
-        {
-            var sql = new Sql()
-                  .Select("*")
-                  .From<Comment>();
-
-            sql.Where<Comment>(x => x.ParentCommentId == commentId);
-            sql.OrderByDescending("created");
-
-            return _databaseContext.Database.Query<Comment>(sql);
-        }
-
         public Comment GetById(int id)
         {
             return _databaseContext.Database.SingleOrDefault<Comment>(id);
         }
 
         /* Crud */
-        public Comment Save(Comment comment, bool raiseEvents = true)
+        public Comment Save(Comment comment)
         {
             var newComment = comment.Id <= 0;
             var eventArgs = new CommentEventArgs() { Comment = comment };
 
-            if (raiseEvents)
-            {
-                if (newComment)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newComment)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-
-
                 //save comment
                 _databaseContext.Database.Save(comment);
 
@@ -111,14 +60,10 @@ namespace uForum.Services
                     Save(p);
                 }
 
-                if (raiseEvents)
-                {
-                    if (newComment)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
-                }
-
+                if (newComment)
+                    Created.Raise(this, eventArgs);
+                else
+                    Updated.Raise(this, eventArgs);
             }
             else
             {

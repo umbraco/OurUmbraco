@@ -267,13 +267,13 @@
     </Compile>
     <Compile Include="MemberForumExtensions.cs" />
     <Compile Include="Models\Comment.cs" />
-    <Compile Include="Models\CommentViewModel.cs" />
+    <Compile Include="Models\CommentSaveModel.cs" />
     <Compile Include="Models\Forum.cs" />
     <Compile Include="Models\ReadOnlyComment.cs" />
     <Compile Include="Models\ReadOnlyTopic.cs" />
     <Compile Include="Models\Topic.cs" />
     <Compile Include="Models\TopicCommentRelator.cs" />
-    <Compile Include="Models\TopicViewModel.cs" />
+    <Compile Include="Models\TopicSaveModel.cs" />
     <Compile Include="NewForumHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\CommentService.cs" />

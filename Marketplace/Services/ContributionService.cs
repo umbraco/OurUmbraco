@@ -8,23 +8,13 @@ using Umbraco.Core.Persistence;
 
 namespace uProject.Services
 {
-    public class ContributionService: IDisposable
+    public class ContributionService
     {
-        private DatabaseContext DatabaseContext;
-
-        public ContributionService()
-        {
-            init(ApplicationContext.Current.DatabaseContext);
-        }
+        private readonly DatabaseContext _dbContext;
 
         public ContributionService(DatabaseContext dbContext)
         {
-            init(dbContext);
-        }
-
-        private void init(DatabaseContext dbContext)
-        {
-            DatabaseContext = dbContext;
+            _dbContext = dbContext;
         }
 
         public IEnumerable<ProjectContributor> GetContributions(int projectId)
@@ -35,19 +25,19 @@ namespace uProject.Services
 
             sql.Where<ProjectContributor>(x => x.ProjectId == projectId);
 
-            return DatabaseContext.Database.Query<ProjectContributor>(sql);
+            return _dbContext.Database.Query<ProjectContributor>(sql);
         }
 
         public void DeleteContributor(int projectId, int memberId)
         {
-            DatabaseContext.Database.Delete<ProjectContributor>(
+            _dbContext.Database.Delete<ProjectContributor>(
               "Where projectId=@0 and memberId=@1",
               projectId,memberId);
         }
 
         public void AddContributor(int projectId, int memberId)
         {
-            var r = DatabaseContext.Database.SingleOrDefault<ProjectContributor>(
+            var r = _dbContext.Database.SingleOrDefault<ProjectContributor>(
                "SELECT * FROM projectContributors WHERE projectId=@0 and memberId=@1",
                projectId,
                memberId);
@@ -58,22 +48,8 @@ namespace uProject.Services
                 rec.MemberId = memberId;
                 rec.ProjectId = projectId;
 
-                DatabaseContext.Database.Insert(rec);
+                _dbContext.Database.Insert(rec);
             }
-        }
-
-
-        public static ContributionService Instance
-        {
-            get
-            {
-                return Singleton<ContributionService>.UniqueInstance;
-            }
-        }
-
-        public void Dispose()
-        {
-            DatabaseContext.DisposeIfDisposable();
         }
     }
 }

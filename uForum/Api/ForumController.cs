@@ -24,7 +24,7 @@ namespace uForum.Api
         /* COMMENTS */
 
         [HttpPost]
-        public ExpandoObject Comment(CommentViewModel model)
+        public ExpandoObject Comment(CommentSaveModel model)
         {
             dynamic o = new ExpandoObject();
             var currentMemberId = Members.GetCurrentMemberId();
@@ -56,7 +56,7 @@ namespace uForum.Api
         }
 
         [HttpPut]
-        public void Comment(int id, CommentViewModel model)
+        public void Comment(int id, CommentSaveModel model)
         {
             var c = CommentService.GetById(id);
 
@@ -123,7 +123,7 @@ namespace uForum.Api
         
 
         [HttpPost]
-        public ExpandoObject Topic(TopicViewModel model)
+        public ExpandoObject Topic(TopicSaveModel model)
         {
             dynamic o = new ExpandoObject();
 
@@ -156,7 +156,7 @@ namespace uForum.Api
 
 
         [HttpPut]
-        public ExpandoObject Topic(int id, TopicViewModel model)
+        public ExpandoObject Topic(int id, TopicSaveModel model)
         {
             dynamic o = new ExpandoObject();
 

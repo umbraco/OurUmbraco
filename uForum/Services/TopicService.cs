@@ -142,7 +142,7 @@ namespace uForum.Services
                 .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
                 .Where<ReadOnlyTopic>(topic => topic.Id == id);
 
-            return _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+            return _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
                 sql).FirstOrDefault();
         }
@@ -153,33 +153,25 @@ namespace uForum.Services
         }
 
         /* CRUD */
-        public Topic Save(Topic topic, bool raiseEvents = true)
+        public Topic Save(Topic topic)
         {
             var newTopic = topic.Id <= 0;
             var eventArgs = new TopicEventArgs() { Topic = topic };
 
-            if (raiseEvents)
-            {
-                if (newTopic)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newTopic)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-
-
                 //save entity
                 _databaseContext.Database.Save(topic);
 
-                if (raiseEvents)
-                {
-                    if (newTopic)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
-                }
+                if (newTopic)
+                    Created.Raise(this, eventArgs);
+                else
+                    Updated.Raise(this, eventArgs);
 
             }
             else

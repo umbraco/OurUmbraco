@@ -98,6 +98,9 @@
                     </div>
 
                 </header>
+                
+                <umbraco:Macro Alias="[Global]AlertBar" runat="server"></umbraco:Macro>
+
                 <asp:ContentPlaceHolder ID="Search" runat="server" />
 
 
