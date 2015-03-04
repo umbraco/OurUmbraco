@@ -39,31 +39,28 @@ namespace uProject.Api
         public ExpandoObject AddContributor(int projectId, string email)
         {
 
-           dynamic o = new ExpandoObject();
-           var member = Members.GetByEmail(email) ;
-           if(member == null)
-           {
-               o.success = false;
-               o.error = "Email not found";
-               return o;
+            dynamic o = new ExpandoObject();
+            var member = Members.GetByEmail(email);
+            if (member == null)
+            {
+                o.success = false;
+                o.error = "Email not found";
+                return o;
 
-           }
-           
+            }
+
             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
             var project = help.TypedContent(projectId);
 
             if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
             {
 
-                using (var cs = new ContributionService())
-                {
-                    cs.AddContributor(projectId, member.Id);
-                    o.success = true;
-                    o.memberName = member.Name;
-                    o.memberId = member.Id;
-                    return o;
-                }
-
+                var cs = new ContributionService(DatabaseContext);
+                cs.AddContributor(projectId, member.Id);
+                o.success = true;
+                o.memberName = member.Name;
+                o.memberId = member.Id;
+                return o;
             }
             else
             {
@@ -80,13 +77,11 @@ namespace uProject.Api
             UmbracoHelper help = new UmbracoHelper(UmbracoContext);
             var project = help.TypedContent(projectId);
 
-            if(project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
-            { 
-                using (var cs = new ContributionService())
-                {
-                    cs.DeleteContributor(projectId, memberId);
-                }
-
+            if (project.GetPropertyValue<int>("owner") == Members.GetCurrentMemberId())
+            {
+                var cs = new ContributionService(DatabaseContext);
+                cs.DeleteContributor(projectId, memberId);
+                
                 return new HttpResponseMessage(HttpStatusCode.Accepted);
             }
             else
