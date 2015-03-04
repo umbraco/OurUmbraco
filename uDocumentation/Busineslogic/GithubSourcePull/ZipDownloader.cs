@@ -70,13 +70,13 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         /// <summary>
         /// This will ensure that the docs exist, this checks by the existence of the /Documentation/sitemap.js file
         /// </summary>
-        public static void EnsureGitHubDocs()
+        public static void EnsureGitHubDocs(bool overwrite = false)
         {
             var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
             var configPath = HttpContext.Current.Server.MapPath(config);
 
             //Check if it exists, if it does then exit
-            if (File.Exists(Path.Combine(rootFolderPath, "sitemap.js"))) return;
+            if (!overwrite && File.Exists(Path.Combine(rootFolderPath, "sitemap.js"))) return;
 
             if (!Directory.Exists(rootFolderPath))
             {

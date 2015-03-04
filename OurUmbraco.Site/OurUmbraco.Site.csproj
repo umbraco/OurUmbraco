@@ -1736,6 +1736,7 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
+    <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamListComments.ascx" />
