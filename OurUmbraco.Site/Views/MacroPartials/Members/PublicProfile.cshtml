@@ -9,7 +9,29 @@
 
     var member = Members.GetById(id);
     
+    @member.Name
     
+    @member.GetPropertyValue("avatar")
+    
+    @member.GetPropertyValue("profileText")
+    
+    @member.GetPropertyValue("location")
+    
+    @member.GetPropertyValue("company")
+    
+    @member.GetPropertyValue("twitter")
+
+    var ts = new uForum.Services.TopicService();
+
+    var topics = ts.GetLatestTopicsForMember(member.id);
+
+    <ul>
+        @foreach (var topic in topics)
+        {
+            <li><a href="@topic.GetUrl()">@topic.Title</a></li>
+        }
+    </ul>
 }
+
     
 
