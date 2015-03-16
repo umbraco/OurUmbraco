@@ -15,7 +15,7 @@
 
     var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
     
-    var contris = cs.GetContributions(id).ToList();
+    var contris = cs.GetContributors(id).ToList();
     
     <dic class="profile-settings">
         <strong>@project.Name</strong>
