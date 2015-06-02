@@ -1803,7 +1803,6 @@
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
     <Content Include="umbraco\translation\translationTasks.dtd" />
     <Content Include="Views\Partials\Forum\actions.cshtml" />
-    <Content Include="umbraco\lib\jquery\jquery.min.map" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
