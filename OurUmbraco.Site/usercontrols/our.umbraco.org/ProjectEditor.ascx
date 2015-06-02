@@ -122,20 +122,20 @@
 
 <script type="text/javascript">
 
-  $(document).ready(function() {
-      $("form").validate();
-  });
+    $(document).ready(function () {
+        $("form").validate();
+    });
 
-  tinyMCE.init({
-    // General options
-    mode: "exact",
-    elements: "<%= tb_desc.ClientID %>",
+    tinyMCE.init({
+        // General options
+        mode: "exact",
+        elements: "<%= tb_desc.ClientID %>",
     content_css: "/css/fonts.css",
     auto_resize: true,
     theme: "simple",
     remove_linebreaks: false
   });
-  
+
 </script>
 
 </asp:PlaceHolder>
