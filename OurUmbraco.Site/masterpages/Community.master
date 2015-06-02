@@ -73,14 +73,14 @@
 			<div class="col-md-6">
 
 				
-				<umbraco:Macro topicpage="1" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
+				<umbraco:Macro topicpage="1" Alias="ForumLatestActivity" runat="server"></umbraco:Macro>
 				
 
 			</div>
 
 			<div class="col-md-6">
 
-				<umbraco:Macro topicpage="2" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
+				<umbraco:Macro topicpage="2" Alias="ForumLatestActivity" runat="server"></umbraco:Macro>
 				
 			</div>
 

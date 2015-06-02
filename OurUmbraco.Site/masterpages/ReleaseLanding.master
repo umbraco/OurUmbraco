@@ -74,7 +74,7 @@
                     <div data-bind="template: { name: 'releases-template', foreach: currentReleases }"></div>
                     </div>-->
                 <div class="markdown-syntax">
-				    <umbraco:Macro Alias="[Releases]AllReleases" runat="server" />
+				    <umbraco:Macro Alias="ReleasesAllReleases" runat="server" />
 			    </div>
                 
 

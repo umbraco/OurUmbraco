@@ -16,7 +16,7 @@
 
 				
 				
-                <umbraco:Macro source="1057" Alias="[Member]ProfileNavigation" runat="server"></umbraco:Macro>
+                <umbraco:Macro source="1057" Alias="MemberProfileNavigation" runat="server"></umbraco:Macro>
 
             </div><!-- .content-wrapper -->
         </div><!-- .sidebar-content -->
