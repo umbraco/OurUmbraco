@@ -677,6 +677,7 @@
     <Content Include="umbraco\js\umbraco.services.js" />
     <Content Include="umbraco\js\umbraco.testing.js" />
     <Content Include="umbraco\lib\angular-bootstrap\ui-bootstrap-tpls-0.10.0.min.js" />
+    <Content Include="umbraco\lib\angular-dynamic-locale\tmhDynamicLocale.min.js" />
     <Content Include="umbraco\lib\angular\1.1.5\angular-cookies.js" />
     <Content Include="umbraco\lib\angular\1.1.5\angular-cookies.min.js" />
     <Content Include="umbraco\lib\angular\1.1.5\angular-loader.js" />
@@ -980,6 +981,7 @@
     <Content Include="umbraco\lib\angular\1.1.5\i18n\angular-locale_zu.js" />
     <Content Include="umbraco\lib\angular\angular-ui-sortable.js" />
     <Content Include="umbraco\lib\angular\tmhDynamicLocale.js" />
+    <Content Include="umbraco\lib\blueimp-load-image\load-image.all.min.js" />
     <Content Include="umbraco\lib\bootstrap\css\bootstrap-responsive.css" />
     <Content Include="umbraco\lib\bootstrap\css\bootstrap-responsive.min.css" />
     <Content Include="umbraco\lib\bootstrap\css\bootstrap.cosmo.min.css" />
@@ -1004,6 +1006,12 @@
     <Content Include="umbraco\lib\datetimepicker\bootstrap-datetimepicker.min.css" />
     <Content Include="umbraco\lib\datetimepicker\bootstrap-datetimepicker.min.js" />
     <Content Include="umbraco\lib\datetimepicker\langs\datetimepicker.pt-BR.js" />
+    <Content Include="umbraco\lib\jquery-file-upload\jquery.fileupload-angular.js" />
+    <Content Include="umbraco\lib\jquery-file-upload\jquery.fileupload-image.js" />
+    <Content Include="umbraco\lib\jquery-file-upload\jquery.fileupload-process.js" />
+    <Content Include="umbraco\lib\jquery-file-upload\jquery.fileupload.js" />
+    <Content Include="umbraco\lib\jquery-ui\jquery-ui-1.10.4.custom.min.css" />
+    <Content Include="umbraco\lib\jquery-ui\jquery-ui.min.js" />
     <Content Include="umbraco\lib\jquery\jquery-2.0.3.min.js" />
     <Content Include="umbraco\lib\jquery\jquery-ui-1.10.3.custom.min.js" />
     <Content Include="umbraco\lib\jquery\jquery-ui-1.10.4.custom.min.css" />
@@ -1045,6 +1053,7 @@
     <Content Include="umbraco\lib\markdown\markdown.sanitizer.js" />
     <Content Include="umbraco\lib\markdown\red.css" />
     <Content Include="umbraco\lib\moment\moment-with-locales.js" />
+    <Content Include="umbraco\lib\rgrove-lazyload\lazyload.js" />
     <Content Include="umbraco\lib\slider\js\bootstrap-slider.js" />
     <Content Include="umbraco\lib\slider\slider.css" />
     <Content Include="umbraco\lib\spectrum\spectrum.css" />
@@ -1218,6 +1227,7 @@
     <Content Include="umbraco\lib\tinymce\themes\modern\theme.min.js" />
     <Content Include="umbraco\lib\tinymce\themes\umbraco\theme.min.js" />
     <Content Include="umbraco\lib\tinymce\tinymce.min.js" />
+    <Content Include="umbraco\lib\typeahead-js\typeahead.bundle.min.js" />
     <Content Include="umbraco\lib\typeahead\typeahead.bundle.min.js" />
     <Content Include="umbraco\lib\umbraco\compat.js" />
     <Content Include="umbraco\lib\umbraco\Extensions.js" />
@@ -1462,6 +1472,7 @@
     <Content Include="umbraco\Views\directives\html\umb-photo-folder.html" />
     <Content Include="umbraco\Views\directives\html\umb-upload-dropzone.html" />
     <Content Include="umbraco\Views\directives\imaging\umb-image-crop.html" />
+    <Content Include="umbraco\Views\directives\imaging\umb-image-folder.html" />
     <Content Include="umbraco\Views\directives\imaging\umb-image-gravity.html" />
     <Content Include="umbraco\Views\directives\imaging\umb-image-thumbnail.html" />
     <Content Include="umbraco\Views\directives\umb-avatar.html" />
@@ -1534,7 +1545,9 @@
     <Content Include="umbraco\Views\propertyeditors\grid\dialogs\editconfig.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\dialogs\layoutconfig.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\dialogs\rowconfig.html" />
+    <Content Include="umbraco\Views\propertyeditors\grid\dialogs\rowdeleteconfirm.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\editors\embed.html" />
+    <Content Include="umbraco\Views\propertyeditors\grid\editors\error.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\editors\macro.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\editors\media.html" />
     <Content Include="umbraco\Views\propertyeditors\grid\editors\rte.html" />
@@ -1730,6 +1743,7 @@
     <Content Include="umbraco_client\Editors\EditXslt.js" />
     <Content Include="umbraco_client\IconPicker\iconpicker.js" />
     <Content Include="umbraco_client\Installer\images\zoom-in.png" />
+    <Content Include="umbraco_client\PunyCode\punycode.min.js" />
     <Content Include="umbraco_client\splitbutton\InsertMacroSplitButton.js" />
     <Content Include="umbraco_client\tablesorting\img\asc.gif" />
     <Content Include="umbraco_client\tablesorting\img\desc.gif" />
@@ -1786,6 +1800,8 @@
     <Content Include="masterpages\ReleaseProgress.master" />
     <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
+    <Content Include="umbraco\lib\angular-dynamic-locale\tmhDynamicLocale.min.js.map" />
+    <Content Include="umbraco\translation\translationTasks.dtd" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
