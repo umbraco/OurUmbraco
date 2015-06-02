@@ -26,7 +26,7 @@ namespace NotificationsCore.NotificationTypes
 
                 var topic = (Topic)args[0];
                 string url = (string)args[1];
-                var member = (Umbraco.Core.Models.Member)args[2];
+                var memberName = (string)args[2];
 
                 if (topic.IsSpam)
                 {
@@ -55,7 +55,7 @@ namespace NotificationsCore.NotificationTypes
 
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 
-                body = string.Format(body, forum.Text, "http://" + domain + url, member.Name, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
+                body = string.Format(body, forum.Text, "http://" + domain + url, memberName, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
 
                 SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["umbracoDbDSN"].ConnectionString);
