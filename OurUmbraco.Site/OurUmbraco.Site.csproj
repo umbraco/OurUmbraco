@@ -1016,6 +1016,7 @@
     <Content Include="umbraco\lib\jquery\jquery-ui-1.10.3.custom.min.js" />
     <Content Include="umbraco\lib\jquery\jquery-ui-1.10.4.custom.min.css" />
     <Content Include="umbraco\lib\jquery\jquery-ui-1.10.4.custom.min.js" />
+    <Content Include="umbraco\lib\jquery\jquery.min.js" />
     <Content Include="umbraco\lib\jquery\jquery.sortable\jquery.sortable.min.js" />
     <Content Include="umbraco\lib\jquery\jquery.ui.core.min.js" />
     <Content Include="umbraco\lib\jquery\jquery.ui.draggable.js" />
@@ -1802,6 +1803,7 @@
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
     <Content Include="umbraco\translation\translationTasks.dtd" />
     <Content Include="Views\Partials\Forum\actions.cshtml" />
+    <Content Include="umbraco\lib\jquery\jquery.min.map" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
