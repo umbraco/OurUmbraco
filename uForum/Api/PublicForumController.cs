@@ -19,7 +19,7 @@ namespace uForum.Api
         public IEnumerable<ExpandoObject> LatestPaged(int page, int cat)
         {
             var l = new List<ExpandoObject>();
-            foreach (var topic in TopicService.GetLatestTopics(50, page, true, cat))
+            foreach (var topic in TopicService.GetLatestTopics(50, page, true, cat).Items)
             {
                 dynamic o = new ExpandoObject();
 

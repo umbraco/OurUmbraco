@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,34 +28,24 @@ namespace uForum.Services
         /// <param name="ignoreSpam"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
+        public Page<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
-            const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
-FROM forumTopics
-LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
-LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
-";
-            const string sql2 = @"
-ORDER BY updated
-OFFSET @offset ROWS
-FETCH NEXT @count ROWS ONLY";
+            var sql = new Sql().Select(@"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
+                .From("forumTopics")
+                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
+                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
 
-            const string sqlxx = sql1 + sql2;
-            const string sqlix = sql1 + "WHERE isSpam=0" + sql2;
-            const string sqlxc = sql1 + "WHERE forumTopics.parentId=@category" + sql2;
-            const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category" + sql2;
-
-            var sql = ignoreSpam
-                ? (category > 0 ? sqlic : sqlix)
-                : (category > 0 ? sqlxc : sqlxx);
-
-            // probably as fast as PetaPoco can be...
-            return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new
+            if (ignoreSpam)
             {
-                offset = (page - 1) * take,
-                count = take,
-                category = category
-            });
+                sql.Where<Topic>(x => x.IsSpam != true);
+            }
+
+            if (category > 0)
+                sql.Where<Topic>(x => x.ParentId == category);
+
+
+            sql.OrderByDescending("updated");
+            return _databaseContext.Database.Page<ReadOnlyTopic>(page, take, sql);
         }
 
         /// <summary>
