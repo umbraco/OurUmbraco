@@ -2,16 +2,20 @@
 @using uForum;
 
 @{
-    int page = 0;
-
-
-    int.TryParse(Model.MacroParameters["topicpage"].ToString(), out page);
-
-
     var ts = new uForum.Services.TopicService(ApplicationContext.DatabaseContext);
+}
 
+<div class="col-md-6">
+    @Column(ts.GetLatestTopics(3, 1).Items)
+</div>
+<div class="col-md-6">
+    @Column(ts.GetLatestTopics(3, 2).Items)
+</div>
+
+@helper Column(List<uForum.Models.ReadOnlyTopic> topics)
+{
     <ul>
-        @foreach (var topic in ts.GetLatestTopics(3, page).Items)
+        @foreach (var topic in topics)
         {
             var cat = Umbraco.TypedContent(topic.ParentId);
             var mem = Members.GetById(topic.LatestReplyAuthor);
