@@ -19,7 +19,7 @@
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
 
-    Page<ReadOnlyTopic> topics;
+    IEnumerable<ReadOnlyTopic> topics;
 
     // only cache the first page of each category
     if (cat > 0 || page > 1)
@@ -30,8 +30,8 @@
     {
         var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
         var key = "OurForumForum[" + cat + "]";
-        topics = (Page<ReadOnlyTopic>) cache.GetCacheItem(key,
-            () => topicService.GetLatestTopics(50, page, true, cat),
+        topics = (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
+            () => topicService.GetLatestTopics(50, page, true, cat).ToArray(),
             TimeSpan.FromSeconds(4));
     }
 }
@@ -66,7 +66,7 @@
         <tbody class="forum-default-listing">
 
             <!-- FORUM THREAD START -->
-            @foreach (var topic in topics.Items)
+            @foreach (var topic in topics)
             {       
                 
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
