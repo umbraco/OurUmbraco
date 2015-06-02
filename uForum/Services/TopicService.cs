@@ -37,7 +37,7 @@ LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.
 LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
 ";
             const string sql2 = @"
-ORDER BY updated
+ORDER BY updated DESC
 OFFSET @offset ROWS
 FETCH NEXT @count ROWS ONLY";
 
@@ -56,7 +56,7 @@ FETCH NEXT @count ROWS ONLY";
                 offset = (page - 1) * take,
                 count = take,
                 category = category
-            }).OrderByDescending(x => x.Updated);
+            });
         }
 
         /// <summary>
