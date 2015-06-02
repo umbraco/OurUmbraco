@@ -1,265 +1,119 @@
-﻿using System.Diagnostics;
+﻿using System;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Xml;
 using uDocumentation.Busineslogic;
-using umbraco;
-using umbraco.cms.businesslogic.web;
 using Umbraco.Core;
-using umbraco.interfaces;
-using umbraco.NodeFactory;
-using Umbraco.Web;
 using Umbraco.Web.Routing;
 
 namespace uDocumentation
 {
-    public class DocumentationContentFinder : IContentFinder
+    public class DocumentationContentFinder : ContentFinderByNiceUrl
     {
-        public bool TryFindContent(PublishedContentRequest contentRequest)
+        public override bool TryFindContent(PublishedContentRequest contentRequest)
         {
-            bool succes = false;
+            // eg / or /path/to/whatever
+            var url = contentRequest.Uri.GetAbsolutePathDecoded();
 
-            // Added because in 4.7.1 for some inexplicable reason, the trailing slash 
-            // is being stripped before we get the url in the NotFoundHandler
-            
-            var url = HttpContext.Current.Items["UmbPage"].ToString();
+            // ensure it's a md url
+            const string mdRoot = "/" + MarkdownLogic.BaseUrl;
+            if (url.StartsWith(mdRoot) == false)
+                return false; // not for us
+
+            // find the root content
+            var node = FindContent(contentRequest, mdRoot);
+            if (node == null)
+                return false;
+
+            // kill those old urls
+            foreach (var s in new []{ "master", "v480" })
+                if (url.StartsWith(mdRoot + "/" + s))
+                {
+                    url = url.Replace(mdRoot + "/" + s, mdRoot);
+                    contentRequest.SetRedirectPermanent(url);
+                    return true;
+                }
+
+            // find the md file
+            var mdFilepath = FindMarkdownFile(url);
+            if (mdFilepath == null)
+            {
+                // clear the published content (that was set by FindContent) to cause a 404, and in
+                // both case return 'true' because there's no point other finders try to handle the request
+                contentRequest.PublishedContent = null;
+                return true;
+            }
+ 
+            // set the context vars
+            var httpContext = contentRequest.RoutingContext.UmbracoContext.HttpContext;
+            httpContext.Items[MarkdownLogic.MarkdownPathKey] = mdFilepath;
+            httpContext.Items["topicTitle"] = string.Join(" - ", httpContext.Request.RawUrl
+                .Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)
+                .Skip(1)
+                .Reverse());
+
+            // override the template
+            const string altTemplate = "DocumentationSubpage";
+            var templateIsSet = contentRequest.TrySetTemplate(altTemplate);
+            //httpContext.Trace.Write("Markdown Files Handler",
+            //    string.Format("Template changed to: '{0}' is {1}", altTemplate, templateIsSet));
+
+            // be happy
+            return true;
+        }
+
+        private static string FindMarkdownFile(string url /*, out string redirUrl*/)
+        {
+            //redirUrl = null;
+
             if (url.StartsWith("/"))
                 url = url.Substring(1);
 
-            url = url.Replace(".aspx", string.Empty);
+            var relpath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
 
+            // note
+            // the whole redirecting thing is moot because Umbraco normalizes urls
+            // so even if redirecting to /foo/ it will end up as /foo... getting rid
+            // of it
 
-            if (url.Length > 0 && (url.ToLower().StartsWith(MarkdownLogic.BaseUrl) || url.ToLower().Contains("/documentation/")) && !IsImage(url))
-            {
-                bool redirect = false;
-                //take care of those versioned urls
-                if (url.StartsWith(MarkdownLogic.BaseUrl + "/master") || url.StartsWith(MarkdownLogic.BaseUrl + "/v480"))
-                {
-                    //to kill the old requests and guide them to the root folder
-                    url = url.Replace(MarkdownLogic.BaseUrl + "/master", MarkdownLogic.BaseUrl);
-                    url = url.Replace(MarkdownLogic.BaseUrl + "/v480", MarkdownLogic.BaseUrl);
-                }
-
-
-                if (url.Substring(0, 1) == "/")
-                    url = url.Substring(1, url.Length - 1);
-
-                var _url = url;
-                redirect = doRedirect(_url, out url);
-
-                if (redirect)
-                    HttpContext.Current.Response.RedirectPermanent(url);
-
-
-                XmlNode urlNode = null;
-                bool notFound = true;
-                string markdownPath = string.Empty;
-
-                // We're not at domain root
-                if (url.IndexOf("/") != -1)
-                {
-                    string theRealUrl = url.Substring(0, url.IndexOf("/"));
-                    string realUrlXPath = CreateXPathQuery(theRealUrl, true);
-
-                    urlNode = content.Instance.XmlContent.SelectSingleNode(realUrlXPath);
-                    string markdownRelativePath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
-
-                    string filePath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, ".md");
-                    if (File.Exists(filePath))
-                    {
-                        notFound = false;
-                        markdownPath = filePath;
-                    }
-
-                    if (notFound)
-                    {
-                        string indexPath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, "\\index.md");
-                        if (File.Exists(indexPath))
-                        {
-                            notFound = false;
-                            markdownPath = indexPath;
-                        }
-                    }
-                }
-
-                if (urlNode != null && !notFound)
-                {
-                    XmlAttribute legacyNodeTypeAliasAttribute = urlNode.Attributes["nodeTypeAlias"];
-                    string nodeTypeAlias = legacyNodeTypeAliasAttribute == null ? string.Empty : legacyNodeTypeAliasAttribute.Value;
-                    
-                    if (urlNode.Name == MarkdownLogic.DocumentTypeAlias || nodeTypeAlias == MarkdownLogic.DocumentTypeAlias || urlNode.Name == "Projects")
-                    {
-                        HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey] = markdownPath;
-                        HttpContext.Current.Items["topicTitle"] = string.Join(" - ", HttpContext.Current.Request.RawUrl
-                            .Split(new[] { '/' }, System.StringSplitOptions.RemoveEmptyEntries)
-                            .Skip(1)
-                            .Reverse());
-                        
-                        var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-                        var content = umbracoHelper.TypedContent(urlNode.Attributes["id"].Value);
-                        contentRequest.PublishedContent = content;
-                        
-                        const string altTemplate = "DocumentationSubpage"; 
-                        var templateIsSet = contentRequest.TrySetTemplate(altTemplate);
-
-                        HttpContext.Current.Trace.Write("Markdown Files Handler",
-                                                        string.Format("Templated changed to: '{0}' is {1}", altTemplate, templateIsSet));
-                        succes = true;
-                    }
-                }
-            }
-
-            return succes;
-        }
-
-        private static string[] ImgExts = ".jpg,.jpeg,.gif,.png,.bmp".Split(',');
-        private bool IsImage(string url)
-        {
-            foreach (var imgExt in ImgExts)
-            {
-                if (url.EndsWith(imgExt))
-                    return true;
-            }
-            return false;
-        }
-
-        private static bool doRedirect(string url, out string returnurl)
-        {
             if (url.EndsWith("/"))
             {
-                string markdownRelativePath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
-                string filePath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, "\\index.md");
-
-                if (!File.Exists(filePath))
-                {
-                    returnurl = url.TrimEnd('/');
-                    return true;
-                }
-
+                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
+                if (File.Exists(fpath))
+                    return fpath; // ok!
+                // else it could be a normal file?
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath.Substring(0, relpath.Length - 1), ".md");
+                if (File.Exists(fpath))
+                    return fpath;
+                //{
+                //    // does not work for a directory but would work for a file
+                //    redirUrl = "/" + url.Substring(0, url.Length - 1);
+                //    return null;
+                //}
             }
             else
             {
-                string markdownRelativePath = url.UnderscoreToDot().Replace('/', '\\').TrimEnd('\\');
-                string filePath = string.Concat(HttpRuntime.AppDomainAppPath, markdownRelativePath, ".md");
-                if (!File.Exists(filePath))
-                {
-                    returnurl = url + "/";
-                    return true;
-                }
+                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, ".md");
+                if (File.Exists(fpath))
+                    return fpath; // ok!
+                // else it could be a directory?
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
+                if (File.Exists(fpath))
+                    return fpath;
+                //{
+                //    // does not match a file but would work for a directory, redirect
+                //    redirUrl = "/" + url + "/";
+                //    return null;
+                //}
             }
 
-            returnurl = url;
-            return false;
-        }
-
-        private const string PageXPathQueryStart = "/root";
-        private const string UrlName = "@urlName";
-
-        public static string CreateXPathQuery(string url, bool checkDomain)
-        {
-
-            string _tempQuery = "";
-            if (GlobalSettings.HideTopLevelNodeFromPath && checkDomain)
-            {
-                _tempQuery = "/root" + GetChildContainerName() + "/*";
-            }
-            else if (checkDomain)
-                _tempQuery = "/root" + GetChildContainerName();
-
-
-            string[] requestRawUrl = url.Split("/".ToCharArray());
-
-            // Check for Domain prefix
-            string domainUrl = "";
-            if (checkDomain && Domain.Exists(HttpContext.Current.Request.ServerVariables["SERVER_NAME"]))
-            {
-                // we need to get the node based on domain
-                INode n = new Node(Domain.GetRootFromDomain(HttpContext.Current.Request.ServerVariables["SERVER_NAME"]));
-                domainUrl = n.UrlName; // we don't use niceUrlFetch as we need more control
-                if (n.Parent != null)
-                {
-                    while (n.Parent != null)
-                    {
-                        n = n.Parent;
-                        domainUrl = n.UrlName + "/" + domainUrl;
-                    }
-                }
-                domainUrl = "/" + domainUrl;
-
-                // If at domain root
-                if (url == "")
-                {
-                    _tempQuery = "";
-                    requestRawUrl = domainUrl.Split("/".ToCharArray());
-                    HttpContext.Current.Trace.Write("requestHandler",
-                                                    "Redirecting to domain: " +
-                                                    HttpContext.Current.Request.ServerVariables["SERVER_NAME"] +
-                                                    ", nodeId: " +
-                                                    Domain.GetRootFromDomain(
-                                                        HttpContext.Current.Request.ServerVariables["SERVER_NAME"]).
-                                                        ToString());
-                }
-                else
-                {
-                    // if it matches a domain url, skip all other xpaths and use this!
-                    string langXpath = CreateXPathQuery(domainUrl + "/" + url, false);
-                    if (content.Instance.XmlContent.DocumentElement.SelectSingleNode(langXpath) != null)
-                        return langXpath;
-                }
-            }
-            else if (url == "" && !GlobalSettings.HideTopLevelNodeFromPath)
-                _tempQuery += "/*";
-
-            bool rootAdded = false;
-            if (GlobalSettings.HideTopLevelNodeFromPath && requestRawUrl.Length == 1)
-            {
-                HttpContext.Current.Trace.Write("umbracoRequestHandler", "xpath: '" + _tempQuery + "'");
-                if (_tempQuery == "")
-                    _tempQuery = "/root" + GetChildContainerName() + "/*";
-                _tempQuery = "/root" + GetChildContainerName() + "/* [" + UrlName +
-                             " = \"" + requestRawUrl[0].Replace(".aspx", "").ToLower() + "\"] | " + _tempQuery;
-                HttpContext.Current.Trace.Write("umbracoRequestHandler", "xpath: '" + _tempQuery + "'");
-                rootAdded = true;
-            }
-
-
-            for (int i = 0; i <= requestRawUrl.GetUpperBound(0); i++)
-            {
-                if (requestRawUrl[i] != "")
-                    _tempQuery += GetChildContainerName() + "/* [" + UrlName + " = \"" + requestRawUrl[i].Replace(".aspx", "").ToLower() +
-                                  "\"]";
-            }
-
-            if (GlobalSettings.HideTopLevelNodeFromPath && requestRawUrl.Length == 2)
-            {
-                _tempQuery += " | " + PageXPathQueryStart + GetChildContainerName() + "/* [" + UrlName + " = \"" +
-                              requestRawUrl[1].Replace(".aspx", "").ToLower() + "\"]";
-            }
-            HttpContext.Current.Trace.Write("umbracoRequestHandler", "xpath: '" + _tempQuery + "'");
-
-            Debug.Write(_tempQuery + "(" + PageXPathQueryStart + ")");
-
-            if (checkDomain)
-                return _tempQuery;
-            else if (!rootAdded)
-                return PageXPathQueryStart + _tempQuery;
-            else
-                return _tempQuery;
-        }
-
-        private static string GetChildContainerName()
-        {
-            if (string.IsNullOrEmpty(UmbracoSettings.TEMP_FRIENDLY_XML_CHILD_CONTAINER_NODENAME) == false)
-                return "/" + UmbracoSettings.TEMP_FRIENDLY_XML_CHILD_CONTAINER_NODENAME;
-            return "";
+            return null;
         }
     }
 
-    public class MyTest : ApplicationEventHandler
+    public class DocumentationContentFinderInstaller : ApplicationEventHandler
     {
-        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication,
-            ApplicationContext applicationContext)
+        protected override void ApplicationStarting(UmbracoApplicationBase app, ApplicationContext context)
         {
             ContentFinderResolver.Current
                 .InsertTypeBefore<ContentFinderByNiceUrl, DocumentationContentFinder>();
