@@ -499,7 +499,6 @@
     <Content Include="masterpages\WikiPageAttachments.master" />
     <Content Include="masterpages\WikiPageHistory.master" />
     <Content Include="masterpages\WikipagewithTOC.master" />
-    <Content Include="media\avatar\default.gif" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkFlowButton.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\Workflownode.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkflowOverview.png" />
