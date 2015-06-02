@@ -1,12 +1,14 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum;
+@using uForum.Models
 @using uForum.Services
+@using Umbraco.Core.Persistence
 
 @{
-    var page = 1;
-    if(Request["page"] != null)
+    int page;
+    if (!int.TryParse(Request["page"], out page))
     {
-        int.TryParse(Request["page"], out page);
+        page = 1;
     }
     var nextPage = page + 1;
     
@@ -17,7 +19,21 @@
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
 
-    var topics = topicService.GetLatestTopics(50, page, true, cat);
+    Page<ReadOnlyTopic> topics;
+
+    // only cache the first page of each category
+    if (cat > 0 || page > 1)
+    {
+        topics = topicService.GetLatestTopics(50, page, true, cat);
+    }
+    else
+    {
+        var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+        var key = "OurForumForum[" + cat + "]";
+        topics = (Page<ReadOnlyTopic>) cache.GetCacheItem(key,
+            () => topicService.GetLatestTopics(50, page, true, cat),
+            TimeSpan.FromSeconds(4));
+    }
 }
 <div id="overlay" class="overlay"></div>
     <!-- FORUM LIST START -->
