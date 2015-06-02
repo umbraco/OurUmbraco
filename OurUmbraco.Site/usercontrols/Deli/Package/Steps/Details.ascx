@@ -1,5 +1,26 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Details" %>
+<%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 
+<%
+    Member m = Member.GetCurrentMember();
+    var reputation = string.Empty;
+    if (m.getProperty("reputationTotal") != null && m.getProperty("reputationTotal").Value != null)
+        reputation = m.getProperty("reputationTotal").Value.ToString();
+
+    int reputationTotal;
+    var enoughReputation = int.TryParse(reputation, out reputationTotal) && reputationTotal > 30;
+
+    if (enoughReputation == false)
+    {
+        holder.Visible = false;
+        notallowed.Visible = true;
+    }
+%>
+<asp:PlaceHolder runat="server" ID="notallowed" Visible="False">
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+</asp:PlaceHolder>
+
+<asp:PlaceHolder runat="server" ID="holder">
 <div class="form simpleForm" id="registrationForm">
 <fieldset>
     <legend>Project Information</legend>
@@ -150,3 +171,4 @@
   
 </script>
 
+</asp:PlaceHolder>
