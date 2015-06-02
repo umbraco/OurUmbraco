@@ -1800,8 +1800,8 @@
     <Content Include="masterpages\ReleaseProgress.master" />
     <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
-    <Content Include="umbraco\lib\angular-dynamic-locale\tmhDynamicLocale.min.js.map" />
     <Content Include="umbraco\translation\translationTasks.dtd" />
+    <Content Include="Views\Partials\Forum\actions.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
