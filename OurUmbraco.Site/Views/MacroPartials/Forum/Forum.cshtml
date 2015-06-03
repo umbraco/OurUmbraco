@@ -18,22 +18,7 @@
         cat = CurrentPage.Id;
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-
-    IEnumerable<ReadOnlyTopic> topics;
-
-    // only cache the first page of each category
-    if (cat > 0 || page > 1)
-    {
-        topics = topicService.GetLatestTopics(50, page, true, cat);
-    }
-    else
-    {
-        var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-        var key = "OurForumForum[" + cat + "]";
-        topics = (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
-            () => topicService.GetLatestTopics(50, page, true, cat).ToArray(),
-            TimeSpan.FromSeconds(4));
-    }
+    var topics = topicService.GetLatestTopics(50, page, true, cat);
 }
 <div id="overlay" class="overlay"></div>
     <!-- FORUM LIST START -->

@@ -31,6 +31,19 @@ namespace uForum.Services
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
+            // only cache the first page of each category
+            if (page > 1)
+                return GetLatestTopicsNoCache(take, page, ignoreSpam, category);
+            var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+            var key = "OurForumForum[" + category + "]";
+            return (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
+                () => GetLatestTopicsNoCache(50, page, true, category).ToArray(),
+                TimeSpan.FromSeconds(4));
+
+        }
+
+        private IEnumerable<ReadOnlyTopic> GetLatestTopicsNoCache(long take, long page, bool ignoreSpam, int category)
+        {
             const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
 FROM forumTopics
 LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
@@ -106,32 +119,29 @@ FETCH NEXT @count ROWS ONLY";
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = 1000)
         {
-            var sql = new Sql().Select("TOP " + maxCount + " " + 
-        @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql1 = @"SELECT TOP @count forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId")
-                .From("forumTopics")
-                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
-                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
+	forumComments.position, forumComments.score, forumComments.topicId
+FROM forumTopics
+LEFT OUTER JOIN forumComments ON (forumTopics.id = forumComments.topicId)
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+WHERE
+";
+            const string sql2 = @"
+    (forumComments.id IS NULL OR forumComments.parentCommentId=0)
+ORDER BY forumTopics.updated DESC, forumComments.created DESC
+";
 
-            if (ignoreSpam)
-            {
-                sql.Where<Topic>(x => x.IsSpam != true);
-                sql.Where("forumComments.id IS NULL OR (forumComments.isSpam <> 1)");
-            }
+            const string sqlx = sql1 + sql2;
+            const string sqli = sql1 + " (forumTopics.isSpam <> 1) AND (forumComments.id IS NULL OR forumComments.isSpam <> 1) AND " + sql2;
 
-            sql.Where("forumComments.id IS NULL OR (forumComments.[parentCommentId] = 0)");
-
-            //start with the most recent
-            sql
-                .OrderByDescending<Topic>(x => x.Updated)
-                .OrderByDescending<Comment>(comment => comment.Created);
+            var sql = ignoreSpam ? sqlx : sqli;
 
             var result = _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
-                sql);
+                sql, new { count = maxCount });
 
             return result;
         }
@@ -143,19 +153,20 @@ FETCH NEXT @count ROWS ONLY";
         /// <returns></returns>
         public ReadOnlyTopic QueryById(int id)
         {
-            var sql = new Sql().Select(@"forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql = @"SELECT forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId")
-                .From("forumTopics")
-                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
-                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .Where<ReadOnlyTopic>(topic => topic.Id == id);
+	forumComments.position, forumComments.score, forumComments.topicId
+FROM forumTopics
+LEFT OUTER JOIN forumComments ON (forumTopics.id = forumComments.topicId)
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+WHERE forumTopics.id=@id
+";
 
             return _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
-                sql).FirstOrDefault();
+                sql, new { id = id }).FirstOrDefault();
         }
 
         public Topic GetById(int id)
@@ -247,14 +258,13 @@ FETCH NEXT @count ROWS ONLY";
         {
             return (ReadOnlyTopic)cache.GetCacheItem(typeof (TopicService) + "-CurrentTopic", () =>
             {
-                var contextId = context.Items["topicID"];
+                var contextId = context.Items["topicID"] as string;
                 if (contextId != null)
                 {
-                    int topicId = 0;
-                    if (int.TryParse(contextId.ToString(), out topicId))
+                    int topicId;
+                    if (int.TryParse(contextId, out topicId))
                         return QueryById(topicId);
                 }
-
                 return null;
             });
         }
