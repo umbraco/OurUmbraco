@@ -31,19 +31,6 @@ namespace uForum.Services
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
-            // only cache the first page of each category
-            if (page > 1)
-                return GetLatestTopicsNoCache(take, page, ignoreSpam, category);
-            var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-            var key = "OurForumForum[" + category + "]";
-            return (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
-                () => GetLatestTopicsNoCache(50, page, true, category).ToArray(),
-                TimeSpan.FromSeconds(4));
-
-        }
-
-        private IEnumerable<ReadOnlyTopic> GetLatestTopicsNoCache(long take, long page, bool ignoreSpam, int category)
-        {
             const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
 FROM forumTopics
 LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
