@@ -5,11 +5,11 @@
         <div id="body">
             <asp:ContentPlaceHolder Id="Main" runat="server">
                 <div style="margin-top: 25px;">
-                   <umbraco:Macro Alias="[Docs]Breadcrumb" runat="server"></umbraco:Macro>
+                   <umbraco:Macro Alias="DocsBreadcrumb" runat="server"></umbraco:Macro>
                 </div>
                 
                 <div id="markdown-docs" class="markdown-syntax">
-                        <umbraco:Macro Alias="[Docs]DisplayMarkdown" runat="server"></umbraco:Macro>
+                        <umbraco:Macro Alias="DocsDisplayMarkdown" runat="server"></umbraco:Macro>
                 </div>
 
                 <br style="clear: both"/>

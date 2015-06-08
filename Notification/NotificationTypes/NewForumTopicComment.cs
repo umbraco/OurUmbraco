@@ -31,7 +31,7 @@ namespace NotificationsCore.NotificationTypes
                 Comment com = (Comment)args[0];
                 Topic topic = (Topic)args[1];
                 string url = (string)args[2];
-                IMember mem = (IMember)args[3];
+                string memberName = (string)args[3];
 
 
                 if (com.IsSpam)
@@ -54,7 +54,7 @@ namespace NotificationsCore.NotificationTypes
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 var subject = string.Format(details.SelectSingleNode("//subject").InnerText, topic.Title);
                 var body = details.SelectSingleNode("//body").InnerText;
-                body = string.Format(body, topic.Title, "http://" + domain + url + "#comment-" + com.Id, mem.Name,  HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
+                body = string.Format(body, topic.Title, "http://" + domain + url + "#comment-" + com.Id, memberName, HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
 
                 
                 //connect to DB

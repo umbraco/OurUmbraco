@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlTypes;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,24 +29,34 @@ namespace uForum.Services
         /// <param name="ignoreSpam"></param>
         /// <param name="category"></param>
         /// <returns></returns>
-        public Page<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
+        public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
-            var sql = new Sql().Select(@"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName")
-                .From("forumTopics")
-                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
+            const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
+FROM forumTopics
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+";
+            const string sql2 = @"
+ORDER BY updated DESC
+OFFSET @offset ROWS
+FETCH NEXT @count ROWS ONLY";
 
-            if (ignoreSpam)
+            const string sqlxx = sql1 + sql2;
+            const string sqlix = sql1 + "WHERE isSpam=0" + sql2;
+            const string sqlxc = sql1 + "WHERE forumTopics.parentId=@category" + sql2;
+            const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category" + sql2;
+
+            var sql = ignoreSpam
+                ? (category > 0 ? sqlic : sqlix)
+                : (category > 0 ? sqlxc : sqlxx);
+            
+            // probably as fast as PetaPoco can be...
+            return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new
             {
-                sql.Where<Topic>(x => x.IsSpam != true);
-            }
-
-            if (category > 0)
-                sql.Where<Topic>(x => x.ParentId == category);
-
-
-            sql.OrderByDescending("updated");
-            return _databaseContext.Database.Page<ReadOnlyTopic>(page, take, sql);
+                offset = (page - 1) * take,
+                count = take,
+                category = category
+            });
         }
 
         /// <summary>
@@ -95,32 +106,29 @@ namespace uForum.Services
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = 1000)
         {
-            var sql = new Sql().Select("TOP " + maxCount + " " + 
-        @"forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql1 = @"SELECT TOP @count forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId")
-                .From("forumTopics")
-                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
-                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')");
+	forumComments.position, forumComments.score, forumComments.topicId
+FROM forumTopics
+LEFT OUTER JOIN forumComments ON (forumTopics.id = forumComments.topicId)
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+WHERE
+";
+            const string sql2 = @"
+    (forumComments.id IS NULL OR forumComments.parentCommentId=0)
+ORDER BY forumTopics.updated DESC, forumComments.created DESC
+";
 
-            if (ignoreSpam)
-            {
-                sql.Where<Topic>(x => x.IsSpam != true);
-                sql.Where("forumComments.id IS NULL OR (forumComments.isSpam <> 1)");
-            }
+            const string sqlx = sql1 + sql2;
+            const string sqli = sql1 + " (forumTopics.isSpam <> 1) AND (forumComments.id IS NULL OR forumComments.isSpam <> 1) AND " + sql2;
 
-            sql.Where("forumComments.id IS NULL OR (forumComments.[parentCommentId] = 0)");
-
-            //start with the most recent
-            sql
-                .OrderByDescending<Topic>(x => x.Updated)
-                .OrderByDescending<Comment>(comment => comment.Created);
+            var sql = ignoreSpam ? sqlx : sqli;
 
             var result = _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
-                sql);
+                sql, new { count = maxCount });
 
             return result;
         }
@@ -132,19 +140,20 @@ namespace uForum.Services
         /// <returns></returns>
         public ReadOnlyTopic QueryById(int id)
         {
-            var sql = new Sql().Select(@"forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql = @"SELECT forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId")
-                .From("forumTopics")
-                .LeftOuterJoin("forumComments").On("forumTopics.id = forumComments.topicId")
-                .LeftOuterJoin("umbracoNode u1").On("(forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .LeftOuterJoin("umbracoNode u2").On("(forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')")
-                .Where<ReadOnlyTopic>(topic => topic.Id == id);
+	forumComments.position, forumComments.score, forumComments.topicId
+FROM forumTopics
+LEFT OUTER JOIN forumComments ON (forumTopics.id = forumComments.topicId)
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+WHERE forumTopics.id=@id
+";
 
             return _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
-                sql).FirstOrDefault();
+                sql, new { id = id }).FirstOrDefault();
         }
 
         public Topic GetById(int id)
@@ -236,14 +245,13 @@ namespace uForum.Services
         {
             return (ReadOnlyTopic)cache.GetCacheItem(typeof (TopicService) + "-CurrentTopic", () =>
             {
-                var contextId = context.Items["topicID"];
+                var contextId = context.Items["topicID"] as string;
                 if (contextId != null)
                 {
-                    int topicId = 0;
-                    if (int.TryParse(contextId.ToString(), out topicId))
+                    int topicId;
+                    if (int.TryParse(contextId, out topicId))
                         return QueryById(topicId);
                 }
-
                 return null;
             });
         }

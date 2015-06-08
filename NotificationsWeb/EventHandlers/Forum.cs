@@ -8,6 +8,7 @@ using Umbraco.Core;
 using uForum.Services;
 using uForum;
 using NotificationsWeb.Services;
+using Umbraco.Web.Security;
 
 namespace NotificationsWeb.EventHandlers
 {
@@ -56,10 +57,13 @@ namespace NotificationsWeb.EventHandlers
             InstantNotification not = new InstantNotification();
 
             //data for notification:
-            var member = e.Topic.AuthorAsMember();
-          
-
-            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewTopic", e.Topic,e.Topic.GetUrl(), member);
+            var membershipHelper = new MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+            var member = membershipHelper.GetById(e.Topic.MemberId);
+            var memberName = string.Empty;
+            if (member != null)
+                memberName = member.Name;
+            
+            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewTopic", e.Topic, e.Topic.GetUrl(), memberName);
         }
 
         void CommentService_Created(object sender, uForum.CommentEventArgs e)
@@ -71,12 +75,16 @@ namespace NotificationsWeb.EventHandlers
             ns.SubscribeToForumTopic(e.Comment.TopicId, e.Comment.MemberId);
             
             //data for notification:
-            var member = e.Comment.AuthorAsMember();
+            var membershipHelper = new MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+            var member = membershipHelper.GetById(e.Comment.TopicId);
+            var memberName = string.Empty;
+            if (member != null)
+                memberName = member.Name;
             var topic = ts.GetById(e.Comment.TopicId);
 
             //send notifications
             InstantNotification not = new InstantNotification();
-            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewComment", e.Comment, topic, topic.GetUrl(), member);
+            not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewComment", e.Comment, topic, topic.GetUrl(), memberName);
         }
 
 

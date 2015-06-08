@@ -12,7 +12,7 @@
 			
 			<!-- THREAD ACTIONS START -->
 			
-        	<umbraco:Macro Alias="[Forum]TopicActions" runat="server" />
+        	<umbraco:Macro Alias="ForumTopicActions" runat="server" />
 
 			
 			<!-- THREAD ACTIONS END -->
@@ -21,7 +21,7 @@
 		</div>
 		<!-- FORUM HEADER END -->
 		
-		<umbraco:Macro Alias="[Forum]Thread" runat="server"></umbraco:Macro>
+		<umbraco:Macro Alias="ForumThread" runat="server"></umbraco:Macro>
 	</div>
    
 </asp:Content>

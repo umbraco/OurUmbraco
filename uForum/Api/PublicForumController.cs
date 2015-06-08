@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
 using uForum.Services;
+using Umbraco.Core.Models;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
@@ -18,7 +19,7 @@ namespace uForum.Api
         public IEnumerable<ExpandoObject> LatestPaged(int page, int cat)
         {
             var l = new List<ExpandoObject>();
-            foreach (var topic in TopicService.GetLatestTopics(50, page, true, cat).Items)
+            foreach (var topic in TopicService.GetLatestTopics(50, page, true, cat))
             {
                 dynamic o = new ExpandoObject();
 
@@ -29,29 +30,39 @@ namespace uForum.Api
                 o.updated = topic.Updated.ConvertToRelativeTime();
                 if (topic.LatestReplyAuthor > 0)
                 {
-                    var mem = Members.GetById(topic.LatestReplyAuthor);
-                    if (mem != null)
-                    {
-                        o.memId = mem.Id;
-                        o.memName = mem.Name;
-                    }
+                    o.memId = topic.LatestReplyAuthor;
+                    o.memName = topic.LastReplyAuthorName;
+                    //var mem = Members.GetById(topic.LatestReplyAuthor);
+                    //if (mem != null)
+                    //{
+                    //    o.memId = mem.Id;
+                    //    o.memName = mem.Name;
+                    //}
                 }
                 else
                 {
-                    var author = Members.GetById(topic.MemberId);
-                    if (author != null)
-                    {
-                        o.memId = author.Id;
-                        o.memName = author.Name;
-                    }
+                    o.memId = topic.MemberId;
+                    o.memName = topic.AuthorName;
+                    //var author = Members.GetById(topic.MemberId);
+                    //if (author != null)
+                    //{
+                    //    o.memId = author.Id;
+                    //    o.memName = author.Name;
+                    //}
                 }
 
-                var forum = Umbraco.TypedContent(topic.ParentId);
-                if (forum != null)
+                IPublishedContent forum;
+                if (topic.ParentId > 0 && ((forum = Umbraco.TypedContent(topic.ParentId)) != null))
                 {
                     o.forumUrl = forum.Url;
                     o.forumName = forum.Name;
                 }
+                //var forum = Umbraco.TypedContent(topic.ParentId);
+                //if (forum != null)
+                //{
+                //    o.forumUrl = forum.Url;
+                //    o.forumName = forum.Name;
+                //}
 
                 l.Add(o);
             }

@@ -263,7 +263,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                     lt_versions.Text = umboptions;
 
                     
-                    string[] dotnetversions = {"2.0","3.5","4.0"};
+                    string[] dotnetversions = {"2.0","3.5","4.0", "4.5"};
                     string dotnetoptions = string.Empty;
 
                     foreach (var opt in dotnetversions)

@@ -10,7 +10,7 @@
                 <div class="clear"></div>
             </div>
 			
-			<umbraco:Macro Alias="[Projects]ProjectDetail" runat="server" />
+			<umbraco:Macro Alias="ProjectsProjectDetail" runat="server" />
 			
         </div>
     </section>

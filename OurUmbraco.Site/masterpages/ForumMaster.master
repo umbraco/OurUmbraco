@@ -6,7 +6,7 @@
 		<asp:contentplaceholder id="main" runat="server"/>
 	</section>
 	
-	<umbraco:Macro Alias="[Forum]Form" runat="server"></umbraco:Macro>
+	<umbraco:Macro Alias="ForumForm" runat="server"></umbraco:Macro>
 </asp:content>
 	
 	

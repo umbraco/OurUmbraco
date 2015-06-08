@@ -28,7 +28,7 @@
 
 							<li class="filter-category">
 								<h3>By Category</h3>
-								<umbraco:Macro Alias="[Projects]ListCategories" runat="server"></umbraco:Macro>
+								<umbraco:Macro Alias="ProjectsListCategories" runat="server"></umbraco:Macro>
 							</li>
 
 						
@@ -48,7 +48,7 @@
                     </div>
 
 					<div class="packages-content">
-						<umbraco:Macro Alias="[Projects]ListProjects" runat="server"></umbraco:Macro>
+						<umbraco:Macro Alias="ProjectsListProjects" runat="server"></umbraco:Macro>
 					</div>
 
         		</div><!-- .content-wrapper -->

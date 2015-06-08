@@ -70,19 +70,7 @@
 				<h1 class="text-center">Forum Activity</h1>
 			</div>
 
-			<div class="col-md-6">
-
-				
-				<umbraco:Macro topicpage="1" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
-				
-
-			</div>
-
-			<div class="col-md-6">
-
-				<umbraco:Macro topicpage="2" Alias="[Forum]LatestActivity" runat="server"></umbraco:Macro>
-				
-			</div>
+			<umbraco:Macro Alias="ForumLatestActivity" runat="server"></umbraco:Macro>
 
 			<div class="col-md-12 goto-forum">
 				<a class="button transparent" href="/forum">Go to Forum &rarr;</a>

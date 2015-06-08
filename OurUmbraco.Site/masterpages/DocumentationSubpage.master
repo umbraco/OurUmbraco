@@ -7,7 +7,7 @@
 		<div class="sidebar-area">
 			<div class="sidebar-content">
 				<div class="content-wrapper">
-                    <umbraco:Macro Alias="[Docs]Navigation" runat="server"></umbraco:Macro>
+                    <umbraco:Macro Alias="DocsNavigation" runat="server"></umbraco:Macro>
 				</div><!-- .content-wrapper -->
 			</div><!-- .sidebar-content -->
 		</div><!-- .sidebar-area-->
@@ -16,7 +16,7 @@
 			<div class="main-content">
 				<div class="content-wrapper">
                     <div>
-                        <umbraco:Macro Alias="[Docs]Breadcrumb" runat="server"></umbraco:Macro>
+                        <umbraco:Macro Alias="DocsBreadcrumb" runat="server"></umbraco:Macro>
                     </div>
                     
                     <div class="search-big">
@@ -29,7 +29,7 @@
                     </ul>
 
                     <div id="markdown-docs" class="docs-default-listing markdown-syntax">
-                        <umbraco:Macro Alias="[Docs]DisplayMarkdown" runat="server"></umbraco:Macro>
+                        <umbraco:Macro Alias="DocsDisplayMarkdown" runat="server"></umbraco:Macro>
                     </div>
         		</div><!-- .content-wrapper -->
 			</div><!-- .main-content -->

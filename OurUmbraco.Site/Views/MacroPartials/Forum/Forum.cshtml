@@ -1,12 +1,14 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum;
+@using uForum.Models
 @using uForum.Services
+@using Umbraco.Core.Persistence
 
 @{
-    var page = 1;
-    if(Request["page"] != null)
+    int page;
+    if (!int.TryParse(Request["page"], out page))
     {
-        int.TryParse(Request["page"], out page);
+        page = 1;
     }
     var nextPage = page + 1;
     
@@ -17,7 +19,21 @@
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
 
-    var topics = topicService.GetLatestTopics(50, page, true, cat);
+    IEnumerable<ReadOnlyTopic> topics;
+
+    // only cache the first page of each category
+    if (page > 1)
+    {
+        topics = topicService.GetLatestTopics(50, page, true, cat);
+    }
+    else
+    {
+        var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+        var key = "OurForumForum[" + cat + "]";
+        topics = (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
+            () => topicService.GetLatestTopics(50, page, true, cat).ToArray(),
+            TimeSpan.FromSeconds(4));
+    }
 }
 <div id="overlay" class="overlay"></div>
     <!-- FORUM LIST START -->
@@ -50,7 +66,7 @@
         <tbody class="forum-default-listing">
 
             <!-- FORUM THREAD START -->
-            @foreach (var topic in topics.Items)
+            @foreach (var topic in topics)
             {       
                 
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">

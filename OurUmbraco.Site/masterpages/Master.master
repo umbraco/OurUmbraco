@@ -40,7 +40,7 @@
 
         <script src="//code.jquery.com/jquery-1.7.2.min.js"></script>
 
-        <umbraco:Macro Alias="[Members]JsValues" runat="server" />
+        <umbraco:Macro Alias="MembersJsValues" runat="server" />
 
 
         <asp:ContentPlaceHolder ID="Head" runat="server"></asp:ContentPlaceHolder>
@@ -69,7 +69,7 @@
     <body class="<%= bodyCss %>">
         <form runat="server">
 
-            <umbraco:Macro Alias="[Members]QuickMenu" runat="server"></umbraco:Macro>
+            <umbraco:Macro Alias="MembersQuickMenu" runat="server"></umbraco:Macro>
 
             <div class="wrapper">
 
@@ -89,7 +89,7 @@
                                 </div>
 
                                 <nav class="col-md-9">
-                                    <umbraco:Macro Alias="[Navigation]TopNavigation" runat="server" />
+                                    <umbraco:Macro Alias="NavigationTopNavigation" runat="server" />
                                 </nav>
 
                             </div>
@@ -99,7 +99,7 @@
 
                 </header>
                 
-                <umbraco:Macro Alias="[Global]AlertBar" runat="server"></umbraco:Macro>
+                <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
 
                 <asp:ContentPlaceHolder ID="Search" runat="server" />
 

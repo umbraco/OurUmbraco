@@ -292,10 +292,11 @@
                                 <span>Contributors:</span> 
                                 @{var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);}
                                 
-                                @foreach(var contri in  cs.GetContributors(project.Id)){
-                                    
+                                @foreach(var contri in  cs.GetContributors(project.Id).ToArray())
+                                {
+
                                     @Members.GetById(@contri.MemberId).Name
-                                    
+
                                 }
                                 
                                 

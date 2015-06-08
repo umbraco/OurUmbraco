@@ -11,7 +11,7 @@
     <!-- Start of question -->
     <div class="meta">
         <div class="profile">
-            <a href="javascript:void(0)">@topicAuthor.Name</a> <span class="hide-xs">has in total&nbsp;</span>@topicAuthor.Karma() karma points
+            <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span class="hide-xs">has in total, </span>@topicAuthor.Karma() karma points
 
             @if (roles.Length > 1)
             {
@@ -37,7 +37,9 @@
     </div>
 
     <div class="comment-inner">
-        <a href="javascript:void(0)" class="photo">@avatar(topicAuthor, 48) <span class="karma">Recieved @topicAuthor.Karma() <br>Karma points</span>
+        <a href="/member/@topicAuthor.Id" class="photo">
+            @Avatar(topicAuthor, 48)
+            <span class="karma">Recieved @topicAuthor.Karma() <br>Karma points</span>
         </a>
         <div class="body-meta">
             <div class="topic">
@@ -107,28 +109,28 @@
         }
     </div>
 </li> <!-- End of question -->
-@helper avatar(IPublishedContent member, int avatarSize)
+@helper Avatar(IPublishedContent member, int avatarSize)
 {
     if (member.HasValue("avatar"))
     {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
+        @LocalAvatar(member.GetPropertyValue<string>("avatar"), avatarSize);
     }
     else
     {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
+        @Gravatar(member.GetPropertyValue<string>("Email"), avatarSize);
     }
 }
 
 
-@helper gravatar(string email, int size)
+@helper Gravatar(string email, int size)
 {
     var emailId = email.ToLower();
     var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-    
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" />
+
+    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" alt="Avatar" />
 }
 
-@helper localAvatar(string imgPath, int size)
+@helper LocalAvatar(string imgPath, int size)
 {   
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Alternate Text" />
+    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Avatar" />
 }
