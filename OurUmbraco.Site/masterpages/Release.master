@@ -39,18 +39,6 @@
 					        </li>
 							<li>
 								<a href="/contribute/progress"><h3>In Progress</h3></a>
-								<ul class="level-2">
-									<li>
-										<a href=""><h4>7.2.3</h4></a>
-									</li>
-									<li>
-										<a href=""><h4>7.3</h4></a>
-									</li>
-									<li>
-										<a href=""><h4>8.0</h4></a>
-									</li>
-									
-								</ul>
 							</li>
 							<li>
 								<a href="/contribute/releases"><h3>All Releases</h3></a>
@@ -249,7 +237,7 @@
     <umbraco:Macro runat="server" Language="cshtml">
  
         <script type="text/javascript">
-            (function () {
+           /* (function () {
                 var currentVersions = [];
                 var inProgressVersions = [];
                 var futureVersions = [];
@@ -260,6 +248,14 @@
                 // Load data
                 loadData('@Model.Name');
 
+            })();*/
+
+            (function () {
+
+                // Apply bindings
+                ko.applyBindings(viewModel);
+                // Load data
+                loadAllData();
             })();
             
 
