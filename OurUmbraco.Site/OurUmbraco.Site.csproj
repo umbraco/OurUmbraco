@@ -394,7 +394,9 @@
     <Content Include="config\trees.config" />
     <Content Include="config\Umb.OurUmb.MemberLocator.config" />
     <Content Include="config\UmbracoHelp.config" />
-    <Content Include="config\umbracoSettings.config" />
+    <Content Include="config\umbracoSettings.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="config\uPowers.config" />
     <Content Include="config\UrlRewriting.config" />
     <Content Include="config\uVersion.backup.config" />
@@ -1784,6 +1786,9 @@
     <Content Include="masterpages\ReleaseProgress.master" />
     <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
+    <Content Include="masterpages\ProfileLogin.master" />
+    <Content Include="masterpages\ProfileRegister.master" />
+    <Content Include="masterpages\Sidebar.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

@@ -10,15 +10,6 @@
 
     var member = Members.GetById(id);
 
-    
-    
-    
-    
-    
-    
-    
-    
-
     var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
 
     var topics = ts.GetLatestTopicsForMember(member.Id,true,10);
@@ -51,7 +42,16 @@
                 <div class="col-md-12">
 
                     <div class="member-details">
-                        <small>Emmaline <span> is from <span>@member.GetPropertyValue("location"), </span></span><span> works at <span>@member.GetPropertyValue("company")</span></span> and has godt <span></span> karma points</small>
+                        <small>@member.Name 
+                            @if (member.HasValue("location"))
+                            {
+                                <span> is from <span>@member.GetPropertyValue("location")</span></span>
+                            }
+                            @if (member.HasValue("company"))
+                            {
+                                <span> works at <span>@member.GetPropertyValue("company")</span></span>
+                            }
+                            and has godt <span></span> karma points</small>
                     </div>
                     <div class="member-bio">
                         <p>@member.GetPropertyValue("profileText")</p>

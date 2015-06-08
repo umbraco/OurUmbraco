@@ -1,0 +1,47 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:content ContentPlaceHolderId="Head" runat="server">
+
+</asp:content>
+
+<asp:content ContentPlaceHolderId="Search" runat="server">
+
+</asp:content>
+
+<asp:content ContentPlaceHolderId="Main" runat="server">
+	<div class="profile">
+    <div class="has-sidebar">
+  	<div class="page-content">
+        
+        <div id="overlay" class="overlay"></div>
+          		
+		<div class="sidebar-area">
+			<div class="sidebar-content">
+				<div class="content-wrapper">
+
+                    <umbraco:Item Field="sidebarMacros" runat="server"></umbraco:Item>
+
+				</div><!-- .content-wrapper -->
+			</div><!-- .sidebar-content -->
+		</div><!-- .sidebar-area -->
+
+		<div class="main-area">
+			<div class="main-content">
+				<div class="content-wrapper">
+
+                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+				
+				 <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
+
+        		</div><!-- .content-wrapper -->
+			</div><!-- .main-content -->
+		</div><!-- .main-area -->
+
+	</div><!-- .page-content -->
+        </div><!-- .has-sidebar -->
+        </div><!-- .profile -->
+</asp:content>
+
+<asp:content ContentPlaceHolderId="EndScripts" runat="server">
+
+</asp:content>
