@@ -34,7 +34,7 @@
         //NOTE: We are doing a *wildcard* search here because versions are stored as comma delimited values in the index
         // when I release the next version of Examine this will be different since we'll store each version separately in the same version
         // field which will be nicer to query.
-        versionFilters.Filters.Add(new SearchFilter("versions", string.Format("*{0}*", version.Trim())));
+        versionFilters.Filters.Add(new SearchFilter("versions", string.Format("{0}.*", version.Trim())));
         filters.Add(versionFilters);
     }
 
