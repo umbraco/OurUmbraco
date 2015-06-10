@@ -22,7 +22,7 @@
     var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
     var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&category_id=" + id, "");
 
-    IEnumerable<IListingItem> Projects = ProjectsProvider.GetListingsByCategory(category, true, true).Where(x => !x.NotAPackage && x.Approved && (string.Join("", x.UmbracoVerionsSupported).Contains("nan") || string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+    IEnumerable<IListingItem> projects = ProjectsProvider.GetListingsByCategory(category, true, true).Where(x => !x.NotAPackage && x.Approved && (string.Join("", x.UmbracoVerionsSupported).Contains("nan") || string.Join("", x.UmbracoVerionsSupported).Contains(version)));
 
     var pUrl = "/repo_viewproject?" + qs + "&project_id=";
 }
@@ -37,7 +37,7 @@
     <h1>@category.Name</h1>
 
     <ul class="projects">
-        @foreach (var project in @Projects)
+        @foreach (var project in projects)
         {
             <li class="clearfix">
                 <div class="deliPackage">
