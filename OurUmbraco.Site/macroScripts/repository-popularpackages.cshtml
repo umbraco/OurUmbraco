@@ -2,9 +2,10 @@
 @using Marketplace.Providers
 @using System.Xml;
 @using System.Xml.XPath;
+@using Umbraco.Core
 
 @{
- var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+ var projectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
  var take = 30;
  
  var wrapperClass = "notLoggedIn";
@@ -15,11 +16,26 @@
  if(Request.QueryString["version"] != null){
   version = Request.QueryString["version"].ToLower();
  }
-  
- List<IListingItem> favs = new List<IListingItem>();
- IEnumerable<IListingItem> Projects = ProjectsProvider.GetListingsByKarma(0, take, true, false).Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) ) );
+
+    const string uniqueWhatever = "E295637E-E957-4CCA-92CE-BF5D58F9FF59";
+    var cacheKey = uniqueWhatever + "[" + version + "]";
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>) cache.GetCacheItem(cacheKey, () =>
+    {
+        return projectsProvider
+             .GetListingsByKarma(0, take, true, false)
+             .Where(x => !x.NotAPackage &&
+                 (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
+                    string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+    }, TimeSpan.FromMinutes(10));
+ //var projects = projectsProvider
+ //    .GetListingsByKarma(0, take, true, false)
+ //    .Where(x => !x.NotAPackage &&
+ //        (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || 
+ //           string.Join("",x.UmbracoVerionsSupported).Contains(version) ) );
   
  var pUrl = "/repo_viewproject?" + qs + "&project_id=";
+ var favs = new List<IListingItem>();
   
   
   if(umbraco.library.IsLoggedOn()){
@@ -37,7 +53,7 @@
       
        if(id != null){
           try{            
-          var project = ProjectsProvider.GetListing(int.Parse(id), false);
+          var project = projectsProvider.GetListing(int.Parse(id), false);
           if(project != null){
               favs.Add(project);
           }
@@ -60,7 +76,7 @@
 <h1>Popular Packages</h1>
 <p>The most popular packages, based on karma and downloads</p>
 <ul class="projects">
-  @foreach(var project in @Projects)
+  @foreach(var project in projects)
   {
     <li class="clearfix">
             <div class="deliPackage">
