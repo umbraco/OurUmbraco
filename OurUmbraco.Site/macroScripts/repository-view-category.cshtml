@@ -1,5 +1,6 @@
 ﻿@using Marketplace.Interfaces
 @using Marketplace.Providers
+@using Umbraco.Core
 
 @{
 
@@ -22,7 +23,16 @@
     var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
     var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&category_id=" + id, "");
 
-    IEnumerable<IListingItem> projects = ProjectsProvider.GetListingsByCategory(category, true, true).Where(x => !x.NotAPackage && x.Approved && (string.Join("", x.UmbracoVerionsSupported).Contains("nan") || string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+    const string uniqueWhatever = "254D2E95-4E57-4777-AC01-2F45B28E942C";
+    var cacheKey = uniqueWhatever + "[" + category.Id + "]";
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>) cache.GetCacheItem(cacheKey, () =>
+        ProjectsProvider
+            .GetListingsByCategory(category, true, true)
+            .Where(x => !x.NotAPackage && x.Approved &&
+                        (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
+                         string.Join("", x.UmbracoVerionsSupported).Contains(version))),
+        TimeSpan.FromMinutes(10));
 
     var pUrl = "/repo_viewproject?" + qs + "&project_id=";
 }
