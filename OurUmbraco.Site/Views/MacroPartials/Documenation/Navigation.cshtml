@@ -23,13 +23,13 @@
 	<ul class="level-1">
 	    @foreach (dynamic item in sitemap.directories)
         {
-            if (item.name != "images" && item.name != "Development-Guidelines" && item.name != "Extending-Umbraco" && item.name != "Using-Umbraco" && item.name != "Reference" && item.name != "Installing")
+            if (item.name != "images" && item.name != "Development-Guidelines" && item.name != "Extending-Umbraco" && item.name != "Using-Umbraco" && item.name != "Reference" && item.name != "Installation" && item.name != "Products" && item.name != "Cheatsheets")
             {
                 
             
             <li class=" @IsActive(root+item.path, "active open")">
                 <a href="@(root + item.path)/"><h3>@item.name</h3></a>
-                @if((bool)item.hasChildren)
+                @if(item.hasChildren != null && (bool)item.hasChildren)
                 {
                     <ul class="level-2 @IsActive(root+item.path, "open")">
                         @foreach(dynamic itemChild in item.directories){
