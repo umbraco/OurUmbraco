@@ -1,29 +1,33 @@
+@using uForum
 @using uForum.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
-    
 }
 
-@if (Members.IsLoggedIn()) { 
-    
+@if (Members.IsLoggedIn())
+{
     var mem = Members.GetCurrentMember();
-    
-    var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id,mem.Id);
-        
-    <a href="#" class="delete-thread button" data-id="@topic.Id">
-        <i class="icon-Delete-key"></i><span>Delete thread</span>
-    </a>
+    var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
 
-    if (subscribed) { 
-    <a href="#" class="follow button following" data-id="@topic.Id" data-controller="topic">
-        <i class="icon-Bookmark"></i><span>Following</span>
-    </a>
+    if (Members.IsAdmin())
+    {
+        <a href="#" class="delete-thread button" data-id="@topic.Id">
+            <i class="icon-Delete-key"></i><span>Delete thread</span>
+        </a>
     }
-    else { 
-    <a href="#" class="follow button transparent" data-id="@topic.Id" data-controller="topic">
-        <i class="icon-Bookmark"></i><span>Follow</span>
-    </a>
+
+    if (subscribed)
+    {
+        <a href="#" class="follow button following" data-id="@topic.Id" data-controller="topic">
+            <i class="icon-Bookmark"></i><span>Following</span>
+        </a>
+    }
+    else
+    {
+        <a href="#" class="follow button transparent" data-id="@topic.Id" data-controller="topic">
+            <i class="icon-Bookmark"></i><span>Follow</span>
+        </a>
     }
 }
