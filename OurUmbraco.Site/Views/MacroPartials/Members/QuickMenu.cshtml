@@ -1,7 +1,6 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using uForum
 @using uForum.Services
-
 @{
 
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
@@ -10,7 +9,6 @@
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-
 
                 @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
@@ -34,18 +32,15 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
-
                         <div class="karma">
                             @member.Karma()
                         </div>
-
                         @if (member.HasValue("twitter"))
                         {
                             <div class="user-twitter">
                                 <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
                             </div>
                         }
-
                         @if (roles.Length > 1)
                         {
                             <span class="roles">
@@ -63,9 +58,8 @@
                             </span>
                         }
                         <div class="log-out">
-                            <a href="@Url.Action("Logout","Login")">Log out</a>
+                            <a href="/umbraco/Surface/Login/Logout">Log out</a>
                         </div>
-
                     </div>
 
 
@@ -74,34 +68,34 @@
                     </small>
 
                     <div class="user-latest-posts">
-
                         @foreach (var topic in latestTopics)
                         {
                             var forum = Umbraco.TypedContent(topic.ParentId);
-
-                            <a href="@topic.GetUrl()" class="forum-thread">
-                                <div class="row">
-                                    <div class="col-xs-10 col-md-8">
-                                        <div class="forum-thread-text">
-                                            <h3>@topic.Title</h3>
-                                            @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                            {
-                                                <p>
-                                                    Reply by @topic.LastReplyAuthorName <br />
-                                                    @topic.Updated.ConvertToRelativeTime()
-                                                </p>
-                                            }
+                            // if forum == null then it's been hidden/unpublished (example: v5 forum)
+                            // if this is the case: don't show forum post in list
+                            if (forum != null)
+                            {
+                                <a href="@topic.GetUrl()" class="forum-thread">
+                                    <div class="row">
+                                        <div class="col-xs-10 col-md-8">
+                                            <div class="forum-thread-text">
+                                                <h3>@topic.Title</h3>
+                                                @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                                {
+                                                    <p>
+                                                        Reply by @topic.LastReplyAuthorName <br />
+                                                        @topic.Updated.ConvertToRelativeTime()
+                                                    </p>
+                                                }
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-2 col-md-4">
+                                            <div class="category frontend"><span class="cat">@forum.Name</span></div>
                                         </div>
                                     </div>
-
-                                    <div class="col-xs-2 col-md-4">
-                                        <div class="category frontend"><span class="cat">@forum.Name</span></div>
-                                    </div>
-
-                                </div>
-                            </a>
+                                </a>
+                            }
                         }
-
                     </div>
 
 
@@ -111,12 +105,10 @@
                     <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
                 }
 
-
             </div>
         </div>
     </div>
 </div>
-
 @helper avatar(IPublishedContent member, int avatarSize)
 {
     if (member.HasValue("avatar"))
@@ -129,7 +121,6 @@
     }
 }
 
-
 @helper gravatar(string email, int size)
 {
     var emailId = email.ToLower();
@@ -137,7 +128,6 @@
 
     <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
 }
-
 @helper localAvatar(string imgPath, int size)
 {
     <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Alternate Text" />
