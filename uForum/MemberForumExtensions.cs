@@ -22,7 +22,7 @@ namespace uForum
 
         public static string Avatar(this IPublishedContent member)
         {
-            return string.Format("/media/avatar/{0}.jpg", member.Id);
+            return member.GetPropertyValue<string>("avatar");
         }
         
         public static int Karma(this IMember member)
