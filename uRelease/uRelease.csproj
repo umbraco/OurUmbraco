@@ -253,7 +253,6 @@
     <Compile Include="App_Start\ControllerRouting.cs" />
     <Compile Include="Controllers\ApiController.cs" />
     <Compile Include="Controllers\NodeExtensions.cs" />
-    <Compile Include="EventHandlers\FinalReleaseHandler.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\AggregateView.cs" />
     <Compile Include="Models\Version.cs" />
