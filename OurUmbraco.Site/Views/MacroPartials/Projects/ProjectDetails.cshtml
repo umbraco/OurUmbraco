@@ -287,20 +287,24 @@
                                 <span>Project owner:</span> @owner.Name
                             </li>
 
-                            @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab")) { 
-                            <li>
-                                <span>Contributors:</span> 
-                                @{var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);}
-                                
-                                @foreach(var contri in  cs.GetContributors(project.Id).ToArray())
+                            @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab"))
+                            {
+                                var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
+                                var contributors = cs.GetContributors(project.Id).ToList();
+                                if (contributors.Any())
                                 {
-
-                                    @Members.GetById(@contri.MemberId).Name
-
+                                    <li>
+                                        <span>Contributors:</span>
+                                        @foreach (var contributor in contributors)
+                                        {
+                                            <a href="/member/@contributor.MemberId">@Members.GetById(contributor.MemberId).Name</a>
+                                            if (contributor != contributors.Last())
+                                            {
+                                                <text>, </text>
+                                            }
+                                        }
+                                    </li>
                                 }
-                                
-                                
-                            </li>
                             }
                             <li>
                                 <span>Created:</span> @project.CreateDate.ToShortDateString()
