@@ -141,7 +141,7 @@
                 <div class="col-xs-10 col-md-6">
                     <div class="forum-thread-text">
                         <h3><a href="@childContent.Url">@childContent.Name</a></h3>
-                        <p>@(childContent.GetPropertyValue<string>("body", "No description available")).Truncate(150))</p>
+                        <p>@GetField(childPage.Fields, "body", "No description available").Truncate(150)</p>
                     </div>
                 </div>
                 <div class="col-xs-12 col-md-5">
