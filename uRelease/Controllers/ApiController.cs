@@ -89,22 +89,6 @@ namespace uRelease.Controllers
             // Just used to make sure we don't make repeated API requests for keys
             var versionCache = new ConcurrentDictionary<string, RestResponse<IssuesWrapper>>();
 
-            // Make sure all versions exist on Our 
-            foreach (var orderedVersion in orderedVersions.Where(v => v.Value.AsFullVersion() > "6.0.0".AsFullVersion()))
-            {
-                var versionExistsInUmbraco = releasesNode.Children.Cast<Node>().Any(child => child.Name == orderedVersion.Value);
-
-                if (versionExistsInUmbraco) 
-                    continue;
-
-                //make it
-                var releaseDocumentType = DocumentType.GetByAlias("Release");
-                var document = Document.MakeNew(orderedVersion.Value, releaseDocumentType, new User(0), releasesNode.Id);
-                document.getProperty("bodyText").Value = string.Format("<p>{0}</p>", orderedVersion.Description);
-                document.Publish(new User(0));
-                library.UpdateDocumentCache(document.Id);
-            }
-
             foreach (var version in orderedVersions)
             {
                 var issueView = new List<IssueView>();
