@@ -313,9 +313,12 @@
                                 <span>Current version</span> @project.GetPropertyValue("version")
                             </li>
 
-                            <li>
-                                <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
-                            </li>
+                            @if (project.HasValue("dotNetVersion"))
+                            {
+                                <li>
+                                    <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
+                                </li>
+                            }
 
                             <li>
                                 <span>License</span> @project.GetPropertyValue("licenseName")
