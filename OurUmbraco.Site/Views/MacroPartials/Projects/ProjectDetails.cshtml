@@ -184,6 +184,7 @@
 
                                 @foreach (var release in source.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
                                 {
+                                    var uploader = Members.GetById(release.CreatedBy) ?? owner;
                                     <li>
                                         <a href="/FileDownload?id=@release.Id">
                                             <div class="type-icon">
@@ -195,7 +196,7 @@
                                                     @release.Name
                                                 </div>
                                                 <div class="type-description">
-                                                    uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                                    uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
                                                 </div>
                                             </div>
                                         </a>
