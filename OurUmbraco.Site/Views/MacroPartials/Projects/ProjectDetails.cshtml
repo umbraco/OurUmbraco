@@ -320,14 +320,23 @@
                             <li>
                                 <span>License</span> @project.GetPropertyValue("licenseName")
                             </li>
-                            <li>
-                                <span>Tags</span>
-
-                                @foreach (var tag in Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags"))
+                            @{
+                                var tags = Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags").ToList();
+                                if (tags.Any())
                                 {
-                                    <text>@tag.Text </text>
+                                    <li>
+                                        <span>Tags</span>
+                                        @foreach (var tag in tags)
+                                        {
+                                            <text>@tag.Text</text>
+                                            if (tag != tags.Last())
+                                            {
+                                                <text>, </text>
+                                            }
+                                        }
+                                    </li>
                                 }
-                            </li>
+                            }
                             <li>
                                 <span>Downloads:</span> @downloads
                             </li>
