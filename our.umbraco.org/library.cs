@@ -65,7 +65,7 @@ namespace our {
 
         public static int GetProjectTotalDownloadCount(int projectId)
         {
-            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select count(*) from projectDownload where projectId = @0", projectId);
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0", projectId);
             return result ?? 0;
         }
 
@@ -104,7 +104,7 @@ namespace our {
         /// <returns></returns>
         public static Dictionary<int, int> GetProjectTotalDownload()
         {
-            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("select projectId, count(*) as total from projectDownload GROUP BY projectId")
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>("select nodeId as projectId, SUM(downloads) as total from wikiFiles GROUP BY nodeId")
                 .ToDictionary(x => (int)x.projectId, x => (int)x.total);
         }
 
