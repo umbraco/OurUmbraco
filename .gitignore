@@ -52,3 +52,4 @@ NuGetBackup
 OurUmbraco.Site/web.config
 OurUmbraco.Site/usercontrols/Deli/
 *.DS_Store
+OurUmbraco.Site/App_Data/mail/
