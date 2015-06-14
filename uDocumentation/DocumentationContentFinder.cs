@@ -15,8 +15,11 @@ namespace uDocumentation
             // eg / or /path/to/whatever
             var url = contentRequest.Uri.GetAbsolutePathDecoded();
 
+            var mdRoot = "/" + MarkdownLogic.BaseUrl;
+            if (url.StartsWith("/projects"))
+                mdRoot = "/projects";
+
             // ensure it's a md url
-            const string mdRoot = "/" + MarkdownLogic.BaseUrl;
             if (url.StartsWith(mdRoot) == false)
                 return false; // not for us
 
@@ -98,6 +101,10 @@ namespace uDocumentation
                     return fpath; // ok!
                 // else it could be a directory?
                 fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
+                if (File.Exists(fpath))
+                    return fpath;
+                
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\readme.md");
                 if (File.Exists(fpath))
                     return fpath;
                 //{
