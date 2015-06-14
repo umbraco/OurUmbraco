@@ -12,7 +12,7 @@
 							<li class="filter-orderBy">
 								<h3>Projects</h3>
 								<ul class="level-2">
-									<li><h4><a href="?orderBy=updateDate">Newest projects</a></h4></li>
+									<li><h4><a href="?orderBy=createDate">Newest projects</a></h4></li>
 									<li><h4><a href="?orderBy=popularity">Popular projects</a></h4></li>
 								</ul>
 							</li>

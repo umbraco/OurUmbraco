@@ -36,6 +36,7 @@ namespace our.Examine
             }
             simpleDataSet.RowData.Add("nodeName", project.Name);
             simpleDataSet.RowData.Add("updateDate", project.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
+            simpleDataSet.RowData.Add("createDate", project.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url );
 
