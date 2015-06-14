@@ -71,12 +71,12 @@
     public string ParseVersion(string version)
     {
         if (string.IsNullOrEmpty(version))
-            return version;
+            return "n/a";
 
         var versions = version.Trim(',').Split(',').Select(decimal.Parse).ToArray();
 
         if (!versions.Any())
-            return string.Empty;
+            return "n/a";
 
         if (versions.Count() == 1)
             return (versions.First()) + "+";
