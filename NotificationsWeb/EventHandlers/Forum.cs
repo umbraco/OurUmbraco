@@ -76,7 +76,7 @@ namespace NotificationsWeb.EventHandlers
             
             //data for notification:
             var membershipHelper = new MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            var member = membershipHelper.GetById(e.Comment.TopicId);
+            var member = membershipHelper.GetById(e.Comment.MemberId);
             var memberName = string.Empty;
             if (member != null)
                 memberName = member.Name;
