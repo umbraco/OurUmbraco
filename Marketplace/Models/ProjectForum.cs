@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 using System.Runtime.Serialization;
-using System.Web;
 
 namespace uProject.Models
 {
     [DataContract(Name = "projectForum", Namespace = "")]
     public class ProjectForum
     {
-      
+        [DataMember(Name = "forumId")]
         public int Id { get; set; }
 
         [DataMember(Name = "parentId",IsRequired=true)]

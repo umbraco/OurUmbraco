@@ -13,14 +13,14 @@
 
             $.ajax({
                 url: "/umbraco/api/Forum/Comment/" + id,
-                type: 'DELETE'
+                type: "DELETE"
             });            
         },
 
         deleteThread: function (id) {
             $.ajax({
                 url: "/umbraco/api/Topic/Delete/" + id,
-                type: 'DELETE',
+                type: "DELETE"
             })
             .done(function () {
                 window.location = "/forum";
@@ -64,17 +64,16 @@
 
         removeContributor: function (projectId, memberId) {
             $.ajax({
-                url: "/umbraco/api/ProjectContribution/DeleteContributor/?projectId=" + projectId + "&memberId="+ memberId,
-                type: 'DELETE',
-            })
-           
+                url: "/umbraco/api/ProjectContribution/DeleteContributor/?projectId=" + projectId + "&memberId=" + memberId,
+                type: "DELETE"
+            });
         },
 
-        updateCollaborationStatus: function(projectId, status){
+        updateCollaborationStatus: function(projectId, status) {
             $.ajax({
-                url: "/umbraco/api/ProjectContribution/UpdateCollaborationStatus/?projectId=" + projectId + "&status="+status,
-                type: 'PUT',
-            })
+                url: "/umbraco/api/ProjectContribution/UpdateCollaborationStatus/?projectId=" + projectId + "&status=" + status,
+                type: "PUT"
+            });
         },
 
         addContributor: function(projectId, email)
@@ -84,18 +83,20 @@
             });
         },
 
-        removeProjectForum: function(forumId)
-        {
+        removeProjectForum: function(forumId) {
             $.ajax({
                 url: "/umbraco/api/ProjectForum/DeleteProjectForum/?forumId=" + forumId,
-                type: 'DELETE',
-            })
+                type: "DELETE"
+            });
         },
 
-        addProjectForum: function(title, description, parentId)
-        {
+        addProjectForum: function(title, description, parentId) {
+            $.post("/umbraco/api/ProjectForum/PostProjectForum/", { title: title, description: description, parentId: parentId }, function (data) {
+                $("#forums").append("<li>" + data.title + "<small>" + data.description + "</small><a data-id=\"" + data.forumId + "\" class=\"remove-forum\" href=\"#\"><i class=\"icon-Delete-key\"></i>Remove</a></li>");
 
-            $.post("/umbraco/api/ProjectForum/PostProjectForum/", { title: title, description: description, parentId: parentId });
+                $("#forum-title").val("");
+                $("#forum-description").val("");
+            });
         }
 
     };
@@ -103,7 +104,6 @@
 
 
 $(function () {
-
     /*FORUM*/
 
     //Mark as solution
@@ -148,8 +148,8 @@ $(function () {
         }
     });
 
-    $('.overlay').on('click', function () {
-        body.removeClass('active copy-prompt');
+    $(".overlay").on("click", function () {
+        body.removeClass("active copy-prompt");
         deepLinking = false;
     });
 
@@ -167,7 +167,6 @@ $(function () {
         var count = parseInt($(".highfive-count", cont).html());
         count++;
         $(".highfive-count", cont).html(count);
-
     });
 
     //Delete comment
@@ -177,7 +176,6 @@ $(function () {
         var data = $(this).data();
         var id = parseInt(data.id);
         var $thisComment = $(this).closest(".comment");
-        // $(this).closest(".comment").fadeOut(function () { $(this).closest(".comment").remove(); });
 
         terminateConfirm("comment", id, $thisComment);
     });
@@ -195,23 +193,21 @@ $(function () {
 
     // Ask for confirmation
     function terminateConfirm(typeOfPost, id, thisComment) {
-        var $confirm = $('#confirm-wrapper');
-        var $confirmType = $('#confirm-wrapper .type-of')
-        var $body = $('body');
+        var $confirm = $("#confirm-wrapper");
+        var $confirmType = $("#confirm-wrapper .type-of");
+        var $body = $("body");
 
-        $body.addClass('active confirm-prompt');
+        $body.addClass("active confirm-prompt");
 
         $confirmType.html(typeOfPost);
 
-        $('#confirm-wrapper .green').on('click', function () {
-
+        $("#confirm-wrapper .green").on("click", function () {
             terminatePost(typeOfPost, id, thisComment);
-            $body.removeClass('active confirm-prompt');
+            $body.removeClass("active confirm-prompt");
         });
 
-        $('#confirm-wrapper .red').on('click', function () {
-
-            $body.removeClass('active confirm-prompt');
+        $("#confirm-wrapper .red").on("click", function () {
+            $body.removeClass("active confirm-prompt");
         });
     }
 
@@ -226,11 +222,10 @@ $(function () {
                 community.deleteThread(id);
                 break;
             default:
-                alert('Something went wrong')
+                alert("Something went wrong");
         }
     }
-
-
+    
     //follow thread
 
     //unfollow thread
@@ -256,7 +251,7 @@ $(function () {
     });
 
     //Category filter
-    $('.sorting select').on('change', function () {
+    $(".sorting select").on("change", function () {
         var id = $(this).val();
         community.getCategoryUrl(id).done(function (data) {
             window.location.replace(data);
@@ -271,16 +266,17 @@ $(function () {
         var data = $(this).data();
         var id = parseInt(data.id);
         var controller = data.controller;
+        if (confirm("Are you sure you want to mark this as spam?")) {
+            community.markAsSpam(id, controller);
 
-        community.markAsSpam(id, controller);
+            $(this).removeClass("mark-as-spam");
+            $(this).addClass("mark-as-ham");
 
-        $(this).removeClass("mark-as-spam");
-        $(this).addClass("mark-as-ham");
-
-        $("span", $(this)).text("Mark as ham");
+            $("span", $(this)).text("Mark as ham");
+        } 
     });
 
-    //mark as spa
+    //mark as ham
     $(".comments").on("click", "a.mark-as-ham", function (e) {
         e.preventDefault();
         var data = $(this).data();
@@ -293,7 +289,6 @@ $(function () {
         $(this).addClass("mark-as-spam");
 
         $("span", $(this)).text("Mark as spam");
-
     });
 
 
@@ -302,9 +297,9 @@ $(function () {
     //upload avatar
     $(".profile-settings-forms").on("click", ".avatar-image", function(e)
     {
-        var $body = $('body');
+        var $body = $("body");
         var $dialog = $("#update-avatar-dialog");
-        var $loader = $('.span', $dialog);
+        var $loader = $(".span", $dialog);
         var $file = $("input[type=file]", $dialog);
         var $cancel = $("button", $dialog);
        
@@ -321,25 +316,25 @@ $(function () {
             if (response.success) {                
                 $("img", $(".profile-settings-forms")).attr("src", response.imagePath + "?width=100&height=100&mode=crop");
                 $("#Avatar", $(".profile-settings-forms")).val(response.imagePath);
-                $body.removeClass('active uploading-image');
+                $body.removeClass("active uploading-image");
             } else {
-                $dialog.addClass('invalid');
-                setTimeout(function () { $dialog.removeClass('invalid') }, 3000);
-                $file.val('');
+                $dialog.addClass("invalid");
+                setTimeout(function () { $dialog.removeClass("invalid") }, 3000);
+                $file.val("");
             }
         };
 
-        $file.unbind('change').ajaxfileupload({
-            action: $file.attr('data-action'),
+        $file.unbind("change").ajaxfileupload({
+            action: $file.attr("data-action"),
             onStart: uploadStart,
             onComplete: uploadComplete
         });
 
         $cancel.click(function () {
-            $body.removeClass('active uploading-image');
+            $body.removeClass("active uploading-image");
             
         });
-        $body.addClass('active uploading-image');
+        $body.addClass("active uploading-image");
     });
 
     //password repeat
@@ -353,25 +348,25 @@ $(function () {
     $(".profile-settings-forms form").submit(function () {
         
         if ($(this).valid()) {
-            $(this).find('div.profile-input').each(function () {
-                if ($(this).find('.input-validation-error').length == 0) {
-                    $(this).removeClass('warning');
+            $(this).find("div.profile-input").each(function () {
+                if ($(this).find(".input-validation-error").length === 0) {
+                    $(this).removeClass("warning");
                 }
             });
         }
         else {
-            $(this).find('div.profile-input').each(function () {
-                if ($(this).find('.input-validation-error').length > 0) {
-                    $(this).addClass('warning');
+            $(this).find("div.profile-input").each(function () {
+                if ($(this).find(".input-validation-error").length > 0) {
+                    $(this).addClass("warning");
                 }
             });
         }
     });
 
-    $('.profile-settings-forms form').each(function () {
-        $(this).find('div.profile-input').each(function () {
-            if ($(this).find('.input-validation-error').length > 0) {
-                $(this).addClass('warning');
+    $(".profile-settings-forms form").each(function () {
+        $(this).find("div.profile-input").each(function () {
+            if ($(this).find(".input-validation-error").length > 0) {
+                $(this).addClass("warning");
             }
         });
     });
@@ -400,9 +395,9 @@ $(function () {
     $(".main-content #open-for-collab").on("change", function (e) {
         var data = $(this).data();
         var projectId = parseInt(data.id);
-        var status  =$(this).is(":checked");
+        var status = $(this).is(":checked");
 
-        community.updateCollaborationStatus(projectId,status)
+        community.updateCollaborationStatus(projectId, status);
     });
 
     $(".main-content #add-contri").on("click", function (e) {
@@ -416,11 +411,9 @@ $(function () {
             var email = $("#contri-email").val();
 
             community.addContributor(projectId, email).done(function (data) {
-               
                 if (data.success) {
-                    $("#contris").append('<li><a href="/member/' + data.memberId + '">' + data.memberName + '</a> - <a data-projectid="' + projectId + '"  data-memberid="' + data.memberId + '" class="remove-contri" href="#">Remove</a></li>');
-                }else
-                {
+                    $("#contris").append("<li><a href=\"/member/" + data.memberId + "\">" + data.memberName + "</a> - <a data-projectid=\"" + projectId + "\" data-memberid=\"" + data.memberId + "\" class=\"remove-contri\" href=\"#\">Remove</a></li>");
+                } else {
                     console.log(data.error);
                     $("#contri-feedback").html(data.error);
                 }
@@ -431,7 +424,7 @@ $(function () {
     });
 
     /* profile project forums ¨*/
-    $(".main-content .remove-forum").on("click", function (e) {
+    $("#forums .remove-forum").on("click", function (e) {
         e.preventDefault();
         var data = $(this).data();
         var forumId = parseInt(data.id);
@@ -440,7 +433,7 @@ $(function () {
         $(this).parent("li").fadeOut();
     });
 
-    $(".main-content #add-forum").on("click", function (e) {
+    $(".profile-settings-forms #add-forum").on("click", function (e) {
         e.preventDefault();
 
         if ($("#forum-title").val() && $("#forum-description").val()) {
@@ -451,13 +444,6 @@ $(function () {
             var description = $("#forum-description").val();
 
             community.addProjectForum(title, description, projectId);
-
-            $("#forums").append('<li>' + title + '<small>' + description + '</small><a data-id="" class="remove-forum" href="#">Remove</a></li>');
-
-            $("#forum-title").val("");
-            $("#forum-description").val("");
         }
     });
-
-
 });
