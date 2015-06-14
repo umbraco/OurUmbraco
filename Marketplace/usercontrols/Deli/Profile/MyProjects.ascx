@@ -42,7 +42,7 @@
                                 <p>
                                      <%#  Eval("Description").ToString().StripHtmlAndLimit(45) %> ...
                                     <br />
-                                    <a href="<%= editUrl %>?id=<%# Eval("Id") %>">Edit</a>
+                                    <a href="<%= editUrl.Substring(0, editUrl.Length - 1) %>?id=<%# Eval("Id") %>">Edit</a>
                                     <a href="<%= forumUrl %>?id=<%# Eval("Id") %>">Forums</a>
                                     <a href="<%= teamUrl %>?id=<%# Eval("Id") %>">Team</a>
                                 </p>
