@@ -11,7 +11,7 @@
         page = 1;
     }
     var nextPage = page + 1;
-    
+
     var cat = -1;
     if (CurrentPage.Level > 3)
     {
@@ -30,54 +30,52 @@
     {
         var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
         var key = "OurForumForum[" + cat + "]";
-        topics = (IEnumerable<ReadOnlyTopic>) cache.GetCacheItem(key,
+        topics = (IEnumerable<ReadOnlyTopic>)cache.GetCacheItem(key,
             () => topicService.GetLatestTopics(50, page, true, cat).ToArray(),
             TimeSpan.FromSeconds(4));
     }
 }
 <div id="overlay" class="overlay"></div>
-    <!-- FORUM LIST START -->
-    <table class="table table-striped topic-list">
+<!-- FORUM LIST START -->
+<table class="table table-striped topic-list">
 
-        <!-- FORUM LIST HEADER START -->
-        <thead>
-            <tr>
-                <th class="topic">Topic</th>
-                <th class="category">
-                    <div class="sorting">
-                        <select id="selectCategory" data-placeholder="Choose&hellip;">
-                            <option class="category" selected disabled>Category</option>
-                            @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+    <!-- FORUM LIST HEADER START -->
+    <thead>
+        <tr>
+            <th class="topic">Topic</th>
+            <th class="category">
+                <div class="sorting">
+                    <select id="selectCategory" data-placeholder="Choose&hellip;">
+                        <option class="category" selected disabled>Category</option>
+                        @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                        {
+                            foreach (var tag in main.Children)
                             {
-                                foreach (var tag in main.Children)
-                                {
-                                    <option class="@tag.Name.ToLower().Replace(" ","")" value="@tag.Id">@tag.Name</option>
-                                }
+                                <option class="@tag.Name.ToLower().Replace(" ","")" value="@tag.Id">@tag.Name</option>
                             }
-                        </select>
-                    </div>
-                </th>
-                <th class="posts">Posts</th>
-                <th class="activity">Activity</th>
-            </tr>
-        </thead>
-        <!-- FORUM LIST HEADER END -->
-        <!-- FORUM LIST OF THREADS START -->
-        <tbody class="forum-default-listing">
+                        }
+                    </select>
+                </div>
+            </th>
+            <th class="posts">Posts</th>
+            <th class="activity">Activity</th>
+        </tr>
+    </thead>
+    <!-- FORUM LIST HEADER END -->
+    <!-- FORUM LIST OF THREADS START -->
+    <tbody class="forum-default-listing">
 
-            <!-- FORUM THREAD START -->
-            @foreach (var topic in topics)
-            {       
-                
+        <!-- FORUM THREAD START -->
+        @foreach (var topic in topics)
+        {
+            var forum = Umbraco.TypedContent(topic.ParentId);
+            if (forum != null)
+            {
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
-
-                    @{
-                var forum = Umbraco.TypedContent(topic.ParentId);
-                    }
 
                     <td class="topic">
                         <a href="@topic.GetUrl()">@topic.Title</a>
-                        
+
                         @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
                         {
                             <span>last edited by <a href="/member/@topic.LatestReplyAuthor">@topic.LastReplyAuthorName</a></span>
@@ -88,17 +86,16 @@
                     <td class="posts">@topic.Replies</td>
                     <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
-                
             }
+        }
 
-            <a href="?page=@nextPage" style="display:none;">next page</a>
-            
-        </tbody>
+        <a href="?page=@nextPage" style="display:none;">next page</a>
 
-        <tbody class="forum-search-listing">
-        </tbody>
-        <!-- FORUM LIST OF THREADS START -->
-    </table>
+    </tbody>
+
+    <tbody class="forum-search-listing"></tbody>
+    <!-- FORUM LIST OF THREADS START -->
+</table>
 
 
 <!-- FORUM LIST END -->
