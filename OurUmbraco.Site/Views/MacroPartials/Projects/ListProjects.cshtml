@@ -153,16 +153,16 @@
                         </div>
                         <span class="stats">
                             <span class="downloads">
-                                @(childContent.GetPropertyValue("downloads", 0))<span><i class="icon-Download-alt"></i></span>
+                                @GetField(childPage.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
                         </span>
                         <span class="karma">
-                            @(childContent.GetPropertyValue("karma", 0))<span><i class="icon-Hearts"></i></span>
+                            @GetField(childPage.Fields, "karma", "0")<span><i class="icon-Hearts"></i></span>
+                        </span>
                     </span>
-                </span>
+                </div>
             </div>
         </div>
     </div>
-</div>
     }
     <nav class="pagination" role="navigation">
         @if (page > 1)
