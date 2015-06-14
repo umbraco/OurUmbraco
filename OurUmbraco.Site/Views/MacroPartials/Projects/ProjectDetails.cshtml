@@ -331,7 +331,7 @@
                             @{
                                 // Gets tags from the document property, if that's not available then get them using Umbraco.TagQuery
                                 // This is here because it was needed after the v7 upgrade
-                                var tagsCached = project.GetPropertyValue<string>("tags").Split(',').ToList();
+                                var tagsCached = project.GetPropertyValue<string>("tags") == null ? new List<string>() : project.GetPropertyValue<string>("tags").Split(',').ToList();
                                 var tagList = tagsCached;
                                 if (tagList.Any())
                                 {
