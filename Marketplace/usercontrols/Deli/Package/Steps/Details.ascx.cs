@@ -1,23 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Providers.Helpers;
 using Marketplace.Interfaces;
 using Marketplace.Providers;
 using Marketplace.Providers.ListingItem;
-using Marketplace.BusinessLogic.ListingCreator;
-using umbraco.cms.businesslogic.member;
-using Marketplace.BusinessLogic;
+using umbraco;
 using uProject.Helpers;
-using umbraco.NodeFactory;
-using System.Text.RegularExpressions;
+using Umbraco.Core.Models;
+using Umbraco.Web.UI.Controls;
+using Member = umbraco.cms.businesslogic.member.Member;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
-    public partial class Details : System.Web.UI.UserControl
+    public partial class Details : UmbracoUserControl
     {
 
         public bool IsDeliVendor { get; set; }
@@ -54,7 +51,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected override void OnInit(EventArgs e)
         {
-            ((umbraco.UmbracoDefault)this.Page).ValidateRequest = false;
+            ((UmbracoDefault)this.Page).ValidateRequest = false;
         }
 
         protected void Page_Load(object sender, EventArgs e)
@@ -68,7 +65,6 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 //if the user is a registered deli vendor show them the commercial options
                 CommercialOption.Visible = IsDeliVendor;
 
-
                 if (_editMode)
                 {
                     MoveNext.Text = "Save";
@@ -78,11 +74,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 {
                     MoveNext.Text = "Next";
                 }
-
-              
             }
-
-
         }
 
         private void SetupTags()
@@ -134,34 +126,27 @@ namespace uProject.usercontrols.Deli.Package.Steps
             GaCode.Text = project.GACode;
             Collab.Checked = project.OpenForCollab;
             Terms.Checked = project.TermsAgreementDate != new DateTime();
-
-
-
+            
             var tagProvider = ((IProjectTagProvider)MarketplaceProviderManager.Providers["TagProvider"]);
-            var projecttags = tagProvider.GetTagsByProjectId((int)ProjectId);
+            var projectTags = tagProvider.GetTagsByProjectId((int)ProjectId).ToList();
 
-            if (projecttags.Count() > 0)
+            if (projectTags.Any())
             {
-                string stags = string.Empty;
-                foreach (var tag in projecttags)
+                var tags = new List<string>();
+                foreach (var tag in projectTags)
                 {
-                    stags += tag.Text + ",";
+                    if(tags.Any(x => string.Equals(x.Trim(), tag.Text.Trim(), StringComparison.InvariantCultureIgnoreCase)) == false)
+                        tags.Add(tag.Text);
                 }
-
-                stags = stags.Substring(0, stags.Length - 1);
-
+                
                 ScriptManager.RegisterStartupScript(
                     this,
                     this.GetType(),
                     "inittags",
-                    " $(document).ready(function() {$('#projecttagger').addTag('" + stags + "');});",
+                    " $(document).ready(function() {$('#projecttagger').addTag('" + string.Join(",", tags) + "');});",
                     true);
             }
-
-            
-
         }
-
 
         protected void SaveStep(object sender, EventArgs e)
         {
@@ -198,22 +183,30 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
             if (Request["projecttags[]"] != null)
             {
-                var tagProvider = ((IProjectTagProvider)MarketplaceProviderManager.Providers["TagProvider"]);
-                tagProvider.SetTags(project.Id, Request["projecttags[]"].ToString());
-                project.Tags = tagProvider.GetTagsByProjectId(project.Id);
                 ProjectsProvider.SaveOrUpdate(project);
+                
+                var tags = new List<string>();
+                foreach (var tag in Request["projecttags[]"].Split(','))
+                {
+                    if (tags.Any(x => string.Equals(x.Trim(), tag.Trim(), StringComparison.InvariantCultureIgnoreCase)) == false)
+                        tags.Add(tag);
+                }
+
+                var contentService = Services.ContentService;
+                var projectContent = contentService.GetById(project.Id);
+                projectContent.SetTags("tags", tags, true, "project");
+                contentService.Save(projectContent);
             }
 
             //move to the file upload step
             ProjectCreatorHelper.MoveToNextStep(this, (int)ProjectId);
-
-
         }
 
         protected string[] GetSelected(ListBox lb)
         {
             var strArr = "";
-            foreach(ListItem li in lb.Items){
+            foreach(ListItem li in lb.Items)
+            {
                if(li.Selected) strArr+=li.Value + ",";
             }
 
