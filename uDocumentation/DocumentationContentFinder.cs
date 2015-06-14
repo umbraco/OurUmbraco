@@ -16,7 +16,7 @@ namespace uDocumentation
             var url = contentRequest.Uri.GetAbsolutePathDecoded();
 
             var mdRoot = "/" + MarkdownLogic.BaseUrl;
-            if (url.StartsWith("/projects"))
+            if (url.StartsWith("/projects/umbraco-pro/contour/documentation"))
                 mdRoot = "/projects";
 
             // ensure it's a md url
