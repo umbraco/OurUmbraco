@@ -4,7 +4,14 @@
 @{
     var sortedVersions = new Dictionary<System.Version, IPublishedContent>();
     foreach(var release in Model.Content.Children.Where( x => x.GetPropertyValue<string>("releaseStatus") == "Released")) {
-           sortedVersions.Add(new System.Version(release.Name), release);
+        try
+        {
+            sortedVersions.Add(new System.Version(release.Name), release);
+        }
+        catch (Exception ex)
+        {
+            <span style="display: none">Couldn't add version @release.Name</span>
+        }
     }
     
     var mayorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending( x => x.Key);
