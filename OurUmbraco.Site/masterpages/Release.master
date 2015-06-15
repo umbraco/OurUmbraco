@@ -247,7 +247,7 @@
     <umbraco:Macro runat="server" Language="cshtml">
  
         <script type="text/javascript">
-           /* (function () {
+            (function () {
                 var currentVersions = [];
                 var inProgressVersions = [];
                 var futureVersions = [];
@@ -258,16 +258,7 @@
                 // Load data
                 loadData('@Model.Name');
 
-            })();*/
-
-            (function () {
-
-                // Apply bindings
-                ko.applyBindings(viewModel);
-                // Load data
-                loadAllData();
             })();
-            
 
     </script>
     </umbraco:Macro>
