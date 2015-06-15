@@ -30,7 +30,7 @@
 						            <a href="/contribute/progress"><h3>In Progress</h3></a>
 						            <ul class="level-2" data-bind="foreach: inProgressReleases">
 							            <li>
-								            <a href=""><h4 data-bind="text: version()"></h4></a>
+								            <a data-bind="attr: { href: '#v' + version().replace('.', '').replace('.', '').replace('.', '') }"><h4 data-bind="text: version()"></h4></a>
 							            </li>
 						            </ul>
 					            </li>
@@ -53,7 +53,7 @@
 
                         <div class="markdown-syntax">
                     	    <h1>In progress</h1>
-                    	    <p><em>Versions of Umbraco currently in production</em></p>
+                    	    <p><em>Versions of Umbraco currently in development</em></p>
                         </div><!-- #markdown-docs -->
 
                         <h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
@@ -74,7 +74,7 @@
 <script type="text/html" id="version-template">
 
    
-		<div class="col-xs-3">
+		<div data-bind="attr: { id: 'v' + version().replace('.', '').replace('.', '').replace('.', '') }" class="col-xs-3">
 			<span data-bind="css: {'icon-untitled': percentComplete() < 1 }" class="dot big progress">
 				<div class="chart"  data-bind="attr: {'data-percent': percentComplete()}">
                     <div class="percentage" data-bind="visible: percentComplete() > 0, attr: { id: id, title: percentComplete()} > 0, text: percentComplete() + '%'">
