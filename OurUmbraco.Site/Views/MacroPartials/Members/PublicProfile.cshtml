@@ -138,7 +138,7 @@
                                 <h3>Packages created</h3>
                                 @foreach (var project in projects.Where(x => x.Live))
                                 {
-                                    <a href="@project.ProjectUrl" class="forum-thread">
+                                    <a href="@project.NiceUrl" class="forum-thread">
                                         <div class="row">
                                             <div class="col-xs-2">
                                                 <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
@@ -165,7 +165,7 @@
                                 <h2>Contributed to packagages</h2>
                                 @foreach (var project in contribProjects.Where(x => x.Live))
                                 {
-                                    <a href="@project.ProjectUrl" class="forum-thread">
+                                    <a href="@project.NiceUrl" class="forum-thread">
                                         <div class="row">
                                             <div class="col-xs-2">
                                                 <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
