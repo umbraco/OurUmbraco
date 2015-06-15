@@ -4,7 +4,7 @@ Documents how to work with [Umbraco Contour](http://umbraco.com/products/more-ad
 ##[Installation and upgrading](Documentation/Installation/index.md)
 Extending Umbraco with the Contour section and keeping it up to date
 
-##[For editors](Editor/index.md)
+##[For editors](Documentation/Editor/index.md)
 Documents how to interact with the interface and build forms in a couple of clicks.
 
 ##[For developers](Documentation/Developer/index.md)
