@@ -2,7 +2,6 @@
 @using Marketplace.Interfaces
 @using Marketplace.Providers
 @using uForum;
-
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -24,13 +23,10 @@
     var contribProjects = provider.GetListingsForContributor(member.Id).OrderByDescending(x => x.CreateDate);
 
     <div class="public-member">
-
         <div class="row">
             <div class="col-md-8">
-
                 <div class="row">
                     <div class="col-xs-12">
-
                         <div class="member-details">
                             <img src="@member.GetPropertyValue("avatar")" alt="">
                             <div class="text">
@@ -66,10 +62,8 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
-
                         <div class="member-details">
                             <small>
                                 @member.Name
@@ -89,12 +83,10 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="row">
                     <div class="col-md-12">
                         <div class="package-forum-activity">
                             <h3>Activity</h3>
-
                             @foreach (var topic in topics)
                             {
                                 var cat = Umbraco.TypedContent(topic.ParentId);
@@ -123,13 +115,10 @@
                                     </div>
                                 </a>
                             }
-
                             <a class="goto" href="/forum">Go to forum &rarr;</a>
-
                         </div>
                     </div>
                 </div>
-
                 @if (projects.Any())
                 {
                     <div class="row">
@@ -141,7 +130,14 @@
                                     <a href="@project.NiceUrl" class="forum-thread">
                                         <div class="row">
                                             <div class="col-xs-2">
-                                                <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                @if (string.IsNullOrWhiteSpace(project.DefaultScreenshot.Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
                                             </div>
                                             <div class="col-xs-10">
                                                 <div class="forum-thread-text">
@@ -156,7 +152,6 @@
                         </div>
                     </div>
                 }
-
                 @if (contribProjects.Any())
                 {
                     <div class="row">
@@ -168,7 +163,14 @@
                                     <a href="@project.NiceUrl" class="forum-thread">
                                         <div class="row">
                                             <div class="col-xs-2">
-                                                <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                @if (string.IsNullOrWhiteSpace(project.DefaultScreenshot.Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
                                             </div>
                                             <div class="col-xs-10">
                                                 <div class="forum-thread-text">
@@ -183,10 +185,8 @@
                         </div>
                     </div>
                 }
-                
+
             </div>
         </div>
-
     </div> <!-- .public-member -->
 }
-
