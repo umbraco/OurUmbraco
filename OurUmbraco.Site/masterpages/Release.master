@@ -123,19 +123,23 @@
 						                    var numberOfDownloads = 0;
 						                    int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
                                             numberOfDownloads = numberOfDownloads + our.Utils.GetProjectTotalDownloadCount(item.Id);
-							
-                                        <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-sm-1">
-							                    <i class="icon-Download-alt"></i>
-					                    </div>
-					                    <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-md-5">
+							                if(item.Name.Contains("WebPI") == false) 
+                                            {
+                                                <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-sm-1">
+							                            <i class="icon-Download-alt"></i>
+					                            </div>
+					                            <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-md-5">
 	
-						                    <h3><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.7.2.2.zip']);">UmbracoCms.7.2.2.zip</a></h3>
-                                            @if(item.IsFirst())
-						                    {
-							                    <p>This is the main Umbraco download, generally you won't need anything else.</p>
-						                    }
-						                    <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
-					                    </div>
+						                            <h3><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></h3>
+                                                    @if(item.IsFirst())
+						                            {
+							                            <p>This is the main Umbraco download, generally you won't need anything else.</p>
+						                            }
+						                            <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
+					                            </div>
+                                            } else {
+                                                <div style="display: none;"><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></div>
+                                            }
 					                    }
 				                    </div>
 			                    }
