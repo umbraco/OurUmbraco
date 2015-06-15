@@ -10,7 +10,9 @@ using RestSharp;
 using RestSharp.Deserializers;
 using umbraco;
 using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.member;
+using Umbraco.Core.Models;
+using Member = umbraco.cms.businesslogic.member.Member;
+using MemberGroup = umbraco.cms.businesslogic.member.MemberGroup;
 
 namespace uForum.Library
 {
@@ -365,6 +367,18 @@ namespace uForum.Library
                 Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending new member notification: {0} {1} {2}", 
                     ex.Message, ex.StackTrace, ex.InnerException));
             }
+        }
+
+        public static string GetForumName(IPublishedContent forum)
+        {
+            var forumName = forum.Name;
+            var isProjectForum = string.Equals(forum.Parent.ContentType.Alias, "Project", StringComparison.InvariantCultureIgnoreCase);
+            if (isProjectForum && forum.Name.ToLowerInvariant().Contains(forum.Parent.Name.ToLowerInvariant()) == false)
+            {
+                forumName = forum.Parent.Name + " - " + forumName;
+            }
+
+            return forumName;
         }
 
         private static string GetSpamResultBody(SpamResult spammer)

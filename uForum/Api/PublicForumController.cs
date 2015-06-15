@@ -55,7 +55,8 @@ namespace uForum.Api
                 if (topic.ParentId > 0 && ((forum = Umbraco.TypedContent(topic.ParentId)) != null))
                 {
                     o.forumUrl = forum.Url;
-                    o.forumName = forum.Name;
+
+                    o.forumName = Library.Utils.GetForumName(forum);
                 }
                 //var forum = Umbraco.TypedContent(topic.ParentId);
                 //if (forum != null)

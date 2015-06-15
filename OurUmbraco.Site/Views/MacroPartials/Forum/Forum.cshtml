@@ -1,4 +1,5 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using NotificationsWeb.Library
 @using uForum;
 @using uForum.Models
 @using uForum.Services
@@ -81,10 +82,9 @@
                             <span>last edited by <a href="/member/@topic.LatestReplyAuthor">@topic.LastReplyAuthorName</a></span>
                         }
                     </td>
-
-                    <td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
+                    <td class="category frontend"><a href="@forum.Url">@(uForum.Library.Utils.GetForumName(forum))</a></td>
                     <td class="posts">@topic.Replies</td>
-                    <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
+                    <td class="activity" title="@topic.Updated.ToLongDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
             }
         }
