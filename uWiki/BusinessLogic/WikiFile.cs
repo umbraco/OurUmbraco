@@ -86,7 +86,7 @@ namespace uWiki.Businesslogic
                     }
                     else
                     {
-                        wikiFiles.Add(result.nodeId, new List<WikiFile>(new[] {file}));
+                        wikiFiles.Add(result.nodeId, new List<WikiFile>(new[] { file }));
                     }
                 }
             }
@@ -390,14 +390,21 @@ namespace uWiki.Businesslogic
 
         }
 
-        public static void UpdateDownloadCount(int fileId, bool ignoreCookies, bool isPackage)
+        public void UpdateDownloadCount(int fileId, bool ignoreCookies, bool isPackage)
         {
             var cookie = HttpContext.Current.Request.Cookies["ProjectFileDownload" + fileId];
 
             if (cookie != null && ignoreCookies == false)
                 return;
+            var downloads = 0;
+            var projectId = 0;
 
-            var downloads = Application.SqlHelper.ExecuteScalar<int>("Select downloads from wikiFiles where id = @id;", Application.SqlHelper.CreateParameter("@id", fileId));
+            var reader = Application.SqlHelper.ExecuteReader("Select downloads, nodeId from wikiFiles where id = @id;", Application.SqlHelper.CreateParameter("@id", fileId));
+            if (reader.Read())
+            {
+                downloads = reader.GetInt("downloads");
+                projectId = reader.GetInt("nodeId");
+            }
             downloads = downloads + 1;
 
             Application.SqlHelper.ExecuteNonQuery(
@@ -405,6 +412,8 @@ namespace uWiki.Businesslogic
                 Application.SqlHelper.CreateParameter("@id", fileId),
                 Application.SqlHelper.CreateParameter("@downloads", downloads));
 
+            var totalDownloads = Application.SqlHelper.ExecuteScalar<int>("Select SUM(downloads) from wikiFiles where nodeId = @projectId;", Application.SqlHelper.CreateParameter("@projectId", projectId));
+            
             if (isPackage)
             {
                 var currentMember = 0;
@@ -419,6 +428,9 @@ namespace uWiki.Businesslogic
                     Application.SqlHelper.CreateParameter("@id", fileId),
                     Application.SqlHelper.CreateParameter("@memberId", currentMember));
             }
+
+            var e = new FileDownloadUpdateEventArgs { ProjectId = projectId, Downloads = totalDownloads };
+            FireAfterDownloadUpdate(e);
 
             cookie = new HttpCookie("ProjectFileDownload" + fileId) { Expires = DateTime.Now.AddHours(1) };
             HttpContext.Current.Response.Cookies.Add(cookie);
@@ -491,6 +503,11 @@ namespace uWiki.Businesslogic
                 AfterUpdate(this, e);
         }
 
-
+        public static event EventHandler<FileDownloadUpdateEventArgs> AfterDownloadUpdate;
+        protected virtual void FireAfterDownloadUpdate(FileDownloadUpdateEventArgs e)
+        {
+            if (AfterDownloadUpdate != null)
+                AfterDownloadUpdate(this, e);
+        }
     }
 }
