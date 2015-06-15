@@ -2,10 +2,10 @@
 @using uForum.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    
+
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var notificationService = new NotificationService(ApplicationContext.DatabaseContext);
-    
+
     var member = Members.GetCurrentMember();
 
     var dontBug = member.GetPropertyValue<bool>("bugMeNot");
@@ -18,8 +18,9 @@
     var pages = Math.Ceiling(((double)numberOfTopicItems / 50));
 
     var currentPage = 1;
-    
-    if (Request["p"] != null) { 
+
+    if (Request["p"] != null)
+    {
         int.TryParse(Request["p"], out currentPage);
     }
 
@@ -27,70 +28,79 @@
     var nextPage = currentPage + 1;
 
     var topicItems = notificationService.GetTopicSubscriptionsFromMember(member.Id, 50, currentPage).Items;
-    
-    
+
+
 }
 
 <div class="profile-settings">
 
-    
 
-    @Html.Action("Render", "ProfileNotification") 
 
-    @if (!dontBug) { 
-  
-    if (forumItems.Any()) { 
-    <strong>Forums</strong>
-    <ul class="profile-settings-following">
-        @foreach (var not in forumItems)
+    @Html.Action("Render", "ProfileNotification")
+
+    @if (!dontBug)
+    {
+
+        if (forumItems.Any())
         {
-            var forum = Umbraco.TypedContent(not.ForumId);
-
-            if (forum != null) { 
-            <li>
-                <a href="@forum.Url">@forum.Name</a> <span class="hidden-xs">–</span>
-                <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
-            </li>
-            }
-        }
-    </ul>
-    }
-    if (topicItems.Any()) { 
-    <strong>Topics</strong>
-    <ul class="profile-settings-following">
-        @foreach (var not in topicItems)
-        {
-            var topic = topicService.GetById(not.TopicId);
-
-            if (topic != null) { 
-            <li>
-                <a href="@topic.GetUrl()">@topic.Title</a> <span class="hidden-xs">–</span>
-                <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
-            </li>
-            }
-        }
-    </ul>
-
-    if (pages > 1) { 
-        <nav class="pagination" role="navigation">
-            @if (currentPage > 1) { 
-            <a class="prev" href="@prevPage">Prev</a>
-            }
-            @for (int i = 1; i <= pages; i++)
-            {
-                if(i == currentPage){
-                    <a class="active" href="?p=@i">@i</a>
-                }
-                else
+            <strong>Forums</strong>
+            <ul class="profile-settings-following">
+                @foreach (var not in forumItems)
                 {
-                <a href="?p=@i">@i</a>
+                    var forum = Umbraco.TypedContent(not.ForumId);
+
+                    if (forum != null)
+                    {
+                        <li>
+                            <a href="@forum.Url">@forum.Name</a> <span class="hidden-xs">–</span>
+                            <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
+                        </li>
+                    }
                 }
+            </ul>
+        }
+        if (topicItems.Any())
+        {
+            <strong>Topics</strong>
+            <ul class="profile-settings-following">
+                @foreach (var not in topicItems)
+                {
+                    var topic = topicService.GetById(not.TopicId);
+
+                    if (topic != null)
+                    {
+                        <li>
+                            <a href="@topic.GetUrl()">@topic.Title</a> <span class="hidden-xs">–</span>
+                            <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
+                        </li>
+                    }
+                }
+            </ul>
+
+            if (pages > 1)
+            {
+                <nav class="pagination" role="navigation">
+                    @if (currentPage > 1)
+                    {
+                        <a class="prev" href="?p=@prevPage">Prev</a>
+                    }
+                    @for (int i = 1; i <= pages; i++)
+                    {
+                        if (i == currentPage)
+                        {
+                            <a class="active" href="?p=@i">@i</a>
+                        }
+                        else
+                        {
+                            <a href="?p=@i">@i</a>
+                        }
+                    }
+                    @if (currentPage < pages)
+                    {
+                        <a class="next" href="?p=@nextPage">Next</a>
+                    }
+                </nav>
             }
-            @if (currentPage < pages) { 
-            <a class="next" href="?p=@nextPage">Next</a>
-            }
-        </nav>
-    }
-    }
+        }
     }
 </div>
