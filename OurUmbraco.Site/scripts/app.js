@@ -27,7 +27,7 @@ Date.prototype.format = function(f)
             case 'mm':   return (d.getMonth() + 1).zf(2);
             case 'dddd': return gsDayNames[d.getDay()];
             case 'ddd':  return gsDayNames[d.getDay()].substr(0, 3);
-            case 'dd':   return d.getDate().zf(2);
+            case 'dd':   return d.getDate();
             case 'hh':   return ((h = d.getHours() % 12) ? h : 12).zf(2);
             case 'nn':   return d.getMinutes().zf(2);
             case 'ss':   return d.getSeconds().zf(2);
