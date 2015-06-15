@@ -15,6 +15,9 @@ namespace uForum.Models
         [Column("topicId")]
         public int TopicId { get; set; }
 
+        [Column("topicAuthorId")]
+        public int TopicAuthorId { get; set; }
+
         [Column("parentCommentId")]
         public int ParentCommentId { get; set; }
 
@@ -38,7 +41,5 @@ namespace uForum.Models
 
         [Column("hasChildren")]
         public bool HasChildren { get; set; }
-
-
     }
 }

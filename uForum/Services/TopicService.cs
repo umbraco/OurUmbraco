@@ -106,7 +106,7 @@ FETCH NEXT @count ROWS ONLY";
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = 1000)
         {
-            const string sql1 = @"SELECT TOP @count forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql1 = @"SELECT TOP @count forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName, u2.[id] as topicAuthorId
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
 	forumComments.position, forumComments.score, forumComments.topicId
@@ -140,7 +140,7 @@ ORDER BY forumTopics.updated DESC, forumComments.created DESC
         /// <returns></returns>
         public ReadOnlyTopic QueryById(int id)
         {
-            const string sql = @"SELECT forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName,
+            const string sql = @"SELECT forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName, u2.[id] as topicAuthorId,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
 	forumComments.position, forumComments.score, forumComments.topicId

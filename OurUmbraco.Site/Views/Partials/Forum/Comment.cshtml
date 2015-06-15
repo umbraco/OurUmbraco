@@ -74,8 +74,7 @@
         {
 
             <div class="actions">
-
-                @if (answer == 0 && (Members.IsAdmin() || currentMember.Id == Model.MemberId))
+                @if (answer == 0 && (Members.IsAdmin() || currentMember.Id == Model.TopicAuthorId))
                 {
                     <a href="#" class="solved" data-id="@Model.Id">
                         <i class="icon-Check"></i><span>Mark as solution</span>
