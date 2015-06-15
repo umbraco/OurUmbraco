@@ -24,7 +24,7 @@
 <div class="profile-settings">
     <strong>My Packages</strong>
     <div class="profile-settings-packages packages-content">
-        <a href="<%= editUrl %>" class="button green"><i class="icon-Add"></i>Add package</a>
+        <a href="<%= editUrl.Substring(0, editUrl.Length - 1) %>" class="button green"><i class="icon-Add"></i>Add package</a>
         <asp:Repeater runat="server" ID="myProjects">
             <ItemTemplate>
 
@@ -103,7 +103,7 @@
                                      <%#  Eval("Description").ToString().StripHtmlAndLimit(45) %>
 
                                     <br />
-                                    <a href="<%= editUrl %>?id=<%# Eval("Id") %>">Edit</a>
+                                    <a href="<%= editUrl.Substring(0, editUrl.Length - 1) %>?id=<%# Eval("Id") %>">Edit</a>
                                     <a href="<%= forumUrl %>?id=<%# Eval("Id") %>">Forums</a>
                                 </p>
                             </div>
