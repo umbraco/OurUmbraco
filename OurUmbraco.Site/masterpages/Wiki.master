@@ -1,7 +1,16 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderId="main" runat="server">
-
+	
+	<div id="alertBar">
+		<div class="container">
+			<div class="row">
+				<div class="col-xs-12">
+					<p>The legacy wiki pages are here for reference purposes only.<br/>For up-to-date information make sure to <a href="/documentation">check the documentation section</a>.</p>
+				</div>
+			</div>
+		</div>
+	</div>
 
 <div id="wiki" class="subpage">
 

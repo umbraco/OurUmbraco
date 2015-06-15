@@ -11,6 +11,16 @@
 </asp:Content>
   
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
+    <div id="alertBar">
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p>The release pages are experiencing some problems currently. <br /><br />We're working on it!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+	
     <umbraco:Macro ID="Macro6" Language="cshtml" runat="server">
         @{
             if(Request.Params["fromdownload"] != null) {
