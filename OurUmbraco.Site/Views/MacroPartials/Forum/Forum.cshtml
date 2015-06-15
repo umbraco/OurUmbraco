@@ -84,7 +84,7 @@
                     </td>
                     <td class="category frontend"><a href="@forum.Url">@(uForum.Library.Utils.GetForumName(forum))</a></td>
                     <td class="posts">@topic.Replies</td>
-                    <td class="activity" title="@topic.Updated.ToLongDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
+                    <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
             }
         }
