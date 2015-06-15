@@ -25,12 +25,12 @@
                     <div class="member-details">
                         <img src="@member.GetPropertyValue("avatar")" alt="">
                         <div class="text">
-                            <h3>
-                                <a href="#">
-                                    @member.Name
-                                </a>
-                            </h3>
-                            <small><a href="http://twitter/@member.GetPropertyValue("twitter")">&commat;<span>@member.GetPropertyValue("twitter")</span></a></small>
+                            <h3>@member.Name</h3>
+                            @if (member.HasValue("twitter"))
+                            {
+                                var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
+                                <small><a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a></small>
+                            }
                         </div>
                     </div> <!-- .member-details -->
 

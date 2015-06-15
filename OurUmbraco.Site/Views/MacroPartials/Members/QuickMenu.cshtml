@@ -37,8 +37,9 @@
                         </div>
                         @if (member.HasValue("twitter"))
                         {
+                            var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
                             <div class="user-twitter">
-                                <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
+                                <a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a>
                             </div>
                         }
                         @if (roles.Length > 1)
