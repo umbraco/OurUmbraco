@@ -9,6 +9,10 @@
             $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + id);
         },
 
+        voteProject: function (id) {
+            $.get("/umbraco/api/Powers/Action/?alias=ProjectUp&pageId=" + id);
+        },
+
         deleteComment: function (id, thisComment) {
 
             $.ajax({
@@ -167,6 +171,22 @@ $(function () {
         var count = parseInt($(".highfive-count", cont).html());
         count++;
         $(".highfive-count", cont).html(count);
+    });
+
+    //Vote project
+    $("#projectVote").one("click", function (e) {
+        e.preventDefault();
+        $("#projectVote").click(function () { return false; });
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        community.voteProject(id);
+        var votes = $("#projectVote").html().replace(" votes", "");
+        console.log(votes);
+        var count = parseInt(votes);
+        
+        count++;
+        $("#projectVote").html(count + " votes");
+        $("#projectVote").after("<br /><span>&nbsp;&nbsp;&nbsp;You Rock!</span>");
     });
 
     //Delete comment

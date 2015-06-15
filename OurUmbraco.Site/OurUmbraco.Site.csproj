@@ -1817,6 +1817,7 @@
     <Content Include="masterpages\ProfileLogin.master" />
     <Content Include="masterpages\ProfileRegister.master" />
     <Content Include="masterpages\Sidebar.master" />
+    <Content Include="Views\MacroPartials\Rss\Forum.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

@@ -29,7 +29,8 @@
     }
 
     var totalVotes = our.Utils.GetProjectTotalVotes(project.Id);
-    var hasMemberVoted = Members.IsLoggedIn() ? our.Utils.GetProjectMemberVotes(project.Id, Members.GetCurrentMemberId()) > 0 : false;
+    var currentMember = Members.GetCurrentMember();
+    var hasMemberVoted = Members.IsLoggedIn() ? our.Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
     var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
 
     var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
@@ -48,13 +49,13 @@
 
                     <div class="vote">
                         <i class="icon-Hearts"></i>
-                        @if (hasMemberVoted)
+                        @if (Members.IsLoggedIn() == false || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
                         {
                             <span>@totalVotes votes</span>
                         }
                         else
                         {
-                            <a href="#" id="projectVote">@totalVotes votes</a>
+                            <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
                         }
                     </div>
 
