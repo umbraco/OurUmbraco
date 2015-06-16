@@ -1820,6 +1820,7 @@
     <Content Include="Views\MacroPartials\Rss\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Rss\LatestTopics.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Packages.cshtml" />
+    <Content Include="Views\MacroPartials\Rss\Topic.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
