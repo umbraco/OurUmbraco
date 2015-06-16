@@ -27,7 +27,7 @@
         <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
         <title>@forum.Name</title>
         @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
-        <pubdate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubdate>
+        <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
         <generator>umbraco</generator>
         <description>Latest topics in the forum @forum.Name</description>
         <language>en</language>
@@ -37,11 +37,11 @@
             <item>
                 <title>@topic.Title</title>
                 @Html.Raw(string.Format("<link>{0}{1}</link>", baseUrl, topic.GetUrl()))
-                <guid ispermalink="true">@string.Format("{0}{1}", baseUrl, topic.GetUrl())</guid>
+                <guid isPermaLink="true">@string.Format("{0}{1}", baseUrl, topic.GetUrl())</guid>
                 <description><![CDATA[@Umbraco.StripHtml(Umbraco.Truncate(bodyNoControlCharacters, 100, false))]]></description>
                 <content:encoded><![CDATA[@topic.Body.Sanitize()]]></content:encoded>
                 <dc:creator>@topic.AuthorName</dc:creator>
-                <pubdate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", topic.Created)</pubdate>
+                <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", topic.Created)</pubDate>
             </item>
         }
     </channel>
