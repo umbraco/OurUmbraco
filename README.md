@@ -42,3 +42,10 @@ Simply run the below command in git bash:
 
 ##Projects section
 Note: the projects section doesn't work well at the moment, due to missing Marketplace.*.dll files. We still need to seperate our some of the Deli processes into a seperate DLL.
+
+##Issues
+If you're creating a pull request, make sure that it's backed by an issue on the tracker: http://issues.umbraco.org/issues?q=project%3A+our.umbraco.org  
+
+Mention the issue number in your pull request so we can merge it in more easily. 
+
+Even if you're not planning on sending a pull request, you can always create an issue on the tracker if it doesn't exist yet, it helps other find ways to contribute.
