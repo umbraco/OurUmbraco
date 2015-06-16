@@ -140,24 +140,23 @@
 {
     if (member.HasValue("avatar"))
     {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
+        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
     }
     else
     {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
+        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
     }
 }
 
-
-@helper gravatar(string email, int size)
+@helper gravatar(string email, int size, string memberName)
 {
     var emailId = email.ToLower();
     var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
 
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" />
+    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" alt="@memberName" />
 }
 
-@helper localAvatar(string imgPath, int size)
+@helper localAvatar(string imgPath, int size, string memberName)
 {
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Alternate Text" />
+    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="@memberName" />
 }
