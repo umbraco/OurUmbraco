@@ -87,7 +87,7 @@
                     </td>
                     <td class="category frontend"><a href="@forum.Url">@(Utils.GetForumName(forum))</a></td>
                     <td class="posts">@topic.Replies</td>
-                    <td class="activity" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} CET", topic.Updated))">@topic.Updated.ConvertToRelativeTime()</td>
+                    <td class="activity" title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
             }
         }
