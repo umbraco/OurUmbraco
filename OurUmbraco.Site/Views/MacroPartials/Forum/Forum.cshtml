@@ -75,11 +75,15 @@
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
 
                     <td class="topic">
-                        <a href="@topic.GetUrl()">@topic.Title</a>
+                        <a href="@topic.GetUrl()">@topic.Title</a><h1>@topic.Replies.ToString()</h1>
 
-                        @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                        @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
                         {
                             <span>last edited by <a href="/member/@topic.LatestReplyAuthor">@topic.LastReplyAuthorName</a></span>
+                        }
+                        else
+                        {
+                            <span>topic created by <a href="/member/@topic.MemberId">@topic.AuthorName</a></span>
                         }
                     </td>
                     <td class="category frontend"><a href="@forum.Url">@(uForum.Library.Utils.GetForumName(forum))</a></td>

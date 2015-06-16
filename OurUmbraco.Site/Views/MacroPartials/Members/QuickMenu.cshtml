@@ -81,13 +81,18 @@
                                         <div class="col-xs-10 col-md-8">
                                             <div class="forum-thread-text">
                                                 <h3>@topic.Title</h3>
-                                                @if (!string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                                {
-                                                    <p>
-                                                        Reply by @topic.LastReplyAuthorName <br />
-                                                        @topic.Updated.ConvertToRelativeTime()
-                                                    </p>
-                                                }
+                                                <p>
+                                                    @{
+                                                        if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                                        {
+                                                            <text>last edited by @topic.LastReplyAuthorName</text>
+                                                        }
+                                                        else
+                                                        {
+                                                            <text>created by @topic.AuthorName</text>
+                                                        }
+                                                    }  @topic.Updated.ConvertToRelativeTime()
+                                                </p>
                                             </div>
                                         </div>
                                         <div class="col-xs-2 col-md-4">
