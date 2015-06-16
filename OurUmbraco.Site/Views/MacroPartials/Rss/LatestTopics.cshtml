@@ -7,7 +7,7 @@
     var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
     var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topics = topicService.GetLatestTopics(50L, 1L, false);
+    var topics = topicService.GetLatestTopics(50L, 1L, false).OrderByDescending(x => x.Created);
 }<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
