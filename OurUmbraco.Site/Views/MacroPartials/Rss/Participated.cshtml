@@ -29,16 +29,17 @@
 
         @foreach (var topic in topics)
         {
-            foreach (var comment in topic.Comments.OrderByDescending(x => x.Created).Take(10))
+            foreach (var comment in topic.Comments.OrderByDescending(x => x.Created).Where(x => x.MemberId != memberId).Take(20))
             {
                 var bodyNoControlCharacters = new string(comment.Body.Where(c => !char.IsControl(c)).ToArray());
+                var commentMember = Members.GetById(comment.MemberId);
                 <item>
                     <title>@topic.Title</title>
                     @Html.Raw(string.Format("<link>{0}{1}</link>", baseUrl, topic.GetUrl()))
                     <guid isPermaLink="true">@string.Format("{0}{1}", baseUrl, topic.GetUrl())</guid>
                     <description><![CDATA[@Umbraco.StripHtml(Umbraco.Truncate(bodyNoControlCharacters, 100, false))]]></description>
                     <content:encoded><![CDATA[@comment.Body.Sanitize()]]></content:encoded>
-                    <dc:creator>@member.Name</dc:creator>
+                    <dc:creator>@commentMember.Name</dc:creator>
                     <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", comment.Created)</pubDate>
                 </item>
             }
