@@ -75,7 +75,7 @@
                 <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
 
                     <td class="topic">
-                        <a href="@topic.GetUrl()">@topic.Title</a><h1>@topic.Replies.ToString()</h1>
+                        <a href="@topic.GetUrl()">@topic.Title</a>
 
                         @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
                         {
