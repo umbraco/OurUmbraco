@@ -31,7 +31,7 @@
             }
         </div>
 
-        <div class="time">
+        <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} CET", Model.Created))">
             @Model.Created.ConvertToRelativeTime()
         </div>
     </div>

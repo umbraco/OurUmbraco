@@ -28,6 +28,7 @@ namespace uForum.Api
                 o.replies = topic.Replies;
                 o.hasAnswer = topic.Answer > 0;
                 o.updated = topic.Updated.ConvertToRelativeTime();
+                o.updatedLong = string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} CET", topic.Updated);
                 if (topic.LatestReplyAuthor > 0)
                 {
                     o.memId = topic.LatestReplyAuthor;

@@ -1,9 +1,8 @@
-﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using NotificationsWeb.Library
-@using uForum;
+﻿@using uForum
+@using uForum.Library
 @using uForum.Models
 @using uForum.Services
-@using Umbraco.Core.Persistence
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
     int page;
@@ -86,9 +85,9 @@
                             <span>topic created by <a href="/member/@topic.MemberId">@topic.AuthorName</a></span>
                         }
                     </td>
-                    <td class="category frontend"><a href="@forum.Url">@(uForum.Library.Utils.GetForumName(forum))</a></td>
+                    <td class="category frontend"><a href="@forum.Url">@(Utils.GetForumName(forum))</a></td>
                     <td class="posts">@topic.Replies</td>
-                    <td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
+                    <td class="activity" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} CET", topic.Updated))">@topic.Updated.ConvertToRelativeTime()</td>
                 </tr>
             }
         }
@@ -113,7 +112,7 @@
         </td>
         <td class="category frontend"><a href="{{forumUrl}}">{{forumName}}</a></td>
         <td class="posts">{{replies}}</td>
-        <td class="activity" title="{{updated}}">{{updated}}</td>
+        <td class="activity" title="{{updatedLong}}">{{updated}}</td>
     </tr>
     {{/.}}
 </script>
