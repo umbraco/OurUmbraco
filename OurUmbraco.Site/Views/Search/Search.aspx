@@ -35,7 +35,9 @@
                         <asp:TextBox runat="server" ID="SearchText" ></asp:TextBox>
                         <label for="<%=SearchText.ClientID %>">Search</label>
                     </div>
-
+                    <% if (Model.Results.SearchResults.Any() == false) { %>
+                        <p>No results</p>
+                    <% } %>
                     <div class="clear"></div>
                 </div>
 
