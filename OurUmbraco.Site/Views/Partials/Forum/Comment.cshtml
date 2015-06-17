@@ -48,7 +48,7 @@
         <div class="comment-inner">
             <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(commentAuthor, 48))</a>
 
-            <div class="highfive">
+            <div class="highfive highfive-comment">
 
                 <div class="highfive-count">
                     @Model.Score
@@ -57,7 +57,7 @@
                 {
                     if (currentMember.Id != Model.MemberId)
                     {
-                        <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five"/>High Five</a>
+                        <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
 
                     }
                 }

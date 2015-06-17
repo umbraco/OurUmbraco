@@ -5,6 +5,7 @@
     var topicAuthor = Members.GetById(Model.MemberId);
     var forum = Umbraco.TypedContent(Model.ParentId);
     var roles = Roles.GetRolesForUser(topicAuthor.GetPropertyValue<string>("UserName"));
+    var currentMember = Members.GetCurrentMember();
 }
 
 <li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
@@ -37,10 +38,21 @@
     </div>
 
     <div class="comment-inner">
-        <a href="/member/@topicAuthor.Id" class="photo">
-            @Html.Raw(our.Utils.GetMemberAvatar(topicAuthor, 48))
-            <span class="karma">Recieved @topicAuthor.Karma() <br>Karma points</span>
-        </a>
+        <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(topicAuthor, 48))</a>
+            <div class="highfive highfive-question">
+
+                <div class="highfive-count">
+                    @Model.Score
+                </div>
+                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                {
+                    if (currentMember.Id != Model.MemberId)
+                    {
+                        <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
+                    }
+                }
+            </div>
+        
         <div class="body-meta">
             <div class="topic">
                 <h2>@Model.Title</h2>

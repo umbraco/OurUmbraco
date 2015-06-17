@@ -9,6 +9,10 @@
             $.get("/umbraco/api/Powers/Action/?alias=LikeComment&pageId=" + id);
         },
 
+        highFiveQuestion: function (id) {
+            $.get("/umbraco/api/Powers/Action/?alias=LikeTopic&pageId=" + id);
+        },
+
         voteProject: function (id) {
             $.get("/umbraco/api/Powers/Action/?alias=ProjectUp&pageId=" + id);
         },
@@ -161,11 +165,25 @@ $(function () {
     });
 
     //High five
-    $(".comment .highfive a").on("click",function (e) {
+    $(".highfive-comment a").on("click",function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
         community.highFiveComment(id);
+        $(this).empty();
+        var cont = $(this).parent();
+        cont.append("You Rock!");
+        var count = parseInt($(".highfive-count", cont).html());
+        count++;
+        $(".highfive-count", cont).html(count);
+    });
+
+    //High five
+    $(".highfive-question a").on("click", function (e) {
+        e.preventDefault();
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        community.highFiveQuestion(id);
         $(this).empty();
         var cont = $(this).parent();
         cont.append("You Rock!");
