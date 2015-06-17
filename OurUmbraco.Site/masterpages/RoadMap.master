@@ -66,13 +66,13 @@
 					    <div class="changes">
 						    <small>Features: <span data-bind="text: featureIssues().length"></span></small>
 						    <small>Issues: <span data-bind="text: issueIssues().length"></span></small>
-						    <small>Breaking changes: <span data-bind="text: breakingIssues().length"></span></small>
+						    <small>Breacking changes: <span data-bind="text: breakingIssues().length"></span></small>
 					    </div>
 				    </div>
 				    <div class="col-xs-6">
 					    <div class="changes">
 						    <small>Release date:</small>
-                            <small data-bind="text: releaseDate() == '' ? 'Not yet determined' : releaseDate() "></small>
+                            <small data-bind="text: releaseDate() == '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')"></small>
 					    </div>
 				    </div>
 
