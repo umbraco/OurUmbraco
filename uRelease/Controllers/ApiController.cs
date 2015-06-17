@@ -18,6 +18,7 @@ using uRelease.Models;
 using YouTrackSharp.Infrastructure;
 using umbraco.NodeFactory;
 using System.Configuration;
+using System.Web.Hosting;
 using Version = uRelease.Models.Version;
 
 namespace uRelease.Controllers
@@ -178,6 +179,13 @@ namespace uRelease.Controllers
             var allText = System.IO.File.ReadAllText(Server.MapPath(YouTrackJsonFile));
 
             return new JsonResult { Data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+        }
+
+        public static List<AggregateView> GetAggregateVersionsFromFile()
+        {
+            var allText = System.IO.File.ReadAllText(HostingEnvironment.MapPath(YouTrackJsonFile));
+
+            return new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText);
         }
 
         public string SaveAllToFile()
