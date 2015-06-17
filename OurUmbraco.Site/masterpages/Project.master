@@ -16,3 +16,17 @@
     </section>
 
 </asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
+    
+    <script type="text/javascript">
+        (function () {
+            $(".fancybox").fancybox({
+                openEffect: 'none',
+                closeEffect: 'none',
+                padding: 0,
+            });
+        })();
+    </script>
+  
+</asp:Content>
