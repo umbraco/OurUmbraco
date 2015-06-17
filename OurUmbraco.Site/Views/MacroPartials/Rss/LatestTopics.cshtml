@@ -6,30 +6,17 @@
     Response.ContentType = "application/rss+xml";
     var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
     var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
-    int forumId;
-    // For some reason the Request.Url will show that this URL looks like: /rss/forum/?id=?id=103196
-    // This means that Request.QueryString["id"] results in ",1929". Removing the comma helps...
-    if (int.TryParse(Model.MacroParameters["forumId"].ToString().Replace(",", string.Empty), out forumId) == false)
-    {
-        throw new Exception("Invalid forum Id");
-    }
-
-    var forum = Umbraco.TypedContent(forumId);
-    if (forum == null)
-    {
-        throw new Exception("Invalid forum Id");
-    }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topics = topicService.GetLatestTopics(50L, 1L, false, forumId).OrderByDescending(x => x.Created);
+    var topics = topicService.GetLatestTopics(50L, 1L, false).OrderByDescending(x => x.Created);
 }<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>
         <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
-        <title>@forum.Name</title>
+        <title>@Model.Content.Name</title>
         @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
         <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
         <generator>umbraco</generator>
-        <description>Latest topics in the forum @forum.Name</description>
+        <description>Latests topics from the forum on our.umbraco.org</description>
         <language>en</language>
         @foreach (var topic in topics)
         {
@@ -41,7 +28,7 @@
                 <description><![CDATA[@Umbraco.StripHtml(Umbraco.Truncate(bodyNoControlCharacters, 100, false))]]></description>
                 <content:encoded><![CDATA[@topic.Body.Sanitize()]]></content:encoded>
                 <dc:creator>@topic.AuthorName</dc:creator>
-                <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", topic.Created)</pubDate>
+                <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", topic.Created)</pubDate>
             </item>
         }
     </channel>
