@@ -30,7 +30,7 @@
         }
         else
         {
-            <a href="/member/login">Sign in</a><strong> / </strong><a href="/member/Signup">Register</a>
+            <a href="/member/login?redirectUrl@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a><strong> / </strong><a href="/member/Signup">Register</a>
         }
     </li>
 </ul>
