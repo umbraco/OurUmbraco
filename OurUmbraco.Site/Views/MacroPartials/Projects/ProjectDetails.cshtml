@@ -49,7 +49,7 @@
 
                     <div class="vote">
                         <i class="icon-Hearts"></i>
-                        @if (Members.IsLoggedIn() == false || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
+                        @if (Members.IsLoggedIn() == false || currentMember == owner || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
                         {
                             <span>@totalVotes votes</span>
                         }
