@@ -2,7 +2,7 @@
 	
 <asp:content ContentPlaceHolderId="Main" runat="server">
   <div id="body" class="page markdown-syntax">
-  <div style="margin-top: 25px;">
+  <div>
       <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
   </div>
     
