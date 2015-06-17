@@ -38,7 +38,7 @@
 
     <div class="comment-inner">
         <a href="/member/@topicAuthor.Id" class="photo">
-            @Avatar(topicAuthor, 48)
+            @Html.Raw(our.Utils.GetMemberAvatar(topicAuthor, 48))
             <span class="karma">Recieved @topicAuthor.Karma() <br>Karma points</span>
         </a>
         <div class="body-meta">
@@ -109,28 +109,3 @@
         }
     </div>
 </li> <!-- End of question -->
-@helper Avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @LocalAvatar(member.GetPropertyValue<string>("avatar"), avatarSize);
-    }
-    else
-    {
-        @Gravatar(member.GetPropertyValue<string>("Email"), avatarSize);
-    }
-}
-
-
-@helper Gravatar(string email, int size)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" alt="Avatar" />
-}
-
-@helper LocalAvatar(string imgPath, int size)
-{   
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Avatar" />
-}

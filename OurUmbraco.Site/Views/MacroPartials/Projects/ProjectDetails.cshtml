@@ -262,7 +262,7 @@
                         <div class="row">
                             <div class="col-xs-12">
                                 <div class="package-creator-information">
-                                    <img src="@owner.Avatar()" alt="">
+                                    @Html.Raw(our.Utils.GetMemberAvatar(owner, 79))
                                     <div class="text">
                                         <h3>
                                             <a href="/member/@owner.Id">

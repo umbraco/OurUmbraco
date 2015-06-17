@@ -22,7 +22,7 @@
 
             <a href="@topic.GetUrl()" class="forum-thread">
                 <div class="row flex-center">
-                    <div class="col-xs-2">@avatar(mem, 79)</div>
+                    <div class="col-xs-2">@Html.Raw(our.Utils.GetMemberAvatar(mem, 79))</div>
                     <div class="col-xs-10">
                         <div class="forum-thread-text">
                             <h3>@topic.Title</h3>
@@ -46,29 +46,4 @@
             </a>
         }
     </ul>
-}
-
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
-    }
-}
-
-@helper gravatar(string email, int size, string memberName)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" alt="@memberName"/>
-}
-
-@helper localAvatar(string imgPath, int size, string memberName)
-{
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="@memberName" />
 }

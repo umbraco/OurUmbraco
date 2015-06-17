@@ -46,9 +46,7 @@
         </div>
 
         <div class="comment-inner">
-
-            <a href="/member/@commentAuthor.Id" class="photo">@avatar(commentAuthor, 48)</a>
-
+            <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(commentAuthor, 48))</a>
 
             <div class="highfive">
 
@@ -134,29 +132,4 @@
             </div>
         }
     </li>
-}
-
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
-    }
-}
-
-@helper gravatar(string email, int size, string memberName)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g&d=retro" alt="@memberName" />
-}
-
-@helper localAvatar(string imgPath, int size, string memberName)
-{
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="@memberName" />
 }

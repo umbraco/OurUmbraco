@@ -27,7 +27,7 @@
 
 
                     <div class="user-image">
-                        @avatar(member, 100)
+                        @Html.Raw(our.Utils.GetMemberAvatar(member, 100))
                     </div>
 
                     <div class="user-profile">
@@ -115,26 +115,3 @@
         </div>
     </div>
 </div>
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
-    }
-}
-
-@helper gravatar(string email, int size)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="//www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
-}
-@helper localAvatar(string imgPath, int size)
-{
-    <img src="@imgPath?width=@size&height=@size&mode=crop" alt="Alternate Text" />
-}

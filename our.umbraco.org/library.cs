@@ -3,14 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using umbraco.cms.businesslogic.member;
+using System.Web.Hosting;
+using System.Web.Security;
 using umbraco.BusinessLogic;
 using System.Xml.XPath;
+using Umbraco.Core.Models;
 using Umbraco.Web;
+using Member = umbraco.cms.businesslogic.member.Member;
+using MemberGroup = umbraco.cms.businesslogic.member.MemberGroup;
 
-namespace our {
+namespace our
+{
     [Umbraco.Core.Macros.XsltExtension("our.library")]
-    public class Utils {
+    public class Utils
+    {
         private static Regex _tags = new Regex("<[^>]*(>|$)", RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
         private static Regex _whitelist = new Regex(@"
             ^</?(a|b(lockquote)?|code|em|h(1|2|3)|i|li|ol|p(re)?|s(ub|up|trong|trike)?|ul)>$
@@ -27,11 +33,12 @@ namespace our {
         /// 
 
 
-        public static string Sanitize(string html) {
-           string re = Regex.Replace(html, "<script.*?</script>", "", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-           re = CleanInvalidXmlChars(re);
+        public static string Sanitize(string html)
+        {
+            string re = Regex.Replace(html, "<script.*?</script>", "", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            re = CleanInvalidXmlChars(re);
 
-           return re;
+            return re;
         }
 
 
@@ -44,7 +51,8 @@ namespace our {
             return Regex.Replace(text, re, "");
         }
 
-        public static Member GetMember(int id) {
+        public static Member GetMember(int id)
+        {
             Member m = Member.GetMemberFromCache(id);
             if (m == null)
                 m = new Member(id);
@@ -93,14 +101,14 @@ namespace our {
         public static int GetProjectMemberVotes(int projectId, params int[] memberIds)
         {
             var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>(
-                "SELECT sum([points]) FROM [powersProject] where id = @projectId AND memberId IN (@memberIds)", new {projectId = projectId, memberIds = memberIds});
+                "SELECT sum([points]) FROM [powersProject] where id = @projectId AND memberId IN (@memberIds)", new { projectId = projectId, memberIds = memberIds });
             return result ?? 0;
         }
 
         public static IEnumerable<string> GetProjectCompatibleVersions(int projectId)
         {
             return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<string>(
-                "SELECT DISTINCT [version] FROM DeliVersionCompatibility WHERE isCompatible = 1 AND projectId = @projectId", new {projectId = projectId});
+                "SELECT DISTINCT [version] FROM DeliVersionCompatibility WHERE isCompatible = 1 AND projectId = @projectId", new { projectId = projectId });
         }
 
         /// <summary>
@@ -155,9 +163,9 @@ namespace our {
 
             string output = "[";
 
-            foreach(umbraco.interfaces.ITag tag in umbraco.editorControls.tags.library.GetTagsFromGroupAsITags(group))
+            foreach (umbraco.interfaces.ITag tag in umbraco.editorControls.tags.library.GetTagsFromGroupAsITags(group))
             {
-                output += "\"" + tag.TagCaption +"\",";
+                output += "\"" + tag.TagCaption + "\",";
             }
 
             output = output.Substring(0, output.Length - 1);
@@ -174,7 +182,7 @@ namespace our {
 
         public static List<int> GetProjectContributors(int projectId)
         {
-            
+
 
             List<int> projects = new List<int>();
 
@@ -196,24 +204,40 @@ namespace our {
 
         }
 
-        /*
-        public static XPathNodeIterator ProjectsContributing(int memberId)
+        public static string GetMemberAvatar(IPublishedContent member, int avatarSize)
         {
-            return uForum.Businesslogic.Data.GetDataSet
-               ("SELECT * FROM projectContributors WHERE memberId = " + memberId, "projects");
+            var hasAvatar = member.HasValue("avatar");
+            if (hasAvatar)
+            {
+                var avatarPath = member.GetPropertyValue("avatar").ToString();
+                var path = HostingEnvironment.MapPath(avatarPath);
+                if (System.IO.File.Exists(path))
+                    return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
+            } 
+            
+            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
         }
 
-        public static XPathNodeIterator ProjectContributors(int projectId)
+        public static string GetGravatar(string email, int size, string memberName)
         {
-            return uForum.Businesslogic.Data.GetDataSet
-                ("SELECT * FROM projectContributors WHERE projectId = " + projectId, "contributors");
-        }*/
+            var emailId = email.ToLower();
+            var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+
+            return string.Format("<img src=\"//www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro\" alt=\"{2}\" />", hash, size, memberName);
+        }
+
+        public static string GetLocalAvatar(string imgPath, int size, string memberName)
+        {
+            return string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" alt=\"{2}\" />", imgPath, size, memberName);
+        }
     }
 
-    public struct ReplacePoint {
+    public struct ReplacePoint
+    {
         public int open, close;
 
-        public ReplacePoint(int open, int close) {
+        public ReplacePoint(int open, int close)
+        {
             this.open = open;
             this.close = close;
 
