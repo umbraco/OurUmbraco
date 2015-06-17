@@ -125,28 +125,31 @@ $(function () {
     var deepLinking = false;
     var getLink = $(".getLink");
     var body = $("body");
-    var thankYou = $("#thankYou");
+    var thankYou = $("#thankyou");
 
     $(".comments").on("click", "a.copy-link", function (e) {
         e.preventDefault();
         if (deepLinking === false) {
             body.addClass("active copy-prompt");
-            getLink.val(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
+            getLink.html(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
             getLink.focus().select();
             deepLinking = true;
         } else {
             body.removeClass("active copy-prompt");
             deepLinking = false;
         }
+        getLink.height(document.getElementsByClassName('getLink')[0].scrollHeight);
     });
 
     getLink.keydown(function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
             body.removeClass("active copy-prompt");
+            
+            console.log(thankYou);
 
-            thankyou.style.opacity = 1;
+            thankYou.addClass('active');
             setTimeout(function () {
-                thankyou.style.opacity = 0;
+                thankYou.removeClass('active');
             }, 900);
             deepLinking = false;
         }
@@ -156,8 +159,6 @@ $(function () {
         body.removeClass("active copy-prompt");
         deepLinking = false;
     });
-
-
 
     //High five
     $(".comment .highfive a").on("click",function (e) {
