@@ -81,15 +81,8 @@ namespace our
 
         public static int GetReleaseDownloadCount(int projectId)
         {
-            var releaseDownload = UmbracoContext.Current.ContentCache.GetById(projectId);
-            var releaseDownloadCorrection = releaseDownload.GetPropertyValue<int>("numberOfDownloads");
             var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("SELECT COUNT(*) FROM [projectDownload] WHERE projectId = @0", projectId);
-            if (result == null)
-                result = releaseDownloadCorrection;
-            else
-                result = result + releaseDownloadCorrection;
-
-            return result.Value;
+            return result ?? 0;
         }
 
         public static int GetProjectTotalVotes(int projectId)
@@ -213,8 +206,8 @@ namespace our
                 var path = HostingEnvironment.MapPath(avatarPath);
                 if (System.IO.File.Exists(path))
                     return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
-            } 
-            
+            }
+
             return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
         }
 
