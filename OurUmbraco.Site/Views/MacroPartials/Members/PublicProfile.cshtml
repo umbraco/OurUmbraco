@@ -13,7 +13,7 @@
 
     var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
 
-    var topics = ts.GetLatestTopicsForMember(member.Id, true, 10);
+    var topics = ts.GetLatestTopicsForMember(member.Id);
 
     var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
 
