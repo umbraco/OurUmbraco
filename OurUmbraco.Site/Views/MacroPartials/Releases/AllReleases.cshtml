@@ -89,9 +89,8 @@
 
                 <!-- latest release -->
                 <div class="col-xs-12">
-                    <h4><a href="@latest.Value.Url">v @latest.Key.ToString()</a></h4>
+                    <h4 style="display: inline"><a href="@latest.Value.Url">v @latest.Key.ToString()</a></h4><p style="display: inline; padding-left: 20px; color: rgba(0, 0, 0, .4); font-size: .8rem;">@Html.Raw(infoText)</p>
                     <p>@youTrackVersion.releaseDescription @latest.Value.GetPropertyValue("releaseDescription")</p>
-                    <p style="color: rgba(0, 0, 0, .4); font-size: .8rem;">@Html.Raw(infoText)</p>
                 </div>
 
                 <!-- the rest -->
