@@ -10,7 +10,7 @@
 
     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(project.Id);
     var screenshots = files.Where(x => x.FileType == "screenshot").ToArray();
-    var packages = files.Where(x => x.FileType == "package");
+    var packages = files.Where(x => x.FileType == "package").ToList();
     var docs = files.Where(x => x.FileType == "docs");
     var source = files.Where(x => x.FileType == "source");
 
@@ -114,7 +114,7 @@
                                                 </div>
                                                 <div class="type-description">
                                                     uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
+                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
                                                 </div>
                                             </div>
                                         </a>
@@ -142,7 +142,7 @@
                                                 </div>
                                                 <div class="type-description">
                                                     uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
-                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) <br /> .NET Version:  &nbsp; Full Trust Required</span>
+                                                    <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version:  @release.DotNetVersion</span>
                                                 </div>
                                             </div>
                                         </a>
