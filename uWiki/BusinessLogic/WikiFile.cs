@@ -68,7 +68,7 @@ namespace uWiki.Businesslogic
                         NodeVersion = result.version,
                         NodeId = result.nodeId,
                         CreateDate = result.createDate,
-                        Current = result.current,
+                        DotNetVersion = result.dotNetVersion,
                         Downloads = result.downloads,
                         Archived = result.archived,
                         Verified = result.verified,
@@ -94,6 +94,8 @@ namespace uWiki.Businesslogic
             return wikiFiles.ToDictionary(x => x.Key, x => (IEnumerable<WikiFile>)x.Value);
 
         }
+
+        public string DotNetVersion { get; set; }
 
         public static List<WikiFile> CurrentFiles(int nodeId)
         {
@@ -344,6 +346,7 @@ namespace uWiki.Businesslogic
                     Downloads = reader.GetInt("downloads");
                     Archived = reader.GetBoolean("archived");
                     Verified = reader.GetBoolean("verified");
+                    DotNetVersion = reader.GetString("dotNetVersion");
                     Versions = GetVersionsFromString(reader.GetString("umbracoVersion"));
                     Version = Versions.Any()
                         ? GetVersionsFromString(reader.GetString("umbracoVersion"))[0]
