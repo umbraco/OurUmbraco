@@ -6,7 +6,7 @@
 
 <div id="body" class="markdown-syntax">
 
-<div style="margin-top: 25px;">
+<div>
 <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
 </div>
 
