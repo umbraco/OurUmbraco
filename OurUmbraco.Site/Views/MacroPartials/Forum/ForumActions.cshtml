@@ -28,7 +28,7 @@
 }
 else
 {
-    <a href="/member/login" class="button login disabled">
-        <i class="icon-Add"></i><span>Log in to create topic</span>
+    <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login disabled">
+        <i class="icon-Add"></i><span>Sign in in to create a topic</span>
     </a>
 }
