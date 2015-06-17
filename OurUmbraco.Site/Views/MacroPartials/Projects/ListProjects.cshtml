@@ -142,7 +142,7 @@
                         <div class="forum-thread-text">
                             <h3><a href="@childContent.Url">@childContent.Name</a>
                             </h3>
-                            <p>@GetField(childPage.Fields, "body", "No description available").Truncate(150)</p>
+                            <p>@Html.Raw(GetField(childPage.Fields, "body", "No description available").StripHtml().Truncate(150))</p>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-5">
