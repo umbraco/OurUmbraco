@@ -45,13 +45,13 @@
             <th class="topic">Topic</th>
             <th class="category">
                 <div class="sorting">
-                    <select id="selectCategory" data-placeholder="Choose&hellip;">
+                    <select id="selectCategory" data-placeholder="Choose&hellip;" style="color:black;">
                         <option class="category" selected disabled>Category</option>
                         @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
                         {
                             foreach (var tag in main.Children)
                             {
-                                <option class="@tag.Name.ToLower().Replace(" ","")" value="@tag.Id">@tag.Name</option>
+                                <option class="@tag.Name.ToLower().Replace(" ","")" value="@tag.Id">@tag.Parent.Name - @tag.Name</option>
                             }
                         }
                     </select>
