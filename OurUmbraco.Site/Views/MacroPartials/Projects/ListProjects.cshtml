@@ -7,7 +7,7 @@
     var category = Request["category"];
     var version = Request["version"];
     var term = Request["term"];
-    var pageSize = 50;
+    var pageSize = 20;
     var headline = orderMode == "createDate" ? "latest" : "most popular";
 
     var filters = new List<SearchFilters>();
@@ -37,22 +37,24 @@
         filters.Add(versionFilters);
     }
 
-    OurSearcher searcher = new OurSearcher(term, "project", orderMode, filters: filters);
+    var searcher = new OurSearcher(term, "project", orderMode, filters: filters, maxResults: 2000);
 
     var search = searcher.Search();
     var total = search.SearchResults.TotalItemCount;
     var pages = (total / pageSize) + 1;
 
-    var url = "orderBy=" + orderMode + "&q=" + term + "&version=" + version;
+    var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
     var result = search.SearchResults.Skip((page - 1) * pageSize).Take(pageSize);
 }
 @if (Context.IsDebuggingEnabled)
 {
     <p style="border: 1px solid orange;">
-        <strong>Debugging output</strong><br />
-        <strong>Query:</strong> @search.LuceneQuery<br />
-        <strong>Order by:</strong> @search.OrderBy<br />
-        <strong>Time elapsed:</strong> @search.Totalmilliseconds
+        <strong>Debugging output</strong><br/>
+        <strong>Query:</strong> @search.LuceneQuery<br/>
+        <strong>Order by:</strong> @search.OrderBy<br/>
+        <strong>Time elapsed:</strong> @search.Totalmilliseconds<br/>
+        <strong>Total results:</strong> @total<br/>
+        <strong>Pages:</strong> @pages
     </p>
 }
 <div class="search-big">
@@ -169,16 +171,16 @@
     <nav class="pagination" role="navigation">
         @if (page > 1)
         {
-            <a class="prev" href="?page=@(page-1)&@url">Prev</a>
+            <a class="prev" href="?page=@(page - 1)&@url">Prev</a>
         }
-        @for (int i = 1; i < pages; i++)
+        @for (int i = 1; i <= pages; i++)
         {
             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
         }
 
         @if (page < pages)
         {
-            <a class="next" href="?page=@(page+1)&@url">Next</a>
+            <a class="next" href="?page=@(page + 1)&@url">Next</a>
         }
     </nav>
 </div>
