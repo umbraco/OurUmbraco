@@ -40,7 +40,7 @@
                 }
 
             </div>
-            <div class="time">
+            <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
                 @Model.Created.ConvertToRelativeTime()
             </div>
         </div>
