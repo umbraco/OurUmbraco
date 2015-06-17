@@ -6,6 +6,7 @@ using System.Web;
 using umbraco.cms.businesslogic.member;
 using umbraco.BusinessLogic;
 using System.Xml.XPath;
+using Umbraco.Web;
 
 namespace our {
     [Umbraco.Core.Macros.XsltExtension("our.library")]
@@ -67,6 +68,20 @@ namespace our {
         {
             var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0", projectId);
             return result ?? 0;
+        }
+
+
+        public static int GetReleaseDownloadCount(int projectId)
+        {
+            var releaseDownload = UmbracoContext.Current.ContentCache.GetById(projectId);
+            var releaseDownloadCorrection = releaseDownload.GetPropertyValue<int>("numberOfDownloads");
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("SELECT COUNT(*) FROM [projectDownload] WHERE projectId = @0", projectId);
+            if (result == null)
+                result = releaseDownloadCorrection;
+            else
+                result = result + releaseDownloadCorrection;
+
+            return result.Value;
         }
 
         public static int GetProjectTotalVotes(int projectId)
