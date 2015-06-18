@@ -1,6 +1,8 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
 
 <%@ Import Namespace="Umbraco.Web" %>
+<%@ Register TagPrefix="CD" Namespace="ClientDependency.Core.Controls" Assembly="ClientDependency.Core" %>
+
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
     <!doctype html>
     <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -29,14 +31,20 @@
         <meta name="description" content="">
         <meta name="author" content="">
 
-        <link href='//fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
-        <link rel="stylesheet" href="/assets/css/style.min.css" />
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+
+        <CD:ClientDependencyLoader runat="server" ID="Loader" />
+        <CD:HtmlInclude runat="server">
+                <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
+        </CD:HtmlInclude>
+        <asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
 
         <!--[if lt IE 9]>
-        <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
         <![endif]-->
 
-        <script src="//code.jquery.com/jquery-1.7.2.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
 
         <umbraco:Macro Alias="MembersJsValues" runat="server" />
 
@@ -58,7 +66,7 @@
 
     <%
         var model = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
-        var bodyCss = 
+        var bodyCss =
             model.Level > 2 && model.AncestorOrSelf(3).Id == 1057
             ? "profile has-sidebar"
             : model.DocumentTypeAlias.ToLower().Replace(" ", "-") + "-page";
@@ -96,7 +104,7 @@
                     </div>
 
                 </header>
-                
+
                 <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
 
                 <asp:ContentPlaceHolder ID="Search" runat="server" />
@@ -120,33 +128,34 @@
             </div>
             <!--.wrapper-->
 
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+            <script src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
 
-            <script src="//cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
-            <script src="//ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
 
-            <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
-            <script src="//cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
-
-            <script src="//cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
-
-
-            <script src="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-            <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css">
-
-            <script src="/assets/js/jquery.ajaxfileupload.js"></script>
-            <script src="/assets/js/jquery.scrolly.js"></script>
-            <script src="/assets/js/lodash.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
 
 
-            <script src="/assets/js/community.js"></script>
-            <script src="/assets/js/app.min.js"></script>
-            <script src="/assets/js/editor.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
 
+            <CD:HtmlInclude runat="server">
+                <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
+                <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
+                <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
+                <script type="text/javascript" src="/assets/js/community.js"></script>
+                <script type="text/javascript" src="/assets/js/app.min.js"></script>
+                <script type="text/javascript" src="/assets/js/editor.min.js"></script>
+            </CD:HtmlInclude>
+
+            <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>
 
             <script type="text/javascript">
                 classOnScroll('header', 'sticky', 10);
             </script>
+
+            <asp:ContentPlaceHolder ID="EndScripts" runat="server" />
 
             <script type="text/javascript">
                 var _gaq = _gaq || [];
@@ -159,10 +168,6 @@
                     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
                 })();
             </script>
-
-
-
-            <asp:ContentPlaceHolder ID="EndScripts" runat="server" />
 
         </form>
     </body>
