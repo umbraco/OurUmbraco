@@ -11,7 +11,7 @@
     {
         page = 1;
     }
-    
+
     var cat = -1;
     if (CurrentPage.Level > 3)
     {
@@ -41,7 +41,7 @@
         () => topicService.GetAllTopicsCount(cat),
         TimeSpan.FromMinutes(1));
 
-    var pages = (totalTopics/pageSize) + 1;
+    var pages = (totalTopics / pageSize) + 1;
 }
 <!-- FORUM HEADER START -->
 <div class="forum-archive-header">
@@ -98,20 +98,22 @@
                 <div class="topic-row @Umbraco.If(topic.Answer > 0, " solved")">
 
                     <div class="topic">
-                        <a href="@topic.GetUrl()">@topic.Title</a>
-                        @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                        {
-                            <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">last edited by <strong>@topic.LastReplyAuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
-                        }
-                        else
-                        {
-                            <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
-                        }
+                        <a href="@topic.GetUrl()">
+                            <h3>@topic.Title</h3>
+                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">last edited by <strong>@topic.LastReplyAuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                            else
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                        </a>
                     </div>
                     <div class="category frontend">
                         <a href="@forum.Url">@(Utils.GetForumName(forum))</a>
                     </div>
-                    <div class="posts">@topic.Replies</div>
+                    <div class="posts"><small>@topic.Replies</small> <span>replies</span></div>
                 </div>
             }
         }
@@ -141,4 +143,3 @@
     <div class="forum-conten"></div>
     <!-- FORUM LIST OF THREADS START -->
 </section>
-
