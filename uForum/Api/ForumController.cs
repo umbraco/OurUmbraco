@@ -63,7 +63,7 @@ namespace uForum.Api
             if (c == null)
                 throw new Exception("Comment not found");
 
-            if (c.MemberId != Members.GetCurrentMemberId())
+            if (c.MemberId != Members.GetCurrentMemberId() && Members.IsAdmin() == false)
                 throw new Exception("You cannot edit this comment");
 
             c.Body = model.Body;
@@ -165,7 +165,7 @@ namespace uForum.Api
             if (t == null)
                 throw new Exception("Topic not found");
 
-            if (t.MemberId != Members.GetCurrentMemberId())
+            if (t.MemberId != Members.GetCurrentMemberId() && Members.IsAdmin() == false)
                 throw new Exception("You cannot edit this topic");
 
             t.Updated = DateTime.Now;
