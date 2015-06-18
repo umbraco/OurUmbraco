@@ -32,6 +32,7 @@ namespace uForum.Library
 
 
             html = Regex.Replace(html, "<script.*?</script>", "", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            html = Regex.Replace(html, "<iframe>", "&lt;iframe&gt;", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             html = html.Replace("[code]", "<pre>");
             html = html.Replace("[/code]", "</pre>");
 
@@ -41,6 +42,13 @@ namespace uForum.Library
             var regex = new Regex(@"(^|\s|>|;)(https?|ftp)(:\/\/[-A-Z0-9+&@#\/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#\/%=~_|\[\]])($|\W)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
             var linkedHtml = regex.Replace(cleanHtml, "$1<a href=\"$2$3\" rel=\"nofollow\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
+
+            var iframeRegex = new Regex("<iframe.*?</iframe>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            var iframeMatches = iframeRegex.Matches(linkedHtml);
+            for (var i = 0; i < iframeMatches.Count; i++)
+            {
+                linkedHtml = linkedHtml.Replace(iframeMatches[i].Value, string.Format("<pre>{0}</pre>", HttpContext.Current.Server.HtmlEncode(iframeMatches[i].Value)));
+            }
 
             return linkedHtml;
         }
@@ -62,7 +70,7 @@ namespace uForum.Library
             }
             catch (Exception exception)
             {
-                Log.Add(LogTypes.Error, 0, string.Format("Could not get member {0} from the cache nor from the database - Exception: {1} {2} {3}", id, exception.Message,  exception.StackTrace, exception.InnerException));
+                Log.Add(LogTypes.Error, 0, string.Format("Could not get member {0} from the cache nor from the database - Exception: {1} {2} {3}", id, exception.Message, exception.StackTrace, exception.InnerException));
             }
 
             return null;
@@ -152,7 +160,7 @@ namespace uForum.Library
                 // If reputation is > ReputationThreshold they've got enough karma, spammers never get that far
 
                 var reputation = string.Empty;
-                if(member.getProperty("reputationTotal") != null && member.getProperty("reputationTotal").Value != null)
+                if (member.getProperty("reputationTotal") != null && member.getProperty("reputationTotal").Value != null)
                     reputation = member.getProperty("reputationTotal").Value.ToString();
 
                 int reputationTotal;
@@ -333,7 +341,7 @@ namespace uForum.Library
             }
             catch (Exception ex)
             {
-                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending potential spam member notification: {0} {1} {2}", 
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending potential spam member notification: {0} {1} {2}",
                     ex.Message, ex.StackTrace, ex.InnerException));
             }
         }
@@ -364,7 +372,7 @@ namespace uForum.Library
             }
             catch (Exception ex)
             {
-                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending new member notification: {0} {1} {2}", 
+                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending new member notification: {0} {1} {2}",
                     ex.Message, ex.StackTrace, ex.InnerException));
             }
         }
@@ -402,16 +410,16 @@ namespace uForum.Library
                        "Blocked: {0}<br />Name: {1}<br />Company: {2}<br />Bio: {3}<br />Email: {4}<br />IP: {5}<br />" +
                        "Score IP: {6}<br />Frequency IP: {7}<br />Score e-mail: {8}<br />Frequency e-mail: {9}<br />Total score: {10}<br />Member Id: {11}",
                        spammer.Blocked,
-                       spammer.Name ?? string.Empty, 
-                       spammer.Company ?? string.Empty, 
+                       spammer.Name ?? string.Empty,
+                       spammer.Company ?? string.Empty,
                        spammer.Bio == null ? string.Empty : spammer.Bio.Replace("\n", "<br />"),
-                       spammer.Email ?? string.Empty, 
+                       spammer.Email ?? string.Empty,
                        spammer.Ip ?? string.Empty,
-                       spammer.ScoreIp ?? string.Empty, 
+                       spammer.ScoreIp ?? string.Empty,
                        spammer.FrequencyIp ?? string.Empty,
                        spammer.ScoreEmail ?? string.Empty,
-                       spammer.FrequencyEmail ?? string.Empty, 
-                       spammer.TotalScore, 
+                       spammer.FrequencyEmail ?? string.Empty,
+                       spammer.TotalScore,
                        spammer.MemberId);
 
             var querystring = string.Format("api?ip={0}&email={1}&f=json", spammer.Ip, HttpUtility.UrlEncode(spammer.Email));
