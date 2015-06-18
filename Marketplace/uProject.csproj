@@ -83,6 +83,10 @@
     <Reference Include="Elmah">
       <HintPath>..\dependencies\Our\Elmah.dll</HintPath>
     </Reference>
+    <Reference Include="Examine, Version=0.1.64.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Examine.0.1.64.0\lib\Examine.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.6.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.6\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
@@ -294,6 +298,7 @@
     <Compile Include="Api\ProjectContributionController.cs" />
     <Compile Include="Api\ProjectForumController.cs" />
     <Compile Include="Controllers\ProjectCompatibilityReportController.cs" />
+    <Compile Include="Controllers\RepositoryController.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
