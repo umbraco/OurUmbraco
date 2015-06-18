@@ -30,7 +30,7 @@
 						            <a href="/contribute/progress"><h3>In Progress</h3></a>
 						            <ul class="level-2" data-bind="foreach: inProgressReleases">
 							            <li>
-								            <a href=""><h4 data-bind="text: version()"></h4></a>
+								            <a href="" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }"><h4 data-bind="text: version()"></h4></a>
 							            </li>
 						            </ul>
 					            </li>

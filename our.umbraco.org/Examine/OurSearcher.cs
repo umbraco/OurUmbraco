@@ -1,15 +1,12 @@
-﻿using Examine;
-using Examine.LuceneEngine.Providers;
-using Examine.Providers;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
-using System.Web;
+using Examine;
+using Examine.LuceneEngine.Providers;
 using our.Models;
 
 namespace our.Examine
@@ -123,8 +120,6 @@ namespace our.Examine
             var watch = new Stopwatch();
             watch.Start();
 
-            //TODO: The result.TotalSearchResults will yield a max of 100 which is incorrect, this  is an issue 
-            // in Examine, it needs to limit the results to 100 but still tell you how many in total
             var result = multiIndexSearchProvider.Search(criteria, MaxResults);
             watch.Stop();
 

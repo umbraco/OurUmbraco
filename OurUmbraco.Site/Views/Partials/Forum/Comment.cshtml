@@ -115,7 +115,7 @@
                 }
 
 
-                @if (currentMember.Id == Model.MemberId)
+                @if (currentMember.Id == Model.MemberId || Members.IsAdmin())
                 {
                     <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
                         <i class="icon-Edit"></i><span>Edit post</span>

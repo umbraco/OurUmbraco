@@ -83,8 +83,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
     </Reference>
-    <Reference Include="Examine, Version=0.1.63.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Examine.0.1.63.0\lib\Examine.dll</HintPath>
+    <Reference Include="Examine, Version=0.1.64.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Examine.0.1.64.0\lib\Examine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack">
