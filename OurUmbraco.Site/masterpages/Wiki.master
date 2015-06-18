@@ -14,17 +14,42 @@
 
 <div id="wiki" class="subpage">
 
-<div id="body">
+<div id="body" class="markdown-syntax">
 <asp:ContentPlaceHolder Id="Main" runat="server">
-<div style="margin-top: 25px;">
+<div>
 <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
 </div>
 
+    <style>
+        .markdown-syntax .projectGroups li {
+            min-height: 120px;
+            margin-top: 60px;
+            padding: 0 30px;
+
+            list-style: none;
+        }
+
+        .projectGroups li > div {
+            background-repeat: no-repeat;
+        }
+
+        .projectGroups h3, .projectGroups p {
+            margin-left: 80px;
+        }
+
+        .projectGroups h3 {
+            font-size: 1.2rem;
+        }
+
+        .projectGroups p {
+            margin-bottom: 20px;   
+        }
+    </style>
 
 <h1>The umbraco documentation wiki</h1>
  
 <div class="options">
-  <p style="text-align: left;">
+<p style="text-align: left;">
   The umbraco documentation wiki is community driven documentation effort for <a href="http://umbraco.org">Umbraco</a>. Content is both submitted 
   by <a href="/wiki/about/core-team">The core team</a>, the <a href="/wiki/about/mvps">MVPs</a>, the <a href="/wiki/about/umbraco-corporation">umbraco corporation</a> 
   and ofcourse anyone else in the community 
@@ -32,36 +57,36 @@
 </p>
 </div>
   
-<ul class="projectGroups">
-  <li>
+<ul class="projectGroups row">
+  <li class="col-md-6">
     <div style="background-image: url('/images/wiki/it.png');">
         <h3><a href="/wiki/recommendations/recommended-reading-for-it-administrators">Recommended reading for IT admin</a></h3>
         <p>Minimum requirements, How to install on Windows 7, Handling folder permissions, Use Windows Platform Installer</p>
       </div>
     </li>  
   
-    <li>
+    <li class="col-md-6">
       <div style="background-image: url('/images/wiki/editor.png');">
         <h3><a href="/wiki/recommendations/recommended-reading-for-content-editors">Recommended reading for editors</a></h3>
         <p>How to add new buttons to TinyMCE, How do I move documents, how to rollback changes</p>
       </div>
     </li>
   
-     <li>
+     <li class="col-md-6">
       <div style="background-image: url('/images/wiki/webdev.png');">
         <h3><a href="/wiki/recommendations/recommended-reading-for-web-developers">Recommended reading for web developers</a></h3>
         <p>What is XSLT? how do I migrate my html? what about css?, how do I create forms?</p>
       </div>
     </li>
     
-     <li>
+     <li class="col-md-6">
       <div style="background-image: url('/images/wiki/netdev.png');">
         <h3><a href="/wiki/recommendations/recommended-reading-for-net-developers">Recommended reading for .net programmers</a></h3>
         <p>The Umbraco API, the Event Model, how to extend the backend, how to integrate 3rd party data</p>
       </div>
     </li>
   
-    <li>
+    <li class="col-md-6">
       <div style="background-image: url('/images/wiki/package.png');">
         <h3><a href="/wiki/recommendations/recommended-reading-for-package-developers">Package developers</a></h3>
         <p>How redistribute, how to write good documentation, the package format etc, installation actions</p>
