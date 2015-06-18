@@ -39,7 +39,7 @@
         filters.Add(versionFilters);
     }
 
-    var searcher = new OurSearcher(term, "project", orderMode, filters: filters, maxResults: 2000);
+    var searcher = new OurSearcher(term, "project", orderMode, filters: filters, maxResults: pageSize * page);
 
     var search = searcher.Search();
     var total = search.SearchResults.TotalItemCount;
