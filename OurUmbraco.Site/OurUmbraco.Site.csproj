@@ -614,6 +614,7 @@
     <Content Include="scripts\forum\select2\select2-new.js" />
     <Content Include="scripts\forum\tags.js" />
     <Content Include="scripts\shadowbox\languages\README" />
+    <Content Include="scripts\shadowbox\libraries\sizzle\sizzle.js" />
     <Content Include="scripts\shadowbox\players\README" />
     <Content Include="setpermssions.bat" />
     <Content Include="umbraco\assets\css\canvasdesigner.css" />
