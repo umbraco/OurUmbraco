@@ -39,6 +39,7 @@ jQuery("li .deliPackage").live('mouseenter', function(event) {
             content: {
                text: function(api) {
                    var href = $(this).find(".hiLite a").attr("href");
+                   console.log($(this).find(".hiLite a").attr);
                    var rel = $(this).find(".hiLite a").attr("rel");
                    var title = $(this).find(".hiLite a").attr("title");
                  
@@ -46,7 +47,7 @@ jQuery("li .deliPackage").live('mouseenter', function(event) {
                        html += $(this).find(".brief").html();    
                        html += $(this).find(".hiLite").html();
                        html += "<div class='popularity'>" + $(this).find(".popularity").html() + "</div>"; 
-                       html += "<a href='" + href + "' class='btn' title='" + title + "' rel='" + rel + "'>Install package</a> <em>or</em> <a href='" + href + "'>view details</a>";     
+                       html += "<a href='" + href + "'>view details</a>";     
                        html += "</div>";
                        return html;
                    } 
