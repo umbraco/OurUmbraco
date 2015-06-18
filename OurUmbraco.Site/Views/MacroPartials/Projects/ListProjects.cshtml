@@ -2,6 +2,8 @@
 @using our.Examine
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
+    const int pagesToShowLeft = 4;
+    const int pagesToShowRight = 2;
     var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
@@ -49,11 +51,11 @@
 @if (Context.IsDebuggingEnabled)
 {
     <p style="border: 1px solid orange;">
-        <strong>Debugging output</strong><br/>
-        <strong>Query:</strong> @search.LuceneQuery<br/>
-        <strong>Order by:</strong> @search.OrderBy<br/>
-        <strong>Time elapsed:</strong> @search.Totalmilliseconds<br/>
-        <strong>Total results:</strong> @total<br/>
+        <strong>Debugging output</strong><br />
+        <strong>Query:</strong> @search.LuceneQuery<br />
+        <strong>Order by:</strong> @search.OrderBy<br />
+        <strong>Time elapsed:</strong> @search.Totalmilliseconds<br />
+        <strong>Total results:</strong> @total<br />
         <strong>Pages:</strong> @pages
     </p>
 }
@@ -132,17 +134,18 @@
                 <div class="row">
                     <div class="col-xs-2 col-md-1">
                         @{
-                            var defaultScreenshot = "/css/img/package2.png";
-                            if (childContent != null)
-                            {
-                                defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
-                            }
+            var defaultScreenshot = "/css/img/package2.png";
+            if (childContent != null)
+            {
+                defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
+            }
                         }
-                        <img src="@defaultScreenshot?width=50&height=50&bgcolor=fff"/>
+                        <img src="@defaultScreenshot?width=50&height=50&bgcolor=fff" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">
-                            <h3><a href="@childContent.Url">@childContent.Name</a>
+                            <h3>
+                                <a href="@childContent.Url">@childContent.Name</a>
                             </h3>
                             <p>@Html.Raw(GetField(childPage.Fields, "body", "No description available").StripHtml().Truncate(150))</p>
                         </div>
@@ -155,13 +158,13 @@
                                 <span class="package-number">@ParseVersion(GetField(childPage.Fields, "versions"))</span>
                             </div>
                             <span class="stats">
-                            <span class="downloads">
-                                @GetField(childPage.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
-                        </span>
-                        <span class="karma">
-                            @GetField(childPage.Fields, "karma", "0")<span><i class="icon-Hearts"></i></span>
-                        </span>
-                    </span>
+                                <span class="downloads">
+                                    @GetField(childPage.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
+                                </span>
+                                <span class="karma">
+                                    @GetField(childPage.Fields, "karma", "0")<span><i class="icon-Hearts"></i></span>
+                                </span>
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -173,13 +176,15 @@
         {
             <a class="prev" href="?page=@(page - 1)&@url">Prev</a>
         }
-        @for (int i = 1; i <= pages; i++)
+
+        @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
         {
             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
         }
-
+        
         @if (page < pages)
         {
+            <span>&hellip;</span>
             <a class="next" href="?page=@(page + 1)&@url">Next</a>
         }
     </nav>

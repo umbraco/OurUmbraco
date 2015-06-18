@@ -2,7 +2,9 @@
 @using uForum.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-
+    
+    const int pagesToShowLeft = 4;
+    
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var notificationService = new NotificationService(ApplicationContext.DatabaseContext);
 
@@ -17,25 +19,20 @@
 
     var pages = Math.Ceiling(((double)numberOfTopicItems / 50));
 
-    var currentPage = 1;
+    var page = 1;
 
     if (Request["p"] != null)
     {
-        int.TryParse(Request["p"], out currentPage);
+        int.TryParse(Request["p"], out page);
     }
 
-    var prevPage = currentPage - 1;
-    var nextPage = currentPage + 1;
+    var prevPage = page - 1;
+    var nextPage = page + 1;
 
-    var topicItems = notificationService.GetTopicSubscriptionsFromMember(member.Id, 50, currentPage).Items;
-
-
+    var topicItems = notificationService.GetTopicSubscriptionsFromMember(member.Id, 50, page).Items;
 }
 
 <div class="profile-settings">
-
-
-
     @Html.Action("Render", "ProfileNotification")
 
     @if (!dontBug)
@@ -59,6 +56,7 @@
                 }
             </ul>
         }
+        
         if (topicItems.Any())
         {
             <strong>Topics</strong>
@@ -80,13 +78,13 @@
             if (pages > 1)
             {
                 <nav class="pagination" role="navigation">
-                    @if (currentPage > 1)
+                    @if (page > 1)
                     {
                         <a class="prev" href="?p=@prevPage">Prev</a>
                     }
-                    @for (int i = 1; i <= pages; i++)
+                    @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
                     {
-                        if (i == currentPage)
+                        if (i == page)
                         {
                             <a class="active" href="?p=@i">@i</a>
                         }
@@ -95,8 +93,9 @@
                             <a href="?p=@i">@i</a>
                         }
                     }
-                    @if (currentPage < pages)
+                    @if (page < pages)
                     {
+                        <span>&hellip;</span>
                         <a class="next" href="?p=@nextPage">Next</a>
                     }
                 </nav>
