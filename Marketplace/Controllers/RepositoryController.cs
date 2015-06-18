@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Web.Script.Serialization;
 using Examine;
-using Examine.Providers;
 using Examine.SearchCriteria;
-using our;
 using Umbraco.Web.WebApi;
 
 namespace uProject.Controllers
@@ -14,13 +13,13 @@ namespace uProject.Controllers
     public class RepositoryController : UmbracoApiController
     {
         [HttpGet]
-        public string Search(string query, int parent, bool wildcard)
+        public HttpResponseMessage Search(string query, int parent, bool wildcard)
         {
             if (query.ToLower() == "useqsstring") query = HttpContext.Current.Request.QueryString["term"];
             if (wildcard && !query.EndsWith("*")) query += "*";
             var searchTerm = query;
             var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
-
+            
             ////Search Criteria for WIKI & Projects
             var searchCriteria = searcher.CreateSearchCriteria(BooleanOperation.Or);
             var searchQuery = searchTerm.BuildExamineString(99, "nodeName", false);
@@ -31,8 +30,8 @@ namespace uProject.Controllers
                             where r["nodeTypeAlias"] == "project"
                             select r;
 
-            JavaScriptSerializer serializer = new JavaScriptSerializer();
-            return serializer.Serialize(searchResults);
+            var resp = Request.CreateResponse(HttpStatusCode.OK, searchResults, Configuration.Formatters.JsonFormatter);
+            return resp;
         }
     }
 }

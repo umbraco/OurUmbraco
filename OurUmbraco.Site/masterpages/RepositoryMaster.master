@@ -31,7 +31,7 @@
     <li class="clearfix">
         <div class="deliPackage">
             <div class="brief">
-              <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url({{= Fields.defaultScreenshotPath}}?width=50&amp;height=50&amp;bgcolor=fff;) no-repeat top left;">
+              <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url({{= Fields.image}}?width=50&amp;height=50&amp;bgcolor=fff;) no-repeat top left;">
                     Package</a>
                 <h3>
                 <a href="/repo_viewproject?project_id={{= Id}}">{{= Fields.nodeName}}</a></h3>
