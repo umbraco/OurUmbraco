@@ -59,11 +59,12 @@
         <div class="sorting">
             <select id="selectCategory" data-placeholder="Choose&hellip;">
                 <option class="category" selected disabled>Filter by category</option>
+                <option class="all" value="@CurrentPage.AncestorOrSelf(2).Id">All categories</option>
                 @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
                 {
                     foreach (var tag in main.Children)
                     {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id">@tag.Parent.Name - @tag.Name</option>
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
                     }
                 }
             </select>
