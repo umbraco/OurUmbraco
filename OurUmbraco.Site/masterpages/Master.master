@@ -48,9 +48,10 @@
         <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 
         <CD:ClientDependencyLoader runat="server" ID="Loader" />
-        <CD:HtmlInclude runat="server">
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
+        <%--<CD:HtmlInclude runat="server">
                 <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-        </CD:HtmlInclude>
+        </CD:HtmlInclude>--%>
         <asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
 
