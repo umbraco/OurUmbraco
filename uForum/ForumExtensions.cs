@@ -50,7 +50,7 @@ namespace uForum
             if (span >= 1209600 && span < 2592000)
                 return string.Concat(Math.Round(ts.TotalDays), " days ago");
 
-            return date.ToString("dd MMM, yyyy @ HH:mm");
+            return date.ToString("MMM dd, yyyy @ HH:mm");
         }
 
 
