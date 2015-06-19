@@ -1,14 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Mail;
 using System.Text;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using Umbraco.Web.UI.Controls;
 
 namespace our.usercontrols
 {
-    public partial class Forgotpassword : System.Web.UI.UserControl
+    public partial class Forgotpassword : UmbracoUserControl
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -17,53 +16,79 @@ namespace our.usercontrols
 
         protected void sendPass(object sender, EventArgs e)
         {
-            string em = tb_email.Text;
+            message.Visible = false;
+            error.Visible = false;
+            retrieve_error.Visible = false;
 
-            umbraco.cms.businesslogic.member.Member m = umbraco.cms.businesslogic.member.Member.GetMemberFromEmail(em);
-
-            if (m != null)
+            var email = tb_email.Text;
+            
+            var memberService = Services.MemberService;
+            int totalMembers;
+            var members = memberService.FindByEmail(email, 0, 100, out totalMembers);
+            var duplicateMembers = new List<DuplicateMember>();
+            foreach (var member in members)
             {
-                var pass = RandomString(8, true);
-                m.Password = pass;
-                m.Save();
-
-                var email = "<p>Hi " + m.Text + "</p>";
-                email = email + "<p>This is your new password for your account on http://our.umbraco.org:</p>";
-                email = email + "<p><strong>" + pass + "</strong></p>";
-                email = email + "<br/><br/><p>All the best<br/> <em>The email robot</em></p>";
-
-                var mailMessage = new MailMessage
-                {
-                    Subject = string.Format("Your password to our.umbraco.org"),
-                    Body = email,
-                    IsBodyHtml = true
-                };
-
-                mailMessage.To.Add(new MailAddress(m.Email));
-
-                mailMessage.From = new MailAddress("robot@umbraco.org");
-
-                var smtpClient = new SmtpClient();
-                smtpClient.Send(mailMessage);
-
-                msg.Visible = true;
-                msg.Text = "<div class='notice'><p>A new password has been sent to the email address: <strong>" + em + "</strong></p><p>Go to the <a href='/member/login.aspx'>login page</a></div>";
+                var totalKarma = member.GetValue<int>("reputationTotal");
+                var duplicateMember = new DuplicateMember { MemberId = member.Id, TotalKarma = totalKarma };
+                duplicateMembers.Add(duplicateMember);
             }
 
+            // rename username/email for each duplicate member
+            // EXCEPT for the one with the highest karma (Skip(1))
+            foreach (var duplicateMember in duplicateMembers.OrderByDescending(x => x.TotalKarma).ThenByDescending(x => x.MemberId).Skip(1))
+            {
+                var member = memberService.GetById(duplicateMember.MemberId);
+                var newUserName = member.Username.Replace("@", "@__" + member.Id);
+                member.Username = newUserName;
+                member.Email = newUserName;
+                memberService.Save(member);
+            }
+
+            var m = memberService.GetByEmail(email);
+            if (m == null)
+            {
+                retrieve_error.Visible = true;
+                return;
+            }
+              
+
+            var pass = RandomString(8, true);
+            memberService.SavePassword(m, pass);
+
+            var mail = "<p>Hi " + m.Name + "</p>";
+            mail = mail + "<p>This is your new password for your account on http://our.umbraco.org:</p>";
+            mail = mail + "<p><strong>" + pass + "</strong></p>";
+            mail = mail + "<br/><br/><p>All the best<br/> <em>The email robot</em></p>";
+
+            var mailMessage = new MailMessage
+            {
+                Subject = "Your password to our.umbraco.org",
+                Body = mail,
+                IsBodyHtml = true
+            };
+
+            mailMessage.To.Add(new MailAddress(m.Email));
+
+            mailMessage.From = new MailAddress("robot@umbraco.org");
+
+            var smtpClient = new SmtpClient();
+            smtpClient.Send(mailMessage);
+
+            message.Visible = true;
+            lt_email.Text = email;
         }
 
-        private string RandomString(int size, bool lowerCase) {
-            StringBuilder builder = new StringBuilder();
-            Random random = new Random();
-            char ch;
-            for (int i = 0; i < size; i++) {
-                ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
+        private string RandomString(int size, bool lowerCase)
+        {
+            var builder = new StringBuilder();
+            var random = new Random();
+            for (var i = 0; i < size; i++)
+            {
+                var ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
                 builder.Append(ch);
             }
-            if (lowerCase)
-                return builder.ToString().ToLower();
-            return builder.ToString();
+            
+            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
         }
     }
-
 }
