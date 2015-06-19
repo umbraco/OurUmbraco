@@ -29,9 +29,9 @@
         <meta name="apple-mobile-web-app-title" content="Our Umbraco">
 
          <!-- Icons -->
-        <link rel="apple-touch-icon-precomposed" href="/assets/images/app-icons/Icon-60@2x.png">
-        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/Icon-72@2x.png">
-        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/Icon-76@2x.png">
+        <link rel="apple-touch-icon-precomposed" href="/assets/images/app-icons/icon-60.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/icon-72.png">
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/icon-76.png">
         <link rel="icon" sizes="192x192" href="/assets/images/app-icons/touch-icon-192x192.png">
         <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
