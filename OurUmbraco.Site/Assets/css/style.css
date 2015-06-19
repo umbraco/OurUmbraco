@@ -12020,9 +12020,9 @@ section.forum .col-md-6 {
 
 .forum-overview .forum-settings .search-big {
 	-webkit-box-flex: 0;
-	-webkit-flex: 0 0 57%;
-	-ms-flex: 0 0 57%;
-	flex: 0 0 57%;
+	-webkit-flex: 0 0 70%;
+	-ms-flex: 0 0 70%;
+	flex: 0 0 70%;
 }
 
 .forum-overview .forum-settings .sorting {
