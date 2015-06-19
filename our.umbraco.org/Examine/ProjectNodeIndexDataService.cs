@@ -39,6 +39,7 @@ namespace our.Examine
             simpleDataSet.RowData.Add("createDate", project.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url );
+            simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
 
             var image = files.FirstOrDefault(x => x.FileType == "screenshot");
             var imageFile = "";

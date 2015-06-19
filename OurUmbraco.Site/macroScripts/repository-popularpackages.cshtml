@@ -82,7 +82,12 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(uProject.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+				<a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
@@ -120,7 +125,12 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(uProject.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+              <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
