@@ -21,9 +21,19 @@
         <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.org/rss/activetopics" />
         <link rel="alternate" type="application/rss+xml" title="Community blogs" href="//pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
 
-
         <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
-        <link rel="shortcut icon" type="image/x-icon" href="/css/img/our.favicon.png" />
+
+        
+        <!-- Application name -->
+        <meta name="application-name" content="Our Umbraco" />
+        <meta name="apple-mobile-web-app-title" content="Our Umbraco">
+
+         <!-- Icons -->
+        <link rel="apple-touch-icon-precomposed" href="/assets/images/app-icons/Icon-60@2x.png">
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/Icon-72@2x.png">
+        <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/Icon-76@2x.png">
+        <link rel="icon" sizes="192x192" href="/assets/images/app-icons/touch-icon-192x192.png">
+        <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
         <title>
             <umbraco:Macro Alias="Title" runat="server"></umbraco:Macro>
