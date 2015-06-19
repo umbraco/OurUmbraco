@@ -33,6 +33,15 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/icon-72.png">
         <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/icon-76.png">
         <link rel="icon" sizes="192x192" href="/assets/images/app-icons/touch-icon-192x192.png">
+
+        <meta name="msapplication-square70x70logo" content="/assets/images/acme-tile-small.png" />
+        <meta name="msapplication-square150x150logo" content="/assets/images/acme-tile-medium.png" />
+        <meta name="msapplication-wide310x150logo" content="/assets/images/acme-tile-wide.png" />
+        <meta name="msapplication-square310x310logo" content="/assets/images/acme-tile-large.png" />
+
+        <meta name="msapplication-TileImage" content="/assets/images/tile.png"/>
+        <meta name="msapplication-TileColor" content="#ff6e00"/>
+
         <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
         <title>
