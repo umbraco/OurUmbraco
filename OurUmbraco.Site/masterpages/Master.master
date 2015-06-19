@@ -23,7 +23,7 @@
 
         <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
 
-        
+
         <!-- Application name -->
         <meta name="application-name" content="Our Umbraco" />
         <meta name="apple-mobile-web-app-title" content="Our Umbraco">
@@ -33,6 +33,10 @@
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/icon-72.png">
         <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/icon-76.png">
         <link rel="icon" sizes="192x192" href="/assets/images/app-icons/touch-icon-192x192.png">
+
+        <meta name="msapplication-TileImage" content="/assets/images/app-icons/tile.png"/>
+        <meta name="msapplication-config" content="/assets/images/app-icons/browserconfig.xml">
+
         <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
         <title>
