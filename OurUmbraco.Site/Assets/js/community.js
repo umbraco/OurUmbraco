@@ -114,6 +114,14 @@
 $(function () {
     /*FORUM*/
 
+
+    //Go to solution
+    $(".go-to-solution").click(function () {
+        $('html, body').animate({
+            scrollTop: $(this.getAttribute('href')).offset().top - 80
+        }, 800);
+    });
+
     //Mark as solution
     $(".comments").on("click","a.solved",function (e) {
         e.preventDefault();
@@ -122,7 +130,6 @@ $(function () {
         community.markCommentAsSolution(id);
         $(this).closest(".comment").addClass('solution');
         $(".comment a.solved").remove();
-
     });
 
     //Copy link

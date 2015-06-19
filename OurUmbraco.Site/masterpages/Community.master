@@ -40,7 +40,7 @@
 
 			<div class="col-md-6">
 				<div class="beginners">
-					<a href="/documentation/Getting-Started/"><img src="assets/images/editor.png" alt=""></a>
+					<a href="/documentation/Getting-Started/"><img src="/documentation/images/icon-getting-started.png" alt=""></a>
 					<h2>Getting started</h2>
 					<p>All the basics of using Umbraco v7. <br>From your first local installation, to a fully functional customized CMS.</p>
 						
@@ -50,7 +50,7 @@
 
 			<div class="col-md-6">
 				<div class="advanced">
-					<a href="/documentation/Implementation/"><img src="assets/images/tools.png" alt=""></a>
+					<a href="/documentation/Implementation/"><img src="/documentation/images/icon-implementation.png" alt=""></a>
 					<h2>Implementation</h2>
 					<p>Get an overview of how the Umbraco pipeline is structured. <br>Not sure what to search for? Get a birdseye view of what happens from user request to content delivery.</p>
 
