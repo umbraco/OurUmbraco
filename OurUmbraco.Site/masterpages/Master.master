@@ -47,12 +47,12 @@
 
         <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
 
-        <CD:ClientDependencyLoader runat="server" ID="Loader" />
+        <%--<CD:ClientDependencyLoader runat="server" ID="Loader" />--%>
         <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
         <%--<CD:HtmlInclude runat="server">
                 <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
         </CD:HtmlInclude>--%>
-        <asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>
+        <%--<asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>--%>
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
 
         <!--[if lt IE 9]>
@@ -154,17 +154,19 @@
 
 
             <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-
-            <CD:HtmlInclude runat="server">
+            
+            
                 <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
                 <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
                 <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
                 <script type="text/javascript" src="/assets/js/community.js"></script>
                 <script type="text/javascript" src="/assets/js/app.min.js"></script>
                 <script type="text/javascript" src="/assets/js/editor.min.js"></script>
+            
+            <%--<CD:HtmlInclude runat="server">
             </CD:HtmlInclude>
 
-            <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>
+            <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>--%>
 
             <script type="text/javascript">
                 classOnScroll('header', 'sticky', 10);

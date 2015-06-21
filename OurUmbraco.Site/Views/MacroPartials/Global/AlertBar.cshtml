@@ -1,8 +1,15 @@
+@using System.Drawing
+@using our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     var home = Umbraco.TypedContentAtRoot().First();
     var notificationText = home.GetPropertyValue<string>("mainNotification");
     var showNotification = string.IsNullOrWhiteSpace(notificationText) == false;
+    Image avatarImage = null;
+    if (Members.IsLoggedIn())
+    {
+        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+    }
 }
 
 @if (showNotification)
@@ -17,3 +24,20 @@
         </div>
     </div>
 }
+
+@*
+    @if (Request.Cookies["dismissAvatar"] == null && CurrentPage.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+    {
+        <div id="alertBar" class="avatarTooSmall">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12">
+                        Your profile image is a little on the small side, it would look<br />
+                        much nicer if you could <a href="/member/profile">update it to be at least 400x400pixels</a>!<br/>
+                        <span style="font-size: 0.8em; color: gray; padding-top: 4px; display: inline-block;">Neh, I like my blurry avatar, <a class="dismisAvatar" href="#">stop notifying me</a> please.</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+*@

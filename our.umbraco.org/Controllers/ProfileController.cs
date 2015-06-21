@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace our.Controllers
@@ -52,7 +53,7 @@ namespace our.Controllers
                 ModelState.AddModelError("RepeatPassword", "Passwords need to match");
                 return CurrentUmbracoPage();
             }
-
+            
             mem.Name = model.Name ;
             mem.Email = model.Email;
             mem.Username = model.Email;
@@ -62,6 +63,13 @@ namespace our.Controllers
             mem.SetValue("twitter",model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
             ms.Save(mem);
+
+            var avatarImage = Utils.GetMemberAvatarImage(Members.GetById(mem.Id));
+            if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+            {
+                ModelState.AddModelError("Avatar", "Please upload an avatar that is at least 400x400 pixels");
+                return CurrentUmbracoPage();
+            }
 
             if(!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)
                 ms.SavePassword(mem, model.Password);       

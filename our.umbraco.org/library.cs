@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -7,6 +8,7 @@ using System.Web.Hosting;
 using System.Web.Security;
 using umbraco.BusinessLogic;
 using System.Xml.XPath;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Member = umbraco.cms.businesslogic.member.Member;
@@ -193,11 +195,18 @@ namespace our
             return ((Data.SqlHelper.ExecuteScalar<int>("SELECT 1 FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
                 Data.SqlHelper.CreateParameter("@projectId", projectId),
                 Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0));
-
-
         }
 
         public static string GetMemberAvatar(IPublishedContent member, int avatarSize)
+        {
+            var memberAvatarPath = MemberAvatarPath(member);
+            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
+                return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
+
+            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
+        }
+
+        private static string MemberAvatarPath(IPublishedContent member)
         {
             var hasAvatar = member.HasValue("avatar");
             if (hasAvatar)
@@ -205,12 +214,30 @@ namespace our
                 var avatarPath = member.GetPropertyValue("avatar").ToString();
                 var path = HostingEnvironment.MapPath(avatarPath);
                 if (System.IO.File.Exists(path))
-                    return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
+                    return path;
             }
 
-            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
+            return string.Empty;
         }
 
+        public static Image GetMemberAvatarImage(IPublishedContent member)
+        {
+            var memberAvatarPath = MemberAvatarPath(member);
+            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
+            {
+                try
+                {
+                    return Image.FromFile(memberAvatarPath);
+                }
+                catch (Exception)
+                {
+                    LogHelper.Debug<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath));
+                }
+            }
+
+            return null;
+        }
+        
         public static string GetGravatar(string email, int size, string memberName)
         {
             var emailId = email.ToLower();

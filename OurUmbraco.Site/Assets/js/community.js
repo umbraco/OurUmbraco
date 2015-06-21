@@ -106,7 +106,6 @@
                 $("#forum-description").val("");
             });
         }
-
     };
 }();
 
@@ -491,5 +490,16 @@ $(function () {
 
             community.addProjectForum(title, description, projectId);
         }
+    });
+
+    $(".dismisAvatar").on("click", function (e) {
+        e.preventDefault();
+
+        var expireDate = new Date();
+        expireDate.setTime(expireDate.getTime() + (3650 * 24 * 60 * 60 * 1000));
+        var expires = "expires=" + expireDate.toUTCString();
+        document.cookie = "dismissAvatar" + "=" + true + "; " + expires + "; path=/";
+
+        $(".avatarTooSmall").hide("fast");
     });
 });

@@ -23,7 +23,7 @@
 
             @using (Html.BeginUmbracoForm<our.Controllers.ProfileController>("HandleSubmit"))
             {
-                @Html.ValidationSummary(true)
+                @Html.ValidationSummary()
                 @Html.AntiForgeryToken()
 
                 <div class="avatar" id="avatar">
