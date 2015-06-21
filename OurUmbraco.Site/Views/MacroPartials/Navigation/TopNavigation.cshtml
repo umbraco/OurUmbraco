@@ -1,11 +1,4 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uForum
-
-@*
-    Macro to display child pages below the root page of a standard website.
-    Also highlights the current active page/section in the navigation with
-    the css class "current".
-*@
 
 @{
     @* Get the root of the website *@
@@ -25,7 +18,7 @@
         {
             var member = Members.GetCurrentMember();
             <div class="user">
-                @Html.Raw(our.Utils.GetMemberAvatar(member, 75))
+                @Html.Raw(our.Utils.GetMemberAvatar(member, 40))
             </div>
         }
         else
