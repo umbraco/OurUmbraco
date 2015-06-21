@@ -41,7 +41,7 @@ namespace uForum.Library
             // Add links to URLs that aren't "properly" linked in a markdown way
             var regex = new Regex(@"(^|\s|>|;)(https?|ftp)(:\/\/[-A-Z0-9+&@#\/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#\/%=~_|\[\]])($|\W)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
-            var linkedHtml = regex.Replace(cleanHtml, "$1<a href=\"$2$3\" rel=\"nofollow\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
+            var linkedHtml = regex.Replace(cleanHtml, "$1<a href=\"$2$3\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
 
             var iframeRegex = new Regex("<iframe.*?</iframe>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
             var iframeMatches = iframeRegex.Matches(linkedHtml);

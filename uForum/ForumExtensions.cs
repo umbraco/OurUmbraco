@@ -1,18 +1,15 @@
-﻿using HtmlAgilityPack;
-using MarkdownSharp;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
+using HtmlAgilityPack;
+using ImageProcessor.Imaging.Filters.Artistic;
+using MarkdownSharp;
+using uForum.AntiSpam;
 using uForum.Library;
 using uForum.Models;
-using uForum.Services;
-using Umbraco.Core;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace uForum
 {
@@ -21,7 +18,7 @@ namespace uForum
 
         public static string ConvertToRelativeTime(this DateTime date)
         {
-            
+
             var ts = DateTime.Now.Subtract(date);
             int span;
             int.TryParse(Math.Round(ts.TotalSeconds, 0).ToString(CultureInfo.InvariantCulture), out span);
@@ -54,7 +51,8 @@ namespace uForum
         }
 
 
-        public static HtmlString Sanitize(this string html){
+        public static HtmlString Sanitize(this string html)
+        {
             // Run it through Markdown first
             var md = new Markdown();
             html = md.Transform(html);
@@ -69,7 +67,6 @@ namespace uForum
                 var images = root.SelectNodes("//img");
                 if (images != null)
                 {
-                    var replace = false;
                     foreach (var image in images)
                     {
                         var src = image.GetAttributeValue("src", "");
@@ -84,14 +81,40 @@ namespace uForum
                         a.AppendChild(image.Clone());
 
                         image.ParentNode.ReplaceChild(a, image);
-
-                        replace = true;
                     }
+                }
 
-                    if (replace)
+                // Any links not going to an "approved" domain need to be marked as nofollow
+                var links = root.SelectNodes("//a");
+                if (links != null)
+                {
+                    foreach (var link in links)
                     {
-                        html = root.OuterHtml;
+                        if (link.Attributes["href"] != null && (SpamChecker.CountValidLinks(link.Attributes["href"].Value, 0) == 0))
+                        {
+                            if (link.Attributes["rel"] != null)
+                            {
+                                link.Attributes.Remove("rel");
+                            }
+                            link.Attributes.Add("rel", "nofollow");
+                        }
                     }
+                }
+
+                // Remove styles from all elements
+                var elementsWithStyleAttribute = root.SelectNodes("//@style");
+                if (elementsWithStyleAttribute != null)
+                {
+                    foreach (var element in elementsWithStyleAttribute)
+                    {
+                        element.Attributes.Remove("style");
+                    }
+                }
+
+                using (var writer = new StringWriter())
+                {
+                    doc.Save(writer);
+                    html = writer.ToString();
                 }
             }
 
@@ -100,15 +123,15 @@ namespace uForum
 
         public static bool DetectSpam(this Comment comment)
         {
-            var member = Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(comment.MemberId);
-            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(member, comment.Body);
+            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(comment.MemberId);
+            comment.IsSpam = SpamChecker.IsSpam(member, comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
-            var member = Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
-            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(member, topic.Body);
+            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
+            topic.IsSpam = SpamChecker.IsSpam(member, topic.Body);
             return topic.IsSpam;
         }
     }

@@ -149,7 +149,7 @@ namespace uForum.AntiSpam
             return false;
         }
 
-        private static int CountValidLinks(string href, int validLinksCount)
+        internal static int CountValidLinks(string href, int validLinksCount)
         {
             if (href != null && (href.TrimStart().StartsWith("/media")
                                  || href.TrimStart().StartsWith("/forum")
