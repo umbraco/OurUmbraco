@@ -10,7 +10,7 @@
 
     var files = uWiki.Businesslogic.WikiFile.CurrentFiles(project.Id);
     var screenshots = files.Where(x => x.FileType == "screenshot").ToArray();
-    var packages = files.Where(x => x.FileType == "package").ToList();
+    var packages = files.Where(x => x.FileType == "package" || x.FileType == "hotfix").ToList();
     var docs = files.Where(x => x.FileType == "docs");
     var source = files.Where(x => x.FileType == "source");
 
