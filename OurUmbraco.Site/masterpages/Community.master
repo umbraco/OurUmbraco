@@ -69,6 +69,9 @@
 			<div class="col-md-12">
 				<h1 class="text-center">Forum Activity</h1>
 			</div>
+            <div class="col-md-12">
+                <small>Recent posts</small>
+			</div>
 
 			<umbraco:Macro Alias="ForumLatestActivity" runat="server"></umbraco:Macro>
 
