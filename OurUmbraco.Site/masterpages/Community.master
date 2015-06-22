@@ -73,7 +73,7 @@
 			<umbraco:Macro Alias="ForumLatestActivity" runat="server"></umbraco:Macro>
 
 			<div class="col-md-12 goto-forum">
-				<a class="button transparent" href="/forum">Go to Forum &rarr;</a>
+				<a class="button green large" href="/forum">Go to Forum &rarr;</a>
 			</div>
 
 		</div>
