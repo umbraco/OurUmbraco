@@ -251,6 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\CommunityController.cs" />
+    <Compile Include="Api\GitHubWebHook.cs" />
     <Compile Include="Api\SearchController.cs" />
     <Compile Include="Controllers\AvatarController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
