@@ -25,7 +25,6 @@ CD %CD%\..\OurUmbraco.Client\
 
 ECHO Do npm install and the gulp build
 call npm install
-call npm install gulp-rename
 call npm install -g install gulp -g --quiet
 call gulp build
 
