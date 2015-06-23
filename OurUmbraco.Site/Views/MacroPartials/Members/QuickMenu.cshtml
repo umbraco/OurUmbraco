@@ -69,29 +69,33 @@
                         </div>
                     </div>
 
+
+
                     if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
                     {
-                        <small>Notifications</small>
 
-                        <a href="/member/profile" class="forum-thread">
-                            <div class="row">
-                                <div class="col-xs-10 col-md-8">
-                                    <div class="forum-thread-text">
-                                        <h3>Your profile picture is a little on the small side.</h3>
-                                        <p>
-                                            It would look <strong>much nicer</strong> if you could update it to be larger image.
-                                        </p>
-                                    </div>
+                        <div class="user-notifications">
+                            <small>
+                                Your Notifications
+                            </small>
+
+                            <a href="#" class="user-notification__green">
+                                <div class="user-notification-text">
+                                    <p>>Your profile picture is a little on the small side, It would look <strong>much nicer</strong> if you could update it to be larger image.</p>
                                 </div>
-                            </div>
-                        </a>
+                            </a>
+                        </div>
+
                     }
-                    
-                    <small>
-                        Activity in threads you participated in
-                    </small>
+
+
 
                     <div class="user-latest-posts">
+
+                        <small>
+                            Activity in threads you participated in
+                        </small>
+
                         @foreach (var topic in latestTopics)
                         {
                             var forum = Umbraco.TypedContent(topic.ParentId);
@@ -100,12 +104,10 @@
                             if (forum != null)
                             {
                                 <a href="@topic.GetUrl()" class="forum-thread">
-                                    <div class="row">
-                                        <div class="col-xs-10 col-md-8">
-                                            <div class="forum-thread-text">
-                                                <h3>@topic.Title</h3>
-                                                <p>
-                                                    @{
+                                    <div class="forum-thread-text">
+                                        <h3>@topic.Title</h3>
+                                        <p>
+                                            @{
                                 if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
                                 {
                                     <text>last edited by @topic.LastReplyAuthorName</text>
@@ -114,14 +116,11 @@
                                 {
                                     <text>created by @topic.AuthorName</text>
                                 }
-                                                    }  @topic.Updated.ConvertToRelativeTime()
-                                                </p>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-2 col-md-4">
-                                            <div class="category frontend"><span class="cat">@forum.Name</span></div>
-                                        </div>
+                                            }  @topic.Updated.ConvertToRelativeTime()
+                                        </p>
                                     </div>
+
+                                    <div class="category frontend"><span class="cat">@forum.Name</span></div>
                                 </a>
                             }
                         }
