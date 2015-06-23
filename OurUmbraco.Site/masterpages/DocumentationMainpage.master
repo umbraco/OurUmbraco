@@ -1,39 +1,20 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/DocumentationMaster.master" AutoEventWireup="true" %>
-<%@ Register Src="~/usercontrols/DocumentationShowMarkdown.ascx" TagPrefix="markdown" TagName="Doc" %>
-<%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb"%>
 
 <asp:Content ContentPlaceHolderId="main" runat="server">
     <div id="wiki" class="subpage">
         <div id="body">
             <asp:ContentPlaceHolder Id="Main" runat="server">
                 <div style="margin-top: 25px;">
-                    <markdown:Breadcrumb runat="server" />
+                   <umbraco:Macro Alias="DocsBreadcrumb" runat="server"></umbraco:Macro>
                 </div>
                 
-                <div id="markdown-docs">
-                    <markdown:Doc ID="Markdown" MarkdownFilePath="documentation\index.md" PrefixLinks="True" AddHeader="False" runat="server" />
+                <div id="markdown-docs" class="markdown-syntax">
+                        <umbraco:Macro Alias="DocsDisplayMarkdown" runat="server"></umbraco:Macro>
                 </div>
+
                 <br style="clear: both"/>
                 <div class="divider"></div>
             </asp:ContentPlaceHolder>
         </div>
-        
-        <umbraco:Macro runat="server" language="cshtml">
-            @if(Model.Parent.NodeTypeAlias != "Project"){
-                <div style="margin-top: 20px; padding: 7px;" class="notice">
-                    <h2>The documenation Wiki?</h2>
-                    <p>
-                        <em>As we have started to focus our documentation efforts on the documentation github project, we will be removing the wiki from our.umbraco.org</em>
-                    </p> 
-                    <p>
-                        The wiki will still be available, but editing will be turned off, 
-                        and the wiki links are also removed from the site navigation and search results. 
-                    </p> 
-                    <p>
-                        <strong>Umbraco Documentation Team</strong>
-                    </p>
-                </div>
-            }
-        </umbraco:Macro>
     </div>
 </asp:Content>

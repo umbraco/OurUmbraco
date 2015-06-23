@@ -49,3 +49,9 @@ OurUmbraco.Site_419
 OurUmbraco.Site/App_Data/cache/
 *.sln.ide/
 NuGetBackup
+OurUmbraco.Site/web.config
+OurUmbraco.Site/usercontrols/Deli/
+*.DS_Store
+OurUmbraco.Site/App_Data/mail/
+OurUmbraco.Client/build/assets/
+OurUmbraco.Client/node_modules/

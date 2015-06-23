@@ -54,7 +54,7 @@ namespace uWiki.usercontrols {
                 if (wf.Versions != null)
                     _version.Text = uWiki.Businesslogic.WikiFile.ToVersionString(wf.Versions);
 
-                if (Member.GetCurrentMember().Id == wf.CreatedBy || uWiki.Library.Utills.IsInGroup("admin"))
+                if (Member.GetCurrentMember().Id == wf.CreatedBy || uWiki.Library.Utils.IsInGroup("admin"))
                     _delete.Enabled = true;
 
 

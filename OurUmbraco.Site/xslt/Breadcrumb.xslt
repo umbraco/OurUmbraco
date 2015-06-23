@@ -24,29 +24,29 @@
 	<xsl:variable name="linkToCurrent" select="/macro/linkToCurrent"/>
 
 	<xsl:template match="/">
-		<xsl:if test="$currentPage/@level &gt; $minLevel">
-			<ul id="breadcrumb">
-				<li>
-					<a href="/">Our</a>
-				</li>
-				<xsl:for-each select="$currentPage/ancestor::*[@isDoc and @level &gt; $minLevel][not(umbracoNaviHide = 1)]">
-					<li>
-						<a href="{umbraco.library:NiceUrl(@id)}">
-							<xsl:value-of select="@nodeName"/>
-						</a>
-						<xsl:if test="$linkToCurrent = 1 or position() &lt; last()">&separator;</xsl:if>
-					</li>
-				</xsl:for-each>
-				<!-- print currentpage? -->
-				<xsl:if test="$linkToCurrent = 1">
-					<li>
-						<a href="{umbraco.library:NiceUrl($currentPage/@id)}">
-							<xsl:value-of select="$currentPage/@nodeName"/>
-						</a>
-					</li>
-				</xsl:if>
-			</ul>
-		</xsl:if>
+    <xsl:if test="$currentPage/@level &gt; $minLevel">
+      <ul id="breadcrumb">
+        <li>
+          <a href="/">Our</a>
+        </li>
+        <xsl:for-each select="$currentPage/ancestor::*[@isDoc and @level &gt; $minLevel][not(umbracoNaviHide = 1)]">
+          <li>
+            <a href="{umbraco.library:NiceUrl(@id)}">
+              <xsl:value-of select="@nodeName"/>
+            </a>
+           
+          </li>
+        </xsl:for-each>
+        <!-- print currentpage? -->
+        <xsl:if test="$linkToCurrent = 1">
+          <li>
+            <a href="{umbraco.library:NiceUrl($currentPage/@id)}">
+              <xsl:value-of select="$currentPage/@nodeName"/>
+            </a>
+          </li>
+        </xsl:if>
+      </ul>
+    </xsl:if>
 	</xsl:template>
 
 </xsl:stylesheet>

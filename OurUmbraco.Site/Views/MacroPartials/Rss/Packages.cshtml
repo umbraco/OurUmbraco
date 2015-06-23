@@ -1,0 +1,39 @@
+﻿@using uForum
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    Response.Clear();
+    Response.ContentType = "application/rss+xml";
+    var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
+    var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
+    var home = Model.Content.AncestorOrSelf(1);
+    var projectsRoot = home.Children.First(x => x.ContentType.Alias == "Projects");
+    var orderByUpdated = Model.MacroParameters["updated"].ToString() == "1";
+    var projects = orderByUpdated 
+        ? projectsRoot.Descendants("Project").OrderByDescending(x => x.UpdateDate).Where(x => x.GetPropertyValue<bool>("projectLive")).Take(20) 
+        : projectsRoot.Descendants("Project").OrderByDescending(x => x.CreateDate).Where(x => x.GetPropertyValue<bool>("projectLive")).Take(20);
+}<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
+        <title>@Model.Content.Name</title>
+        @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
+        <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
+        <generator>umbraco</generator>
+        <description>Latests packages from the forum on our.umbraco.org</description>
+        <language>en</language>
+        @foreach (var project in projects)
+        {
+            var description = project.GetPropertyValue<string>("description");
+            var owner = Members.GetById(project.GetPropertyValue<int>("owner"));
+            <item>
+                <title>@project.Name</title>
+                @Html.Raw(string.Format("<link>{0}{1}</link>", baseUrl, project.Url))
+                <guid isPermaLink="true">@string.Format("{0}{1}", baseUrl, project.Url)</guid>
+                <description><![CDATA[@Umbraco.StripHtml(Umbraco.Truncate(description, 100, false))]]></description>
+                <content:encoded><![CDATA[@description.Sanitize()]]></content:encoded>
+                <dc:creator>@owner.Name</dc:creator>
+                <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", project.CreateDate)</pubDate>
+            </item>
+        }
+    </channel>
+</rss>

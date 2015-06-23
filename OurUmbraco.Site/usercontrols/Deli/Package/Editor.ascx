@@ -1,6 +1,6 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Editor.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Editor" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Editor.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Editor" %>
 
-
+<div class="package-create">
 <asp:Repeater runat="server" ID="StepNavigation" OnItemDataBound="bindStep">
 <HeaderTemplate><ul class="stepNavigation"></HeaderTemplate>
 <ItemTemplate>
@@ -11,4 +11,5 @@
 
 <input type="hidden" runat="server" value="details" id="Step" />
 <asp:PlaceHolder runat="server" ID="StepPlaceHolder" />
+</div>
 

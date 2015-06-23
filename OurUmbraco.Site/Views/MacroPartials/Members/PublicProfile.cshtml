@@ -1,0 +1,190 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using Marketplace.Interfaces
+@using Marketplace.Providers
+@using uForum;
+@{
+    var memberId = Request["id"];
+    int id = 0;
+}
+@if (!string.IsNullOrEmpty(memberId) && int.TryParse(memberId, out id))
+{
+
+    var member = Members.GetById(id);
+
+    var ts = new uForum.Services.TopicService(ApplicationContext.Current.DatabaseContext);
+
+    var topics = ts.GetLatestTopicsForMember(member.Id);
+
+    var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+
+    var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+    var projects = provider.GetListingsByVendor(member.Id, true, true).OrderByDescending(x => x.CreateDate);
+
+    var contribProjects = provider.GetListingsForContributor(member.Id).OrderByDescending(x => x.CreateDate);
+
+    <div class="public-member">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="member-details">
+                            @Html.Raw(our.Utils.GetMemberAvatar(member, 79))
+                            <div class="text">
+                                <h3>@member.Name</h3>
+                                @if (member.HasValue("twitter"))
+                                {
+                                    var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
+                                    <small><a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a></small>
+                                }
+                            </div>
+                        </div> <!-- .member-details -->
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="member-details">
+                            @if (roles.Length > 1)
+                            {
+                                <span class="roles">
+                                    @foreach (var role in roles.Skip(1))
+                                    {
+                                        if (role == "CoreContrib")
+                                        {
+                                            <span class="c-trib">C-trib</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="@role.ToLower()">@role</span>
+                                        }
+                                    }
+                                </span>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="member-details">
+                            <small>
+                                @member.Name
+                                @if (member.HasValue("location"))
+                                {
+                                    <span> is from <span>@member.GetPropertyValue("location")</span></span>
+                                }
+                                @if (member.HasValue("company"))
+                                {
+                                    <span> works at <span>@member.GetPropertyValue("company")</span></span>
+                                }
+                                and has @member.GetPropertyValue("reputationCurrent") <span></span> karma points
+                            </small>
+                        </div>
+                        <div class="member-bio">
+                            <p>@member.GetPropertyValue("profileText")</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="package-forum-activity">
+                            <h3>Activity</h3>
+                            @foreach (var topic in topics)
+                            {
+                                var cat = Umbraco.TypedContent(topic.ParentId);
+                                // if cat == null then it's been hidden/unpublished (example: v5 forum)
+                                // if this is the case: don't show forum post in list
+                                if (cat != null)
+                                {
+                                    var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
+
+                                    <a href="@topic.GetUrl()" class="forum-thread">
+                                        <div class="row flex-center">
+                                            <div class="col-xs-2">
+                                                @Html.Raw(our.Utils.GetMemberAvatar(mem, 79))
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@topic.Title</h3>
+                                                    <p>Reply by @mem.Name @topic.Updated.ConvertToRelativeTime()</p>
+                                                </div>
+
+                                                <div class="category frontend"><span class="cat">@cat.Name</span></div>
+                                            </div>
+
+                                        </div>
+                                    </a>
+                                }
+                            }
+                            <a class="goto" href="/forum">Go to forum &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                @if (projects.Any())
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="package-forum-activity">
+                                <h3>Packages created</h3>
+                                @foreach (var project in projects.Where(x => x.Live))
+                                {
+                                    <a href="@project.NiceUrl" class="forum-thread">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                @if (string.IsNullOrWhiteSpace(project.DefaultScreenshot.Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@project.Name</h3>
+                                                    <p>@Umbraco.StripHtml(Umbraco.Truncate(project.Description, 120))</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+                @if (contribProjects.Any())
+                {
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="package-forum-activity">
+                                <h2>Contributed to packagages</h2>
+                                @foreach (var project in contribProjects.Where(x => x.Live))
+                                {
+                                    <a href="@project.NiceUrl" class="forum-thread">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                @if (string.IsNullOrWhiteSpace(project.DefaultScreenshot.Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@project.DefaultScreenshot?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@project.Name</h3>
+                                                    <p>@Umbraco.StripHtml(Umbraco.Truncate(project.Description, 120))</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
+                                }
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div> <!-- .public-member -->
+}

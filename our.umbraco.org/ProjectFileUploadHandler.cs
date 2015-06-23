@@ -17,6 +17,8 @@ namespace our {
         }
 
         public void ProcessRequest(HttpContext context) {
+            
+            //TODO: Authorize this request!!!
 
             HttpPostedFile file = context.Request.Files["Filedata"];
             string userguid = context.Request.Form["USERGUID"];
@@ -38,7 +40,7 @@ namespace our {
                 Document d = new Document( Document.GetContentFromVersion(new Guid(nodeguid)).Id );
                 Member mem = new Member(new Guid(userguid));
 
-                if (d.ContentType.Alias == "Project" && d.getProperty("owner") != null && (d.getProperty("owner").Value.ToString() == mem.Id.ToString() ||  Utills.IsProjectContributor(mem.Id,d.Id))) {
+                if (d.ContentType.Alias == "Project" && d.getProperty("owner") != null && (d.getProperty("owner").Value.ToString() == mem.Id.ToString() ||  Utils.IsProjectContributor(mem.Id,d.Id))) {
                     uWiki.Businesslogic.WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v);
 
                     //the package publish handler will make sure we got the right versions info on the package node itself.

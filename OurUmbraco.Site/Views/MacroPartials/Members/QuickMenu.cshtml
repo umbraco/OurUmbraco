@@ -1,19 +1,39 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Drawing
+@using our
 @using uForum
+@using uForum.Services
+@{
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    Image avatarImage = null;
+    if (Members.IsLoggedIn())
+    {
+        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+    }
+}
 <div class="quick-menu">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
-                <div class="close">
-                    <img src="assets/images/close.png" alt="">
-                </div>
 
-                @if (Members.IsLoggedIn())
+                @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
                 {
-                    var member = @Members.GetCurrentMember();
+                    var member = Members.GetCurrentMember();
+
+                    var roles = System.Web.Security.Roles.GetRolesForUser();
+
+                    var latestTopics = topicService.GetLatestTopicsForMember(member.Id, maxCount: 100);
+
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
+                    </div>
+                    <div class="settings">
+                        <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
+                    </div>
+
 
                     <div class="user-image">
-                        @avatar(member, 100)
+                        @Html.Raw(our.Utils.GetMemberAvatar(member, 100))
                     </div>
 
                     <div class="user-profile">
@@ -23,9 +43,81 @@
                         </div>
                         @if (member.HasValue("twitter"))
                         {
+                            var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
                             <div class="user-twitter">
-                                <a href="https://twitter.com/@member.GetPropertyValue("twitter")">&#64;@member.GetProperty("twitter").Value.ToString()</a>
+                                <a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a>
                             </div>
+                        }
+                        @if (roles.Length > 1)
+                        {
+                            <span class="roles">
+                                @foreach (var role in roles.Skip(1))
+                                {
+                                    if (role == "CoreContrib")
+                                    {
+                                        <span class="c-trib">C-trib</span>
+                                    }
+                                    else
+                                    {
+                                        <span class="@role.ToLower()">@role</span>
+                                    }
+                                }
+                            </span>
+                        }
+                        <div class="log-out">
+                            <a href="/umbraco/Surface/Login/Logout">Log out</a>
+                        </div>
+                    </div>
+                    
+                    if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+                    {
+
+                        <div class="user-notifications">
+                            <small>
+                                Your Notifications
+                            </small>
+
+                            <a href="/member/profile" class="user-notification__green">
+                                <div class="user-notification-text">
+                                    <p>Your profile picture is a little on the small side, It would look <strong>much nicer</strong> if you could update it to be larger image.</p>
+                                </div>
+                            </a>
+                        </div>
+                    }
+
+                    <div class="user-latest-posts">
+
+                        <small>
+                            Activity in threads you participated in
+                        </small>
+
+                        @foreach (var topic in latestTopics)
+                        {
+                            var forum = Umbraco.TypedContent(topic.ParentId);
+                            // if forum == null then it's been hidden/unpublished (example: v5 forum)
+                            // if this is the case: don't show forum post in list
+                            if (forum != null)
+                            {
+                                <a href="@topic.GetUrl()" class="forum-thread">
+                                    <div class="forum-thread-text">
+                                        <h3>@topic.Title</h3>
+                                        <p>
+                                            @{
+                                if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                {
+                                    <text>last edited by @topic.LastReplyAuthorName</text>
+                                }
+                                else
+                                {
+                                    <text>created by @topic.AuthorName</text>
+                                }
+                                            }  @topic.Updated.ConvertToRelativeTime()
+                                        </p>
+                                    </div>
+
+                                    <div class="category frontend"><span class="cat">@forum.Name</span></div>
+                                </a>
+                            }
                         }
                     </div>
 
@@ -36,80 +128,7 @@
                     <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
                 }
 
-                <small>
-                    Activity in threads you participated in
-                </small>
-
-                <div class="user-latest-posts">
-
-                    <a href="#" class="forum-thread">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="forum-thread-text">
-                                    <h3>RE: Allow user to change site design</h3>
-                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="#" class="forum-thread">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="forum-thread-text">
-                                    <h3>RE: Allow user to change site design</h3>
-                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                    <a href="#" class="forum-thread">
-                        <div class="row">
-                            <div class="col-xs-12">
-                                <div class="forum-thread-text">
-                                    <h3>RE: Allow user to change site design</h3>
-                                    <p>Posted in Using Umbraco 7 by Dennis Aaen</p>
-                                </div>
-                            </div>
-                        </div>
-                    </a>
-
-                </div>
-                <div class="loader-placeholder">
-
-                    <div class="span">
-                        <div class="loader"></div>
-                    </div>
-
-                </div>
             </div>
         </div>
     </div>
 </div>
-
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
-    }
-}
-
-
-@helper gravatar(string email, int size)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
-}
-
-@helper localAvatar(string imgPath, int size)
-{
-    <img src="@imgPath?width=@size" alt="Alternate Text" />
-}

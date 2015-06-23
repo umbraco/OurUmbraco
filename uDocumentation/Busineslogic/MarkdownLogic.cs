@@ -7,12 +7,10 @@ namespace uDocumentation.Busineslogic
     public class MarkdownLogic
     {
         private readonly string _filePath;
-        private readonly string _version;
 
-        public MarkdownLogic(string filePath, string version)
+        public MarkdownLogic(string filePath)
         {
             _filePath = filePath;
-            _version = version;
         }
 
         public const string VersionSession = "DocumentationVersion";

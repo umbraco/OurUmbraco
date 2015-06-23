@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using NotificationsWeb.Services;
+using System.Linq;
 using System.Web.Http;
 using Umbraco.Web.WebApi;
 
@@ -6,13 +7,20 @@ namespace NotificationsWeb.Api
 {
     public class NotificationsController:UmbracoApiController
     {
+        public NotificationsController()
+        {
+            _notificationService = new NotificationService(DatabaseContext);
+        }
+
+        private readonly NotificationService _notificationService;
+
         [HttpGet]
-        public string SubscribeToForumTopic(int topicId)
+        public string SubscribeToForumTopic(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.Subscribe(topicId, currentMemberId);
+                _notificationService.SubscribeToForumTopic(id, currentMemberId);
 
                 return "true";
             }
@@ -21,12 +29,12 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string UnSubscribeFromForumTopic(int topicId)
+        public string UnSubscribeFromForumTopic(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.ForumTopic.UnSubscribe(topicId, currentMemberId);
+                _notificationService.UnSubscribeFromForumTopic(id, currentMemberId);
 
                 return "true";
             }
@@ -35,12 +43,12 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string SubscribeToForum(int forumId)
+        public string SubscribeToForum(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.Subscribe(forumId, currentMemberId);
+                _notificationService.SubscribeToForum(id, currentMemberId);
 
                 return "true";
             }
@@ -49,12 +57,13 @@ namespace NotificationsWeb.Api
         }
 
         [HttpGet]
-        public string UnSubscribeFromForum(int forumId)
+        public string UnSubscribeFromForum(int id)
         {
             var currentMemberId = Members.GetCurrentMember().Id;
             if (currentMemberId > 0)
             {
-                BusinessLogic.Forum.UnSubscribe(forumId, currentMemberId);
+                _notificationService.UnSubscribeFromForum(id, currentMemberId);
+                
 
                 return "true";
             }

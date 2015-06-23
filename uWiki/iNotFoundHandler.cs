@@ -61,9 +61,9 @@ namespace uWiki {
                     if (HttpContext.Current.Request["wikiEditor"] == null)
                     {
                         //set redirect id to main umbraco help page
-                        if (Library.Utills.GetWikiHelpFallBackPage(section) > 0)
+                        if (Library.Utils.GetWikiHelpFallBackPage(section) > 0)
                         {
-                            _redirectID = Library.Utills.GetWikiHelpFallBackPage(section);
+                            _redirectID = Library.Utils.GetWikiHelpFallBackPage(section);
                             return true;
                         }
                     }

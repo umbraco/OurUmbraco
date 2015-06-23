@@ -9,9 +9,13 @@ using uForum.Services;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
 using umbraco.presentation.nodeFactory;
+using Umbraco.Core;
 
 namespace our.usercontrols {
-    public partial class ProjectForums : System.Web.UI.UserControl {
+    public partial class ProjectForums : System.Web.UI.UserControl
+    {
+
+        private readonly ForumService _forumService = new ForumService(ApplicationContext.Current.DatabaseContext);
 
         protected void Page_Load(object sender, EventArgs e) {
             if (!Page.IsPostBack) {
@@ -26,36 +30,33 @@ namespace our.usercontrols {
                     if ((int)d.getProperty("owner").Value == m.Id) {
                         holder.Visible = true;
 
-                        using (var fs = new ForumService())
+                        rp_forums.DataSource = _forumService.GetForums(pId);
+                        rp_forums.DataBind();
+
+
+
+                        int fId = 0;
+
+                        if (!string.IsNullOrEmpty(Request.QueryString["forum"]) && int.TryParse(Request.QueryString["forum"], out fId))
                         {
-                            rp_forums.DataSource = fs.GetForums(pId);
-                            rp_forums.DataBind();
+                            var f = _forumService.GetById(fId);
+                            tb_desc.Text = f.Description;
+                            tb_name.Text = f.Title;
+
+                            bt_submit.CommandArgument = f.Id.ToString();
+                            bt_delete.CommandArgument = f.Id.ToString();
+
+                            bt_submit.CommandName = "edit";
+
+                            ph_add.Visible = true;
+                            ph_edit.Visible = true;
 
 
-
-                            int fId = 0;
-
-                            if (!string.IsNullOrEmpty(Request.QueryString["forum"]) && int.TryParse(Request.QueryString["forum"], out fId))
-                            {
-                                var f = fs.GetById(fId);
-                                tb_desc.Text = f.Description;
-                                tb_name.Text = f.Title;
-
-                                bt_submit.CommandArgument = f.Id.ToString();
-                                bt_delete.CommandArgument = f.Id.ToString();
-
-                                bt_submit.CommandName = "edit";
-
-                                ph_add.Visible = true;
-                                ph_edit.Visible = true;
-
-
-                            }
-                            else if (!string.IsNullOrEmpty(Request.QueryString["add"]))
-                            {
-                                ph_add.Visible = true;
-                                ph_edit.Visible = false;
-                            }
+                        }
+                        else if (!string.IsNullOrEmpty(Request.QueryString["add"]))
+                        {
+                            ph_add.Visible = true;
+                            ph_edit.Visible = false;
                         }
                     }
                 }
@@ -127,13 +128,9 @@ namespace our.usercontrols {
                         fnode = null;
 
                     }
-
-                    using (var fs = new ForumService())
-                    {
-                        var f = fs.GetById(fnode.Id);
-                        if (f != null)
-                            fs.Delete(f);
-                    }
+                    var f = _forumService.GetById(fnode.Id);
+                    if (f != null)
+                        _forumService.Delete(f);
                     
                     
 
@@ -149,6 +146,20 @@ namespace our.usercontrols {
                     fnode.Publish(new umbraco.BusinessLogic.User(0));
                     fnode.Save();
                     umbraco.library.UpdateDocumentCache(fnode.Id);
+
+                    Forum f = _forumService.GetById(fnode.Id);
+
+                    if (f == null)
+                    {
+                        f = new Forum();
+                        f.Id = fnode.Id;
+                        f.ParentId = fnode.ParentId;
+                        f.SortOrder = 0;
+                        f.TotalTopics = 0;
+                        f.TotalComments = 0;
+                        f.LatestPostDate = DateTime.Now;
+                        _forumService.Save(f);
+                    }
                 }
 
                 

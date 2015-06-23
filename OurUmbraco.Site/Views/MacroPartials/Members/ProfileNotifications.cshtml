@@ -1,0 +1,105 @@
+@using NotificationsWeb.Services
+@using uForum.Services
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    
+    const int pagesToShowLeft = 4;
+    
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var notificationService = new NotificationService(ApplicationContext.DatabaseContext);
+
+    var member = Members.GetCurrentMember();
+
+    var dontBug = member.GetPropertyValue<bool>("bugMeNot");
+
+    var forumItems = notificationService.GetForumSubscriptionsFromMember(member.Id).Items;
+
+
+    var numberOfTopicItems = notificationService.GetNumberOfTopicSubscriptionsFromMember(member.Id);
+
+    var pages = Math.Ceiling(((double)numberOfTopicItems / 50));
+
+    var page = 1;
+
+    if (Request["p"] != null)
+    {
+        int.TryParse(Request["p"], out page);
+    }
+
+    var prevPage = page - 1;
+    var nextPage = page + 1;
+
+    var topicItems = notificationService.GetTopicSubscriptionsFromMember(member.Id, 50, page).Items;
+}
+
+<div class="profile-settings">
+    @Html.Action("Render", "ProfileNotification")
+
+    @if (!dontBug)
+    {
+
+        if (forumItems.Any())
+        {
+            <strong>Forums</strong>
+            <ul class="profile-settings-following">
+                @foreach (var not in forumItems)
+                {
+                    var forum = Umbraco.TypedContent(not.ForumId);
+
+                    if (forum != null)
+                    {
+                        <li>
+                            <a href="@forum.Url">@forum.Name</a> <span class="hidden-xs">–</span>
+                            <a class="unfollow button transparent" href="" data-controller="" data-id="@forum.Id">Unfollow</a>
+                        </li>
+                    }
+                }
+            </ul>
+        }
+        
+        if (topicItems.Any())
+        {
+            <strong>Topics</strong>
+            <ul class="profile-settings-following">
+                @foreach (var not in topicItems)
+                {
+                    var topic = topicService.GetById(not.TopicId);
+
+                    if (topic != null)
+                    {
+                        <li>
+                            <a href="@topic.GetUrl()">@topic.Title</a> <span class="hidden-xs">–</span>
+                            <a class="unfollow button transparent" href="" data-controller="topic" data-id="@topic.Id">Unfollow</a>
+                        </li>
+                    }
+                }
+            </ul>
+
+            if (pages > 1)
+            {
+                <nav class="pagination" role="navigation">
+                    @if (page > 1)
+                    {
+                        <a class="prev" href="?p=@prevPage">Prev</a>
+                    }
+                    @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
+                    {
+                        if (i == page)
+                        {
+                            <a class="active" href="?p=@i">@i</a>
+                        }
+                        else
+                        {
+                            <a href="?p=@i">@i</a>
+                        }
+                    }
+                    @if (page < pages)
+                    {
+                        <span>&hellip;</span>
+                        <a class="next" href="?p=@nextPage">Next</a>
+                    }
+                </nav>
+            }
+        }
+    }
+</div>

@@ -1,0 +1,170 @@
+body.packages {
+	nav {
+
+		h3 {
+			&:hover {
+				opacity: .8;
+			}
+		}
+
+		h4 {
+			opacity: .7;
+			margin: .5rem 0 .5rem;
+		}
+	}
+
+	li {
+		h3 {
+			opacity: .5;
+		}
+
+		&.open, &.active {
+			h3, a {
+				opacity: 1;
+				color: #000 !important;
+			}
+		}
+
+		&.active > ul {
+			max-height: 100%;
+		}
+	}
+}
+
+.packages-content {
+
+	.search-big {
+	    margin-bottom: 0;
+	    margin-top: 20px;
+	}
+
+	h1 {
+		margin: 1em 0 10px;
+		font-size: 2.1rem;
+	}
+
+	.package {
+		margin-bottom: 15px;
+		padding: 20px;
+		transition: all .1s linear;
+		cursor: pointer;
+		position: relative;
+		overflow: hidden;
+		border-radius: 3px;
+		border: 1px solid #e9e9e9;
+
+		&:hover {
+			@include box-shadow(2);
+
+			.icon {
+				transform: scale(1.1);
+			}
+		}
+	}
+
+	.box {
+		border: none;
+		border-bottom: 1px solid whitesmoke;
+		width: 100%;
+
+		h3 {
+			font-size: 1.1rem;
+			margin-bottom: .5rem;
+			font-weight: 600;
+
+			a {
+				color: $color-headline;
+
+				&:hover {
+					color: $color-our;
+				}
+			}
+		}
+
+		img {
+			max-width: 100%;
+			height: auto;
+			display: block;
+			vertical-align: middle;
+			
+			@media (min-width: $md) {
+
+			}
+		}
+
+		.col-xs-2 {
+			vertical-align: middle !important;
+			padding: 0 !important;
+		}
+
+		.other {
+			margin-top: 30px;
+		}
+
+		.stats {
+			left: calc(16.666666666666664% + 15px);
+			font-family: Consolas, "Liberation Mono", Menlo, Monaco, Courier, monospace;
+			font-size: .75rem;
+
+			i {
+				margin-left: 3px;
+				font-size: .9rem;
+			}
+
+			span {
+				&:first-child {
+					margin-right: 0px;
+				}
+			}
+		}
+
+		p {
+			font-size: .9rem;
+			color: $color-text;
+			opacity: 1;
+		}
+
+		.package-badge {
+			position: absolute;
+			right: 15px;
+			bottom: -3px;
+
+
+			@media (min-width: $md) {
+				position: absolute;
+				right: 0;
+				bottom: 25px;
+			}
+		}
+
+		.karma , .downloads {
+			color: #000;
+
+			span {
+				transform: translate(0, 2px);
+				display: inline-block;
+			}
+		}
+
+		&.liked {
+			.karma {
+				i {
+					color: $color-red;
+				}
+			}
+		}
+	}
+
+	.name {
+		font-size: 1rem;
+		line-height: 1.3;
+		font-weight: bold;
+	}
+
+	.description {
+		font-size: .8rem;
+		margin-top: 3px;
+		max-height: 28px;
+		overflow: hidden;
+	}
+}

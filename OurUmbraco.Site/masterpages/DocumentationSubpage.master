@@ -1,43 +1,61 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/DocumentationMaster.master" AutoEventWireup="true" %>
 
-<%@ Register Src="~/usercontrols/DocumentationShowMarkdown.ascx" TagPrefix="markdown" TagName="Doc" %>
-<%@ Register Src="~/usercontrols/DocumentationBreadcrumb.ascx" TagPrefix="markdown" TagName="Breadcrumb" %>
-<%@ Register Src="~/usercontrols/DocumentationEditButton.ascx" TagPrefix="markdown" TagName="DocumentationEditButton" %>
-
-
 <asp:Content ContentPlaceHolderID="main" runat="server">
-    <span class="sidebar-bg"></span>
-    <span class="content-bg"></span>
-    <div class="container">
-        <div class="row">
-            <nav class="sidebar col-md-4">
-                <div class="row">
-                    <div class="col-md-12">
-                    </div>
-                </div>
-            </nav>
-            <div class="content markdown-syntax col-md-8  col-md-offset-4">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div id="body">
-
-                            <div>
-                                <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-                            </div>
-
-                            <div id="markdown-docs">
-                                <markdown:Doc ID="Markdown" runat="server" AddHeader="False" PrefixLinks="False" />
-                            </div>
-
-                            <br style="clear: both">
-                            <div class="divider"></div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    </div>
     
+    <div class="page-content">
+		
+		<div class="sidebar-area">
+			<div class="sidebar-content">
+				<div class="content-wrapper">
+                    <umbraco:Macro Alias="DocsNavigation" runat="server"></umbraco:Macro>
+				</div><!-- .content-wrapper -->
+			</div><!-- .sidebar-content -->
+		</div><!-- .sidebar-area-->
+
+		<div class="main-area">
+			<div class="main-content">
+				<div class="content-wrapper">
+                    <div>
+                        <umbraco:Macro Alias="DocsBreadcrumb" runat="server"></umbraco:Macro>
+                    </div>
+                    
+                    <div class="search-big">
+					    <input type="search" class="docs-search-input" required placeholder="Search for documentation">
+					    <label for="search">Search for documentation</label>
+				    </div>
+
+                    <ul class="search-all-results docs-search-listing">
+
+                    </ul>
+
+                    <div id="markdown-docs" class="docs-default-listing markdown-syntax">
+                        <umbraco:Macro Alias="DocsDisplayMarkdown" runat="server"></umbraco:Macro>
+                    </div>
+        		</div><!-- .content-wrapper -->
+			</div><!-- .main-content -->
+		</div><!-- .main-area -->
+
+	</div><!-- .page-content -->
+    
+    
+    <script type="text/template" class="search-item-docs">
+        <li>
+			<a href="{{ url }}">
+				<div class="type-icon">
+					<i class="icon-Book-alt"></i>
+				</div>
+
+				<div class="type-context">
+					<div class="type-name">
+						{{ name }}
+					</div>
+					<div class="type-description">
+						{{ body }}
+					</div>
+				</div>
+			</a>
+		</li>
+    </script>
+    
+                            
 </asp:Content>

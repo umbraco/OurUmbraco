@@ -8,11 +8,19 @@ using System.Net;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Diagnostics;
 using umbraco.BusinessLogic;
+using System.Dynamic;
+using Newtonsoft.Json;
 
 namespace uDocumentation.Busineslogic.GithubSourcePull
 {
     public class ZipDownloader
     {
+        private const string rootFolder = @"~\Documentation";
+        private const string config = @"~\config\githubpull.config";
+        private string rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
+        private string configPath = HttpContext.Current.Server.MapPath(config);
+
+
         public string RootFolder { get; set; }
         public XmlDocument Configuration { get; set; }
         public bool IsProjectDocumentation { get; set; }
@@ -21,6 +29,16 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         {
             Configuration = configuration;
             RootFolder = rootFolder;
+            IsProjectDocumentation = false;
+        }
+
+        public ZipDownloader()
+        {
+            XmlDocument xd = new XmlDocument();
+            xd.Load(configPath);
+
+            Configuration = xd;
+            RootFolder = rootFolderPath;
             IsProjectDocumentation = false;
         }
 
@@ -49,6 +67,29 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             IsProjectDocumentation = true;
         }
 
+        /// <summary>
+        /// This will ensure that the docs exist, this checks by the existence of the /Documentation/sitemap.js file
+        /// </summary>
+        public static void EnsureGitHubDocs(bool overwrite = false)
+        {
+            var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
+            var configPath = HttpContext.Current.Server.MapPath(config);
+
+            //Check if it exists, if it does then exit
+            if (!overwrite && File.Exists(Path.Combine(rootFolderPath, "sitemap.js"))) return;
+
+            if (!Directory.Exists(rootFolderPath))
+            {
+                Directory.CreateDirectory(rootFolderPath);
+            }
+
+            var unzip = new ZipDownloader(rootFolderPath, configPath)
+            {
+                IsProjectDocumentation = true
+            };
+            unzip.Run();
+        }
+
         public void Run()
         {
             Trace.WriteLine("Started git sync", "Gitsyncer");
@@ -64,25 +105,64 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                 process(url, folder);
             }
 
+
             FinishEventArgs ev = new FinishEventArgs();
-            
             FireOnFinish(ev);
+        }
+
+        public dynamic DocumentationSiteMap(string folder = "")
+        {
+            var path = Path.Combine(RootFolder, folder, "sitemap.js");
+            var json = File.ReadAllText(path);
+            dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
+            return d;
         }
 
         public void process(string url, string foldername)
         {
             var zip = Download(url, foldername);
             unzip(zip, foldername, RootFolder);
+            BuildSitemap(foldername);
+        }
+
+        private void BuildSitemap(string foldername)
+        {
+            var folder = new DirectoryInfo(Path.Combine(RootFolder, foldername));
+            dynamic root = GetFolderStructure(folder, folder.FullName, 0);
+
+            var serializedRoot = JsonConvert.SerializeObject(root, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(Path.Combine(folder.FullName, "sitemap.js"), serializedRoot); 
+        }
+
+        private dynamic GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
+        {
+            dynamic d = new ExpandoObject();
+            d.name = dir.Name;
+            d.path = dir.FullName.Substring(rootPath.Length).Replace('\\','/');
+            d.level = level; 
+
+            if (dir.GetDirectories().Any())
+            {
+                var list = new List<dynamic>();
+                foreach (var child in dir.GetDirectories())
+                    list.Add(GetFolderStructure(child, rootPath, level+1));
+
+                
+                d.hasChildren = true;
+                d.directories = list;
+            }
+
+            return d;
         }
 
         private string Download(string url, string foldername)
         {
             var dir = new DirectoryInfo(Path.Combine(RootFolder, foldername));
             var dirsToCreate = new List<DirectoryInfo>();
+
             while (!dir.Exists)
             {
                dirsToCreate.Add(dir);
-
                dir = dir.Parent;
             }
 
@@ -93,7 +173,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                     d.Create();
             }
 
-            var path = Path.Combine(RootFolder, foldername + ".zip");
+            var path = Path.Combine(RootFolder, foldername + "archive.zip");
             
             if (File.Exists(path))
                 File.Delete(path);
@@ -103,6 +183,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
             return path;
         }
+
 
         private void unzip(string path, string foldername, string rootFolder)
         {
@@ -116,8 +197,14 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
             if (Directory.Exists(serverFolder))
             {
-                var files = string.Join("|", Directory.GetFiles(serverFolder, "*.md", SearchOption.AllDirectories)).ToLower().Split('|');
-                existingFiles.AddRange(files);
+                foreach (var folder in Directory.GetDirectories(serverFolder))
+                    Directory.Delete(folder, true);
+
+                foreach (var mdfile in Directory.GetFiles(serverFolder, "*.md"))
+                    File.Delete(mdfile);
+
+//                var files = string.Join("|", Directory.GetFiles(serverFolder, "*.md", SearchOption.AllDirectories)).ToLower().Split('|');
+//                existingFiles.AddRange(files);
             }
             else
                 Directory.CreateDirectory(serverFolder);
@@ -195,14 +282,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
                 s.Close();
                 foreach (var file in Directory.GetFiles(rootFolder, "*.zip"))
                 {
-                    File.Delete(file);
-                }
-
-                foreach (var file in existingFiles)
-                {
-                    DeleteEventArgs ev = new DeleteEventArgs();
-                    ev.FilePath = file;
-                    FireOnDelete(ev);
+                    //File.Delete(file);
                 }
 
             }

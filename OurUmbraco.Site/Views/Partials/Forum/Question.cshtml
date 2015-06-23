@@ -2,81 +2,126 @@
 @using uForum;
 
 @{
-    var topicAuthor = Model.Author();
+    var topicAuthor = Members.GetById(Model.MemberId);
     var forum = Umbraco.TypedContent(Model.ParentId);
+    var roles = Roles.GetRolesForUser(topicAuthor.GetPropertyValue<string>("UserName"));
+    var currentMember = Members.GetCurrentMember();
 }
 
-<li class="comment question"> <!-- Start of question -->
-        <div class="meta">
-			<div class="profile">
-				<a href="#">@topicAuthor.Name</a> has in total, @topicAuthor.Karma() karma points
-			</div>
-			<div class="time">
-				@Model.Created.ConvertToRelativeTime()
-			</div>
-		</div>
+<li class="comment question" id="comment-@Model.Id" data-deepLink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
+    <!-- Start of question -->
+    <div class="meta">
+        <div class="profile">
+            <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span class="hide-xs">has in total </span>@topicAuthor.Karma() karma points
 
-		<div class="comment-inner">
-			<a href="#" class="photo">
-                @avatar(topicAuthor, 48)
-				<span class="karma">Recieved 5 <br>Karma points</span>
-			</a>
-			<div class="body-meta">
-				<div class="topic">
-					<h2>@Model.Title</h2>
-				</div>
-				<div class="categories">
-					<div class="category core">
-						<a href="@forum.Url">@forum.Name</a>
-					</div>
-
-                    @if(Model.Version > 0){
-					    <div class="version">
-						    <a href="#">Umbraco @Model.Version</a>
-					    </div>
+            @if (roles.Length > 1)
+            {
+                <span class="roles">
+                    @foreach (var role in roles.Skip(1))
+                    {
+                        if (role == "CoreContrib")
+                        {
+                            <span class="c-trib">C-trib</span>
+                        }
+                        else
+                        {
+                            <span class="@role.ToLower()">@role</span>
+                        }
                     }
-				</div>
-			</div>
+                </span>
+            }
+        </div>
 
-			<div class="body">
-				@Model.Body.Sanitize()
-			</div>
-		</div>
+        <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
+            @Model.Created.ConvertToRelativeTime()
+        </div>
+    </div>
 
-		<div class="actions">
-            <a href="#" class="copy-link">
-                <i class="icon-Out"></i><span>Copy Link</span>
+    <div class="comment-inner">
+        <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(topicAuthor, 48))</a>
+        <div class="highfive highfive-question">
+
+            <div class="highfive-count">
+                @Model.Score
+            </div>
+            @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+            {
+                if (currentMember.Id != Model.MemberId)
+                {
+                    <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
+                }
+            }
+        </div>
+
+        <div class="body-meta">
+            <div class="topic">
+                <h2>@Model.Title</h2>
+            </div>
+            <div class="categories">
+                <div class="category core">
+                    <a href="@forum.Url">@forum.Name</a>
+                </div>
+
+                @if (Model.Version > 0)
+                {
+                    <div class="version">
+                        <a href="#">Umbraco @Model.Version</a>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="body markdown-syntax">
+
+            @if (Model.IsSpam)
+            {
+                <div class="alert">
+                    Sorry if we're causing you any inconvenience but this topic has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your topic. When this topic has been marked as clean, this topic will be shown as normal.
+                    <br /><br />
+                    You can see this topic because you're a moderator of the forum. Only moderators and the topic starter can see this topic.
+                </div>
+            }
+
+            @Model.Body.Sanitize()
+        </div>
+    </div>
+
+    <div class="actions">
+        <a href="#" class="copy-link" data-id="#comment-@Model.Id">
+            <i class="icon-Link"></i><span>Copy Link</span>
+        </a>
+
+        @if (Members.IsLoggedIn())
+        {
+            <a href="#" data-author="@topicAuthor.Name" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
+                <i class="icon-Reply-arrow"></i><span>Reply</span>
             </a>
 
-            <a href="#" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
-				<img src="https://cdn2.iconfinder.com/data/icons/freecns-cumulus/16/519627-127_ArrowLeft-16.png" alt=""> Reply
-			</a>
-			
-		</div>
+            if (Members.IsAdmin())
+            {
+                if (Model.IsSpam)
+                {
+
+                    <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="topic">
+                        <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                    </a>
+
+                }
+                else
+                {
+                    <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="topic">
+                        <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+                    </a>
+                }
+            }
+
+            if (Members.GetCurrentMember().Id == topicAuthor.Id || Members.IsAdmin())
+            {
+                <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
+                    <i class="icon-Edit"></i><span>Edit post</span>
+                </a>
+            }
+
+        }
+    </div>
 </li> <!-- End of question -->
-
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
-    }
-}
-
-
-@helper gravatar(string email, int size)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
-}
-
-@helper localAvatar(string imgPath, int size)
-{
-    <img src="@imgPath" alt="Alternate Text" />
-}

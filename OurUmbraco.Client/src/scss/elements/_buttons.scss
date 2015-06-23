@@ -1,0 +1,137 @@
+.button, a.button {
+	background: $color-blue;
+	padding: 20px 40px;
+	display: inline-block;
+	text-decoration: none;
+	border: none;
+	border-radius: 3px;
+	-webkit-appearance: none;
+	position: relative;
+	overflow: hidden;
+
+	color: #fff;
+	text-align: center;
+	font-size: 1rem;
+
+	@include transition(background, .2s);
+	cursor: pointer;
+	user-select: none;
+
+	&:hover {
+		background: lighten($color-blue, 5%);
+	}
+
+
+	span {
+		position: relative;
+		z-index: 20;
+	}
+
+
+	&.green {
+		background: $color-green;
+		
+		&:hover {
+			background: lighten($color-green, 5%);
+		}
+	}
+
+
+
+
+	&.white {
+		background: #fff;
+		color: $color-text;
+
+		&:hover {
+			background: rgba(#fff, .7);
+		}
+	}
+
+
+
+
+	&.red {
+		background: $color-red;
+		color: #fff;
+
+		&:hover {
+			background: lighten($color-red, 5%);
+		}
+	}
+
+
+
+
+	&.transparent {
+		border: 1px solid $color-grey; 
+		background: none;
+		color: $color-grey;
+
+		&:hover {
+			background: none;
+			color: #000;
+			border-color: #000;
+		}
+
+		.ink {
+			background:rgba($color-green, 0.3);
+		}
+	}
+
+
+
+	&.pink {
+		background: $color-pink;
+		
+		&:hover {
+			background: lighten($color-pink, 5%);
+		}
+	}
+
+
+
+	&.large {
+		font-size: 1.2rem;
+	}
+
+
+
+	&.tiny {
+		padding: 10px 20px;
+		font-size: .9rem;
+	}
+}
+
+
+
+button.button {
+	font-family: $font-family;
+	cursor: pointer;
+	outline: none;
+
+	&:active, &:focus {
+		outline: none;
+	}
+}
+
+
+// Click animation
+.ink {
+	display: block;
+	position: absolute;
+	background: rgba(255, 255, 255, 0.3);
+	border-radius: 100%;
+	transform: scale(0);
+}
+
+.animate {
+    animation:ripple 0.65s $easeExpo;
+}
+
+@keyframes ripple {
+    100% {
+    	opacity: 0;
+    	transform: scale(2);
+    }
+}

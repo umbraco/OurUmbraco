@@ -15,68 +15,24 @@ namespace our.usercontrols
         {
             if (Request["id"] != null)
             {
+                var fileId = int.Parse(Request["id"]);
 
-                int fileId = int.Parse(Request["id"]);
+                var wikiFile = new WikiFile(fileId);
 
+                wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
 
-                WikiFile wf = new WikiFile(fileId);
-
-                wf.UpdateDownloadCounter(false, Request["release"] != null);
-
-
-//                HttpCookie cookie = HttpContext.Current.Request.Cookies["ProjectFileDownload" + fileId];
-//                if (cookie == null)
-//                {
-//                    int downloads = 0;
-//                    downloads = BL.Application.SqlHelper.ExecuteScalar<int>(
-//                        "Select downloads from wikiFiles where id = @id;",
-//                        BL.Application.SqlHelper.CreateParameter("@id", fileId));
-
-//                    downloads = downloads + 1;
-                    
-
-//                    BL.Application.SqlHelper.ExecuteNonQuery(
-//                        "update wikiFiles set downloads = @downloads where id = @id;",
-//                         BL.Application.SqlHelper.CreateParameter("@id", fileId),
-//                         BL.Application.SqlHelper.CreateParameter("@downloads", downloads));
-
-
-
-//                    int _currentMember = 0;
-//                    Member m = Member.GetCurrentMember();
-//                    if(m != null)
-//                        _currentMember = m.Id;
-
-//                    WikiFile wf = new WikiFile(fileId);
-
-//                    if (Request["release"] != null)
-//                    {
-
-//                        BL.Application.SqlHelper.ExecuteNonQuery(
-//                            @"insert into projectDownload(projectId,memberId,timestamp) 
-//                        values((select nodeId from wikiFiles where id = @id) ,@memberId, getdate())",
-//                                 BL.Application.SqlHelper.CreateParameter("@id", fileId),
-//                                 BL.Application.SqlHelper.CreateParameter("@memberId", _currentMember));
-//                    }
-
-//                    cookie = new HttpCookie("ProjectFileDownload" + fileId);
-//                    cookie.Expires = DateTime.Now.AddHours(1);
-//                    HttpContext.Current.Response.Cookies.Add(cookie);
-
-                    
-//                }                
-                string path = BL.Application.SqlHelper.ExecuteScalar<string>(
+                var path = BL.Application.SqlHelper.ExecuteScalar<string>(
                         "Select path from wikiFiles where id = @id;",
                         BL.Application.SqlHelper.CreateParameter("@id", fileId));
 
-                string file = BL.Application.SqlHelper.ExecuteScalar<string>(
+                var file = BL.Application.SqlHelper.ExecuteScalar<string>(
                    "Select name from wikiFiles where id = @id;",
                    BL.Application.SqlHelper.CreateParameter("@id", fileId));
 
-                System.IO.FileInfo fileinfo = new System.IO.FileInfo(Server.MapPath(path));
+                var fileinfo = new System.IO.FileInfo(Server.MapPath(path));
 
-                string extension = System.IO.Path.GetExtension(Server.MapPath(path));
-                string type = "";
+                var extension = System.IO.Path.GetExtension(Server.MapPath(path));
+                var type = "";
                 // set known types based on file extension  
                 if (extension != null)
                 {
@@ -113,8 +69,6 @@ namespace our.usercontrols
                     }
                 }
 
-         
-
                 Response.Clear();
                
                 Response.AddHeader("Content-Disposition", "attachment; filename= " + MakeSafeFileName(file));
@@ -122,7 +76,6 @@ namespace our.usercontrols
                 Response.ContentType = type;
                 Response.WriteFile(path); 
             }
-
         }
 
         private string MakeSafeFileName(string orig)

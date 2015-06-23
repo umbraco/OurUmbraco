@@ -9,101 +9,44 @@ using Umbraco.Core.Persistence;
 
 namespace uForum.Services
 {
-    public class CommentService : IDisposable
+    /// <summary>
+    /// Used for CRUD of comments - There aren't any query methods for comments here, comments are resolved with a Topic in a single query be displayed in the view
+    /// </summary>
+    public class CommentService
     {
 
-        private DatabaseContext DatabaseContext;
+        private readonly DatabaseContext _databaseContext;
+        private readonly TopicService _topicService;
 
-        public CommentService()
+        public CommentService(DatabaseContext dbContext, TopicService topicService)
         {
-            init(ApplicationContext.Current.DatabaseContext);
-        }
-
-        public CommentService(DatabaseContext dbContext)
-        {
-            init(dbContext);
-        }
-        private void init(DatabaseContext dbContext)
-        {
-            DatabaseContext = dbContext;
-        }
-
-        
-        public Page<Comment> GetPagedComments(int topicId, long number = 10, long page = 1, bool ignoreSpam = true)
-        {
-            var sql = new Sql()
-                 .Select("*")
-                 .From<Comment>();
-
-           // if (ignoreSpam)
-           //     sql.Where<Comment>(x => x.IsSpam != true);
-
-            if (topicId > 0)
-                sql.Where<Comment>(x => x.TopicId == topicId);
-
-            sql.Where<Comment>(x => x.ParentCommentId == 0);
-            sql.OrderByDescending("created");
-            
-            return DatabaseContext.Database.Page<Comment>(page, number, sql);
-        }
-
-        public IEnumerable<Comment> GetComments(int topicId, bool ignoreSpam = true)
-        {
-            var sql = new Sql()
-                 .Select("*")
-                 .From<Comment>();
-
-            if (ignoreSpam)
-                 sql.Where<Comment>(x => x.IsSpam != true);
-
-            if (topicId > 0)
-                sql.Where<Comment>(x => x.TopicId == topicId);
-
-            sql.Where<Comment>(x => x.ParentCommentId == 0);
-            sql.OrderByDescending("created");
-
-            return DatabaseContext.Database.Fetch<Comment>(sql);
-        }
-
-        public IEnumerable<Comment> GetChildComments(int commentId)
-        {
-            var sql = new Sql()
-                  .Select("*")
-                  .From<Comment>();
-
-            sql.Where<Comment>(x => x.ParentCommentId == commentId);
-            sql.OrderByDescending("created");
-
-            return DatabaseContext.Database.Query<Comment>(sql);
+            if (dbContext == null) throw new ArgumentNullException("dbContext");
+            if (topicService == null) throw new ArgumentNullException("topicService");
+            _databaseContext = dbContext;
+            _topicService = topicService;
         }
 
         public Comment GetById(int id)
         {
-            return DatabaseContext.Database.SingleOrDefault<Comment>(id);
+            return _databaseContext.Database.SingleOrDefault<Comment>(id);
         }
 
         /* Crud */
-        public Comment Save(Comment comment, bool raiseEvents = true)
+        public Comment Save(Comment comment)
         {
-            var newComment = comment.Id < 0;
-            var eventArgs = new CommentEventArgs() { Comment =comment };
+            var newComment = comment.Id <= 0;
+            var eventArgs = new CommentEventArgs() { Comment = comment };
 
-            if (raiseEvents)
-            {
-                if (newComment)
-                    Creating.Raise(this, eventArgs);
-                else
-                    Updating.Raise(this, eventArgs);
-            }
+            if (newComment)
+                Creating.Raise(this, eventArgs);
+            else
+                Updating.Raise(this, eventArgs);
 
             if (!eventArgs.Cancel)
             {
-
-                //spam filtering
-                comment.DetectSpam();
-
                 //save comment
-                DatabaseContext.Database.Save(comment);
+                _databaseContext.Database.Save(comment);
+
 
                 //topic post count
                 UpdateTopicPostsCount(comment);
@@ -117,14 +60,10 @@ namespace uForum.Services
                     Save(p);
                 }
 
-                if (raiseEvents)
-                {
-                    if (newComment)
-                        Created.Raise(this, eventArgs);
-                    else
-                        Updated.Raise(this, eventArgs);
-                }
-
+                if (newComment)
+                    Created.Raise(this, eventArgs);
+                else
+                    Updated.Raise(this, eventArgs);
             }
             else
             {
@@ -136,17 +75,15 @@ namespace uForum.Services
 
         private void UpdateTopicPostsCount(Comment c, bool adding = true)
         {
-            using (var ts = new TopicService())
-            {
-                var t = ts.GetById(c.TopicId);
-                t.Replies = adding ? t.Replies + 1 : t.Replies - 1;
-                t.Updated = DateTime.Now;
+            var ts = _topicService;
+            var t = ts.GetById(c.TopicId);
+            t.Replies = adding ? t.Replies + 1 : t.Replies - 1;
+            t.Updated = DateTime.Now;
 
-                if (adding)
-                    t.LatestReplyAuthor = c.MemberId;
-                
-                ts.Save(t);
-            }
+            if (adding)
+                t.LatestReplyAuthor = c.MemberId;
+
+            ts.Save(t);
         }
 
         public void Delete(Comment comment)
@@ -155,7 +92,7 @@ namespace uForum.Services
             if (Deleting.RaiseAndContinue(this, eventArgs))
             {
                 UpdateTopicPostsCount(comment, false);
-                DatabaseContext.Database.Delete(comment);
+                _databaseContext.Database.Delete(comment);
                 Deleted.Raise(this, eventArgs);
             }
             else
@@ -180,18 +117,5 @@ namespace uForum.Services
 
         public static event EventHandler<CommentEventArgs> CancelledByEvent;
 
-
-        public static CommentService Instance
-        {
-            get
-            {
-                return Singleton<CommentService>.UniqueInstance;
-            }
-        }
-
-        public void Dispose()
-        {
-          
-        }
     }
 }

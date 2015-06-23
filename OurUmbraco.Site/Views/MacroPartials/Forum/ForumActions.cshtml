@@ -1,0 +1,34 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+	
+@if (Members.IsLoggedIn())
+{
+    <a href="#" class="button create-new-thread" data-controller="topic">
+        <i class="icon-Add"></i><span>Create new</span>
+    </a>
+
+    var mem = Members.GetCurrentMember();
+
+    var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
+
+    if (CurrentPage.Level == 4)
+    {
+        if (subscribed)
+        {
+            <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Following</span>
+            </a>
+        }
+        else
+        {
+            <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Follow</span>
+            </a>
+        }
+    }
+}
+else
+{
+    <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login disabled">
+        <i class="icon-Add"></i><span>Sign in in to create a topic</span>
+    </a>
+}

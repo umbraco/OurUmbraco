@@ -1,0 +1,108 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    var sortedVersions = new Dictionary<Version, IPublishedContent>();
+    foreach (var release in Model.Content.Children.Where(x => x.GetPropertyValue<string>("releaseStatus") == "Released"))
+    {
+        try
+        {
+            sortedVersions.Add(new Version(release.Name), release);
+        }
+        catch (Exception ex)
+        {
+            <span style="display: none">Couldn't add version @release.Name</span>
+        }
+    }
+
+    var majorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending(x => x.Key);
+    var youTrackVersions = uRelease.Controllers.ApiController.GetAggregateVersionsFromFile();
+}
+
+<h1>All Releases</h1>
+
+@foreach (var majorVersion in majorVersionGroups)
+{
+    var versions = majorVersion.OrderByDescending(x => x.Key);
+    var latest = versions.First();
+    var youTrackVersion = youTrackVersions.First(x => x.version == latest.Key.ToString());
+    var features = youTrackVersion.issues.Count(x => x.type.Contains("Feature"));
+    var issues = youTrackVersion.issues.Count() - features;
+    var breaking = youTrackVersion.issues.Count(x => x.breaking);
+    var firstDownload = latest.Value.Children(x => x.DocumentTypeAlias == "ReleaseDownload").FirstOrDefault();
+    var releaseDate = new DateTime();
+    if (firstDownload != null)
+    {
+        releaseDate = firstDownload.GetPropertyValue<DateTime>("uploadDate");
+    }
+
+    var infoText = string.Empty;
+    var isFirst = true;
+    var seperator = "&nbsp;|&nbsp;";
+    
+    if (features > 0)
+    {
+        infoText = string.Format("{0}{1}Features: {2}", infoText, isFirst == false ? seperator : string.Empty, features);
+        isFirst = false;
+    }
+    if (issues > 0)
+    {
+        infoText = string.Format("{0}{1}Issues fixed: {2}", infoText, isFirst == false ? seperator : string.Empty, issues);
+        isFirst = false;
+    }
+    if (breaking > 0)
+    {
+        infoText = string.Format("{0}{1}Breaking changes: {2}", infoText, isFirst == false ? seperator : string.Empty, breaking);
+        isFirst = false;
+    }
+    if (Equals(releaseDate, default(DateTime)) == false)
+    {
+        infoText = string.Format("{0}{1}Released: {2}", infoText, isFirst == false ? seperator : string.Empty, releaseDate.ToString("ddd MMM dd yyyy"));
+        isFirst = false;
+    }
+
+
+    <h2 id="version-@majorVersion.Key">Version @majorVersion.Key</h2>
+
+    <div class="row releaseTable">
+        <div class="col-xs-3">
+
+            <!-- latest release -->
+            <span class="dot big icon-untitled"><span class="line v-line"></span><span class="line h-line"></span></span>
+
+            <!-- the rest -->
+            @for (var i = 0; i < versions.Count(); i++)
+            {
+                if (i % 3 == 0)
+                {
+                    <span class="dot small">
+                        <span class="line v-line"></span>
+                        <span class="line h-line"></span>
+                    </span>
+                }
+            }
+
+
+        </div>
+
+        <div class="col-xs-9">
+            <div class="row explain">
+
+                <!-- latest release -->
+                <div class="col-xs-12">
+                    <h4 style="display: inline"><a href="@latest.Value.Url">v @latest.Key.ToString()</a></h4><p style="display: inline; padding-left: 20px; color: rgba(0, 0, 0, .4); font-size: .8rem;">@Html.Raw(infoText)</p>
+                    <p>@youTrackVersion.releaseDescription @latest.Value.GetPropertyValue("releaseDescription")</p>
+                </div>
+
+                <!-- the rest -->
+                @foreach (var minorRelease in versions)
+                {
+
+                    <div class="col-xs-4" style="min-height: 133px">
+                        <h5><a href="@minorRelease.Value.Url">@minorRelease.Key.ToString()</a></h5>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+}
+

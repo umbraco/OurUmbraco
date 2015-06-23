@@ -12,117 +12,268 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using uForum.Models;
 using uForum.Services;
+using Umbraco.Core.Services;
+using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
 {
     [MemberAuthorize( AllowType="member" )]
-    public class ForumController : UmbracoApiController
+    public class ForumController : ForumControllerBase
     {
         /* COMMENTS */
 
         [HttpPost]
-        public void Comment(CommentViewModel model)
+        public ExpandoObject Comment(CommentSaveModel model)
         {
-            using (var cs = new CommentService())
-            {
-                var c = new Comment();
-                c.Body = model.Body;
-                c.MemberId = Members.GetCurrentMemberId();
-                c.Created = DateTime.Now;
-                c.ParentCommentId = model.Parent;
-                c.TopicId = model.Topic;
-                cs.Save(c);
-            }
+            dynamic o = new ExpandoObject();
+            var currentMemberId = Members.GetCurrentMemberId();
+
+            var c = new Comment();
+            c.Body = model.Body;
+            c.MemberId = currentMemberId;
+            c.Created = DateTime.Now;
+            c.ParentCommentId = model.Parent;
+            c.TopicId = model.Topic;
+            c.IsSpam = c.DetectSpam();
+            CommentService.Save(c);
+            if (c.IsSpam)
+                AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
+
+            o.id = c.Id;
+            o.body = c.Body.Sanitize().ToString();
+            o.topicId = c.TopicId;
+            o.authorId = c.MemberId;
+            o.created = c.Created.ConvertToRelativeTime();
+            var author = Members.GetById(currentMemberId);
+            o.authorKarma = author.Karma();
+            o.authorName = author.Name;
+            o.roles = System.Web.Security.Roles.GetRolesForUser();
+            o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
+            o.parent = model.Parent;
+
+            return o;
         }
 
         [HttpPut]
-        public void Comment(int id, CommentViewModel model)
+        public void Comment(int id, CommentSaveModel model)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
-                
-                if (c == null)
-                    throw new Exception("Comment not found");
+            var c = CommentService.GetById(id);
 
-                if(c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot edit this comment");
-                
-                c.Body = model.Body;
-                cs.Save(c);
-            }
+            if (c == null)
+                throw new Exception("Comment not found");
+
+            if (c.MemberId != Members.GetCurrentMemberId() && Members.IsAdmin() == false)
+                throw new Exception("You cannot edit this comment");
+
+            c.Body = model.Body;
+            CommentService.Save(c);
         }
 
         [HttpDelete]
         public void Comment(int id)
         {
-            using (var cs = new CommentService())
-            {
-                var c = cs.GetById(id);
+            var c = CommentService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Comment not found");
+            if (c == null)
+                throw new Exception("Comment not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot delete this comment");
+            if (!Library.Utils.IsModerator() && c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot delete this comment");
 
-                cs.Delete(c);
-            }
+            CommentService.Delete(c);
         }
 
-
-
-        /* TOPICS */
-        [HttpPost]
-        public void Topic(TopicViewModel model)
+        [HttpGet]
+        public string CommentMarkdown(int id)
         {
-            using (var ts = new TopicService())
-            {
-                var t = new Topic();
-                t.Body = model.Body;
-                t.MemberId = Members.GetCurrentMemberId();
-                t.Created = DateTime.Now;
-                t.ParentId = model.Forum;
-                ts.Save(t);
-            }
+            var c = CommentService.GetById(id);
+
+            if (c == null)
+                throw new Exception("Comment not found");
+
+            return c.Body;
+        }
+
+        [HttpPost]
+        public void CommentAsSpam(int id)
+        {
+            var c = CommentService.GetById(id);
+
+            if (c == null)
+                throw new Exception("Comment not found");
+
+            c.IsSpam = true;
+
+            CommentService.Save(c);
+        }
+
+        [HttpPost]
+        public void CommentAsHam(int id)
+        {
+            var c = CommentService.GetById(id);
+
+            if (c == null)
+                throw new Exception("Comment not found");
+
+            c.IsSpam = false;
+
+            CommentService.Save(c);
+        }
+        
+
+        [HttpPost]
+        public ExpandoObject Topic(TopicSaveModel model)
+        {
+            dynamic o = new ExpandoObject();
+
+            var t = new Topic();
+            t.Body = model.Body;
+            t.Title = model.Title;
+            t.MemberId = Members.GetCurrentMemberId();
+            t.Created = DateTime.Now;
+            t.ParentId = model.Forum;
+            t.UrlName = umbraco.cms.helpers.url.FormatUrl(model.Title);
+            t.Updated = DateTime.Now;
+            t.Version = model.Version;
+            t.Locked = false;
+            t.LatestComment = 0;
+            t.LatestReplyAuthor = 0;
+            t.Replies = 0;
+            t.Score = 0;
+            t.Answer = 0;
+            t.LatestComment = 0;
+            t.IsSpam = t.DetectSpam();
+            TopicService.Save(t);
+
+            if (t.IsSpam)
+                AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+
+            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
+
+            return o;
         }
 
 
         [HttpPut]
-        public void Topic(int id, TopicViewModel model)
+        public ExpandoObject Topic(int id, TopicSaveModel model)
         {
-            using (var cs = new TopicService())
-            {
-                var c = cs.GetById(id);
+            dynamic o = new ExpandoObject();
 
-                if (c == null)
-                    throw new Exception("Topic not found");
+            var t = TopicService.GetById(id);
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot edit this topic");
+            if (t == null)
+                throw new Exception("Topic not found");
 
-                c.Body = model.Body;
-                cs.Save(c);
-            }
+            if (t.MemberId != Members.GetCurrentMemberId() && Members.IsAdmin() == false)
+                throw new Exception("You cannot edit this topic");
+
+            t.Updated = DateTime.Now;
+            t.Body = model.Body;
+            t.Version = model.Version;
+            t.ParentId = model.Forum;
+            t.Title = model.Title;
+            TopicService.Save(t);
+
+            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
+
+            return o;
         }
 
 
         [HttpDelete]
         public void Topic(int id)
         {
-            using (var cs = new TopicService())
+            var c = CommentService.GetById(id);
+
+            if (c == null)
+                throw new Exception("Topic not found");
+
+            if (c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot delete this topic");
+
+            CommentService.Delete(c);
+        }
+
+        [HttpGet]
+        public string TopicMarkdown(int id)
+        {
+            var t = TopicService.GetById(id);
+
+            if (t == null)
+                throw new Exception("Topic not found");
+
+            return t.Body;
+        }
+
+        [HttpPost]
+        public void TopicAsHam(int id)
+        {
+            var t = TopicService.GetById(id);
+
+            if (t == null)
+                throw new Exception("Topic not found");
+
+            t.IsSpam = false;
+
+            TopicService.Save(t);
+        }
+
+        [HttpPost]
+        public void TopicAsSpam(int id)
+        {
+            var t = TopicService.GetById(id);
+
+            if (t == null)
+                throw new Exception("Topic not found");
+
+            t.IsSpam = true;
+
+            TopicService.Save(t);
+        }
+
+        /* MEDIA */
+        [HttpPost]
+        public  HttpResponseMessage EditorUpload()
+        {
+            dynamic result = new ExpandoObject();
+            var httpRequest = System.Web.HttpContext.Current.Request;
+            if (httpRequest.Files.Count > 0)
             {
-                var c = cs.GetById(id);
+                string filename = string.Empty;
 
-                if (c == null)
-                    throw new Exception("Topic not found");
+                Guid g = Guid.NewGuid();
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot delete this topic");
+                foreach (string file in httpRequest.Files)
+                {
+                   
+                    DirectoryInfo updir = new DirectoryInfo(System.Web.HttpContext.Current.Server.MapPath("/media/upload/" + g));
+                  
+                    if (!updir.Exists)
+                        updir.Create();
+                    
+                    var postedFile = httpRequest.Files[file];
+                    
+                    var filePath = updir.FullName + "/" +  postedFile.FileName;
+                    postedFile.SaveAs(filePath);
+                    filename = postedFile.FileName;
 
-                cs.Delete(c);
+                }
+
+                result.success = true;
+                result.imagePath = "/media/upload/" + g + "/" + filename;
             }
+            else
+            {
+                result.success = false;
+                result.message = "No images found";
+            }
+
+            //jquery ajax file uploader expects html, it parses to json client side
+            var response = new HttpResponseMessage();
+            response.Content = new StringContent(JsonConvert.SerializeObject(result));
+            response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
+            return response;
         }
 
         /* MEDIA */

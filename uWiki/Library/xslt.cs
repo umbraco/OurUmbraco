@@ -83,7 +83,7 @@ namespace uWiki.Library {
 
         public static bool IsMemberInGroup(string GroupName, int memberid)
         {
-            Member m = Utills.GetMember(memberid);
+            Member m = Utils.GetMember(memberid);
 
             foreach (MemberGroup mg in m.Groups.Values)
             {

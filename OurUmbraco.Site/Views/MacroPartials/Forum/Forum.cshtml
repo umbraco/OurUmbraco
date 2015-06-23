@@ -1,48 +1,146 @@
-﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uForum;
+﻿@using uForum
+@using uForum.Library
+@using uForum.Models
+@using uForum.Services
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
-    var topics = uForum.Services.TopicService.Instance.GetLatestTopics(50, 1);
+    const int pagesToShowLeft = 4;
+    int page;
+    if (!int.TryParse(Request["page"], out page))
+    {
+        page = 1;
+    }
+
+    var cat = -1;
+    if (CurrentPage.Level > 3)
+    {
+        cat = CurrentPage.Id;
+    }
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+
+    IEnumerable<ReadOnlyTopic> topics;
+
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    // only cache the first page of each category
+    var pageSize = 50;
+    if (page > 1)
+    {
+        topics = topicService.GetLatestTopics(pageSize, page, true, cat);
+    }
+    else
+    {
+        var key = "OurForumForum[" + cat + "]";
+        topics = (IEnumerable<ReadOnlyTopic>)cache.GetCacheItem(key,
+            () => topicService.GetLatestTopics(pageSize, page, true, cat).ToArray(),
+            TimeSpan.FromSeconds(4));
+    }
+
+    var totalCountKey = "OurForumForumThreadCount[" + cat + "]";
+    var totalTopics = (int)cache.GetCacheItem(totalCountKey,
+        () => topicService.GetAllTopicsCount(cat),
+        TimeSpan.FromMinutes(1));
+
+    var pages = (totalTopics / pageSize) + 1;
 }
-
-<!-- FORUM LIST START -->
-<table class="table table-striped topic-list">
-
-	<!-- FORUM LIST HEADER START -->
-	<thead>
-		<tr>
-			<th class="topic">Topic</th>
-			<th class="category">Category</th>
-			<th class="posts">Posts</th>
-			<th class="activity">Activity</th>
-		</tr>
-	</thead>
-	<!-- FORUM LIST HEADER END -->
-
-	<!-- FORUM LIST OF THREADS START -->
-	<tbody>
-
-		<!-- FORUM THREAD START -->
-
-        @foreach (var topic in topics.Items)
-        {
-            <tr class="@Umbraco.If(topic.Answer > 0, "solved")">
-                
-                @{
-                    var forum = Umbraco.TypedContent(topic.ParentId);
+<!-- FORUM HEADER START -->
+<div class="forum-archive-header">
+    <!-- FORUM BREADCRUMB START -->
+    @Umbraco.RenderMacro("Breadcrumb", new { linktocurrent = "1" })
+    <!-- FORUM BREADCRUMB END -->
+    @Umbraco.RenderMacro("ForumForumActions")
+    <!-- FORUM settings START -->
+    <div class="forum-settings">
+        <div class="search-big">
+            <input type="search" class="forum-search-input" required placeholder="Search for threads">
+            <label for="search">Search for threads</label>
+        </div>
+        <div class="or">or</div>
+        <div class="sorting">
+            <select id="selectCategory" data-placeholder="Choose&hellip;">
+                <option class="category" selected disabled>Filter by category</option>
+                <option class="all" value="@CurrentPage.AncestorOrSelf(2).Id">All categories</option>
+                @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+                {
+                    foreach (var tag in main.Children)
+                    {
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                    }
                 }
+            </select>
+        </div>
+    </div>
+    <!-- FORUM settings END -->
+</div>
+<div class="clear"></div>
+<!-- FORUM HEADER END -->
+<!-- FORUM TOPICS -->
+<div id="overlay" class="overlay"></div>
+<!-- FORUM LIST START -->
+<section class="forum">
+    <!-- FORUM LIST HEADER START -->
+    <div class="forum-head">
 
-				<td class="topic">
-					<a href="@topic.Url">@topic.Title</a>
-					<span>last edited by <a href="#">@topic.LastActiveMember().Name</a></span>
-				</td>
+        <div class="topic">Topic</div>
+        <div class="category">Category</div>
+        <div class="posts">Replies</div>
 
-				<td class="category frontend"><a href="@forum.Url">@forum.Name</a></td>
-				<td class="posts">@topic.Replies</td>
-				<td class="activity" title="@topic.Updated.ToShortDateString() - @topic.Updated.ToShortTimeString()">@topic.Updated.ConvertToRelativeTime()</td>
-			</tr>
+    </div>
+    <!-- FORUM LIST HEADER END -->
+    <!-- FORUM LIST OF THREADS START -->
+    <div class="forum-content">
+
+        <!-- FORUM THREAD START -->
+        @foreach (var topic in topics)
+        {
+            var forum = Umbraco.TypedContent(topic.ParentId);
+            if (forum != null)
+            {
+                <div class="topic-row @Umbraco.If(topic.Answer > 0, " solved")">
+
+                    <div class="topic">
+                        <a href="@topic.GetUrl()">
+                            <h3>@topic.Title</h3>
+                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">last edited by <strong>@topic.LastReplyAuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                            else
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="category frontend">
+                        <a href="@forum.Url">@(Utils.GetForumName(forum))</a>
+                    </div>
+                    <div class="posts"><small>@topic.Replies</small> <span>replies</span></div>
+                </div>
+            }
         }
-	</tbody>
-	<!-- FORUM LIST OF THREADS START -->
-</table>
-<!-- FORUM LIST END -->
+
+        <nav class="pagination" role="navigation">
+            @if (page > 1)
+            {
+                <a class="prev" href="?page=@(page - 1)">Prev</a>
+                <span>&hellip;</span>
+            }
+
+            @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
+            {
+                <a class="@Umbraco.If(i == page, "active")" href="?page=@i">@i</a>
+            }
+
+            @if (page < (pages - 3))
+            {
+                <span>&hellip;</span>
+                <a class="next" href="?page=@(page + 1)">Next</a>
+            }
+        </nav>
+
+    </div>
+
+
+    <div class="forum-conten"></div>
+    <!-- FORUM LIST OF THREADS START -->
+</section>

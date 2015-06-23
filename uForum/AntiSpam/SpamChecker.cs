@@ -14,6 +14,7 @@ using uForum.Models;
 using uForum.Services;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
+using Umbraco.Core;
 using Umbraco.Web;
 
 
@@ -21,7 +22,7 @@ namespace uForum.AntiSpam
 {
     internal class SpamChecker
     {
-        public static bool IsSpam(Umbraco.Core.Models.IPublishedContent member, string body, string commentType, int topicId)
+        public static bool IsSpam(Umbraco.Core.Models.IMember member, string body)
         {
             int reputationTotal;
 
@@ -31,28 +32,28 @@ namespace uForum.AntiSpam
 
             var isSpam = TextContainsSpam(body) || IsSuspiciousBehavior(body);
 
-            if (isSpam)
-            {
-                // Deduct karma
-                //member getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
+            //if (isSpam)
+            //{
+            //    // Deduct karma
+            //    //member getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
 
-                //int reputationCurrent;
-                //int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
-                //member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
-                //member.Save();
-                SendSlackSpamReport(body, topicId, commentType, member.Id);
-            }
+            //    //int reputationCurrent;
+            //    //int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
+            //    //member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
+            //    //member.Save();
+            //    SendSlackSpamReport(body, topicId, commentType, member.Id);
+            //}
 
             return isSpam;
         }
 
-        private static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
+        public static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
         {
-            using (var ts = new TopicService())
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             using (var client = new WebClient())
             {
                 var topic = ts.GetById(topicId);
-                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, topic.Url);
+                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, topic.GetUrl());
                 post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
                 post = post + string.Format("Go to member http://our.umbraco.org/member/{0}\n\n", memberId);
 
@@ -60,9 +61,14 @@ namespace uForum.AntiSpam
 
                 if (memberId != 0)
                 {
-                    var member = new Member(memberId);
-                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utills.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
-                    body = body + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                    var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
+
+                    if (member != null)
+                    {
+                        var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+                        body = body + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                    }
+                    
                 }
 
                 body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
@@ -143,7 +149,7 @@ namespace uForum.AntiSpam
             return false;
         }
 
-        private static int CountValidLinks(string href, int validLinksCount)
+        internal static int CountValidLinks(string href, int validLinksCount)
         {
             if (href != null && (href.TrimStart().StartsWith("/media")
                                  || href.TrimStart().StartsWith("/forum")

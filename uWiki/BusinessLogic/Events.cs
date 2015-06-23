@@ -8,6 +8,11 @@ namespace uWiki.Businesslogic {
     public class FileCreateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class FileUpdateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class FileRemoveEventArgs : System.ComponentModel.CancelEventArgs { }
+    public class FileDownloadUpdateEventArgs : EventArgs
+    {
+        public int ProjectId { get; set; }
+        public int Downloads { get; set; }
+    }
 
     public class CreateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class UpdateEventArgs : System.ComponentModel.CancelEventArgs { }

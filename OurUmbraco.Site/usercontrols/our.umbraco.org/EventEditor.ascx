@@ -1,7 +1,26 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="EventEditor.ascx.cs" Inherits="our.usercontrols.EventEditor" %>
-<%@ Register TagPrefix="our" Assembly="our.umbraco.org" Namespace="our.controls" %>
+<%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 <link rel="stylesheet" media="all" type="text/css" href="/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 
+<%
+    Member m = Member.GetCurrentMember();
+    var reputation = string.Empty;
+    if (m.getProperty("reputationTotal") != null && m.getProperty("reputationTotal").Value != null)
+        reputation = m.getProperty("reputationTotal").Value.ToString();
+
+    int reputationTotal;
+    var enoughReputation = int.TryParse(reputation, out reputationTotal) && reputationTotal > 30;
+
+    if (enoughReputation == false)
+    {
+        holder.Visible = false;
+        notallowed.Visible = true;
+    }
+%>
+<asp:PlaceHolder runat="server" ID="notallowed" Visible="False">
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+</asp:PlaceHolder>
+<asp:PlaceHolder runat="server" ID="holder">
 <script src="/scripts/libs/jquery-ui-timepicker-addon.js" type="text/javascript"></script>
 
 
@@ -168,5 +187,6 @@
     }  
 </script>
 
-<script src="//maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA0NU1XDEzOML2eyLWhmJ9LBSxfxjTTu64lrS209cfOxNPw1orBxShNTRVj48sdN3ldWVic17nG0GLeA" type="text/javascript"></script>
+<script src="http://maps.google.com/maps?file=api&amp;v=2&amp;sensor=false&amp;key=ABQIAAAA0NU1XDEzOML2eyLWhmJ9LBSxfxjTTu64lrS209cfOxNPw1orBxShNTRVj48sdN3ldWVic17nG0GLeA" type="text/javascript"></script>
 </asp:Panel>
+</asp:PlaceHolder>

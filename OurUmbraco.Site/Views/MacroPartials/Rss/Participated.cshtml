@@ -1,0 +1,48 @@
+﻿@using uForum
+@using uForum.Services
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    Response.Clear();
+    Response.ContentType = "application/rss+xml";
+    var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
+    var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
+    int memberId;
+    // For some reason the Request.Url will show that this URL looks like: /rss/forum/?id=?id=103196
+    // This means that Request.QueryString["id"] results in ",1929". Removing the comma helps...
+    if (int.TryParse(Model.MacroParameters["memberId"].ToString().Replace(",", string.Empty), out memberId) == false)
+    {
+        throw new Exception("Invalid member Id");
+    }
+    var member = Members.GetById(memberId);
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var topics = topicService.GetLatestTopicsForMember(member.Id);
+}<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+    <channel>
+        <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
+        <title>Updates in topics @member.Name has participated in</title>
+        @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
+        <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
+        <generator>umbraco</generator>
+        <description>Latest updates in topics @member.Name participated in</description>
+        <language>en</language>
+
+        @foreach (var topic in topics)
+        {
+            foreach (var comment in topic.Comments.OrderByDescending(x => x.Created).Where(x => x.MemberId != memberId).Take(20))
+            {
+                var bodyNoControlCharacters = new string(comment.Body.Where(c => !char.IsControl(c)).ToArray());
+                var commentMember = Members.GetById(comment.MemberId);
+                <item>
+                    <title>@topic.Title</title>
+                    @Html.Raw(string.Format("<link>{0}{1}</link>", baseUrl, topic.GetUrl()))
+                    <guid isPermaLink="true">@string.Format("{0}{1}", baseUrl, topic.GetUrl())</guid>
+                    <description><![CDATA[@Umbraco.StripHtml(Umbraco.Truncate(bodyNoControlCharacters, 100, false))]]></description>
+                    <content:encoded><![CDATA[@comment.Body.Sanitize()]]></content:encoded>
+                    <dc:creator>@commentMember.Name</dc:creator>
+                    <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", comment.Created)</pubDate>
+                </item>
+            }
+        }
+    </channel>
+</rss>

@@ -8,11 +8,13 @@ using Umbraco.Core.Persistence;
 namespace uForum.Models
 {
     [TableName("forumForums")]
-    [PrimaryKey("id")]
+    [PrimaryKey("id", autoIncrement = false)]
     [ExplicitColumns]
     public class Forum
     {
+        [Ignore]
         public string Title { get; set; }
+        [Ignore]
         public string Description { get; set; }
 
         [Column("id")]
@@ -31,6 +33,15 @@ namespace uForum.Models
 
         [Column("sortOrder")]
         public int SortOrder { get; set; }
+
+        [Column("latestComment")]
+        public int LatestComment { get; set; }
+
+        [Column("latestTopic")]
+        public int LatestTopic { get; set; }
+
+        [Column("latestAuthor")]
+        public int LatestAuthor { get; set; }
 
     }
 }

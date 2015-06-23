@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,15 +60,12 @@ namespace uForum.Models
         [Column("version")]
         public int Version { get; set; }
 
-        public string Url
+        public string GetUrl()
         {
-            get
-            {
-                var url = library.NiceUrl(this.ParentId);
-                return GlobalSettings.UseDirectoryUrls
-                    ? string.Format("/{0}/{1}-{2}", url.Trim('/'), Id, UrlName)
-                    : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), Id, UrlName);
-            }
+            var url = library.NiceUrl(this.ParentId);
+            return GlobalSettings.UseDirectoryUrls
+                ? string.Format("/{0}/{1}-{2}", url.Trim('/'), Id, UrlName)
+                : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), Id, UrlName);
         }
     }
 }

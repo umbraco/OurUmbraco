@@ -1,74 +1,58 @@
-﻿using HtmlAgilityPack;
-using MarkdownSharp;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Globalization;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
+using HtmlAgilityPack;
+using ImageProcessor.Imaging.Filters.Artistic;
+using MarkdownSharp;
+using uForum.AntiSpam;
 using uForum.Library;
 using uForum.Models;
-using uForum.Services;
-using Umbraco.Core.Models;
-using Umbraco.Core.Services;
+using Umbraco.Web;
 
 namespace uForum
 {
     public static class ForumExtensions
     {
-        
-        public static IEnumerable<Comment> ChildComments(this Comment comment)
-        {
-            if (comment.HasChildren)
-            {
-                using (var cs = new CommentService())
-                {
-                    return cs.GetChildComments(comment.Id);
-                }
-            }
-
-            return new List<Comment>();
-        }
-
 
         public static string ConvertToRelativeTime(this DateTime date)
         {
-            
-            var TS = DateTime.Now.Subtract(date);
-            var span = int.Parse(Math.Round(TS.TotalSeconds, 0).ToString());
+
+            var ts = DateTime.Now.Subtract(date);
+            int span;
+            int.TryParse(Math.Round(ts.TotalSeconds, 0).ToString(CultureInfo.InvariantCulture), out span);
 
             if (span < 60)
                 return "1 minute ago";
 
             if (span >= 60 && span < 3600)
-                return string.Concat(Math.Round(TS.TotalMinutes), " minutes ago");
+                return string.Concat(Math.Round(ts.TotalMinutes), " minutes ago");
 
             if (span >= 3600 && span < 7200)
                 return "1 hour ago";
 
             if (span >= 3600 && span < 86400)
-                return string.Concat(Math.Round(TS.TotalHours), " hours ago");
+                return string.Concat(Math.Round(ts.TotalHours), " hours ago");
 
             if (span >= 86400 && span < 172800)
                 return "1 day ago";
 
             if (span >= 172800 && span < 604800)
-                return string.Concat(Math.Round(TS.TotalDays), " days ago");
+                return string.Concat(Math.Round(ts.TotalDays), " days ago");
 
             if (span >= 604800 && span < 1209600)
                 return "1 week ago";
 
             if (span >= 1209600 && span < 2592000)
-                return string.Concat(Math.Round(TS.TotalDays), " days ago");
+                return string.Concat(Math.Round(ts.TotalDays), " days ago");
 
-            if (span >= 2592000 && span < 26920000)
-                return "Several months ago";
-
-            return "More then a year ago";
+            return date.ToString("MMM dd, yyyy @ HH:mm");
         }
 
 
-        public static HtmlString Sanitize(this string html){
+        public static HtmlString Sanitize(this string html)
+        {
             // Run it through Markdown first
             var md = new Markdown();
             html = md.Transform(html);
@@ -83,7 +67,6 @@ namespace uForum
                 var images = root.SelectNodes("//img");
                 if (images != null)
                 {
-                    var replace = false;
                     foreach (var image in images)
                     {
                         var src = image.GetAttributeValue("src", "");
@@ -98,29 +81,57 @@ namespace uForum
                         a.AppendChild(image.Clone());
 
                         image.ParentNode.ReplaceChild(a, image);
-
-                        replace = true;
                     }
+                }
 
-                    if (replace)
+                // Any links not going to an "approved" domain need to be marked as nofollow
+                var links = root.SelectNodes("//a");
+                if (links != null)
+                {
+                    foreach (var link in links)
                     {
-                        html = root.OuterHtml;
+                        if (link.Attributes["href"] != null && (SpamChecker.CountValidLinks(link.Attributes["href"].Value, 0) == 0))
+                        {
+                            if (link.Attributes["rel"] != null)
+                            {
+                                link.Attributes.Remove("rel");
+                            }
+                            link.Attributes.Add("rel", "nofollow");
+                        }
                     }
+                }
+
+                // Remove styles from all elements
+                var elementsWithStyleAttribute = root.SelectNodes("//@style");
+                if (elementsWithStyleAttribute != null)
+                {
+                    foreach (var element in elementsWithStyleAttribute)
+                    {
+                        element.Attributes.Remove("style");
+                    }
+                }
+
+                using (var writer = new StringWriter())
+                {
+                    doc.Save(writer);
+                    html = writer.ToString();
                 }
             }
 
-            return new HtmlString(Utills.Sanitize(html));
+            return new HtmlString(Utils.Sanitize(html));
         }
 
         public static bool DetectSpam(this Comment comment)
         {
-            comment.IsSpam = AntiSpam.SpamChecker.IsSpam(comment.Author(), comment.Body, "comment", comment.TopicId);
+            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(comment.MemberId);
+            comment.IsSpam = SpamChecker.IsSpam(member, comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
-            topic.IsSpam = AntiSpam.SpamChecker.IsSpam(topic.Author(), topic.Body, "comment", topic.Id);
+            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
+            topic.IsSpam = SpamChecker.IsSpam(member, topic.Body);
             return topic.IsSpam;
         }
     }

@@ -14,7 +14,7 @@ namespace uPowers.BusinessLogic {
                 
         public void Save() {
             if (MemberId > 0) {
-                Member m = Library.Utills.GetMember(MemberId);
+                Member m = Library.Utils.GetMember(MemberId);
                 m.getProperty(config.GetKey("/configuration/reputation/currentPointsAlias")).Value = Current;
                 m.getProperty(config.GetKey("/configuration/reputation/totalPointsAlias")).Value = Total;
                 
@@ -32,7 +32,7 @@ namespace uPowers.BusinessLogic {
         }
 
         public Reputation(int memberId){
-            Member m = Library.Utills.GetMember(memberId);
+            Member m = Library.Utils.GetMember(memberId);
 
             if (m != null) {
                 Current = obToInt( m.getProperty(config.GetKey("/configuration/reputation/currentPointsAlias")).Value );

@@ -14,6 +14,7 @@
         }
 
         var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
+        unzip.IsProjectDocumentation = true;
         unzip.Run();
     }
     else

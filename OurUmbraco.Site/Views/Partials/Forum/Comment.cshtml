@@ -1,69 +1,135 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.Comment>
+﻿@inherits UmbracoViewPage<uForum.Models.ReadOnlyComment>
 @using uForum;
 
 @{
+    var currentMember = Members.GetCurrentMember();
     var answer = (int)ViewData["answer"];
-    var commentAuthor = Model.Author();
+    string[] roles = { };
+    
+    var commentAuthor = Members.GetById(Model.MemberId);
+    // author could have been deleted (spammer) so make sure to check if they exist
+    if (commentAuthor != null)
+    {
+        roles = Roles.GetRolesForUser(commentAuthor.GetPropertyValue<string>("UserName"));
+    }
+    
 }
 
-<li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
-	<div class="meta">
-		<div class="profile">
-			<a href="#">@commentAuthor.Name</a> has in total, @commentAuthor.Karma() karma points – <span class="roles">Admin</span>
-		</div>
-		<div class="time">
-			@Model.Created.ConvertToRelativeTime()
-		</div>
-	</div>
+@if (commentAuthor != null)
+{
+    <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
+        <div class="meta">
+            <div class="profile">
+                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a> <span class="hide-xs">has in total </span>@commentAuthor.Karma() karma points
 
-	<div class="comment-inner">
+                @if (roles.Length > 1)
+                {
+                    <span class="roles">
+                    @foreach (var role in roles.Skip(1))
+                    {
+                        if (role == "CoreContrib")
+                        {
+                            <span class="c-trib">C-trib</span>
+                        }
+                        else
+                        {
+                            <span class="@role.ToLower()">@role</span>
+                        }
+                    }
+                </span>
+                }
 
-		<a href="#" class="photo">
-		<img src="@commentAuthor.Avatar()">
-		</a>
+            </div>
+            <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
+                @Model.Created.ConvertToRelativeTime()
+            </div>
+        </div>
 
-		<div class="body markdown-syntax">
-            @Model.Body.Sanitize()
-		</div>
-	</div>
+        <div class="comment-inner">
+            <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(commentAuthor, 48))</a>
 
-    @if(Members.IsLoggedIn()){
-        var mem = Members.GetCurrentMember();
-        
-	<div class="actions">
-  	  	
-        <a href="#" class="solved">
-            <i class="icon-Check"></i><span>Mark as solution</span>
-        </a>
-		
+            <div class="highfive highfive-comment">
 
-        @if (Members.IsAdmin() || mem.Id == Model.MemberId)
+                <div class="highfive-count">
+                    @Model.Score
+                </div>
+                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
+                {
+                    if (currentMember.Id != Model.MemberId)
+                    {
+                        <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
+
+                    }
+                }
+            </div>
+
+            <div class="body markdown-syntax">
+                @Model.Body.Sanitize()
+            </div>
+        </div>
+
+        @if (Members.IsLoggedIn())
         {
-            <a href="#" class="solved">
-                <i class="icon-Check"></i><span>Mark as solution</span>
-            </a>
+
+            <div class="actions">
+                @if (answer == 0 && (Members.IsAdmin() || currentMember.Id == Model.TopicAuthorId))
+                {
+                    <a href="#" class="solved" data-id="@Model.Id">
+                        <i class="icon-Check"></i><span>Mark as solution</span>
+                    </a>
+                }
+
+                <a href="#" id="copy-link" class="copy-link" data-id="#comment-@Model.Id">
+                    <i class="icon-Link"></i><span>Copy Link</span>
+                </a>
+
+                @if (Model.ParentCommentId <= 0)
+                {
+                    <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
+                        <i class="icon-Reply-arrow"></i><span>Reply</span>
+                    </a>
+                }
+
+                @if (Members.IsAdmin() || currentMember.Id == Model.MemberId)
+                {
+                    <a href="#" class="delete-reply" data-id="@Model.Id">
+                        <i class="icon-Delete-key"></i><span>Delete post</span>
+                    </a>
+
+
+                    if (Members.IsAdmin())
+                    {
+                        if (Model.IsSpam)
+                        {
+                            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
+                                <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
+                                <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+                            </a>
+                        }
+                    }
+                }
+
+
+                @if (currentMember.Id == Model.MemberId || Members.IsAdmin())
+                {
+                    <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
+                        <i class="icon-Edit"></i><span>Edit post</span>
+                    </a>
+                }
+            </div>
         }
-
-@*
-    @if(mem.Id != Model.MemberId){
-    <div class="karma">
-        <a href="#"><img src="https://cdn0.iconfinder.com/data/icons/very-basic-android-l-lollipop-icon-pack/24/like_outline-16.png" alt=""> Give Karma</a>
-    </div>
-    }
-*@
-    
-        <a href="#" class="copy-link">
-            <i class="icon-Out"></i><span>Copy Link</span>
-        </a>
-
-        @if(Model.ParentCommentId <= 0){
-            <a href="#" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment"  class="reply forum-reply">
-                <i class="icon-Reply-arrow"></i><span>Reply</span>
-			</a>
+        else
+        {
+            <div class="actions">
+                <a href="#" id="copy-link" class="copy-link" data-id="@Model.Id">
+                    <i class="icon-Link"></i><span>Copy Link</span>
+                </a>
+            </div>
         }
-
-
-		
-	</div>
-    }
-</li>
+    </li>
+}

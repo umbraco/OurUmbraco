@@ -1,0 +1,30 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uDocumentation.Busineslogic;
+
+@{
+    string baseurl = "/";
+    string absolutePath = HttpContext.Current.Request.Url.AbsolutePath;
+    string directoryName = Path.GetDirectoryName(absolutePath);
+
+    directoryName = directoryName.Substring(1);
+    string[] strDirs = directoryName.Split('\\');
+
+}
+
+<ul id="breadcrumb">
+    <li><a href="/">Our</a></li>
+    @foreach(var page in strDirs){
+        <li><a href="@(baseurl+page)/">@page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</a></li>
+        {
+            baseurl += page + "/";
+        }
+    }
+
+    @if (!absolutePath.EndsWith("/"))
+    {
+        <li>@absolutePath.Substring(absolutePath.LastIndexOf('/') + 1).RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</li>
+    }
+
+
+ 
+</ul>

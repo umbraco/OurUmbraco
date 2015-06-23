@@ -1,6 +1,26 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Details" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Details.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Details" %>
+<%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 
-<h1>Project Details</h1>
+<%
+    Member m = Member.GetCurrentMember();
+    var reputation = string.Empty;
+    if (m.getProperty("reputationTotal") != null && m.getProperty("reputationTotal").Value != null)
+        reputation = m.getProperty("reputationTotal").Value.ToString();
+
+    int reputationTotal;
+    var enoughReputation = int.TryParse(reputation, out reputationTotal) && reputationTotal > 30;
+
+    if (enoughReputation == false)
+    {
+        holder.Visible = false;
+        notallowed.Visible = true;
+    }
+%>
+<asp:PlaceHolder runat="server" ID="notallowed" Visible="False">
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+</asp:PlaceHolder>
+
+<asp:PlaceHolder runat="server" ID="holder">
 <div class="form simpleForm" id="registrationForm">
 <fieldset>
     <legend>Project Information</legend>
@@ -118,10 +138,11 @@
 </asp:PlaceHolder>
 
 <div class="buttons">
-<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton"/>
+<asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton button green tiny"/>
 </div>
 </div>
 
+<script type="text/javascript" src="/scripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 
     $(document).ready(function () {
@@ -141,8 +162,14 @@
         elements: "<%= Description.ClientID %>",
         content_css: "/css/fonts.css",
         auto_resize: false,
-        theme: "simple",
+        theme: "advanced",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_buttons1: "bold,italic,underline,bullist,numlist",
+        theme_advanced_buttons2: "",
+        theme_advanced_buttons3: "",
         remove_linebreaks: false
     });
-  
+
 </script>
+
+</asp:PlaceHolder>

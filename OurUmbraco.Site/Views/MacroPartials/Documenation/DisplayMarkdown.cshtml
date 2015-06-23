@@ -1,0 +1,25 @@
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using uDocumentation.Busineslogic;
+
+@{
+    var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+    var ml = new MarkdownLogic(path) { PrefixLinks = false };
+    if (path.ToLowerInvariant().EndsWith("index.md".ToLowerInvariant()) || path.ToLowerInvariant().EndsWith("readme.md".ToLowerInvariant()))
+    {
+        if (Request.Url.AbsoluteUri.EndsWith("/") == false)
+        {
+            Response.Redirect(Request.Url + "/");
+        }
+    }
+    else
+    {
+        if (Request.Url.AbsoluteUri.EndsWith("/"))
+        {
+            Response.Redirect(Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.Length - 1));
+        }
+    }
+    
+    var markdown = ml.DoTransformation();
+}
+
+@Html.Raw(markdown)

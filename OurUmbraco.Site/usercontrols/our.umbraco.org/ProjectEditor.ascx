@@ -1,5 +1,9 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectEditor.ascx.cs" Inherits="our.usercontrols.ProjectEditor" %>
 
+<asp:PlaceHolder runat="server" ID="notallowed" Visible="False">
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+</asp:PlaceHolder>
+
 <asp:PlaceHolder ID="holder" runat="server">
 
 <h1><asp:Literal runat="server" ID="lt_title" Text="Create project"></asp:Literal></h1>
@@ -118,20 +122,20 @@
 
 <script type="text/javascript">
 
-  $(document).ready(function() {
-      $("form").validate();
-  });
+    $(document).ready(function () {
+        $("form").validate();
+    });
 
-  tinyMCE.init({
-    // General options
-    mode: "exact",
-    elements: "<%= tb_desc.ClientID %>",
+    tinyMCE.init({
+        // General options
+        mode: "exact",
+        elements: "<%= tb_desc.ClientID %>",
     content_css: "/css/fonts.css",
     auto_resize: true,
     theme: "simple",
     remove_linebreaks: false
   });
-  
+
 </script>
 
 </asp:PlaceHolder>

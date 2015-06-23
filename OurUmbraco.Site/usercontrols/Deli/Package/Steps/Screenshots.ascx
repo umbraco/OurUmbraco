@@ -1,5 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Screenshots.ascx.cs" Inherits="Marketplace.usercontrols.Deli.Package.Steps.Screenshots" %>
-<h1>Screenshots</h1>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Screenshots.ascx.cs" Inherits="uProject.usercontrols.Deli.Package.Steps.Screenshots" %>
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
 <script type="text/javascript">
     var swfu;
@@ -112,7 +111,7 @@
     <fieldset>
     <legend>Upload file</legend>
     
-    <div id="swfu_container" style="margin: 0px 10px;">
+    <div id="swfu_container">
     
     <div id="swfu_controls">
     
@@ -134,7 +133,7 @@
         </p>
 
         <p>
-            <input type="button" value="Upload file" id="btn_submit" />
+            <input type="button" value="Upload file" id="btn_submit" class="button tiny"/>
         </p>
 
     </div>
@@ -144,7 +143,7 @@
     
     <div class="buttons">
         <asp:linkbutton runat="server" Text="Previous" ID="MovePrevious" OnClick="MoveLast"/>&nbsp;
-        <asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton"/>
+        <asp:Button runat="server" Text="Next" ID="MoveNext" OnClick="SaveStep"  CssClass="submitButton button tiny green" />
     </div>			       
  </div>
  </asp:PlaceHolder>

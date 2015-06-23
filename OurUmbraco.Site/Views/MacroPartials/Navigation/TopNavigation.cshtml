@@ -1,15 +1,15 @@
+@using System.Drawing
+@using our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uForum
-
-@*
-    Macro to display child pages below the root page of a standard website.
-    Also highlights the current active page/section in the navigation with
-    the css class "current".
-*@
 
 @{
     @* Get the root of the website *@
     var root = CurrentPage.AncestorOrSelf(1);
+    Image avatarImage = null;
+    if (Members.IsLoggedIn())
+    {
+        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+    }
 }
 
 <ul>
@@ -21,42 +21,20 @@
     }
 
     <li>
-        @if (Members.IsLoggedIn())
+        @if (Members.IsLoggedIn() && Members.GetCurrentMember() != null)
         {
             var member = Members.GetCurrentMember();
             <div class="user">
-                @avatar(member, 40)
+                @Html.Raw(our.Utils.GetMemberAvatar(member, 40))
+                @if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+                {
+                    <span class="notificationCount">1</span>
+                }
             </div>
         }
         else
         {
-            <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+            <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a><strong> / </strong><a href="/member/Signup">Register</a>
         }
     </li>
 </ul>
-
-@helper avatar(IPublishedContent member, int avatarSize)
-{
-    if (member.HasValue("avatar"))
-    {
-        @localAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize);
-    }
-    else
-    {
-        @gravatar(member.GetPropertyValue("Email").ToString(), avatarSize);
-    }
-}
-
-
-@helper gravatar(string email, int size)
-{
-    var emailId = email.ToLower();
-    var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-
-    <img src="http://www.gravatar.com/avatar/@hash?s=@size&d=mm&r=g" />
-}
-
-@helper localAvatar(string imgPath, int size)
-{
-    <img src="@imgPath?width=@size" alt="Alternate Text" />
-}

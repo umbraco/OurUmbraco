@@ -2,9 +2,10 @@
 @using Marketplace.Providers
 @using System.Xml;
 @using System.Xml.XPath;
+@using Umbraco.Core
 
 @{
- var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+ var projectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
  var take = 30;
  
  var wrapperClass = "notLoggedIn";
@@ -15,11 +16,26 @@
  if(Request.QueryString["version"] != null){
   version = Request.QueryString["version"].ToLower();
  }
-  
- List<IListingItem> favs = new List<IListingItem>();
- IEnumerable<IListingItem> Projects = ProjectsProvider.GetListingsByKarma(0, take, true, false).Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) ) );
+
+    const string uniqueWhatever = "E295637E-E957-4CCA-92CE-BF5D58F9FF59";
+    var cacheKey = uniqueWhatever + "[" + version + "]";
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>) cache.GetCacheItem(cacheKey, () =>
+    {
+        return projectsProvider
+             .GetListingsByKarma(0, take, true, false)
+             .Where(x => !x.NotAPackage &&
+                 (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
+                    string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+    }, TimeSpan.FromMinutes(10));
+ //var projects = projectsProvider
+ //    .GetListingsByKarma(0, take, true, false)
+ //    .Where(x => !x.NotAPackage &&
+ //        (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || 
+ //           string.Join("",x.UmbracoVerionsSupported).Contains(version) ) );
   
  var pUrl = "/repo_viewproject?" + qs + "&project_id=";
+ var favs = new List<IListingItem>();
   
   
   if(umbraco.library.IsLoggedOn()){
@@ -37,7 +53,7 @@
       
        if(id != null){
           try{            
-          var project = ProjectsProvider.GetListing(int.Parse(id), false);
+          var project = projectsProvider.GetListing(int.Parse(id), false);
           if(project != null){
               favs.Add(project);
           }
@@ -60,21 +76,26 @@
 <h1>Popular Packages</h1>
 <p>The most popular packages, based on karma and downloads</p>
 <ul class="projects">
-  @foreach(var project in @Projects)
+  @foreach(var project in projects)
   {
     <li class="clearfix">
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(Marketplace.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+				<a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@Marketplace.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@Marketplace.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">
@@ -104,17 +125,22 @@
             <div class="deliPackage">
             
             <div class="brief">
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url(@Html.Raw(Marketplace.library.GetDefaultScreenshot((string)project.DefaultScreenshot))) no-repeat top left;">Package</a>
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+              <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@Marketplace.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
 
 
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@Marketplace.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">

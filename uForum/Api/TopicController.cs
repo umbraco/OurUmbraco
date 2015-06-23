@@ -10,53 +10,44 @@ using Umbraco.Web.WebApi;
 namespace uForum.Api
 {
     [MemberAuthorize(AllowType = "member")]
-    public class TopicController : UmbracoApiController
+    public class TopicController : ForumControllerBase
     {
-        public void Post(TopicViewModel model)
+        public void Post(TopicSaveModel model)
         {
-            using (var ts = new TopicService())
-            {
-                var t = new Topic();
-                t.Body = model.Body;
-                t.MemberId = Members.GetCurrentMemberId();
-                t.Created = DateTime.Now;
-                t.ParentId = model.Forum;
-                ts.Save(t);
-            }
+            var t = new Topic();
+            t.Body = model.Body;
+            t.MemberId = Members.GetCurrentMemberId();
+            t.Created = DateTime.Now;
+            t.ParentId = model.Forum;
+            TopicService.Save(t);
         }
 
-        public void Put(int id, TopicViewModel model)
+        public void Put(int id, TopicSaveModel model)
         {
-            using (var cs = new TopicService())
-            {
-                var c = cs.GetById(id);
+            var c = TopicService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Topic not found");
+            if (c == null)
+                throw new Exception("Topic not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot edit this topic");
+            if (c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot edit this topic");
 
-                c.Body = model.Body;
-                cs.Save(c);
-            }
+            c.Body = model.Body;
+            TopicService.Save(c);
         }
 
         //api/topic
         public void Delete(int id)
         {
-            using (var cs = new TopicService())
-            {
-                var c = cs.GetById(id);
+            var c = TopicService.GetById(id);
 
-                if (c == null)
-                    throw new Exception("Topic not found");
+            if (c == null)
+                throw new Exception("Topic not found");
 
-                if (c.MemberId != Members.GetCurrentMemberId())
-                    throw new Exception("You cannot delete this topic");
+            if (!Library.Utils.IsModerator() && c.MemberId != Members.GetCurrentMemberId())
+                throw new Exception("You cannot delete this topic");
 
-                cs.Delete(c);
-            }
+            TopicService.Delete(c);
         }
     }
 }

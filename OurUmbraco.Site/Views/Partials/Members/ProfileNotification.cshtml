@@ -1,0 +1,23 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<our.Models.ProfileNotificationModel>
+@{
+    Html.EnableClientValidation(true);
+    Html.EnableUnobtrusiveJavaScript(true);
+}
+
+
+
+    
+    <div class="profile-settings-forms">
+
+        @using (Html.BeginUmbracoForm<our.Controllers.ProfileNotificationController>("HandleSubmit"))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="profile-input" id="dont-bug">
+                @Html.LabelFor(m => m.DontBug)
+                @Html.CheckBoxFor(m => m.DontBug, new { onchange = "this.form.submit();" })
+            </div>
+            
+        }
+
+    </div>

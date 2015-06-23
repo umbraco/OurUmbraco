@@ -1,0 +1,295 @@
+.search-all {
+	width: 100%;
+	text-align: center;
+
+	padding: 20px 0;
+
+	@media (max-width: $md) {		
+		.search-all-form, .search-all-results {
+			transition: width .2s cubic-bezier(0.7,0,0.3,1),
+						max-width .2s cubic-bezier(0.7,0,0.3,1),
+		}
+	}
+}
+
+.search-container {
+	position: relative;
+	height: 100%;
+	width: 100%;
+	overflow: hidden;
+}
+	
+.search-all-form {
+	position: relative;
+	display: inline-block;
+	width: 80%;
+	height: 60px;
+	max-width: 1100px;
+	margin-top: 15px;
+	padding-top: 0;
+	background-color: white;
+	z-index: 150;
+
+	@media (min-width: $md) {
+		margin-top: 100px;
+	}
+	
+	.search-fieldset {
+		position: relative;
+		display: inline-block;
+		width: 100%;
+		height: 100%;
+		border-left: 1px solid transparent;
+		border-right: 1px solid transparent;
+		border-top: 1px solid transparent;
+	}
+
+	input[type="search"], input[type="submit"] {
+		min-height: 60px;
+		font-size: 1em;
+		border: none;
+		background: #fff;
+		padding: 15px 20px;
+		z-index: 150;
+		margin: 0;
+		@include transitionMultiple(border .2,background-color .5s);
+	}
+
+	input[type="search"] {
+		width: 100%;
+		-webkit-appearance: none;
+		font-family: $font-family;
+		font-size: 1.2rem;
+		
+		&:focus {
+			outline: none;
+			
+			+ input[type="submit"] {
+				color: $color-our;
+			}
+		}
+	}
+
+	input[type="submit"] {
+		position: absolute;
+		top: 0;
+		right: 0;
+		font-family: "Icomoon";
+		color: darken($color-light-grey, 30%);
+	}
+}
+
+.search-text {
+	padding-top: 2em;
+	padding-bottom: 5em
+}
+
+.search-all-results {
+	border-bottom: 1px solid whitesmoke;
+	border-left: 1px solid whitesmoke;
+	border-right: 1px solid whitesmoke;
+
+	ul {
+		max-width: 1100px;
+		width: 100%;
+		margin: 0 auto;
+		background: darken(#fff, 1%);
+		padding: 0;
+	}
+
+	li {
+		list-style: none;
+		padding: 30px;
+		border-bottom: 1px solid whitesmoke;
+		text-align: left;
+		overflow: hidden;
+
+		a {
+			display: block;
+		}
+
+		&:hover {
+			background: rgba($color-our, .16);
+
+			.type-icon, .type-name, .type-description {
+				color: $color-text-hover;
+			}
+		}
+
+		&.search-view-all {
+			border-bottom: none;
+			font-size: .9rem;
+			font-weight: bold;
+			text-align: center;
+			padding: 15px;
+			color: $color-text;
+			background: darken(#fff, 3%);
+
+			a {
+				text-decoration: none;
+				color: $color-headline;
+			}
+
+			&:hover {
+				background: darken(#fff, 4%);
+
+				a {
+					color: #000;
+				}
+			}
+		}
+	}
+
+	.type-icon, .type-context {
+		float: left;
+	}
+
+	.type-icon {
+		width: 20%;
+		font-size: 2rem;
+		color: $color-text;
+
+		@media (min-width: $md) {
+			width: 5%;
+			font-size: 2rem;
+			color: $color-text;
+		}
+	}
+
+	.type-context {
+		width: 80%;
+	
+		@media (min-width: $md) {
+			width: 95%;
+		}
+
+		.type-name {
+			font-size: 1rem;
+			margin-bottom: .15rem;
+			font-weight: 600;
+			color: $color-headline;
+		}
+
+		.type-description {
+			font-size: .9rem;
+			color: $color-text;
+		}
+
+	}
+}
+
+
+.search-all.open {
+
+	input[type="search"], input[type="submit"] {
+		color: #000;
+
+		::-webkit-input-placeholder {
+		   color: #000;
+		}
+
+		:-moz-placeholder {
+		   color: #000;  
+		}
+
+		::-moz-placeholder { 
+		   color: #000;  
+		}
+
+		:-ms-input-placeholder {  
+		   color: #000;  
+		}
+	}
+
+	.search-fieldset {
+		border-left: 1px solid whitesmoke;
+		border-right: 1px solid whitesmoke;
+		border-top: 1px solid whitesmoke;
+	}
+
+	.search-all-results {
+		display: block;
+	}
+
+		@media (max-width: $md) {
+			.search-all-form, .search-all-results {
+			width: 100%;
+		}
+	}
+}
+
+
+.frontpage, .community-page {
+	.search-all-results {
+		width: 80%;
+		left: 50%;
+		transform: translate(-50%, 0);
+		display: none;
+		position: absolute;
+		z-index: 150;
+		max-width: 1100px;
+	}
+}
+
+
+.plain {
+	max-width: 1160px;
+	margin: 0 auto;
+
+	.search-big {
+		margin-top: 30px;
+		margin-bottom: 0;
+	}
+
+	.search-all {
+		background: none;
+		padding: 0 10px;
+
+		@media(min-width: $md) {
+			padding: 0 15px;
+		}
+	}
+
+	.forum-archive-header {
+		margin-bottom:0;
+		border-bottom: none;
+	}
+
+	.search-all-results {
+		width: 100%;
+
+		ul {
+			margin: 0;
+			width: 100%;
+			max-width: 100%;
+		}
+
+		.type-icon {
+			font-size: 1.6rem;
+			opacity: .6;
+		}
+
+		.type-context {
+
+			.type-name {
+				font-size: .95rem;
+			}
+
+			.type-description {
+				font-size: .8rem;
+			}
+		}
+	}
+}
+
+.forum-page {
+	.search-big {
+		width: 100%;
+		margin: 15px 0 15px 0;
+
+		input {
+			font-size: .9rem;
+			min-height: 55px;
+		}
+	}
+}

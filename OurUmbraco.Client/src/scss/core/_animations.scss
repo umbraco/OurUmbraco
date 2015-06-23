@@ -1,0 +1,124 @@
+@keyframes animGenie {
+	0% {
+		opacity:1; transform: scale(0);
+	}
+
+	25% {
+		opacity:1; transform: scale(1.2);
+	}
+
+	50% {
+		opacity:1; transform: scale(.8);
+	}
+
+	75% {
+		opacity:1; transform: scale(1.1);
+	}
+
+	100% {
+		opacity:1; transform: scale(1);
+	}
+
+}
+
+
+
+@keyframes fadeOut {
+	0% {
+		opacity:0;
+	}
+
+	50% {
+		opacity:1;
+	}
+
+	100% {
+		opacity:0;
+	}
+
+}
+
+
+
+@keyframes newIn {
+	0%{ 	
+		background-color: rgba($color-our, .1);
+		box-shadow: 0 3px 6px rgba(#000, .08), 0 3px 6px rgba(#000, .14);
+	}
+
+	100%{
+		background-color: #fff;
+		box-shadow: none;
+	}	
+}
+
+
+
+@keyframes fadeInUp {
+	0% {
+    opacity: 0;
+        transform: translate3d(0, 100%, 0);
+  }
+
+  100% {
+    opacity: 1;
+        transform: none;
+  }
+}
+
+
+
+@keyframes searchLoading {
+	0% {
+		opacity:1;
+	}
+
+	50% {
+		opacity:0;
+	}
+
+	100% {
+		opacity:1;
+	}
+}
+
+// Search result animation
+.table.table-striped.topic-list, .projects-default-listing, .docs-search-listing {
+	opacity: 1;
+	transition: opacity 50ms $cubicSearch;
+	&.fadeResultOut {
+		opacity: 0;
+	}
+}
+
+
+.fadeInUp {
+	animation-name: fadeInUp;
+	animation-duration: 1s;
+	animation-fill-mode: both;
+}
+
+// Classes to add
+.newInAnimation {
+	animation-name: newIn;
+	animation-duration: 1.2s;
+	animation-iteration-count: 3;
+	animation-fill-mode: backwards;
+	animation-timing-function: $cubicSearch;
+}
+
+.fadeOut {
+	animation-name: fadeOut;
+	animation-duration: 1.2s;
+	animation-iteration-count: 1;
+	animation-fill-mode: forward;
+	animation-timing-function: $cubicSearch;
+	display: block;
+}
+
+.searchLoading {
+	animation-name: searchLoading;
+	animation-duration: 2s;
+	animation-iteration-count: 1;
+	animation-timing-function: $cubicSearch;
+}

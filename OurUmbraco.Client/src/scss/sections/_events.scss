@@ -1,0 +1,64 @@
+.events {
+	padding: 0;
+
+	.event-map {
+		position: relative;
+		overflow: hidden;
+	}
+
+	.event-info {
+		padding: 20px;
+		color: #fff;
+		background: rgba(#161616, .87);
+		text-align: center;
+
+		@media (min-width: $md) {
+			position: absolute;
+			right: 0;
+			top: 50%;
+			height: 100%;
+			transform: translateY(-50%);
+			width: 400px;
+			padding: 30px;
+		}
+
+		img {
+			max-width: 66px;
+			height: auto;
+			margin: 10px auto 20px;
+			display: block;
+
+			@media (min-width: $md) {
+				margin: 10px auto 40px;
+			}
+
+	}
+
+		h1 {
+			font-size: 2rem;
+			margin-bottom: 30px;
+		}
+
+		p {
+			line-height: 1.5;
+		}
+
+		a {
+			margin-top: 30px;
+			display: inline-block;
+			font-weight: bold;
+
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
+
+	#map {
+		height: 300px;
+
+		@media (min-width: $md) {
+			height: 500px;
+		}
+	}
+}

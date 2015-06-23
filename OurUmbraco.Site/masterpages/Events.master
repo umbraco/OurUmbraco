@@ -10,7 +10,7 @@
 
 <asp:Content ContentPlaceHolderId="main" runat="server">
 
-<div id="body" class="subpage">
+<div id="body" class="subpage markdown-syntax">
 
 <div style="margin-top: 25px;">
   <umbraco:Macro Alias="Breadcrumb" runat="server"></umbraco:Macro>
