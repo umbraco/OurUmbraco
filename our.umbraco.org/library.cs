@@ -237,7 +237,7 @@ namespace our
 
             return null;
         }
-        
+
         public static string GetGravatar(string email, int size, string memberName)
         {
             var emailId = email.ToLower();
@@ -246,9 +246,10 @@ namespace our
             return string.Format("<img src=\"//www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro\" alt=\"{2}\" />", hash, size, memberName);
         }
 
-        public static string GetLocalAvatar(string imgPath, int size, string memberName)
+        public static string GetLocalAvatar(string imgPath, int minSize, string memberName)
         {
-            return string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" alt=\"{2}\" />", imgPath, size, memberName);
+            return string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />",
+             imgPath, minSize, (minSize * 2), (minSize * 3), memberName);
         }
     }
 

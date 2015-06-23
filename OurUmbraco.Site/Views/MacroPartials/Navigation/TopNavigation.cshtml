@@ -1,8 +1,15 @@
+@using System.Drawing
+@using our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
     @* Get the root of the website *@
     var root = CurrentPage.AncestorOrSelf(1);
+    Image avatarImage = null;
+    if (Members.IsLoggedIn())
+    {
+        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+    }
 }
 
 <ul>
@@ -19,6 +26,10 @@
             var member = Members.GetCurrentMember();
             <div class="user">
                 @Html.Raw(our.Utils.GetMemberAvatar(member, 40))
+                @if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+                {
+                    <span class="notificationCount">1</span>
+                }
             </div>
         }
         else

@@ -14,18 +14,22 @@
 
 @if (showNotification)
 {
-    <div class="alertbar__blue">
+    <div class="alertbar__yellow">
         @Html.Raw(notificationText)
     </div>
 }
-
-@*
-    @if (Request.Cookies["dismissAvatar"] == null && CurrentPage.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
-    {
-        <div class="alertbar__blue avatarTooSmall">
-          Your profile image is a little on the small side, it would look<br />
-          much nicer if you could <a href="/member/profile">update it to be at least 400x400pixels</a>!<br/>
-          <span style="font-size: 0.8em; color: gray; padding-top: 4px; display: inline-block;">Neh, I like my blurry avatar, <a class="dismisAvatar" href="#">stop notifying me</a> please.</span>
+    
+@if (Request.Cookies["dismissAvatar"] == null && CurrentPage.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+{
+    <div class="notification__blue avatarTooSmall">
+        <div class="message text-center">
+            <p>
+                Your profile picture is a little on the small side, it would look <strong>much nicer</strong> if you <a href="/member/profile">could update it to be larger image.</a>
+            </p>
         </div>
-    }
-*@
+        <div class="close-notification">
+            <i class="icon-Delete dismisAvatar"></i><span style="font-size: 0.7em;" class="dismisAvatar">Neh, I like my blurry avatar!</span>
+        </div>
+
+    </div>
+}

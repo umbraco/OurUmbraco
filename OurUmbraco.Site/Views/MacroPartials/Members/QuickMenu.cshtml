@@ -1,9 +1,15 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@using System.Drawing
+@using our
 @using uForum
 @using uForum.Services
 @{
-
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    Image avatarImage = null;
+    if (Members.IsLoggedIn())
+    {
+        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+    }
 }
 <div class="quick-menu">
     <div class="container">
@@ -63,7 +69,24 @@
                         </div>
                     </div>
 
+                    if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+                    {
+                        <small>Notifications</small>
 
+                        <a href="/member/profile" class="forum-thread">
+                            <div class="row">
+                                <div class="col-xs-10 col-md-8">
+                                    <div class="forum-thread-text">
+                                        <h3>Your profile picture is a little on the small side.</h3>
+                                        <p>
+                                            It would look <strong>much nicer</strong> if you could update it to be larger image.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                    
                     <small>
                         Activity in threads you participated in
                     </small>
@@ -83,14 +106,14 @@
                                                 <h3>@topic.Title</h3>
                                                 <p>
                                                     @{
-                                                        if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                                        {
-                                                            <text>last edited by @topic.LastReplyAuthorName</text>
-                                                        }
-                                                        else
-                                                        {
-                                                            <text>created by @topic.AuthorName</text>
-                                                        }
+                                if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                {
+                                    <text>last edited by @topic.LastReplyAuthorName</text>
+                                }
+                                else
+                                {
+                                    <text>created by @topic.AuthorName</text>
+                                }
                                                     }  @topic.Updated.ConvertToRelativeTime()
                                                 </p>
                                             </div>
