@@ -1,0 +1,48 @@
+.span {
+    width: 60px;
+    background-color: rgba($color-our, 0.5);
+    height: 60px;
+    border-radius: 3px;
+    position: relative;
+}
+
+
+#posting {
+    position: absolute;
+    top: 0;
+    width: 140px;
+    background-color: rgba(74, 174, 78, 1);
+    height: 36px;
+    border-radius: 3px;
+    display: none;  
+}
+
+
+.loader {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    animation: typing 1s linear infinite alternate;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-250%, -50%);
+}
+
+
+@keyframes typing {
+    0%{
+        background-color: rgba(#fff, 1);
+        box-shadow: 12px 0px 0px 0px rgba(#fff, .4), 
+                    24px 0px 0px 0px rgba(#fff, .4);
+      }
+    25%{ 
+        background-color: rgba(#fff , 0.4);
+        box-shadow: 12px 0px 0px 0px rgba(#fff, .2), 
+                    24px 0px 0px 0px rgba(#fff, .4);
+    }
+    75%{ background-color: rgba(#fff , 0.4);
+        box-shadow: 12px 0px 0px 0px rgba(#fff, .4), 
+                    24px 0px 0px 0px rgba(#fff, 1);
+      }
+}

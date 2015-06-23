@@ -1,0 +1,40 @@
+.alertbar {
+	background: #f4ebba;
+	text-align: center;
+	border: none !important;
+
+	padding: 20px;
+
+	@include colorset(alertbar);
+
+	h1, h2, h3 {
+		margin-bottom: .8rem;
+	}
+
+	h1 {
+		font-size: 1.7rem;
+	}
+
+	h2 {
+		font-size: 1.3rem;
+	}
+
+	h3 {
+		font-size: 1rem;
+	}
+
+	p {
+		font-size: .95rem;
+
+		a {
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
+
+	img {
+		max-width: 100%;
+		height: auto;
+	}
+}

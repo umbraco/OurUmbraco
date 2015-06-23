@@ -1,0 +1,352 @@
+body.quickmenu {
+	overflow: hidden;
+	max-height: 100%;
+}
+
+.quick-menu {
+	width: 100%;
+
+	position: fixed;
+	right: 0;
+	top: 0;
+
+	height: auto;
+	z-index: 999;
+	visibility: hidden;
+	transform: translateX(100%);
+	overflow-y: scroll;
+	height: 100%;
+	background: rgba(#fff, 1);
+	box-shadow: 0 3px 6px rgba(#000, .08), 0 3px 6px rgba(#000, .12);
+	@include transition(all, .3s);
+
+	@media (min-width: $md) {
+		width: 450px;
+		min-height: 100%;
+		transform: translateX(450px);
+	}
+
+
+	
+	> .container {
+		padding-bottom: 30px;
+	}
+
+
+	.user-image {
+		img {
+			border-radius: 50%;
+			display: block;
+			margin: 30px auto;
+			max-width: 128px;
+			height: auto;
+		}
+	}
+
+
+
+	.close {
+		left: 15px;
+		cursor: pointer;
+		font-size: .9rem;
+		color: darken($color-space, 15%);
+
+		&:hover {
+			color: $color-space;
+		}
+
+		i {
+			position: relative;
+			top: 3px;
+			font-size: 1rem;
+			margin-right: 3px;
+		}
+	}
+
+
+
+	.settings {
+		right: 15px;
+
+		a {
+			font-size: .9rem;
+			text-decoration: none;
+			color: darken($color-space, 15%);
+		}
+
+		i {
+			position: relative;
+			top: 3px;
+			font-size: 1rem;
+			margin-right: 5px;
+		}
+
+		&:hover {
+			a {
+				color: $color-space;
+			}
+		}
+	}
+
+
+
+	.close, .settings {
+		transition: color .2s $cubicSearch;
+		position: absolute;
+		top: -3px;
+
+		@media (min-width: $md) {
+			top: 3px;
+		}
+	}
+
+
+
+	.user-profile {
+		text-align: center;
+		margin: 0 auto 30px;
+
+
+
+		h2 {
+			font-size: 1.3rem;
+			margin-bottom: .5rem;
+		}
+
+
+
+		.karma {
+			display: inline-block;
+			font-size: .9rem;
+			color: darken($color-space, 15%);
+
+			&:before {
+				content:"Karma";
+				display: inline-block;
+				padding: 0 2px 0 0;
+				transform: translateY(-1px);
+			}
+
+			&:after {
+				content:"-";
+				display: inline-block;
+				padding: 0 1px;
+			}
+		}
+
+
+
+		.user-twitter {
+			display: inline-block;
+			font-size: .9rem;
+			color: darken($color-space, 15%);
+
+			a {
+				border-bottom: 1px solid rgba(#000, .6);
+				padding-bottom: 1px;
+				text-decoration: none;
+				@include transition(all, .2s);
+
+				&:hover {
+					padding-bottom: 3px;
+					color: $color-space;
+				}
+			}
+		}
+
+		.roles {
+			display: block;
+			margin-top: 1rem;
+
+			span {
+				font-size: .8rem;
+			}
+		}
+	}
+	
+	.log-out {
+		margin-top: 20px;
+		a {
+			font-size: .8rem;
+		}
+	}
+
+
+	small {
+		font-size: .9rem;
+		color: #4f5f63;
+		text-transform: uppercase;
+		font-weight: 700;
+		letter-spacing: .2px;
+		display: block;
+		margin-bottom: .5rem;
+	}
+
+
+	.forum-thread, .user-notification {
+		border: 1px solid darken(whitesmoke, 8%);
+		margin-bottom: 10px;
+		padding: 15px;
+		margin-top: 0;
+
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+
+		text-decoration: none;
+
+
+
+		&-text {
+			margin-top: 0;
+			margin-right: 5%;
+			flex: 1 0 60%;
+
+			h3 {
+				font-size: .9rem;
+			}
+		}
+
+
+		.cat {
+			flex: 1 0 30%;
+			font-size: .8rem;
+			margin: 0;
+		}
+	}
+
+
+
+	.user-notifications {
+		margin-bottom: 2rem;
+	}
+
+	.user-notification {
+		@include colorset(user-notification);
+
+		transition: all 250ms $cubicSearch;
+
+		&-text {
+			p {
+				font-size: .9rem;
+			}
+		}
+
+		&:hover {
+			@include box_shadow (2);
+		}
+	}
+
+
+	.login, .new-profile {
+		padding: 0 20px;
+		margin-top: 60px;
+
+		h2 {
+			margin-bottom: .8rem;
+			text-align: center;
+		}
+
+		small {
+			text-align: center;
+		}
+
+		label {
+			text-align: left;
+			font-size: .7rem;
+		}
+
+		input {
+			margin-bottom: 5px;
+			display: inline-block;
+			font-family: $font-family;
+		}
+
+		input[type=text], input[type=password] {
+			width: 95%;
+			padding: 10px 20px 10px 8px;
+			font-size: 1rem;
+			border: 1px solid darken(whitesmoke, 8%);
+			border-radius: 5px;
+		}
+
+		input[type=submit] {
+			margin: 1rem auto 2rem;
+			display: inline-block;
+			@extend .button; @extend .tiny; @extend .green;
+			padding: 15px 45px;
+			font-size: 1rem;
+		}
+
+		.buttons {
+			text-align: center;
+		}
+
+		small {
+			line-height: 1.3;
+		}
+
+		a {
+			&:hover {
+				text-decoration: none;
+			}
+		}
+
+	}
+
+	.oAuth {
+		text-align: center;
+		img {
+			display: inline-block;
+		}
+	}
+
+}
+
+.wrapper, .navigation {
+
+	&:after {
+		content:"";
+		position: absolute;
+		z-index: 998;
+		height: 100%;
+		width: 100%;
+		background: rgba(#000, .33);
+		top: 0;
+		left: 0;
+		visibility: hidden;
+		opacity: 0;
+		@include transition(opacity, .3s);
+	}
+}
+
+
+.wrapper {
+	transition: margin-left .3s, margin-right .3s;
+	position: relative;
+}
+
+
+
+body.quickmenu {
+
+	.wrapper, .navigation {
+		@media (min-width: $md) {
+			margin-left:-100px;
+			margin-right: 100px;
+			overflow: hidden;
+			max-height: 100vh;
+
+			&:after {
+				visibility: visible;
+				opacity: 1;
+			}
+
+		}
+	}
+
+	.quick-menu {
+		transform: translateX(0px);
+		visibility: visible;
+	}
+}
