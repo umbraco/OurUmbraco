@@ -21,7 +21,8 @@
     "gulp-ruby-sass": "0.5.x",
     "gulp-minify-css": "0.3.x",
     "gulp-clean": "0.3.x",
-    "gulp-svgmin": "0.4.x"
+    "gulp-svgmin": "0.4.x",
+    "gulp-rename": "1.2.x"
   },
   "scripts": {
     "test": "gulp build --verbose"
