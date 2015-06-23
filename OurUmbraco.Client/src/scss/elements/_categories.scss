@@ -12,6 +12,13 @@
 		text-transform: capitalize;
 		@include transition(background, .2s);
 
+		background: #4ea7ff;
+		color: #fff;
+
+		&:hover {
+			background: lighten(#4ea7ff, 5%);
+		}
+
 		@media (min-width: $md) {
 			padding: 4px 6px;
 			font-size: .85rem;
@@ -20,12 +27,11 @@
 
 	&.default {
 		a, span.cat {
-			background: transparent;
-			border: 1px solid #cbcbcb;
-			color: darken(#cbcbcb, 10%);
+			background: #4ea7ff;
+			color: #fff;
 
 			&:hover {
-				color: darken(#cbcbcb, 20%);
+				background: lighten(#4ea7ff, 5%);
 			}
 		}
 	}
