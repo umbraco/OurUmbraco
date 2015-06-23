@@ -68,6 +68,9 @@
 
 			<div class="col-md-12">
 				<h1 class="text-center">Forum Activity</h1>
+                <p>
+				    Recent activity in the forums, where people are helping each other with current problems.
+				</p>
 			</div>
             <div class="col-md-12">
                 <small>Recent posts</small>
