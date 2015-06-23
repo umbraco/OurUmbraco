@@ -55,6 +55,9 @@ gulp.task('js', function() {
 gulp.task('css', function () {
     gulp.src(settings.source + '/scss/*.scss')
         .pipe(sass())
+		.on('error', gutil.log)
+		.pipe(autoprefixer('last 1 version', 'ie 9', 'ios 7'))
+		.pipe(cmq({log: true}))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifyCss())
         .pipe(gulp.dest(settings.build + '/assets/css'))
