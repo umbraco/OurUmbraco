@@ -38,14 +38,14 @@ namespace uEvents.Library
         public static XPathNodeIterator UpcomingEvents()
         {
             int contentType = DocumentType.GetByAlias("Event").Id;
-            string property = "start";
+            string property = "end";
             
             string sql = string.Format(@"SELECT distinct contentNodeId from cmsPropertyData
             inner join cmsPropertyType ON 
             cmspropertytype.contenttypeid = {0} and
             cmspropertytype.Alias = '{1}' and
             cmspropertytype.id = cmspropertydata.propertytypeid
-            where dataDate > GETDATE()", contentType, property);
+            where dataDate > DATEADD(day,-1,GETDATE())", contentType, property);
 
             ISqlHelper sqlhelper = umbraco.BusinessLogic.Application.SqlHelper;
             IRecordsReader rr = sqlhelper.ExecuteReader(sql);
