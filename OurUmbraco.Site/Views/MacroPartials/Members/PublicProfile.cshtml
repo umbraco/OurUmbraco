@@ -90,28 +90,29 @@
                             @foreach (var topic in topics)
                             {
                                 var cat = Umbraco.TypedContent(topic.ParentId);
-                                var mem = Members.GetById(topic.LatestReplyAuthor);
-                                if (mem == null)
+                                // if cat == null then it's been hidden/unpublished (example: v5 forum)
+                                // if this is the case: don't show forum post in list
+                                if (cat != null)
                                 {
-                                    mem = Members.GetById(topic.MemberId);
-                                }
+                                    var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
 
-                                <a href="@topic.GetUrl()" class="forum-thread">
-                                    <div class="row flex-center">
-                                        <div class="col-xs-2">
-                                            @Html.Raw(our.Utils.GetMemberAvatar(mem, 79))
-                                        </div>
-                                        <div class="col-xs-10">
-                                            <div class="forum-thread-text">
-                                                <h3>@topic.Title</h3>
-                                                <p>Reply by @mem.Name @topic.Updated.ConvertToRelativeTime()</p>
+                                    <a href="@topic.GetUrl()" class="forum-thread">
+                                        <div class="row flex-center">
+                                            <div class="col-xs-2">
+                                                @Html.Raw(our.Utils.GetMemberAvatar(mem, 79))
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@topic.Title</h3>
+                                                    <p>Reply by @mem.Name @topic.Updated.ConvertToRelativeTime()</p>
+                                                </div>
+
+                                                <div class="category frontend"><span class="cat">@cat.Name</span></div>
                                             </div>
 
-                                            <div class="category frontend"><span class="cat">@cat.Name</span></div>
                                         </div>
-
-                                    </div>
-                                </a>
+                                    </a>
+                                }
                             }
                             <a class="goto" href="/forum">Go to forum &rarr;</a>
                         </div>
@@ -183,7 +184,6 @@
                         </div>
                     </div>
                 }
-
             </div>
         </div>
     </div> <!-- .public-member -->
