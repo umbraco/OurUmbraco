@@ -1,0 +1,100 @@
+.map {
+	header {
+		background: transparent !important;
+	}
+
+	.container {
+		position: relative;
+		z-index: 200;
+	}
+
+	+ div {
+		margin-top: 15px;
+	}
+
+	nav {
+		a, a:visited, a:active {
+			text-decoration: none;
+			color: rgba(#fff, .6);
+			@include transition(color, .2s);
+
+			&:hover {
+				color: rgba(#fff, 1);
+			}
+		}
+	}
+
+	.event-map {
+		position: relative;
+		padding-top: 0 !important;
+		min-height: 200px;
+
+		@media (min-width: $md) {
+		
+			min-height: 500px;
+		}
+	}
+
+	#map {
+		height: 200px;
+	    
+	    @media (min-width: $md) {
+	    	height: 500px;
+	    }
+	}
+
+	.col-md-4 {
+		margin-bottom: 40px;
+
+		@media (min-width: $md) {
+			margin-bottom: 0;
+		}
+	}
+
+	.people {
+		border-bottom: 1px solid whitesmoke;
+		padding: 30px 0;
+
+		.teaser {
+			max-width: 640px;
+			margin: 0 auto;
+
+			h1 {
+				margin-bottom: 1rem;
+			}
+
+			p + p {
+				margin-top: 30px;
+			}
+
+			strong {
+				font-size: 1.2rem;
+			}
+		}
+	}
+
+	.people-activity {
+		background: whitesmoke;
+		padding: 30px 0;
+
+		strong {
+			margin-bottom: .3rem;
+			display: block;
+			font-size: 1.6rem;
+
+			@media (min-width: $md) {
+				font-size: 1.2rem;
+			}
+		}
+
+		img {
+			max-height: 66px;
+			width: auto;
+		}
+
+		.person-activity-text {
+			margin-top: 8px;
+		}
+	}
+}
+

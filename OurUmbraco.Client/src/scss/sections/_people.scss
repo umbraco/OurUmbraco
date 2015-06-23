@@ -1,0 +1,203 @@
+.people,
+.leaderboard {
+	position: relative;
+	overflow: hidden;
+
+	.user-profile {
+		width: 100%;
+		max-width: 68px;
+		margin: 0 auto;
+		height: auto;
+		border-radius: 50%;
+		position: relative;
+		@include transition(box-shadow, .2s);
+
+		&:hover {
+			@extend .BoxShadow;
+		}
+	}
+
+	h1, p {
+		text-align: center;
+		position: relative;
+		z-index: 30;
+	}
+
+	h1 {
+		font-size: 1.8rem;
+
+		@media (min-width: $md) {
+			font-size: 2.4rem;
+		}
+	}
+
+	p {
+		max-width: 700px;
+		margin: 1rem auto 2.5rem;
+		margin-bottom: 3rem;
+		padding: 0 10px;
+
+		font-size: 1rem;
+		color: darken($color-space, 15%);
+
+		@media (min-width: $md) {
+			padding: 0;
+			font-size: 1.2rem;
+		}
+	}
+
+	.button {
+		margin: 3rem auto 0;
+
+		@media (min-width: $md) {
+			font-size: 1.2rem;
+		}
+	}
+}
+
+
+
+.people {
+	text-align: center;
+	background: rgba($color-space, .11);
+	
+	.container {
+		max-width: 1400px;
+		position: relative;
+		z-index: 30;
+	}
+
+	div[class^="col-"] {
+		margin-bottom: 15px;
+	}
+}
+
+
+
+.leaderboard {
+	text-align: center;
+
+	div[data-attr="weeks"],
+	div[data-attr="alltime"] {
+		position: relative;
+		z-index: 30;
+
+		@media (min-width: $md) {
+			margin: 2rem 0;
+		}
+	} 
+
+	div[data-attr="weeks"] {
+		text-align: left;
+
+		strong, .profile {
+			padding-left: .5rem;
+		}
+
+		.meta {
+			margin-left: 4%;
+		}
+	}
+
+
+	div[data-attr="alltime"] {
+		margin-bottom: 3rem;
+		text-align: left;
+
+		strong, .profile {
+			padding-left: .5rem;
+		}
+
+		.meta {
+			margin-left: 4%;
+		}
+
+		@media (min-width: $md) {
+			margin-bottom: 0;
+			text-align: right;
+
+			strong, .profile {
+				padding-left: 0;
+				padding-right: .5rem;
+			}
+
+			.profile {
+				flex-direction: row-reverse;
+
+				.meta {
+					margin-left: 0;
+					margin-right: 4%;
+				}
+			}
+
+		}
+	}
+
+
+
+	a {
+		text-decoration: none;
+		padding: 15px 0;
+
+		&:hover {
+			background: rgba($color-space, .11);
+		}
+	}
+
+	strong {
+		font-size: 1rem;
+		color: $color-pink;
+		text-transform: uppercase;
+		font-weight: 700;
+		letter-spacing: .5px;
+		
+		display: block;
+	}
+
+	.profile {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+
+		&:last-of-type {
+			margin: 0;
+		}
+	}
+
+
+	.avatar {
+		flex: 0 0 20%;
+
+		@media (min-width: $md) {
+			flex: 0 0 10%;
+		}
+	}
+
+
+	.meta {
+		flex: 0 0 76%;
+
+		@media (min-width: $md) {
+			flex: 0 0 86%;
+		}
+
+		.name {
+			padding-left: 0;
+			margin-bottom: .4rem;
+			font-size: 1rem;
+
+			@media (min-width: $md) {
+				font-size: 1.2rem;
+			}
+		}
+
+		small {
+			font-size: .95rem;
+			color: darken($color-space, 10%);
+
+			span {
+				color: darken($color-space, 20%);
+			}
+		}
+	}
+}

@@ -1,0 +1,23 @@
+.frontpage, .community-page {
+	.docs, .forum {
+		.button {
+			&.transparent {
+				float: none;
+				font-size: .9rem;
+				padding: 12px 14px;
+				@include transition(all, .2s);
+
+				&:hover {
+					background: $color-green;
+					color: #fff;
+					opacity: 1;
+					border-color: $color-green;
+				}
+
+				&.ink {
+					background: rgba(#fff, .3);
+				}
+			}
+		}
+	}
+}

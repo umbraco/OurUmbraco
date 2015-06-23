@@ -1,0 +1,91 @@
+.category, .version {
+	display: inline-block;
+	margin: 0;
+
+	a, span.cat {
+		display: inline-block;
+		font-weight: bold;
+		border-radius: 2px;
+		font-size: .70rem;
+		padding: 3px 5px;
+		text-decoration: none;
+		text-transform: capitalize;
+		@include transition(background, .2s);
+
+		@media (min-width: $md) {
+			padding: 4px 6px;
+			font-size: .85rem;
+		}
+	}
+
+	&.default {
+		a, span.cat {
+			background: transparent;
+			border: 1px solid #cbcbcb;
+			color: darken(#cbcbcb, 10%);
+
+			&:hover {
+				color: darken(#cbcbcb, 20%);
+			}
+		}
+	}
+
+	&.frontend {
+		a, span.cat {
+			background: #4ea7ff;
+			color: #fff;
+
+			&:hover {
+				background: lighten(#4ea7ff, 5%);
+			}
+		}
+	}
+
+	&.core {
+		a, span.cat {
+			background: #ff661b;
+			color: #fff;
+
+			&:hover {
+				background: lighten(#ff661b, 5%);
+			}
+		}
+	}
+
+	&.azure {
+		a, span.cat {
+			background: #1ed45c;
+			color: #fff;
+
+			&:hover {
+				background: lighten(#1ed45c, 5%);
+			}
+		}
+	}
+}
+
+
+
+.version {
+	a, span.cat {
+		background: #cbcbcb;
+		color: lighten(#cbcbcb, 20%);
+
+		&:hover {
+			background: lighten(#cbcbcb, 5%);
+		}
+	}
+
+	&.default {
+		a, span.cat {
+			background: transparent;
+			border: 1px solid #cbcbcb;
+			color: darken(#cbcbcb, 10%);
+
+			&:hover {
+				color: darken(#cbcbcb, 20%);
+				background: transparent;
+			}
+		}
+	}
+}

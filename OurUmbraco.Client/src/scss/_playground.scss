@@ -1,0 +1,190 @@
+html, body {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	-webkit-text-size-adjust: none;
+	overflow-x: hidden;
+	min-height: 100%;
+	// height: 100%;
+	// -webkit-overflow-scrolling: touch;
+}
+
+body {
+	font-family: $font-family;
+	position: relative;
+	font-size: 16px;
+	width: 100%;
+}
+
+
+// Link and buttons
+a, a:visited, a:active {
+	color: inherit;
+}
+
+
+// Typography
+p, li {
+	line-height: 1.3;
+	font-size: 1rem;
+	font-weight: 400;
+}
+
+
+// Element based
+section {
+	padding: 20px 0;
+
+	@media (min-width: $md) {
+		padding: 80px 0;
+	}
+}
+
+.user {
+	position: relative;
+}
+
+
+.unread {
+	border-left: 3px solid $color-our;
+}
+
+
+.user-logged-in {
+
+	.search-all {
+
+		.search-all-form {
+			margin-top: 0;
+		}
+	}
+
+	.search-text {
+		padding: 2.2em 0 1rem !important;
+
+		p {
+			display: none;
+		}
+	}
+
+	section.forum {
+		padding: 30px 0;
+		min-height: 0;
+		&:before {
+			display: none;
+		}
+	}
+}
+
+
+// new header shit!
+.search-all {
+	background: $color-our;
+
+	.search-text {
+		padding: 1rem 0 3rem;
+
+		strong {
+			font-size: 1.2rem;
+			margin: 0 0 .8rem;
+			display: block;
+			color: rgba(#fff, 1);
+		}
+
+		p {
+			color: rgba(#fff, 1);
+		}
+	}
+
+	input {
+		-webkit-appearance: none;
+		border-radius: 0;
+	}
+}
+
+
+// Crap
+.loader-placeholder {
+	margin: 30px auto;
+	width: 100%;
+
+	.span {
+		margin: 0 auto;
+	}
+}
+
+.login {
+	h2 {
+		margin-bottom: .8rem;
+		text-align: center;
+		font-size: 1.5rem;
+		color: rgba(#000, .8);
+	}
+
+	p {
+		font-size: .95rem;
+		color: $color-text;
+
+		a {
+			text-decoration: underline !important;
+			
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
+}
+
+#registrationForm {
+	padding: 0;
+
+	fieldset {
+		max-width: 640px;
+
+		p {
+			display: block;
+			margin-left: 0;
+		}
+	}
+
+	label {
+		text-align: left;
+		font-size: .85rem;
+	}
+
+	input {
+		margin-bottom: 5px;
+		display: inline-block;
+		font-family: $font-family;
+	}
+
+	input[type=text], input[type=password] {
+		width: 100%;
+		padding: 10px 20px 10px 8px;
+		font-size: 1rem;
+		border: 1px solid darken(whitesmoke, 8%);
+		border-radius: 5px;
+	}
+
+	input[type=submit] {
+		margin: 1rem auto 1rem;
+		display: inline-block;
+		@extend .button; @extend .tiny; @extend .green;
+		padding: 15px 45px !important;
+		font-size: 1rem !important;
+	}
+
+	p {
+		display: inline-block;
+		font-size: .9rem;
+
+		@media (min-width: $md) {
+			margin-left: .5rem;
+		}
+
+		a {
+			&:hover {
+				text-decoration: none !important;
+			}
+		}
+	}
+}

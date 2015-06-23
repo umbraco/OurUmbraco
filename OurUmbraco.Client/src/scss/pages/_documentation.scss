@@ -1,0 +1,393 @@
+// Variables
+$docs-color: $color-our;
+
+.documentation {
+    padding: 0;
+ 
+
+    > .container {
+        position: relative;
+    }
+
+
+    #body a {
+        color: darken($color-our, 20%);
+    
+
+        &:hover {
+            text-decoration: underline;
+        }
+
+
+        &.active h3 {
+            color: darken($color-our, 10%) !important;
+        }
+    }
+
+
+    .search-big {
+        margin-bottom: 0;
+        margin-top: 20px;
+    }
+}
+
+
+
+
+// Documentation frontpage
+.docs-overview {
+    text-align: center;
+
+    
+    h1 {
+        font-size: 3rem;
+        font-weight: 100;
+        color: $color-headline;
+    }
+
+
+    .docs-section {
+        display: inline-block;
+        max-width: 400px;
+        text-align: center;
+        color: #000;
+        transition: all .1s $cubicSearch;
+
+
+        img {
+            text-align: center;
+            opacity: .8;
+            transform: scale(.95);
+            transition: all .1s linear;
+        }
+
+
+        h2, p {
+            transition: all .1s linear;
+        }
+        
+
+        h2 {
+            font-weight: 100;
+            color: $color-headline;
+            margin-bottom: 1rem;
+        }
+        
+        
+        p {
+            text-align: center;
+            color: $color-text;
+        }
+
+        
+        &:hover {
+            cursor: pointer;
+            
+            h2, p {
+                color: #000;
+            }
+
+            img {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    }
+
+    .contributing {
+       text-align: left;
+       margin-top: 2rem;
+
+        
+        h3 {
+            color: rgba(#000, .8);
+            font-size: 1rem;
+            margin-bottom: .5rem;
+        }
+
+       
+        p {
+            color: $color-text;
+            font-size: .9rem;
+            margin-top: 0;
+        }        
+    }
+
+
+    h3 {
+        font-weight: 100;
+        margin-top: 80px;
+    }
+}
+
+
+
+// Documentation markdown
+#markdown-docs {
+    
+    a {
+        color: darken($color-our, 20%);
+        text-decoration: none;
+
+        &:hover {
+            color: darken($color-our, 40%);
+        }
+    }
+
+    
+    
+    h1, h2, h3, h4, h5, h6 {
+    
+        
+        a {
+            color: #000;
+            text-decoration: underline;
+
+            &:hover {
+                color: #000;
+                text-decoration: none;
+            }
+        }
+    }
+    
+
+    @media (min-width: $md) {
+        
+        pre {
+          margin: 20px 0;
+        }   
+    }
+}
+
+
+
+// Section overview
+$color-overview: lighten($color-our, 20%);
+
+.dot {
+    display: block;
+    position: relative;
+    margin-top: 13px;
+    background-color: $color-overview;
+    border: solid 3px $color-overview;
+
+
+    .line {
+        display: block;
+        position: absolute;
+
+
+        &.h-line {
+            border-top: solid 3px $color-overview;
+
+            @media (max-width: $xs) {
+                display: none;
+            }
+        }
+
+
+        &.v-line {
+            border-left: solid 3px $color-overview;
+        }
+    }
+
+
+
+    &.big {
+        height: 60px;
+        width: 60px;
+        border-radius: 40px;
+        margin: 20px auto 100px;
+        font-size: 2rem;
+        line-height: 3.5rem;
+        text-indent: .7rem;
+        color: darken($color-our, 30%);
+
+
+        .h-line {
+            left: 50px;
+            top: 25px;
+            width: 70px;
+            height: 1px;
+            
+        }
+
+
+        .v-line {
+            left: 25px;
+            top: 57px;
+            width: 1px;
+            height: 100px;
+
+
+            &.top {
+                top: -80px;
+                height: 80px;
+            }
+        }
+    }
+
+
+
+    &.small {
+        height: 20px;
+        width: 20px;
+        border-radius: 30px;
+        margin: 0 auto 115px;
+
+
+        &.last {
+            margin-top: 60px;
+            margin-bottom: 5px;
+        }
+
+
+        .h-line {
+            left: 17px;
+            top: 7px;
+            width: 70px;
+            height: 1px;
+            border-width: 1px;
+        }
+
+
+        .v-line {
+            top: 17px;
+            left: 5px;
+            width: 1px;
+            height: 120px;
+
+
+            &.top {
+                height: 100px;
+                top: -90px;
+            }
+        }
+    }
+}
+
+
+
+.point {
+    position: absolute;
+    margin-left: 191px;
+    margin-top: 21px;
+    z-index: 100;
+
+
+    a {
+        color: #000 !important;
+    }
+
+
+    h4 {
+        font-size: 2rem;
+        margin-top: 13px;
+    }
+
+
+    small {
+        margin-bottom: 10px;
+        color: $color-text;
+        font-size: .9rem;
+        display: block;
+        line-height: 1.3;
+        padding-right: 5px;
+    }
+}
+
+
+
+.explain {
+
+
+    small {
+        margin-bottom: 10px;
+        color: $color-text;
+        font-size: .9rem;
+        display: block;
+        line-height: 1.3;
+        padding-right: 5px;
+    }
+
+
+    .col-xs-12 {
+        min-height: 153px;
+
+
+        h4 {
+            margin-top: 12px;
+            font-size: 2em;
+            margin-bottom: .3rem;
+            color: rgba(#000, .8);
+
+
+
+            a {
+                text-decoration: none;
+
+                &:hover {
+                    color: $color-our;
+                }
+            }
+        }
+    }
+
+
+
+    .col-xs-6 {
+        min-height: 133px;
+
+
+        h5 {
+            font-size: 1.1rem;
+            margin-bottom: .2rem;
+            font-weight: 600;
+            
+
+            a {
+                color: rgba(#000, .8);
+                text-decoration: none;
+
+
+                &:hover {
+                    color: $color-our;
+                }
+            }
+
+        }
+
+
+
+        & > a {
+            display: inline-block;
+            min-height: 150px;
+            padding: 5px;
+            color: white;
+
+
+            &:hover {
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+
+
+
+.umbracoVersion {
+    display: inline-block;
+    font-weight: 700;
+    border-radius: 2px;
+    font-size: .7rem;
+    padding: 3px 5px;
+    text-decoration: none;
+    text-transform: capitalize;
+    transition: background .2s;
+    padding: 4px 6px;
+    font-size: .85rem;
+    background: #4ea7ff;
+    color: #fff;
+    margin-top: 0px;
+}

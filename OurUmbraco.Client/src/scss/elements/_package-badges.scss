@@ -1,0 +1,64 @@
+.package-badge {
+	font-size: .7rem;
+	overflow: hidden;
+	font-weight: bold;
+	color: #fff;
+
+	span {
+		background: lighten(#343434, 8%);
+		background: linear-gradient(to bottom, rgba(#545454,1) 0%, rgba(#2f2f2f,1) 100%);
+		padding: 5px 7px;
+		margin: 0;
+		display: inline-block;
+		float: left;
+
+		&.package-name {
+			border-top-left-radius: 3px;
+			border-bottom-left-radius: 3px;
+		}
+
+		&.package-number {
+			background: $color-green;
+			background: linear-gradient(to bottom, rgba(lighten($color-green, 15%),1) 0%, rgba($color-green,1) 100%);
+			border-top-right-radius: 3px;
+			border-bottom-right-radius: 3px;
+		}
+	}
+
+	&.blue {
+		.package-number {
+			background: $color-blue;
+			background: linear-gradient(to bottom, rgba(lighten($color-blue, 15%),1) 0%, rgba($color-blue,1) 100%);
+		}
+	}
+
+	&.green {
+		.package-number {
+			background: $color-green;
+			background: linear-gradient(to bottom, rgba(lighten($color-green, 15%),1) 0%, rgba($color-green,1) 100%);
+		}
+	}
+
+	&.red {
+		.package-number {
+			background: $color-red;
+			background: linear-gradient(to bottom, rgba(lighten($color-red, 15%),1) 0%, rgba($color-red,1) 100%);
+		}
+	}
+
+	&.orange {
+		.package-number {
+			background: $color-orange;
+			background: linear-gradient(to bottom, rgba(lighten($color-orange, 15%),1) 0%, rgba($color-orange,1) 100%);
+		}
+	}
+
+	&.our {
+		.package-number {
+			background: $color-our;
+			background: linear-gradient(to bottom, rgba(lighten($color-our, 15%),1) 0%, rgba($color-our,1) 100%);
+
+			color: #000;
+		}
+	}
+}

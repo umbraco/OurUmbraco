@@ -1,0 +1,82 @@
+// pagination for profile
+.pagination {
+	margin-top: 60px;
+	margin-left: 10px;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	@media (min-width: $md) {
+		justify-content:flex-end;
+	}
+
+	a {
+		padding: 12px 16px;
+		border: 1px solid darken($color-light-grey, 25%);
+		border-radius: 3px;
+		background: #fff;
+		text-decoration: none;
+
+		display: inline-block;
+		margin-top: 5px;
+		margin-left: 5px;
+
+
+		font-size: .9rem;
+		font-weight: normal;
+		color: darken($color-light-grey, 25%);
+
+
+		@media (min-width: $md) {
+			padding: 6px 12px;
+		}
+
+
+		&:last-of-type, &:first-of-type {
+			margin-left: 0;
+		}
+
+
+		&:hover {
+			border-color: darken($color-light-grey, 50%);
+			color: darken($color-light-grey, 45%);
+		}
+
+		&.active {
+			background: $color-green;
+			color: #fff;
+			font-weight: bold;
+			border-color: $color-green;
+
+			&:hover {
+				cursor: default;
+			}
+		}
+	}
+
+	span {
+		margin: 0 8px;
+		font-size: 1.1rem;
+		letter-spacing: 1px;
+	}
+
+	.prev {
+		&:before {
+			font-weight: normal;
+		}
+	}
+
+	.next {
+		&:after {
+			font-weight: normal;
+		}
+	}
+
+	.next, .prev {
+		&:hover {
+			border-color: darken($color-light-grey, 45%);
+			color: darken($color-light-grey, 45%);
+		}
+	}
+}

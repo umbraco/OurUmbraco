@@ -1,0 +1,35 @@
+{
+  "name": "gulp-workflow",
+  "version": "1.1.0",
+  "description": "Umbraco Our gulpjs config",
+  "main": "gulpfile.js",
+  "private": true,
+  "dependencies": {
+  },
+  "devDependencies": {
+    "gulp": "3.8.x",
+    "gulp-util": "2.2.x",
+    "gulp-watch": "0.6.x",
+    "gulp-sass": "0.7.x",
+    "gulp-combine-media-queries": "0.1.x",
+    "gulp-imagemin": "0.6.x",
+    "gulp-autoprefixer": "2.3.1",
+    "gulp-uglify": "0.3.x",
+    "gulp-jshint": "1.6.x",
+    "gulp-concat": "2.2.x",
+    "jshint-stylish": "0.2.x",
+    "gulp-ruby-sass": "0.5.x",
+    "gulp-minify-css": "0.3.x",
+    "gulp-clean": "0.3.x",
+    "gulp-svgmin": "0.4.x"
+  },
+  "scripts": {
+    "test": "gulp build --verbose"
+  },
+  "author": "umbraco",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/devdk/gulp-workflow.git"
+  }
+}

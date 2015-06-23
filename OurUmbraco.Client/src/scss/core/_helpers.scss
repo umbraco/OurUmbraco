@@ -1,0 +1,263 @@
+// // // //
+// Variables
+// // // //
+
+	// Typography colors
+	$color-black: 		#000000;
+	$color-grey: 		#565656;
+	$color-light: 		#a9a9a9;
+	$color-white:		#ffffff;
+
+	$color-space: 		#7F9499;
+
+	// Element colors
+	$color-light-grey: 	#f1f1f1;
+	$color-blue:		#2f6bff;
+	$color-green:		#2EB369;
+	$color-turquoise: 	#43cfcf;
+	$color-orange: 		#EB7439;
+	$color-red:			#fe6561;
+	$color-pink:		#E13E8F;
+	$color-our-green:	#56f272;
+	$color-joker:		#a3db78;
+
+
+	$color-our: 		$color-joker;
+
+	$color-roles-purple: #df89ff;
+	$color-roles-orange: #e8b142;
+	$color-roles-blue:	 #5dacff;
+
+	$color-headline: 	 rgba(#000, .8);
+	$color-text: 		 rgba(#000, 1);
+	$color-text-hover: 	 rgba(#000, 1);
+
+	$color-markdown-bg:  #333;
+
+	// Font-family
+	$font-family:		'Asap', sans-serif;
+
+
+
+	// Font-sizes
+	$font-size-header:	1.6rem;
+	$font-size-big:		2rem;
+	$font-size-normal:	1rem;
+	$font-size-small:	.9rem;
+
+
+	// Font-weights
+	$font-weight-bold:	bold;
+
+
+
+	// Transitions
+	$cubicSearch	: cubic-bezier(0.7,0,0.3,1);
+
+	$easeExpo		: cubic-bezier(.0,.0,.22,.88);
+
+
+
+	// Breakpoints
+	$xs: 768px;
+	$md: 992px;
+
+
+
+// // // //
+// Helpers
+// // // //
+
+	// Image sizes (Avatar)
+	%small {
+		width: 40px;
+		height: auto;
+	}
+
+	%medium {
+		width: 58px;
+		height: auto;
+	}
+
+	%large {
+		width: 68px;
+		height: auto;
+	}
+
+	%huge {
+		width: 128px;
+		height: auto;
+	}
+
+	// Box shadow on hover
+	.BoxShadow {
+		box-shadow: 0 3px 6px rgba(#000, .16), 0 3px 6px rgba(#000, .23);
+	}
+
+	// New Box Shadow
+	@mixin box_shadow ($level) {
+	 
+	    @if $level == 1 {
+	        box-shadow: 0 1px 3px rgba(#000, .12), 0 1px 2px rgba(#000, .24);
+	    } @else if $level == 2 {
+	        box-shadow: 0 3px 6px rgba(#000, .16), 0 3px 6px rgba(#000, .23);
+	    } @else if $level == 3 {
+	        box-shadow: 0 10px 20px rgba(#000, .19), 0 6px 6px rgba(#000, .23);
+	    } @else if $level == 4 {
+	        box-shadow: 0 14px 28px rgba(#000, .25), 0 10px 10px rgba(#000, .22);
+	    } @else if $level == 5 {
+	        box-shadow: 0 19px 38px rgba(#000, .30), 0 15px 12px rgba(#000, .22);
+	    }
+	 
+	}
+
+
+	.text-center {
+		text-align: center;
+	}
+
+
+
+
+
+// // // //
+// Mixins
+// // // //
+
+
+
+
+	// Transitions
+	@mixin transition($type, $time) {
+		transition: $type $time;
+	}
+
+	@mixin transitionMultiple($args...) {
+		transition: $args $cubicSearch;
+	}
+
+	@mixin placeholder {
+	  ::-webkit-input-placeholder {@content};
+	  :-moz-placeholder           {@content};
+	  ::-moz-placeholder          {@content};
+	  :-ms-input-placeholder      {@content};
+	}
+
+
+
+
+	// Notifications
+	$color-notification-blue: 				#3894FF;
+	$color-notification-green: 				#1BFF79;
+	$color-notification-spaced: 			#383D43;
+	$color-notification-yellow: 			#fcf5e2;
+	$color-notification-red: 				#FC353A;
+
+
+
+	@mixin colorset($extend) {
+		
+
+
+		&__red {
+			@extend .#{$extend};
+
+			border: 1px solid darken($color-notification-red, 10%);
+			background: lighten($color-notification-red, 25%);
+			color: darken($color-notification-red, 45%);
+
+	        a, a:visited {
+	            text-decoration: underline;
+	            color: darken($color-notification-red, 45%);
+
+	            &:hover {
+	                text-decoration: none;
+	            }
+	        }
+
+	        .close-notification {
+	        	&:hover {
+	        		color: darken($color-notification-red, 25%);
+	        	}
+	        }
+		}
+
+
+
+
+		&__yellow {
+			@extend .#{$extend};
+			
+			border: 1px solid darken($color-notification-yellow, 10%);
+			background: darken($color-notification-yellow, 5%);
+			color: darken($color-notification-yellow, 60%);
+
+	        a, a:visited {
+	            text-decoration: underline;
+	            color: darken($color-notification-yellow, 60%);
+
+	            &:hover {
+	                text-decoration: none;
+	            }
+	        }
+
+	        .close-notification {
+	        	&:hover {
+	        		color: darken($color-notification-yellow, 30%);
+	        	}
+	        }
+		}
+
+
+
+
+		&__blue {
+			@extend .#{$extend};
+
+			border: 1px solid lighten($color-notification-blue, 10%);
+			background: lighten($color-notification-blue, 25%);
+			color: darken($color-notification-blue, 30%);
+
+	        a, a:visited {
+	            text-decoration: underline;
+	            color: darken($color-notification-blue, 30%);
+
+	            &:hover {
+	                text-decoration: none;
+	            }
+	        }
+
+	        .close-notification {
+	        	&:hover {
+	        		color: darken($color-notification-blue, 50%);
+	        	}
+	        }
+		}
+
+
+
+
+		&__green {
+			@extend .#{$extend};
+
+			border: 1px solid darken($color-notification-green, 10%);
+			background: lighten($color-notification-green, 25%);
+			color: darken($color-notification-green, 30%);
+
+	        a, a:visited {
+	            text-decoration: underline;
+	            color: darken($color-notification-green, 30%);
+
+	            &:hover {
+	                text-decoration: none;
+	            }
+	        }
+
+	        .close-notification {
+	        	&:hover {
+	        		color: darken($color-notification-green, 50%);
+	        	}
+			}
+		}
+		
+	}

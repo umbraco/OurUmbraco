@@ -1,0 +1,348 @@
+.download {
+
+
+	.dot.progress {
+	text-indent: .3rem;
+	text-align: center;
+	line-height: 2.8rem;
+
+
+		.counter {
+			font-size: 1.1rem;;
+		}
+	}
+
+
+	&.latest {
+
+
+		.dot {
+			margin-top: 2rem;
+		}
+	}
+}
+
+
+
+.explain {
+
+
+	.changes {
+		small {
+			line-height: .5rem;
+		}
+	}
+}
+
+
+
+.chart {
+	position: absolute;
+	top: -4px;
+	left: -8px;
+	z-index: 1;
+
+
+	.percentage {
+		display: inline-block;
+		position: absolute;
+		top: 9px;
+		left: 16px;
+		font-size: 1.1rem;
+        color: darken($color-our, 30%);
+	}
+
+
+	canvas {
+		top: 1px;
+		position: absolute;
+		left: 5px;
+	}
+
+}
+
+
+
+.get-release {
+
+
+	i {
+		font-size: 2.5rem;
+		line-height: 5rem;
+	}
+}
+
+
+
+.get-release {
+	line-height: 1.5;
+	padding: 2.5rem 0;
+	margin: 2.5rem 0;
+	border-bottom: 1px solid darken(whitesmoke, 5%);
+	border-top: 1px solid darken(whitesmoke, 5%);
+
+
+	h3 {
+		font-size: 1.1rem;
+		margin-bottom: .3rem;
+		color: $color-headline;
+
+
+		a {
+			text-decoration: none;
+
+
+			&:hover {
+				color: $color-our;
+			}
+		}
+	}
+
+
+	p {
+		color: $color-headline;
+		font-size: .95rem;
+		line-height: 1.3;
+		margin-bottom: .5rem;
+	}
+
+
+	small {
+		font-size: .7rem;
+		color: $color-text;
+	}
+}
+
+
+
+.release {
+	min-height: 160px;
+	
+
+	&.zip {
+	
+
+		i {
+			color: $color-headline;
+		}
+	}
+
+	
+	&.bin {
+	
+
+		i {
+			color: rgba(#000, .4);
+			font-size: 1.6rem;
+		}
+
+	
+		h4 {
+			font-size: .9rem;
+			margin-bottom: .3rem;
+			color: $color-headline;
+
+	
+			a {
+				text-decoration: none;
+
+	
+				&:hover {
+					color: $color-our;
+				}
+			}
+		}
+	
+	
+		&.col-sm-5 {
+			padding-top: 18px;
+		}
+	}
+
+
+	&.col-sm-1 {
+		text-align: center;
+	}
+}
+
+
+
+
+.latest {
+
+
+	.dot.big {
+		margin-bottom: 30px;
+	}
+
+
+	.explain {
+		
+
+		h4 {
+			font-size: 2.5rem;
+		}
+
+
+		p {
+			font-size: 1.1rem;
+			color: $color-text
+;
+		}
+
+		.col-xs-12 {
+			min-height: 0;
+		}
+	}
+}
+
+
+
+// Single release page
+.release{
+
+
+	.markdown-syntax {
+
+
+		p, li, ul, a {
+			color: $color-headline;
+			font-size: .95rem;
+		}
+
+
+		strong {
+			color: $color-headline;
+		}
+
+
+		a {
+			text-decoration: none;
+
+
+			&:hover {
+				text-decoration: underline;
+			}
+		}
+
+
+		p + p {
+			margin-bottom: 15px !important;
+		}
+
+
+		h1, h2, h3 {
+			color: $color-headline;
+		}
+
+
+		h1, {
+			font-size: 2rem;
+		}
+
+
+		h2 {
+			font-size: 1.3rem;
+		}
+
+
+		h3 {
+			font-size: 1.1rem;
+		}
+
+
+		ul li {
+			margin-bottom: .5rem;
+			line-height: 1.5;
+		}
+	}
+}
+.releaseTable {
+
+
+	.col-xs-3 {
+
+
+		&:first-child {
+			.progress {
+				.top {
+					display: none;
+				}
+			}
+		}
+
+
+		&:nth-last-child(2) {
+
+
+			.small:last-child {
+
+
+				.v-line {
+					display: none;
+				}
+			}
+		}
+	}
+}
+
+// Progress page
+.inprogress {
+
+	.dot.big.progress {
+		text-indent: 0;
+		border: none;
+
+		.v-line {
+			top: 60px;
+			left: 28px;
+
+			&.top {
+				top: -80px;
+			}
+		}
+
+		.h-line {
+		  top: 28px;
+		}
+
+	}
+
+
+	.chart {
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+		line-height: 3rem;
+
+		.percentage {
+			position: initial;
+		}
+
+		canvas {
+			top: 0;
+			left: 0;
+		}
+	}
+}
+
+// Roadmap page
+.plannedreleases {
+	.dot.big {
+		text-indent: 0;
+		line-height: 3rem;	
+	}
+	.chart {
+		top: 0px;
+		left: 0px;
+		width: 100%;
+		height: 100%;
+		text-align: center;
+
+		.percentage {
+			position: initial;
+		}
+	}
+}

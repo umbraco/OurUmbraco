@@ -1,0 +1,743 @@
+<!doctype html>
+<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+ <meta charset="utf-8">
+ <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+ 	
+ <title></title>
+ <meta name="description" content="">
+ <meta name="author" content="">
+
+ <meta name="robots" content="noindex">
+
+ <link href='http://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+ <link rel="stylesheet" href="assets/css/style.min.css" />
+
+ <!--[if lt IE 9]>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
+ <![endif]-->
+
+</head>
+<body class="map">
+
+<div class="quick-menu">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<div class="close">
+					<i class="icon-Delete"></i>Close
+				</div>
+
+				<div class="settings">
+					<a href="profile.html"><i class="icon-Settings"></i>Edit profile</a>
+				</div>
+
+				<div class="user-image">
+					<img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
+				</div>
+
+				<div class="user-profile">
+					<h2>Darth Vader</h2>
+					<div class="karma">
+						2410
+					</div>
+					<div class="user-twitter">
+						<a href="#">@darthvader</a>
+					</div>
+
+					<span class="roles">
+						<span class="core">core</span>
+						<span class="mvp">mvp</span>
+						<span class="admin">admin</span>
+						<span class="hq">hq</span>
+						<span class="c-trib">c-trib</span>
+					</span>
+				</div>
+
+				<small>
+					Activity in threads you participated in
+				</small>
+
+				<div class="user-latest-posts">
+
+					
+					<a href="forum-thread.html" class="forum-thread">
+						<div class="row">
+							<div class="col-xs-10 col-md-8">
+								<div class="forum-thread-text">
+									<h3>Allow user to change site design</h3>
+									<p>Reply by Dennis Aaen 7 minutes ago</p>
+								</div>
+							</div>
+
+							<div class="col-xs-2 col-md-4">
+								<div class="category frontend"><span class="cat">Frontend</span></div>
+							</div>
+
+						</div>
+					</a>
+
+					<a href="forum-thread.html" class="forum-thread">
+						<div class="row">
+							<div class="col-xs-10 col-md-8">
+								<div class="forum-thread-text">
+									<h3>Allow user to change site design</h3>
+									<p>Reply by Dennis Aaen 7 minutes ago</p>
+								</div>
+							</div>
+
+							<div class="col-xs-2 col-md-4">
+								<div class="category frontend"><span class="cat">Frontend</span></div>
+							</div>
+
+						</div>
+					</a>
+
+					<a href="forum-thread.html" class="forum-thread">
+						<div class="row">
+							<div class="col-xs-10 col-md-8">
+								<div class="forum-thread-text">
+									<h3>Allow user to change site design</h3>
+									<p>Reply by Dennis Aaen 7 minutes ago</p>
+								</div>
+							</div>
+
+							<div class="col-xs-2 col-md-4">
+								<div class="category frontend"><span class="cat">Frontend</span></div>
+							</div>
+
+						</div>
+					</a>
+
+				</div>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="wrapper">
+
+	<header>
+
+		<div class="navigation">
+			<div class="container">
+				<div class="row">
+				
+		 			<div class="col-md-3">
+		 				<a class="logo" href="index.html">
+		 					Our Umbraco
+		 				</a>
+		 			</div>
+
+		 			<nav class="col-md-9">
+		 				<ul>
+		 					<li><a href="forum.html">Forum</a></li>
+		 					<li><a href="#">Packages</a></li>
+		 					<li><a href="documentation.html">Docs</a></li>
+		 					<li><a href="#">Download</a></li>
+		 					<li><a href="#">Contribute</a></li>
+		 					<!-- <li><a href="#">Sign in</a></li> -->
+		 					<li>
+		 						<div class="user">
+		 							<img src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt="">
+		 						</div>
+		 					</li>
+		 				</ul>
+		 			</nav>
+
+				</div>
+			</div>
+		</div>
+
+	</header>
+
+	<div class="event-map">
+	     <div id="map" data-mapStyle="1"></div>
+	</div>
+
+
+	<div class="people">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-12">
+					<div class="teaser">
+						<h1>Find community members near you</h1>
+						<p>Umbraco users are located across the globe and around the corner from you. Sign in as an umbraco community member to find umbraco users near you.Follow community members online. Get help from knowledgeable users in your area. Suggest local umbraco meetups by contacting a community moderator.
+						</p>
+
+						<p><strong>Welcome to the friendliest community in the world.</strong></p>
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<div class="people-activity">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-4">
+					<div class="most-active-year">
+
+						<small>
+							Most active people the last 48 hours
+						</small>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+					</div>
+				</div>
+
+				<div class="col-md-4">
+					<div class="most-active-year">
+
+						<small>
+							Best rated members the last 4 weeks
+						</small>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 735karma points the last 4 weeks</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+					</div>
+				</div>
+
+				<div class="col-md-4">
+					<div class="most-active-month">
+
+						<small>
+							Best rated members the last year
+						</small>
+
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+
+						<a href="#" class="person-activity">
+							<div class="row">
+								<div class="col-xs-3">
+									<img src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt="">
+								</div>
+								<div class="col-xs-9">
+									<div class="person-activity-text">
+										<strong>Jan Skovgaard</strong>
+										<p>Received 5719karma points the last year</p>
+									</div>
+								</div>
+							</div>
+						</a>
+						
+					</div>
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+
+	<section class="people">
+		<div class="container">
+			<div class="row">
+
+				<div class="col-md-12">
+					<h1>People on Our</h1>
+					<p>Umbraco users are located across the globe and around the corner from you. Sign in as an umbraco community member to find umbraco users near you</p>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/enda/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/mghoz/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/pixeliris/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/andrewaashen/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/riklomas/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/alexcican/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/nettatheninja/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/scott_allison/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/enda/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/kevin_granger/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/juanpablob/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/steveodom/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/claynewton/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/raquelromanp/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/manugamero/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/nicolaballotta/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/stan/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/peejfancher/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/ffbel/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/anoff/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/joreira/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/adhamdannaway/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/idiot/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/mghoz/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/enda/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/andrewaashen/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/riklomas/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/alexcican/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/nettatheninja/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/scott_allison/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/enda/128.jpg" alt=""></a>
+				</div>
+
+				<div class="col-xs-3 col-md-1">
+					<a href="#"><img class=" user-profile" src="https://s3.amazonaws.com/uifaces/faces/twitter/kevin_granger/128.jpg" alt=""></a>
+				</div>
+
+				<a class="button green large" href="map.html">Sign up &rarr;</a>
+
+			</div>
+		</div>
+	</section>
+
+
+	<footer>
+		<div class="container">
+			<div class="row">
+
+				<div class="col-xs-12">
+					Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and the a ton of packages from the community.
+				</div>
+
+			</div>
+		</div>
+	</footer>
+
+</div> <!-- Wrapper end -->
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="//maps.googleapis.com/maps/api/js?sensor=false&extension=.js"></script>
+<script src="assets/js/app.min.js"></script>
+
+<script type="text/javascript">
+	classOnScroll('header', 'sticky', 10);
+</script>
+
+</body>
+</html>

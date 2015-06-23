@@ -1,0 +1,166 @@
+.overlay {
+	width: 100%;
+	position: fixed;
+	top:0;
+	left:0;
+	height: auto;
+	overflow-y: scroll;
+	height: 100%;
+	z-index: 850;
+	background-color: rgba(#000, .33);
+	visibility: hidden;
+	opacity: 0;
+	@include transition(opacity, .2s);
+	
+	.active & {
+		visibility: visible;
+		opacity: 1;
+	}
+}
+
+
+
+.copy-link-wrapper, .confirm-wrapper, #update-avatar-dialog {
+	z-index: 870;
+	padding: 2rem;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	width: 50%;
+	max-width: 500px;
+	min-width: 300px;
+	background-color: #fff;
+	border-radius: 2px;
+	transform: translateX(-50%) translateY(-50%);
+	@include transition(opacity, .2s);
+	clip:rect(1px 1px 1px 1px);
+	opacity: 0;
+	text-align: center;
+	top: -9999999px;
+	left: -9999999px;
+
+	i {
+		display: block;
+		font-size: 2rem;
+		color: $color-our;
+		margin-bottom: 1rem;
+	}
+
+	p {
+		margin-top: 1rem;
+		font-size: .85rem;
+		color: $color-text;
+	}
+
+	input, textarea {
+		background-color: #f3f3f3;
+		color: #454545;
+		border: 0;
+		font-size: 1rem;
+		padding: 1rem;
+		margin: 0;
+		width: 100%;
+		border-radius: 2px;
+		text-align: center;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		font-family: $font-family;
+	}
+
+	textarea {
+		outline: none;
+		resize: none;	
+		white-space: initial;
+		padding-bottom: 10px;	
+		&:focus {
+			outline: none;
+		}
+	}
+
+	.error {
+		text-align: center;
+		color: #E7483B;
+		display: block;
+		padding: .5rem;
+	}
+}
+
+.copy-link-wrapper {
+	.active.copy-prompt & {
+		clip: auto;
+		opacity: 1;
+		top: 50%;
+		left: 50%;
+	}
+}
+
+.confirm-wrapper {
+
+	max-width: 360px;
+	padding: 2.5rem;
+
+	h4 {
+		font-size: 1.5rem;
+	}
+
+	p {
+		margin-top: .5rem;
+	}
+
+	.active.confirm-prompt & {
+		clip: auto;
+		opacity: 1;
+		top: 50%;
+		left: 50%;
+	}
+}
+
+#update-avatar-dialog {
+	.active.uploading-image & {
+		clip: auto;
+		opacity: 1;
+		top: 50%;
+		left: 50%;
+	}
+	.invalid-file {
+		color: rgba(254, 101, 97, 0);
+		transition: color .4s ease-in;
+	}
+	&.invalid{
+		.invalid-file{
+			color: $color-red;
+		}
+	}
+	button {
+		margin-top: 15px;
+	}
+	.span {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: #E7E7E7;
+	}
+}
+
+#thankyou {
+	position: fixed;
+	transform: translateX(-50%) translateY(-50%);
+	top: -9999999px;
+	left: -9999999px;
+	font-size: 1rem;
+	background: rgba(#000, .8);
+	padding: 10px 15px;
+	border-radius: 6px;
+	z-index: 860;
+	color: #fff;
+	opacity: 0;
+	transition: opacity .4s ease-in;
+	&.active {
+		top: 50%;
+		left: 50%;
+		opacity: 1;
+	}
+}

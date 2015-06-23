@@ -1,0 +1,53 @@
+#breadcrumb {
+	padding: 10px 10px 10px 0;
+	transform: translate(0, 0);
+	margin: 0;
+	display: block;
+	width: 100%;
+
+	@media (min-width: $md) {
+		display: inline-block;
+		width: auto;
+	}
+
+		li {
+		display: inline-block;
+		list-style: none;
+
+			&:after {
+				content: "";
+				background: url('../images/breadcrumb.png');
+				background-repeat: no-repeat;
+				background-size: 16px 16px;
+				display: inline-block;
+				background-position: center bottom;
+				height: 20px;
+				width: 16px;
+				margin-left: 3px;
+				margin-right: 3px;
+				transform: translateY(4px);
+			}
+
+			a {
+				color: $color-text;
+				text-decoration: none;
+				font-size: .8rem;
+				@include transition(color, .1s);
+
+				&:hover {
+					color: $color-text-hover;
+					text-decoration: underline;
+				}
+			}
+
+		&:last-child {
+			a {
+				color: $color-text-hover;
+			}
+
+			&:after {
+				display: none;
+			}
+		}
+	}
+}

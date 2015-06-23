@@ -1,0 +1,213 @@
+$sb-desktop: 1200px;
+$sb-width: 30%;
+$sb-mobile-width: 40%;
+$sb-hd-width: 35%;
+$sb-retina-width: 40%;
+$main-width: 100% - $sb-width;
+
+html {
+    height: 100%;
+}
+
+
+.sidebarTitle {
+    margin: 1em 0 10px;
+    font-size: 2.1rem;
+}
+
+
+.has-sidebar, .projects-page{
+    
+    .page-content {
+        width: 100%;
+        display: table;
+        overflow: hidden;
+        height: auto;
+        @media (max-width:992px) {
+            display: block;
+            width: 100%;
+        }
+    }
+
+    .content-wrapper {
+        display: inline-block;
+        max-width: 100%;
+        text-align: left;
+        width: 100%;
+    }
+    
+    .sidebar-area {
+        display: table-cell;
+        vertical-align: top;
+        width:$sb-width;
+        background-color: lighten($color-our, 30%);
+        height: 100%;
+
+        @media (max-width:992px) {
+            display: block;
+            width:100%;
+            .sidebar-content {
+                max-width: none;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            width:$sb-hd-width;
+        }
+
+        @media (min-width: 2100px) {
+            width:$sb-retina-width;
+        }
+
+        .sidebar-content {
+            display: inline-block;
+            overflow: hidden;
+            width: 100%;
+            max-width: $sb-desktop / 100% * $sb-width;
+            text-align: center;
+
+            @media (min-width: $md) {
+                float: right;
+            }
+        }
+    }
+
+    .main-area {
+        width: 100% - $sb-width;
+        height: auto;
+        display: table-cell;
+        vertical-align: top;
+        padding-bottom: 200px;
+
+        @media (max-width:992px) {
+            
+            display: block;
+            width: 100%;
+
+            .main-content {
+                max-width: none;
+            }
+        }
+
+        @media (min-width: 1600px) {
+            width:100% - $sb-hd-width;
+        }
+
+        @media (min-width: 2100px) {
+            width:100% - $sb-retina-width;
+        }
+        
+        .main-content {
+            display: block;
+            width: 100%;   
+            padding-left: 20px;
+            padding-right: 20px;
+            max-width: $sb-desktop / 100% * $main-width + 40px;
+            text-align: center;
+            min-height: 600px;
+            // position: relative;
+            // top: 30px;
+
+            @media (min-width: $md) {
+                padding-left: 40px;
+                padding-right: 40px;
+                // top: 130px;
+            }
+        }
+    }
+}
+
+.sidebar-content {
+    nav {
+        margin: 0;
+        height: 100%;
+        z-index: 1;
+
+        @media (min-width: 993px) {
+            padding-top: 50px;
+            &.fixed {
+                position: fixed;
+                top:20px;
+            }
+        }
+
+        
+
+        @media screen and (max-width: 992px) {
+            position: relative;
+            &.fixed {
+                position: relative;
+            }
+        }
+
+        ul {
+            list-style: none;
+            margin-left: 5px;
+            padding-left: 10px;
+            transition: max-height 300ms ease-in-out;
+            li.active > a *{
+                color: darken($color-our, 20%);
+            }
+            li.open > ul {
+                max-height: 600px;
+            }
+            @media (max-width: 992px) {
+                padding-left: 0;
+                text-align: center;
+                margin-left: 0;
+            }
+            h3, h4, h5 {
+                margin-top: 10px;
+                margin-bottom: 5px;
+                font-weight: 400;
+
+            }
+            a {
+                display: inline-block;
+                text-decoration: none;
+            }
+        }
+
+        .level-1 {
+            h3 {
+                font-size: 1.1em;
+                color: $color-headline;
+                cursor: pointer;
+            }
+            @media (max-width: 992px) {
+                border-left: none; 
+                background-color: lighten($color-our,10%);
+                padding-top: 10px;
+                padding-bottom: 10px;
+            }
+        }
+
+        .level-2 {
+            overflow: hidden;
+            max-height: 0;
+            border-left:1px solid lighten($color-our,10%);
+            h4 {
+                font-size: .9em;
+                color: $color-headline;
+            }
+            @media (max-width: 992px) {
+                border-left: none;
+                background-color:  lighten($color-our,15%);
+            }
+        }
+
+        .level-3 {
+            overflow: hidden;
+            max-height: 0;
+            border-left:1px solid lighten($color-our,20%);
+            h5 {
+                font-size: 0.8em;
+                color: $color-headline;
+            }
+            @media (max-width: 992px) {
+                border-left: none;
+                background-color:  lighten($color-our,25%);
+            }
+        }
+    }
+} 

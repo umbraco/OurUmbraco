@@ -1,0 +1,29 @@
+.wrapper {
+	min-height: 100%;
+	margin-bottom: 0px; 
+
+	@media (min-width: $md) {
+		margin-bottom: 0px; 
+	}
+}
+
+footer,
+.wrapper:before {
+	height: 184px; 
+
+	@media (min-width: $md) {
+		height: 142px; 
+	}
+}
+
+footer {
+	background: #161616;
+	color: #fff;
+	padding: 30px 0;
+	font-size: .9rem;
+	text-align: center;
+	line-height: 1.5;
+
+	width: 100%;
+}
+

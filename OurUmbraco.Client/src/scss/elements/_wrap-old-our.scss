@@ -1,0 +1,20 @@
+.page, .subpage {
+	@extend .container;
+}
+
+// Contribute
+.projectGroups {
+	margin-top: 50px;
+	.projectGroup {
+		min-height: 150px;
+		h3 {
+			color: $color-headline;
+			font-size: 1.3rem;
+		}
+		p {
+			color: $color-text;
+			line-height: 1.5;
+			font-size: .97rem;
+		}
+	}
+}

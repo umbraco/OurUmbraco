@@ -4808,6 +4808,9 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <Target Name="BelleBuild" BeforeTargets="Rebuild">
+    <Exec WorkingDirectory="$(ProjectDir)\..\build\" Command="BuildClientFiles.bat" ConsoleToMSBuild="true" IgnoreExitCode="true" ContinueOnError="WarnAndContinue" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

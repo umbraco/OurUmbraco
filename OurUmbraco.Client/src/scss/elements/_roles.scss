@@ -1,0 +1,103 @@
+.roles {
+
+	@media (max-width: $md) {
+		display: block;
+		margin-top: .3rem;
+	}
+
+	span {
+		border: 2px solid $color-blue;
+		color: $color-blue;
+		font-size: .6rem;
+		font-weight: bold;
+		// border-radius: 3px;
+		padding: 2px 6px 2px;
+		display: inline-block;
+
+		&:hover {
+			cursor: default;
+		}
+
+		+ span {
+			margin-left: 5px;
+		}
+
+		&:first-child {
+			margin-left: 0;
+
+			@media (min-width: $md) {
+				margin-left: .3rem;
+			}
+		}
+
+		&.standard {
+			display: none;
+		}
+
+		&.hq {
+			border-color: $color-red;
+			color: $color-red;
+			text-transform: uppercase;
+
+			// &:hover {
+			// 	background-color: rgba($color-red, .1);
+			// }
+		}
+
+		&.admin {
+			border-color: $color-turquoise;
+			color: $color-turquoise;
+			text-transform: capitalize;
+
+			// &:hover {
+			// 	background-color: rgba($color-turquoise, .1);
+			// }
+		}
+
+		&.mvp {
+			border-color: $color-roles-purple;
+			color: $color-roles-purple;
+			text-transform: uppercase;
+
+			// &:hover {
+			// 	background-color: rgba($color-roles-purple, .1);
+			// }
+		}
+
+		&.core {
+			border-color: $color-roles-orange;
+			color: $color-roles-orange;
+			text-transform: capitalize;
+
+			// &:hover {
+			// 	background-color: rgba($color-roles-orange, .1);
+			// }
+		}
+
+		&.c-trib {
+			border-color: $color-roles-blue;
+			color: $color-roles-blue;
+			text-transform: capitalize;
+
+			// &:hover {
+			// 	background-color: rgba($color-roles-blue, .1);
+			// }
+		}
+
+		&.corecontrib {
+			@extend .c-trib;
+			visibility: hidden;
+			position: relative;
+			&:after {
+				visibility: visible;
+				position: absolute;
+				top: -2px;
+				left: -2px;
+				display: block;
+				content: "C-trib";
+				border: inherit;
+				padding: inherit;
+			}
+		}
+	}
+}
