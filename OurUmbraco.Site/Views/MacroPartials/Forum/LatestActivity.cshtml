@@ -14,7 +14,7 @@
 
 @helper Column(IEnumerable<uForum.Models.ReadOnlyTopic> topics)
 {
-    @foreach (var topic in topics.ToArray())
+    foreach (var topic in topics.ToArray())
     {
         var cat = Umbraco.TypedContent(topic.ParentId);
         var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
@@ -26,23 +26,22 @@
                     <div class="forum-thread-text">
                         <h3>@topic.Title</h3>
                         <p>
-                            @{
-        if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
-        {
-            <text>last edited by @topic.LastReplyAuthorName</text>
-        }
-        else
-        {
-            <text>created by @topic.AuthorName</text>
-        }
-                        }  @topic.Updated.ConvertToRelativeTime()
-                    </p>
+                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                            {
+                                <text>last edited by @topic.LastReplyAuthorName</text>
+                            }
+                            else
+                            {
+                                <text>created by @topic.AuthorName</text>
+                            }
+                            @topic.Updated.ConvertToRelativeTime()
+                        </p>
+                    </div>
+
+                    <div class="category"><span class="cat">@cat.Name</span></div>
                 </div>
 
-                <div class="category"><span class="cat">@cat.Name</span></div>
             </div>
-
-        </div>
-    </a>
+        </a>
     }
 }
