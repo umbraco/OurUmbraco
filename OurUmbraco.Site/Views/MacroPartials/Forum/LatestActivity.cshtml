@@ -5,28 +5,28 @@
     var ts = new uForum.Services.TopicService(ApplicationContext.DatabaseContext);
 }
 
-<div class="col-md-6">
-    @Column(ts.GetLatestTopics(3, 1))
-</div>
-<div class="col-md-6">
-    @Column(ts.GetLatestTopics(3, 2))
+<div class="col-md-12 flex">
+    @Column(ts.GetLatestTopics(6, 1))
 </div>
 
 @helper Column(IEnumerable<uForum.Models.ReadOnlyTopic> topics)
 {
-    @foreach (var topic in topics.ToArray())
+    foreach (var topic in topics.ToArray())
     {
         var cat = Umbraco.TypedContent(topic.ParentId);
         var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
 
         <a href="@topic.GetUrl()" class="forum-thread">
-            <div class="row flex-center">
-                <div class="col-xs-2">@Html.Raw(our.Utils.GetMemberAvatar(mem, 79))</div>
-                <div class="col-xs-10">
-                    <div class="forum-thread-text">
-                        <h3>@topic.Title</h3>
-                        <p>
-                            @{
+
+            <div class="avatar">
+                @Html.Raw(our.Utils.GetMemberAvatar(mem, 79))
+            </div>
+
+            <div class="meta">
+                <div class="forum-thread-text">
+                    <h3>@topic.Title</h3>
+                    <p>
+                        @{
         if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
         {
             <text>last edited by @topic.LastReplyAuthorName</text>
@@ -39,10 +39,10 @@
                     </p>
                 </div>
 
-                <div class="category"><span class="cat">@cat.Name</span></div>
+                <div class="category">
+                    <span class="cat">@cat.Name</span>
+                </div>
             </div>
-
-        </div>
-    </a>
+        </a>
     }
 }
