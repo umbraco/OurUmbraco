@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -9,6 +10,7 @@ using System.Web;
 using System.Web.Http;
 using Octokit;
 using our.Attributes;
+using uForum;
 using Umbraco.Core.Persistence.Querying;
 using Umbraco.Web.WebApi;
 
@@ -59,6 +61,12 @@ namespace our.Api
                     //As we found this member in a succesfull PR back to the Umbraco core
                     //Assign the member to the contributor group
                     memberService.AssignRole(gitHubMember.Id, "contributor-group");
+
+                    //Get appSetting value for karma amount
+                    var karmaToAward = Convert.ToInt32(ConfigurationManager.AppSettings["gitHubPullRequestKarma"]);
+
+                    //Award karma to member
+                    gitHubMember.IncreaseKarma(karmaToAward);
                 }
 
             }
