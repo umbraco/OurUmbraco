@@ -281,7 +281,7 @@
 
 					@media (min-width: $md) {
 						display: inline-block;
-						margin-right: .5rem;
+						margin-right: .07rem;
 					}
 
 					&:hover {
@@ -291,6 +291,12 @@
 
 				span {
 					margin-right: .1rem;
+				}
+
+				.roles {
+					span {
+						font-size: .7rem;
+					}
 				}
 			}
 
@@ -349,6 +355,11 @@
 			overflow: hidden;
 			border-bottom: 1px solid transparent;
 
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+			align-items: center;
+
 			.category, .version {
 				a {
 					font-size: .7rem;
@@ -359,38 +370,38 @@
 				}
 			}
 
-			.category {
-				margin-bottom: .5rem;
-			}
-
-
-
-			.categories, .topic {
-				display: inline-block;
-				vertical-align: middle;
-			}
-
-
 
 			.topic {
-				width: 100%;
-				margin-bottom: .2rem;
-
+				flex: 0 0 100%;
+				
 				@media (min-width: $md) {
-					margin-bottom: 0;
-					width: 74%;
+					flex: 0 0 57%;
+					margin-right: 3%;
 				}
+
+
+				margin-bottom: .2rem;
 			}
 
 
 
 			.categories {
-				width: 100%;
+				display: flex;
+				flex: 0 0 100%;
+				
+				@media (min-width: $md) {
+					flex: 0 0 40%;
+					flex-direction: column;
+				}
+
+				text-align: right;
+			}
+
+			.category {
+				margin: 0 .5rem 0 0;
 
 				@media (min-width: $md) {
-					width: 25%;
-					text-align: right;
-					float: right;
+					margin: 0 0 .5rem 0;
 				}
 			}
 		}
