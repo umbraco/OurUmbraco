@@ -14,12 +14,13 @@
 		margin-bottom: 75px;
 		position: relative;
 		border-radius: 2px;
+		background: rgba($color-space, 0.08);
+		border: 1px solid rgba($color-space, 0.15);
 
 
 		.comment-inner {
 			padding: 15px;
-			background: rgba($color-space, 0.08);
-			border: 1px solid rgba($color-space, 0.15);
+
 			border-bottom: none;
 			border-top: none;
 			@include transition(all, .2s);
@@ -33,7 +34,7 @@
 
 		&.solution {
 			background: rgba($color-our, .23);
-			// border: 2px solid rgba($color-our, .66);
+			border: 1px solid rgba($color-our, .3);
 
 			.photo {
 				img {
@@ -43,12 +44,10 @@
 			}
 
 			.meta {
-				border: 1px solid rgba($color-our, .3);
 				border-bottom: none;
 			}
 
 			.comment-inner {
-				border: 1px solid rgba($color-our, .3);
 				border-bottom: none;
 				border-top: none;
 			}
@@ -254,8 +253,6 @@
 			font-size: .9rem;
 			overflow: hidden;
 			color: darken($color-space, 15%);
-			background: rgba($color-space, 0.08);
-			border: 1px solid rgba($color-space, 0.15);
 			border-bottom: none;
 			@include transition(all, .2s);
 
@@ -413,12 +410,9 @@
 		.actions {
 			display: flex;
 			justify-content: space-between;
-			
 
 			padding: 10px 20px;
 
-			background: rgba($color-space, 0.08);
-			border: 1px solid rgba($color-space, 0.15);
 			border-top: none;
 
 			@include transition(background, .2s);
