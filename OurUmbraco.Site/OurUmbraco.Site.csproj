@@ -374,6 +374,7 @@
     <Content Include="Assets\images\editor.png" />
     <Content Include="Assets\images\forum.gif" />
     <Content Include="Assets\images\forum.png" />
+    <Content Include="Assets\images\GitHub-Mark-32px.png" />
     <Content Include="Assets\images\highfive.svg" />
     <Content Include="Assets\images\imagegen %281%29.png" />
     <Content Include="Assets\images\imagegen %282%29.png" />

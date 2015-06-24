@@ -5,7 +5,7 @@
     <section class="plain">
         <div>
             <!-- FORUM HEADER START -->
-            <div class="forum-archive-header">
+            <div class="utilities">
                 <umbraco:Macro linkToCurrent="0" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                 <div class="clear"></div>
             </div>

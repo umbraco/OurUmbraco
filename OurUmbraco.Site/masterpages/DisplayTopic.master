@@ -4,7 +4,7 @@
 	<div class="forum-single-thread">
 		
 		<!-- FORUM HEADER START -->
-		<div class="forum-archive-header">
+		<div class="utilities">
 			
 			<!-- FORUM BREADCRUMB START -->
 			<umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
