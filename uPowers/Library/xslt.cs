@@ -11,7 +11,7 @@ namespace uPowers.Library {
 
         //this will be changed to something abit less static before Upowers are released, if it ever is...
         public static XPathNodeIterator MemberKarma(int InLastNumberOfDays, int maxItems) {
-            string SQL = Buddha.TotalKarmaSQL(InLastNumberOfDays, maxItems);
+            string SQL = Buddha.Buddha.TotalKarmaSQL(InLastNumberOfDays, maxItems);
             return uPowers.BusinessLogic.Data.GetDataSet(SQL, "score");
         }
         

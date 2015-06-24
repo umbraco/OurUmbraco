@@ -1,9 +1,10 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using uRelease;
 
-[assembly: PreApplicationStartMethod(typeof(uRelease.App_Start.ControllerRouting), "Setup")]
-namespace uRelease.App_Start
+[assembly: PreApplicationStartMethod(typeof(ControllerRouting), "Setup")]
+namespace uRelease
 {
     public class ControllerRouting
     {

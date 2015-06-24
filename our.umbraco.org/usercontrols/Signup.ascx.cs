@@ -2,7 +2,6 @@
 using System.Configuration;
 using System.Web.UI;
 using System.Xml;
-using our.Rest;
 using umbraco;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;

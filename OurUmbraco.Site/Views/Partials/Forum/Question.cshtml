@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.Topic>
 @using uForum;
+@using uForum.Extensions
 
 @{
     var topicAuthor = Members.GetById(Model.MemberId);

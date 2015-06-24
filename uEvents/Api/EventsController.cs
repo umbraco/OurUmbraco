@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web.Http;
 using System.Xml.XPath;
 using uEvents.Meetup;
+using uEvents.Relations;
 using umbraco;
 using umbraco.cms.businesslogic.cache;
 using umbraco.cms.businesslogic.member;

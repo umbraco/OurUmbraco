@@ -1,4 +1,5 @@
 ﻿using uForum;
+using uForum.Extensions;
 using uForum.Services;
 using Umbraco.Core;
 using Umbraco.Web;

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using uForum.Extensions;
 using uForum.Models;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;

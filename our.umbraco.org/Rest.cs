@@ -1,18 +1,11 @@
-﻿using System;
-using System.Linq;
-using System.Web;
-using System.Xml.XPath;
-using umbraco.cms.businesslogic.member;
-using System.IO;
-using System.Drawing;
-using System.Xml;
-using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.web;
-using our.Businesslogic;
+﻿using System.Web;
 using System.Web.Security;
+using System.Xml.XPath;
+using umbraco.BusinessLogic;
+using umbraco.cms.businesslogic.member;
 using Umbraco.Web.BaseRest;
 
-namespace our.Rest
+namespace our
 {
     /// <summary>
     /// Our mighty utill classes for looking stuff up quickly...

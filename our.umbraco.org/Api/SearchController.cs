@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Lucene.Net.Documents;
 using our.Models;
 using uForum;
+using uForum.Extensions;
 using Umbraco.Web.WebApi;
 
 namespace our.Api

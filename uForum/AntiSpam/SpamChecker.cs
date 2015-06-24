@@ -9,6 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
+using uForum.Extensions;
 using uForum.Library;
 using uForum.Models;
 using uForum.Services;

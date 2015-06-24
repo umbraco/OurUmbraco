@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Web;
 using HtmlAgilityPack;
-using ImageProcessor.Imaging.Filters.Artistic;
 using MarkdownSharp;
 using uForum.AntiSpam;
 using uForum.Library;
 using uForum.Models;
 using Umbraco.Web;
 
-namespace uForum
+namespace uForum.Extensions
 {
     public static class ForumExtensions
     {

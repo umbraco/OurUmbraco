@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
+using uForum.Extensions;
 using uForum.Models;
 using Umbraco.Core;
 using Umbraco.Core.Cache;

@@ -1,11 +1,10 @@
-﻿using System.Linq;
+﻿using umbraco.BusinessLogic;
 using Umbraco.Core.Models;
-using umbraco.BusinessLogic;
 using Umbraco.Web;
 using Relation = umbraco.cms.businesslogic.relation.Relation;
 using RelationType = umbraco.cms.businesslogic.relation.RelationType;
 
-namespace uEvents
+namespace uEvents.Relations
 {
     public class Event
     {

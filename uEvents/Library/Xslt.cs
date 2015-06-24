@@ -6,6 +6,7 @@ using System.Xml.XPath;
 using umbraco.cms.businesslogic.web;
 using umbraco.DataLayer;
 using System.Xml;
+using uEvents.Relations;
 
 namespace uEvents.Library
 {

@@ -4,7 +4,7 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
-namespace uForum
+namespace uForum.Extensions
 {
     public static class MemberForumExtensions
     {

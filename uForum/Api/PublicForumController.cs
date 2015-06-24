@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using uForum.Extensions;
 using uForum.Services;
 using Umbraco.Core.Models;
 using Umbraco.Web.WebApi;

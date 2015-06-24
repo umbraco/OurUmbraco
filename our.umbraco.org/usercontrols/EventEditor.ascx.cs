@@ -5,6 +5,7 @@ using System.Web.UI;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using System.Net.Mail;
+using uEvents.Relations;
 using umbraco.BusinessLogic;
 using Umbraco.Web;
 using Member = umbraco.cms.businesslogic.member.Member;
@@ -97,7 +98,7 @@ namespace our.usercontrols
 
                     if (sync)
                     {
-                        var ev = new uEvents.Event(publishedContent);
+                        var ev = new Event(publishedContent);
                         ev.syncCapacity();
                     }
                 }

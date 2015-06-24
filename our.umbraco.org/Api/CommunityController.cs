@@ -7,7 +7,6 @@ using System.Web;
 using System.Web.Http;
 using System.Xml;
 using our.Businesslogic;
-using our.Rest;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
