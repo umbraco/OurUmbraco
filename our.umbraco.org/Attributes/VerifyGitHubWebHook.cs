@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http.Controllers;
@@ -44,9 +42,11 @@ namespace our.Attributes
                     //Return a HTTP 401 Unauthorised header
                     actionContext.Response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 }
-                
-                //All is good - do not need to set response 200 header here
-                //As we now need to carry on running our API method
+                else
+                {
+                    //Return a HTTP 200 OK
+                    actionContext.Response = new HttpResponseMessage(HttpStatusCode.OK);
+                }
 
             }
             catch (Exception)
@@ -59,38 +59,50 @@ namespace our.Attributes
             base.OnActionExecuting(actionContext);
         }
 
-        /// <summary>
-        /// http://chris.59north.com/post/Integrating-with-Github-Webhooks-using-OWIN
-        /// </summary>
-        /// <returns></returns>
-        private bool IsValidToken(string payloadToken, HttpRequestMessage request)
+
+        //http://stackoverflow.com/questions/4390543/facebook-real-time-update-validating-x-hub-signature-sha1-signature-in-c-sharp#13857878
+        public bool IsValidToken(string payloadToken, HttpRequestMessage request)
         {
-            //Get token stored in appsetting
-            var serverToken = ConfigurationManager.AppSettings["gitHubWebHookSecret"];
+            //Get token stored on enviroment
+            var serverToken = Environment.GetEnvironmentVariable("githubToken");
 
             //Need to get the actual content of the request - JSON payload
             //As this payload is signed/encoded with our key
-            var jsonPayload = request.Content.ReadAsStringAsync().Result;
+            var jsonPayload = request.Content.ToString();
 
-            //Verify the payloadToken starts with sha1
-            var vals = payloadToken.Split('=');
-            if (vals[0] != "sha1")
-            {
-                return false;
-            }
-                
+            //Sign our payload we have got with our secret
+            var hmac = SignWithHmac(UTF8Encoding.UTF8.GetBytes(jsonPayload), UTF8Encoding.UTF8.GetBytes(serverToken));
+            
+            //Do the conversion
+            var hmacHex = ConvertToHexadecimal(hmac);
 
-            var encoding = new System.Text.ASCIIEncoding();
-            var keyByte = encoding.GetBytes(serverToken);
+            //Check what we have signed is what is sent as header
+            //Token example: sha1=fooBarLongEncodedTokenHere
+            //Split on the equal as we not worried about the sha1= stuff
+            bool isValid = payloadToken.Split('=')[1] == hmacHex;
 
-            var hmacsha1 = new HMACSHA1(keyByte);
-
-            var messageBytes = encoding.GetBytes(jsonPayload);
-            var hashmessage = hmacsha1.ComputeHash(messageBytes);
-            var hash = hashmessage.Aggregate("", (current, t) => current + t.ToString("X2"));
-
-            return hash.Equals(vals[1], StringComparison.OrdinalIgnoreCase);
+            return isValid;
         }
+
+        private static byte[] SignWithHmac(byte[] dataToSign, byte[] keyBody)
+        {
+            using (var hmacAlgorithm = new System.Security.Cryptography.HMACSHA1(keyBody))
+            {
+                return hmacAlgorithm.ComputeHash(dataToSign);
+            }
+        }
+
+        private static string ConvertToHexadecimal(IEnumerable<byte> bytes)
+        {
+            var builder = new StringBuilder();
+            foreach (var b in bytes)
+            {
+                builder.Append(b.ToString("x2"));
+            }
+
+            return builder.ToString();
+        }
+
     }
 
 }
