@@ -1,11 +1,10 @@
 ﻿@inherits UmbracoViewPage<uForum.Models.ReadOnlyComment>
-@using uForum;
 @using uForum.Extensions
 
 @{
     var currentMember = Members.GetCurrentMember();
     var answer = (int)ViewData["answer"];
-    string[] roles = { };
+    var roles = new List<string>();
 
     var commentAuthor = Members.GetById(Model.MemberId);
     // author could have been deleted (spammer) so make sure to check if they exist
