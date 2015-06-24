@@ -201,7 +201,7 @@ namespace our
         {
             var memberAvatarPath = MemberAvatarPath(member);
             if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
-                return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
+                return GetLocalAvatar(HttpUtility.HtmlEncode(member.GetPropertyValue("avatar").ToString()), avatarSize, member.Name);
 
             return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
         }
