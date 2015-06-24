@@ -143,7 +143,7 @@ namespace uForum.Extensions
             
             foreach (var role in roles)
             {
-                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()))
+                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()) || role.ToLowerInvariant().Contains("wiki".ToLowerInvariant()))
                     continue;
 
                 if (role == "CoreContrib")
