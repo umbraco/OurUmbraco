@@ -201,7 +201,7 @@ namespace our
         {
             var memberAvatarPath = MemberAvatarPath(member);
             if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
-                return GetLocalAvatar(HttpUtility.HtmlEncode(member.GetPropertyValue("avatar").ToString()), avatarSize, member.Name);
+                return GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
 
             return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
         }
@@ -249,7 +249,7 @@ namespace our
         public static string GetLocalAvatar(string imgPath, int minSize, string memberName)
         {
             return string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />",
-             imgPath, minSize, (minSize * 2), (minSize * 3), memberName);
+             imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName);
         }
     }
 
