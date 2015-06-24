@@ -4807,6 +4807,9 @@
     <PreBuildEvent>
     </PreBuildEvent>
   </PropertyGroup>
+  <PropertyGroup>
+	<DeployOnBuild Condition="'($DeployWebProject)'!=''">$(DeployWebProject)</DeployOnBuild>
+  </PropertyGroup>
   <Target Name="ClientFilesBuild" BeforeTargets="Rebuild">
     <Exec WorkingDirectory="$(ProjectDir)\..\build\" Command="BuildClientFiles.bat" ConsoleToMSBuild="true" IgnoreExitCode="true" ContinueOnError="WarnAndContinue" />
   </Target>
