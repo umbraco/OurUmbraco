@@ -1,8 +1,8 @@
 //underscore templating
- // _.templateSettings = {
- //   interpolate: /\{\{(.+?)\}\}/g,
- //   evaluate : /\{\[([\s\S]+?)\]\}/g
- // };
+_.templateSettings = {
+   interpolate: /\{\{(.+?)\}\}/g,
+   evaluate : /\{\[([\s\S]+?)\]\}/g
+};
 
 
 jQuery(document).ready(function (){
