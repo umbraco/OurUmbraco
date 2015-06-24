@@ -6,11 +6,8 @@
     var ts = new uForum.Services.TopicService(ApplicationContext.DatabaseContext);
 }
 
-<div class="col-md-6">
-    @Column(ts.GetLatestTopics(3, 1))
-</div>
-<div class="col-md-6">
-    @Column(ts.GetLatestTopics(3, 2))
+<div class="col-md-12 flex">
+    @Column(ts.GetLatestTopics(6, 1))   
 </div>
 
 @helper Column(IEnumerable<uForum.Models.ReadOnlyTopic> topics)
@@ -21,13 +18,17 @@
         var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
 
         <a href="@topic.GetUrl()" class="forum-thread">
-            <div class="row flex-center">
-                <div class="col-xs-2">@Html.Raw(our.Utils.GetMemberAvatar(mem, 79))</div>
-                <div class="col-xs-10">
-                    <div class="forum-thread-text">
-                        <h3>@topic.Title</h3>
-                        <p>
-                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                
+            <div class="avatar">
+                @Html.Raw(our.Utils.GetMemberAvatar(mem, 79))
+            </div>
+               
+            <div class="meta">
+                <div class="forum-thread-text">
+                    <h3>@topic.Title</h3>
+                    <p>
+                        @{
+                            if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
                             {
                                 <text>last edited by @topic.LastReplyAuthorName</text>
                             }
@@ -35,13 +36,13 @@
                             {
                                 <text>created by @topic.AuthorName</text>
                             }
-                            @topic.Updated.ConvertToRelativeTime()
-                        </p>
-                    </div>
-
-                    <div class="category"><span class="cat">@cat.Name</span></div>
+                        }  @topic.Updated.ConvertToRelativeTime()
+                    </p>
                 </div>
 
+                <div class="category">
+                    <span class="cat">@cat.Name</span>
+                </div>
             </div>
         </a>
     }

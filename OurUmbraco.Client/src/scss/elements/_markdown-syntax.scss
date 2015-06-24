@@ -438,9 +438,10 @@
     margin: 0 2px;
     padding: 1px 5px;
     white-space: pre-wrap;
-    border: 1px solid $color-text;
-    background-color: rgba(255, 255, 255, 0);
+    border: 1px solid rgba($color-space, .44);
+    background-color: #fff;
     border-radius: 3px;
+    font-size: .9rem;
   }
    
   pre {
@@ -449,7 +450,7 @@
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
     background-color: $color-markdown-bg;
     color: white;
-    font-size: 0.9rem;
+    font-size: .9rem;
     line-height: 1.4em;
     background-clip: padding-box;
     padding: 20px 30px;

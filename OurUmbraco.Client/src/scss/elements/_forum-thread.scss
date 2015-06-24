@@ -57,14 +57,28 @@
 			.actions {
 				border-top: none;
 			}
+
 			.body {
 				a {
 					color: #000;
 					word-wrap:break-word;
 					text-decoration: underline;
+					
 					&:hover {
 						text-decoration: none;
 					}
+				}
+			}
+
+			.markdown-syntax {
+				code, tt {
+				  margin: 0 2px;
+				  padding: 1px 5px;
+				  white-space: pre-wrap;
+				  border: 1px solid rgba($color-our, .66);
+				  background-color: rgba($color-our, .44);
+				  border-radius: 3px;
+				  font-size: .9rem;
 				}
 			}
 		}
@@ -236,12 +250,12 @@
 				margin-top: 15px;
 			}
 
-			a {
-				color: darken($color-our, 20%);
+			a {	
+				text-decoration: underline;
 				word-wrap:break-word;
 
 				&:hover {
-					text-decoration: underline;
+					text-decoration: none;
 				}
 			}
 		}

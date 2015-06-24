@@ -55,3 +55,4 @@ OurUmbraco.Site/usercontrols/Deli/
 OurUmbraco.Site/App_Data/mail/
 OurUmbraco.Client/build/assets/
 OurUmbraco.Client/node_modules/
+npm-debug.log
