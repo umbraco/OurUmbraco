@@ -16,7 +16,7 @@
 
     var topics = ts.GetLatestTopicsForMember(member.Id);
 
-    var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+    var roles = member.GetRoles();
 
     var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
     var projects = provider.GetListingsByVendor(member.Id, true, true).OrderByDescending(x => x.CreateDate);
@@ -44,19 +44,12 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="member-details">
-                            @if (roles.Length > 1)
+                            @if (roles.Any())
                             {
                                 <span class="roles">
-                                    @foreach (var role in roles.Skip(1))
+                                    @foreach (var role in roles)
                                     {
-                                        if (role == "CoreContrib")
-                                        {
-                                            <span class="c-trib">C-trib</span>
-                                        }
-                                        else
-                                        {
-                                            <span class="@role.ToLower()">@role</span>
-                                        }
+                                        <span class="@role">@role</span>
                                     }
                                 </span>
                             }

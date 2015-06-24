@@ -1,12 +1,15 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Web;
+using System.Web.Security;
 using HtmlAgilityPack;
 using MarkdownSharp;
 using uForum.AntiSpam;
 using uForum.Library;
 using uForum.Models;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace uForum.Extensions
@@ -131,6 +134,28 @@ namespace uForum.Extensions
             var member = UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
             topic.IsSpam = SpamChecker.IsSpam(member, topic.Body);
             return topic.IsSpam;
+        }
+
+        public static List<string> GetRoles(this IPublishedContent member)
+        {
+            var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+            var memberRoles = new List<string>();
+            
+            foreach (var role in roles)
+            {
+                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()))
+                    continue;
+
+                if (role == "CoreContrib")
+                {
+                    memberRoles.Add("c-trib");
+                    continue;
+                }
+
+                memberRoles.Add(role.ToLower());
+            }
+
+            return memberRoles;
         }
     }
 }

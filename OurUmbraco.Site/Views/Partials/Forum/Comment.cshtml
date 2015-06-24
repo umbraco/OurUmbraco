@@ -6,14 +6,14 @@
     var currentMember = Members.GetCurrentMember();
     var answer = (int)ViewData["answer"];
     string[] roles = { };
-    
+
     var commentAuthor = Members.GetById(Model.MemberId);
     // author could have been deleted (spammer) so make sure to check if they exist
     if (commentAuthor != null)
     {
-        roles = Roles.GetRolesForUser(commentAuthor.GetPropertyValue<string>("UserName"));
+        roles = commentAuthor.GetRoles();
     }
-    
+
 }
 
 @if (commentAuthor != null)
@@ -23,21 +23,14 @@
             <div class="profile">
                 <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a><span>@commentAuthor.Karma() karma points</span> 
 
-                @if (roles.Length > 1)
+                @if (roles.Any())
                 {
                     <span class="roles">
-                    @foreach (var role in roles.Skip(1))
-                    {
-                        if (role == "CoreContrib")
+                        @foreach (var role in roles)
                         {
-                            <span class="c-trib">C-trib</span>
+                            <span class="@role">@role</span>
                         }
-                        else
-                        {
-                            <span class="@role.ToLower()">@role</span>
-                        }
-                    }
-                </span>
+                    </span>
                 }
 
             </div>
