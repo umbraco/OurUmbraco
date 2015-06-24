@@ -20,7 +20,7 @@ namespace uForum.EventHandlers
             // This is needed as we added new membership after upgrading so IsApproved is 
             // currently empty. First time a member gets saved now (login also saves the member)
             // IsApproved would turn false (default value of bool) so we want to prevent that
-            var nonApprovedMembers = e.SavedEntities.Where(member => member.Properties[Constants.Conventions.Member.IsApproved] != null && member.IsApproved == false);
+            var nonApprovedMembers = e.SavedEntities.Where(member => member.Properties.Contains(Constants.Conventions.Member.IsApproved) && member.IsApproved == false);
             var memberService = UmbracoContext.Current.Application.Services.MemberService;
             foreach (var member in nonApprovedMembers)
             {
