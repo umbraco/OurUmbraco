@@ -5,7 +5,7 @@
 @{
     var topicAuthor = Members.GetById(Model.MemberId);
     var forum = Umbraco.TypedContent(Model.ParentId);
-    var roles = Roles.GetRolesForUser(topicAuthor.GetPropertyValue<string>("UserName"));
+    var roles = topicAuthor.GetRoles();
     var currentMember = Members.GetCurrentMember();
 }
 
@@ -13,24 +13,18 @@
     <!-- Start of question -->
     <div class="meta">
         <div class="profile">
-            <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span class="hide-xs">has in total </span>@topicAuthor.Karma() karma points
+            <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span>@topicAuthor.Karma() karma points</span>
 
-            @if (roles.Length > 1)
+            @if (roles.Any())
             {
                 <span class="roles">
-                    @foreach (var role in roles.Skip(1))
+                    @foreach (var role in roles)
                     {
-                        if (role == "CoreContrib")
-                        {
-                            <span class="c-trib">C-trib</span>
-                        }
-                        else
-                        {
-                            <span class="@role.ToLower()">@role</span>
-                        }
+                        <span class="@role">@role</span>
                     }
                 </span>
             }
+            
         </div>
 
         <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">

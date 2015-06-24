@@ -284,9 +284,7 @@
 
 
 	&.transparent {
-		border: 1px solid rgba(#000, .5); 
-		background: none;
-		color: rgba(#000, .5);
+		@extend .button.transparent;
 		padding: 5px 17px 9px 13px;
 
 		&:hover {

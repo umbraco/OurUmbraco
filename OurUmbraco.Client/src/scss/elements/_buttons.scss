@@ -64,9 +64,9 @@
 
 
 	&.transparent {
-		border: 1px solid $color-grey; 
+		border: 1px solid darken($color-space, 15%); 
 		background: none;
-		color: $color-grey;
+		color: darken($color-space, 15%);
 
 		&:hover {
 			background: none;

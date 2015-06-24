@@ -1,10 +1,14 @@
+@using uForum.Extensions
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 	
 @if (Members.IsLoggedIn())
 {
-    <a href="#" class="button create-new-thread" data-controller="topic">
-        <i class="icon-Add"></i><span>Create new</span>
-    </a>
+    if (Model.Content.NewTopicsAllowed())
+    {
+        <a href="#" class="button create-new-thread" data-controller="topic">
+            <i class="icon-Add"></i><span>Create new</span>
+        </a>
+    }
 
     var mem = Members.GetCurrentMember();
 
@@ -28,7 +32,7 @@
 }
 else
 {
-    <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login disabled">
+    <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
         <i class="icon-Add"></i><span>Sign in in to create a topic</span>
     </a>
 }

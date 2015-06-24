@@ -256,6 +256,7 @@
     <Compile Include="Api\ForumControllerBase.cs" />
     <Compile Include="Api\PublicForumController.cs" />
     <Compile Include="Api\TopicController.cs" />
+    <Compile Include="EventHandlers\MemberApprovedEventhandler.cs" />
     <Compile Include="Extensions\EventExtensions.cs" />
     <Compile Include="Events.cs" />
     <Compile Include="Extensions\ForumExtensions.cs" />

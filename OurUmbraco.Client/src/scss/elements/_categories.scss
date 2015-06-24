@@ -74,11 +74,11 @@
 
 .version {
 	a, span.cat {
-		background: #cbcbcb;
-		color: lighten(#cbcbcb, 20%);
+		background: rgba($color-space, .22);
+		color: $color-space;
 
 		&:hover {
-			background: lighten(#cbcbcb, 5%);
+			background: #fff;
 		}
 	}
 

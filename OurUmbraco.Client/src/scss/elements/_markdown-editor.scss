@@ -283,7 +283,7 @@
 		position: fixed;
 		bottom: -40px;
 		right: 30px;
-		background-color: $color-our;
+		background-color: $color-green;
 		color:white;
 		padding: 12px 20px;
 		cursor: pointer;
@@ -297,7 +297,7 @@
 			opacity: 1;
 
 			&:hover {
-				background: darken($color-our, 3%);
+				background: lighten($color-green, 5%);
 				@extend .BoxShadow;
 			}
 		}

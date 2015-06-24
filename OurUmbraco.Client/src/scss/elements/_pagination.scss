@@ -13,7 +13,7 @@
 
 	a {
 		padding: 12px 16px;
-		border: 1px solid darken($color-light-grey, 25%);
+		border: 1px solid $color-space;
 		border-radius: 3px;
 		background: #fff;
 		text-decoration: none;
@@ -25,7 +25,7 @@
 
 		font-size: .9rem;
 		font-weight: normal;
-		color: darken($color-light-grey, 25%);
+		color: $color-space;
 
 
 		@media (min-width: $md) {
@@ -39,8 +39,8 @@
 
 
 		&:hover {
-			border-color: darken($color-light-grey, 50%);
-			color: darken($color-light-grey, 45%);
+			border-color: darken($color-space, 25%);
+			color: darken($color-space, 25%);
 		}
 
 		&.active {
@@ -75,8 +75,8 @@
 
 	.next, .prev {
 		&:hover {
-			border-color: darken($color-light-grey, 45%);
-			color: darken($color-light-grey, 45%);
+			border-color: darken($color-space, 25%);
+			color: darken($color-space, 25%);
 		}
 	}
 }
