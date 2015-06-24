@@ -157,5 +157,10 @@ namespace uForum.Extensions
 
             return memberRoles;
         }
+
+        public static bool NewTopicsAllowed(this IPublishedContent forum)
+        {
+            return forum.Level <= 3 || forum.GetPropertyValue<bool>("forumAllowNewTopics");
+        }
     }
 }

@@ -44,6 +44,18 @@
 
     var pages = (totalTopics / pageSize) + 1;
 }
+@if (Model.Content.NewTopicsAllowed() == false)
+{
+    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    if (string.IsNullOrWhiteSpace(notification))
+    {
+        notification = "Creating new topics is not allowed here";
+    }
+    
+    <div class="alertbar__yellow">
+        @Html.Raw(notification)
+    </div>
+}
 <!-- FORUM HEADER START -->
 <div class="forum-archive-header">
     <!-- FORUM BREADCRUMB START -->
