@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using Newtonsoft.Json;
 using Octokit;
 using our.Attributes;
 using uForum;
@@ -16,7 +17,7 @@ using Umbraco.Web.WebApi;
 
 namespace our.Api
 {
-    public class GitHubWebHook : UmbracoApiController
+    public class GitHubWebHookController : UmbracoApiController
     {
         /// <summary>
         /// 
@@ -31,14 +32,18 @@ namespace our.Api
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="payload"></param>
         /// <returns></returns>
         [VerifyGitHubWebHook]
         [HttpPost]
-        public HttpResponseMessage RecieveWebHook(PullRequestEventPayload payload)
+        public HttpResponseMessage RecieveWebHook()
         {
             //From the webhook JSON payloud we get POSTed to us
             //Deserialize it to a object - take from Octokit GitHub's .NET API client
+
+            var payloadString = Request.Content.ReadAsStringAsync().Result;
+            
+            //Map JSON string to object
+            var payload = JsonConvert.DeserializeObject<PullRequestEventPayload>(payloadString);
 
             //Check the state, is it closed & merged = true
             //Means was accepeted & put back into repo
