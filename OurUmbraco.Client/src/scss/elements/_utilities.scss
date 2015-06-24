@@ -1,0 +1,20 @@
+.utilities {
+	color: #898989;
+	font-size: .9rem;
+	margin: 0 0 20px;
+	padding: 0 10px;
+	text-align: center;
+
+	@media (min-width: $md) {
+		padding: 10px 15px;
+		text-align: left;
+	}
+
+	.container {
+		padding: 0;
+
+		.row {
+			margin: 0;
+		}
+	}
+}

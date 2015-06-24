@@ -126,4 +126,44 @@ namespace uDocumentation
                 .InsertTypeBefore<ContentFinderByNiceUrl, DocumentationContentFinder>();
         }
     }
+
+    public class Github
+    {
+        public static string MarkdownFileLink()
+        {
+            string branchName = "v7-documentation";
+            string baseUrl = "https://github.com/umbraco/Umbraco4Docs/blob/" + branchName;
+
+            var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+
+            if (System.IO.File.Exists(docUrl))
+            {
+                //Need to get NEW key as needs to be the original MD filename 
+                //from Github including .md & correct casing of file
+                var originalUrl = HttpContext.Current.Items["umbOriginalUrl"].ToString();
+
+                //Ensure beginning part of url is right case for GitHub URL
+                originalUrl = originalUrl.Replace("/documentation/", "/");
+
+                //If ends with / then it's an index.md file in a folder
+                if (originalUrl.EndsWith("/"))
+                {
+                    //Add the word  after the /, so it's /index
+                    originalUrl += "index";
+
+                }
+
+                //Append the .md file extension
+                docUrl = baseUrl + string.Format("{0}{1}", originalUrl, ".md");
+
+            }
+            else
+            {
+                //MD file does not exist on disk - hide edit button
+                docUrl = null;
+            }
+
+            return docUrl;
+        }
+    }
 }

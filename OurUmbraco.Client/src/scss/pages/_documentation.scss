@@ -1,6 +1,3 @@
-// Variables
-$docs-color: $color-our;
-
 .documentation {
     padding: 0;
  
@@ -24,6 +21,36 @@ $docs-color: $color-our;
         }
     }
 
+    #github-link {
+        line-height: 1rem;
+        vertical-align: middle;
+        transition: border-color .1s $easeExpo, color .1s $easeExpo;
+        
+        &:before {
+            content: "";
+            display: inline-block;
+            width: 22px;
+            height: 18px;
+            vertical-align: sub;
+            background-image: url("/Assets/images/GitHub-Mark-32px.png");
+            background-size: contain;
+            background-repeat: no-repeat;
+            opacity: .7;
+            transition: opacity .1s $easeExpo; 
+        }
+        
+        &:hover {
+            border-color: black;
+            
+            &:before {
+                opacity: 1;
+            }
+        }
+        
+        @media (min-width:$md) {
+            float: right;
+        }
+    }
 
     .search-big {
         margin-bottom: 0;

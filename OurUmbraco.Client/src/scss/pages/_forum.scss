@@ -258,12 +258,11 @@
 	&.go-to-solution { 
 		padding: 6px 18px 10px 14px;
 		min-width: 115px;
-		font-size: .8rem;
 		margin-top: 5px;
 		margin-left: 5px;
 		min-width: 115px;
 		width: auto;
-
+		
 		@include transition(all, .2s);
 
 		@media (min-width: $md) {
@@ -403,41 +402,7 @@
 		}
 	}
 
-	#breadcrumb {
-		display: inline-block;
-		padding: 0;
-		margin-bottom: 15px;
 	
-		@media (min-width: $md) {
-			height: 48px;
-			line-height: 48px;
-			margin-bottom: 0;
-		}
-
-		li {
-
-			display: none;
-
-			&:last-child {
-				display: block;
-				opacity: .5;
-				font-style: italic;
-
-				@media (min-width: $md) {
-					display: inline-block;
-					opacity: 1;
-				}
-			}
-
-			@media (min-width: $md) {
-				display: inline-block;
-			}
-
-			a {
-				font-size: .9rem;
-			}
-		}
-	}
 
 	.sorting {
 		width: 100%;
@@ -478,55 +443,6 @@
 				margin: 0;
 				display: block;
 			}
-		}
-	}
-
-
-}
-
-
-
-
-.forum-archive-header {
-	color: #898989;
-	font-size: .9rem;
-	margin: 0 0 20px;
-	padding: 0 10px;
-	text-align: center;
-
-	@media (min-width: $md) {
-		padding: 10px 15px;
-		text-align: left;
-	}
-
-	.container {
-		padding: 0;
-
-		.row {
-			margin: 0;
-		}
-	}
-
-	#breadcrumb span {
-		&:last-child {
-			color: darken(#b7b7b7, 50%);
-
-			&:after {
-				display: none;
-			}
-		}
-
-		&:after {
-			content:"";
-			display: inline-block;
-			margin: 0 5px;
-			background: url('/assets/images/breadcrumb.png');
-			background-repeat: no-repeat;
-			background-size: 100%;
-			background-position: bottom center;
-			height: 16px;
-			width: 16px;
-			transform: translateY(3px);
 		}
 	}
 }

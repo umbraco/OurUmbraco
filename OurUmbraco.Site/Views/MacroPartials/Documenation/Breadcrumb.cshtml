@@ -9,22 +9,30 @@
     directoryName = directoryName.Substring(1);
     string[] strDirs = directoryName.Split('\\');
 
+    string linkToGithub = uDocumentation.Github.MarkdownFileLink();
 }
-
-<ul id="breadcrumb">
-    <li><a href="/">Our</a></li>
-    @foreach(var page in strDirs){
-        <li><a href="@(baseurl+page)/">@page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</a></li>
+<div class="utilities">
+    <ul id="breadcrumb">
+        <li><a href="/">Our</a></li>
+        @foreach (var page in strDirs)
         {
-            baseurl += page + "/";
+            <li><a href="@(baseurl+page)/">@page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</a></li>
+            {
+                baseurl += page + "/";
+            }
         }
-    }
 
-    @if (!absolutePath.EndsWith("/"))
+        @if (!absolutePath.EndsWith("/"))
+        {
+            <li>@absolutePath.Substring(absolutePath.LastIndexOf('/') + 1).RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</li>
+        }
+
+
+
+    </ul>
+
+    @if (linkToGithub != "")
     {
-        <li>@absolutePath.Substring(absolutePath.LastIndexOf('/') + 1).RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</li>
+        <a href="@linkToGithub" id="github-link" class="button transparent tiny">Edit</a>
     }
-
-
- 
-</ul>
+</div>

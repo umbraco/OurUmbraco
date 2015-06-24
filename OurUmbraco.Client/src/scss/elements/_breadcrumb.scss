@@ -1,52 +1,87 @@
 #breadcrumb {
-	padding: 10px 10px 10px 0;
+	padding: 0;
 	transform: translate(0, 0);
-	margin: 0;
-	display: block;
+	margin: 0 0 15px 0;
+	display: inline-block;
 	width: 100%;
 
 	@media (min-width: $md) {
 		display: inline-block;
 		width: auto;
+		line-height: 48px;
 	}
 
-		li {
-		display: inline-block;
-		list-style: none;
+	li {
+		display: none;
+		
+		@media (min-width: $md) {
+			display: inline-block;
+		}
 
-			&:after {
-				content: "";
-				background: url('../images/breadcrumb.png');
-				background-repeat: no-repeat;
-				background-size: 16px 16px;
-				display: inline-block;
-				background-position: center bottom;
-				height: 20px;
-				width: 16px;
-				margin-left: 3px;
-				margin-right: 3px;
-				transform: translateY(4px);
+		&:after {
+			content: "";
+			background: url('../images/breadcrumb.png');
+			background-repeat: no-repeat;
+			background-size: 16px 16px;
+			display: inline-block;
+			background-position: center bottom;
+			height: 20px;
+			width: 16px;
+			margin-left: 3px;
+			margin-right: 3px;
+			transform: translateY(4px);
+		}
+
+		a {
+			color: $color-text;
+			text-decoration: none;
+			font-size: .9rem;
+			@include transition(color, .1s);
+
+			&:hover {
+				color: $color-text-hover;
+				text-decoration: underline;
 			}
-
-			a {
-				color: $color-text;
-				text-decoration: none;
-				font-size: .8rem;
-				@include transition(color, .1s);
-
-				&:hover {
-					color: $color-text-hover;
-					text-decoration: underline;
-				}
-			}
+		}
 
 		&:last-child {
+			display: block;
+			opacity: .5;
+			font-style: italic;
 			a {
 				color: $color-text-hover;
 			}
-
+	
 			&:after {
 				display: none;
+			}
+			
+			@media (min-width: $md) {
+				display: inline-block;
+				opacity: 1;
+			}
+		}
+		
+		span {
+			&:last-child {
+				color: darken(#b7b7b7, 50%);
+	
+				&:after {
+					display: none;
+				}
+			}
+	
+			&:after {
+				content:"";
+				display: inline-block;
+				margin: 0 5px;
+				background: url('/assets/images/breadcrumb.png');
+				background-repeat: no-repeat;
+				background-size: 100%;
+				background-position: bottom center;
+				height: 16px;
+				width: 16px;
+				transform: translateY(3px);
 			}
 		}
 	}
