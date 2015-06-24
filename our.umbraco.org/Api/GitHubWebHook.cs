@@ -53,7 +53,7 @@ namespace our.Api
 
                 //Try & find a member with this github username
                 //Should only ever be one (As when saving profile we should check that no one else has it set already)
-                var gitHubMember = memberService.GetMembersByPropertyValue("githubUsername", "githubUserWhoMadeCommit", StringPropertyMatchType.Exact).FirstOrDefault();
+                var gitHubMember = memberService.GetMembersByPropertyValue("githubUsername", payload.PullRequest.User.Login, StringPropertyMatchType.Exact).FirstOrDefault();
 
                 //Check we definately found someone (again if there was more than one, we picked first)
                 if (gitHubMember != null)
@@ -66,6 +66,8 @@ namespace our.Api
                     var karmaToAward = Convert.ToInt32(ConfigurationManager.AppSettings["gitHubPullRequestKarma"]);
 
                     //Award karma to member
+                    //TODO: DO I NEED TO GIVE SOME CONTEXT WHERE THIS WAS ASSIGNED FROM
+                    //SO KARMA LOG/HISTORY FOR USER CAN BE TRACED BACK?!
                     gitHubMember.IncreaseKarma(karmaToAward);
                 }
 
