@@ -21,7 +21,7 @@
     <li class="comment @Umbraco.If(Model.ParentCommentId > 0, "level-2") @Umbraco.If(Model.Id == answer, "solution")" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
-                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a> <span class="hide-xs">has in total </span>@commentAuthor.Karma() karma points
+                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a><span>@commentAuthor.Karma() karma points</span> 
 
                 @if (roles.Length > 1)
                 {
