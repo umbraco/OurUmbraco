@@ -141,6 +141,9 @@
       <HintPath>..\packages\Newtonsoft.Json.6.0.5\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Octokit">
+      <HintPath>..\packages\Octokit.0.13.0\lib\net45\Octokit.dll</HintPath>
+    </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.5675.23469, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.2.8\lib\SQLCE4Umbraco.dll</HintPath>
       <Private>True</Private>
@@ -254,6 +257,7 @@
     <Compile Include="Api\GitHubWebHook.cs" />
     <Compile Include="Api\SearchController.cs" />
     <Compile Include="Controllers\AvatarController.cs" />
+    <Compile Include="Attributes\VerifyGitHubWebHook.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\ProfileController.cs" />
     <Compile Include="Businesslogic\ProjectContributor.cs" />
