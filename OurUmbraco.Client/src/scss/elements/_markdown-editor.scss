@@ -80,9 +80,9 @@
 
 	.reply-to {
 		p {
-			font-size: .8rem;
+			font-size: 1rem;
 			overflow: hidden;
-			color: $color-text;
+			color: darken($color-space, 25%);
 			background: transparent;
 		}
 		span {

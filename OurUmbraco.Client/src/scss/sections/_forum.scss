@@ -47,9 +47,12 @@ section.forum {
 		display: flex;
 
 		@media (min-width: $md) {
-			flex: 0 0 47%;
-		}
+			flex: 1 0 49%;
 
+			&:nth-child(odd) {
+				margin-right: 2%;
+			}
+		}
 
 		.avatar {
 			flex: 0 0 23%;
@@ -196,4 +199,13 @@ section.forum {
 			padding: 0 .3rem;
 		}
 	}
+}
+
+
+_:-ms-input-placeholder, :root .selector { 
+    section.forum .forum-thread {
+		@media (min-width: $md) {
+			flex: 0 1 47%;
+		}
+	}  
 }
