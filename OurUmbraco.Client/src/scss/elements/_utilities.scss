@@ -1,7 +1,6 @@
 .utilities {
 	color: #898989;
 	font-size: .9rem;
-	margin: 0 0 20px;
 	padding: 0 10px;
 	text-align: center;
 
@@ -13,6 +12,7 @@
 	flex-direction: column;
 
 	@media (min-width: $md) {
+		margin: 0 0 20px;
 		padding: 10px;
 		text-align: left;
 
