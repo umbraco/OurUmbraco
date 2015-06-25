@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -64,8 +65,8 @@ namespace our.Attributes
         /// <returns></returns>
         private bool IsValidToken(string payloadToken, HttpRequestMessage request)
         {
-            //Get token stored on enviroment
-            var serverToken = Environment.GetEnvironmentVariable("GITHUB_TOKEN", EnvironmentVariableTarget.Machine);
+            //Get token stored in appsetting
+            var serverToken = ConfigurationManager.AppSettings["gitHubWebHookSecret"];
 
             //Need to get the actual content of the request - JSON payload
             //As this payload is signed/encoded with our key
