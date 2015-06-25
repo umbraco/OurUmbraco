@@ -90,7 +90,7 @@
                                 {
                                     var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
 
-                                    <a href="@topic.GetUrl()" class="forum-thread">
+                                    <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
                                         <div class="row flex-center">
                                             <div class="col-xs-2">
                                                 @Html.Raw(our.Utils.GetMemberAvatar(mem, 75))

@@ -92,20 +92,19 @@
                             // if this is the case: don't show forum post in list
                             if (forum != null)
                             {
-                                <a href="@topic.GetUrl()" class="forum-thread">
+                                <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
                                     <div class="forum-thread-text">
                                         <h3>@topic.Title</h3>
                                         <p>
-                                            @{
-                                if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                                {
-                                    <text>last edited by @topic.LastReplyAuthorName</text>
-                                }
-                                else
-                                {
-                                    <text>created by @topic.AuthorName</text>
-                                }
-                                            }  @topic.Updated.ConvertToRelativeTime()
+                                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                            {
+                                                <text>last edited by @topic.LastReplyAuthorName</text>
+                                            }
+                                            else
+                                            {
+                                                <text>created by @topic.AuthorName</text>
+                                            }
+                                            @topic.Updated.ConvertToRelativeTime()
                                         </p>
                                     </div>
 
