@@ -208,13 +208,20 @@ namespace our
 
         private static string MemberAvatarPath(IPublishedContent member)
         {
-            var hasAvatar = member.HasValue("avatar");
-            if (hasAvatar)
+            try
             {
-                var avatarPath = member.GetPropertyValue("avatar").ToString();
-                var path = HostingEnvironment.MapPath(avatarPath);
-                if (System.IO.File.Exists(path))
-                    return path;
+                var hasAvatar = member.HasValue("avatar");
+                if (hasAvatar)
+                {
+                    var avatarPath = member.GetPropertyValue("avatar").ToString();
+                    var path = HostingEnvironment.MapPath(avatarPath);
+                    if (System.IO.File.Exists(path))
+                        return path;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<Utils>("Could not get MemberAvatarPath", ex);
             }
 
             return string.Empty;
@@ -222,18 +229,17 @@ namespace our
 
         public static Image GetMemberAvatarImage(IPublishedContent member)
         {
-            try
+            var memberAvatarPath = MemberAvatarPath(member);
+            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
             {
-                var memberAvatarPath = MemberAvatarPath(member);
-                if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
+                try
                 {
                     return Image.FromFile(memberAvatarPath);
-
                 }
-            }
-            catch (Exception)
-            {
-                LogHelper.Debug<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath));
+                catch (Exception ex)
+                {
+                    LogHelper.Error<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath), ex);
+                }
             }
 
             return null;
