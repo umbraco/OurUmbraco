@@ -222,17 +222,18 @@ namespace our
 
         public static Image GetMemberAvatarImage(IPublishedContent member)
         {
-            var memberAvatarPath = MemberAvatarPath(member);
-            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
+            try
             {
-                try
+                var memberAvatarPath = MemberAvatarPath(member);
+                if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
                 {
                     return Image.FromFile(memberAvatarPath);
+
                 }
-                catch (Exception)
-                {
-                    LogHelper.Debug<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath));
-                }
+            }
+            catch (Exception)
+            {
+                LogHelper.Debug<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath));
             }
 
             return null;
