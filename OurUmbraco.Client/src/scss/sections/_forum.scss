@@ -77,6 +77,8 @@ section.forum {
 			flex-direction: column;
 			flex: 1 0 75%;
 
+			padding: 0 10px 0 0;
+
 			@media (min-width: $md) {
 				flex: 1 0 83%;
 			}
@@ -99,7 +101,11 @@ section.forum {
 
 	.goto-forum {
 		text-align: center;
-		margin-top: 60px;
+		margin-top: 20px;
+
+		@media (min-widt: $md) {
+			margin-top: 60px;
+		}
 	}
 
 	.button {
