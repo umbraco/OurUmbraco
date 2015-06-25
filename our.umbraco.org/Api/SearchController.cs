@@ -6,6 +6,7 @@ using System.Dynamic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Examine.SearchCriteria;
 using Lucene.Net.Documents;
 using our.Models;
 using uForum;
@@ -38,9 +39,18 @@ namespace our.Api
             return searchResult;
         }
 
-        public SearchResultModel GetForumSearchResults(string term)
+        public SearchResultModel GetForumSearchResults(string term, string forum = "")
         {
-            var searcher = new OurSearcher(term, nodeTypeAlias: "forum");
+            int forumId;
+            var filters = new List<SearchFilters>();
+            if (int.TryParse(forum, out forumId))
+            {
+                var searchFilters = new SearchFilters(BooleanOperation.And);
+                searchFilters.Filters.Add(new SearchFilter("parentId", forumId.ToString()));
+                filters.Add(searchFilters);
+            }
+
+            var searcher = new OurSearcher(term, nodeTypeAlias: "forum", filters: filters);
             var searchResult = searcher.Search();
 
             foreach (var result in searchResult.SearchResults)

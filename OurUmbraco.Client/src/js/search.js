@@ -3,24 +3,41 @@ function redirectToSearch(ev){
 				ev.preventDefault();
 				var cssClass = ev.target.attributes.class.value;
 				
-				var category = cssClass.replace("-search-input", "");
-				if(category === "docs") {
-					category = "documentation";
+				var filters = GetSearchFilters(cssClass);
+				
+				var query = this.value.replace(":", " ");
+				
+				var redirect = "/search?q="+query+"&cat="+filters.category;
+				if(filters.forumId !== undefined) { 
+					redirect = redirect+"&fid="+filters.forumId;
 				}
 				
-				var forumId = $('#selectCategory').val();
-				if(forumId !== undefined) {
-					forumId = forumId.replace(/([A-Za-z])\w+/g, "");
-				}
-				
-				var redirect = "/search?q="+this.value+"&cat="+category;
-				if(forumId !== undefined) { 
-					redirect = redirect+"&fid="+forumId;
-				}
 				window.location = redirect;
 			}
 	    }
 
+function GetSearchFilters(cssClass) {
+	var filters = { 
+		category: undefined,
+		forumId: undefined
+	};
+	
+	var category = cssClass.replace("-search-input", "");
+	if(category === "docs") {
+		category = "documentation";
+	}
+	
+	var forumId = $('#selectCategory').val();
+	if(forumId !== undefined) {
+		forumId = forumId.replace(/([A-Za-z])\w+/g, "");
+	}
+	
+	filters.category = category;
+	filters.forumId = forumId;
+	
+	return filters;
+}	
+		
 var projectSearch = _.debounce(function(ev) {
 	var term = $('.project-search-input').val();
 	var defaultListing = $('.projects-default-listing');
@@ -37,13 +54,12 @@ var projectSearch = _.debounce(function(ev) {
 		var template = _.template(
             $( "script.search-item-project" ).html()
         );
-
-
+	
 		//get search from server
 		$.ajax({
 		  dataType: "json",
 		  url: url,
-		  data: {term: term},
+		  data: { term: term.replace(":"," ") },
 		  success: function(response){
 
 		  	//toggle and empty box
@@ -163,11 +179,16 @@ var forumSearch = _.debounce( function(ev) {
 		//fade out existing searchresults
 		searchTable.addClass('fadeResultOut');
 
+		var filters = GetSearchFilters("forum");
+		
 		//get search from server
 		$.ajax({
 		  dataType: "json",
 		  url: url,
-		  data: {term: term},
+		  data: {
+			  term: term,
+			  forum: filters.forumId
+		  },
 		  success: function(response){
 
 		  	//toggle and empty box
