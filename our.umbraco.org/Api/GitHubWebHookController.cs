@@ -19,10 +19,7 @@ namespace our.Api
 {
     public class GitHubWebHookController : UmbracoApiController
     {
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+       
         [HttpGet]
         public HttpResponseMessage Ping()
         {
@@ -62,7 +59,7 @@ namespace our.Api
                 {
                     //As we found this member in a succesfull PR back to the Umbraco core
                     //Assign the member to the contributor group
-                    memberService.AssignRole(gitHubMember.Id, "contributor-group");
+                    memberService.AssignRole(gitHubMember.Id, "CoreContrib");
 
                     //Get appSetting value for karma amount
                     var karmaToAward = Convert.ToInt32(ConfigurationManager.AppSettings["gitHubPullRequestKarma"]);
