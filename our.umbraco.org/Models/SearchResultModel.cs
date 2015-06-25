@@ -29,6 +29,9 @@ namespace our.Models
         [DataMember(Name = "term")]
         public string SearchTerm { get; private set; }
 
+        [DataMember(Name = "category")]
+        public string Category { get; set; }
+
         //NOTE: Used for debugging
         [DataMember(Name = "luceneQuery")]
         public string LuceneQuery { get; set; }

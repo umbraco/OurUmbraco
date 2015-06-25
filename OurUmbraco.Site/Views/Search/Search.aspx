@@ -42,6 +42,9 @@
                 </div>
 
                 <section>
+                    <% if (string.IsNullOrWhiteSpace(Model.Results.Category) == false) { %>
+                        <h2>Results from category: <%= Model.Results.Category %></h2>
+                    <% } %>
 
                     <ul class="search-all-results docs-search-listing">
                         <% foreach (var result in Model.Results.SearchResults)
