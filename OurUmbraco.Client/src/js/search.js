@@ -4,11 +4,14 @@ function redirectToSearch(ev){
 				var query = this.value.replace(":", " ");
 				
 				var categoryName = getParameterByName('cat');
-				 
+				console.log(categoryName);
 				if(categoryName === undefined) {
 					var category = ev.target.attributes.class.value;
+					if(category !== undefined) {
+						categoryName = category;
+					}
 				} 
-				
+
 				var filters = GetSearchFilters(categoryName);
 				
 				var newUri = "/search";
@@ -18,8 +21,7 @@ function redirectToSearch(ev){
 				newUri = updateQueryString("order", filters.order, newUri);
 				newUri = updateQueryString("replies", filters.replies, newUri);
 				newUri = updateQueryString("solved", filters.solved, newUri);
-				console.log(newUri);
-								
+					
 				window.location = newUri;
 			}
 	    }
