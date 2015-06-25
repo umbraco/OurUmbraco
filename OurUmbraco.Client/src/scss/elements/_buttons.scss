@@ -1,4 +1,4 @@
-.button, a.button {
+button.button, .button, a.button {
 	background: $color-blue;
 	padding: 20px 40px;
 	display: inline-block;
@@ -12,6 +12,8 @@
 	color: #fff;
 	text-align: center;
 	font-size: 1rem;
+
+	margin: 0;
 
 	@include transition(background, .2s);
 	cursor: pointer;
@@ -30,9 +32,11 @@
 
 	&.green {
 		background: $color-green;
+		border: 1px solid $color-green;
 		
 		&:hover {
 			background: lighten($color-green, 5%);
+			border: 1px solid lighten($color-green, 5%);
 		}
 	}
 
@@ -41,22 +45,24 @@
 
 	&.white {
 		background: #fff;
+		border: 1px solid #fff;
 		color: $color-text;
 
 		&:hover {
 			background: rgba(#fff, .7);
+			border: 1px solid rgba(#fff, .7);
 		}
 	}
 
 
-
-
 	&.red {
 		background: $color-red;
+		border: 1px solid $color-red;
 		color: #fff;
 
 		&:hover {
 			background: lighten($color-red, 5%);
+			border: 1px solid lighten($color-red, 5%);
 		}
 	}
 
@@ -65,8 +71,8 @@
 
 	&.transparent {
 		border: 1px solid darken($color-space, 15%); 
-		background: none;
 		color: darken($color-space, 15%);
+		background: none;
 
 		&:hover {
 			background: none;
@@ -83,9 +89,11 @@
 
 	&.pink {
 		background: $color-pink;
+		border: 1px solid $color-pink;
 		
 		&:hover {
 			background: lighten($color-pink, 5%);
+			border: 1px solid lighten($color-pink, 5%);
 		}
 	}
 

@@ -113,6 +113,13 @@ header {
 			&:last-child {
 				margin-right: 0;
 			}
+
+			&.current {
+				a {
+					border-bottom-color: rgba(#000, .6);
+					font-weight: bold;
+				}
+			}
 		}
 
 		a, a:visited{

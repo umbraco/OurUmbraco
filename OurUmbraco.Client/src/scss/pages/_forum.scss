@@ -125,10 +125,16 @@
 					text-decoration: none;
 					display: block;
 
+					color: #000;
+
 					&:hover {
 						h3 {
 							text-decoration: underline;
 						}
+					}
+
+					&:visited {
+						color: darken($color-space, 15%);
 					}
 				}
 
@@ -249,25 +255,21 @@
 
 
 // Buttons in forum
-.forum-page .button {
+.forum-page .button, .forum-page button.button {
 	
 	&.delete-thread,
 	&.follow,
 	&.create-new-thread,
 	&.login,
-	&.go-to-solution { 
-		padding: 6px 18px 10px 14px;
-		min-width: 115px;
-		margin-top: 5px;
-		margin-left: 5px;
+	&.go-to-solution {
+		padding: 5px 17px 9px 13px;
 		min-width: 115px;
 		width: auto;
+
+		font-size: .9rem;
 		
 		@include transition(all, .2s);
 
-		@media (min-width: $md) {
-			float: right;
-		}
 
 		i {
 			margin-right: 3px;
@@ -277,21 +279,15 @@
 			@include transition(opacity, .2s);
 		}
 
-		&:hover {
-			opacity: 1;
+		+ .button {
+			margin-left: .5rem;
+
 		}
 	}
 
 
 	&.transparent {
-		@extend .button.transparent;
-		padding: 5px 17px 9px 13px;
-
-		&:hover {
-			background: none;
-			color: #000;
-			border-color: #000;
-		}
+		@extend .transparent;
 
 		.ink {
 			background:rgba($color-green, .23);
@@ -300,18 +296,10 @@
 
 
 	&.delete-thread {
-		@extend .button.red; 
-		opacity: 1;
-		border-color: transparent;
+		@extend .red; 
 
 		i {
 			color: #fff;
-		}
-
-		&:hover {
-			i {
-				opacity: .5;
-			}
 		}
 
 		.ink {
@@ -321,38 +309,23 @@
 
 
 
-	&.following {
-		background: $color-green;
-		color: #fff;
-		opacity: 1;
-		border-color: transparent;
-
-		&:hover {
-			background: lighten($color-green, 5%);
-			i {
-				opacity: .5;
-			}
-		}
+	&.following {	
+		@extend .green;
 	}
 
-	&.create-new-thread, &.login {
-		padding: 9px 18px 10px 14px;
-		opacity: 1;
-		border-color: transparent;
+	&.create-new-thread,
+	&.login {
+		
 
-		@extend .button.green;
+		@extend .green;
 
 		font-size: 1rem;
 		font-weight: bold;
-		color: #fff;
+
 
 		i {
 			color: #fff;
 			transform: translate(0, 3px);
-		}
-
-		&:hover {
-			background: lighten($color-green, 10%);
 		}
 
 		&.disabled {

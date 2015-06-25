@@ -16,7 +16,7 @@
     @foreach (var page in root.Children.Where("Visible"))
     {
         <li class="@(page.IsAncestorOrSelf(CurrentPage) ? "current" : null)">
-            <a href="@page.Url">@page.Name</a>
+            <a href="@page.Url" class="current">@page.Name</a>
         </li>
     }
 

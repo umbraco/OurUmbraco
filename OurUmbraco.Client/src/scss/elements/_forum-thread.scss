@@ -122,7 +122,6 @@
 
 
 		.highfive {
-			// display: none;
 			position: absolute;
 			
 			top: 100%;
@@ -158,21 +157,22 @@
 
 				display: block;
 
-				font-size: .7rem;
-				color: #384244;
-
 				transform: translate(-52px, 6px);
-				background: #fff;
-				padding: 3px;
-				text-align: center;
-				color: #8e8e8e;
-				border: none;
+
 				max-width: 44px;
 				min-width: 44px;
 
-				line-height: 1.3;
+				background: #fff;
+				padding: 3px;
+				border: none;
 
-				display: block;
+				font-size: .8rem;
+				font-weight: normal;
+				line-height: 1.3;
+				text-align: center;
+				color: darken($color-space, 25%);
+
+
 
 				img {
 					margin: 0;
@@ -184,7 +184,7 @@
 
 				.highfive-count {
 					display: inline-block;
-					font-size: .85rem;
+					font-size: 1rem;
 					font-weight: bold;
 					padding-top: 3px;
 
@@ -210,13 +210,11 @@
 			a {
 				display: block;
 				text-decoration: none;
-				opacity: .7;
 				@include transition(all, .2s);
 			}
 
 			&:hover {
 				a {
-					opacity: 1;
 					color: #000;
 				}
 			}
@@ -272,7 +270,7 @@
 				flex-direction: column;
 				
 				a {
-					color: darken($color-space, 25%);
+					color: darken($color-space, 45%);
 					text-decoration: none;
 					display: block;
 
@@ -317,11 +315,6 @@
 			.gotosolution {
 				margin-left: 5px;
 				color: #000;
-				float: right;
-
-				@media (min-width: $md) {
-					float: none;
-				}
 
 				&:hover {
 					text-decoration: none;
@@ -434,18 +427,16 @@
 
 				@media (min-width: $md) {
 					overflow: hidden;
-					margin-right: .5rem;
+					margin-right: 1.3rem;
 				}
 
 				&:hover {
-					color: rgba(#000, 1);
+					color: $color-green;
+					font-weight: bold;
 				}
 
 				span {
 					display: none;
-					@media (min-width: $md) {
-
-					}
 				}
 
 				i {
@@ -454,7 +445,13 @@
 
 					@media (min-width: $md) {
 						font-size: 1.1rem;
-						margin-right: .5rem;
+						margin-right: .2rem;
+					}
+				}
+
+				&.delete-reply {
+					&:hover {
+						color: $color-red;
 					}
 				}
 

@@ -58,34 +58,34 @@
 }
 <!-- FORUM HEADER START -->
 <div class="utilities">
-    <!-- FORUM BREADCRUMB START -->
+
     @Umbraco.RenderMacro("Breadcrumb", new { linktocurrent = "1" })
-    <!-- FORUM BREADCRUMB END -->
+    
     @Umbraco.RenderMacro("ForumForumActions")
-    <!-- FORUM settings START -->
-    <div class="forum-settings">
-        <div class="search-big">
-            <input type="search" class="forum-search-input" required placeholder="Search for threads">
-            <label for="search">Search for threads</label>
-        </div>
-        <div class="or">or</div>
-        <div class="sorting">
-            <select id="selectCategory" data-placeholder="Choose&hellip;">
-                <option class="category" selected disabled>Filter by category</option>
-                <option class="all" value="@CurrentPage.AncestorOrSelf(2).Id">All categories</option>
-                @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
-                {
-                    foreach (var tag in main.Children)
-                    {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
-                    }
-                }
-            </select>
-        </div>
-    </div>
-    <!-- FORUM settings END -->
+
 </div>
-<div class="clear"></div>
+
+<div class="forum-settings">
+    <div class="search-big">
+        <input type="search" class="forum-search-input" required placeholder="Search for threads">
+        <label for="search">Search for threads</label>
+    </div>
+    <div class="or">or</div>
+    <div class="sorting">
+        <select id="selectCategory" data-placeholder="Choose&hellip;">
+            <option class="category" selected disabled>Filter by category</option>
+            <option class="all" value="@CurrentPage.AncestorOrSelf(2).Id">All categories</option>
+            @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+            {
+                foreach (var tag in main.Children)
+                {
+                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                }
+            }
+        </select>
+    </div>
+</div>
+
 <!-- FORUM HEADER END -->
 <!-- FORUM TOPICS -->
 <div id="overlay" class="overlay"></div>
