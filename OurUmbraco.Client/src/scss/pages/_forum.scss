@@ -116,8 +116,8 @@
 
 			border-bottom: 1px solid rgba($color-space, .11);
 
+
 			.topic {
-				
 				font-size: .95rem;
 				line-height: 1.3;
 
@@ -138,6 +138,7 @@
 					}
 				}
 
+
 				span {
 					display: block;
 					font-size: .75rem;
@@ -149,6 +150,7 @@
 						color: darken($color-space, 25%);
 					}
 				}
+
 
 				@media (min-width: $md) {
 					font-size: 1.15rem;
@@ -166,13 +168,28 @@
 
 			&.solved {
 				background: rgba($color-our, .23);
-				border-bottom: 2px solid rgba($color-our, .66);
+				border: 2px solid rgba($color-our, .66);
+
+				+ .solved {
+					margin-top: 10px;
+				}
 			}
 
+			
 
 
 			@media (min-width: $md) {
 				padding: 35px 15px;
+
+				&:hover {
+					// background: rgba($color-space, .08);
+				}
+
+				&.solved {
+					&:hover {
+						// background: rgba($color-our, .30);
+					}
+				}
 			}
 		}
 
