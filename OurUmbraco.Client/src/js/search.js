@@ -337,7 +337,11 @@ $('#search-options input[type=checkbox]').click(function () {
 	var newUri;
 	if(this.name === "order") {
 		if(this.name === "order") {
-			newUri = updateQueryString("order", this.value, window.location.href);
+			var orderValue = this.value;
+			if(this.checked === false) {
+				orderValue = undefined;
+			}
+			newUri = updateQueryString("order", orderValue, window.location.href);
 		}
 	} else {
 		newUri = updateQueryString(this.name, this.checked, window.location.href);

@@ -30,17 +30,25 @@
                             <strong>Order by:</strong> <%= Model.Results.OrderBy %><br />
                             <strong>Time elapsed:</strong> <%= Model.Results.Totalmilliseconds %>
                         </p>
-                    
                         <div id="search-options">
-                            <span>Options:</span><br/>
-                            <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
-                            <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
-                            <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span><br/>
-                            <span><input type="checkbox" name="order" value="score"/> order by score</span><br/>
+                            <% if(Request.QueryString["cat"] == "forum")
+                               { %>
+                        
+                                <span>Options:</span><br/>
+                                <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
+                                <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
+                                <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
+                            </div>
+                            <% } %>
+                            
+                            <% if (Request.QueryString["cat"] == "project")
+                               { %>
+                                <span>Options:</span><br/>
+                                <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
+                            <% } %>
+                    
+                            <% } %>
                         </div>
-                    </div>
-                    <% } %>
-
                     <div class="search-big">
                         <asp:TextBox runat="server" ID="SearchText"></asp:TextBox>
                         <label for="<%=SearchText.ClientID %>">Search</label>
