@@ -54,6 +54,12 @@
 
 			.actions {
 				border-top: none;
+
+				a {
+					&:hover {
+						color: #000;
+					}
+				}
 			}
 
 			.body {
@@ -276,7 +282,7 @@
 
 					@media (min-width: $md) {
 						display: inline-block;
-						margin-right: .07rem;
+						margin-right: .2rem;
 					}
 
 					&:hover {

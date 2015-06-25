@@ -13,7 +13,7 @@
 	flex-direction: column;
 
 	@media (min-width: $md) {
-		padding: 10px 0;
+		padding: 10px;
 		text-align: left;
 
 		flex-direction: row;
@@ -21,9 +21,13 @@
 
 	#breadcrumb {
 		margin: 0 0 20px;
+		flex: 1 0 100%;
+
+		line-height: 1.3;
 
 		@media (min-width: $md) {
 			margin: 0;
+			flex: 1 0 auto;
 		}
 	}
 
@@ -31,6 +35,13 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+		justify-content: flex-end;
+		flex: 1 1 auto;
+
+	
+		@media (min-width: $md) {
+			margin-left: auto;
+		}
 
 		.button {
 			margin-bottom: .5rem;
