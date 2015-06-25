@@ -4815,7 +4815,7 @@
       <!-- Create web.config file from Template if it doesn't exist -->
     <Copy SourceFiles="$(ProjectDir)web.Template.config" DestinationFiles="$(ProjectDir)Web.config" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" Condition="!Exists('$(ProjectDir)Web.config')" />
     <!-- Only runs if the ClientFiles build folder doesn't yet exist -->
-    <CallTarget Targets="ClientFilesBuild" Condition="!Exists('$(ProjectDir)\..\OurUmbraco.Client\build')" />
+    <CallTarget Targets="ClientFilesBuild" Condition="!Exists('$(ProjectDir)\..\OurUmbraco.Client\build\assets')" />
   </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
