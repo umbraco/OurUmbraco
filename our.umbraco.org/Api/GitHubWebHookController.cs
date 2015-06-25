@@ -29,22 +29,19 @@ namespace our.Api
             return Request.CreateResponse(HttpStatusCode.OK, "Pong");
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <returns></returns>
+        
         [VerifyGitHubWebHook]
         [HttpPost]
-        public HttpResponseMessage RecieveWebHook()
+        public HttpResponseMessage ReceiveWebHook()
         {
             //From the webhook JSON payloud we get POSTed to us
             //Deserialize it to a object - take from Octokit GitHub's .NET API client
 
             var payloadString = Request.Content.ReadAsStringAsync().Result;
-            
+
             //Map JSON string to object
             var payload = JsonConvert.DeserializeObject<PullRequestEventPayload>(payloadString);
-
+            
             //Check the state, is it closed & merged = true
             //Means was accepeted & put back into repo
             //Thus assign contributor badge to memebr
