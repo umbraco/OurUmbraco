@@ -127,7 +127,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
         /// <returns></returns>
         public IEnumerable<ReadOnlyTopic> QueryAll(bool ignoreSpam = true, int maxCount = 1000)
         {
-            const string sql1 = @"SELECT TOP @count forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName, u2.[id] as topicAuthorId
+            var sql1 = @"SELECT TOP " + maxCount + @" forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName, u2.[id] as topicAuthorId,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
 	forumComments.position, forumComments.score, forumComments.topicId
@@ -142,14 +142,14 @@ WHERE
 ORDER BY forumTopics.updated DESC, forumComments.created DESC
 ";
 
-            const string sqlx = sql1 + sql2;
-            const string sqli = sql1 + " (forumTopics.isSpam <> 1) AND (forumComments.id IS NULL OR forumComments.isSpam <> 1) AND " + sql2;
+            var sqlx = sql1 + sql2;
+            var sqli = sql1 + " (forumTopics.isSpam <> 1) AND (forumComments.id IS NULL OR forumComments.isSpam <> 1) AND " + sql2;
 
             var sql = ignoreSpam ? sqlx : sqli;
 
             var result = _databaseContext.Database.Query<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
-                sql, new { count = maxCount });
+                sql);
 
             return result;
         }

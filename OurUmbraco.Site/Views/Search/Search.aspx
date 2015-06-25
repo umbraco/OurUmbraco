@@ -57,6 +57,7 @@
 
                                 <div class="type-context">
                                     <div class="type-name"><%=result.GetTitle() %></div>
+                                    <span class="type-datetime"><%=result.GetDate() %></span>
                                     <div class="type-description"><%=result.GenerateBlurb(300) %></div>
                                 </div>
                             </a>

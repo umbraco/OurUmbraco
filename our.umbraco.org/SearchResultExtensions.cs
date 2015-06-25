@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Web;
 using Examine;
@@ -17,10 +18,13 @@ namespace our
         public static string GetIcon(this SearchResult result)
         {
             var icon = "icon-Chat";
-            if(result.Fields["nodeTypeAlias"] == "project"){
+            if (result.Fields["nodeTypeAlias"] == "project")
+            {
                 icon = "icon-Box";
-            }else if(result.Fields["nodeTypeAlias"] == "documentation"){
-                icon = "icon-Book-alt";   
+            }
+            else if (result.Fields["nodeTypeAlias"] == "documentation")
+            {
+                icon = "icon-Book-alt";
             }
 
             return icon;
@@ -30,11 +34,20 @@ namespace our
         {
             try
             {
-                return HttpContext.Current.Server.HtmlEncode(string.Format("Last update: {0}", GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy")));
+                var createDate = GetFormattedDateTime(result["createDate"], "MMMM dd, yyyy");
+                var updateDate = GetFormattedDateTime(result["updateDate"], "MMMM dd, yyyy");
+                return
+                    HttpContext.Current.Server.HtmlEncode(string.Format("Created: {0} - Last update: {1}", createDate,
+                        updateDate));
             }
             catch (FormatException ex)
             {
                 // Catches "String was not recognized as a valid DateTime." errors
+                // TODO: Figure out why these errors occur..
+            }
+            catch (KeyNotFoundException ex)
+            {
+                // Catches "The given key was not present in the dictionary." errors for result["createDate"]
                 // TODO: Figure out why these errors occur..
             }
 
@@ -47,7 +60,7 @@ namespace our
             {
                 return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
             }
-            catch (FormatException ex) 
+            catch (FormatException ex)
             {
                 // Catches "String was not recognized as a valid DateTime." errors
                 // TODO: Figure out why these errors occur..
@@ -81,7 +94,7 @@ namespace our
                     : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"]);
             }
 
-            if(result.Fields.ContainsKey("url"))
+            if (result.Fields.ContainsKey("url"))
             {
                 return result["url"];
             }
@@ -108,7 +121,7 @@ namespace our
             }
 
             var helper = new UmbracoHelper(UmbracoContext.Current);
-            
+
             return helper.Truncate(text, noOfChars);
         }
 
