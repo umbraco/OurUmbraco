@@ -56,3 +56,6 @@ OurUmbraco.Site/App_Data/mail/
 OurUmbraco.Client/build/assets/
 OurUmbraco.Client/node_modules/
 npm-debug.log
+OurUmbraco.Site/[Ww]eb.config
+OurUmbraco.Site/[Aa]ssets/css/style.min.css
+OurUmbraco.Site/[Aa]ssets/js/app.min.js
