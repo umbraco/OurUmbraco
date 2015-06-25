@@ -52,7 +52,10 @@ namespace our.Controllers
             mem.SetValue("company", model.Company);
             mem.SetValue("twitter", model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
-           
+
+            //WB: Do we need to check that this is unique so that karma can get assigned to only account from PR GitHub WebHook?
+            mem.SetValue("githubUsername", model.GitHubUsername); 
+
 
             ms.AssignRole(mem.Username, "standard");
            
