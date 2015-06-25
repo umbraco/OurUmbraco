@@ -43,11 +43,9 @@ namespace our.Attributes
                     //Return a HTTP 401 Unauthorised header
                     actionContext.Response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 }
-                else
-                {
-                    //Return a HTTP 200 OK
-                    actionContext.Response = new HttpResponseMessage(HttpStatusCode.OK);
-                }
+                
+                //All is good - do not need to set response 200 header here
+                //As we now need to carry on running our API method
 
             }
             catch (Exception)
@@ -63,14 +61,11 @@ namespace our.Attributes
         /// <summary>
         /// http://chris.59north.com/post/Integrating-with-Github-Webhooks-using-OWIN
         /// </summary>
-        /// <param name="body"></param>
-        /// <param name="signature"></param>sB
         /// <returns></returns>
         private bool IsValidToken(string payloadToken, HttpRequestMessage request)
         {
             //Get token stored on enviroment
-            var serverToken = Environment.GetEnvironmentVariable("githubToken");
-            //var serverToken = "superSecretFOO";
+            var serverToken = Environment.GetEnvironmentVariable("GITHUB_TOKEN", EnvironmentVariableTarget.Machine);
 
             //Need to get the actual content of the request - JSON payload
             //As this payload is signed/encoded with our key
@@ -95,9 +90,6 @@ namespace our.Attributes
 
             return hash.Equals(vals[1], StringComparison.OrdinalIgnoreCase);
         }
-
-
-
     }
 
 }
