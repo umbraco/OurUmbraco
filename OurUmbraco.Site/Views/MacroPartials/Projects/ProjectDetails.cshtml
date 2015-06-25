@@ -49,7 +49,7 @@
                 <div class="package-detail-content">
 
                     <div class="vote">
-                        <i class="icon-Hearts"></i>
+                        <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
                         @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
                         {
                             <span>@totalVotes votes</span>
