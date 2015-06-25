@@ -25,6 +25,7 @@ namespace our.Controllers
             m.Company = mem.GetValue<string>("company");
             m.TwitterAlias = mem.GetValue<string>("twitter");
             m.Avatar = mem.GetValue<string>("avatar");
+            m.GitHubUsername = mem.GetValue<string>("githubUsername");
 
             return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
         }
@@ -62,6 +63,7 @@ namespace our.Controllers
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
+            mem.SetValue("githubUsername", model.GitHubUsername);
             ms.Save(mem);
 
             var avatarImage = Utils.GetMemberAvatarImage(Members.GetById(mem.Id));
