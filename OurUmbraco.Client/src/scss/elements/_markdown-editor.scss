@@ -42,12 +42,16 @@
 	}
 
 	input, textarea, select{
-		border: 1px solid transparent;
+		border: 2px solid #E4E8E9;
+		color: #000;
+		
 		&:focus, &:active{
 			outline: none;
+			border-color: $color-green;
 		}
+
 		&.warning {
-			border: 1px solid $color-red !important;
+			border-color: $color-red !important;
 		}
 	}
 
@@ -98,8 +102,8 @@
 		label {
 			display: block;
 			margin-bottom: 5px;
-			color: #a9a9a9;
-			font-size: .8rem;
+			color: $color-space;
+			font-size: .9rem;
 		}
 	}
 	.wmd-button-row {
@@ -233,14 +237,18 @@
 		height: 300px;
 		width: 100%;
 		padding: .5rem;
-		font-size: .8rem;	
+		font-size: 1rem;	
 		color: $color-text;
 		background: white;
-		border: 2px solid whitesmoke;
+		border: 2px solid #E4E8E9;
 		@include transition(border-color, .2s);
 
 		@media (max-width: $xs) {
 			height: 152px;
+		}
+
+		&:focus {
+			border-color: $color-green;
 		}
 	}
 
@@ -252,7 +260,7 @@
 		padding: .5rem 20px;
 		font-size: .8rem;
 		color: #000;
-		background: #ededed;
+		background: darken(#F5F7F7, 5%);
 		@media (max-width: $xs) {
 			max-height: 150px;
 			min-height: 150px;
@@ -331,6 +339,9 @@
 		color: #000;
 		background: #fff;	
 		width: 100%;
+
+		border: 2px solid #E4E8E9;
+
 		@media (max-width: $xs) {
 			margin-top: 20px;
 		}

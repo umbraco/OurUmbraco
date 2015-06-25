@@ -59,10 +59,10 @@
 	}
 
 	.button {
-		font-size: 1rem;
+		font-size: .9rem !important;
 
 		@media (min-width: $md) {
-			font-size: 1.2rem;
+			font-size: 1rem !important;
 		}
 	}
 }

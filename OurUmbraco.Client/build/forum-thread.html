@@ -1067,51 +1067,88 @@ namespace TestProject.Controllers
 	</footer>
 
 	<div class="markdown-spacer"></div>
-	<div id="markdown-editor" class="markdown-editor">
-		
-		<div class="container">
-			
-			<div class="row reply-to">
-				<div class="col-sm-12">
-					<p>Reply to: <a class="reply-name" href=""></a> in <span class="reply-topic"></span></p>
-				</div>
-			</div>
-			
-			<div class="row hidden-xs">
-				<div class="col-md-12">
-					<div id="wmd-button-bar"></div>
-				</div>
-			</div>
-			
-			<div class="row input-row">
-				<div id="input-container" class="col-md-6">
-					<label>Editor</label>
-					<textarea name="" id="wmd-input" cols="30" rows="10" class="wmd-input markdown-control"></textarea>	
-				</div>
-				
-				<div id="preview-container" class="col-md-6">
-					<label>Preview</label>
-					<div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
-				</div>
-			</div>
-			
-			<div class="row">
-				<div class="col-xs-8">
-					<input class="button tiny" type="button" value="Post reply" id="topic-submit" class="markdown-control">
-				</div>
+	<div id="markdown-editor" class="markdown-editor write">
+	    <div class="container">
+	        <div class="row reply-to" style="display: none;">
+	            <div class="col-sm-6">
+	                <p>Write your reply to: <a class="reply-name" href=""></a></p>
+	            </div>
+	        </div>
 
-				<div class="col-xs-4 visible-xs visible-sm">
-					<button id="mobile-preview" class="markdown-control">
-						<i class="icon-Eye"></i> <span>Preview</span>
-					</button>
-				</div>
+	        <div class="row create-topic" style="display: block;">
+	            <div class="col-sm-6">
+	                <input id="topic-title" class="markdown-control" name="topic-title" type="text" placeholder="Enter topic title">
+	            </div>
 
-			</div>
+	                <div class="col-sm-3 col-xs-6">
+	                    <select name="topic-category" id="topic-category" class="markdown-control">
+	                        <option value="Choose a category" selected="" disabled="">Choose a category</option>
+	                                <option class="usingumbraco7" value="103196">Umbraco 7 - Using Umbraco 7</option>
+	                                <option class="developingumbraco7packages" value="103197">Umbraco 7 - Developing Umbraco 7 packages</option>
+	                                <option class="installingumbraco" value="1062">Getting Started - Installing umbraco</option>
+	                                <option class="questionsaboutrunwayandmodules" value="1069">Getting Started - Questions about runway and modules</option>
+	                                <option class="uiquestions" value="1065">Using - UI Questions</option>
+	                                <option class="migratingfromv5tov4(andbeyond)" value="48807">Using - Migrating from v5 to v4 (and beyond)</option>
+	                                <option class="templatesanddocumenttypes" value="4773">Templating - Templates and document types</option>
+	                                <option class="contour" value="6413">Umbraco PRO - Contour</option>
+	                                <option class="concierge" value="6414">Umbraco PRO - Concierge</option>
+	                                <option class="courier" value="6415">Umbraco PRO - Courier</option>
+	                                <option class="apiquestions" value="1066">Developers - API Questions</option>
+	                                <option class="razor" value="16455">Developers - Razor</option>
+	                                <option class="xslt" value="4680">Developers - XSLT</option>
+	                                <option class="extendingumbraco" value="4684">Developers - Extending Umbraco</option>
+	                                <option class="generalmarketing&amp;salesdiscussion" value="49424">Marketing &amp; Sales - General marketing &amp; sales discussion</option>
+	                                <option class="suggestameetup" value="1184">Meetups and usergroups - Suggest a meetup</option>
+	                                <option class="jobs" value="4691">Jobs - Jobs</option>
+	                                <option class="bugs" value="1149">our.umb dev forum - bugs</option>
+	                                <option class="features" value="1150">our.umb dev forum - Features</option>
+	                                <option class="general" value="5668">Core - General</option>
+	                                <option class="4.1feedback" value="5669">Core - 4.1 feedback</option>
+	                                <option class="generalquestions" value="73967">Umbraco as a Service - General Questions</option>
+	                                <option class="issues" value="73968">Umbraco as a Service - Issues</option>
+	                    </select>
+	                </div>
 
-		</div>
+	            <div class="col-sm-3 col-xs-6">
+	                <select name="topic-version" id="topic-version" class="markdown-control">
+	                    <option value="Choose a version" selected="" disabled="">Choose version</option>
+	                    <option value="7">Umbraco v7</option>
+	                    <option value="6">Umrbaco v6</option>
+	                    <option value="4">Umbraco v4</option>
+	                </select>
+	            </div>
 
-		<span class="markdown-close icon-Navigation-down"></span>
-		<div class="draft">Draft</div>
+	        </div>
+
+	        <div class="row hidden-xs">
+	            <div class="col-md-12">
+	                <div id="wmd-button-bar"><ul id="wmd-button-row" class="wmd-button-row"><li class="wmd-button" id="wmd-bold-button" title="Strong <strong> Ctrl+B" style="left: 0px;"><span style="background-position: 0px 0px;"></span></li><li class="wmd-button" id="wmd-italic-button" title="Emphasis <em> Ctrl+I" style="left: 25px;"><span style="background-position: -20px 0px;"></span></li><li class="wmd-spacer wmd-spacer1" id="wmd-spacer1"></li><li class="wmd-button" id="wmd-link-button" title="Hyperlink <a> Ctrl+L" style="left: 75px;"><span style="background-position: -40px 0px;"></span></li><li class="wmd-button" id="wmd-quote-button" title="Blockquote <blockquote> Ctrl+Q" style="left: 100px;"><span style="background-position: -60px 0px;"></span></li><li class="wmd-button" id="wmd-code-button" title="Code Sample <pre><code> Ctrl+K" style="left: 125px;"><span style="background-position: -80px 0px;"></span></li><li class="wmd-button" id="wmd-image-button" title="Image <img> Ctrl+G" style="left: 150px;"><span style="background-position: -100px 0px;"></span></li><li class="wmd-spacer wmd-spacer2" id="wmd-spacer2"></li><li class="wmd-button" id="wmd-olist-button" title="Numbered List <ol> Ctrl+O" style="left: 200px;"><span style="background-position: -120px 0px;"></span></li><li class="wmd-button" id="wmd-ulist-button" title="Bulleted List <ul> Ctrl+U" style="left: 225px;"><span style="background-position: -140px 0px;"></span></li><li class="wmd-button" id="wmd-heading-button" title="Heading <h1>/<h2> Ctrl+H" style="left: 250px;"><span style="background-position: -160px 0px;"></span></li><li class="wmd-button" id="wmd-hr-button" title="Horizontal Rule <hr> Ctrl+R" style="left: 275px;"><span style="background-position: -180px 0px;"></span></li><li class="wmd-spacer wmd-spacer3" id="wmd-spacer3"></li><li class="wmd-button" id="wmd-undo-button" title="Undo - Ctrl+Z" style="left: 325px;"><span style="background-position: -200px -20px;"></span></li><li class="wmd-button" id="wmd-redo-button" title="Redo - Ctrl+Shift+Z" style="left: 350px;"><span style="background-position: -220px -20px;"></span></li></ul></div>
+	            </div>
+	        </div>
+	        <div class="row input-row">
+	            <div id="input-container" class="col-md-6">
+	                <label>Editor</label>
+	                <textarea name="" id="wmd-input" cols="30" rows="10" class="wmd-input markdown-control"></textarea>
+	            </div>
+	            <div id="preview-container" class="col-md-6">
+	                <label>Preview</label>
+	                <div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
+	            </div>
+	        </div>
+	        <div class="row">
+	            <div class="col-xs-8">
+	                <input class="button tiny markdown-control" type="button" value="Post topic" id="topic-submit">
+	                <div id="posting"><div class="loader"></div></div>
+	            </div>
+	            <div class="col-xs-4 visible-xs visible-sm">
+	                <button id="mobile-preview" class="markdown-control">
+	                    <i class="icon-Eye"></i> <span>Preview</span>
+	                </button>
+	            </div>
+	        </div>
+	    </div>
+	    <span class="markdown-close icon-Page-down"></span>
+	    <div class="draft">Draft</div>
 	</div>
 
 
