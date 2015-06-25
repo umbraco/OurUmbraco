@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using Examine.SearchCriteria;
 using our.Examine;
 using our.Models;
-using Umbraco.Web.Models;
 using Umbraco.Web.UI.Pages;
 
 namespace OurUmbraco.Site.Views.Search
@@ -23,7 +19,22 @@ namespace OurUmbraco.Site.Views.Search
             {
                 var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
-                var ourSearcher = new OurSearcher(Request.QueryString["q"], maxResults: 100);
+                var nodeTypeAlias = Request.QueryString["cat"];
+                
+                int forumId;
+                var filters = new List<SearchFilters>();
+                if (nodeTypeAlias == "forum" && int.TryParse(Request.QueryString["fid"], out forumId))
+                {
+                    var searchFilters = new SearchFilters(BooleanOperation.And);
+                    searchFilters.Filters.Add(new SearchFilter("parentId", forumId.ToString()));
+                    filters.Add(searchFilters);
+                }
+
+                var ourSearcher = new OurSearcher(Request.QueryString["q"], 
+                    maxResults: 100, 
+                    nodeTypeAlias: 
+                    nodeTypeAlias, 
+                    filters: filters);
 
                 var results = ourSearcher.Search();
 

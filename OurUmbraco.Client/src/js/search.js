@@ -1,10 +1,25 @@
 function redirectToSearch(ev){
 	    	if(ev.keyCode === 13){
 				ev.preventDefault();
-				window.location = "/search?q="+this.value;
+				var cssClass = ev.target.attributes.class.value;
+				
+				var category = cssClass.replace("-search-input", "");
+				if(category === "docs") {
+					category = "documentation";
+				}
+				
+				var forumId = $('#selectCategory').val();
+				if(forumId !== undefined) {
+					forumId = forumId.replace(/([A-Za-z])\w+/g, "");
+				}
+				
+				var redirect = "/search?q="+this.value+"&cat="+category;
+				if(forumId !== undefined) { 
+					redirect = redirect+"&fid="+forumId;
+				}
+				window.location = redirect;
 			}
 	    }
-
 
 var projectSearch = _.debounce(function(ev) {
 	var term = $('.project-search-input').val();
@@ -263,7 +278,7 @@ $('.docs-search-input')
 //forum search form
 $('.forum-search-input')
 	.keydown(redirectToSearch)
-	.keyup( forumSearch );
+	.keyup(forumSearch);
 
 // Frontpage search form
 $('.search-input')
@@ -276,4 +291,3 @@ $('.project-search-input')
 	.keyup(projectSearch);
 
 });
-
