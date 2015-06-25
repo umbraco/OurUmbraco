@@ -181,10 +181,15 @@
 
 			&.solved {
 				background: rgba($color-our, .23);
-				border: 2px solid rgba($color-our, .66);
+				border-top: 2px solid rgba($color-our, .66);
+				border-bottom: 2px solid rgba($color-our, .66);
 
 				+ .solved {
 					margin-top: 10px;
+				}
+
+				@media (min-width: $md) {
+					border: 2px solid rgba($color-our, .66);
 				}
 			}
 
