@@ -29,6 +29,8 @@ namespace our.Models
 
         public string TwitterAlias { get; set; }
 
+        public string GitHubUsername { get; set; }
+
         public string Location { get; set; }
 
 
