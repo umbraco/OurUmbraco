@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Umbraco.Core.Persistence.Querying;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -52,6 +53,14 @@ namespace our.Controllers
             {
                 ModelState.AddModelError("Password", "Passwords need to match");
                 ModelState.AddModelError("RepeatPassword", "Passwords need to match");
+                return CurrentUmbracoPage();
+            }
+
+            //Check to see if we can find a member with that github username already set
+            var tryFindMember = ms.GetMembersByPropertyValue("githubUsername", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
+            if (tryFindMember != null)
+            {
+                ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
                 return CurrentUmbracoPage();
             }
             
