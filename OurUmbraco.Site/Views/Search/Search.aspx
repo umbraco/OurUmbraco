@@ -20,36 +20,48 @@
                         <li><a href="#" rel="nofollow">Search</a></li>
                         <li><a href="#" rel="nofollow"><%=Model.Results.SearchTerm %></a></li>
                     </ul>
-                    
+
                     <% if (Context.IsDebuggingEnabled)
                        { %>
-                        <p style="border: 1px solid orange;">
-                            <strong>Debugging output</strong><br/>
+                    <div style="border: 1px solid orange;">
+                        <p>
+                            <strong>Debugging output</strong><br />
                             <strong>Query:</strong> <%= Model.Results.LuceneQuery %><br />
                             <strong>Order by:</strong> <%= Model.Results.OrderBy %><br />
                             <strong>Time elapsed:</strong> <%= Model.Results.Totalmilliseconds %>
                         </p>
+                    
+                        <div id="search-options">
+                            <span>Options:</span><br/>
+                            <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
+                            <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
+                            <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span><br/>
+                            <span><input type="checkbox" name="order" value="score"/> order by score</span><br/>
+                        </div>
+                    </div>
                     <% } %>
 
                     <div class="search-big">
-                        <asp:TextBox runat="server" ID="SearchText" ></asp:TextBox>
+                        <asp:TextBox runat="server" ID="SearchText"></asp:TextBox>
                         <label for="<%=SearchText.ClientID %>">Search</label>
                     </div>
-                    <% if (Model.Results.SearchResults.Any() == false) { %>
-                        <p>No results</p>
+                    <% if (Model.Results.SearchResults.Any() == false)
+                       { %>
+                    <p>No results</p>
                     <% } %>
                     <div class="clear"></div>
                 </div>
 
                 <section>
-                    <% if (string.IsNullOrWhiteSpace(Model.Results.Category) == false) { %>
-                        <h2>Results from category: <%= Model.Results.Category %></h2>
+                    <% if (string.IsNullOrWhiteSpace(Model.Results.Category) == false)
+                       { %>
+                    <h2>Results from category: <%= Model.Results.Category %></h2>
                     <% } %>
 
                     <ul class="search-all-results docs-search-listing">
                         <% foreach (var result in Model.Results.SearchResults)
                            {%>
-                        <li>
+                        <li class="<%= result.SolvedClass() %>">
                             <a href="<%=result.FullUrl() %>">
                                 <div class="type-icon">
                                     <i class="<%=result.GetIcon() %>"></i>

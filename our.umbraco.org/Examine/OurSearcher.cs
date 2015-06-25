@@ -54,17 +54,6 @@ namespace our.Examine
                 }
             }
 
-            if (Filters.Any())
-            {
-                //If there is a filter applied to the entire result then add it here, this is a MUST sub query
-                sb.Append("+(");
-                foreach (var filter in Filters)
-                {
-                    sb.Append(filter.GetLuceneFilter());
-                }
-                sb.Append(")");
-            }
-
             if (!string.IsNullOrEmpty(Term))
             {
                 Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*').Trim('\'').Trim('"');
@@ -109,6 +98,23 @@ namespace our.Examine
             {
                 return new SearchResultModel(new EmptySearchResults(), 0, "", "");
             }
+
+            if (Filters.Any())
+            {
+                //If there is a filter applied to the entire result then add it here, this is a MUST sub query
+                
+                foreach (var filter in Filters)
+                {
+                    sb.Append(filter.GetLuceneAddFilters());
+                }
+                
+
+                foreach (var filter in Filters)
+                {
+                    sb.Append(filter.GetLuceneExcludeFilters());
+                }
+            }
+
 
             criteria.RawQuery(sb.ToString());
 

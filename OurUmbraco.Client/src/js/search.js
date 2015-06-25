@@ -1,30 +1,45 @@
 function redirectToSearch(ev){
 	    	if(ev.keyCode === 13){
 				ev.preventDefault();
-				var cssClass = ev.target.attributes.class.value;
-				
-				var filters = GetSearchFilters(cssClass);
-				
 				var query = this.value.replace(":", " ");
 				
-				var redirect = "/search?q="+query+"&cat="+filters.category;
-				if(filters.forumId !== undefined) { 
-					redirect = redirect+"&fid="+filters.forumId;
-				}
+				var categoryName = getParameterByName('cat');
+				 
+				if(categoryName === undefined) {
+					var category = ev.target.attributes.class.value;
+				} 
 				
-				window.location = redirect;
+				var filters = GetSearchFilters(categoryName);
+				
+				var newUri = "/search";
+				newUri = updateQueryString("q", query, newUri);
+				newUri = updateQueryString("cat", filters.category, newUri);
+				newUri = updateQueryString("fid", filters.forumId, newUri);
+				newUri = updateQueryString("order", filters.order, newUri);
+				newUri = updateQueryString("replies", filters.replies, newUri);
+				newUri = updateQueryString("solved", filters.solved, newUri);
+				console.log(newUri);
+								
+				window.location = newUri;
 			}
 	    }
 
 function GetSearchFilters(cssClass) {
 	var filters = { 
 		category: undefined,
-		forumId: undefined
+		forumId: undefined,
+		order: undefined,
+		solved: undefined,
+		replies: undefined
 	};
-	
-	var category = cssClass.replace("-search-input", "");
-	if(category === "docs") {
-		category = "documentation";
+	if(cssClass === undefined) {
+		filters.category = undefined;
+	} else {
+		var category = cssClass.replace("-search-input", "");
+		if(category === "docs") {
+			filters.category = "documentation";
+		}
+		filters.category = category;
 	}
 	
 	var forumId = $('#selectCategory').val();
@@ -32,8 +47,10 @@ function GetSearchFilters(cssClass) {
 		forumId = forumId.replace(/([A-Za-z])\w+/g, "");
 	}
 	
-	filters.category = category;
 	filters.forumId = forumId;
+	filters.order = getParameterByName('order');
+	filters.solved = getParameterByName('solved');
+	filters.replies = getParameterByName('replies');
 	
 	return filters;
 }	
@@ -311,4 +328,73 @@ $('.project-search-input')
 	.keydown(redirectToSearch)
 	.keyup(projectSearch);
 
+$('.search-big input[type=text]')
+	.keydown(redirectToSearch);
+	
+$('#search-options input[type=checkbox]').click(function () {
+	var newUri;
+	if(this.name === "order") {
+		if(this.name === "order") {
+			newUri = updateQueryString("order", this.value, window.location.href);
+		}
+	} else {
+		newUri = updateQueryString(this.name, this.checked, window.location.href);
+	}
+	console.log(newUri);
+	window.location = newUri;
 });
+
+initCheckbox('replies');
+initCheckbox('solved');
+initCheckbox('order');
+
+});
+
+// From: http://stackoverflow.com/a/11654596/5018
+function updateQueryString(key, value, url) {
+   	if (!url) url = window.location.href;
+    var re = new RegExp("([?&])" + key + "=.*?(&|#|$)(.*)", "gi"),
+        hash;
+
+    if (re.test(url)) {
+        if (typeof value !== 'undefined' && value !== null)
+            return url.replace(re, '$1' + key + "=" + value + '$2$3');
+        else {
+            hash = url.split('#');
+            url = hash[0].replace(re, '$1$3').replace(/(&|\?)$/, '');
+            if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                url += '#' + hash[1];
+            return url;
+        }
+    }
+    else {
+        if (typeof value !== 'undefined' && value !== null) {
+            var separator = url.indexOf('?') !== -1 ? '&' : '?';
+            hash = url.split('#');
+            url = hash[0] + separator + key + '=' + value;
+            if (typeof hash[1] !== 'undefined' && hash[1] !== null) 
+                url += '#' + hash[1];
+            return url;
+        }
+        else
+            return url;
+    }
+}
+
+// From: http://stackoverflow.com/a/901144/5018
+function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+        results = regex.exec(location.search);
+    return results === null ? undefined : decodeURIComponent(results[1].replace(/\+/g, " "));
+}
+
+function initCheckbox(name) {
+	if(getParameterByName(name) === "true") {
+		$('#search-options input[name=' + name + ']').prop('checked', true); 
+	}
+	else {
+		var value = getParameterByName(name);
+		$('#search-options input[value=' + value + ']').prop('checked', true);
+	}
+}

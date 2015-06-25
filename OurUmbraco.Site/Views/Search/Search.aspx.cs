@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using Examine.SearchCriteria;
-using InfoCaster.Umbraco.UrlTracker.Helpers;
 using our.Examine;
 using our.Models;
+using Umbraco.Web;
 using Umbraco.Web.UI.Pages;
 
 namespace OurUmbraco.Site.Views.Search
@@ -21,7 +21,7 @@ namespace OurUmbraco.Site.Views.Search
                 var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
                 var nodeTypeAlias = Request.QueryString["cat"];
-                
+
                 int forumId;
                 var forumName = string.Empty;
                 var filters = new List<SearchFilters>();
@@ -31,16 +31,45 @@ namespace OurUmbraco.Site.Views.Search
                     searchFilters.Filters.Add(new SearchFilter("parentId", forumId.ToString()));
                     filters.Add(searchFilters);
 
-                    var umbracoHelper = new Umbraco.Web.UmbracoHelper(Umbraco.Web.UmbracoContext.Current);
+                    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
                     var forum = umbracoHelper.ContentQuery.TypedContent(forumId);
                     var parentForum = forum.Parent;
                     forumName = forum.Name + " - " + parentForum.Name;
                 }
 
-                var ourSearcher = new OurSearcher(Request.QueryString["q"], 
-                    maxResults: 100, 
-                    nodeTypeAlias: 
-                    nodeTypeAlias, 
+                if (string.IsNullOrWhiteSpace(Request.QueryString["solved"]) == false)
+                {
+                    bool onlySolvedItems;
+                    if (bool.TryParse(Request.QueryString["solved"], out onlySolvedItems) && onlySolvedItems)
+                    {
+                        var searchFilters = new SearchFilters(BooleanOperation.Not);
+                        searchFilters.Filters.Add(new SearchFilter("solved", "0"));
+                        filters.Add(searchFilters);
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(Request.QueryString["replies"]) == false)
+                {
+                    bool onlyIfReplies;
+                    if (bool.TryParse(Request.QueryString["replies"], out onlyIfReplies) && onlyIfReplies)
+                    {
+                        var searchFilters = new SearchFilters(BooleanOperation.Not);
+                        searchFilters.Filters.Add(new SearchFilter("replies", "0"));
+                        filters.Add(searchFilters);
+                    }
+                }
+
+                var orderBy = "score";
+                if (string.IsNullOrWhiteSpace(Request.QueryString["order"]) == false)
+                {
+                    orderBy = Request.QueryString["order"];
+                }
+
+                var ourSearcher = new OurSearcher(Request.QueryString["q"],
+                    orderBy: orderBy,
+                    maxResults: 100,
+                    nodeTypeAlias:
+                    nodeTypeAlias,
                     filters: filters);
 
                 var results = ourSearcher.Search();
@@ -55,7 +84,7 @@ namespace OurUmbraco.Site.Views.Search
             {
                 Response.Redirect("/search?q=" + SearchText.Text);
             }
-            
+
         }
     }
 }

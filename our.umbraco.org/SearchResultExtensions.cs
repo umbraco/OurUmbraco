@@ -30,6 +30,16 @@ namespace our
             return icon;
         }
 
+        public static string SolvedClass(this SearchResult result)
+        {
+            if (result.Fields.ContainsKey("solved") && result.Fields["solved"] != "0")
+            {
+                return "solved";
+            }
+            
+            return string.Empty;
+        }
+
         public static string GetDate(this SearchResult result)
         {
             try
