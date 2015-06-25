@@ -8,8 +8,12 @@
 
     directoryName = directoryName.Substring(1);
     string[] strDirs = directoryName.Split('\\');
-
-    string linkToGithub = uDocumentation.Github.MarkdownFileLink();
+    
+    var linkToGithub = string.Empty;
+    if (absolutePath.StartsWith("/project") == false)
+    {
+        linkToGithub = uDocumentation.Github.MarkdownFileLink();
+    }
 }
 <div class="utilities">
     <ul id="breadcrumb">
@@ -31,7 +35,7 @@
 
     </ul>
     <div class="utility-actions">
-        @if (linkToGithub != "")
+        @if (string.IsNullOrWhiteSpace(linkToGithub) == false)
         {
             <a href="@linkToGithub" id="github-link" class="button transparent tiny">Edit</a>
         }
