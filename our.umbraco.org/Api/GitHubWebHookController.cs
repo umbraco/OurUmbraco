@@ -37,7 +37,8 @@ namespace our.Api
             var payloadString = Request.Content.ReadAsStringAsync().Result;
 
             //Map JSON string to object
-            var payload = JsonConvert.DeserializeObject<PullRequestEventPayload>(payloadString);
+            //var payload = JsonConvert.DeserializeObject<PullRequestEventPayload>(payloadString);
+            var payload = new Octokit.Internal.SimpleJsonSerializer().Deserialize<PullRequestEventPayload>(payloadString);
             
             //Check the state, is it closed & merged = true
             //Means was accepeted & put back into repo
@@ -52,7 +53,7 @@ namespace our.Api
 
                 //Try & find a member with this github username
                 //Should only ever be one (As when saving profile we should check that no one else has it set already)
-                var gitHubMember = memberService.GetMembersByPropertyValue("githubUsername", payload.PullRequest.User.Login, StringPropertyMatchType.Exact).FirstOrDefault();
+                var gitHubMember = memberService.GetMembersByPropertyValue("github", payload.PullRequest.User.Login, StringPropertyMatchType.Exact).FirstOrDefault();
 
                 //Check we definately found someone (again if there was more than one, we picked first)
                 if (gitHubMember != null)
