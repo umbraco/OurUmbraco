@@ -19,6 +19,9 @@ function redirectToSearch(ev){
 				if(filters.category !== "search-input") {
 					newUri = updateQueryString("cat", filters.category, newUri);
 				}
+				if(filters.category === "docs") {
+					newUri = updateQueryString("cat", "documentation", newUri);
+				}
 				newUri = updateQueryString("fid", filters.forumId, newUri);
 				newUri = updateQueryString("order", filters.order, newUri);
 				newUri = updateQueryString("replies", filters.replies, newUri);
@@ -40,9 +43,6 @@ function GetSearchFilters(cssClass) {
 		filters.category = undefined;
 	} else {
 		var category = cssClass.replace("-search-input", "");
-		if(category === "docs") {
-			filters.category = "documentation";
-		}
 		filters.category = category;
 	}
 	
