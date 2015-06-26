@@ -47,7 +47,7 @@ namespace our.Controllers
             }
 
             //Check to see if we can find a member with that github username already set
-            var tryFindMember = ms.GetMembersByPropertyValue("githubUsername", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
+            var tryFindMember = ms.GetMembersByPropertyValue("github", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
             if (tryFindMember != null)
             {
                 ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
@@ -61,7 +61,7 @@ namespace our.Controllers
             mem.SetValue("company", model.Company);
             mem.SetValue("twitter", model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
-            mem.SetValue("githubUsername", model.GitHubUsername); 
+            mem.SetValue("github", model.GitHubUsername); 
 
 
             ms.AssignRole(mem.Username, "standard");
