@@ -16,7 +16,9 @@ function redirectToSearch(ev){
 				
 				var newUri = "/search";
 				newUri = updateQueryString("q", query, newUri);
-				newUri = updateQueryString("cat", filters.category, newUri);
+				if(filters.category !== "search-input") {
+					newUri = updateQueryString("cat", filters.category, newUri);
+				}
 				newUri = updateQueryString("fid", filters.forumId, newUri);
 				newUri = updateQueryString("order", filters.order, newUri);
 				newUri = updateQueryString("replies", filters.replies, newUri);
