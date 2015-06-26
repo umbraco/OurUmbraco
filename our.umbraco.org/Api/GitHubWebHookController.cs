@@ -69,6 +69,9 @@ namespace our.Api
                     //TODO: DO I NEED TO GIVE SOME CONTEXT WHERE THIS WAS ASSIGNED FROM
                     //SO KARMA LOG/HISTORY FOR USER CAN BE TRACED BACK?!
                     gitHubMember.IncreaseKarma(karmaToAward);
+
+                    //Save member so karma is persisted to member
+                    memberService.Save(gitHubMember);
                 }
 
             }
