@@ -22,7 +22,7 @@ namespace our.Examine
             bool addedGrouping = false;
             foreach (var filter in Filters)
             {
-                if (_booleanOperation == BooleanOperation.And)
+                if (_booleanOperation != BooleanOperation.Not)
                 {
                     if (addedGrouping == false)
                         sb.Append("+(");

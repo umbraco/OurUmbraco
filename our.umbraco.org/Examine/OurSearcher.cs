@@ -116,7 +116,8 @@ namespace our.Examine
             }
 
 
-            criteria.RawQuery(sb.ToString());
+            var query = sb.ToString().Replace("+()", string.Empty);
+            criteria.RawQuery(query);
 
             if (string.IsNullOrEmpty(OrderBy) == false)
             {
