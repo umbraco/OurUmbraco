@@ -56,12 +56,18 @@ namespace our.Controllers
                 return CurrentUmbracoPage();
             }
 
-            //Check to see if we can find a member with that github username already set
-            var tryFindMember = ms.GetMembersByPropertyValue("github", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
-            if (tryFindMember != null)
+            //Only check if github username already set
+            //If a value has been set & that the github username has not changed from last time
+            //May be updating other items on their profile
+            if (!string.IsNullOrEmpty(model.GitHubUsername) && model.GitHubUsername != mem.GetValue<string>("github"))
             {
-                ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
-                return CurrentUmbracoPage();
+                //Check to see if we can find a member with that github username already set
+                var tryFindMember = ms.GetMembersByPropertyValue("github", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
+                if (tryFindMember != null)
+                {
+                    ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
+                    return CurrentUmbracoPage();
+                }
             }
             
             mem.Name = model.Name ;
