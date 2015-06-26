@@ -62,6 +62,10 @@
 						color: darken($color-space, 25%);
 						border-color: $color-green;
 					}
+
+					&:hover {
+						border-color: rgba($color-space, .66);
+					}
 				}
 			}
 
@@ -98,10 +102,10 @@
 			flex-direction: column;
 
 			.posts {
-				
+
 				display: flex;
 				flex-direction: column;
-				
+
 				small {
 					color: darken($color-space, 25%);
 					font-size: 1rem;
@@ -181,8 +185,7 @@
 
 			&.solved {
 				background: rgba($color-our, .23);
-				border-top: 2px solid rgba($color-our, .66);
-				border-bottom: 2px solid rgba($color-our, .66);
+				border-bottom: none;
 
 				+ .solved {
 					margin-top: 10px;
@@ -193,7 +196,7 @@
 				}
 			}
 
-			
+
 
 
 			@media (min-width: $md) {
@@ -289,7 +292,7 @@
 
 // Buttons in forum
 .forum-page .button, .forum-page button.button {
-	
+
 	&.delete-thread,
 	&.follow,
 	&.create-new-thread,
@@ -300,7 +303,7 @@
 		width: auto;
 
 		font-size: .9rem;
-		
+
 		@include transition(all, .2s);
 
 
@@ -329,7 +332,7 @@
 
 
 	&.delete-thread {
-		@extend .red; 
+		@extend .red;
 
 		i {
 			color: #fff;
@@ -342,13 +345,13 @@
 
 
 
-	&.following {	
+	&.following {
 		@extend .green;
 	}
 
 	&.create-new-thread,
 	&.login {
-		
+
 
 		@extend .green;
 
@@ -397,14 +400,14 @@
 		display: block;
 		position:relative;
 		left:50%;
-		
+
 		.span {
 			background-color: rgba(#504d3e, 0.5);
 			transform: translate(-50%, 0);
 		}
 	}
 
-	
+
 
 	.sorting {
 		width: 100%;
@@ -415,10 +418,10 @@
 			font-family: $font-family;
 			position: relative;
 			overflow: hidden;
-			
+
 			-webkit-appearance:none;
 			-moz-appearance: none;
-			
+
 			background: #fff url('/assets/images/selectdown_unfocus.svg');
 			background-size: 11px 13px;
 			background-repeat: no-repeat;
@@ -427,15 +430,14 @@
 			color: $color-space;
 
 			width: 100%;
-			
+
 			@include transition(border, .3s);
 
 
 			&:focus, &:hover {
-				border-color: $color-our;
 				outline: none;
 				cursor: pointer;
-				background: #fff url('/assets/images/selectdown_our.svg');	
+				background: #fff url('/assets/images/selectdown_our.svg');
 				background-size: 11px 13px;
 				background-repeat: no-repeat;
 				background-position: 95% center;
