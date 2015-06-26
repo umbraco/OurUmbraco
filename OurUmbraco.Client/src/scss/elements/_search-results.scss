@@ -4,7 +4,7 @@
 
 	padding: 20px 0;
 
-	@media (max-width: $md) {		
+	@media (max-width: $md) {
 		.search-all-form, .search-all-results {
 			transition: width .2s cubic-bezier(0.7,0,0.3,1),
 						max-width .2s cubic-bezier(0.7,0,0.3,1),
@@ -18,7 +18,7 @@
 	width: 100%;
 	overflow: hidden;
 }
-	
+
 .search-all-form {
 	position: relative;
 	display: inline-block;
@@ -33,7 +33,7 @@
 	@media (min-width: $md) {
 		margin-top: 100px;
 	}
-	
+
 	.search-fieldset {
 		position: relative;
 		display: inline-block;
@@ -60,10 +60,10 @@
 		-webkit-appearance: none;
 		font-family: $font-family;
 		font-size: 1.2rem;
-		
+
 		&:focus {
 			outline: none;
-			
+
 			+ input[type="submit"] {
 				color: $color-our;
 			}
@@ -158,7 +158,7 @@
 
 	.type-context {
 		width: 80%;
-	
+
 		@media (min-width: $md) {
 			width: 95%;
 		}
@@ -189,15 +189,15 @@
 		}
 
 		:-moz-placeholder {
-		   color: #000;  
+		   color: #000;
 		}
 
-		::-moz-placeholder { 
-		   color: #000;  
+		::-moz-placeholder {
+		   color: #000;
 		}
 
-		:-ms-input-placeholder {  
-		   color: #000;  
+		:-ms-input-placeholder {
+		   color: #000;
 		}
 	}
 
@@ -244,10 +244,6 @@
 	.search-all {
 		background: none;
 		padding: 0 10px;
-
-		@media(min-width: $md) {
-			padding: 0 15px;
-		}
 	}
 
 	.forum-archive-header {
@@ -292,4 +288,208 @@
 			min-height: 55px;
 		}
 	}
+}
+
+.search-results {
+
+	h2, .search-in {
+		font-size: .9rem;
+		color: #4f5f63;
+		text-transform: uppercase;
+		font-weight: 700;
+		letter-spacing: .2px;
+		display: block;
+		margin-bottom: .75rem;
+		text-align: left;
+	}
+
+	.search-big {
+		padding: 0 10px;
+
+		input {
+			font-size: .95rem;
+			color: $color-space;
+
+			margin-bottom: 30px;
+
+			border: 2px solid rgba($color-space, .33);
+
+			transition: border 150ms ease;
+
+			&:hover {
+				border: 2px solid rgba($color-space, .66);
+			}
+
+			&:focus {
+				color: darken($color-space, 25%);
+				border-color: $color-green;
+			}
+		}
+	}
+
+	.message {
+		margin-top: 40px;
+		font-size: 1.2rem;
+
+		color: darken($color-space, 45%);
+	}
+
+	.search-options {
+		padding: 0 10px;
+		margin: 10px 0 40px;
+
+		label {
+			font-size: .9rem;
+			color: #4f5f63;
+			text-transform: uppercase;
+			font-weight: 700;
+			letter-spacing: .2px;
+			display: block;
+			margin-bottom: .5rem;
+			text-align: left;
+		}
+
+		.options {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
+
+			span {
+				position: relative;
+				flex: 1 1 auto;
+				margin-right: 20px;
+
+				display: flex;
+				justify-content: center;
+				align-items: center;
+
+				text-align: center;
+
+				&:last-child {
+					margin-right: 0;
+				}
+
+				min-height: 50px;
+
+				input {
+					position: absolute;
+					z-index: 20;
+					top: 0;
+					left: 0;
+					appearance: none;
+					width: 100%;
+					height: 100%;
+
+					padding: 15px 0;
+
+					cursor: pointer;
+
+					border: 2px solid rgba($color-space, .22);
+
+					transition: border 150ms ease;
+
+					outline: none;
+
+					&:hover {
+						border-color: rgba($color-space, .44);
+
+						+ small {
+							color: darken($color-space, 2%);
+						}
+					}
+
+					&:checked {
+						border-color: $color-green;
+						background: rgba($color-green, .22);
+
+						+ small {
+							color: $color-green;
+						}
+
+						&:hover {
+							border-color: $color-green;
+							background: rgba($color-green, .15);
+						}
+					}
+				}
+
+				small {
+					color: rgba($color-space, .66);
+					transition: color 150ms ease;
+					font-size: .9rem;
+
+					transform: translate(0, 3px);
+				}
+			}
+		}
+	}
+
+	.search-all-results {
+		padding: 0 10px !important;
+		border: none !important;
+		margin: 0 0 50px 0;
+
+		li {
+			background: none;
+			border: 2px solid rgba($color-space, .33);
+
+			transition: border 150ms ease;
+
+			+ li {
+				margin-top: 20px;
+			}
+
+			a {
+				display: flex;
+				align-items: center;
+				text-decoration: none;
+			}
+
+			.type-icon {
+				color: $color-space;
+				display: none;
+
+				@media(min-width: $md) {
+					display: inline-block;
+				}
+			}
+
+			.type-context {
+				width: 100%;
+
+				@media (min-width: $md) {
+					width: 95%;
+				}
+
+				.type-name {
+					font-size: 1.1rem;
+					font-weight: normal;
+					color: $color-green;
+				}
+
+				.type-description {
+					color: darken($color-space, 5%);
+					font-size: .95rem;
+				}
+			}
+
+			&:hover {
+				border: 2px solid rgba($color-space, .66);
+
+				.type-icon {
+					color: darken($color-space, 45%);
+
+					.type-context {
+						.type-name {
+							color: darken($color-space, 65%);
+						}
+						.type-description {
+							color: darken($color-space, 25%);
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

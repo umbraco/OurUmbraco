@@ -75,6 +75,12 @@
 
 				border: 2px solid rgba($color-space, .33);
 
+				transition: border 150ms ease;
+
+				&:hover {
+					border: 2px solid rgba($color-space, .66);
+				}
+
 				&:focus {
 					color: darken($color-space, 25%);
 					border-color: $color-green;
@@ -82,6 +88,7 @@
 			}
 		}
 
+	
 
 		&-head {
 			flex-direction: row;

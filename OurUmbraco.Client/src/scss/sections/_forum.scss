@@ -38,7 +38,7 @@ section.forum {
 	.flex {
 		display: flex;
 		flex-flow: row wrap;
-		justify-content: space-between; 
+		justify-content: space-between;
 	}
 
 
@@ -97,7 +97,7 @@ section.forum {
 
 	}
 
-	
+
 
 	.goto-forum {
 		text-align: center;
@@ -133,12 +133,13 @@ section.forum {
 	margin-bottom: 30px;
 	border: 1px solid darken(#f6f6f6, 5%);
 	transition: box-shadow .2s;
-	text-decoration: none;	
+	text-decoration: none;
 
 	display: flex;
 	align-items: center;
 
 	&:hover {
+		border-color: transparent;
 		@include box_shadow(2);
 	}
 
@@ -208,10 +209,10 @@ section.forum {
 }
 
 
-_:-ms-input-placeholder, :root .selector { 
+_:-ms-input-placeholder, :root .selector {
     section.forum .forum-thread {
 		@media (min-width: $md) {
 			flex: 0 1 47%;
 		}
-	}  
+	}
 }
