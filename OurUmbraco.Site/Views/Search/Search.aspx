@@ -21,12 +21,7 @@
                         <li><a href="#" rel="nofollow"><%=Model.Results.SearchTerm %></a></li>
                     </ul>
                 </div>
-
-                <div class="search-big">
-                    <asp:TextBox runat="server" ID="SearchText"></asp:TextBox>
-                    <label for="<%=SearchText.ClientID %>">Search</label>
-                </div>
-
+                
                 <% if (Context.IsDebuggingEnabled)
                    { %>
                 <div style="border: 1px solid orange;">
@@ -36,28 +31,36 @@
                         <strong>Order by:</strong> <%= Model.Results.OrderBy %><br />
                         <strong>Time elapsed:</strong> <%= Model.Results.Totalmilliseconds %>
                     </p>
-                    <div id="search-options" class="search-options">
-                        <% if(Request.QueryString["cat"] == "forum")
-                           { %>
 
-                            <label>Options:</label>
-                            <div class="options">
-                                <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
-                                <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
-                                <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
-                            </div>
-                        </div>
-                        <% } %>
+                    </div>
+                <% } %>
 
-                        <% if (Request.QueryString["cat"] == "project")
-                           { %>
-                            <span>Options:</span><br/>
-                            <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
-                        <% } %>
-
-                        <% } %>
+                <div class="search-big">
+                    <asp:TextBox runat="server" ID="SearchText"></asp:TextBox>
+                    <label for="<%=SearchText.ClientID %>">Search</label>
                 </div>
+
                 
+                <% if(Request.QueryString["cat"] == "forum")
+                    { %>
+                    <div id="search-options" class="search-options">
+                    <div class="options">
+                        <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
+                        <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
+                        <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
+                    </div>
+                    </div>
+                <% } %>
+
+<%--                <% if (Request.QueryString["cat"] == "project")
+                    { %>
+                    <div id="search-options" class="search-options">
+                        <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
+                    </div>
+                <% } %>--%>
+
+                        
+                </div>
 
                 <% if (Model.Results.SearchResults.Any() == false)
                    { %>
