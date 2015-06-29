@@ -21,7 +21,7 @@
                         <li><a href="#" rel="nofollow"><%=Model.Results.SearchTerm %></a></li>
                     </ul>
                 </div>
-                
+
                 <% if (Context.IsDebuggingEnabled)
                    { %>
                 <div style="border: 1px solid orange;">
@@ -40,14 +40,22 @@
                     <label for="<%=SearchText.ClientID %>">Search</label>
                 </div>
 
-                
+
                 <% if(Request.QueryString["cat"] == "forum")
                     { %>
                     <div id="search-options" class="search-options">
+                        <label>Sort by</label>
                     <div class="options">
-                        <span><input type="checkbox" name="solved"/> show only solved topics</span><br/>
-                        <span><input type="checkbox" name="replies"/> show only topics with replies</span><br/>
-                        <span><input type="checkbox" name="order" value="updateDate"/> show last updated first</span>
+                        <span>
+                            <input type="checkbox" name="solved"/>
+                            <small>show only solved topics</small
+                        ></span><br/>
+                        <span>
+                            <input type="checkbox" name="replies"/><small>show only topics with replies</small>
+                        </span><br/>
+                        <span>
+                            <input type="checkbox" name="order" value="updateDate"/><small>show last updated first</small>
+                        </span>
                     </div>
                     </div>
                 <% } %>
@@ -59,7 +67,7 @@
                     </div>
                 <% } %>--%>
 
-                        
+
                 </div>
 
                 <% if (Model.Results.SearchResults.Any() == false)

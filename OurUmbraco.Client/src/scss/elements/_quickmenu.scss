@@ -27,7 +27,7 @@ body.quickmenu {
 	}
 
 
-	
+
 	> .container {
 		padding-bottom: 30px;
 	}
@@ -163,7 +163,7 @@ body.quickmenu {
 			}
 		}
 	}
-	
+
 	.log-out {
 		margin-top: 20px;
 		a {
@@ -195,8 +195,6 @@ body.quickmenu {
 
 		text-decoration: none;
 
-
-
 		&-text {
 			margin-top: 0;
 			margin-right: 5%;
@@ -212,6 +210,19 @@ body.quickmenu {
 			flex: 1 0 30%;
 			font-size: .8rem;
 			margin: 0;
+		}
+
+		&.solved {
+			background: rgba($color-our, .23);
+			border-bottom: none;
+
+			+ .solved {
+				margin-top: 10px;
+			}
+
+			@media (min-width: $md) {
+				border: 2px solid rgba($color-our, .66);
+			}
 		}
 	}
 

@@ -416,9 +416,14 @@
 				small {
 					color: rgba($color-space, .66);
 					transition: color 150ms ease;
-					font-size: .9rem;
+					font-size: .7rem;
 
 					transform: translate(0, 3px);
+
+
+					@media(min-width: $md) {
+						font-size: .9rem;
+					}
 				}
 			}
 		}
@@ -438,6 +443,7 @@
 			+ li {
 				margin-top: 20px;
 			}
+
 
 			a {
 				display: flex;
@@ -478,13 +484,31 @@
 
 				.type-icon {
 					color: darken($color-space, 45%);
+				}
 
-					.type-context {
-						.type-name {
-							color: darken($color-space, 65%);
-						}
-						.type-description {
-							color: darken($color-space, 25%);
+				.type-context {
+					.type-name {
+						color: darken($color-green, 5%);
+					}
+					.type-description {
+						color: darken($color-space, 25%);
+					}
+				}
+			}
+
+			&.solved {
+				background: rgba($color-our, .23);
+				border: 2px solid rgba($color-our, .66);
+
+				.type-context {
+					.type-name {
+						color: rgba(#000, .66);
+						position: relative;
+
+						&::after {
+							content:"(Solved)";
+							font-size: .8rem;
+							color: rgba(#000, .55);
 						}
 					}
 				}
