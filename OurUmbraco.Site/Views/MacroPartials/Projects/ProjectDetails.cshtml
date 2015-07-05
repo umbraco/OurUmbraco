@@ -33,6 +33,9 @@
     var currentMember = Members.GetCurrentMember();
     var hasMemberVoted = Members.IsLoggedIn() ? our.Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
     var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
+    
+    var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
+    var contributors = cs.GetContributors(project.Id).ToList();
 
     var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
     var websiteUrl = project.GetPropertyValue<string>("websiteUrl");
@@ -271,6 +274,11 @@
                                             </a>
                                         </h3>
                                         <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                        @if (currentMember != null && (currentMember.Id == owner.Id || contributors.ForEach(c => c.MemberId == currentMember.Id).SingleOrDefault()))
+                                        {
+                                            <br /><br />
+                                            <a href="/member/profile/projects/edit?id=@project.Id">Edit project</a>
+                                        }
                                     </div>
                                 </div>
                             </div>
@@ -292,8 +300,6 @@
 
                             @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab"))
                             {
-                                var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
-                                var contributors = cs.GetContributors(project.Id).ToList();
                                 if (contributors.Any())
                                 {
                                     <li>
