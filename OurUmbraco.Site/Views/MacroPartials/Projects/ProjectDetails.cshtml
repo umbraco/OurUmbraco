@@ -76,8 +76,8 @@
 
                                 @foreach (var image in screenshots)
                                 {
-                                    <a class="fancybox" rel="gallery1" href="@image.Path" title="">
-                                        <img src="@image.Path" alt="" />
+                                    <a class="fancybox" rel="gallery1" href="@our.Utils.GetScreenshotPath(image.Path)" title="">
+                                        <img src="@our.Utils.GetScreenshotPath(image.Path)" alt="" />
                                     </a>
                                 }
 

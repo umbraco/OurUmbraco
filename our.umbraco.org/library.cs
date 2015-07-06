@@ -227,6 +227,29 @@ namespace our
             return string.Empty;
         }
 
+        private static Random rnd = new Random();
+
+        public static string GetScreenshotPath(string screenshot)
+        {
+            if (HttpContext.Current.IsDebuggingEnabled)
+                return screenshot;
+            try
+            {
+                if (string.IsNullOrWhiteSpace(screenshot) == false)
+                {
+                    var path = HostingEnvironment.MapPath(screenshot);
+                    if (System.IO.File.Exists(path))
+                        return path;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<Utils>("Could not get MemberAvatarPath", ex);
+            }
+            
+            return "http://lorempixel.com/600/600/?" + rnd.Next();
+        }
+
         public static Image GetMemberAvatarImage(IPublishedContent member)
         {
             var memberAvatarPath = MemberAvatarPath(member);

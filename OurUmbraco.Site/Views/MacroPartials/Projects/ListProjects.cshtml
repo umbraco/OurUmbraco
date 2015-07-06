@@ -140,7 +140,7 @@
                 defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
             }
                         }
-                        <img src="@defaultScreenshot?width=50&height=50&bgcolor=fff" />
+                        <img src="@our.Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">
