@@ -3,20 +3,25 @@ Our Umbraco
 
 Complete source of the umbraco community site, our.umbraco.org. 
 
+##Build in visual studio
+Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first buid of the project will take quite a while, be patient, it will finish at some point.
+Upon build a web.config file will be copied into the `OurUmbraco.Site` project which you can use in the following step.
 
 ##Database restore
 Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip
 
-Restore the database to SQL Server 2014 (won't work on earlier version) and update the connection string (umbracoDbDSN) in OurUmbraco.Site/web.config.   
-**Note:** there's 2 connection strings, make sure to update them both. 
-
-##Build in visual studio
-Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first buid of the project will take quite a while, be patient, it will finish at some point.
+Restore the database to SQL Server 2008R2 (won't work on earlier version) and update the connection strings (`umbracoDbDSN` and `Marketplace.Data.Properties.Settings.ourConnectionString`) in `OurUmbraco.Site/web.config`.
 
 ##Logging in
 All users and members use the same password: Not_A_Real_Password
 
-To log in, try root / Not_A_Real_Password for the backoffice and member423@non-existing-mail-provider.none / Not_A_Real_Password for the frontend.
+To log in, try `root` / `Not_A_Real_Password` for the backoffice and `member423@non-existing-mail-provider.none` / `Not_A_Real_Password` for the frontend.
+
+##Projects
+If the projects section seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
+
+##Documentation
+If the documentation section seems empty then that's because you need to download the documentation, look for the the `Github Documentation` tab in the dashboards in the Developer section of Umbraco and use the `Get Docs!!` button.
 
 ##Syncing your fork with the original repository
 To sync your fork with this original one, you'll have to add the upstream url once:
