@@ -17,11 +17,11 @@ All users and members use the same password: Not_A_Real_Password
 
 To log in, try `root` / `Not_A_Real_Password` for the backoffice and `member423@non-existing-mail-provider.none` / `Not_A_Real_Password` for the frontend.
 
-##Projects
-If the projects section seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
+##Projects Area
+If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
 
-##Documentation
-If the documentation section seems empty then that's because you need to download the documentation, look for the the `Github Documentation` tab in the dashboards in the Developer section of Umbraco and use the `Get Docs!!` button.
+##Documentation area
+If the documentation area seems empty then that's because you need to download the documentation, look for the the `Github Documentation` tab in the dashboards in the Developer section of Umbraco and use the `Get Docs!!` button.
 
 ##Syncing your fork with the original repository
 To sync your fork with this original one, you'll have to add the upstream url once:
