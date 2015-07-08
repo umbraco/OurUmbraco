@@ -10,7 +10,7 @@ Upon build a web.config file will be copied into the `OurUmbraco.Site` project w
 ##Database restore
 Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip
 
-Restore the database to SQL Server 2008R2 (won't work on earlier version) and update the connection strings (`umbracoDbDSN` and `Marketplace.Data.Properties.Settings.ourConnectionString`) in `OurUmbraco.Site/web.config`.
+Restore the database to SQL Server 2012 (won't work on earlier version) and update the connection strings (`umbracoDbDSN` and `Marketplace.Data.Properties.Settings.ourConnectionString`) in `OurUmbraco.Site/web.config`.
 
 ##Logging in
 All users and members use the same password: Not_A_Real_Password
