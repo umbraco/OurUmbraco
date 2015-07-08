@@ -345,7 +345,6 @@ body.quickmenu {
 		@media (min-width: $md) {
 			margin-left:-100px;
 			margin-right: 100px;
-			overflow: hidden;
 			max-height: 100vh;
 
 			&:after {
