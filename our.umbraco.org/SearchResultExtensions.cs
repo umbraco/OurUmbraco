@@ -93,8 +93,11 @@ namespace our
 
         public static string FullUrl(this SearchResult result)
         {
+            if (result.Fields.ContainsKey("url"))
+                return result["url"];
+
             if (result["__IndexType"] == "content")
-                return umbraco.library.NiceUrl(result.Id);
+                return library.NiceUrl(result.Id);
 
             if (result["__IndexType"] == "forum" && result.Fields.ContainsKey("parentId") && result.Fields.ContainsKey("urlName"))
             {
@@ -103,12 +106,7 @@ namespace our
                     ? string.Format("/{0}/{1}-{2}", url.Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"])
                     : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"]);
             }
-
-            if (result.Fields.ContainsKey("url"))
-            {
-                return result["url"];
-            }
-
+            
             return "TODO";
         }
 

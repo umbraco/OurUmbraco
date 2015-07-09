@@ -128,6 +128,11 @@ namespace our.Examine
             watch.Start();
 
             var result = multiIndexSearchProvider.Search(criteria, MaxResults);
+            foreach (var searchResult in result)
+            {
+                if (searchResult.Fields.ContainsKey("url") == false)
+                    searchResult.Fields["url"] = searchResult.FullUrl();
+            }
             watch.Stop();
 
             
