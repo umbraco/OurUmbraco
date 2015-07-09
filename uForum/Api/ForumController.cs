@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Collections.Specialized;
+using System.Configuration;
 using System.Dynamic;
 using System.IO;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
@@ -12,12 +15,14 @@ using uForum.Extensions;
 using uForum.Library;
 using uForum.Models;
 using umbraco;
+using umbraco.BusinessLogic;
 using umbraco.cms.helpers;
+using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
 {
-    [MemberAuthorize( AllowType="member" )]
+    [MemberAuthorize(AllowType = "member")]
     public class ForumController : ForumControllerBase
     {
         /* COMMENTS */
@@ -81,6 +86,9 @@ namespace uForum.Api
                 throw new Exception("You cannot delete this comment");
 
             CommentService.Delete(c);
+
+            if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
+                SendSlackDeleteNotification(c.MemberId, Members.GetCurrentMember().Name);
         }
 
         [HttpGet]
@@ -104,7 +112,7 @@ namespace uForum.Api
 
             if (c == null)
                 throw new Exception("Comment not found");
-            
+
             c.IsSpam = true;
 
             CommentService.Save(c);
@@ -120,12 +128,12 @@ namespace uForum.Api
 
             if (c == null)
                 throw new Exception("Comment not found");
-            
+
             c.IsSpam = false;
 
             CommentService.Save(c);
         }
-        
+
 
         [HttpPost]
         public ExpandoObject Topic(TopicSaveModel model)
@@ -198,6 +206,9 @@ namespace uForum.Api
                 throw new Exception("You cannot delete this topic");
 
             CommentService.Delete(c);
+
+            if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
+                SendSlackDeleteNotification(c.MemberId, Members.GetCurrentMember().Name);
         }
 
         [HttpGet]
@@ -231,7 +242,7 @@ namespace uForum.Api
         public void TopicAsSpam(int id)
         {
             var t = TopicService.GetById(id);
-            
+
             if (Members.IsAdmin() == false)
                 throw new Exception("You cannot mark this topic as spam");
 
@@ -245,7 +256,7 @@ namespace uForum.Api
 
         /* MEDIA */
         [HttpPost]
-        public  HttpResponseMessage EditorUpload()
+        public HttpResponseMessage EditorUpload()
         {
             dynamic result = new ExpandoObject();
             var httpRequest = HttpContext.Current.Request;
@@ -257,15 +268,15 @@ namespace uForum.Api
 
                 foreach (string file in httpRequest.Files)
                 {
-                   
+
                     DirectoryInfo updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + g));
-                  
+
                     if (!updir.Exists)
                         updir.Create();
-                    
+
                     var postedFile = httpRequest.Files[file];
-                    
-                    var filePath = updir.FullName + "/" +  postedFile.FileName;
+
+                    var filePath = updir.FullName + "/" + postedFile.FileName;
                     postedFile.SaveAs(filePath);
                     filename = postedFile.FileName;
 
@@ -300,6 +311,48 @@ namespace uForum.Api
                 throw new Exception("Member not found");
 
             memberService.Delete(member);
+        }
+
+        public static void SendSlackDeleteNotification(int memberId, string adminName)
+        {
+            using (var client = new WebClient())
+            {
+                var post = "Topic or comment deleted by admin " + adminName;
+                post = post + string.Format("Go to affected member http://our.umbraco.org/member/{0}\n\n", memberId);
+
+                if (memberId != 0)
+                {
+                    var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
+
+                    if (member != null)
+                    {
+                        var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+                        post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                    }
+
+                }
+
+                post = post.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+
+                var values = new NameValueCollection
+                             {
+                                 {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
+                                 {"token", ConfigurationManager.AppSettings["SlackToken"]},
+                                 {"username", ConfigurationManager.AppSettings["SlackUsername"]},
+                                 {"icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
+                                 {"text", post}
+                             };
+
+                try
+                {
+                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
+                    var response = client.Encoding.GetString(data);
+                }
+                catch (Exception ex)
+                {
+                    Log.Add(LogTypes.Error, new User(0), -1, string.Format("Posting update to Slack failed {0} {1}", ex.Message, ex.StackTrace));
+                }
+            }
         }
     }
 }
