@@ -274,6 +274,7 @@
     <Compile Include="Examine\SearchFilters.cs" />
     <Compile Include="Examine\VersionAnalyzer.cs" />
     <Compile Include="Examine\VersionTokenizer.cs" />
+    <Compile Include="HackedCdfLoader.cs" />
     <Compile Include="Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
