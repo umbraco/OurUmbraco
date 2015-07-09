@@ -15,7 +15,7 @@
     }
 
     var majorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending(x => x.Key);
-    var youTrackVersions = uRelease.Controllers.ApiController.GetAggregateVersionsFromFile();
+    var youTrackVersions = uRelease.Controllers.ReleaseController.GetAggregateVersionsFromFile();
 }
 
 <h1>All Releases</h1>

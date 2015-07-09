@@ -33,10 +33,10 @@ namespace uRelease.Controllers
         private static readonly string Login = ConfigurationManager.AppSettings["uReleaseUsername"];
         private static readonly string Password = ConfigurationManager.AppSettings["uReleasePassword"];
         private static readonly int ReleasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
-        private const string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
+        public static string YouTrackJsonFile = "~/App_Data/YouTrack/all.json";
 
         public JsonResult VersionBundle(string ids, bool cached)
-        {
+        { 
             var idArray = new ArrayList();
             idArray.AddRange(ids.Replace("all", "").TrimEnd(',').Split(','));
             idArray.Remove("");
@@ -163,17 +163,7 @@ namespace uRelease.Controllers
 
             return new JsonResult { Data = toReturn, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
         }
-
-        public JsonResult GetAllFromFile()
-        {
-            if (File.Exists(HttpContext.Current.Server.MapPath(YouTrackJsonFile)) == false)
-                SaveAllToFile();
-
-            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(YouTrackJsonFile));
-
-            return new JsonResult { Data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText), JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-        }
-
+        
         public JsonResult GetVersionsFromFile()
         {
             var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(YouTrackJsonFile));

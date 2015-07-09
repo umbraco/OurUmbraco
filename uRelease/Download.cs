@@ -1,0 +1,27 @@
+﻿using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Web;
+using System.Web.Script.Serialization;
+using uRelease.Controllers;
+using uRelease.Models;
+
+namespace uRelease
+{
+    public static class Download
+    {
+        public static AggregateView GetCurrentReleaseFromFile()
+        {
+            var releaseController = new ReleaseController();
+            if (File.Exists(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile)) == false)
+                releaseController.SaveAllToFile();
+
+            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile));
+
+            var data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText);
+            var result = data.First(x => x.currentRelease);
+
+            return result;
+        }
+    }
+}
