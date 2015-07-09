@@ -1,14 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+<%@ Import Namespace="Umbraco.Web" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
-  <!-- <link rel="stylesheet" type="text/css" href="/css/releases.css?v=6" /> -->
-  <!-- release scripts -->
-  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
-  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
-  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
-  <script src="/Scripts/humane.js" type="text/javascript"></script>
-  <script src="/Scripts/app.js?v=4" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.4/jquery.easypiechart.min.js"></script>
 </asp:Content>
   
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
@@ -26,6 +19,19 @@
             } 
         }
     </umbraco:Macro>
+<%
+    var currentPage = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
+    var allReleases = uRelease.Release.GetAllReleaseFromFile();
+    var release = allReleases.First(x => x.version == currentPage.Name);
+    var completedIssues = release.issues.Count(x => x.state == "Fixed");
+    var totalIssues = release.issues.Count();
+    var percentComplete = Math.Round(((double) 100/totalIssues)*completedIssues);
+    var releaseDate = DateTime.Now;
+    if (release.releaseDate != string.Empty)
+    {
+        releaseDate = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
+    }
+%>
   <div class="has-sidebar release">
       <div class="page-content">
 			<div class="sidebar-area">
@@ -34,10 +40,15 @@
                         
 					<nav>
 						<ul class="level-1">
-							<li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
-					        <li data-bind="foreach: currentReleases()">
-						        <a class="active" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" href="/contribute/latest"><h3>Latest Release</h3></a>
-					        </li>
+                            <%
+                                foreach (var currentRelease in allReleases.Where(x => x.released && x.currentRelease))
+                                {
+                            %>
+                                    <li>
+						                <a class="active" href="/contribute/releases/<%= currentRelease.version.Replace(".", string.Empty) %>"><h3>Latest Release - v<%= currentRelease.version %></h3></a>
+					                </li>
+                            <% } %>
+
 							<li>
 								<a href="/contribute/progress"><h3>In Progress</h3></a>
 							</li>
@@ -68,8 +79,6 @@
                     <div>
                         <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                     </div>
-
-                    <h2 id="loading" data-bind="visible: versions().length == 0">Loading release details...</h2>
                     
                     <style>
                         .release-page .explain h2 {
@@ -80,43 +89,40 @@
                         }
 
                         .release-page .dot {
-                            border:none;
+                            border: none;
                         }
-                        .release-page .dot.big {
-                            position: relative;
-                            text-indent: 0;
-                            margin:15px auto 0;
-                        }
+
+                            .release-page .dot.big {
+                                position: relative;
+                                text-indent: 0;
+                                margin: 15px auto 0;
+                            }
 
                         .release-page .chart {
-                            height:60px;
+                            height: 60px;
                             width: 60px;
-                            top:initial;
-                            left:initial;
-                            text-align:center;
+                            top: initial;
+                            left: initial;
+                            text-align: center;
                         }
 
-                        .release-page .chart p {
-                            vertical-align:middle;
-                          line-height: 3.7rem;
-                          display: inline-block;
-                        }
+                            .release-page .chart p {
+                                vertical-align: middle;
+                                line-height: 3.7rem;
+                                display: inline-block;
+                            }
 
-                        .release-page .chart canvas {
-                            top: 0px;
-                            left: 0px;
-                        }
-
+                            .release-page .chart canvas {
+                                top: 0px;
+                                left: 0px;
+                            }
                     </style>
 
-                    <!-- ko foreach: versions -->
                     <div class="row explain">
                         <div class="col-sm-2">
-                            <span data-bind="css: { 'icon-untitled': percentComplete() < 1 }" class="dot big progress">
-				                <div class="chart"  data-bind="attr: { 'data-percent': percentComplete() }">
-                                    <p data-bind="visible: percentComplete() > 0, attr: { id: id, title: percentComplete() } > 0, text: percentComplete() + '%'">
-                        
-                                    </p>
+                            <span class="dot big progress">
+				                <div class="chart"  data-percent="<%= percentComplete %>">
+                                    <p><%= percentComplete %>%</p>
 				                </div>
 			                </span>
                         </div>
@@ -124,13 +130,17 @@
                             <h2>
                                 v<umbraco:Item ID="Item1" field="pageName" runat="server" />
                             </h2>
+                            <small>Status: <span><%= release.released ? "Released" : "In Progress" %></span></small>
+                            <% if (release.released == false)
+                               { %>
                             <h3>
-                                <span data-bind="text: (released() ? '100' : percentComplete()) + '% Complete' "></span>
-                                <span data-bind="text: percentInProgress() + '% In Progress' "></span>  
+                                
+                                <span><%= percentComplete %>% complete</span>
+                                <span><%= 100 - percentComplete %>% in progress</span>
                             </h3>
-                            <small data-bind="visible: !released()">Status: <span data-bind="    text: inProgressRelease() === true ? 'In progress' : 'Planned'"></span></small>
-                                <small data-bind="visible: released()">Status: Released</small>
-                                <h3 data-bind="visible: !released()">Target release date: <span data-bind="    text: releaseDate() === '' ? 'Not yet determined' : new Date(releaseDate()).format('dddd, dd MMMM yyyy')" style="color:#5B5B5B"></span></h3>
+                            <h3>Target release date: <span style="color:#5B5B5B"><%= release.releaseDate == "" ? "Not yet determined" : releaseDate.ToString("dddd, MMMM d yyyy") %></span></h3>
+                            <% } %>
+                            
                             <umbraco:Macro ID="Macro5" Language="cshtml" runat="server">
 	                            @if(Model.HasValue("releaseNotes")) {
 		                            <small><p>@Model.releaseNotes</p></small>
@@ -140,15 +150,7 @@
                         </div>
                     </div>
                     
-
-                        <div class="" data-bind="css: { released: released() }, attr: { id: id }">
-                            <!-- Progress Bar -->    
-                            <div class="progressbar">
-                                <div class="bar bar1 rl" data-bind="style: { width: (released() ? '100' : percentComplete()) + '%' }, visible: percentComplete() > 0 || released(), css: { rr: percentInProgress() == 0 }">&nbsp;</div>
-                                <div class="bar bar2 rr" data-bind="style: { width: percentInProgress() + '%' }, visible: percentInProgress() > 0, css: { rl: percentComplete() == 0 }">&nbsp;</div>
-                            </div>
-                        
-                        <!--<h3 data-bind="visible: released()"><a href="http://umbraco.codeplex.com/releases">Download it now!</a></h3>-->
+                    <div>
                         <umbraco:Macro ID="Macro2" Language="cshtml" runat="server">
 		                    @{ 
 			                    var downloads = Model.ReleaseDownload.Where("Visible"); 	
@@ -189,11 +191,14 @@
                         <div class="row markdown-syntax">
 
                             <div class="col-md-5">
-
-                            <span data-bind="visible: releaseDescription() != ''">
-                                <h2>Summary</h2>
-                                <p><span data-bind="html: releaseDescription"></span></p>
-                            </span>
+                                
+                                <% if (release.releaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
+                                   { %>
+                                    <span>
+                                        <h2>Summary</h2>
+                                        <p><span><%= release.releaseDescription %></span></p>
+                                    </span>
+                                <% } %>
       
                             <umbraco:Macro ID="Macro3" Language="cshtml" runat="server">
 		                        @if(Model.HasValue("bodyText")) {
@@ -210,18 +215,57 @@
                                 <div class="statuses group">
                                     <div class="status features">
                                         <h3>Features</h3>
-                                        <p data-bind="visible: featureIssues().length == 0">No items to display</p>
-                                        <ul data-bind="template: { name: 'issue-template', foreach: featureIssues }"></ul>                
+                                        <%
+                                            var features = release.issues.Where(x => x.type.ToLowerInvariant().Contains("feature")).ToList();
+                                            if (features.Any())
+                                            {
+                                                foreach (var issue in features)
+                                                { %>
+
+                                            <ul>
+                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                    <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
+                                                </li>
+                                            </ul>                
+                                        <% } } else { %>
+                                            <p>No items to display</p>
+                                        <% } %>
                                     </div>
                                     <div class="status breaking">
                                         <h3>Breaking Changes</h3>
-                                        <p data-bind="visible: breakingIssues().length == 0">No items to display</p>
-                                        <ul data-bind="template: { name: 'issue-template', foreach: breakingIssues }"></ul>
+                                        <%
+                                            var breaking = release.issues.Where(x => x.breaking).ToList();
+                                            if (breaking.Any())
+                                            {
+                                                foreach (var issue in breaking)
+                                                { %>
+
+                                            <ul>
+                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                    <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
+                                                </li>
+                                            </ul>                
+                                        <% } } else { %>
+                                            <p>No items to display</p>
+                                        <% } %>
                                     </div>
                                     <div class="status issues">
-                                        <h3>Issues &amp; Tasks</h3>
-                                        <p data-bind="visible: issueIssues().length == 0">No items to display</p>
-                                        <ul data-bind="template: { name: 'issue-template', foreach: issueIssues }"></ul>
+                                        <h3>Issues & Tasks</h3>
+                                        <%
+                                            var issues = release.issues.Where(x => x.breaking == false && x.type.ToLowerInvariant().Contains("feature") == false).ToList();
+                                            if (issues.Any())
+                                            {
+                                                foreach (var issue in issues)
+                                                { %>
+
+                                            <ul>
+                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                    <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
+                                                </li>
+                                            </ul>                
+                                        <% } } else { %>
+                                            <p>No items to display</p>
+                                        <% } %>
                                     </div>
                                 </div>
           
@@ -270,53 +314,25 @@
                             </div><!-- col-md-5 col-md-offset-2 -->
 
                         </div><!-- .row .markdown-syntax -->
-
                     </div>
-                    <!-- /ko -->
-
                     </div><!-- .content-wrapper -->
 				</div><!-- .main-content -->
 			</div><!-- .main-area -->
 	    </div><!-- .page-content -->
 	</div><!-- has-sidebar -->
 
-<script type="text/html" id="issue-template">
-    <li data-bind="attr: { 'class': state().replace(/\s/g, '') }">
-        <a data-bind="text: id() + ' ' + title(), attr: { href: 'http://issues.umbraco.org/issue/' + id() }" target="_blank"></a>
-    </li>
-</script>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderId="EndScripts" runat="server">
-    <umbraco:Macro runat="server" Language="cshtml">
- 
-        <script type="text/javascript">
-            (function () {
-                var currentVersions = [];
-                var inProgressVersions = [];
-                var futureVersions = [];
-                var patchReleases = [];
-
-                // Apply bindings
-                ko.applyBindings(viewModel);
-                // Load data
-                loadData('@Model.Name');
-
-                //Animate progress when data is loaded
-                viewModel.versions.subscribe(function (newValue) {
-                    setTimeout(function () {
-                        $('.chart').easyPieChart({
-                            size: 60,
-                            barColor: '#569327',
-                            scaleColor: false,
-                            trackColor: '#daf0c9'
-                        });
-                    }, 1000);
-                });
-
-            })();
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.4/jquery.easypiechart.min.js"></script>    
+    <script type="text/javascript">
+        setTimeout(function () {
+            $('.chart').easyPieChart({
+                size: 60,
+                barColor: '#569327',
+                scaleColor: false,
+                trackColor: '#daf0c9'
+            });
+        }, 300);
     </script>
-    </umbraco:Macro>
-  
 </asp:Content>

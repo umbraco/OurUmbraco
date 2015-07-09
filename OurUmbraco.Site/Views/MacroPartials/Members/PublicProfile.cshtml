@@ -21,19 +21,14 @@
 
         var roles = member.GetRoles();
 
-        var provider = (IListingProvider) MarketplaceProviderManager.Providers["ListingProvider"];
+        var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
         var projects = provider.GetListingsByVendor(member.Id, true, true).OrderByDescending(x => x.CreateDate);
 
         var contribProjects = provider.GetListingsForContributor(member.Id).OrderByDescending(x => x.CreateDate);
         var currentMember = Members.GetCurrentMember();
+        var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
         <div class="public-member">
-            @if (currentMember.IsHq())
-            {
-                <p>HQ Tools (also known as "with great power comes great responsibility"):<br/>
-                    <a href="#" class="delete-member" style="color: red" rel="@member.Id">Delete this member</a>
-                </p>
-            }
             <div class="row">
                 <div class="col-md-8">
                     <div class="row">
@@ -57,11 +52,11 @@
                                 @if (roles.Any())
                                 {
                                     <span class="roles">
-                                    @foreach (var role in roles)
-                                    {
-                                        <span class="@role">@role</span>
-                                    }
-                                </span>
+                                        @foreach (var role in roles)
+                                        {
+                                            <span class="@role">@role</span>
+                                        }
+                                    </span>
                                 }
                             </div>
                         </div>
@@ -79,7 +74,7 @@
                                     {
                                         <span> works at <span>@member.GetPropertyValue("company")</span></span>
                                     }
-                                    and has @member.GetPropertyValue("reputationCurrent") <span></span> karma points
+                                    and has <em class="karma-points">@member.GetPropertyValue("reputationCurrent")</em> <span></span> karma points
                                 </small>
                             </div>
                             <div class="member-bio">
@@ -192,6 +187,17 @@
             </div>
         </div>
         <!-- .public-member -->
+        if (currentMember.IsHq())
+        {
+            <p style="border: 1px solid orange; padding: 4px;">
+                HQ Tools (also known as "with great power comes great responsibility"):<br />
+                <a href="#" class="delete-member" style="color: red" rel="@member.Id">Delete this member</a><br />
+                @if (reputationCurrent < 71)
+                {
+                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Give enough karma to to stop spamchecks and allow posting packages</a><br />
+                }
+            </p>
+        }
     }
 }
 

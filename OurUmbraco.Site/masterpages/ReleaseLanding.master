@@ -1,16 +1,12 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
   
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
-  <!--<link rel="stylesheet" type="text/css" href="/css/releases.css?v=4" />-->
-  <!-- release scripts -->
-  <script src="/Scripts/jquery.cookie.js" type="text/javascript"></script>
-  <script src="/Scripts/knockout-2.0.0.js" type="text/javascript"></script>
-  <script src="/Scripts/knockout.mapping-latest.js" type="text/javascript"></script>
-  <script src="/Scripts/humane.js" type="text/javascript"></script>
-  <script src="/Scripts/app.js?v=5" type="text/javascript"></script>
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">    
+<%
+    var allReleases = uRelease.Release.GetAllReleaseFromFile();
+%>
 <div class="has-sidebar"><!-- Apply to body -->
 
 <div class="page-content">
@@ -21,27 +17,21 @@
 				
 			    <nav>
 				    <ul class="level-1">
-					    <li><a href="#" data-bind="visible: versions().length == 0"><h3>Latest Release</h3></a></li>
-					    <li data-bind="foreach: currentReleases()">
-						    <a class="active" data-bind="attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }" href="/contribute/latest"><h3>Latest Release</h3></a>
-					    </li>
+                        <%
+                            foreach (var currentRelease in allReleases.Where(x => x.released && x.currentRelease))
+                            {
+                        %>
+                        <li>
+                            <a class="active" href="/contribute/releases/<%= currentRelease.version.Replace(".", string.Empty) %>">
+                                <h3>Latest Release - v<%= currentRelease.version %></h3>
+                            </a>
+                        </li>
+                        <% } %>
 					    <li>
 						    <a href="/contribute/progress"><h3>In Progress</h3></a>
-						    
 					    </li>
-					    <li class="active open">
-						    <a href="/contribute/releases"><h3>All Releases</h3></a>
-						    <ul class="level-2" data-bind="foreach: majorFilterReleases">
-							    <li>
-								    <a href="#version-7"><h4>Umbraco 7</h4></a>
-							    </li>
-							    <li>
-								    <a href="#version-6"><h4>Umbraco 6</h4></a>
-							    </li>
-							    <li>
-								    <a href="#version-4"><h4>Umbraco 4</h4></a>
-							    </li>
-						    </ul>
+                        <li class="active">
+						    <a href="/contribute/releases"><h3>All releases</h3></a>
 					    </li>
 				    </ul>
 			    </nav>
@@ -74,41 +64,8 @@
 
 </div><!-- .page-content -->
   </div>
-
-    <script type="text/html" id="releases-template">
-        <h1>Recommended release</h1>
-        <em>Want the latest stable release - we recommend this one</em>
-
-        <div class="row">
-            <div class="col-xs-3">
-                <span class="dot big icon-untitled"><span class="line h-line"></span></span>
-            </div>
-            <div class="col-xs-9">
-                <div class="row explain">    
-                    <div class="col-xs-12">
-		                <h4><a data-bind="text: releaseStatus() === null ? 'v' + version() : 'v' + version() + '-' + releaseStatus().toLowerCase(), attr: { href: '/contribute/releases/' + version().replace('.', '').replace('.', '').replace('.', '') }">v6.2.4</a></h4>
-		                <small data-bind="visible: (releaseDescription().length > 0)"><span data-bind="    html: releaseDescription"></span></small>
-	                </div>
-	            </div>
-            </div>
-        </div>
-    </script>
-    
 </asp:Content>
 
 <asp:Content ID="Content3" ContentPlaceHolderId="EndScripts" runat="server">
-    <umbraco:Macro runat="server" Language="cshtml">
- 
-        <script type="text/javascript">
-            (function () {
 
-                // Apply bindings
-                ko.applyBindings(viewModel);
-                // Load data
-                loadAllData();
-            })();
-
-    </script>
-    </umbraco:Macro>
-  
 </asp:Content>

@@ -313,6 +313,30 @@ namespace uForum.Api
             memberService.Delete(member);
         }
 
+        [HttpPost]
+        public int ApproveMember(int id)
+        {
+            if (Members.IsHq() == false)
+                throw new Exception("You cannot approve this member");
+
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            var member = memberService.GetById(id);
+            
+            if (member == null)
+                throw new Exception("Member not found");
+
+            var minimumKarma = 71;
+            if (member.GetValue<int>("reputationCurrent") < minimumKarma)
+            {
+                member.SetValue("reputationCurrent", minimumKarma);
+                member.SetValue("reputationTotal", minimumKarma);
+            }
+
+            memberService.Save(member);
+
+            return minimumKarma;
+        }
+
         public static void SendSlackDeleteNotification(int memberId, string adminName)
         {
             using (var client = new WebClient())
