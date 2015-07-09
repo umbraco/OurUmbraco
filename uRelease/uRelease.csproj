@@ -251,7 +251,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\ControllerRouting.cs" />
-    <Compile Include="Controllers\ApiController.cs" />
+    <Compile Include="Controllers\ReleaseController.cs" />
     <Compile Include="Controllers\NodeExtensions.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Models\AggregateView.cs" />

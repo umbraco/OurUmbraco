@@ -22,6 +22,7 @@
     <TargetFrameworkProfile />
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <UseGlobalApplicationHostFile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -1792,6 +1793,7 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
+    <Content Include="usercontrols\dashboard\ForceYouTrackDownload.ascx" />
     <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
     <Content Include="usercontrols\IndexStatus.ascx" />
     <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
@@ -4812,7 +4814,7 @@
     <Exec WorkingDirectory="$(ProjectDir)\..\build\" Command="BuildClientFiles.bat" ConsoleToMSBuild="true" IgnoreExitCode="true" ContinueOnError="WarnAndContinue" />
   </Target>
   <Target Name="BeforeBuild">
-      <!-- Create web.config file from Template if it doesn't exist -->
+    <!-- Create web.config file from Template if it doesn't exist -->
     <Copy SourceFiles="$(ProjectDir)web.Template.config" DestinationFiles="$(ProjectDir)Web.config" OverwriteReadOnlyFiles="true" SkipUnchangedFiles="false" Condition="!Exists('$(ProjectDir)Web.config')" />
     <!-- Only runs if the ClientFiles build folder doesn't yet exist -->
     <CallTarget Targets="ClientFilesBuild" Condition="!Exists('$(ProjectDir)\..\OurUmbraco.Client\build\assets')" />
