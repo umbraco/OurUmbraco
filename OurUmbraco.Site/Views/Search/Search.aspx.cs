@@ -59,7 +59,7 @@ namespace OurUmbraco.Site.Views.Search
                     }
                 }
 
-                var orderBy = "score";
+                var orderBy = string.Empty;
                 if (string.IsNullOrWhiteSpace(Request.QueryString["order"]) == false)
                 {
                     orderBy = Request.QueryString["order"];
