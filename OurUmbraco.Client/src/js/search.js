@@ -4,8 +4,6 @@ function redirectToSearch(ev){
 				
 				var query = "";
 				if(ev.type === "click") {
-					console.log($(".search-input"));
-					console.log($(".search-input").val());
 					query = $(".search-input").val();
 				} else {				
 					query = this.value.replace(":", " ");
