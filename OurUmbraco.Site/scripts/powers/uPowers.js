@@ -90,6 +90,16 @@ var uPowers = function () {
                     // Do something with the result
                 }
             });
+        },
+        ApproveMember: function (s_memberId) {
+
+            $.ajax({
+                url: "/umbraco/api/Forum/ApproveMember/?id=" + s_memberId,
+                type: 'POST',
+                success: function (result) {
+                    jQuery(".karma-points").text(result);
+                }
+            });
         }
     };
 } ();
@@ -401,6 +411,15 @@ jQuery(document).ready(function () {
             
             uPowers.DeleteMember(deleteLink.attr("rel"));
             deleteLink.hide();
+        }
+        return false;
+    });
+
+    jQuery("a.approve-member").click(function () {
+        if (confirm("Do you really want to approve this member?")) {
+            var approveLink = jQuery(this);
+            uPowers.ApproveMember(approveLink.attr("rel"));
+            approveLink.hide();
         }
         return false;
     });
