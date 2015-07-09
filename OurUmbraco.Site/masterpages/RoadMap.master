@@ -1,5 +1,11 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <asp:Content ContentPlaceHolderID="Head" runat="server">
+    <% if (Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap/" || Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap")
+        {
+            var newUrl = Request.Url.AbsoluteUri.Replace("/roadmap", "/contribute/roadmap");
+            Response.Redirect(newUrl, true);
+        } 
+    %>
 </asp:Content>
 
 <asp:Content ContentPlaceHolderID="Main" runat="server">
