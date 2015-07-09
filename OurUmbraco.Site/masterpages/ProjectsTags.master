@@ -2,6 +2,7 @@
 
   
 <asp:Content ContentPlaceHolderId="TitleArea" runat="server">
+    <% Response.Redirect("/page-not-found/"); %>
 </asp:Content>
 
 <asp:content ContentPlaceHolderId="DeliRight" runat="server">
@@ -13,7 +14,7 @@
   </div>
   <h2>Projects tagged with: <%= Request["tag"] %> </h2>
 <div class="deliPromoBox clearfix">
-  <umbraco:Macro PageNumber="[@page]" Tag="[@tag]" IsCategoryListing="0" MaxPageSize="20" viewAll="[@ViewAll]" Alias="Deli-ProjectListing" runat="server"></umbraco:Macro>
+  <%--<umbraco:Macro PageNumber="[@page]" Tag="[@tag]" IsCategoryListing="0" MaxPageSize="20" viewAll="[@ViewAll]" Alias="Deli-ProjectListing" runat="server"></umbraco:Macro>--%>
 </div>
 
 
