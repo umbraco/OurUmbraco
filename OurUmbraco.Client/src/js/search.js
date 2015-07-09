@@ -1,7 +1,15 @@
 function redirectToSearch(ev){
-	    	if(ev.keyCode === 13){
+	    	if(ev.type === "click" || ev.keyCode === 13){
 				ev.preventDefault();
-				var query = this.value.replace(":", " ");
+				
+				var query = "";
+				if(ev.type === "click") {
+					console.log($(".search-input"));
+					console.log($(".search-input").val());
+					query = $(".search-input").val();
+				} else {				
+					query = this.value.replace(":", " ");
+				}
 				
 				var categoryName = getParameterByName('cat');
 				console.log(categoryName);
@@ -16,7 +24,7 @@ function redirectToSearch(ev){
 				
 				var newUri = "/search";
 				newUri = updateQueryString("q", query, newUri);
-				if(filters.category !== "search-input") {
+				if(filters.category !== "search-input" && filters.category !== "search-submit") {
 					newUri = updateQueryString("cat", filters.category, newUri);
 				}
 				if(filters.category === "docs") {
@@ -326,6 +334,8 @@ $('.forum-search-input')
 $('.search-input')
 	.keydown(redirectToSearch)
 	.keyup(globalSearch);
+$('.search-submit')
+	.click(redirectToSearch);
 
 //project search form
 $('.project-search-input')
@@ -334,7 +344,7 @@ $('.project-search-input')
 
 $('.search-big input[type=text]')
 	.keydown(redirectToSearch);
-	
+
 $('#search-options input[type=checkbox]').click(function () {
 	var newUri;
 	if(this.name === "order") {
