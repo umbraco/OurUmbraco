@@ -5,11 +5,16 @@ function redirectToSearch(ev){
 				
 				var categoryName = getParameterByName('cat');
 				console.log(categoryName);
-				if(categoryName === undefined) {
-					var category = ev.target.attributes.class.value;
-					if(category !== undefined) {
-						categoryName = category;
-					}
+				if (categoryName === undefined) {
+
+				    //use the category from the class assigned to the input element
+				    //... this is strange but I guess it works. If there is no class
+                    // then there is no category.
+
+				    if (ev && ev.target && ev.target.attributes && ev.target.attributes.class && ev.target.attributes.class.value) {
+				        categoryName = ev.target.attributes.class.value;
+				    }
+
 				} 
 
 				var filters = GetSearchFilters(categoryName);
