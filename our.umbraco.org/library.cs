@@ -231,22 +231,25 @@ namespace our
 
         public static string GetScreenshotPath(string screenshot)
         {
-            if (HttpContext.Current.IsDebuggingEnabled)
+            if (HttpContext.Current.IsDebuggingEnabled == false)
                 return screenshot;
+
             try
             {
                 if (string.IsNullOrWhiteSpace(screenshot) == false)
                 {
                     var path = HostingEnvironment.MapPath(screenshot);
                     if (System.IO.File.Exists(path))
-                        return path;
+                    {
+                        return screenshot;
+                    }
                 }
             }
             catch (Exception ex)
             {
-                LogHelper.Error<Utils>("Could not get MemberAvatarPath", ex);
+                LogHelper.Error<Utils>("Could not get Screenshot", ex);
             }
-            
+
             return "http://lorempixel.com/600/600/?" + rnd.Next();
         }
 
