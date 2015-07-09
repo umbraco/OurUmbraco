@@ -9,6 +9,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using System.Diagnostics;
 using umbraco.BusinessLogic;
 using System.Dynamic;
+using Examine;
 using Newtonsoft.Json;
 
 namespace uDocumentation.Busineslogic.GithubSourcePull
@@ -123,6 +124,10 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             var zip = Download(url, foldername);
             unzip(zip, foldername, RootFolder);
             BuildSitemap(foldername);
+
+            //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
+            // a consistent integer id per document. I'm sure we can make that happen but I don't have time right now.
+            ExamineManager.Instance.IndexProviderCollection["documentationIndexSet"].RebuildIndex();
         }
 
         private void BuildSitemap(string foldername)
