@@ -57,5 +57,20 @@ namespace uForum.Extensions
         {
             return ModeratorRoles.Split(',').Any(Roles.IsUserInRole);
         }
+
+        public static bool IsHq(this MembershipHelper helper)
+        {
+            return Roles.IsUserInRole("HQ");
+        }
+
+        public static bool IsAdmin(this IPublishedContent helper)
+        {
+            return ModeratorRoles.Split(',').Any(Roles.IsUserInRole);
+        }
+
+        public static bool IsHq(this IPublishedContent helper)
+        {
+            return Roles.IsUserInRole("HQ");
+        }
     }
 }

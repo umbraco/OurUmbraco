@@ -1,20 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
+using System.Web.Security;
+using Newtonsoft.Json;
+using uForum.AntiSpam;
 using uForum.Extensions;
+using uForum.Library;
 using uForum.Models;
-using uForum.Services;
-using Umbraco.Core.Services;
-using Umbraco.Web.Security;
+using umbraco;
+using umbraco.cms.helpers;
 using Umbraco.Web.WebApi;
 
 namespace uForum.Api
@@ -39,7 +37,7 @@ namespace uForum.Api
             c.IsSpam = c.DetectSpam();
             CommentService.Save(c);
             if (c.IsSpam)
-                AntiSpam.SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
+                SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
 
             o.id = c.Id;
             o.body = c.Body.Sanitize().ToString();
@@ -49,7 +47,7 @@ namespace uForum.Api
             var author = Members.GetById(currentMemberId);
             o.authorKarma = author.Karma();
             o.authorName = author.Name;
-            o.roles = System.Web.Security.Roles.GetRolesForUser();
+            o.roles = Roles.GetRolesForUser();
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
 
@@ -79,7 +77,7 @@ namespace uForum.Api
             if (c == null)
                 throw new Exception("Comment not found");
 
-            if (!Library.Utils.IsModerator() && c.MemberId != Members.GetCurrentMemberId())
+            if (Members.IsAdmin() == false && c.MemberId != Members.GetCurrentMemberId())
                 throw new Exception("You cannot delete this comment");
 
             CommentService.Delete(c);
@@ -101,9 +99,12 @@ namespace uForum.Api
         {
             var c = CommentService.GetById(id);
 
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot mark this comment as spam");
+
             if (c == null)
                 throw new Exception("Comment not found");
-
+            
             c.IsSpam = true;
 
             CommentService.Save(c);
@@ -114,9 +115,12 @@ namespace uForum.Api
         {
             var c = CommentService.GetById(id);
 
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot mark this comment as ham");
+
             if (c == null)
                 throw new Exception("Comment not found");
-
+            
             c.IsSpam = false;
 
             CommentService.Save(c);
@@ -134,7 +138,7 @@ namespace uForum.Api
             t.MemberId = Members.GetCurrentMemberId();
             t.Created = DateTime.Now;
             t.ParentId = model.Forum;
-            t.UrlName = umbraco.cms.helpers.url.FormatUrl(model.Title);
+            t.UrlName = url.FormatUrl(model.Title);
             t.Updated = DateTime.Now;
             t.Version = model.Version;
             t.Locked = false;
@@ -148,9 +152,9 @@ namespace uForum.Api
             TopicService.Save(t);
 
             if (t.IsSpam)
-                AntiSpam.SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+                SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
 
-            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
+            o.url = string.Format("{0}/{1}-{2}", library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
         }
@@ -176,7 +180,7 @@ namespace uForum.Api
             t.Title = model.Title;
             TopicService.Save(t);
 
-            o.url = string.Format("{0}/{1}-{2}", umbraco.library.NiceUrl(t.ParentId), t.Id, t.UrlName);
+            o.url = string.Format("{0}/{1}-{2}", library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
         }
@@ -190,7 +194,7 @@ namespace uForum.Api
             if (c == null)
                 throw new Exception("Topic not found");
 
-            if (c.MemberId != Members.GetCurrentMemberId())
+            if (Members.IsAdmin() == false && c.MemberId != Members.GetCurrentMemberId())
                 throw new Exception("You cannot delete this topic");
 
             CommentService.Delete(c);
@@ -212,6 +216,9 @@ namespace uForum.Api
         {
             var t = TopicService.GetById(id);
 
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot mark this topic as ham");
+
             if (t == null)
                 throw new Exception("Topic not found");
 
@@ -224,6 +231,9 @@ namespace uForum.Api
         public void TopicAsSpam(int id)
         {
             var t = TopicService.GetById(id);
+            
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot mark this topic as spam");
 
             if (t == null)
                 throw new Exception("Topic not found");
@@ -238,7 +248,7 @@ namespace uForum.Api
         public  HttpResponseMessage EditorUpload()
         {
             dynamic result = new ExpandoObject();
-            var httpRequest = System.Web.HttpContext.Current.Request;
+            var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count > 0)
             {
                 string filename = string.Empty;
@@ -248,7 +258,7 @@ namespace uForum.Api
                 foreach (string file in httpRequest.Files)
                 {
                    
-                    DirectoryInfo updir = new DirectoryInfo(System.Web.HttpContext.Current.Server.MapPath("/media/upload/" + g));
+                    DirectoryInfo updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + g));
                   
                     if (!updir.Exists)
                         updir.Create();
@@ -275,6 +285,21 @@ namespace uForum.Api
             response.Content = new StringContent(JsonConvert.SerializeObject(result));
             response.Content.Headers.ContentType = new MediaTypeHeaderValue("text/html");
             return response;
+        }
+
+        [HttpDelete]
+        public void DeleteMember(int id)
+        {
+            if (Members.IsHq() == false)
+                throw new Exception("You cannot delete this member");
+
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            var member = memberService.GetById(id);
+
+            if (member == null)
+                throw new Exception("Member not found");
+
+            memberService.Delete(member);
         }
     }
 }

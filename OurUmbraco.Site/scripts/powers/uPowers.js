@@ -82,8 +82,14 @@ var uPowers = function () {
             $.get("/umbraco/api/Community/UnBlockMember/" + s_memberId);
         },
         DeleteMember: function (s_memberId) {
-            
-            $.get("/umbraco/api/Community/DeleteMember/" + s_memberId);
+
+            $.ajax({
+                url: "/umbraco/api/Forum/DeleteMember/?id=" + s_memberId,
+                type: 'DELETE',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
         }
     };
 } ();
@@ -389,12 +395,12 @@ jQuery(document).ready(function () {
     });
 
 
-    jQuery("a.deleteMember").click(function () {
+    jQuery("a.delete-member").click(function () {
         if (confirm("Do you really want to DELETE this member?")) {
             var deleteLink = jQuery(this);
             
             uPowers.DeleteMember(deleteLink.attr("rel"));
-            deleteLink.parent("li").hide();
+            deleteLink.hide();
         }
         return false;
     });
