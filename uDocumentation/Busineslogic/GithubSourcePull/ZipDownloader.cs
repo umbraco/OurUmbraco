@@ -127,7 +127,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
             // a consistent integer id per document. I'm sure we can make that happen but I don't have time right now.
-            ExamineManager.Instance.IndexProviderCollection["documentationIndexSet"].RebuildIndex();
+            ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].RebuildIndex();
         }
 
         private void BuildSitemap(string foldername)
