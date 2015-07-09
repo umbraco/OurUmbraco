@@ -12,13 +12,13 @@
     // This means that Request.QueryString["id"] results in ",1929". Removing the comma helps...
     if (int.TryParse(Model.MacroParameters["forumId"].ToString().Replace(",", string.Empty), out forumId) == false)
     {
-        throw new Exception("Invalid forum Id");
+        return;
     }
 
     var forum = Umbraco.TypedContent(forumId);
     if (forum == null)
     {
-        throw new Exception("Invalid forum Id");
+        return;
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var topics = topicService.GetLatestTopics(50L, 1L, false, forumId).OrderByDescending(x => x.Created);
