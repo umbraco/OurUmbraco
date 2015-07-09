@@ -2,6 +2,7 @@
 
 <%@ Import Namespace="Umbraco.Web" %>
 <%@ Register TagPrefix="CD" Namespace="ClientDependency.Core.Controls" Assembly="ClientDependency.Core" %>
+<%@ Register TagPrefix="CD" Namespace="our" Assembly="our.umbraco.org" %>
 
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
     <!doctype html>
@@ -28,13 +29,13 @@
         <meta name="application-name" content="Our Umbraco" />
         <meta name="apple-mobile-web-app-title" content="Our Umbraco">
 
-         <!-- Icons -->
+        <!-- Icons -->
         <link rel="apple-touch-icon-precomposed" href="/assets/images/app-icons/icon-60.png">
         <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/assets/images/app-icons/icon-72.png">
         <link rel="apple-touch-icon-precomposed" sizes="76x76" href="/assets/images/app-icons/icon-76.png">
         <link rel="icon" sizes="192x192" href="/assets/images/app-icons/touch-icon-192x192.png">
 
-        <meta name="msapplication-TileImage" content="/assets/images/app-icons/tile.png"/>
+        <meta name="msapplication-TileImage" content="/assets/images/app-icons/tile.png" />
         <meta name="msapplication-config" content="/assets/images/app-icons/browserconfig.xml">
 
         <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
@@ -44,16 +45,17 @@
         </title>
         <meta name="description" content="">
         <meta name="author" content="">
+        
+        <CD:HackedCdfLoader runat="server" ID="Loader" />
+        
+        <CD:HtmlInclude runat="server">            
+            <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
+            <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
+            <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
+        </CD:HtmlInclude>
 
-        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css"/>
+        <asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>
 
-        <%--<CD:ClientDependencyLoader runat="server" ID="Loader" />--%>
-        <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-        <%--<CD:HtmlInclude runat="server">
-                <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-        </CD:HtmlInclude>--%>
-        <%--<asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>--%>
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
 
         <!--[if lt IE 9]>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
@@ -142,31 +144,27 @@
 
             </div>
             <!--.wrapper-->
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
-            <script src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
-
-
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
             
+            <CD:HtmlInclude runat="server">
             
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
+                <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
+                <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
+
                 <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
                 <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
                 <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
                 <script type="text/javascript" src="/assets/js/community.js"></script>
                 <script type="text/javascript" src="/assets/js/app.min.js"></script>
                 <script type="text/javascript" src="/assets/js/editor.min.js"></script>
-            
-            <%--<CD:HtmlInclude runat="server">
+                    
             </CD:HtmlInclude>
 
-            <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>--%>
+            <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>
 
             <script type="text/javascript">
                 classOnScroll('header', 'sticky', 10);
