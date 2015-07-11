@@ -28,7 +28,7 @@
         <generator>umbraco</generator>
         <description>Latest comment in the topic @topic.Title</description>
         <language>en</language>
-        @foreach (var comment in topic.Comments.OrderByDescending(x => x.Created).Take(10))
+        @foreach (var comment in topic.Comments.Where(x => x.IsSpam == false).OrderByDescending(x => x.Created).Take(10))
         {
             var bodyNoControlCharacters = new string(comment.Body.Where(c => !char.IsControl(c)).ToArray());
             var memberId = comment.MemberId;

@@ -21,7 +21,7 @@
         return;
     }
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topics = topicService.GetLatestTopics(50L, 1L, false, forumId).OrderByDescending(x => x.Created);
+    var topics = topicService.GetLatestTopics(50L, 1L, true, forumId).OrderByDescending(x => x.Created);
 }<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
     <channel>

@@ -32,7 +32,7 @@
 
         @foreach (var topic in topics)
         {
-            foreach (var comment in topic.Comments.OrderByDescending(x => x.Created).Where(x => x.MemberId != memberId).Take(20))
+            foreach (var comment in topic.Comments.Where(x => x.IsSpam == false).OrderByDescending(x => x.Created).Where(x => x.MemberId != memberId).Take(20))
             {
                 var bodyNoControlCharacters = new string(comment.Body.Where(c => !char.IsControl(c)).ToArray());
                 var commentMember = Members.GetById(comment.MemberId);
