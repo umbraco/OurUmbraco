@@ -47,7 +47,10 @@
 
             <div class="col-md-7">
                 <div class="package-detail-content">
-
+                    @if (currentMember != null && currentMember.GetPropertyValue<int>("reputationCurrent") < 70)
+                    {
+                        <div class="vote-info">You need at least 70 karma points to vote</div>
+                    }
                     <div class="vote">
                         <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
                         @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
