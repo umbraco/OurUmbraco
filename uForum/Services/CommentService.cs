@@ -33,7 +33,7 @@ namespace uForum.Services
         }
 
         /* Crud */
-        public Comment Save(Comment comment)
+        public Comment Save(Comment comment, bool updateTopicPostCount = true)
         {
             var newComment = comment.Id <= 0;
             var eventArgs = new CommentEventArgs() { Comment = comment };
@@ -50,7 +50,8 @@ namespace uForum.Services
 
 
                 //topic post count
-                UpdateTopicPostsCount(comment);
+                if(updateTopicPostCount)
+                    UpdateTopicPostsCount(comment);
 
                 //parent comment state
                 if (comment.ParentCommentId > 0)

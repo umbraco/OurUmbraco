@@ -74,7 +74,8 @@ namespace uForum.Api
                 throw new Exception("You cannot edit this comment");
 
             c.Body = model.Body;
-            CommentService.Save(c);
+            // This is an edit, don't update topic post count
+            CommentService.Save(c, false);
         }
 
         [HttpDelete]
