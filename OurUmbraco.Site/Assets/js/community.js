@@ -22,7 +22,7 @@
             $.ajax({
                 url: "/umbraco/api/Forum/Comment/" + id,
                 type: "DELETE"
-            });            
+            });
         },
 
         deleteThread: function (id) {
@@ -35,11 +35,19 @@
             });
         },
 
+        flag: function (id, typeOfPost, memberId) {
+            $.ajax({
+                url: "/umbraco/api/Forum/Flag/",
+                type: "POST",
+                data: { Id: id, TypeOfPost: typeOfPost, MemberId: memberId }
+            });
+        },
+
         getCommentMarkdown: function (id) {
             return $.get("/umbraco/api/Forum/CommentMarkDown/" + id).pipe(function (p) {
                 return p;
             });
-            
+
         },
 
         getThreadMarkdown: function (id) {
@@ -48,20 +56,20 @@
             });
 
         },
-        follow: function (id,controller) {
-            $.get("/umbraco/api/Notifications/SubscribeToForum"+controller+"/?id=" + id);
+        follow: function (id, controller) {
+            $.get("/umbraco/api/Notifications/SubscribeToForum" + controller + "/?id=" + id);
         },
 
-        unfollow: function (id,controller) {
-            $.get("/umbraco/api/Notifications/UnSubscribeFromForum"+controller+"/?id=" + id);
+        unfollow: function (id, controller) {
+            $.get("/umbraco/api/Notifications/UnSubscribeFromForum" + controller + "/?id=" + id);
         },
 
-        markAsSpam: function (id,controller) {
-            $.post("/umbraco/api/Forum/"+controller+"AsSpam/" + id);
+        markAsSpam: function (id, controller) {
+            $.post("/umbraco/api/Forum/" + controller + "AsSpam/" + id);
         },
 
-        markAsHam: function (id,controller) {
-            $.post("/umbraco/api/Forum/"+controller+"AsHam/" + id);
+        markAsHam: function (id, controller) {
+            $.post("/umbraco/api/Forum/" + controller + "AsHam/" + id);
         },
 
         getCategoryUrl: function (id) {
@@ -77,28 +85,27 @@
             });
         },
 
-        updateCollaborationStatus: function(projectId, status) {
+        updateCollaborationStatus: function (projectId, status) {
             $.ajax({
                 url: "/umbraco/api/ProjectContribution/UpdateCollaborationStatus/?projectId=" + projectId + "&status=" + status,
                 type: "PUT"
             });
         },
 
-        addContributor: function(projectId, email)
-        {
+        addContributor: function (projectId, email) {
             return $.get("/umbraco/api/ProjectContribution/AddContributor/?projectId=" + projectId + "&email=" + email).pipe(function (p) {
                 return p;
             });
         },
 
-        removeProjectForum: function(forumId) {
+        removeProjectForum: function (forumId) {
             $.ajax({
                 url: "/umbraco/api/ProjectForum/DeleteProjectForum/?forumId=" + forumId,
                 type: "DELETE"
             });
         },
 
-        addProjectForum: function(title, description, parentId) {
+        addProjectForum: function (title, description, parentId) {
             $.post("/umbraco/api/ProjectForum/PostProjectForum/", { title: title, description: description, parentId: parentId }, function (data) {
                 $("#forums").append("<li>" + data.title + "<small>" + data.description + "</small><a data-id=\"" + data.forumId + "\" class=\"remove-forum\" href=\"#\"><i class=\"icon-Delete-key\"></i>Remove</a></li>");
 
@@ -122,7 +129,7 @@ $(function () {
     });
 
     //Mark as solution
-    $(".comments").on("click","a.solved",function (e) {
+    $(".comments").on("click", "a.solved", function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -154,7 +161,7 @@ $(function () {
     getLink.keydown(function (e) {
         if ((e.metaKey || e.ctrlKey) && e.keyCode === 67) {
             body.removeClass("active copy-prompt");
-            
+
             console.log(thankYou);
 
             thankYou.addClass('active');
@@ -171,7 +178,7 @@ $(function () {
     });
 
     //High five
-    $(".highfive-comment a").on("click",function (e) {
+    $(".highfive-comment a").on("click", function (e) {
         e.preventDefault();
         var data = $(this).data();
         var id = parseInt(data.id);
@@ -208,53 +215,11 @@ $(function () {
         var votes = $("#projectVote").html().replace(" votes", "");
         console.log(votes);
         var count = parseInt(votes);
-        
+
         count++;
         $("#projectVote").html(count + " votes");
         $("#projectVote").after("<br /><span>&nbsp;&nbsp;&nbsp;You Rock!</span>");
     });
-
-    //Delete comment
-    $(".comments").on("click", "a.delete-reply", function (e) {
-        e.preventDefault();
-
-        var data = $(this).data();
-        var id = parseInt(data.id);
-        var $thisComment = $(this).closest(".comment");
-
-        terminateConfirm("comment", id, $thisComment);
-    });
-
-    // Delete thread
-
-    $(".delete-thread").on("click", function (e) {
-        e.preventDefault();
-
-        var data = $(this).data();
-        var id = parseInt(data.id);
-
-        terminateConfirm("thread", id);
-    });
-
-    // Ask for confirmation
-    function terminateConfirm(typeOfPost, id, thisComment) {
-        var $confirm = $("#confirm-wrapper");
-        var $confirmType = $("#confirm-wrapper .type-of");
-        var $body = $("body");
-
-        $body.addClass("active confirm-prompt");
-
-        $confirmType.html(typeOfPost);
-
-        $("#confirm-wrapper .green").on("click", function () {
-            terminatePost(typeOfPost, id, thisComment);
-            $body.removeClass("active confirm-prompt");
-        });
-
-        $("#confirm-wrapper .red").on("click", function () {
-            $body.removeClass("active confirm-prompt");
-        });
-    }
 
     // Terminate upon confirmation
     function terminatePost(typeOfPost, id, thisComment) {
@@ -271,6 +236,85 @@ $(function () {
         }
     }
     
+    // Ask for confirmation
+    function terminateConfirm(typeOfPost, id, thisComment) {
+        var $confirmType = $("#confirm-wrapper .type-of");
+        var $body = $("body");
+
+        $body.addClass("active confirm-prompt");
+
+        $confirmType.html(typeOfPost);
+
+        $("#confirm-wrapper .green").unbind("click");
+        $("#confirm-wrapper .green").on("click", function () {
+            terminatePost(typeOfPost, id, thisComment);
+            $body.removeClass("active confirm-prompt");
+        });
+
+        $("#confirm-wrapper .red").on("click", function () {
+            $body.removeClass("active confirm-prompt");
+        });
+    }
+
+    function flagConfirm(typeOfPost, id, memberId) {
+        var $body = $("body");
+        $body.addClass("active confirm-prompt");
+
+        $("#confirm-wrapper-flag .green").unbind("click");
+        $("#confirm-wrapper-flag .green").on("click", function () {
+            community.flag(id, typeOfPost, memberId);
+            $body.removeClass("active confirm-prompt");
+        });
+
+
+        $("#confirm-wrapper-flag .red").on("click", function () {
+            $body.removeClass("active confirm-prompt");
+        });
+    }
+
+    //Delete comment
+    $(".comments").on("click", "a.delete-reply", function (e) {
+        e.preventDefault();
+
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        var $thisComment = $(this).closest(".comment");
+
+        terminateConfirm("comment", id, $thisComment);
+    });
+
+    // Delete thread
+    $(".delete-thread").on("click", function (e) {
+        e.preventDefault();
+
+        var data = $(this).data();
+        var id = parseInt(data.id);
+
+        terminateConfirm("thread", id);
+    });
+
+    //Flag comment
+    $(".comments").on("click", "a.flag-comment", function (e) {
+        e.preventDefault();
+
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        var memberId = parseInt(data.member);
+
+        flagConfirm("comment", id, memberId);
+    });
+
+    // Flag thread
+    $("a.flag-thread").on("click", function (e) {
+        e.preventDefault();
+
+        var data = $(this).data();
+        var id = parseInt(data.id);
+        var memberId = parseInt(data.member);
+
+        flagConfirm("thread", id, memberId);
+    });
+
     //follow thread
 
     //unfollow thread
@@ -281,14 +325,13 @@ $(function () {
         var controller = data.controller;
         if ($(this).hasClass("following")) {
 
-            community.unfollow(id,controller);
+            community.unfollow(id, controller);
             $(this).removeClass("following");
             $(this).addClass("transparent");
             $("span", $(this)).text("Follow");
         }
-        else
-        {
-            community.follow(id,controller);
+        else {
+            community.follow(id, controller);
             $(this).addClass("following");
             $(this).removeClass("transparent");
             $("span", $(this)).text("Following");
@@ -300,7 +343,7 @@ $(function () {
         var id = $(this).val();
         community.getCategoryUrl(id).done(function (data) {
             window.location.replace(data);
-           
+
         });;
     });
 
@@ -318,7 +361,7 @@ $(function () {
             $(this).addClass("mark-as-ham");
 
             $("span", $(this)).text("Mark as ham");
-        } 
+        }
     });
 
     //mark as ham
@@ -340,25 +383,24 @@ $(function () {
     /* PROFILE */
 
     //upload avatar
-    $(".profile-settings-forms").on("click", ".avatar-image", function(e)
-    {
+    $(".profile-settings-forms").on("click", ".avatar-image", function (e) {
         var $body = $("body");
         var $dialog = $("#update-avatar-dialog");
         var $loader = $(".span", $dialog);
         var $file = $("input[type=file]", $dialog);
         var $cancel = $("button", $dialog);
-       
+
         var uploadStart = function () {
             $loader.show();
             $file.hide();
         };
 
         var uploadComplete = function (response) {
-            
+
             $loader.hide();
             $file.show();
 
-            if (response.success) {                
+            if (response.success) {
                 $("img", $(".profile-settings-forms")).attr("src", response.imagePath + "?width=100&height=100&mode=crop");
                 $("#Avatar", $(".profile-settings-forms")).val(response.imagePath);
                 $body.removeClass("active uploading-image");
@@ -377,7 +419,7 @@ $(function () {
 
         $cancel.click(function () {
             $body.removeClass("active uploading-image");
-            
+
         });
         $body.addClass("active uploading-image");
     });
@@ -391,7 +433,7 @@ $(function () {
 
     //make sure surrounding element get's warning class
     $(".profile-settings-forms form").submit(function () {
-        
+
         if ($(this).valid()) {
             $(this).find("div.profile-input").each(function () {
                 if ($(this).find(".input-validation-error").length === 0) {
@@ -449,8 +491,8 @@ $(function () {
         e.preventDefault();
         $("#contri-feedback").html("");
 
-        if ($("#contri-email").val()){
-           
+        if ($("#contri-email").val()) {
+
             var data = $(this).data();
             var projectId = parseInt(data.id);
             var email = $("#contri-email").val();
@@ -482,7 +524,7 @@ $(function () {
         e.preventDefault();
 
         if ($("#forum-title").val() && $("#forum-description").val()) {
-            
+
             var data = $(this).data();
             var projectId = parseInt(data.id);
             var title = $("#forum-title").val();

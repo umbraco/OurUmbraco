@@ -36,7 +36,15 @@
     </div>
 }
 <!-- DELETE THREAD END -->
-
+<!-- FLAG SPAM START -->
+<div id="confirm-wrapper-flag" class="confirm-wrapper">
+    <h4>Flag this post as spam?</h4>
+    <p>This post will be reported to the moderators as potential spam to be looked at</p>
+    <br />
+    <button type="button" class="button green tiny">Yes</button>
+    <button type="button" class="button red tiny">No</button>
+</div>
+<!-- FLAG SPAM END -->
 <ul class="comments">
     @Html.Partial("forum/question", topic)
 

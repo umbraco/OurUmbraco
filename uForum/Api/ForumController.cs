@@ -14,9 +14,12 @@ using uForum.AntiSpam;
 using uForum.Extensions;
 using uForum.Library;
 using uForum.Models;
+using uForum.Services;
 using umbraco;
 using umbraco.BusinessLogic;
 using umbraco.cms.helpers;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
@@ -88,7 +91,7 @@ namespace uForum.Api
             CommentService.Delete(c);
 
             if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
-                SendSlackDeleteNotification(c.MemberId, Members.GetCurrentMember().Name);
+                SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
         }
 
         [HttpGet]
@@ -208,7 +211,7 @@ namespace uForum.Api
             CommentService.Delete(c);
 
             if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
-                SendSlackDeleteNotification(c.MemberId, Members.GetCurrentMember().Name);
+                SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
         }
 
         [HttpGet]
@@ -321,7 +324,7 @@ namespace uForum.Api
 
             var memberService = UmbracoContext.Application.Services.MemberService;
             var member = memberService.GetById(id);
-            
+
             if (member == null)
                 throw new Exception("Member not found");
 
@@ -337,25 +340,51 @@ namespace uForum.Api
             return minimumKarma;
         }
 
-        public static void SendSlackDeleteNotification(int memberId, string adminName)
+        [HttpPost]
+        public void Flag(Flag flag)
+        {
+            var post = string.Format("A {0} has been flagged as spam for a moderator to check\n", flag.TypeOfPost);
+            var member = Members.GetById(flag.MemberId);
+            post = post + string.Format("Flagged by member {0} https://our.umbraco.org/member/{1}\n", member.Name, member.Id);
+
+            var topicId = flag.Id;
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+            if (flag.TypeOfPost == "comment")
+            {
+                var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
+                var comment = cs.GetById(flag.Id);
+                topicId = comment.TopicId;
+            }
+            var topic = ts.GetById(topicId);
+
+            post = post+ string.Format("Topic title: *{0}*\n\n Link to {1}: http://our.umbraco.org{2}{3}\n\n", topic.Title, flag.TypeOfPost, topic.GetUrl(),    flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
+
+            SendSlackNotification(post);
+        }
+
+        private static string BuildDeleteNotifactionPost(string adminName, int memberId)
+        {
+            var post = "Topic or comment deleted by admin " + adminName;
+            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+
+            if (memberId != 0)
+            {
+                var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
+
+                if (member != null)
+                {
+                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+                    post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                }
+            }
+
+            return post;
+        }
+
+        private static void SendSlackNotification(string post)
         {
             using (var client = new WebClient())
             {
-                var post = "Topic or comment deleted by admin " + adminName;
-                post = post + string.Format("Go to affected member http://our.umbraco.org/member/{0}\n\n", memberId);
-
-                if (memberId != 0)
-                {
-                    var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
-
-                    if (member != null)
-                    {
-                        var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
-                        post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
-                    }
-
-                }
-
                 post = post.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
                 var values = new NameValueCollection
@@ -374,9 +403,16 @@ namespace uForum.Api
                 }
                 catch (Exception ex)
                 {
-                    Log.Add(LogTypes.Error, new User(0), -1, string.Format("Posting update to Slack failed {0} {1}", ex.Message, ex.StackTrace));
+                    LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
                 }
             }
         }
+    }
+
+    public class Flag
+    {
+        public int Id { get; set; }
+        public string TypeOfPost { get; set; }
+        public int MemberId { get; set; }
     }
 }
