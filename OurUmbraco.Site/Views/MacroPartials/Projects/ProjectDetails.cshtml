@@ -44,13 +44,12 @@
 <section class="package-detail">
     <div class="container">
         <div class="row">
-
             <div class="col-md-7">
                 <div class="package-detail-content">
-
+                    
                     <div class="vote">
                         <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
-                        @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || currentMember.GetPropertyValue<int>("reputationCurrent") < 70 || hasMemberVoted)
+                        @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
                         {
                             <span>@totalVotes votes</span>
                         }
@@ -77,7 +76,7 @@
                                 @foreach (var image in screenshots)
                                 {
                                     <a class="fancybox" rel="gallery1" href="@our.Utils.GetScreenshotPath(image.Path)" title="">
-                                        <img src="@our.Utils.GetScreenshotPath(image.Path)" alt="" />
+                                        <img src="@our.Utils.GetScreenshotPath(image.Path)" alt=""/>
                                     </a>
                                 }
 

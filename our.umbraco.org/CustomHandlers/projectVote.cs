@@ -1,7 +1,7 @@
 ﻿using System;
-using umbraco.cms.businesslogic.web;
 using uPowers.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Web;
 
 namespace our.CustomHandlers
 {
@@ -20,20 +20,13 @@ namespace our.CustomHandlers
 
             if (a.Alias == "ProjectUp")
             {
-                Document d = new Document(e.ItemId);
-
-                if (d.getProperty("approved").Value != null &&
-                     d.getProperty("approved").Value.ToString() != "1" &&
-                     uPowers.Library.Xslt.Score(d.Id, "powersProject") >= 15)
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var content = contentService.GetById(e.ItemId);
+                if (content.GetValue<bool>("approved") == false &&
+                    uPowers.Library.Xslt.Score(content.Id, "powersProject") >= 15)
                 {
-                    //set approved flag
-                    d.getProperty("approved").Value = true;
-
-                    d.Save();
-                    d.Publish(new umbraco.BusinessLogic.User(0));
-
-                    umbraco.library.UpdateDocumentCache(d.Id);
-                    umbraco.library.RefreshContent();
+                    content.SetValue("approved", true);
+                    contentService.SaveAndPublishWithStatus(content);
                 }
             }
         }
@@ -44,12 +37,12 @@ namespace our.CustomHandlers
 
             if (a.Alias == "ProjectUp" || a.Alias == "ProjectDown")
             {
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var content = contentService.GetById(e.ItemId);
 
-                Document d = new Document(e.ItemId);
+                e.ReceiverId = content.GetValue<int>("owner");
 
-                e.ReceiverId = (int)d.getProperty("owner").Value;
-
-                e.ExtraReceivers = Utils.GetProjectContributors(d.Id);
+                e.ExtraReceivers = Utils.GetProjectContributors(content.Id);
             }
         }
     }
