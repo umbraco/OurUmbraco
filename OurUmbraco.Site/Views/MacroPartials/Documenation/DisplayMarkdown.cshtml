@@ -18,7 +18,17 @@
             Response.Redirect(Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.Length - 1));
         }
     }
-    
+
+    if (Request.Url.AbsoluteUri.EndsWith("/index/"))
+    {
+        Response.Redirect(Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.Length - "/index/".Length));
+    }
+
+    if (Request.Url.AbsoluteUri.EndsWith("/readme/"))
+    {
+        Response.Redirect(Request.Url.AbsoluteUri.Substring(0, Request.Url.AbsoluteUri.Length - "/readme/".Length));
+    }
+
     var markdown = ml.DoTransformation();
 }
 
