@@ -49,10 +49,10 @@
         <CD:HackedCdfLoader runat="server" ID="Loader" />
         
         <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-        
+
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
         
         <CD:HtmlInclude runat="server">
-            <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
         </CD:HtmlInclude>
 
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
