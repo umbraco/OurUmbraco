@@ -2,7 +2,6 @@
 using System.IO;
 using System.Web;
 using System.Web.Script.Serialization;
-using uRelease.Controllers;
 using uRelease.Models;
 
 namespace uRelease
@@ -11,11 +10,11 @@ namespace uRelease
     {
         public static List<AggregateView> GetAllReleaseFromFile()
         {
-            var releaseController = new ReleaseController();
-            if (File.Exists(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile)) == false)
-                releaseController.SaveAllToFile();
+            var import = new Import();
+            if (File.Exists(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile)) == false)
+                import.SaveAllToFile();
 
-            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile));
+            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile));
 
             var data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText);
 

@@ -296,6 +296,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="CustomHandlers\OurApplicationStartupHandler.cs" />
+    <Compile Include="Scheduling\YouTrackSync.cs" />
+    <Compile Include="Scheduling\Scheduler.cs" />
     <Compile Include="usercontrols\acceptTos.ascx.cs">
       <DependentUpon>acceptTos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -434,6 +436,10 @@
     <ProjectReference Include="..\uPowers\uPowers.csproj">
       <Project>{00F050B9-E3ED-49A7-AB97-E8BEC2513553}</Project>
       <Name>uPowers</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\uRelease\uRelease.csproj">
+      <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
+      <Name>uRelease</Name>
     </ProjectReference>
     <ProjectReference Include="..\uRepo\uRepo.csproj">
       <Project>{47fd2b14-1653-4052-ad53-1871a8f85e0e}</Project>

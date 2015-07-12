@@ -12,11 +12,11 @@ namespace uRelease
     {
         public static AggregateView GetCurrentReleaseFromFile()
         {
-            var releaseController = new ReleaseController();
-            if (File.Exists(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile)) == false)
-                releaseController.SaveAllToFile();
+            var import = new Import();
+            if (File.Exists(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile)) == false)
+                import.SaveAllToFile();
 
-            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(ReleaseController.YouTrackJsonFile));
+            var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile));
 
             var data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText);
             var result = data.First(x => x.currentRelease);

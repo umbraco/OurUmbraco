@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="System.Web.UI.UserControl" %>
-<%@ Import Namespace="uRelease.Controllers" %>
 
 <script runat="server">
 
@@ -14,8 +13,8 @@
     
     void GetYouTrackButton_Click(object sender, EventArgs e)
     {
-        var releases = new ReleaseController();
-        var result = releases.SaveAllToFile();
+        var import = new uRelease.Import();
+        var result = import.SaveAllToFile();
         Status = result;
     }
 
