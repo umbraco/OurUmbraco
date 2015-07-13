@@ -1,5 +1,6 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <%@ Import Namespace="Umbraco.Web" %>
+<%@ Import Namespace="uRelease" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
 </asp:Content>
@@ -92,11 +93,11 @@
                             border: none;
                         }
 
-                            .release-page .dot.big {
-                                position: relative;
-                                text-indent: 0;
-                                margin: 15px auto 0;
-                            }
+                        .release-page .dot.big {
+                            position: relative;
+                            text-indent: 0;
+                            margin: 15px auto 0;
+                        }
 
                         .release-page .chart {
                             height: 60px;
@@ -106,16 +107,31 @@
                             text-align: center;
                         }
 
-                            .release-page .chart p {
-                                vertical-align: middle;
-                                line-height: 3.7rem;
-                                display: inline-block;
-                            }
+                        .release-page .chart p {
+                            vertical-align: middle;
+                            line-height: 3.7rem;
+                            display: inline-block;
+                        }
 
-                            .release-page .chart canvas {
-                                top: 0px;
-                                left: 0px;
-                            }
+                        .release-page .chart canvas {
+                            top: 0px;
+                            left: 0px;
+                        }
+                        
+                        .statuses ul {
+                            list-style-type: none; 
+                        }
+                        .statuses ul li  { 
+                            position: relative;
+                            margin-bottom: 10px;
+                            padding-left: 10px;
+                        }
+                        .statuses li:before {
+                            position: absolute;
+                            top: -4px;
+                            left: -25px;
+                            font-size: 1.5em;
+                        }
                     </style>
 
                     <div class="row explain">
@@ -223,7 +239,7 @@
                                                 { %>
 
                                             <ul>
-                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                <li class="<%= issue.StateIcon() %>" title="<%= issue.state %>">
                                                     <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
                                                 </li>
                                             </ul>                
@@ -241,7 +257,7 @@
                                                 { %>
 
                                             <ul>
-                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                <li class="<%= issue.StateIcon() %>" title="<%= issue.state %>">
                                                     <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
                                                 </li>
                                             </ul>                
@@ -259,7 +275,7 @@
                                                 { %>
 
                                             <ul>
-                                                <li class="<%= issue.state.Replace(" ", string.Empty) %>">
+                                                <li class="<%= issue.StateIcon() %>" title="<%= issue.state %>">
                                                     <a href="http://issues.umbraco.org/issue/<%= issue.id %>" target="_blank"><%= issue.id %> - <%= issue.title %></a>
                                                 </li>
                                             </ul>                

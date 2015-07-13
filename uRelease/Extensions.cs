@@ -35,5 +35,36 @@ namespace uRelease
         {
             return new DateTime(1970, 1, 1).AddMilliseconds(date);
         }
+
+        public static string StateIcon(this IssueView issue)
+        {
+            switch (issue.state.ToLowerInvariant().Replace(" ", "").Replace("'", ""))
+            {
+                case "submitted":
+                    return "icon-Checkbox-dotted";
+                case "open":
+                    return "icon-Checkbox-empty";
+                case "inprogress":
+                    return "icon-Paper-plane-alt";
+                case "fixed":
+                    return "icon-Check";
+                case "duplicate":
+                    return "icon-Multiple-windows";
+                case "cantreproduce":
+                    return "icon-Enter";
+                case "obsolete":
+                    return "icon-Scull";
+                case "closed":
+                    return "icon-Stop-alt";
+                case "reopened":
+                    return "icon-Undo";
+                case "workaroundposted":
+                    return "icon-Redo";
+                case "resolved":
+                    return "icon-Check";
+                default:
+                    return "";
+            }
+        }
     }
 }
