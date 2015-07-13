@@ -30,7 +30,7 @@
 
         </div>
         <% var roadmap = uRelease.Roadmap.GetRoadmapReleasesFromFile(); %>
-        <% foreach (var release in roadmap.OrderByDescending(x => x.version))
+        <% foreach (var release in roadmap.OrderBy(x => x.version))
             {
                 var completedIssues = release.issues.Count(x => x.state == "Fixed");
                 var totalIssues = release.issues.Count();
