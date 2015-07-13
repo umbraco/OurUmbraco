@@ -1,8 +1,5 @@
 .markdown-syntax{
-
-
   a {
-    text-decoration: none;
 
     &.absent {
       color: #cc0000;
@@ -164,6 +161,14 @@
       color: #871A1A;
       height: 0px;
       padding: 0;
+  }
+
+  pre { 
+
+      a{ 
+          color:$color-white;
+
+      }
   }
    
   
