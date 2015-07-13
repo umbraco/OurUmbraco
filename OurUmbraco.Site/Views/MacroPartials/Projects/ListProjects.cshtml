@@ -11,6 +11,14 @@
     var term = Request["term"];
     var pageSize = 20;
     var headline = orderMode == "createDate" ? "latest" : "most popular";
+    if (version != null)
+    {
+        headline = "version " + version;
+    }
+    if (category != null)
+    {
+        headline = category.ToLowerInvariant();
+    }
 
     var filters = new List<SearchFilters>();
     if (!string.IsNullOrEmpty(category))
