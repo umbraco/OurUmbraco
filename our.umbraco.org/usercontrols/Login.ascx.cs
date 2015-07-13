@@ -66,9 +66,15 @@ namespace our.usercontrols
             {
                 if (!string.IsNullOrEmpty(redirectUrl))
                 {
-                    var nextUrl = new Uri(redirectUrl);
-                    if (Request.Url.Host == nextUrl.Host)
-                        Response.Redirect(redirectUrl);
+                    try
+                    {
+                        var newUrl = new Uri(redirectUrl);
+                        if (newUrl.Host != Request.Url.Host)
+                            Response.Redirect("/");
+                    }
+                    catch(Exception) { }
+
+                    Response.Redirect(redirectUrl);
                 }
                 else
                 {
