@@ -43,6 +43,8 @@
         TimeSpan.FromMinutes(1));
 
     var pages = (totalTopics / pageSize) + 1;
+
+    var categories = CurrentPage.AncestorOrSelf(2);
 }
 @if (Model.Content.NewTopicsAllowed() == false)
 {
@@ -51,7 +53,7 @@
     {
         notification = "Creating new topics is not allowed here";
     }
-    
+
     <div class="alertbar__yellow">
         @Html.Raw(notification)
     </div>
@@ -60,7 +62,7 @@
 <div class="utilities">
 
     @Umbraco.RenderMacro("Breadcrumb", new { linktocurrent = "1" })
-    
+
     @Umbraco.RenderMacro("ForumForumActions")
 
 </div>
@@ -70,20 +72,32 @@
         <input type="search" class="forum-search-input" required placeholder="Search for threads">
         <label for="search">Search for threads</label>
     </div>
+
     <div class="or">or</div>
     <div class="sorting">
         <select id="selectCategory" data-placeholder="Choose&hellip;">
             <option class="category" selected disabled>Filter by category</option>
-            <option class="all" value="@CurrentPage.AncestorOrSelf(2).Id">All categories</option>
-            @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
+            @if (categories.ContentType.Alias == "Projects")
             {
-                foreach (var tag in main.Children)
+                foreach (var tag in CurrentPage.Parent.Children)
                 {
                     <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
                 }
             }
+            else
+            {
+                <option class="all" value="@categories.Id">All categories</option>
+                foreach (var main in categories.Children)
+                 {
+                     foreach (var tag in main.Children)
+                     {
+                         <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                     }
+                 }
+            }
         </select>
     </div>
+
 </div>
 
 <!-- FORUM HEADER END -->
