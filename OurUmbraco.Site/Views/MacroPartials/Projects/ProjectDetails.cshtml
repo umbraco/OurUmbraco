@@ -273,7 +273,7 @@
                                             </a>
                                         </h3>
                                         <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
-                                        @if (currentMember != null && (currentMember.Id == owner.Id || contributors.ForEach(c => c.MemberId == currentMember.Id).SingleOrDefault()))
+                                        @if (currentMember != null && (currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                         {
                                             <br /><br />
                                             <a href="/member/profile/projects/edit?id=@project.Id">Edit project</a>
