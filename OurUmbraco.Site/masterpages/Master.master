@@ -166,13 +166,14 @@
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
             <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
-
+            
+            <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
+            <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
+            <script type="text/javascript" src="/assets/js/community.js"></script>
+            <script type="text/javascript" src="/assets/js/app.min.js"></script>
+            <script type="text/javascript" src="/assets/js/editor.min.js"></script>
+            
             <CD:HtmlInclude runat="server">
-                <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
-                <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
-                <script type="text/javascript" src="/assets/js/community.js"></script>
-                <script type="text/javascript" src="/assets/js/app.min.js"></script>
-                <script type="text/javascript" src="/assets/js/editor.min.js"></script>
             </CD:HtmlInclude>
 
             <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>
