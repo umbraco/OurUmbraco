@@ -225,12 +225,6 @@ namespace uRelease
             var smtpClient = new SmtpClient();
             smtpClient.Send(mailMessage);
         }
-
-        public JsonResult AllVersions()
-        {
-            var gotBundle = GetVersionBundle();
-            return new JsonResult { Data = gotBundle.Data, JsonRequestBehavior = JsonRequestBehavior.AllowGet };
-        }
         
         public string SaveAllToFile()
         {
