@@ -243,6 +243,7 @@ $(function () {
 
         $body.addClass("active confirm-prompt");
 
+        console.log(typeOfPost);
         $confirmType.html(typeOfPost);
 
         $("#confirm-wrapper .green").unbind("click");
@@ -258,17 +259,17 @@ $(function () {
 
     function flagConfirm(typeOfPost, id, memberId) {
         var $body = $("body");
-        $body.addClass("active confirm-prompt");
+        $body.addClass("active confirm-prompt-flag");
 
         $("#confirm-wrapper-flag .green").unbind("click");
         $("#confirm-wrapper-flag .green").on("click", function () {
             community.flag(id, typeOfPost, memberId);
-            $body.removeClass("active confirm-prompt");
+            $body.removeClass("active confirm-prompt-flag");
         });
 
 
         $("#confirm-wrapper-flag .red").on("click", function () {
-            $body.removeClass("active confirm-prompt");
+            $body.removeClass("active confirm-prompt-flag");
         });
     }
 
