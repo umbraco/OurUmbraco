@@ -18,7 +18,7 @@
             {
                 <div class="col-sm-3 col-xs-6">
                     <select name="topic-category" id="topic-category" class="markdown-control">
-                        <option value="Choose a category" selected="" disabled="">Choose a category</option>
+                        <option value="" selected="" disabled="">Choose a category</option>
                         @foreach (var main in CurrentPage.AncestorOrSelf(2).Children)
                         {
                             foreach (var cat in main.Children)
