@@ -470,7 +470,7 @@ $(function () {
     });
 
     /* profile project contribution */
-    $(".main-content .remove-contri").on("click", function (e) {
+    $(".profile-settings .remove-contri").on("click", function (e) {
         e.preventDefault();
         var data = $(this).data();
         var projectId = parseInt(data.projectid);
@@ -480,7 +480,7 @@ $(function () {
         $(this).parent("li").fadeOut();
     });
 
-    $(".main-content #open-for-collab").on("change", function (e) {
+    $(".profile-settings #open-for-collab").on("change", function (e) {
         var data = $(this).data();
         var projectId = parseInt(data.id);
         var status = $(this).is(":checked");
@@ -488,7 +488,7 @@ $(function () {
         community.updateCollaborationStatus(projectId, status);
     });
 
-    $(".main-content #add-contri").on("click", function (e) {
+    $(".profile-settings #add-contri").on("click", function (e) {
         e.preventDefault();
         $("#contri-feedback").html("");
 

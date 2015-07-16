@@ -14,10 +14,13 @@
 
 
     var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
-    
+
     var contris = cs.GetContributors(id).ToList();
-    
-    <dic class="profile-settings">
+    <style>
+        .profile-settings { margin-bottom: 50px; }
+        #add-contri { margin-top: 20px; }
+    </style>
+    <div class="profile-settings">
         <strong>@project.Name</strong>
         <div class="profile-settings-forms">
 
@@ -51,16 +54,17 @@
                 }
             </ul>
         </div>
-        
+
         <strong>Add contributor</strong>
         <div class="profile-settings-forms">
 
             <div class="profile-input">
                 <label for="contri-email">Email</label>
-                <input type="text" id="contri-email" name="contri-email" />
+                <input type="text" id="contri-email" name="contri-email"/>
             </div>
+            <span id="contri-feedback"></span><br/>
             <a class="button green tiny" id="add-contri" data-id="@projectId">Add</a>
-            <small id="contri-feedback"></small>
+            
         </div>
-    </dic>
+    </div>
 }
