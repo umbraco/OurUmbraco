@@ -49,6 +49,7 @@ namespace uProject.Api
                 var content = cs.CreateContent(forum.Title, forum.ParentId, "Forum");
                 content.Name = forum.Title;
                 content.SetValue("forumDescription", forum.Description);
+                content.SetValue("forumAllowNewTopics", true);
                 cs.SaveAndPublish(content);
                 forum.Id = content.Id;
                 return forum;
