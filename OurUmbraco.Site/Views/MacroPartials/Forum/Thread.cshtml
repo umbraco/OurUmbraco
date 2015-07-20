@@ -1,12 +1,11 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Web.Mvc.Html
-@using uForum.Models
+@using uForum.Extensions
 @using uForum.Services
 
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
-    var topicAuthor = topic.AuthorName;
 }
 
 <!-- COPY LINK -->
@@ -45,37 +44,43 @@
     <button type="button" class="button red tiny">No</button>
 </div>
 <!-- FLAG SPAM END -->
-<ul class="comments">
-    @Html.Partial("forum/question", topic)
+@if(topic != null) 
+{	
+	<ul class="comments">
+		@Html.Partial("forum/question", topic)
+					
+		@foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
+		{
+			var comm = comment;
+			
+			Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
 
-    @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
-    {
-        var comm = comment;
-        
-        Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
+			if (comm.HasChildren)
+			{
+				var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
 
-        if (comm.HasChildren)
-        {
-            var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
+				foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
+				{
+					Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
+				}
+			}
+		}
+	</ul>
 
-            foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
-            {
-                Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
-            }
-        }
-    }
-
-</ul>
-
-@if (Members.IsLoggedIn())
+	if (Members.IsLoggedIn())
+	{
+		<div class="replybutton">
+			<a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
+		</div>
+	}
+	else
+	{
+		<div class="replybutton notloggedin">
+			Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
+		</div>
+	}
+} 
+else 
 {
-    <div class="replybutton">
-        <a href="#" class="button green large reply forum-reply" data-author="@topicAuthor" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
-    </div>
-}
-else
-{
-    <div class="replybutton notloggedin">
-        Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
-    </div>
+	<p>This topic no longer exists.</p>
 }

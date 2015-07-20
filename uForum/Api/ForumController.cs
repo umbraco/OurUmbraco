@@ -349,23 +349,30 @@ namespace uForum.Api
             post = post + string.Format("Flagged by member {0} https://our.umbraco.org/member/{1}\n", member.Name, member.Id);
 
             var topicId = flag.Id;
+            var posterId = 0;
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             if (flag.TypeOfPost == "comment")
             {
                 var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
                 var comment = cs.GetById(flag.Id);
                 topicId = comment.TopicId;
+                posterId = comment.MemberId;
             }
-            var topic = ts.GetById(topicId);
 
-            post = post+ string.Format("Topic title: *{0}*\n\n Link to {1}: http://our.umbraco.org{2}{3}\n\n", topic.Title, flag.TypeOfPost, topic.GetUrl(),    flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
+            var topic = ts.GetById(topicId);
+            if (flag.TypeOfPost == "thread")
+            {
+                posterId = topic.MemberId;
+            }
+
+            post = post + string.Format("Topic title: *{0}*\nLink to author: http://our.umbraco.org/member/{1}\n Link to {2}: http://our.umbraco.org{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
 
             SendSlackNotification(post);
         }
 
         private static string BuildDeleteNotifactionPost(string adminName, int memberId)
         {
-            var post = "Topic or comment deleted by admin " + adminName;
+            var post = string.Format("Topic or comment deleted by admin {0}\n", adminName);
             post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
 
             if (memberId != 0)

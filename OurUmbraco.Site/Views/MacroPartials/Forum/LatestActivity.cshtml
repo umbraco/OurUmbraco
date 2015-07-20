@@ -19,7 +19,10 @@
         <a href="@topic.GetUrl()" class="forum-thread">
 
             <div class="avatar">
-                @Html.Raw(our.Utils.GetMemberAvatar(mem, 100))
+				@if(mem != null)
+                {
+					@Html.Raw(our.Utils.GetMemberAvatar(mem, 100))
+				}
             </div>
 
             <div class="meta">
