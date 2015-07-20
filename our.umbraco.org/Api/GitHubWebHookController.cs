@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Octokit;
 using our.Attributes;
 using uForum;
+using uForum.Extensions;
 using Umbraco.Core.Persistence.Querying;
 using Umbraco.Web.WebApi;
 
