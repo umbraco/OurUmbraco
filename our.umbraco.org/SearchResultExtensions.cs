@@ -12,7 +12,7 @@ namespace our
     {
         public static string GetTitle(this SearchResult result)
         {
-            return HttpContext.Current.Server.HtmlEncode(result["nodeName"]);
+            return HttpContext.Current.Server.HtmlEncode(result.Fields.ContainsKey("nodeName") ? result["nodeName"] : string.Empty);
         }
 
         public static string GetIcon(this SearchResult result)

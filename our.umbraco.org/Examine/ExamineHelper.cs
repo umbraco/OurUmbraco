@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine;
@@ -43,20 +44,19 @@ namespace our.Examine
         {
             var lines = new List<string>();
             lines.AddRange(File.ReadAllLines(file.FullName));
-            var headLine = string.Empty;
-            var body = string.Empty;
-            if (lines.Count > 0)
-            {
-                headLine = RemoveSpecialCharacters(lines[0]);
-                lines.RemoveAt(0);
-                body = umbraco.library.StripHtml( RemoveSpecialCharacters(string.Join("", lines)) );
-            }
+
+            var body = lines.Any()
+                ? umbraco.library.StripHtml(RemoveSpecialCharacters(string.Join("", lines)))
+                : string.Empty;
+
+            var firstHeadline = lines.FirstOrDefault(x => x.StartsWith("#"));
+            var headLine = firstHeadline ?? file.FullName.Substring(file.FullName.LastIndexOf("\\", StringComparison.Ordinal) + 1).Replace(".md", string.Empty).Replace("-", " ");
 
             simpleDataSet.NodeDefinition.NodeId = index;
             simpleDataSet.NodeDefinition.Type = indexType;
 
             simpleDataSet.RowData.Add("body", body);
-            simpleDataSet.RowData.Add("nodeName", headLine);
+            simpleDataSet.RowData.Add("nodeName", RemoveSpecialCharacters(headLine));
             simpleDataSet.RowData.Add("updateDate", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "documentation");
 
