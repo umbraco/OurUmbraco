@@ -132,7 +132,7 @@ namespace uForum.Extensions
         public static bool DetectSpam(this Topic topic)
         {
             var member = UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
-            topic.IsSpam = SpamChecker.IsSpam(member, topic.Body);
+            topic.IsSpam = SpamChecker.IsSpam(member, string.Format("{0} {1}", topic.Title, topic.Body));
             return topic.IsSpam;
         }
 
