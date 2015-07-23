@@ -12,10 +12,12 @@
                 var downloads = Model.ReleaseDownload.Where("Visible");		
 			    if(downloads.Any())
 			    {
+                    var downloadIds = new List<int>();
 				    foreach (var item in downloads)
-					{							
-                        Response.Redirect("/ReleaseDownload?id=" + item.id, false);
+					{					
+                        downloadIds.Add(item.Id);
 			        }
+                    Response.Redirect("/ReleaseDownload?id=" + downloadIds.First(), false);
 			    }
             } 
         }
