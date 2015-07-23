@@ -6,6 +6,7 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Http;
 using System.Web.Security;
@@ -102,8 +103,8 @@ namespace uForum.Api
 
             if (c == null)
                 throw new Exception("Comment not found");
-
-            return c.Body;
+            
+            return c.Body.SanitizeEdit();
         }
 
         [HttpPost]
@@ -223,7 +224,7 @@ namespace uForum.Api
             if (t == null)
                 throw new Exception("Topic not found");
 
-            return t.Body;
+            return t.Body.SanitizeEdit();
         }
 
         [HttpPost]
