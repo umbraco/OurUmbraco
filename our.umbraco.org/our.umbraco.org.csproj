@@ -286,6 +286,7 @@
     <Compile Include="Examine\DocumentationIndexConfig.cs" />
     <Compile Include="CustomHandlers\ForumIndexer.cs" />
     <Compile Include="library.cs" />
+    <Compile Include="MigrationsHandler.cs" />
     <Compile Include="Models\ProfileModel.cs" />
     <Compile Include="Models\ProfileNotificationModel.cs" />
     <Compile Include="Models\RegisterModel.cs" />

@@ -1852,6 +1852,7 @@
     <Content Include="Views\MacroPartials\Rss\Packages.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Topic.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Participated.cshtml" />
+    <Content Include="Views\MacroPartials\Members\Activate.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
@@ -4762,6 +4763,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="App_Data\migrations\" />
     <Folder Include="App_Plugins\" />
     <Folder Include="css\img\Cached\" />
     <Folder Include="umbraco\dashboard\air\" />

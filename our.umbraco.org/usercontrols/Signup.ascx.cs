@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Net;
 using System.Web.Hosting;
 using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Web.UI.Controls;
+using Umbraco.Web;
 using File = System.IO.File;
+using UmbracoUserControl = Umbraco.Web.UI.Controls.UmbracoUserControl;
 
 namespace our.usercontrols
 {
@@ -145,8 +147,21 @@ namespace our.usercontrols
                             uForum.Library.Utils.SendActivationMail(member);
                             uForum.Library.Utils.SendMemberSignupMail(member);
                         }
+                        memberService.AssignRole(member.Id, "notactivated");
 
-                        //Response.Redirect(library.NiceUrl(NextPage));
+                        var redirectPage = "/";
+                        var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                        var rootNode = contentService.GetRootContent().First();
+
+                        var memberNode = rootNode.Children().FirstOrDefault(x => x.Name == "Member");
+                        if (memberNode != null)
+                        {
+                            var pendingActivationPage = memberNode.Children().FirstOrDefault(x => x.Name == "Pending activation");
+                            if (pendingActivationPage != null)
+                                redirectPage = library.NiceUrl(pendingActivationPage.Id);
+                        }
+
+                        Response.Redirect(redirectPage);
                     }
                     else
                     {

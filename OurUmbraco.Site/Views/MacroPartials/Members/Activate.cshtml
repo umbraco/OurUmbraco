@@ -1,0 +1,53 @@
+﻿@using uForum.Extensions
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    var memberGuid = Request.QueryString["id"];
+
+    if (string.IsNullOrWhiteSpace(memberGuid) == false)
+    {
+        var memberService = UmbracoContext.Current.Application.Services.MemberService;
+        var member = memberService.GetByKey(new Guid(memberGuid));
+
+        if (member == null)
+        {
+            <p>Member was not found.</p>
+        }
+        else
+        {
+            if (Roles.IsUserInRole(member.Username, "notactivated") == false)
+            {
+                if (member.IsApproved)
+                {
+                    <p>You have already been activated.</p>
+                }
+                else
+                {
+                    <p>Your account has been disabled.</p>
+                }
+            }
+            else
+            {
+                member.IsApproved = true;
+                memberService.Save(member);
+                memberService.DissociateRole(member.Id, "notactivated");
+                FormsAuthentication.SetAuthCookie(member.Username, true);
+
+                <h2>Thank you for signing up!</h2>
+                <div class="notice">
+                    <p>You are now part of the friendliest community on the web. Start with one of the items below.</p>
+                    <ul>
+                        <li>Get help or offer your own assistance in the <a href="/forum" title="Forum">Forum</a></li>
+                        <li>Find answers to your questions in the <a href="/documentation" title="Documentation">Documentation</a></li>
+                        <li>Browse projects or create your own in <a href="/projects" title="Projects">Projects</a></li>
+                    </ul>
+                    <p>You can also rate and categorize content, topics, projects, and users. So get going!</p>
+                </div>
+            }
+        }
+    }
+    else
+    {
+        <p>Invalid activation code.</p>
+    }
+}
+<p>&nbsp;</p>

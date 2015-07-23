@@ -60,3 +60,4 @@ OurUmbraco.Site/[Ww]eb.config
 OurUmbraco.Site/[Aa]ssets/css/style.min.css
 OurUmbraco.Site/[Aa]ssets/js/app.min.js
 .vs/
+OurUmbraco.Site/App_Data/migrations/*.txt
