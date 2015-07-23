@@ -190,8 +190,12 @@
         if (currentMember.IsHq())
         {
             <p style="border: 1px solid orange; padding: 4px;">
-                HQ Tools (also known as "with great power comes great responsibility"):<br />
+                HQ Tools (also known as "with great power comes great responsibility"):<br/>
+                @{ var dbMember = UmbracoContext.Application.Services.MemberService.GetById(member.Id); }
+                <span>Member is approved? <strong>@dbMember.IsApproved</strong></span><br />
+
                 <a href="#" class="delete-member" style="color: red" rel="@member.Id">Delete this member</a><br />
+                <a href="#" class="delete-member-plus" style="color: red" rel="@member.Id">Delete this member including all their topics and comments</a><br />
                 @if (reputationCurrent < 71)
                 {
                     <a href="#" class="approve-member" style="color: green" rel="@member.Id">Give enough karma to to stop spamchecks and allow posting packages</a><br />

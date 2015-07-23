@@ -91,6 +91,16 @@ var uPowers = function () {
                 }
             });
         },
+        DeleteMemberPlus: function (s_memberId) {
+
+            $.ajax({
+                url: "/umbraco/api/Forum/DeleteMemberPlus/?id=" + s_memberId,
+                type: 'DELETE',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
+        },
         ApproveMember: function (s_memberId) {
 
             $.ajax({
@@ -410,6 +420,16 @@ jQuery(document).ready(function () {
             var deleteLink = jQuery(this);
             
             uPowers.DeleteMember(deleteLink.attr("rel"));
+            deleteLink.hide();
+        }
+        return false;
+    });
+    
+    jQuery("a.delete-member-plus").click(function () {
+        if (confirm("Do you really want to DELETE this member and ALL of their created topics and comments?")) {
+            var deleteLink = jQuery(this);
+            
+            uPowers.DeleteMemberPlus(deleteLink.attr("rel"));
             deleteLink.hide();
         }
         return false;

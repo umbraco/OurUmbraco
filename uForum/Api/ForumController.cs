@@ -3,6 +3,7 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -314,6 +315,37 @@ namespace uForum.Api
 
             if (member == null)
                 throw new Exception("Member not found");
+
+            memberService.Delete(member);
+        }
+
+        [HttpDelete]
+        public void DeleteMemberPlus(int id)
+        {
+            if (Members.IsHq() == false)
+                throw new Exception("You cannot delete this member");
+
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            var member = memberService.GetById(id);
+
+            if (member == null)
+                throw new Exception("Member not found");
+
+            var topicService = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var commentService = new CommentService(ApplicationContext.Current.DatabaseContext, topicService);
+            var comments = commentService.GetAllCommentsForMember(member.Id);
+            foreach (var comment in comments)
+            {
+                commentService.Delete(comment);
+            }
+            
+            var topics = topicService.GetLatestTopicsForMember(member.Id, false, 100);
+            foreach (var topic in topics)
+            {
+                // Only delete if this member started the topic
+                if(topic.MemberId == member.Id)
+                    topicService.Delete(topic);
+            }
 
             memberService.Delete(member);
         }

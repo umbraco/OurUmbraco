@@ -31,6 +31,19 @@ namespace uForum.Services
         {
             return _databaseContext.Database.SingleOrDefault<Comment>(id);
         }
+        
+        /// <summary>
+        /// Returns all comments that a given member has created
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public IEnumerable<Comment> GetAllCommentsForMember(int memberId)
+        {
+            var sql = new Sql().Select("*").From("forumComments").Where<Comment>(comment => comment.MemberId == memberId);
+            var result = _databaseContext.Database.Fetch<Comment>(sql);
+            return result;
+        }
+
 
         /* Crud */
         public Comment Save(Comment comment, bool updateTopicPostCount = true)
