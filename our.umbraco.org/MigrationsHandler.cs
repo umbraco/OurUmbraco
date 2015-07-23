@@ -56,7 +56,7 @@ namespace our
                 }
 
                 var contentService = UmbracoContext.Current.Application.Services.ContentService;
-                var rootNode = contentService.GetRootContent().First();
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
 
                 var memberNode = rootNode.Children().FirstOrDefault(x => x.Name == "Member");
 
