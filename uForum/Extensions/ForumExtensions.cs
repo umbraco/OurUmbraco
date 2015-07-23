@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using HtmlAgilityPack;
@@ -120,6 +121,23 @@ namespace uForum.Extensions
             }
 
             return new HtmlString(Utils.Sanitize(html));
+        }
+
+        public static string SanitizeEdit(this string input)
+        {
+            var replaceTags = "script,iframe";
+
+            foreach (var tag in replaceTags.Split(','))
+            {
+                var replaceRegex = new Regex(string.Format("<{0}.*?</{0}>", tag), RegexOptions.Singleline | RegexOptions.IgnoreCase);
+                var replaceRegexMatches = replaceRegex.Matches(input);
+                for (var i = 0; i < replaceRegexMatches.Count; i++)
+                {
+                    input = input.Replace(replaceRegexMatches[i].Value, string.Format("\n\n    {0}\n\n", replaceRegexMatches[i].Value));
+                }
+            }
+
+            return input;
         }
 
         public static bool DetectSpam(this Comment comment)
