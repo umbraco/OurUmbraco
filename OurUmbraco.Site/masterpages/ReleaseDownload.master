@@ -34,7 +34,7 @@
                 Application.SqlHelper.CreateParameter("@id", docId),
                 Application.SqlHelper.CreateParameter("@memberId", currentMember));
 
-            Response.Redirect(link);
+            Response.Redirect(link, false);
         }
         else
         {

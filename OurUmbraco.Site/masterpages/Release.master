@@ -14,7 +14,7 @@
 			    {
 				    foreach (var item in downloads)
 					{							
-                        Response.Redirect("/ReleaseDownload?id=" + item.id);
+                        Response.Redirect("/ReleaseDownload?id=" + item.id, false);
 			        }
 			    }
             } 
