@@ -55,7 +55,8 @@ namespace our.usercontrols
                 // This is needed as we added new membership after upgrading so IsApproved is 
                 // currently empty. First time a member gets saved now (login also saves the member)
                 // IsApproved would turn false (default value of bool) so we want to prevent that
-                if (memberToLogin.Properties.Contains(Constants.Conventions.Member.IsApproved) && memberToLogin.IsApproved == false)
+                // Note: After July 23rd 2015 we need people to activate their accounts! Don't approve automatically
+                if (memberToLogin.CreateDate < DateTime.Parse("2015-07-23") && memberToLogin.Properties.Contains(Constants.Conventions.Member.IsApproved) && memberToLogin.IsApproved == false)
                 {
                     memberToLogin.IsApproved = true;
                     memberService.Save(memberToLogin, false);

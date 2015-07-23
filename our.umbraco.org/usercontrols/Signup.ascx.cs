@@ -1,34 +1,35 @@
 ﻿using System;
 using System.Configuration;
-using System.Web.UI;
-using System.Xml;
+using System.Net;
+using System.Web.Hosting;
 using umbraco;
-using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.member;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using Umbraco.Web.UI.Controls;
+using File = System.IO.File;
 
 namespace our.usercontrols
 {
-    public partial class Signup : UserControl
-    {   
+    public partial class Signup : UmbracoUserControl
+    {
         // Needs to be lower case, macro depends on that
         public string memberType { get; set; }
 
         public string Group { get; set; }
         public int NextPage { get; set; }
 
-        private Member _member = Member.GetCurrentMember();
-
         protected void Page_Load(object sender, EventArgs e)
         {
-            //lazyloading the needed javascript for validation. (addded it to the master template as our ahah forms need it aswel)
-            //umbraco.library.RegisterJavaScriptFile("jquery.validation", "/scripts/jquery.validation.js");
+            var memberService = Services.MemberService;
+            var currentMember = memberService.GetById(Members.GetCurrentMemberId());
 
             MemberExists.Visible = false;
 
-            if (Page.IsPostBack == false && _member != null)
+            if (Page.IsPostBack == false && currentMember != null)
             {
-                tb_name.Text = _member.Text;
-                tb_email.Text = _member.Email;
+                tb_name.Text = currentMember.Name;
+                tb_email.Text = currentMember.Email;
 
                 //make sure that it is not required to enter the password..
                 tb_password.CssClass = "title";
@@ -37,29 +38,22 @@ namespace our.usercontrols
                 bt_submit.Text = "Save";
 
                 //treshold and newsletter
+                cb_bugMeNot.Checked = currentMember.GetValue<bool>("bugMeNot");
 
-                if (_member.getProperty("bugMeNot") != null)
-                {
-                    int checkbox;
-                    int.TryParse(_member.getProperty("bugMeNot").Value.ToString(), out checkbox);
-
-                    cb_bugMeNot.Checked = (checkbox > 0);
-                }
-
-                tb_treshold.Text = _member.getProperty("treshold").Value.ToString();
+                tb_treshold.Text = currentMember.GetValue<string>("treshold");
 
                 //optional.. 
-                tb_twitter.Text = _member.getProperty("twitter").Value.ToString();
-                tb_flickr.Text = _member.getProperty("flickr").Value.ToString();
-                tb_company.Text = _member.getProperty("company").Value.ToString();
-                tb_bio.Text = _member.getProperty("profileText").Value.ToString();
+                tb_twitter.Text = currentMember.GetValue<string>("twitter");
+                tb_flickr.Text = currentMember.GetValue<string>("flickr");
+                tb_company.Text = currentMember.GetValue<string>("company");
+                tb_bio.Text = currentMember.GetValue<string>("profileText");
 
                 //Location
-                tb_lat.Value = _member.getProperty("latitude").Value.ToString();
-                tb_lng.Value = _member.getProperty("longitude").Value.ToString();
-                tb_location.Text = _member.getProperty("location").Value.ToString();
-
+                tb_lat.Value = currentMember.GetValue<string>("latitude");
+                tb_lng.Value = currentMember.GetValue<string>("longitude");
+                tb_location.Text = currentMember.GetValue<string>("location");
             }
+
             // ReCaptcha is wrong when Page.IsValid is false
             Page.Validate();
             if (Page.IsPostBack && Page.IsValid == false)
@@ -68,120 +62,91 @@ namespace our.usercontrols
             }
 
         }
-        
+
         protected void CreateMember(object sender, EventArgs e)
         {
+            var memberService = Services.MemberService;
+            var currentMember = memberService.GetById(Members.GetCurrentMemberId());
+
             //Member is already logged in, and we just need to save his new data...
-            if (_member != null)
+            if (currentMember != null)
             {
-                _member.Text = tb_name.Text;
-                _member.Email = tb_email.Text;
-                _member.LoginName = tb_email.Text;
+                currentMember.Name = tb_name.Text;
+                currentMember.Email = tb_email.Text;
+                currentMember.Username = tb_email.Text;
+                currentMember.SetValue("twitter", tb_twitter.Text);
+                currentMember.SetValue("flickr", tb_flickr.Text);
+                currentMember.SetValue("company", tb_company.Text);
+                currentMember.SetValue("profileText", tb_bio.Text);
+                currentMember.SetValue("location", tb_location.Text);
+                currentMember.SetValue("latitude", tb_lat.Value);
+                currentMember.SetValue("longitude", tb_lng.Value);
+                currentMember.SetValue("treshold", tb_treshold.Text);
+                currentMember.SetValue("bugMeNot", cb_bugMeNot.Checked);
 
-                if (tb_password.Text != "")
-                    _member.Password = tb_password.Text;
+                memberService.Save(currentMember);
+                memberService.SavePassword(currentMember, tb_password.Text);
 
-                //optional.. 
-                _member.getProperty("twitter").Value = tb_twitter.Text;
-                _member.getProperty("flickr").Value = tb_flickr.Text;
-                _member.getProperty("company").Value = tb_company.Text;
-                _member.getProperty("profileText").Value = tb_bio.Text;
-
-                //location
-                _member.getProperty("location").Value = tb_location.Text;
-                _member.getProperty("latitude").Value = tb_lat.Value;
-                _member.getProperty("longitude").Value = tb_lng.Value;
-
-
-                //treshold + newsletter
-                _member.getProperty("treshold").Value = tb_treshold.Text;
-                _member.getProperty("bugMeNot").Value = cb_bugMeNot.Checked;
-
-                _member.XmlGenerate(new XmlDocument());
-                _member.Save();
-                
-                //Refresh the member cache data
-                Member.RemoveMemberFromCache(_member);
-                Member.AddMemberToCache(_member);
-
-                uForum.Library.Utils.CheckForSpam(_member);
+                uForum.Library.Utils.CheckForSpam(currentMember);
 
                 Response.Redirect(library.NiceUrl(NextPage));
-
             }
             else
             {
                 if (tb_email.Text != string.Empty && Page.IsValid)
                 {
-                    _member = Member.GetMemberFromLoginName(tb_email.Text);
-                    if (_member == null)
+                    var member = memberService.GetByEmail(tb_email.Text);
+                    if (member == null)
                     {
                         // If spammer then this will stop account creation
                         var spamResult = uForum.Library.Utils.CheckForSpam(tb_email.Text, tb_name.Text, true);
                         if (spamResult != null && spamResult.Blocked)
                             return;
 
-                        var mt = MemberType.GetByAlias(memberType);
+                        member = memberService.CreateMember(tb_email.Text, tb_email.Text, tb_name.Text, memberType);
 
-                        // Adding " Temp" is a hack - bizarrely, when you create a member using MakeNew and 
-                        // the name does not have a space in it (like: Ben) you'll get a YSOD saying the 
-                        // username already exists. However, create it with a space in it and everything is 
-                        // fine and dandy! So now we just force the last name to be "Temp" during creation 
-                        // and then update the member's name immediately after that... -SJ
-                        _member = Member.MakeNew(tb_name.Text + " Temp", mt, new User(0));
-                        _member.Text = tb_name.Text;
+                        member.Name = tb_name.Text;
+                        member.Email = tb_email.Text;
+                        member.Username = tb_email.Text;
+                        member.SetValue("twitter", tb_twitter.Text);
+                        member.SetValue("flickr", tb_flickr.Text);
+                        member.SetValue("company", tb_company.Text);
+                        member.SetValue("profileText", tb_bio.Text);
+                        member.SetValue("location", tb_location.Text);
+                        member.SetValue("latitude", tb_lat.Value);
+                        member.SetValue("longitude", tb_lng.Value);
+                        member.SetValue("treshold", tb_treshold.Text);
+                        member.SetValue("bugMeNot", cb_bugMeNot.Checked);
+
+                        member.SetValue("reputationTotal", 20);
+                        member.SetValue("reputationCurrent", 20);
+                        member.SetValue("forumPosts", 0);
                         
-                        _member.Email = tb_email.Text;
-                        _member.Password = tb_password.Text;
-                        _member.LoginName = tb_email.Text;
+                        member.IsApproved = false;
+                        memberService.Save(member);
 
-                        //Location
-                        _member.getProperty("location").Value = tb_location.Text;
-                        _member.getProperty("latitude").Value = tb_lat.Value;
-                        _member.getProperty("longitude").Value = tb_lng.Value;
+                        // Now that we have a memberId we can use it
+                        var avatarPath = GetAvatarPath(member);
+                        member.SetValue("avatar", avatarPath);
+                        memberService.Save(member);
 
-                        //optional.. 
-                        _member.getProperty("twitter").Value = tb_twitter.Text;
-                        _member.getProperty("flickr").Value = tb_flickr.Text;
-                        _member.getProperty("company").Value = tb_company.Text;
-                        _member.getProperty("profileText").Value = tb_bio.Text;
-
-                        //treshold + newsletter
-                        _member.getProperty("treshold").Value = tb_treshold.Text;
-                        _member.getProperty("bugMeNot").Value = cb_bugMeNot.Checked;
-
-                        //Standard values
-                        _member.getProperty("reputationTotal").Value = 20;
-                        _member.getProperty("reputationCurrent").Value = 20;
-                        _member.getProperty("forumPosts").Value = 0;
-
-                        if (string.IsNullOrEmpty(Group) == false)
-                        {
-                            var memberGroup = MemberGroup.GetByName(Group);
-                            if (memberGroup != null)
-                                _member.AddGroup(memberGroup.Id);
-                        }
-
-                        //set a default avatar
-                        Api.CommunityController.SetAvatar(_member.Id, "gravatar");
-
-                        _member.Save();
-                        _member.XmlGenerate(new XmlDocument());
-                        Member.AddMemberToCache(_member);
+                        memberService.AssignRole(member.Id, Group);
+                        memberService.SavePassword(member, tb_password.Text);
 
                         if (spamResult != null && spamResult.TotalScore >= int.Parse(ConfigurationManager.AppSettings["PotentialSpammerThreshold"]))
                         {
-                            spamResult.MemberId = _member.Id;
+                            spamResult.MemberId = member.Id;
 
-                            uForum.Library.Utils.AddMemberToPotentialSpamGroup(_member);
+                            memberService.AssignRole(member.Id, "potentialspam");
                             uForum.Library.Utils.SendPotentialSpamMemberMail(spamResult);
                         }
                         else
                         {
-                            uForum.Library.Utils.SendMemberSignupMail(_member);
+                            uForum.Library.Utils.SendActivationMail(member);
+                            uForum.Library.Utils.SendMemberSignupMail(member);
                         }
 
-                        Response.Redirect(library.NiceUrl(NextPage));
+                        //Response.Redirect(library.NiceUrl(NextPage));
                     }
                     else
                     {
@@ -190,6 +155,36 @@ namespace our.usercontrols
                     }
                 }
             }
+        }
+
+        private static string GetAvatarPath(IMember member)
+        {
+            var url = "http://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
+
+            try
+            {
+                var avatarFileName = "/media/avatar/" + member.Id + ".jpg";
+                var path = HostingEnvironment.MapPath(avatarFileName);
+
+                if (path != null)
+                {
+                    if (File.Exists(path))
+                        File.Delete(path);
+
+                    using (var webClient = new WebClient())
+                    {
+                        webClient.DownloadFile(url, path);
+                    }
+
+                    return avatarFileName;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<Signup>("Could not save gravatar locally", ex);
+            }
+
+            return url;
         }
     }
 }
