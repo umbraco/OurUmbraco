@@ -3,32 +3,46 @@
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
  
 <umbraco:Macro runat="server" language="cshtml">
-@using System.Web	
-@using umbraco.cms.businesslogic.web
 @using umbraco.BusinessLogic
-@using umbraco.NodeFactory
-@using umbraco.cms.businesslogic.member
-
 @{
-	var docId = int.Parse(Request["id"]);
-	if (docId == 92350) { docId = 111983; }
-        
-    var d = new Node(docId);
-	var link = d.GetProperty("downloadLink").Value.ToString().Trim();
-
-    var currentMember = 0;
-    var member = Member.GetCurrentMember();
-    if (member != null) 
+    int docId;
+    if (int.TryParse(Request["id"], out docId))
     {
-        currentMember = member.Id;
-    }
+        if (docId == 92350)
+        {
+            docId = 111983;
+        }
 
-    Application.SqlHelper.ExecuteNonQuery(
-        @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
-        Application.SqlHelper.CreateParameter("@id", docId),
-        Application.SqlHelper.CreateParameter("@memberId", currentMember));    
-        
-    Response.Redirect(link);
+        var umbracoHelper = new Umbraco.Web.UmbracoHelper(Umbraco.Web.UmbracoContext.Current);
+        var content = umbracoHelper.TypedContent(docId);
+
+        if (content != null)
+        {
+            var link = content.GetProperty("downloadLink").Value.ToString().Trim();
+
+            var currentMember = 0;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+            var member = memberShipHelper.GetCurrentMember();
+
+            if (member != null)
+            {
+                currentMember = member.Id;
+            }
+
+            Application.SqlHelper.ExecuteNonQuery(
+                @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
+                Application.SqlHelper.CreateParameter("@id", docId),
+                Application.SqlHelper.CreateParameter("@memberId", currentMember));
+
+            Response.Redirect(link);
+        }
+        else
+        {
+            Response.StatusCode = 404;
+            Response.End();
+            return;
+        }
+    }
 }
 
 </umbraco:Macro>
