@@ -6,7 +6,7 @@
     var topicAuthor = Members.GetById(Model.MemberId);
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
-    if (topicAuthor != null && (Model.IsSpam == false || currentMember.Id == topicAuthor.Id || Members.IsAdmin()))
+    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Id) || Members.IsAdmin()))
     {
         var forum = Umbraco.TypedContent(Model.ParentId);
         var roles = topicAuthor.GetRoles();
