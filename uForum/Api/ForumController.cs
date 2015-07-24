@@ -22,6 +22,7 @@ using umbraco.BusinessLogic;
 using umbraco.cms.helpers;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
+using Umbraco.Web;
 using Umbraco.Web.Security;
 using Umbraco.Web.WebApi;
 
@@ -44,7 +45,7 @@ namespace uForum.Api
             c.Created = DateTime.Now;
             c.ParentCommentId = model.Parent;
             c.TopicId = model.Topic;
-            c.IsSpam = c.DetectSpam();
+            c.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || c.DetectSpam();
             CommentService.Save(c);
             if (c.IsSpam)
                 SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
@@ -162,7 +163,7 @@ namespace uForum.Api
             t.Score = 0;
             t.Answer = 0;
             t.LatestComment = 0;
-            t.IsSpam = t.DetectSpam();
+            t.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || t.DetectSpam();
             TopicService.Save(t);
 
             if (t.IsSpam)
