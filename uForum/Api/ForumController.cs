@@ -304,6 +304,42 @@ namespace uForum.Api
             return response;
         }
 
+        [HttpPost]
+        public void BlockMember(int id)
+        {
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot block this member");
+
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            var member = memberService.GetById(id);
+
+            if (member == null)
+                throw new Exception("Member not found");
+
+            member.SetValue("blocked", true);
+            memberService.Save(member);
+
+            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, true));
+        }
+
+        [HttpPost]
+        public void UnblockMember(int id)
+        {
+            if (Members.IsAdmin() == false)
+                throw new Exception("You cannot unblock this member");
+
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            var member = memberService.GetById(id);
+
+            if (member == null)
+                throw new Exception("Member not found");
+
+            member.SetValue("blocked", false);
+            memberService.Save(member);
+
+            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+        }
+
         [HttpDelete]
         public void DeleteMember(int id)
         {
@@ -406,6 +442,25 @@ namespace uForum.Api
         private static string BuildDeleteNotifactionPost(string adminName, int memberId)
         {
             var post = string.Format("Topic or comment deleted by admin {0}\n", adminName);
+            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+
+            if (memberId != 0)
+            {
+                var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
+
+                if (member != null)
+                {
+                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
+                    post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
+                }
+            }
+
+            return post;
+        }
+
+        private static string BuildBlockedNotifactionPost(string adminName, int memberId, bool blocked)
+        {
+            var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked*", adminName);
             post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
 
             if (memberId != 0)

@@ -73,10 +73,6 @@ var uPowers = function () {
         SolvesProblem: function (s_nodeId) {
             $.get("/umbraco/api/Powers/Action/?alias=TopicSolved&pageId=" + s_nodeId);
         },
-        BlockMember: function (s_memberId) {
-            
-            $.get("/umbraco/api/Community/BlockMember/" + s_memberId);
-        },
         UnBlockMember: function (s_memberId) {
             
             $.get("/umbraco/api/Community/UnBlockMember/" + s_memberId);
@@ -86,6 +82,26 @@ var uPowers = function () {
             $.ajax({
                 url: "/umbraco/api/Forum/DeleteMember/?id=" + s_memberId,
                 type: 'DELETE',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
+        },
+        BlockMember: function (s_memberId) {
+
+            $.ajax({
+                url: "/umbraco/api/Forum/BlockMember/?id=" + s_memberId,
+                type: 'POST',
+                success: function (result) {
+                    // Do something with the result
+                }
+            });
+        },
+        UnblockMember: function (s_memberId) {
+
+            $.ajax({
+                url: "/umbraco/api/Forum/UnblockMember/?id=" + s_memberId,
+                type: 'POST',
                 success: function (result) {
                     // Do something with the result
                 }
@@ -388,32 +404,6 @@ jQuery(document).ready(function () {
         return false;
     });
 
-    jQuery("a.blockMember").click(function () {
-        if (confirm("Do you really want to block this member?")) {
-            var blockLink   = jQuery(this);
-            var unblockLink = jQuery("a.unblockMember");
-
-            uPowers.BlockMember(blockLink.attr("rel"));
-            blockLink.parent("li").hide();
-            unblockLink.parent("li").show();
-
-        }
-        return false;
-    });
-
-    jQuery("a.unblockMember").click(function () {
-        if (confirm("Do you really want to un-block this member?")) {
-            var unblockLink = jQuery(this);
-            var blockLink   = jQuery("a.blockMember");
-
-            uPowers.UnBlockMember(unblockLink.attr("rel"));
-            unblockLink.parent("li").hide();
-            blockLink.parent("li").show();
-
-        }
-        return false;
-    });
-
 
     jQuery("a.delete-member").click(function () {
         if (confirm("Do you really want to DELETE this member?")) {
@@ -421,6 +411,27 @@ jQuery(document).ready(function () {
             
             uPowers.DeleteMember(deleteLink.attr("rel"));
             deleteLink.hide();
+        }
+        return false;
+    });
+
+    jQuery("a.block-member").click(function () {
+        if (confirm("Do you really want to BLOCK this member?")) {
+            var blockLink = jQuery(this);
+            
+            uPowers.BlockMember(blockLink.attr("rel"));
+            blockLink.hide();
+        }
+        return false;
+    });
+
+    jQuery("a.unblock-member").click(function () {
+        if (confirm("Do you really want to UNBLOCK this member?")) {
+            var blockLink = jQuery(this);
+            
+            uPowers.UnblockMember(blockLink.attr("rel"));
+            blockLink.hide();
+            jQuery("strong.member-blocked").hide();
         }
         return false;
     });
