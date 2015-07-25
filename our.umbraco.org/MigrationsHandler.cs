@@ -20,6 +20,7 @@ namespace our
         {
             EnsureMigrationsMarkerPathExists();
             MemberActivationMigration();
+            SpamOverview();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -77,6 +78,52 @@ namespace our
                 }
                 
                 string[] lines = {""};
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void SpamOverview()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroAlias = "AntiSpam";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "[Spam] Overview",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Spam/Overview.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
+
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
+
+                var antiSpamPageName = "AntiSpam";
+                if(rootNode.Children().Any(x => x.Name == antiSpamPageName) == false)
+                {
+                    var content = contentService.CreateContent(antiSpamPageName, rootNode.Id, "Textpage");
+                    content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
+                    contentService.SaveAndPublishWithStatus(content);
+                }
+                
+                string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
             catch (Exception ex)

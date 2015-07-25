@@ -1,0 +1,22 @@
+﻿@using uForum.Extensions
+@using uForum.Services
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    var memberService = UmbracoContext.Application.Services.MemberService;
+    var memberCount = 50;
+    var newMembers = memberService.GetMembersByMemberType("member").OrderByDescending(m => m.CreateDate).Take(memberCount);
+    var topicService = new TopicService(UmbracoContext.Application.DatabaseContext);
+}
+@if(Members.IsAdmin())
+{ 
+    <h2>@memberCount newest members</h2>
+    <ul>
+        @foreach (var member in newMembers)
+        {
+            var topicsForMember = topicService.GetLatestTopicsForMember(member.Id, false);
+            var potentialSpammer = topicsForMember.Any(x => x.IsSpam);
+
+            <li><a href="/member/@member.Id" style="@(potentialSpammer ? "color: orange" : null)">@(potentialSpammer ? "[PotentialSpammer] " : null)<strong>Name: </strong>@member.Name - <strong>Approved: </strong> @member.IsApproved - <strong>Company: </strong>@(member.GetValue<string>("company")) - <strong>Posts: </strong>@topicsForMember.Count() - <strong>Bio: </strong>@(member.GetValue<string>("profileText"))</a></li>
+        }
+    </ul>
+}

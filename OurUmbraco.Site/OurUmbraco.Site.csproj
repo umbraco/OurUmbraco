@@ -1853,6 +1853,7 @@
     <Content Include="Views\MacroPartials\Rss\Topic.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Participated.cshtml" />
     <Content Include="Views\MacroPartials\Members\Activate.cshtml" />
+    <Content Include="Views\MacroPartials\Spam\Overview.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
