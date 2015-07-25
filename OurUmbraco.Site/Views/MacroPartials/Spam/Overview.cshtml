@@ -1,22 +1,75 @@
-﻿@using uForum.Extensions
+﻿@using our
+@using uForum.Extensions
 @using uForum.Services
+@using Umbraco.Core.Services
+
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    var memberService = UmbracoContext.Application.Services.MemberService;
-    var memberCount = 50;
-    var newMembers = memberService.GetMembersByMemberType("member").OrderByDescending(m => m.CreateDate).Take(memberCount);
     var topicService = new TopicService(UmbracoContext.Application.DatabaseContext);
+
+    var memberIds = new List<int>();
+    var sql = "SELECT TOP 100 id FROM umbracoNode WHERE nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560' ORDER BY createDate DESC";
+    var reader = Data.SqlHelper.ExecuteReader(sql);
+    while (reader.Read())
+    {
+        memberIds.Add(reader.GetInt("id"));
+    }
+    reader.Close();
+    reader.Dispose();
+    var newMembers = new List<IPublishedContent>();
+    foreach (var memberId in memberIds)
+    {
+        var member = Umbraco.TypedMember(memberId);
+        if (member != null)
+        {
+            newMembers.Add(member);
+        }
+
+    }
 }
-@if(Members.IsAdmin())
-{ 
-    <h2>@memberCount newest members</h2>
+
+@if (Members.IsAdmin())
+{
+    <h2>Newest members</h2>
     <ul>
         @foreach (var member in newMembers)
         {
-            var topicsForMember = topicService.GetLatestTopicsForMember(member.Id, false);
-            var potentialSpammer = topicsForMember.Any(x => x.IsSpam);
-
-            <li><a href="/member/@member.Id" style="@(potentialSpammer ? "color: orange" : null)">@(potentialSpammer ? "[PotentialSpammer] " : null)<strong>Name: </strong>@member.Name - <strong>Approved: </strong> @member.IsApproved - <strong>Company: </strong>@(member.GetValue<string>("company")) - <strong>Posts: </strong>@topicsForMember.Count() - <strong>Bio: </strong>@(member.GetValue<string>("profileText"))</a></li>
+            var topicsForMember = topicService.GetAuthorLatestTopics(member.Id).ToList();
+            var hasPostsMarkedAsSpam = topicsForMember.Any(x => x.IsSpam);
+            <li>
+                <a href="/member/@member.Id" style="@(hasPostsMarkedAsSpam ? "color: orange" : null)">
+                    <strong>Created: </strong>@(member.CreateDate.ToString("s"))UTC<br/>
+                    @(hasPostsMarkedAsSpam ? Html.Raw("<strong>[HasPostsMarkedAsSpam]</strong><br/>") : null)
+                    <strong>Name: </strong>@member.Name<br />
+                    <strong>Approved: </strong> @(member.GetPropertyValue<bool>("umbracoMemberApproved"))<br/>
+                    <strong>Company: </strong>@(member.GetPropertyValue<string>("company"))<br/><strong>Posts: </strong>@topicsForMember.Count()<br/>
+                    <strong>Bio: </strong>@(member.GetPropertyValue<string>("profileText"))
+                </a>
+            </li>
         }
     </ul>
-}
+
+    <h2>Members in the "potentialspam" group</h2>
+    <ul>
+        @{
+            var memberService = UmbracoContext.Application.Services.MemberService;
+            foreach (var spammer in memberService.GetMembersByGroup("potentialspam"))
+            {
+                var topicsForMember = topicService.GetAuthorLatestTopics(spammer.Id).ToList();
+                var hasPostsMarkedAsSpam = topicsForMember.Any(x => x.IsSpam);
+
+                <li>
+                    <a href="/member/@spammer.Id" style="@(hasPostsMarkedAsSpam ? "color: orange" : null)">
+                        <strong>Created: </strong>@(spammer.CreateDate.ToString("s"))UTC<br/>
+                        @(hasPostsMarkedAsSpam ? Html.Raw("<strong>[HasPostsMarkedAsSpam]</strong><br/>") : null)
+                        <strong>Name: </strong>@spammer.Name<br/>
+                        <strong>Approved: </strong> @spammer.IsApproved<br/>
+                        <strong>Company: </strong>@(spammer.GetValue<string>("company"))<br/>
+                        <strong>Posts: </strong>@topicsForMember.Count()<br />
+                        <strong>Bio: </strong>@(spammer.GetValue<string>("profileText"))
+                    </a>
+                </li>
+            }
+        }
+    </ul>
+            }

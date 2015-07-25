@@ -61,6 +61,18 @@ FETCH NEXT @count ROWS ONLY";
         }
 
         /// <summary>
+        /// Returns a set of topics for a specific author
+        /// </summary>
+        /// 
+        /// <param name="memberId"></param>
+        /// <returns></returns>
+        public IEnumerable<ReadOnlyTopic> GetAuthorLatestTopics(int memberId)
+        {
+            const string sql = @"SELECT * FROM forumTopics WHERE memberId=@memberId";
+            return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new { memberId });
+        }
+
+        /// <summary>
         /// Returns a count of all topics
         /// </summary>
         /// <param name="category"></param>

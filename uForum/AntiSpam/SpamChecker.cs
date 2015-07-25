@@ -4,46 +4,44 @@ using System.Collections.Specialized;
 using System.Configuration;
 using System.Linq;
 using System.Net;
-using System.Net.Mail;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Web;
+using HtmlAgilityPack;
 using uForum.Extensions;
 using uForum.Library;
 using uForum.Models;
 using uForum.Services;
 using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.member;
 using Umbraco.Core;
+using Umbraco.Core.Models;
+using Umbraco.Core.Services;
 using Umbraco.Web;
-
 
 namespace uForum.AntiSpam
 {
     internal class SpamChecker
     {
-        public static bool IsSpam(Umbraco.Core.Models.IMember member, string body)
+        public static bool IsSpam(IMember member, string body)
         {
-            int reputationTotal;
-
             // Members with over 50 karma are trusted automatically
             if (member.Karma() >= 50)
                 return false;
 
-            var isSpam = TextContainsSpam(body) || IsSuspiciousBehavior(body);
+            var isSpam = NewAndPostsALot(member) || TextContainsSpam(body) || IsSuspiciousBehavior(body);
 
-            //if (isSpam)
-            //{
-            //    // Deduct karma
-            //    //member getProperty("reputationTotal").Value = reputationTotal >= 0 ? reputationTotal - 1 : 0;
+            if (isSpam)
+            {
+                //Deduct karma
+                var reputationTotal = member.GetValue<int>("reputationTotal");
+                member.SetValue("reputationTotal", reputationTotal >= 0 ? reputationTotal - 1 : 0);
 
-            //    //int reputationCurrent;
-            //    //int.TryParse(member.getProperty("reputationCurrent").Value.ToString(), out reputationCurrent);
-            //    //member.getProperty("reputationCurrent").Value = reputationCurrent >= 0 ? reputationCurrent - 1 : 0;
-            //    //member.Save();
-            //    SendSlackSpamReport(body, topicId, commentType, member.Id);
-            //}
+                var reputationCurrent = member.GetValue<int>("reputationCurrent");
+                member.SetValue("reputationCurrent", reputationCurrent >= 0 ? reputationCurrent - 1 : 0);
+
+                var memberService = UmbracoContext.Current.Application.Services.MemberService;
+                memberService.Save(member);
+                memberService.AssignRole(member.Id, "potentialspam");
+            }
 
             return isSpam;
         }
@@ -96,9 +94,10 @@ namespace uForum.AntiSpam
         }
 
         // Remember this one only kicks in if a user has < 50 karma
+
         private static bool IsSuspiciousBehavior(string body)
         {
-            var doc = new HtmlAgilityPack.HtmlDocument();
+            var doc = new HtmlDocument();
             doc.LoadHtml(body);
 
             var validLinksCount = 0;
@@ -177,6 +176,52 @@ namespace uForum.AntiSpam
         {
             var spamWords = ConfigurationManager.AppSettings["uForumSpamWords"];
             return spamWords.Split(',').Any(spamWord => text.ToLowerInvariant().Contains(spamWord.Trim().ToLowerInvariant()));
+        }
+
+        private static bool NewAndPostsALot(IMember member)
+        {
+            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var topics = ts.GetAuthorLatestTopics(member.Id);
+            var topicsInHourAfterSignup = new List<ReadOnlyTopic>();
+            var topicsInFirstDayAfterSignup = new List<ReadOnlyTopic>();
+
+            foreach (var topic in topics)
+            {
+                if((topic.Created - member.CreateDate).Hours <= 1)
+                    topicsInHourAfterSignup.Add(topic);
+
+                if ((topic.Created - member.CreateDate).Days <= 1)
+                    topicsInFirstDayAfterSignup.Add(topic);
+            }
+
+            if (topicsInHourAfterSignup.Count >= 3)
+                return true;
+
+            if (topicsInFirstDayAfterSignup.Count >= 5)
+                return true;
+
+            var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
+            var comments = cs.GetAllCommentsForMember(member.Id);
+
+            var commentsInHourAfterSignup = new List<Comment>();
+            var commentsInFirstDayAfterSignup = new List<Comment>();
+
+            foreach (var comment in comments)
+            {
+                if ((comment.Created - member.CreateDate).Hours <= 1)
+                    commentsInHourAfterSignup.Add(comment);
+
+                if ((comment.Created - member.CreateDate).Days <= 1)
+                    commentsInFirstDayAfterSignup.Add(comment);
+            }
+
+            if (commentsInHourAfterSignup.Count >= 3)
+                return true;
+
+            if (commentsInFirstDayAfterSignup.Count >= 5)
+                return true;
+
+            return false;
         }
     }
 }

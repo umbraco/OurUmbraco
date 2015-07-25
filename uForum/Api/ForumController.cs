@@ -58,9 +58,10 @@ namespace uForum.Api
             var author = Members.GetById(currentMemberId);
             o.authorKarma = author.Karma();
             o.authorName = author.Name;
-            o.roles = Roles.GetRolesForUser();
+            o.roles = author.GetRoles();
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
+            o.isSpam = c.IsSpam;
 
             return o;
         }

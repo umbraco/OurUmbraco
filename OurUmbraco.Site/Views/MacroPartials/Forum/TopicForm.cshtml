@@ -129,6 +129,12 @@
             </div>
 
             <div class="body markdown-syntax">
+                {{#isSpam}}
+                <div class="alert">
+                    Sorry if we're causing you any inconvenience but this comment has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your comment. <br>
+                    Only moderators and the comment author starter can see this comment. When this comment has been marked as clean, this comment will be shown as normal.<br>
+                </div>
+                {{/isSpam}}
                 {{{body}}}
 
             </div>
