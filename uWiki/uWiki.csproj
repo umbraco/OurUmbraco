@@ -233,34 +233,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\WikiController.cs" />
-    <Compile Include="Businesslogic\Data.cs" />
-    <Compile Include="Businesslogic\Events.cs" />
-    <Compile Include="Businesslogic\UmbracoVersion.cs" />
-    <Compile Include="Businesslogic\WikiFile.cs" />
-    <Compile Include="Businesslogic\WikiHelpRequest.cs" />
-    <Compile Include="Businesslogic\WikiPage.cs" />
-    <Compile Include="iNotFoundHandler.cs" />
-    <Compile Include="Library\Utils.cs" />
-    <Compile Include="Library\xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="usercontrols\FileUpload.ascx.cs">
-      <DependentUpon>FileUpload.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\FileUpload.ascx.designer.cs">
-      <DependentUpon>FileUpload.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="WikiFileUploadHandler.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="usercontrols\FileUpload.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="usercontrols\scripts\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
