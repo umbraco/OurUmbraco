@@ -426,10 +426,6 @@
       <Project>{547C2D0D-1B55-493B-AE0B-E031A5B8EE77}</Project>
       <Name>uForum</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uRelease\uRelease.csproj">
-      <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
-      <Name>uRelease</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\EventEditor.ascx">

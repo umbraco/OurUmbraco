@@ -1,7 +1,6 @@
-﻿using System.Linq;
-using umbraco.interfaces;
+﻿using umbraco.interfaces;
 
-namespace uRelease.Controllers
+namespace OurUmbraco.Release.Controllers
 {
     public static class NodeExtensions
     {

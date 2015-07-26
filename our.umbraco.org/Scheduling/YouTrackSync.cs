@@ -1,5 +1,5 @@
 ﻿using System;
-using uRelease;
+using OurUmbraco.Release;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 

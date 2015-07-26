@@ -8,21 +8,18 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using OurUmbraco.Release.Models;
 using RestSharp;
 using umbraco.NodeFactory;
-using uRelease.Controllers;
-using uRelease.Models;
 using Umbraco.Core.Logging;
 using YouTrackSharp.Infrastructure;
-using Version = uRelease.Models.Version;
 
-namespace uRelease
+namespace OurUmbraco.Release
 {
     public class Import
     {
@@ -45,7 +42,7 @@ namespace uRelease
             // For each version in the bundle, go get the issues 
             var toReturn = new List<AggregateView>();
 
-            Version[] orderedVersions;
+            Models.Version[] orderedVersions;
 
             if (cached == false)
             {
@@ -57,12 +54,12 @@ namespace uRelease
             }
             else
             {
-                orderedVersions = ids.Split(',').Select(versionId => new Version { Value = versionId }).ToArray();
+                orderedVersions = ids.Split(',').Select(versionId => new Models.Version { Value = versionId }).ToArray();
             }
 
-            var currentReleases = new List<Version>();
-            var plannedReleases = new List<Version>();
-            var inProgressReleases = new List<Version>();
+            var currentReleases = new List<Models.Version>();
+            var plannedReleases = new List<Models.Version>();
+            var inProgressReleases = new List<Models.Version>();
 
             var releasesNode = new Node(_releasesPageNodeId);
 

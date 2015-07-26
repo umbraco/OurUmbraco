@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace uRelease.Models
+namespace OurUmbraco.Release.Models
 {
     public class YouTrackIssue
     {

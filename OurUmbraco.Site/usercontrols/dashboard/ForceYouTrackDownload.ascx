@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="System.Web.UI.UserControl" %>
+<%@ Import Namespace="OurUmbraco.Release" %>
 
 <script runat="server">
 
@@ -13,7 +14,7 @@
     
     void GetYouTrackButton_Click(object sender, EventArgs e)
     {
-        var import = new uRelease.Import();
+        var import = new Import();
         var result = import.SaveAllToFile();
         Status = result;
     }

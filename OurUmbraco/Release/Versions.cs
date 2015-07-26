@@ -2,9 +2,9 @@
 using System.IO;
 using System.Web.Hosting;
 using System.Web.Script.Serialization;
-using uRelease.Models;
+using OurUmbraco.Release.Models;
 
-namespace uRelease
+namespace OurUmbraco.Release
 {
     public class Versions
     {

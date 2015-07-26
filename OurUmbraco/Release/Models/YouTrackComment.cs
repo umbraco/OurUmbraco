@@ -1,4 +1,4 @@
-namespace uRelease.Models
+namespace OurUmbraco.Release.Models
 {
     public class YouTrackComment
     {

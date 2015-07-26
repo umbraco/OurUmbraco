@@ -1,6 +1,6 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <%@ Import Namespace="Umbraco.Web" %>
-<%@ Import Namespace="uRelease" %>
+<%@ Import Namespace="OurUmbraco.Release" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
 </asp:Content>
@@ -24,7 +24,7 @@
     </umbraco:Macro>
 <%
     var currentPage = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
-    var allReleases = uRelease.Release.GetAllReleaseFromFile();
+    var allReleases = Release.GetAllReleaseFromFile();
     var release = allReleases.First(x => x.version == currentPage.Name);
     var completedIssues = release.issues.Count(x => x.state == "Fixed");
     var totalIssues = release.issues.Count();

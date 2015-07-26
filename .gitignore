@@ -8,7 +8,7 @@ dependencies/Marketplace*
 [Bb]in
 [Db]ebug*/
 obj/
-[Rr]elease*/
+[Bb]in/[Rr]elease*/
 _ReSharper*/
 *.ncrunchsolution
 *.ncrunchsolution.user

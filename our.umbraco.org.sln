@@ -26,8 +26,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3A30E
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uRelease", "uRelease\uRelease.csproj", "{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uProject", "Marketplace\uProject.csproj", "{6A2B659E-8BAE-4CD5-8764-851DFBE95FBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco", "OurUmbraco\OurUmbraco.csproj", "{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}"
@@ -92,16 +90,6 @@ Global
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|x86.ActiveCfg = Release|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Release|x86.ActiveCfg = Release|Any CPU
 		{6A2B659E-8BAE-4CD5-8764-851DFBE95FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6A2B659E-8BAE-4CD5-8764-851DFBE95FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6A2B659E-8BAE-4CD5-8764-851DFBE95FBF}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU

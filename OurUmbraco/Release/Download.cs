@@ -3,13 +3,13 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Script.Serialization;
-using uRelease.Models;
+using OurUmbraco.Release.Models;
 
-namespace uRelease
+namespace OurUmbraco.Release
 {
-    public static class Roadmap
+    public static class Download
     {
-        public static IEnumerable<AggregateView> GetRoadmapReleasesFromFile()
+        public static AggregateView GetCurrentReleaseFromFile()
         {
             var import = new Import();
             if (File.Exists(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile)) == false)
@@ -18,7 +18,7 @@ namespace uRelease
             var allText = File.ReadAllText(HttpContext.Current.Server.MapPath(import.YouTrackJsonFile));
 
             var data = new JavaScriptSerializer().Deserialize<List<AggregateView>>(allText);
-            var result = data.Where(x => x.released == false && x.isPatch == false);
+            var result = data.First(x => x.currentRelease);
 
             return result;
         }
