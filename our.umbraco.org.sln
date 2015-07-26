@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco.Site", "OurUmbraco.Site\OurUmbraco.Site.csproj", "{911907FB-3B9D-4E5F-9A45-16700A451A54}"
 EndProject
@@ -27,8 +27,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationsWeb", "Notific
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uDocumentation", "uDocumentation\uDocumentation.csproj", "{2040BDAF-A804-462F-8D5F-CA0DF141BF89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uVersion", "uVersion\uVersion.csproj", "{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3A30EFB-C5EA-460A-A591-8FBD7176B131}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -41,6 +39,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uProject", "Marketplace\uProject.csproj", "{6A2B659E-8BAE-4CD5-8764-851DFBE95FBF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uWiki", "uWiki\uWiki.csproj", "{996601FA-5C0E-46A6-B39D-2863BADC80D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco", "OurUmbraco\OurUmbraco.csproj", "{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -142,16 +142,6 @@ Global
 		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|x86.ActiveCfg = Release|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}.Release|x86.ActiveCfg = Release|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -182,6 +172,18 @@ Global
 		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{996601FA-5C0E-46A6-B39D-2863BADC80D8}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Debug|x86.Build.0 = Debug|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|x86.ActiveCfg = Release|Any CPU
+		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

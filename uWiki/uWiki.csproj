@@ -262,12 +262,6 @@
     <Folder Include="usercontrols\scripts\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\uVersion\uVersion.csproj">
-      <Project>{B46F84CC-4D9B-4B52-AE17-DE5633CE7023}</Project>
-      <Name>uVersion</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>

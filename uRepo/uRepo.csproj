@@ -261,10 +261,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\uVersion\uVersion.csproj">
-      <Project>{b46f84cc-4d9b-4b52-ae17-de5633ce7023}</Project>
-      <Name>uVersion</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uWiki\uWiki.csproj">
       <Project>{996601fa-5c0e-46a6-b39d-2863badc80d8}</Project>
       <Name>uWiki</Name>
