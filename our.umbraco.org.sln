@@ -17,8 +17,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uPowers", "uPowers\uPowers.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "our.umbraco.org", "our.umbraco.org\our.umbraco.org.csproj", "{A625544F-660A-4C01-BA49-1B467D0322D9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uEvents", "uEvents\uEvents.csproj", "{F356B339-296A-4594-81B6-CF69A802483E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "Notification\Notification.csproj", "{80E5F59D-A7A0-4CEE-AEB6-6C626C44B2B2}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationsWeb", "NotificationsWeb\NotificationsWeb.csproj", "{6CF53D68-BD81-47BB-8F56-350A1B04F114}"
@@ -86,16 +84,6 @@ Global
 		{A625544F-660A-4C01-BA49-1B467D0322D9}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{A625544F-660A-4C01-BA49-1B467D0322D9}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A625544F-660A-4C01-BA49-1B467D0322D9}.Release|x86.ActiveCfg = Release|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{F356B339-296A-4594-81B6-CF69A802483E}.Release|x86.ActiveCfg = Release|Any CPU
 		{80E5F59D-A7A0-4CEE-AEB6-6C626C44B2B2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{80E5F59D-A7A0-4CEE-AEB6-6C626C44B2B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{80E5F59D-A7A0-4CEE-AEB6-6C626C44B2B2}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
