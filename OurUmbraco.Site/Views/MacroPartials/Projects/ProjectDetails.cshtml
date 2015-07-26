@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using our.Controllers
+@using OurUmbraco.Wiki.BusinessLogic
 @using uForum;
 @using uForum.Extensions
 @using uProject.Controllers
@@ -9,19 +10,19 @@
 
     var owner = Members.GetById(Model.Content.GetPropertyValue<int>("owner"));
 
-    var files = uWiki.Businesslogic.WikiFile.CurrentFiles(project.Id);
+    var files = WikiFile.CurrentFiles(project.Id);
     var screenshots = files.Where(x => x.FileType == "screenshot").ToArray();
     var packages = files.Where(x => x.FileType == "package" || x.FileType == "hotfix").ToList();
     var docs = files.Where(x => x.FileType == "docs");
     var source = files.Where(x => x.FileType == "source");
 
     var file = project.GetPropertyValue<int>("file");
-    uWiki.Businesslogic.WikiFile currentRelease = null;
+    WikiFile currentRelease = null;
     if (file > 0)
     {
         try
         {
-            currentRelease = new uWiki.Businesslogic.WikiFile(file);
+            currentRelease = new WikiFile(file);
         }
         catch (ArgumentException)
         {

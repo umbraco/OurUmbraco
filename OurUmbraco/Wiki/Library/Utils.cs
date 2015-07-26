@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Web;
-using umbraco.cms.businesslogic.member;
 using System.Xml;
+using umbraco.cms.businesslogic.member;
 
-namespace uWiki.Library {
+namespace OurUmbraco.Wiki.Library {
     public class Utils {
         private static Regex _tags = new Regex("<[^>]*(>|$)", RegexOptions.Singleline | RegexOptions.ExplicitCapture | RegexOptions.Compiled);
         private static Regex _whitelist = new Regex(@"

@@ -3,14 +3,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using umbraco.cms.businesslogic.member;
-using umbraco.cms.businesslogic;
-using umbraco.BusinessLogic;
 using System.Xml;
+using umbraco.BusinessLogic;
+using umbraco.cms.businesslogic;
+using umbraco.cms.businesslogic.member;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 
-namespace uWiki.Businesslogic
+namespace OurUmbraco.Wiki.BusinessLogic
 {
     public class WikiFile
     {

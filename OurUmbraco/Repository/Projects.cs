@@ -1,22 +1,13 @@
 ﻿using System;
-using System.Data;
-using System.Configuration;
-using System.Linq;
-using System.Web;
-using System.Web.Security;
-using System.Web.UI;
-using System.Web.UI.HtmlControls;
-using System.Web.UI.WebControls;
-using System.Web.UI.WebControls.WebParts;
-using System.Xml.Linq;
 using System.Collections.Generic;
-using System.Xml.XPath;
+using System.Web;
 using System.Xml;
-using umbraco.presentation.nodeFactory;
+using System.Xml.XPath;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.web;
-using uWiki.Businesslogic;
+using umbraco.presentation.nodeFactory;
 
-namespace uRepo
+namespace OurUmbraco.Repository
 {
     public class Packages
     {
@@ -33,7 +24,7 @@ namespace uRepo
                     return SubmitStatus.Error;
 
                 umbraco.cms.businesslogic.member.Member mem = new umbraco.cms.businesslogic.member.Member(new Guid(authorGuid));
-                Package packageNode = uRepo.Packages.GetPackageByGuid( new Guid(packageGuid));
+                Package packageNode = Packages.GetPackageByGuid( new Guid(packageGuid));
 
                 if (mem != null)
                 {
@@ -63,13 +54,13 @@ namespace uRepo
                         d.getProperty("owner").Value = mem.Id;
                         d.getProperty("packageGuid").Value = packageGuid;
                         
-                        uWiki.Businesslogic.WikiFile wf = uWiki.Businesslogic.WikiFile.Create(name,"zip", d.UniqueId, mem.UniqueId, packageFile, "package", new List<UmbracoVersion>(){UmbracoVersion.DefaultVersion()});
+                        WikiFile wf = WikiFile.Create(name,"zip", d.UniqueId, mem.UniqueId, packageFile, "package", new List<UmbracoVersion>(){UmbracoVersion.DefaultVersion()});
                         d.getProperty("file").Value = wf.Id;
 
                         //Create Documentation
                         if (packageDoc.Length > 0)
                         {
-                            uWiki.Businesslogic.WikiFile doc = uWiki.Businesslogic.WikiFile.Create("documentation", "pdf", d.UniqueId, mem.UniqueId, packageDoc, "docs", new List<UmbracoVersion>() { UmbracoVersion.DefaultVersion() });
+                            WikiFile doc = WikiFile.Create("documentation", "pdf", d.UniqueId, mem.UniqueId, packageDoc, "docs", new List<UmbracoVersion>() { UmbracoVersion.DefaultVersion() });
                             d.getProperty("documentation").Value = doc.Id;
                         }
 
@@ -355,7 +346,7 @@ namespace uRepo
                 return string.Empty;
         }
 
-        internal static uWiki.Businesslogic.WikiFile PackageFileByGuid(Guid pack)
+        internal static WikiFile PackageFileByGuid(Guid pack)
         {
             XPathNodeIterator xpn = umbraco.library.GetXmlNodeByXPath("descendant::* [@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = translate('" + pack.ToString() + "','ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')]");
 
@@ -379,7 +370,7 @@ namespace uRepo
                             HttpContext.Current.Response.Cookies.Add(myCookie);
                         }
                         
-                        uWiki.Businesslogic.WikiFile wf = new uWiki.Businesslogic.WikiFile(_id);
+                        WikiFile wf = new WikiFile(_id);
                         wf.UpdateDownloadCounter(true,true);
                         
                         return wf;

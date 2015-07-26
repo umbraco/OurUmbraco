@@ -1,14 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
+using OurUmbraco.Wiki.BusinessLogic;
+using OurUmbraco.Wiki.Library;
 using umbraco.cms.businesslogic.member;
-using umbraco.presentation.nodeFactory;
 using umbraco.cms.businesslogic.web;
 
-namespace uWiki.usercontrols {
+namespace OurUmbraco.Wiki.usercontrols {
     public partial class FileUpload : System.Web.UI.UserControl {
 
         public string MemberGuid = "";
@@ -17,7 +15,7 @@ namespace uWiki.usercontrols {
 
         private void RebindFiles()
         {
-            List<uWiki.Businesslogic.WikiFile> files = uWiki.Businesslogic.WikiFile.CurrentFiles(pageId);
+            List<WikiFile> files = WikiFile.CurrentFiles(pageId);
 
             rp_files.DataSource = files;
             rp_files.Visible = (files.Count > 0);
@@ -27,7 +25,7 @@ namespace uWiki.usercontrols {
 
         protected void DeleteFile(object sender, CommandEventArgs e)
         {
-            uWiki.Businesslogic.WikiFile wf = new uWiki.Businesslogic.WikiFile(int.Parse(e.CommandArgument.ToString()));
+            WikiFile wf = new WikiFile(int.Parse(e.CommandArgument.ToString()));
             //Member mem = Member.GetCurrentMember();
 
             //if (wf.CreatedBy == mem.Id)
@@ -40,7 +38,7 @@ namespace uWiki.usercontrols {
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                uWiki.Businesslogic.WikiFile wf = (uWiki.Businesslogic.WikiFile)e.Item.DataItem;
+                WikiFile wf = (WikiFile)e.Item.DataItem;
 
                 Literal _name = (Literal)e.Item.FindControl("lt_name");
                 Literal _date = (Literal)e.Item.FindControl("lt_date");
@@ -52,9 +50,9 @@ namespace uWiki.usercontrols {
                 _delete.CommandArgument = wf.Id.ToString();
 
                 if (wf.Versions != null)
-                    _version.Text = uWiki.Businesslogic.WikiFile.ToVersionString(wf.Versions);
+                    _version.Text = WikiFile.ToVersionString(wf.Versions);
 
-                if (Member.GetCurrentMember().Id == wf.CreatedBy || uWiki.Library.Utils.IsInGroup("admin"))
+                if (Member.GetCurrentMember().Id == wf.CreatedBy || Utils.IsInGroup("admin"))
                     _delete.Enabled = true;
 
 
@@ -85,10 +83,10 @@ namespace uWiki.usercontrols {
                 MemberGuid = mem.UniqueId.ToString();
                 VersionGuid = d.Version.ToString();
 
-                string defaultVersion = uWiki.Businesslogic.UmbracoVersion.DefaultVersion().Version;
+                string defaultVersion = UmbracoVersion.DefaultVersion().Version;
                 string options = "";
 
-                foreach (uWiki.Businesslogic.UmbracoVersion uv in uWiki.Businesslogic.UmbracoVersion.AvailableVersions().Values)
+                foreach (UmbracoVersion uv in UmbracoVersion.AvailableVersions().Values)
                 {
                     string selected = "selected='true'";
                     if (uv.Version != defaultVersion)

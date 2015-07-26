@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Web;
-using umbraco.DataLayer;
 using System.Data;
-using System.Xml;
 using System.Data.SqlClient;
+using System.Xml;
 using System.Xml.XPath;
+using umbraco.DataLayer;
 
-namespace uWiki.Businesslogic {
+namespace OurUmbraco.Wiki.BusinessLogic {
    public class Data {
 
         private static string _ConnString = umbraco.GlobalSettings.DbDSN;

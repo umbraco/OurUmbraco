@@ -4,12 +4,12 @@ using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using our.Examine;
+using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.EntityBase;
 using Umbraco.Core.Services;
 using Umbraco.Web;
-using uWiki.Businesslogic;
 
 namespace our.CustomHandlers
 {

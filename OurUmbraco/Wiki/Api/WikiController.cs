@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Linq;
-using System.Web;
 using System.Web.Http;
-using System.Web.Security;
+using OurUmbraco.Wiki.BusinessLogic;
+using OurUmbraco.Wiki.Library;
 using umbraco.cms.businesslogic.web;
 using Umbraco.Web.WebApi;
-using uWiki.Businesslogic;
-using uWiki.Library;
 
-namespace uWiki.Api
+namespace OurUmbraco.Wiki.Api
 {
     public class WikiController : UmbracoApiController
     {

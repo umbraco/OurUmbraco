@@ -11,6 +11,8 @@ using System.Xml.XPath;
 using umbraco.interfaces;
 using umbraco.presentation.nodeFactory;
 using System.Data;
+using OurUmbraco.Repository;
+using OurUmbraco.Wiki.BusinessLogic;
 
 namespace our.usercontrols
 {
@@ -68,10 +70,10 @@ namespace our.usercontrols
                         hideHq = false;
                     }
 
-                    List<uRepo.Category> categories = uRepo.Packages.Categories(false, hideHq);
+                    List<Category> categories = Packages.Categories(false, hideHq);
                     dd_category.Items.Add(new ListItem("Please select...", ""));
 
-                    foreach (uRepo.Category c in categories)
+                    foreach (Category c in categories)
                     {
                         dd_category.Items.Add(new ListItem(c.Text, c.Id.ToString()));
                     }
@@ -117,13 +119,13 @@ namespace our.usercontrols
 
                             dd_category.SelectedValue = d.Parent.Id.ToString();
 
-                            List<uWiki.Businesslogic.WikiFile> Files = uWiki.Businesslogic.WikiFile.CurrentFiles(d.Id);
+                            List<WikiFile> Files = WikiFile.CurrentFiles(d.Id);
 
 
                             bool hasScreenshots = false;
                             if (Files.Count > 0)
                             {
-                                foreach (uWiki.Businesslogic.WikiFile f in Files)
+                                foreach (WikiFile f in Files)
                                 {
 
                                     if (f.FileType != "screenshot")
@@ -241,7 +243,7 @@ namespace our.usercontrols
                         if (dd_screenshot.SelectedIndex > -1)
                         {
                             d.getProperty("defaultScreenshotPath").Value =
-                                new uWiki.Businesslogic.WikiFile(int.Parse(dd_screenshot.SelectedValue)).Path;
+                                new WikiFile(int.Parse(dd_screenshot.SelectedValue)).Path;
                         }
                         else
                         {

@@ -2,7 +2,7 @@
 using System.Web.Routing;
 using Umbraco.Core;
 
-namespace uRepo
+namespace OurUmbraco.Repository
 {
     public class AppStart : ApplicationEventHandler
     {

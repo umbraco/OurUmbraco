@@ -1,21 +1,13 @@
 ﻿using System;
-using System.Collections;
-using System.ComponentModel;
-using System.Data;
-using System.Linq;
-using System.Web;
-using System.Web.Services;
-using System.Web.Services.Protocols;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using System.Collections.Generic;
-using System.Xml.Serialization;
+using System.ComponentModel;
 using System.IO;
+using System.Web.Services;
+using System.Xml.XPath;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.web;
-using umbraco.BusinessLogic;
-using System.Xml;
 
-namespace uRepo.webservices
+namespace OurUmbraco.Repository.webservices
 {
     /// <summary>
     /// Summary description for Service1
@@ -37,36 +29,36 @@ namespace uRepo.webservices
         [WebMethod]
         public List<Category> Categories(string repositoryGuid)
         {
-            return uRepo.Packages.Categories(false, false);
+            return OurUmbraco.Repository.Packages.Categories(false, false);
         }
 
         public List<Package> Packages(string repositoryGuid, int categoryId)
         {
-            return uRepo.Packages.GetPackagesByCategory(categoryId);
+            return OurUmbraco.Repository.Packages.GetPackagesByCategory(categoryId);
         }
 
         [WebMethod]
         public List<Package> Modules()
         {
-            return uRepo.Packages.GetPackagesByProperty("isModule", "1");
+            return OurUmbraco.Repository.Packages.GetPackagesByProperty("isModule", "1");
         }
 
         [WebMethod]
         public List<Category> ModulesCategorized()
         {
-            return uRepo.Packages.GetPackagesByPropertyCategorized("isModule", "1");
+            return OurUmbraco.Repository.Packages.GetPackagesByPropertyCategorized("isModule", "1");
         }
 
         [WebMethod]
         public List<Package> Nitros()
         {
-            return uRepo.Packages.GetPackagesByCategory("Nitros");
+            return OurUmbraco.Repository.Packages.GetPackagesByCategory("Nitros");
         }
 
         [WebMethod]
         public List<Category> NitrosCategorized()
         {
-            return uRepo.Packages.GetSubCategories("Nitros", true);
+            return OurUmbraco.Repository.Packages.GetSubCategories("Nitros", true);
         }
 
         [WebMethod]
@@ -87,7 +79,7 @@ namespace uRepo.webservices
         [WebMethod]
         public byte[] fetchPackage(string packageGuid)
         {
-            return uRepo.Packages.PackageFileByGuid(new Guid(packageGuid)).ToByteArray();
+            return OurUmbraco.Repository.Packages.PackageFileByGuid(new Guid(packageGuid)).ToByteArray();
         }
 
         [WebMethod]
@@ -120,7 +112,7 @@ namespace uRepo.webservices
                     break;
             }
 
-            uWiki.Businesslogic.WikiFile wf = uRepo.Packages.PackageFileByGuid(new Guid(packageGuid));
+            WikiFile wf = OurUmbraco.Repository.Packages.PackageFileByGuid(new Guid(packageGuid));
 
 
             if (wf != null)
@@ -145,7 +137,7 @@ namespace uRepo.webservices
                         return wf.ToByteArray();
                     else if (wf.Version.Version != version && wf.Version.Version != "nan")
                     {
-                        wf = uWiki.Businesslogic.WikiFile.FindPackageForUmbracoVersion(wf.NodeId, version);
+                        wf = WikiFile.FindPackageForUmbracoVersion(wf.NodeId, version);
                         return wf.ToByteArray();
                     }
                 }
@@ -208,13 +200,13 @@ namespace uRepo.webservices
         [WebMethod]
         public SubmitStatus SubmitPackage(string repositoryGuid, string authorGuid, string packageGuid, byte[] packageFile, byte[] packageDoc, byte[] packageThumbnail, string name, string author, string authorUrl, string description)
         {
-            return uRepo.Packages.SubmitPackageAsProject(authorGuid, packageGuid, packageFile, packageDoc, packageThumbnail, name, description);
+            return OurUmbraco.Repository.Packages.SubmitPackageAsProject(authorGuid, packageGuid, packageFile, packageDoc, packageThumbnail, name, description);
         }
 
         [WebMethod]
         public Package PackageByGuid(string packageGuid)
         {
-            return uRepo.Packages.GetPackageByGuid(new Guid(packageGuid));
+            return OurUmbraco.Repository.Packages.GetPackageByGuid(new Guid(packageGuid));
         }
 
         private static umbraco.cms.businesslogic.contentitem.ContentItem packageContentItem(string guid)

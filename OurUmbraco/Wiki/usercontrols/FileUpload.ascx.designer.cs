@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace uWiki.usercontrols {
+namespace OurUmbraco.Wiki.usercontrols {
     
     
     public partial class FileUpload {

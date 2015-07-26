@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using uWiki.Businesslogic;
+using OurUmbraco.Wiki.BusinessLogic;
 
-namespace uWiki
+namespace OurUmbraco.Wiki
 {
     public class WikiFileUploadHandler : IHttpHandler
     {

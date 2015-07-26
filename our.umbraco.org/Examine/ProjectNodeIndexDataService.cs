@@ -9,7 +9,7 @@ using Examine;
 using Examine.LuceneEngine;
 using Lucene.Net.Documents;
 using Lucene.Net.Util;
-using uWiki.Businesslogic;
+using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;

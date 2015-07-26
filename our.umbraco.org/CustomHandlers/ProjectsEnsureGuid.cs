@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
-using uWiki.Businesslogic;
 using Umbraco.Core;
 
 namespace our.CustomHandlers
@@ -38,7 +38,7 @@ namespace our.CustomHandlers
                 if (sender.getProperty("compatibleVersions") != null)
                 {
                     List<string> compatibleVersions = new List<string>();
-                    foreach (WikiFile wf in uWiki.Businesslogic.WikiFile.CurrentFiles(sender.Id))
+                    foreach (WikiFile wf in WikiFile.CurrentFiles(sender.Id))
                     {
                         if (wf.FileType == "package")
                         {

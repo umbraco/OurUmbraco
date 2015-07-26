@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FileUpload.ascx.cs" Inherits="uWiki.usercontrols.FileUpload" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="FileUpload.ascx.cs" Inherits="OurUmbraco.Wiki.usercontrols.FileUpload" %>
 
 
 

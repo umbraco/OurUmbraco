@@ -1,5 +1,6 @@
 ﻿@using  umbraco.presentation.nodeFactory
 @using System.Xml
+@using OurUmbraco.Wiki.BusinessLogic
 @{
   var packageGuid = "7fc3e288-2be1-493f-a965-2ca6a3c8c78b";
   var files = umbraco.library.GetXmlNodeByXPath("descendant::* [@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = translate('" + packageGuid.ToString() + "','ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')]");
@@ -15,7 +16,7 @@
                     {
                        
                         
-                        uWiki.Businesslogic.WikiFile wf = new uWiki.Businesslogic.WikiFile(_id);
+                        WikiFile wf = new WikiFile(_id);
                         <p>
 @wf.Path
                      @wf.Version.Version

@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using umbraco.cms.businesslogic.web;
 
-namespace uWiki.Businesslogic {
+namespace OurUmbraco.Wiki.BusinessLogic {
     public class WikiPage {
 
         public int ParentId { get; set; }

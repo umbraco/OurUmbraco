@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Xml;
+﻿using System.Collections.Generic;
 using OurUmbraco.Version;
 
-namespace uWiki.Businesslogic
+namespace OurUmbraco.Wiki.BusinessLogic
 {
     public class UmbracoVersion
     {

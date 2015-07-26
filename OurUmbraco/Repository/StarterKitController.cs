@@ -8,7 +8,7 @@ using System.Xml.XPath;
 using OurUmbraco.Version;
 using umbraco.NodeFactory;
 
-namespace uRepo
+namespace OurUmbraco.Repository
 {
     public class StarterKitController : ApiController
     {
@@ -43,13 +43,13 @@ namespace uRepo
 
         private IEnumerable<StarterKit> GetStarterKits(IEnumerable<umbraco.NodeFactory.Node> umbracoNodes, string umbracoVersion)
         {
-            Version version = null;
+            System.Version version = null;
             if (umbracoVersion != null)
             {
                 if (umbracoVersion.Contains("-"))
                     umbracoVersion = umbracoVersion.Substring(0, umbracoVersion.IndexOf("-", StringComparison.Ordinal));
 
-                version = new Version(umbracoVersion);
+                version = new System.Version(umbracoVersion);
             }
 
             var officialStarterKitGuidCollection =
@@ -83,7 +83,7 @@ namespace uRepo
             return starterKits.OrderBy(s => s.SortOrder);
         }
 
-        private bool VersionCompatible(Node umbracoNode, Version version, List<UWikiFileVersion> allConfiguredVersions)
+        private bool VersionCompatible(Node umbracoNode, System.Version version, List<UWikiFileVersion> allConfiguredVersions)
         {
             var versionCompatible = false;
 
@@ -108,9 +108,9 @@ namespace uRepo
             return versionCompatible;
         }
 
-        private static IEnumerable<Version> GetAllCompatibleVersions(string compatibleVersions, List<UWikiFileVersion> configuredVersions)
+        private static IEnumerable<System.Version> GetAllCompatibleVersions(string compatibleVersions, List<UWikiFileVersion> configuredVersions)
         {
-            var compatibleVersionsList = new List<Version>();
+            var compatibleVersionsList = new List<System.Version>();
 
             foreach (var compatibleVersion in compatibleVersions.Split(','))
             {
@@ -124,7 +124,7 @@ namespace uRepo
                 {
                     var voteDescription = configuredVersion.VoteDescription;
                     voteDescription = voteDescription.Replace("Version ", string.Empty).Replace(".x", ".0");
-                    compatibleVersionsList.Add(new Version(voteDescription));
+                    compatibleVersionsList.Add(new System.Version(voteDescription));
                 }
             }
 

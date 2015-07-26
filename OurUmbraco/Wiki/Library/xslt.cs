@@ -1,15 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Web;
-using System.Xml.XPath;
-using umbraco.cms.businesslogic.web;
 using System.Xml;
+using System.Xml.XPath;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.member;
-using umbraco.cms.businesslogic;
-using umbraco.cms.businesslogic.property;
 using umbraco.cms.businesslogic.propertytype;
+using umbraco.cms.businesslogic.web;
 
-namespace uWiki.Library {
+namespace OurUmbraco.Wiki.Library {
     [Umbraco.Core.Macros.XsltExtension("uWiki")]
     public class Xslt {
         public static XPathNodeIterator PageHistory(int nodeId) {
@@ -73,12 +71,12 @@ namespace uWiki.Library {
      
 
         public static XPathNodeIterator GetAttachedFiles(int id) {
-            return Businesslogic.Data.GetDataSet("SELECT * FROM wikiFiles where nodeId = " + id.ToString(), "file");    
+            return Data.GetDataSet("SELECT * FROM wikiFiles where nodeId = " + id.ToString(), "file");    
         }
 
 
         public static XPathNodeIterator GetAttachedFile(int Fileid) {
-            return Businesslogic.Data.GetDataSet("SELECT * FROM wikiFiles where id = " + Fileid.ToString(), "file");
+            return Data.GetDataSet("SELECT * FROM wikiFiles where id = " + Fileid.ToString(), "file");
         }
 
         public static bool IsMemberInGroup(string GroupName, int memberid)
@@ -108,23 +106,23 @@ namespace uWiki.Library {
             string application = "";
             string applicationPage = url.Substring(url.LastIndexOf("/") + 1, url.Length - url.LastIndexOf("/") - 1);
 
-            Businesslogic.WikiHelpRequest.Create(section.ToLower(), application, applicationPage,url);
+            WikiHelpRequest.Create(section.ToLower(), application, applicationPage,url);
         }
         public static XPathNodeIterator GetWikiHelpRequests()
         {
-            return Businesslogic.Data.GetDataSet("SELECT applicationPage, COUNT(*) AS numberOfRequests FROM wikiHelpRequest GROUP BY applicationPage ", "requests");
+            return Data.GetDataSet("SELECT applicationPage, COUNT(*) AS numberOfRequests FROM wikiHelpRequest GROUP BY applicationPage ", "requests");
         }
 
         public static XPathNodeIterator GetWikiHelpRequests(string section)
         {
-            return Businesslogic.Data.GetDataSet("SELECT applicationPage, COUNT(*) AS numberOfRequests FROM wikiHelpRequest where section = '" + section + "' GROUP BY applicationPage", "requests");
+            return Data.GetDataSet("SELECT applicationPage, COUNT(*) AS numberOfRequests FROM wikiHelpRequest where section = '" + section + "' GROUP BY applicationPage", "requests");
         }
 
         public static XPathNodeIterator FindPackageForUmbracoVersion(int nodeid, string umbracoVersion)
         {
             XmlDocument xd = new XmlDocument();
 
-            Businesslogic.WikiFile wf = Businesslogic.WikiFile.FindPackageForUmbracoVersion(nodeid, umbracoVersion);
+            WikiFile wf = WikiFile.FindPackageForUmbracoVersion(nodeid, umbracoVersion);
 
             if (wf != null)
                 xd.AppendChild(wf.ToXml(xd));
@@ -136,7 +134,7 @@ namespace uWiki.Library {
         {
             XmlDocument xd = new XmlDocument();
 
-            Businesslogic.WikiFile wf = Businesslogic.WikiFile.FindPackageDocumentationForUmbracoVersion(nodeid, umbracoVersion);
+            WikiFile wf = WikiFile.FindPackageDocumentationForUmbracoVersion(nodeid, umbracoVersion);
 
             if (wf != null)
                 xd.AppendChild(wf.ToXml(xd));

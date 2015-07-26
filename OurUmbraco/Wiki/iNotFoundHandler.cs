@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Xml;
+﻿using System.Diagnostics;
 using System.Web;
-using umbraco.cms.businesslogic.web;
+using System.Xml;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco;
-using umbraco.cms.businesslogic.template;
-using System.Configuration;
+using umbraco.cms.businesslogic.web;
 using umbraco.interfaces;
 using umbraco.NodeFactory;
 
-namespace uWiki {
+namespace OurUmbraco.Wiki {
     public class iNotFoundHandler : umbraco.interfaces.INotFoundHandler {
         #region INotFoundHandler Members
 
@@ -54,7 +51,7 @@ namespace uWiki {
                     string applicationPage = urlparts[urlparts.Length - 1];
 
                     //log the request
-                    Businesslogic.WikiHelpRequest.Create(section.ToLower(), application, applicationPage, url);
+                    WikiHelpRequest.Create(section.ToLower(), application, applicationPage, url);
 
                     
                     //if it isn't a page create request

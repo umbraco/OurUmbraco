@@ -1,4 +1,4 @@
-﻿namespace uRepo
+﻿namespace OurUmbraco.Repository
 {
     public class StarterKit
     {

@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web;
 using System.ComponentModel;
 
-namespace uWiki.Businesslogic {
+namespace OurUmbraco.Wiki.BusinessLogic {
     //wiki Event args
     public class FileCreateEventArgs : System.ComponentModel.CancelEventArgs { }
     public class FileUpdateEventArgs : System.ComponentModel.CancelEventArgs { }

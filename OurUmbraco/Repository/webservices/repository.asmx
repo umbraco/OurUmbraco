@@ -1,1 +1,1 @@
-﻿<%@ WebService Language="C#" CodeBehind="repository.asmx.cs" Class="uRepo.webservices.Repository" %>
+﻿<%@ WebService Language="C#" CodeBehind="repository.asmx.cs" Class="OurUmbraco.Repository.webservices.Repository" %>

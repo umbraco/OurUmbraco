@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
-using uWiki.Businesslogic;
 
 namespace our {
     public class ProjectFileUploadHandler : IHttpHandler {
@@ -41,7 +41,7 @@ namespace our {
                 Member mem = new Member(new Guid(userguid));
 
                 if (d.ContentType.Alias == "Project" && d.getProperty("owner") != null && (d.getProperty("owner").Value.ToString() == mem.Id.ToString() ||  Utils.IsProjectContributor(mem.Id,d.Id))) {
-                    uWiki.Businesslogic.WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v);
+                    WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v);
 
                     //the package publish handler will make sure we got the right versions info on the package node itself.
                     //ProjectsEnsureGuid.cs is the handler

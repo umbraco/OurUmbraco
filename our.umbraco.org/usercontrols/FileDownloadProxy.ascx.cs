@@ -4,9 +4,10 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
+using OurUmbraco.Wiki.BusinessLogic;
 using BL = umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
-using uWiki.Businesslogic;
+
 namespace our.usercontrols
 {
     public partial class FileDownloadProxy : System.Web.UI.UserControl
