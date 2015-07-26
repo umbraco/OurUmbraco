@@ -5,8 +5,8 @@ using System.Linq;
 using System.Web.Http;
 using System.Xml;
 using System.Xml.XPath;
+using OurUmbraco.Version;
 using umbraco.NodeFactory;
-using uVersion;
 
 namespace uRepo
 {

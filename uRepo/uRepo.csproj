@@ -261,6 +261,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\OurUmbraco\OurUmbraco.csproj">
+      <Project>{a8e5c936-ecab-45b3-bfda-d12f680eb2a6}</Project>
+      <Name>OurUmbraco</Name>
+    </ProjectReference>
     <ProjectReference Include="..\uWiki\uWiki.csproj">
       <Project>{996601fa-5c0e-46a6-b39d-2863badc80d8}</Project>
       <Name>uWiki</Name>

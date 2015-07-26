@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Xml;
-using uVersion;
+using OurUmbraco.Version;
 
 namespace uWiki.Businesslogic
 {

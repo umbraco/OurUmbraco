@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Xml;
-using System.Web;
 using System.IO;
-using umbraco.BusinessLogic;
+using System.Web;
 using System.Web.Caching;
+using System.Xml;
+using umbraco.BusinessLogic;
 
-namespace uVersion
+namespace OurUmbraco.Version
 {
     public class config
     {
