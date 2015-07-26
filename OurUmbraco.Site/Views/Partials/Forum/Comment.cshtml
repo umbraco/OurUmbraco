@@ -1,4 +1,5 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.ReadOnlyComment>
+@using OurUmbraco.Powers.Library
 @using uForum.Extensions
 
 @{
@@ -45,7 +46,7 @@
                 <div class="highfive-count">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
+                @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
                 {
                     if (currentMember.Id != Model.MemberId)
                     {

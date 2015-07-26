@@ -1,6 +1,7 @@
 ﻿using System;
+using OurUmbraco.Powers.BusinessLogic;
 using umbraco.BusinessLogic;
-using uPowers.BusinessLogic;
+using Action = OurUmbraco.Powers.BusinessLogic.Action;
 
 namespace our.CustomHandlers
 {
@@ -8,16 +9,16 @@ namespace our.CustomHandlers
 	{
 		public ExternalVote()
 		{
-			uPowers.BusinessLogic.Action.BeforePerform += new EventHandler<ActionEventArgs>(this.Action_BeforePerform);
+			Action.BeforePerform += new EventHandler<ActionEventArgs>(this.Action_BeforePerform);
 		}
 
 		void Action_BeforePerform(object sender, ActionEventArgs e)
 		{
-			uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
+			Action a = (Action)sender;
 
 			if (a.Alias == "ExternalVote")
 			{
-				var memberId = uPowers.BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT memberId FROM externalUrls WHERE (@id = id)", uPowers.BusinessLogic.Data.SqlHelper.CreateParameter("@id", e.ItemId));
+				var memberId = OurUmbraco.Powers.BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT memberId FROM externalUrls WHERE (@id = id)", OurUmbraco.Powers.BusinessLogic.Data.SqlHelper.CreateParameter("@id", e.ItemId));
 				e.ReceiverId = memberId;
 			}
 		}

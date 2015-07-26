@@ -4734,10 +4734,6 @@
       <Project>{547c2d0d-1b55-493b-ae0b-e031a5b8ee77}</Project>
       <Name>uForum</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uPowers\uPowers.csproj">
-      <Project>{00f050b9-e3ed-49a7-ab97-e8bec2513553}</Project>
-      <Name>uPowers</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uRelease\uRelease.csproj">
       <Project>{c5b74e6a-abce-4a9a-896d-89c33fdafcd8}</Project>
       <Name>uRelease</Name>

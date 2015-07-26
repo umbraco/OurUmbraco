@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Security;
+using OurUmbraco.Powers.BusinessLogic;
+using OurUmbraco.Powers.Library;
 using uForum.Services;
-using uPowers.BusinessLogic;
 using Umbraco.Core;
+using Action = OurUmbraco.Powers.BusinessLogic.Action;
 
 namespace our.CustomHandlers
 {
@@ -16,9 +18,9 @@ namespace our.CustomHandlers
         
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            uPowers.BusinessLogic.Action.BeforePerform += new EventHandler<ActionEventArgs>(TopicVote);
-            uPowers.BusinessLogic.Action.BeforePerform += new EventHandler<ActionEventArgs>(TopicSolved);
-            uPowers.BusinessLogic.Action.AfterPerform += new EventHandler<ActionEventArgs>(TopicScoring);
+            Action.BeforePerform += new EventHandler<ActionEventArgs>(TopicVote);
+            Action.BeforePerform += new EventHandler<ActionEventArgs>(TopicSolved);
+            Action.AfterPerform += new EventHandler<ActionEventArgs>(TopicScoring);
         }
         
         private const string ModeratorRoles = "admin,HQ,Core,MVP";
@@ -28,7 +30,7 @@ namespace our.CustomHandlers
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             var cs = new CommentService(ApplicationContext.Current.DatabaseContext, ts);
 
-            uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
+            Action a = (Action)sender;
             if (a.Alias == "TopicSolved")
             {
                 var c = cs.GetById(e.ItemId);
@@ -61,11 +63,11 @@ namespace our.CustomHandlers
         {
             if (!e.Cancel)
             {
-                uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
+                Action a = (Action)sender;
 
                 if (a.Alias == "LikeTopic" || a.Alias == "DisLikeTopic")
                 {
-                    int topicScore = uPowers.Library.Xslt.Score(e.ItemId, a.DataBaseTable);
+                    int topicScore = Xslt.Score(e.ItemId, a.DataBaseTable);
 
                     //this uses a non-standard coloumn in the forum schema, so this is added manually..
                     our.Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET score = @score WHERE id = @id", Data.SqlHelper.CreateParameter("@id", e.ItemId), Data.SqlHelper.CreateParameter("@score", topicScore));
@@ -77,7 +79,7 @@ namespace our.CustomHandlers
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
 
-            uPowers.BusinessLogic.Action a = (uPowers.BusinessLogic.Action)sender;
+            Action a = (Action)sender;
 
             if (a.Alias == "LikeTopic" || a.Alias == "DisLikeTopic")
             {

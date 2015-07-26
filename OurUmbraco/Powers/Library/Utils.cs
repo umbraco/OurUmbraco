@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using umbraco.cms.businesslogic.member;
+﻿using umbraco.cms.businesslogic.member;
 
-namespace uPowers.Library
+namespace OurUmbraco.Powers.Library
 {
     public class Utils
     {

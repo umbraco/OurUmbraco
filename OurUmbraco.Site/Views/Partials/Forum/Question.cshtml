@@ -1,4 +1,5 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.Topic>
+@using OurUmbraco.Powers.Library
 @using uForum.Extensions
 
 @{
@@ -42,7 +43,7 @@
                     <div class="highfive-count">
                         @Model.Score
                     </div>
-                    @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                    @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                     {
                         if (currentMember.Id != Model.MemberId)
                         {

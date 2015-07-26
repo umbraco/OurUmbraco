@@ -2,6 +2,7 @@
 @using Marketplace.Providers
 @using System.Xml;
 @using System.Xml.XPath;
+@using OurUmbraco.Powers.Library
 @using Umbraco.Core
 
 @{
@@ -43,7 +44,7 @@
                                    
     var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
     
-    var iterator = uPowers.Library.Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
+    var iterator = Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
     while (iterator.MoveNext() && iterator.CurrentPosition < 20)
     {
      var node = (IHasXmlNode)iterator.Current;

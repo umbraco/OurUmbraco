@@ -1,4 +1,5 @@
-﻿using uForum;
+﻿using OurUmbraco.Powers.BusinessLogic;
+using uForum;
 using uForum.Extensions;
 using uForum.Services;
 using Umbraco.Core;
@@ -26,7 +27,7 @@ namespace our.CustomHandlers {
                 member.IncreaseForumPostCount();
                 ms.Save(member);
 
-                uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewComment");
+                Action a = new Action("NewComment");
                 a.Perform(member.Id, e.Comment.Id, "New comment created");  
             }
         }
@@ -40,7 +41,7 @@ namespace our.CustomHandlers {
                 member.IncreaseForumPostCount();
                 ms.Save(member);
 
-                uPowers.BusinessLogic.Action a = new uPowers.BusinessLogic.Action("NewTopic");
+                Action a = new Action("NewTopic");
                 a.Perform(member.Id, e.Topic.Id, "New topic created");
             }
         }

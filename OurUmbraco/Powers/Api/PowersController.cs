@@ -1,9 +1,8 @@
-﻿using System.Linq;
-using System.Web;
+﻿using System.Web;
 using System.Web.Http;
 using Umbraco.Web.WebApi;
 
-namespace uPowers.Api
+namespace OurUmbraco.Powers.Api
 {
     public class PowersController : UmbracoApiController
     {

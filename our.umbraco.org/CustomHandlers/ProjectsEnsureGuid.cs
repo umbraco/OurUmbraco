@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OurUmbraco.Powers.Library;
 using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
@@ -27,7 +28,7 @@ namespace our.CustomHandlers
                 }
 
                 //if the score is above the minimum, set the approved variable
-                int score = uPowers.Library.Xslt.Score(sender.Id, "powersProject");
+                int score = Xslt.Score(sender.Id, "powersProject");
                 if (score >= 15)
                 {
                     sender.getProperty("approved").Value = true;

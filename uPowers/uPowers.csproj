@@ -236,19 +236,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Api\PowersController.cs" />
-    <Compile Include="Buddha\Buddha.cs" />
-    <Compile Include="BusinessLogic\Data.cs" />
-    <Compile Include="config.cs" />
-    <Compile Include="BusinessLogic\Events.cs" />
-    <Compile Include="Library\Utils.cs" />
-    <Compile Include="Library\xslt.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="BusinessLogic\Action.cs" />
-    <Compile Include="BusinessLogic\Reputation.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="uPowers.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
