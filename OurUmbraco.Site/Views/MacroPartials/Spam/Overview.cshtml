@@ -1,10 +1,10 @@
 ﻿@using our
 @using uForum.Extensions
 @using uForum.Services
-@using Umbraco.Core.Services
-
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@{
+
+@if (Members.IsAdmin())
+{
     var topicService = new TopicService(UmbracoContext.Application.DatabaseContext);
 
     var memberIds = new List<int>();
@@ -26,10 +26,7 @@
         }
 
     }
-}
 
-@if (Members.IsAdmin())
-{
     <h2>Newest members</h2>
     <ul>
         @foreach (var member in newMembers)
