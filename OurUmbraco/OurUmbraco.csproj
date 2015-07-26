@@ -335,7 +335,6 @@
     <Compile Include="Our\Controllers\ProfileController.cs" />
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
     <Compile Include="Our\Controllers\RegisterController.cs" />
-    <Compile Include="Our\controls\DateTimePicker.cs" />
     <Compile Include="Our\CustomHandlers\CommentVote.cs" />
     <Compile Include="Our\CustomHandlers\ExternalVote.cs" />
     <Compile Include="Our\CustomHandlers\ForumIndexer.cs" />
