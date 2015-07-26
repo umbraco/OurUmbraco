@@ -261,7 +261,6 @@
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
     <Compile Include="Events\App_Startup\ControllerRouting.cs" />
-    <Compile Include="Events\controls\DateTimePicker.cs" />
     <Compile Include="Events\Library\Xslt.cs" />
     <Compile Include="Events\Meetup\DateTimeExtensions.cs" />
     <Compile Include="Events\Meetup\MeetupController.cs" />
