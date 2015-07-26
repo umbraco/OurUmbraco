@@ -89,7 +89,7 @@ namespace our.usercontrols
                 memberService.Save(currentMember);
                 memberService.SavePassword(currentMember, tb_password.Text);
 
-                uForum.Library.Utils.CheckForSpam(currentMember);
+                OurUmbraco.Forum.Library.Utils.CheckForSpam(currentMember);
 
                 Response.Redirect(library.NiceUrl(NextPage));
             }
@@ -101,7 +101,7 @@ namespace our.usercontrols
                     if (member == null)
                     {
                         // If spammer then this will stop account creation
-                        var spamResult = uForum.Library.Utils.CheckForSpam(tb_email.Text, tb_name.Text, true);
+                        var spamResult = OurUmbraco.Forum.Library.Utils.CheckForSpam(tb_email.Text, tb_name.Text, true);
                         if (spamResult != null && spamResult.Blocked)
                             return;
 
@@ -140,12 +140,12 @@ namespace our.usercontrols
                             spamResult.MemberId = member.Id;
 
                             memberService.AssignRole(member.Id, "potentialspam");
-                            uForum.Library.Utils.SendPotentialSpamMemberMail(spamResult);
+                            OurUmbraco.Forum.Library.Utils.SendPotentialSpamMemberMail(spamResult);
                         }
                         else
                         {
-                            uForum.Library.Utils.SendActivationMail(member);
-                            uForum.Library.Utils.SendMemberSignupMail(member);
+                            OurUmbraco.Forum.Library.Utils.SendActivationMail(member);
+                            OurUmbraco.Forum.Library.Utils.SendMemberSignupMail(member);
                         }
                         memberService.AssignRole(member.Id, "notactivated");
 

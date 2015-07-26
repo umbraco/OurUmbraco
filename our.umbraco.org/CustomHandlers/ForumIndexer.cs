@@ -2,6 +2,8 @@
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using our.Examine;
+using OurUmbraco.Forum;
+using OurUmbraco.Forum.Services;
 using Umbraco.Core;
 //WB Added
 
@@ -13,19 +15,19 @@ namespace our.CustomHandlers
      
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            uForum.Services.TopicService.Created += TopicService_Updated;
-            uForum.Services.TopicService.Updated += TopicService_Updated;
-            uForum.Services.TopicService.Deleting += TopicService_Deleted;
+            TopicService.Created += TopicService_Updated;
+            TopicService.Updated += TopicService_Updated;
+            TopicService.Deleting += TopicService_Deleted;
         }
 
 
-        void TopicService_Deleted(object sender, uForum.TopicEventArgs e)
+        void TopicService_Deleted(object sender, TopicEventArgs e)
         {
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["ForumIndexer"];
             indexer.DeleteFromIndex(e.Topic.Id.ToString());
         }
 
-        void TopicService_Updated(object sender, uForum.TopicEventArgs e)
+        void TopicService_Updated(object sender, TopicEventArgs e)
         {
             var indexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["ForumIndexer"];
             var dataSet = ((ForumDataService)indexer.DataService).CreateNewDocument(e.Topic.Id);

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Security;
+using OurUmbraco.Forum.Services;
 using OurUmbraco.Powers.BusinessLogic;
 using OurUmbraco.Powers.Library;
-using uForum.Services;
 using Umbraco.Core;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
 

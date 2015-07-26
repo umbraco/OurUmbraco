@@ -13,6 +13,7 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using System.Web.Script.Serialization;
 using Newtonsoft.Json;
+using OurUmbraco.Release.Controllers;
 using OurUmbraco.Release.Models;
 using RestSharp;
 using umbraco.NodeFactory;

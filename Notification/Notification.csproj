@@ -234,14 +234,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\uForum\uForum.csproj">
-      <Project>{547C2D0D-1B55-493B-AE0B-E031A5B8EE77}</Project>
-      <Name>uForum</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OurUmbraco\OurUmbraco.csproj">
+      <Project>{a8e5c936-ecab-45b3-bfda-d12f680eb2a6}</Project>
+      <Name>OurUmbraco</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />

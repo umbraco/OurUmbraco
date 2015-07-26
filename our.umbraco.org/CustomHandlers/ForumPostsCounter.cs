@@ -1,7 +1,7 @@
-﻿using OurUmbraco.Powers.BusinessLogic;
-using uForum;
-using uForum.Extensions;
-using uForum.Services;
+﻿using OurUmbraco.Forum;
+using OurUmbraco.Forum.Extensions;
+using OurUmbraco.Forum.Services;
+using OurUmbraco.Powers.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Web;
 
@@ -18,7 +18,7 @@ namespace our.CustomHandlers {
             CommentService.Created += CommentService_Created;
         }
 
-        void CommentService_Created(object sender, uForum.CommentEventArgs e)
+        void CommentService_Created(object sender, CommentEventArgs e)
         {
             if (e.Comment != null && e.Comment.MemberId > 0)
             {
@@ -32,7 +32,7 @@ namespace our.CustomHandlers {
             }
         }
 
-        void TopicService_Created(object sender, uForum.TopicEventArgs e)
+        void TopicService_Created(object sender, TopicEventArgs e)
         {
             if (e.Topic != null && e.Topic.MemberId > 0)
             {

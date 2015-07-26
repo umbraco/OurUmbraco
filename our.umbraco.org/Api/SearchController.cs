@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 using Examine.SearchCriteria;
 using Lucene.Net.Documents;
 using our.Models;
-using uForum;
-using uForum.Extensions;
+using OurUmbraco.Forum.Extensions;
 using Umbraco.Web.WebApi;
 
 namespace our.Api

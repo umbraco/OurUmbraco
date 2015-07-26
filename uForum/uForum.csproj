@@ -247,39 +247,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AntiSpam\SpamChecker.cs" />
-    <Compile Include="Api\ForumController.cs" />
-    <Compile Include="Api\ForumControllerBase.cs" />
-    <Compile Include="Api\PublicForumController.cs" />
-    <Compile Include="Api\TopicController.cs" />
-    <Compile Include="EventHandlers\MemberApprovedEventhandler.cs" />
-    <Compile Include="Extensions\EventExtensions.cs" />
-    <Compile Include="Events.cs" />
-    <Compile Include="Extensions\ForumExtensions.cs" />
-    <Compile Include="iNotFoundHandler.cs" />
-    <Compile Include="Library\Utils.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Extensions\MemberForumExtensions.cs" />
-    <Compile Include="Models\Comment.cs" />
-    <Compile Include="Models\CommentSaveModel.cs" />
-    <Compile Include="Models\Forum.cs" />
-    <Compile Include="Models\ReadOnlyComment.cs" />
-    <Compile Include="Models\ReadOnlyTopic.cs" />
-    <Compile Include="Models\Topic.cs" />
-    <Compile Include="Models\TopicCommentRelator.cs" />
-    <Compile Include="Models\TopicSaveModel.cs" />
-    <Compile Include="EventHandlers\NewForumHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\CommentService.cs" />
-    <Compile Include="Services\ForumService.cs" />
-    <Compile Include="Services\TopicService.cs" />
-    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-    <None Include="setuptables.sql" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />

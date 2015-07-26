@@ -4,11 +4,9 @@ using System.Linq;
 using System.Text;
 using Examine;
 using Examine.LuceneEngine;
-using uForum.Models;
-using uForum.Services;
+using OurUmbraco.Forum.Models;
+using OurUmbraco.Forum.Services;
 //WB Added
-
-using uForum;
 using Umbraco.Core;
 
 namespace our.Examine

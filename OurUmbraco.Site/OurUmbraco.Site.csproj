@@ -4730,10 +4730,6 @@
       <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
       <Name>our.umbraco.org</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uForum\uForum.csproj">
-      <Project>{547c2d0d-1b55-493b-ae0b-e031a5b8ee77}</Project>
-      <Name>uForum</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\migrations\" />

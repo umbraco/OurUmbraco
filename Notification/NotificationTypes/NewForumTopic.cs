@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Net.Mail;
-using uForum.Models;
 using System.Data.SqlClient;
 using umbraco.cms.businesslogic.member;
 using umbraco.presentation.nodeFactory;
 using umbraco.cms.businesslogic.web;
 using System.Web;
+using OurUmbraco.Forum.Models;
 
 namespace NotificationsCore.NotificationTypes
 {

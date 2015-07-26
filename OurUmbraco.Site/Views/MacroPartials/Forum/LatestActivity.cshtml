@@ -1,15 +1,17 @@
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Models
+@using OurUmbraco.Forum.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uForum.Extensions
 
 @{
-    var ts = new uForum.Services.TopicService(ApplicationContext.DatabaseContext);
+    var ts = new TopicService(ApplicationContext.DatabaseContext);
 }
 
 <div class="col-md-12 flex">
     @Column(ts.GetLatestTopics(6, 1))
 </div>
 
-@helper Column(IEnumerable<uForum.Models.ReadOnlyTopic> topics)
+@helper Column(IEnumerable<ReadOnlyTopic> topics)
 {
     foreach (var topic in topics.ToArray())
     {

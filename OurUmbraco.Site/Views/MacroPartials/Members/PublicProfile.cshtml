@@ -1,7 +1,8 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using Marketplace.Interfaces
 @using Marketplace.Providers
-@using uForum.Extensions
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -15,7 +16,7 @@
     }
     else
     {
-        var ts = new uForum.Services.TopicService(UmbracoContext.Application.DatabaseContext);
+        var ts = new TopicService(UmbracoContext.Application.DatabaseContext);
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
 

@@ -1,9 +1,8 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Drawing
 @using our
-@using uForum
-@using uForum.Extensions
-@using uForum.Services
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     Image avatarImage = null;
