@@ -1,5 +1,6 @@
 @using Examine.SearchCriteria
 @using our.Examine
+@using OurUmbraco.Our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     const int pagesToShowLeft = 4;
@@ -148,7 +149,7 @@
                 defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
             }
                         }
-                        <img src="@our.Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
+                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">

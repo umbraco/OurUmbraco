@@ -2,6 +2,7 @@
 @using System.Globalization
 @using System.Text.RegularExpressions
 @using OurUmbraco.MarketPlace.Models
+@using OurUmbraco.Our
 @using uForum.Businesslogic
 @{
     var queriedVersion = Request.QueryString["v"];
@@ -289,7 +290,7 @@
 
     public static string ShortenText(string text)
     {
-        text = our.Utils.StripHTML(text).Replace("&nbsp;", "");
+        text = Utils.StripHTML(text).Replace("&nbsp;", "");
         if (text.Length > 210)
         {
 

@@ -1,6 +1,7 @@
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.Our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
@@ -23,7 +24,7 @@
             <div class="avatar">
 				@if(mem != null)
                 {
-					@Html.Raw(our.Utils.GetMemberAvatar(mem, 100))
+					@Html.Raw(Utils.GetMemberAvatar(mem, 100))
 				}
             </div>
 

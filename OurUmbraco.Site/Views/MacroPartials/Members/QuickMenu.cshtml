@@ -3,6 +3,7 @@
 @using our
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.Our
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     Image avatarImage = null;
@@ -33,7 +34,7 @@
 
 
                     <div class="user-image">
-                        @Html.Raw(our.Utils.GetMemberAvatar(member, 100))
+                        @Html.Raw(Utils.GetMemberAvatar(member, 100))
                     </div>
 
                     <div class="user-profile">

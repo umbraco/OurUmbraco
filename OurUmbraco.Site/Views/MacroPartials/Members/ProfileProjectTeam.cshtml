@@ -1,3 +1,4 @@
+@using OurUmbraco.Project.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
@@ -13,7 +14,7 @@
     var openForCollab = project.GetPropertyValue<bool>("openForCollab");
 
 
-    var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
+    var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
 
     var contris = cs.GetContributors(id).ToList();
     <style>

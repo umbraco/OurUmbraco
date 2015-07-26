@@ -2,6 +2,7 @@
 @using System.Configuration
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.Our
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -45,7 +46,7 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="member-details">
-                                @Html.Raw(our.Utils.GetMemberAvatar(member, 125))
+                                @Html.Raw(Utils.GetMemberAvatar(member, 125))
                                 <div class="text">
                                     <h3>@member.Name</h3>
                                     @if (member.HasValue("twitter"))
@@ -109,7 +110,7 @@
                                         <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
                                             <div class="row flex-center">
                                                 <div class="col-xs-2">
-                                                    @Html.Raw(our.Utils.GetMemberAvatar(mem, 75))
+                                                    @Html.Raw(Utils.GetMemberAvatar(mem, 75))
                                                 </div>
                                                 <div class="col-xs-10">
                                                     <div class="forum-thread-text">
@@ -145,7 +146,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <img src="@our.Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
                                                     }
                                                 </div>
                                                 <div class="col-xs-10">
@@ -178,7 +179,7 @@
                                                     }
                                                     else
                                                     {
-                                                        <img src="@our.Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
                                                     }
                                                 </div>
                                                 <div class="col-xs-10">

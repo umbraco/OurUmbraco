@@ -146,6 +146,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
@@ -157,6 +158,7 @@
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\System.Data.SqlServerCe.Entity.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
@@ -325,6 +327,146 @@
     <Compile Include="MarketPlace\Providers\ProjectTag.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoCategoryProvider.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoProjectTagProvider.cs" />
+    <Compile Include="Our\Api\CommunityController.cs" />
+    <Compile Include="Our\Api\SearchController.cs" />
+    <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
+    <Compile Include="Our\Controllers\AvatarController.cs" />
+    <Compile Include="Our\Controllers\LoginController.cs" />
+    <Compile Include="Our\Controllers\ProfileController.cs" />
+    <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
+    <Compile Include="Our\Controllers\RegisterController.cs" />
+    <Compile Include="Our\controls\DateTimePicker.cs" />
+    <Compile Include="Our\CustomHandlers\CommentVote.cs" />
+    <Compile Include="Our\CustomHandlers\ExternalVote.cs" />
+    <Compile Include="Our\CustomHandlers\ForumIndexer.cs" />
+    <Compile Include="Our\CustomHandlers\ForumPostsCounter.cs" />
+    <Compile Include="Our\CustomHandlers\memberSave.cs" />
+    <Compile Include="Our\CustomHandlers\OurApplicationStartupHandler.cs" />
+    <Compile Include="Our\CustomHandlers\ProjectIndexer.cs" />
+    <Compile Include="Our\CustomHandlers\ProjectsEnsureGuid.cs" />
+    <Compile Include="Our\CustomHandlers\ProjectVote.cs" />
+    <Compile Include="Our\CustomHandlers\SearchPageRouteHandler.cs" />
+    <Compile Include="Our\CustomHandlers\TopicVote.cs" />
+    <Compile Include="Our\Data.cs" />
+    <Compile Include="Our\DefaultMemberAvatarHandler.cs" />
+    <Compile Include="Our\Examine\DocumentationIndexConfig.cs" />
+    <Compile Include="Our\Examine\DocumentationIndexDataService.cs" />
+    <Compile Include="Our\Examine\ExamineHelper.cs" />
+    <Compile Include="Our\Examine\ForumDataService.cs" />
+    <Compile Include="Our\Examine\OurSearcher.cs" />
+    <Compile Include="Our\Examine\ProjectAnalyzer.cs" />
+    <Compile Include="Our\Examine\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Our\Examine\SearchFilter.cs" />
+    <Compile Include="Our\Examine\SearchFilters.cs" />
+    <Compile Include="Our\Examine\VersionAnalyzer.cs" />
+    <Compile Include="Our\Examine\VersionTokenizer.cs" />
+    <Compile Include="Our\HackedCdfLoader.cs" />
+    <Compile Include="Our\Hiccup.cs">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\MigrationsHandler.cs" />
+    <Compile Include="Our\Models\ProfileModel.cs" />
+    <Compile Include="Our\Models\ProfileNotificationModel.cs" />
+    <Compile Include="Our\Models\RegisterModel.cs" />
+    <Compile Include="Our\Models\SearchResultContentModel.cs" />
+    <Compile Include="Our\Models\SearchResultModel.cs" />
+    <Compile Include="Our\ProjectFileUploadHandler.cs" />
+    <Compile Include="Our\Rest.cs" />
+    <Compile Include="Our\Scheduling\Scheduler.cs" />
+    <Compile Include="Our\Scheduling\YouTrackSync.cs" />
+    <Compile Include="Our\SearchResultExtensions.cs" />
+    <Compile Include="Our\usercontrols\acceptTos.ascx.cs">
+      <DependentUpon>acceptTos.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\acceptTos.ascx.designer.cs">
+      <DependentUpon>acceptTos.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\EventEditor.ascx.cs">
+      <DependentUpon>EventEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\EventEditor.ascx.designer.cs">
+      <DependentUpon>EventEditor.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.cs">
+      <DependentUpon>FileDownloadProxy.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.designer.cs">
+      <DependentUpon>FileDownloadProxy.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\Forgotpassword.ascx.cs">
+      <DependentUpon>Forgotpassword.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\Forgotpassword.ascx.designer.cs">
+      <DependentUpon>Forgotpassword.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\InsertImage.ascx.cs">
+      <DependentUpon>InsertImage.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\InsertImage.ascx.designer.cs">
+      <DependentUpon>InsertImage.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\Login.ascx.cs">
+      <DependentUpon>Login.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\Login.ascx.designer.cs">
+      <DependentUpon>Login.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
+      <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.designer.cs">
+      <DependentUpon>ProjectCollabRequest.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectContributors.ascx.cs">
+      <DependentUpon>ProjectContributors.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectContributors.ascx.designer.cs">
+      <DependentUpon>ProjectContributors.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectEditor.ascx.cs">
+      <DependentUpon>ProjectEditor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectEditor.ascx.designer.cs">
+      <DependentUpon>ProjectEditor.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectFileUpload.ascx.cs">
+      <DependentUpon>ProjectFileUpload.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectFileUpload.ascx.designer.cs">
+      <DependentUpon>ProjectFileUpload.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectForums.ascx.cs">
+      <DependentUpon>ProjectForums.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\ProjectForums.ascx.designer.cs">
+      <DependentUpon>ProjectForums.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\Signup.ascx.cs">
+      <DependentUpon>Signup.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\Signup.ascx.designer.cs">
+      <DependentUpon>Signup.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\usercontrols\SignupSimple.ascx.cs">
+      <DependentUpon>SignupSimple.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Our\usercontrols\SignupSimple.ascx.designer.cs">
+      <DependentUpon>SignupSimple.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Our\Utils.cs" />
     <Compile Include="Powers\Api\PowersController.cs" />
     <Compile Include="Powers\Buddha\Buddha.cs" />
     <Compile Include="Powers\BusinessLogic\Action.cs" />
@@ -334,6 +476,66 @@
     <Compile Include="Powers\config.cs" />
     <Compile Include="Powers\Library\Utils.cs" />
     <Compile Include="Powers\Library\xslt.cs" />
+    <Compile Include="Project\Api\ProjectCompatibilityController.cs" />
+    <Compile Include="Project\Api\ProjectContributionController.cs" />
+    <Compile Include="Project\Api\ProjectForumController.cs" />
+    <Compile Include="Project\Controllers\ProjectCompatibilityReportController.cs" />
+    <Compile Include="Project\Controllers\RepositoryController.cs" />
+    <Compile Include="Project\Extensions.cs" />
+    <Compile Include="Project\Helpers\ExtensionMethods.cs" />
+    <Compile Include="Project\Helpers\Helper.cs" />
+    <Compile Include="Project\Models\ProjectContributor.cs" />
+    <Compile Include="Project\Models\ProjectForum.cs" />
+    <Compile Include="Project\Models\VersionCompatibility.cs" />
+    <Compile Include="Project\Models\VersionCompatibilityReportModel.cs" />
+    <Compile Include="Project\ProjectFileUploadHandler.cs" />
+    <Compile Include="Project\Services\ContributionService.cs" />
+    <Compile Include="Project\Services\VersionCompatibilityService.cs" />
+    <Compile Include="Project\Singleton.cs" />
+    <Compile Include="Project\usercontrols\Deli\Package\Editor.ascx.cs">
+      <DependentUpon>Editor.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Editor.ascx.designer.cs">
+      <DependentUpon>Editor.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Complete.ascx.cs">
+      <DependentUpon>Complete.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Complete.ascx.designer.cs">
+      <DependentUpon>Complete.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Details.ascx.cs">
+      <DependentUpon>Details.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Details.ascx.designer.cs">
+      <DependentUpon>Details.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Files.ascx.cs">
+      <DependentUpon>Files.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Files.ascx.designer.cs">
+      <DependentUpon>Files.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Screenshots.ascx.cs">
+      <DependentUpon>Screenshots.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Package\Steps\Screenshots.ascx.designer.cs">
+      <DependentUpon>Screenshots.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Profile\MyProjects.ascx.cs">
+      <DependentUpon>MyProjects.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Project\usercontrols\Deli\Profile\MyProjects.ascx.designer.cs">
+      <DependentUpon>MyProjects.ascx.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Project\uVersion\config.cs" />
+    <Compile Include="Project\uVersion\uVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Release\App_Start\ControllerRouting.cs" />
     <Compile Include="Release\Controllers\NodeExtensions.cs" />
@@ -384,9 +586,60 @@
     <None Include="Forum\setuptables.sql" />
     <None Include="app.config" />
     <None Include="packages.config" />
+    <Content Include="Our\usercontrols\acceptTos.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\EventEditor.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\FileDownloadProxy.ascx" />
+    <Content Include="Our\usercontrols\Forgotpassword.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\InsertImage.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\Login.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\ProjectCollabRequest.ascx" />
+    <Content Include="Our\usercontrols\ProjectContributors.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\ProjectEditor.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\ProjectFileUpload.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\ProjectForums.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\Signup.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Our\usercontrols\SignupSimple.ascx" />
     <Content Include="Powers\uPowers.config" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Project\usercontrols\Deli\Package\Editor.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Project\usercontrols\Deli\Package\Steps\Complete.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Project\usercontrols\Deli\Package\Steps\Details.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Project\usercontrols\Deli\Package\Steps\Files.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Project\usercontrols\Deli\Package\Steps\Screenshots.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
+    <Content Include="Project\usercontrols\Deli\Profile\MyProjects.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Repository\webservices\repository.asmx" />
     <Content Include="Wiki\usercontrols\FileUpload.ascx">
       <SubType>ASPXCodeBehind</SubType>
@@ -400,6 +653,10 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>XCOPY "$(ProjectDir)Project\usercontrols\Deli\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\Deli" /y /s
+XCOPY "$(ProjectDir)Our\usercontrols\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\our.umbraco.org" /y</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

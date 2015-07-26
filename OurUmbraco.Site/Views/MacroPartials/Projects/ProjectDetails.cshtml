@@ -1,8 +1,9 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using our.Controllers
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our
+@using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
-@using uProject.Controllers
 
 @{
     var project = Model.Content;
@@ -29,12 +30,12 @@
         }
     }
 
-    var totalVotes = our.Utils.GetProjectTotalVotes(project.Id);
+    var totalVotes = Utils.GetProjectTotalVotes(project.Id);
     var currentMember = Members.GetCurrentMember();
-    var hasMemberVoted = Members.IsLoggedIn() ? our.Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
-    var downloads = our.Utils.GetProjectTotalDownloadCount(project.Id);
+    var hasMemberVoted = Members.IsLoggedIn() ? Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
+    var downloads = Utils.GetProjectTotalDownloadCount(project.Id);
     
-    var cs = new uProject.Services.ContributionService(ApplicationContext.Current.DatabaseContext);
+    var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
     var contributors = cs.GetContributors(project.Id).ToList();
 
     var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
@@ -78,8 +79,8 @@
 
                     @foreach (var image in screenshots)
                     {
-                        <a class="fancybox" rel="gallery1" href="@our.Utils.GetScreenshotPath(image.Path)" title="">
-                            <img src="@our.Utils.GetScreenshotPath(image.Path)" alt=""/>
+                        <a class="fancybox" rel="gallery1" href="@Utils.GetScreenshotPath(image.Path)" title="">
+                            <img src="@Utils.GetScreenshotPath(image.Path)" alt=""/>
                         </a>
                     }
 
@@ -265,7 +266,7 @@
             <div class="row">
                 <div class="col-xs-12">
                     <div class="package-creator-information">
-                        @Html.Raw(our.Utils.GetMemberAvatar(owner, 100))
+                        @Html.Raw(Utils.GetMemberAvatar(owner, 100))
                         <div class="text">
                             <h3>
                                 <a href="/member/@owner.Id">

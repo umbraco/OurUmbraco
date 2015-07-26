@@ -4694,10 +4694,6 @@
     <Content Include="xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Marketplace\uProject.csproj">
-      <Project>{6a2b659e-8bae-4cd5-8764-851dfbe95fbf}</Project>
-      <Name>uProject</Name>
-    </ProjectReference>
     <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
       <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
       <Name>NotificationsWeb</Name>
@@ -4706,9 +4702,9 @@
       <Project>{80e5f59d-a7a0-4cee-aeb6-6c626c44b2b2}</Project>
       <Name>Notification</Name>
     </ProjectReference>
-    <ProjectReference Include="..\our.umbraco.org\our.umbraco.org.csproj">
-      <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
-      <Name>our.umbraco.org</Name>
+    <ProjectReference Include="..\OurUmbraco\OurUmbraco.csproj">
+      <Project>{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}</Project>
+      <Name>OurUmbraco</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
