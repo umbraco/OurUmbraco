@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace uEvents.Meetup
+namespace OurUmbraco.Events.Meetup
 {
     public static class DateTimeExtensions
     {

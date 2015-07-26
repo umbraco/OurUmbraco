@@ -1,10 +1,10 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
-using uEvents.App_Startup;
+using OurUmbraco.Events.App_Startup;
 
 [assembly: PreApplicationStartMethod(typeof(ControllerRouting), "Setup")]
-namespace uEvents.App_Startup
+namespace OurUmbraco.Events.App_Startup
 {
     public class ControllerRouting
     {

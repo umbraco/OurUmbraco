@@ -2,12 +2,11 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
-using System.Linq;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using RestSharp;
 
-namespace uEvents.Meetup
+namespace OurUmbraco.Events.Meetup
 {
     public class MeetupController : Controller
     {

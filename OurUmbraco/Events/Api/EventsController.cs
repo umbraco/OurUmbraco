@@ -4,17 +4,16 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Http;
 using System.Xml.XPath;
-using uEvents.Meetup;
-using uEvents.Relations;
+using OurUmbraco.Events.Meetup;
+using OurUmbraco.Events.Relations;
 using umbraco;
 using umbraco.cms.businesslogic.cache;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.relation;
-using umbraco.NodeFactory;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
 
-namespace uEvents.Api
+namespace OurUmbraco.Events.Api
 {
     public class EventsController : UmbracoApiController
     {

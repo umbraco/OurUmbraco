@@ -4,7 +4,7 @@ using Umbraco.Web;
 using Relation = umbraco.cms.businesslogic.relation.Relation;
 using RelationType = umbraco.cms.businesslogic.relation.RelationType;
 
-namespace uEvents.Relations
+namespace OurUmbraco.Events.Relations
 {
     public class Event
     {

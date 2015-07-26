@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using umbraco.cms.businesslogic.relation;
 using umbraco.DataLayer;
 
-namespace uEvents.Relations
+namespace OurUmbraco.Events.Relations
 {
     public class EventRelation
     {

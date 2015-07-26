@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Linq;
 
-namespace uEvents.Models
+namespace OurUmbraco.Events.Models
 {
     public class Event
     {

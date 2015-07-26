@@ -1,8 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
-using System;
 
-namespace uEvents.Meetup
+namespace OurUmbraco.Events.Meetup
 {
     /// <summary>
     /// http://stackapps.com/questions/1175/how-to-convert-unix-timestamp-to-net-datetime/1176#1176

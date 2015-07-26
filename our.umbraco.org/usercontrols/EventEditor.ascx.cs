@@ -5,7 +5,7 @@ using System.Web.UI;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using System.Net.Mail;
-using uEvents.Relations;
+using OurUmbraco.Events.Relations;
 using umbraco.BusinessLogic;
 using Umbraco.Web;
 using Member = umbraco.cms.businesslogic.member.Member;

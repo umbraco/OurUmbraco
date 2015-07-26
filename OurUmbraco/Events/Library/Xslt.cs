@@ -1,14 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Xml;
 using System.Xml.XPath;
+using OurUmbraco.Events.Relations;
 using umbraco.cms.businesslogic.web;
 using umbraco.DataLayer;
-using System.Xml;
-using uEvents.Relations;
 
-namespace uEvents.Library
+namespace OurUmbraco.Events.Library
 {
     [Umbraco.Core.Macros.XsltExtension("uEvents")]
     public class Xslt
