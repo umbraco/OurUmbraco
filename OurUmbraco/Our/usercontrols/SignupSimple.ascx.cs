@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
 using umbraco.cms.businesslogic.member;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class SignupSimple : System.Web.UI.UserControl
     {

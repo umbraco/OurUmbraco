@@ -4,9 +4,8 @@ using OurUmbraco.Powers.BusinessLogic;
 using OurUmbraco.Powers.Library;
 using Umbraco.Core;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
-using Data = OurUmbraco.Our.Data;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     /// <summary>
     /// This is a custom handler to catch all voting events on topics

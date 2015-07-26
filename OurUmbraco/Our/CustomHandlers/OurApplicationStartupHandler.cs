@@ -1,19 +1,14 @@
-﻿using System.IO;
-using System.Web.Compilation;
-using System.Web.Hosting;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using System.Web.Routing;
-using System.Web.UI;
 using Examine;
 using Examine.LuceneEngine.Providers;
-using our.Examine;
 using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
+using OurUmbraco.Our.Examine;
 using Umbraco.Core;
 using Umbraco.Web;
-using Umbraco.Web.Security;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     /// <summary>
     /// Main Application startup handler

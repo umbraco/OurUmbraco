@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Text;
 using Examine.SearchCriteria;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     public class SearchFilters
     {

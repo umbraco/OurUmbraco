@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SignupSimple.ascx.cs" Inherits="our.usercontrols.SignupSimple" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="SignupSimple.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.SignupSimple" %>
 
 
 <asp:panel ID="Panel1" runat="server" defaultbutton="bt_submit">

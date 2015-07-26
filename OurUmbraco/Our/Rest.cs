@@ -1,12 +1,11 @@
 ﻿using System.Web;
 using System.Web.Security;
 using System.Xml.XPath;
-using OurUmbraco.Our;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
 using Umbraco.Web.BaseRest;
 
-namespace our
+namespace OurUmbraco.Our
 {
     /// <summary>
     /// Our mighty utill classes for looking stuff up quickly...

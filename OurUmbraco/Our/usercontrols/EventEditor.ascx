@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="EventEditor.ascx.cs" Inherits="our.usercontrols.EventEditor" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="EventEditor.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.EventEditor" %>
 <%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 <link rel="stylesheet" media="all" type="text/css" href="/css/ui-lightness/jquery-ui-1.8.16.custom.css" />
 

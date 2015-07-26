@@ -6,7 +6,7 @@ using Examine;
 using umbraco;
 using Umbraco.Web;
 
-namespace our
+namespace OurUmbraco.Our
 {
     public static class SearchResultExtensions
     {

@@ -1,8 +1,7 @@
 ﻿using System.Web.Http;
-using OurUmbraco.Our;
 using Umbraco.Web.WebApi;
 
-namespace our.Controllers
+namespace OurUmbraco.Our.Controllers
 {
     public class AvatarController : UmbracoApiController
     {

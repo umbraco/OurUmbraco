@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
-using System.Web.UI;
-using Umbraco.Core;
-using Umbraco.Core.Models;
 using System.Net.Mail;
+using System.Web.UI;
 using OurUmbraco.Events.Relations;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 using Member = umbraco.cms.businesslogic.member.Member;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class EventEditor : UserControl
     {

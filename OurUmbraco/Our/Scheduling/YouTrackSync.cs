@@ -3,7 +3,7 @@ using OurUmbraco.Release;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 
-namespace our.Scheduling
+namespace OurUmbraco.Our.Scheduling
 {
     internal class YouTrackSync
     {

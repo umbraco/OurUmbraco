@@ -2,7 +2,7 @@
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
-namespace our
+namespace OurUmbraco.Our
 {
     public class Hiccup : Page
     {

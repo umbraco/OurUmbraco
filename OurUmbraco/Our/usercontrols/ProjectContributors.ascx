@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectContributors.ascx.cs" Inherits="our.usercontrols.ProjectContributors" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectContributors.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.ProjectContributors" %>
 
 <asp:Panel ID="holder" runat="server" Visible="false">
 

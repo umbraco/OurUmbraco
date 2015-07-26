@@ -10,7 +10,7 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using File = System.IO.File;
 
-namespace our
+namespace OurUmbraco.Our
 {
     public class MigrationsHandler : ApplicationEventHandler
     {

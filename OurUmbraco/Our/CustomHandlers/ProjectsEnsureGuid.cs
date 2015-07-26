@@ -2,11 +2,10 @@
 using System.Collections.Generic;
 using OurUmbraco.Powers.Library;
 using OurUmbraco.Wiki.BusinessLogic;
-using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.web;
 using Umbraco.Core;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     public class ProjectsEnsureGuid : ApplicationEventHandler
     {

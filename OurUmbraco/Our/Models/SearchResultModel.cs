@@ -1,7 +1,7 @@
 using System.Runtime.Serialization;
 using Examine;
 
-namespace our.Models
+namespace OurUmbraco.Our.Models
 {
     /// <summary>
     /// A model to display search results

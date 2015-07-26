@@ -1,7 +1,7 @@
 ﻿using umbraco.cms.businesslogic.member;
 using Umbraco.Core;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     public class MemberSave : ApplicationEventHandler
     {

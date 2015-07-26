@@ -1,10 +1,9 @@
 ﻿using System.Threading;
 using System.Web;
 using Umbraco.Core;
-using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 
-namespace our.Scheduling
+namespace OurUmbraco.Our.Scheduling
 {
     /// <summary>
     /// Used to do the scheduling for tasks, publishing, etc...

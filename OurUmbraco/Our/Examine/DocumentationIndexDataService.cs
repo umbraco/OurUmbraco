@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Web;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
-using umbraco.BusinessLogic;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     /// <summary>
     /// Used to index the documentation 

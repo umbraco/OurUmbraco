@@ -7,7 +7,7 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace our.usercontrols {
+namespace OurUmbraco.Our.usercontrols {
     
     
     public partial class ProjectContributors {

@@ -1,7 +1,7 @@
 using Lucene.Net.Analysis;
 using Lucene.Net.Analysis.Standard;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     /// <summary>
     /// Custom analyzer for projects so that we can have different analyzers per field

@@ -182,7 +182,7 @@
 						                    var width = (item.IsLast() && countIsOdd) ? 895 : 380;
 						                    var numberOfDownloads = 0;
 						                    int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
-                                            numberOfDownloads = numberOfDownloads + our.Utils.GetReleaseDownloadCount(item.Id);
+                                            numberOfDownloads = numberOfDownloads + OurUmbraco.Our.Utils.GetReleaseDownloadCount(item.Id);
 							                if(item.Name.Contains("WebPI") == false) 
                                             {
                                                 <div class="release @(item.IsFirst() == false ? "bin" : "zip") col-sm-1">

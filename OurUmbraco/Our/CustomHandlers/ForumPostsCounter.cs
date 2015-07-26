@@ -5,7 +5,7 @@ using OurUmbraco.Powers.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Web;
 
-namespace our.CustomHandlers {
+namespace OurUmbraco.Our.CustomHandlers {
     public class ForumPostsCounter : ApplicationEventHandler {
 
         /*

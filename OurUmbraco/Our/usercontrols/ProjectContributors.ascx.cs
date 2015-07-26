@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
+using OurUmbraco.Our.Businesslogic;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
-using our.Businesslogic;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class ProjectContributors : System.Web.UI.UserControl
     {

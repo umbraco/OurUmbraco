@@ -1,15 +1,8 @@
-﻿using our.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using OurUmbraco.Our;
-using Umbraco.Web;
+﻿using System.Web.Mvc;
+using OurUmbraco.Our.Models;
 using Umbraco.Web.Mvc;
 
-namespace our.Controllers
+namespace OurUmbraco.Our.Controllers
 {
     public class ProfileController: SurfaceController
     {

@@ -5,7 +5,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using AjaxControlToolkit;
 
-namespace our.Controls
+namespace OurUmbraco.Our.controls
 {
     [ValidationProperty("SelectedDate")]
     public class DatePicker : System.Web.UI.WebControls.WebControl, System.Web.UI.INamingContainer

@@ -1,16 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using OurUmbraco.Our;
 using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.member;
-using umbraco.presentation.nodeFactory;
 using umbraco.cms.businesslogic.web;
 
-namespace our.usercontrols {
+namespace OurUmbraco.Our.usercontrols {
     public partial class ProjectFileUpload : System.Web.UI.UserControl {
        
         public string MemberGuid = "";

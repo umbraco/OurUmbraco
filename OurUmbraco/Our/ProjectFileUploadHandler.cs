@@ -1,14 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Web;
-using OurUmbraco.Our;
 using OurUmbraco.Wiki.BusinessLogic;
-using umbraco.cms.businesslogic.web;
-using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
+using umbraco.cms.businesslogic.web;
 
-namespace our {
+namespace OurUmbraco.Our {
     public class ProjectFileUploadHandler : IHttpHandler {
 
         #region IHttpHandler Members

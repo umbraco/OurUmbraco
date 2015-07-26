@@ -7,9 +7,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine.Providers;
-using our.Models;
+using OurUmbraco.Our.Models;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     public class OurSearcher
     {

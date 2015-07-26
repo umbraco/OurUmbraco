@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Login.ascx.cs" Inherits="our.usercontrols.Login" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Login.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.Login" %>
 
 <asp:Panel runat="server" DefaultButton="bt_login">
     <div class="form simpleForm" id="registrationForm">

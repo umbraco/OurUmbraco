@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="InsertImage.ascx.cs"
-    Inherits="our.usercontrols.InsertImage" %>
+    Inherits="OurUmbraco.Our.usercontrols.InsertImage" %>
 
 
 <script type="text/javascript">

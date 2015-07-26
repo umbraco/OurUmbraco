@@ -4,9 +4,8 @@ using OurUmbraco.Powers.Library;
 using Umbraco.Core;
 using Umbraco.Web;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
-using Utils = OurUmbraco.Our.Utils;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     public class ProjectVoteHandler : ApplicationEventHandler
     {

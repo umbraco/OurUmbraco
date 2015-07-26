@@ -1,14 +1,15 @@
 ﻿using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
-using our.Examine;
 using OurUmbraco.Forum;
 using OurUmbraco.Forum.Services;
+using OurUmbraco.Our.Examine;
 using Umbraco.Core;
+
 //WB Added
 
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
     public class ForumIndexer : ApplicationEventHandler
     {

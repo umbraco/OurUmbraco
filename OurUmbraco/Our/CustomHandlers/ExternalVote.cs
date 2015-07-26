@@ -3,7 +3,7 @@ using OurUmbraco.Powers.BusinessLogic;
 using umbraco.BusinessLogic;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
 
-namespace our.CustomHandlers
+namespace OurUmbraco.Our.CustomHandlers
 {
 	public class ExternalVote : ApplicationBase
 	{

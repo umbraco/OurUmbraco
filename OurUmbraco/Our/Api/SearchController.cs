@@ -1,18 +1,12 @@
-﻿using Examine;
-using our.Examine;
-using System;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using Examine.SearchCriteria;
 using Lucene.Net.Documents;
-using our.Models;
 using OurUmbraco.Forum.Extensions;
+using OurUmbraco.Our.Examine;
+using OurUmbraco.Our.Models;
 using Umbraco.Web.WebApi;
 
-namespace our.Api
+namespace OurUmbraco.Our.Api
 {
     public class OurSearchController : UmbracoApiController
     {

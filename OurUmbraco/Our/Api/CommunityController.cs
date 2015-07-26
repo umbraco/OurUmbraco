@@ -1,21 +1,20 @@
 ﻿using System;
 using System.Drawing;
+using System.Dynamic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Net.Http;
 using System.Web;
 using System.Web.Http;
 using System.Xml;
-using our.Businesslogic;
+using Newtonsoft.Json;
+using OurUmbraco.Our.Businesslogic;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
 using Umbraco.Web.WebApi;
-using System.Net.Http;
-using System.Dynamic;
-using Newtonsoft.Json;
 
-namespace our.Api
+namespace OurUmbraco.Our.Api
 {
     public class CommunityController : UmbracoApiController
     {

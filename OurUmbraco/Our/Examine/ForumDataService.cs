@@ -1,17 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Forum.Models;
 using OurUmbraco.Forum.Services;
-//WB Added
+using umbraco;
 using Umbraco.Core;
+//WB Added
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
-   
     /// <summary>
     /// The data service used by the LuceneEngine in order for it to reindex all data
     /// </summary>
@@ -25,7 +22,7 @@ namespace our.Examine
             foreach (var currentComment in topic.Comments)
                 commentText += currentComment.Body;
 
-            var body = umbraco.library.StripHtml(topic.Body + commentText);
+            var body = library.StripHtml(topic.Body + commentText);
 
             simpleDataSet.NodeDefinition.NodeId = id;
             simpleDataSet.NodeDefinition.Type = indexType;

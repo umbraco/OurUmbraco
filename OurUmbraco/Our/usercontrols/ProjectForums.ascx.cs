@@ -1,17 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using OurUmbraco.Forum.Models;
 using OurUmbraco.Forum.Services;
 using umbraco.cms.businesslogic.member;
 using umbraco.cms.businesslogic.web;
 using umbraco.presentation.nodeFactory;
 using Umbraco.Core;
 
-namespace our.usercontrols {
+namespace OurUmbraco.Our.usercontrols {
     public partial class ProjectForums : System.Web.UI.UserControl
     {
 
@@ -68,7 +63,7 @@ namespace our.usercontrols {
         protected void bindForum(object sender, RepeaterItemEventArgs e) {
 
             if (e.Item.ItemType == ListItemType.AlternatingItem || e.Item.ItemType == ListItemType.Item) {
-                var f = (Forum)e.Item.DataItem;
+                var f = (Forum.Models.Forum)e.Item.DataItem;
                 Literal _title = (Literal)e.Item.FindControl("lt_titel");
                 Literal _desc = (Literal)e.Item.FindControl("lt_desc");
                 Literal _link = (Literal)e.Item.FindControl("lt_link");
@@ -147,11 +142,11 @@ namespace our.usercontrols {
                     fnode.Save();
                     umbraco.library.UpdateDocumentCache(fnode.Id);
 
-                    Forum f = _forumService.GetById(fnode.Id);
+                    Forum.Models.Forum f = _forumService.GetById(fnode.Id);
 
                     if (f == null)
                     {
-                        f = new Forum();
+                        f = new Forum.Models.Forum();
                         f.Id = fnode.Id;
                         f.ParentId = fnode.ParentId;
                         f.SortOrder = 0;

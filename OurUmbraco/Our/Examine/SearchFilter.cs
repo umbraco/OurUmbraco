@@ -1,4 +1,4 @@
-﻿namespace our.Examine
+﻿namespace OurUmbraco.Our.Examine
 {
     public class SearchFilter
     {

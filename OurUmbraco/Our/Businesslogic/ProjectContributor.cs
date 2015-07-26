@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using OurUmbraco.Our;
-
-namespace our.Businesslogic
+﻿namespace OurUmbraco.Our.Businesslogic
 {
     public class ProjectContributor
     {

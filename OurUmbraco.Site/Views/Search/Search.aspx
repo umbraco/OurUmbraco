@@ -1,7 +1,7 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" CodeBehind="Search.aspx.cs" Inherits="OurUmbraco.Site.Views.Search.Search" %>
 
 <%@ Import Namespace="Umbraco.Web" %>
-<%@ Import Namespace="our" %>
+<%@ Import Namespace="OurUmbraco.Our" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="server">
 </asp:Content>

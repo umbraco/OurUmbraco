@@ -2,7 +2,7 @@
 
 <%@ Import Namespace="Umbraco.Web" %>
 <%@ Register TagPrefix="CD" Namespace="ClientDependency.Core.Controls" Assembly="ClientDependency.Core" %>
-<%@ Register TagPrefix="CD" Namespace="our" Assembly="our.umbraco.org" %>
+<%@ Register TagPrefix="CD" Namespace="OurUmbraco.Our" Assembly="OurUmbraco" %>
 
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
     <!doctype html>

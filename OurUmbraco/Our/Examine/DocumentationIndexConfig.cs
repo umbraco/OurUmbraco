@@ -1,6 +1,6 @@
 ﻿using System.Configuration;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     public sealed class DocumentationIndexConfig : ConfigurationSection
     {

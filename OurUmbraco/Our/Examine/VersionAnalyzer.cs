@@ -1,7 +1,7 @@
 using System.IO;
 using Lucene.Net.Analysis;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     /// <summary>
     /// Custom version field analyzer which uses the Version Tokenizer

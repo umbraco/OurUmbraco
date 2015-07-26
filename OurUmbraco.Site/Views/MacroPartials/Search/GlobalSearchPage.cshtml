@@ -1,3 +1,4 @@
+@using OurUmbraco.Our.Examine
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
@@ -8,7 +9,7 @@
     var term = Request["term"];
     var pageSize = 50;
 
-    our.Examine.OurSearcher searcher = new our.Examine.OurSearcher(term, orderBy: orderMode);
+    OurSearcher searcher = new OurSearcher(term, orderBy: orderMode);
     
     IEnumerable<SearchResult> result = new List<SearchResult>();
     var url = "orderBy=" + orderMode + "&q=" + term + "&version=" + version;

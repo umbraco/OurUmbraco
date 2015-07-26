@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="acceptTos.ascx.cs" Inherits="our.usercontrols.acceptTos" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="acceptTos.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.acceptTos" %>
 <asp:PlaceHolder ID="error" runat="server" Visible="false">
 <div class="error">You need to accept the ToS!</div>
 </asp:PlaceHolder>

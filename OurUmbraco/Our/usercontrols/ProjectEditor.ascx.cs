@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Xml.XPath;
-using our.Api;
-using OurUmbraco.Our;
+using OurUmbraco.Our.Api;
 using OurUmbraco.Repository;
 using OurUmbraco.Wiki.BusinessLogic;
 using umbraco;
@@ -14,7 +13,7 @@ using umbraco.cms.businesslogic.web;
 using umbraco.interfaces;
 using umbraco.presentation.nodeFactory;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class ProjectEditor : UserControl
     {

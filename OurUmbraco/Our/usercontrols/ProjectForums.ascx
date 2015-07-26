@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectForums.ascx.cs" Inherits="our.usercontrols.ProjectForums" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectForums.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.ProjectForums" %>
 
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">
 

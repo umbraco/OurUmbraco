@@ -11,7 +11,7 @@ using Umbraco.Web;
 using File = System.IO.File;
 using UmbracoUserControl = Umbraco.Web.UI.Controls.UmbracoUserControl;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class Signup : UmbracoUserControl
     {

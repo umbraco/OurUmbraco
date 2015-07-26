@@ -3,7 +3,7 @@ using System.Web;
 using System.Web.UI;
 using ClientDependency.Core.Controls;
 
-namespace our
+namespace OurUmbraco.Our
 {
     /// <summary>
     /// This should not be necessary but we are mixing webforms with mvc sub forms and normally that should work or be done, without

@@ -5,7 +5,7 @@ using umbraco;
 using Umbraco.Core;
 using Umbraco.Web.UI.Controls;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class Login : UmbracoUserControl
     {

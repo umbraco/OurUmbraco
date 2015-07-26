@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using Examine.SearchCriteria;
-using our.Examine;
-using our.Models;
+using OurUmbraco.Our.Examine;
+using OurUmbraco.Our.Models;
 using Umbraco.Web;
 using Umbraco.Web.UI.Pages;
 

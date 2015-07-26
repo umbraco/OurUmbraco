@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Linq;
-using System.Web.UI;
 using System.IO;
+using System.Web.UI;
 
-namespace our.usercontrols
+namespace OurUmbraco.Our.usercontrols
 {
     public partial class InsertImage : UserControl
     {

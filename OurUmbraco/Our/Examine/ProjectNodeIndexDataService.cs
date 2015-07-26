@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
-using Lucene.Net.Documents;
-using Lucene.Net.Util;
-using OurUmbraco.Our;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
@@ -17,7 +12,7 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
-namespace our.Examine
+namespace OurUmbraco.Our.Examine
 {
     /// <summary>
     /// Data service used for projects
