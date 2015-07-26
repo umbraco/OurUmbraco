@@ -141,12 +141,6 @@
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.Providers">
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Umbraco">
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
       <Private>True</Private>
@@ -458,9 +452,6 @@
     <Content Include="macroScripts\GoogleDevGroupRSS.cshtml" />
     <Content Include="macroScripts\Releases-GetAllReleases.cshtml" />
     <Content Include="macroScripts\Releases-ReleaseList.cshtml" />
-    <Content Include="macroScripts\repository-popularpackages.cshtml" />
-    <Content Include="macroScripts\repository-view-category.cshtml" />
-    <Content Include="macroScripts\repository-view-project.cshtml" />
     <Content Include="macroScripts\testWikiFile.cshtml" />
     <Content Include="masterpages\AttachFile.master" />
     <Content Include="masterpages\Authentication.master" />
@@ -4341,25 +4332,20 @@
     <Content Include="usercontrols\Deli\Dashboard\VendorBIOverview.ascx" />
     <Content Include="usercontrols\Deli\Dashboard\VendorProjectBI.ascx" />
     <Content Include="usercontrols\Deli\EditPackage.ascx" />
-    <Content Include="usercontrols\Deli\FeaturedProject.ascx" />
     <Content Include="usercontrols\Deli\HQStaffPickProjects.ascx" />
     <Content Include="usercontrols\Deli\License\Member\MyLicenses.ascx" />
     <Content Include="usercontrols\Deli\License\Vendor\ProjectLicenses.ascx" />
     <Content Include="usercontrols\Deli\ListPagination.ascx" />
-    <Content Include="usercontrols\Deli\NewestProjects.ascx" />
     <Content Include="usercontrols\Deli\Package\Editor.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Complete.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Files.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Licenses.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Screenshots.ascx" />
     <Content Include="usercontrols\Deli\Payout\VendorPayout.ascx" />
     <Content Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx" />
-    <Content Include="usercontrols\Deli\PopularProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\MemberDataLookup.ascx" />
     <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
-    <Content Include="usercontrols\Deli\ProjectsList.ascx" />
     <Content Include="usercontrols\Deli\ProjectView.ascx" />
     <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
     <Content Include="usercontrols\Deli\Purchase\PayPalPayment.ascx" />

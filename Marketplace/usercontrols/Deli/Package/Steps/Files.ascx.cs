@@ -1,23 +1,20 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Providers;
-using umbraco.cms.businesslogic.member;
 using our;
-using Marketplace.BusinessLogic;
-using Marketplace.Umbraco.BusinessLogic;
-using Marketplace.Providers.Helpers;
-using uProject.Helpers;
-using Marketplace.Providers.MediaFile;
 using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.NodeListing;
+using OurUmbraco.MarketPlace.Providers;
+using OurUmbraco.Wiki.BusinessLogic;
 using OurUmbraco.Wiki.Extensions;
+using umbraco;
+using umbraco.cms.businesslogic.member;
+using uProject.Helpers;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
-    public partial class Files : System.Web.UI.UserControl
+    public partial class Files : UserControl
     {
 
         public string MemberGuid = "";
@@ -50,8 +47,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
         //called after upload.
         private void RebindFiles()
         {
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var files = fileProvider.GetMediaFilesByProjectId((int)ProjectId).Where(x => x.FileType != FileType.screenshot);
+            var mediaProvider = new MediaProvider();
+            var files = mediaProvider.GetMediaFilesByProjectId((int)ProjectId).Where(x => x.FileType != FileType.screenshot.FileTypeAsString());
             if (string.IsNullOrEmpty(_defaultFile))
             {
                 var defaultFile = files.OrderByDescending(x => x.CreateDate).FirstOrDefault();
@@ -61,7 +58,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                     MarkFileAsCurrent(defaultFile.Id.ToString());
                 }
             }
-            
+
 
             rp_packagefiles.DataSource = files;
             rp_packagefiles.Visible = (files.Count() > 0);
@@ -71,33 +68,33 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void DeleteFile(object sender, CommandEventArgs e)
         {
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var f = fileProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
-           
+            var mediaProvider = new MediaProvider();
+            var f = mediaProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
+
             var mem = Member.GetCurrentMember();
 
             if (f.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id, (int)ProjectId))
 
-                //if the file is the default file we need to clear it out of the system to stop it showing as the default download
-                if (f.Id.ToString() == _defaultFile)
-                {
-                    _defaultFile = string.Empty;
-                    var listingProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-                    var project = listingProvider.GetListing((int)ProjectId);
-                    project.CurrentReleaseFile = _defaultFile;
-                    listingProvider.SaveOrUpdate(project);
+            //if the file is the default file we need to clear it out of the system to stop it showing as the default download
+            if (f.Id.ToString() == _defaultFile)
+            {
+                _defaultFile = string.Empty;
+                var nodeListingProvider = new NodeListingProvider();
+                var project = nodeListingProvider.GetListing((int)ProjectId);
+                project.CurrentReleaseFile = _defaultFile;
+                nodeListingProvider.SaveOrUpdate(project);
 
-                }
-                fileProvider.Remove(f);
+            }
+
+            mediaProvider.Remove(f);
 
             RebindFiles();
         }
 
         protected void ArchiveFile(object sender, CommandEventArgs e)
         {
-
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var f = fileProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
+            var mediaProvider = new MediaProvider();
+            var f = mediaProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
 
             if (e.CommandName == "Unarchive")
             {
@@ -108,7 +105,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 f.Archived = true;
             }
 
-            fileProvider.SaveOrUpdate(f);
+            mediaProvider.SaveOrUpdate(f);
             RebindFiles();
         }
 
@@ -116,7 +113,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                IMediaFile f = (IMediaFile)e.Item.DataItem;
+                WikiFile f = (WikiFile)e.Item.DataItem;
                 Literal _name = (Literal)e.Item.FindControl("lt_name");
                 Literal _date = (Literal)e.Item.FindControl("lt_date");
                 Button _delete = (Button)e.Item.FindControl("bt_delete");
@@ -127,7 +124,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 Literal _currentRelease = (Literal)e.Item.FindControl("lt_currentRelease");
 
                 Button _defaultPackageFile = (Button)e.Item.FindControl("bt_default");
-                if (f.FileType == FileType.package)
+                if (f.FileType == FileType.package.FileTypeAsString())
                 {
                     if (f.Id.ToString() == _defaultFile)
                     {
@@ -146,13 +143,13 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 {
                     _defaultPackageFile.Visible = false;
                     _currentRelease.Visible = false;
-                    
+
                 }
 
 
                 Button _archive = (Button)e.Item.FindControl("bt_archive");
                 _archive.CommandArgument = f.Id.ToString();
-                
+
 
                 if (f.Archived)
                 {
@@ -165,40 +162,20 @@ namespace uProject.usercontrols.Deli.Package.Steps
                     _archive.CommandName = "Archive";
                 }
 
-                if (f.FileType == FileType.screenshot)
+                if (f.FileType == FileType.screenshot.FileTypeAsString())
                 {
                     _archive.Visible = false;
                 }
 
-                if (f.UmbVersion != null)
-                    _version.Text =  f.UmbVersion.ToVersionString();
+                if (f.Versions != null)
+                    _version.Text = f.Versions.ToVersionString();
 
                 if (f.DotNetVersion != null)
                     _dotNetVersion.Text = f.DotNetVersion;
 
-                _trustLevel.Text = (f.SupportsMediumTrust)?"Medium":"Full";
+                _trustLevel.Text = (f.SupportsMediumTrust) ? "Medium" : "Full";
 
-
-                switch (f.FileType)
-                {
-                    case FileType.screenshot:
-                        _type.Text = "Screenshot";
-                        break;
-                    case FileType.package:
-                        _type.Text = "Package";
-                        break;
-                    case FileType.hotfix:
-                        _type.Text = "Hot Fix";
-                        break;
-                    case FileType.docs:
-                        _type.Text = "Document";
-                        break;
-                    case FileType.source:
-                        _type.Text = "Source";
-                        break;
-                    default:
-                        break;
-                }
+                _type.Text = f.FileType;
 
                 _name.Text = "<a href='" + f.Path + "'>" + f.Name + "</a>";
                 _date.Text = f.CreateDate.ToShortDateString() + " - " + f.CreateDate.ToShortTimeString();
@@ -216,10 +193,10 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         private void MarkFileAsCurrent(string releaseFile)
         {
-            var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            IListingItem project = provider.GetListing((int)ProjectId);
+            var nodeListingProvider = new NodeListingProvider();
+            IListingItem project = nodeListingProvider.GetListing((int)ProjectId);
             project.CurrentReleaseFile = releaseFile;
-            provider.SaveOrUpdate(project);
+            nodeListingProvider.SaveOrUpdate(project);
             _defaultFile = project.CurrentReleaseFile;
         }
 
@@ -227,25 +204,25 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
 
 
-            if (umbraco.library.IsLoggedOn() && ProjectId != null)
+            if (library.IsLoggedOn() && ProjectId != null)
             {
-                var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+                var nodeListingProvider = new NodeListingProvider();
                 Member mem = Member.GetCurrentMember();
-                IListingItem project = provider.GetListing((int)ProjectId);
+                IListingItem project = nodeListingProvider.GetListing((int)ProjectId);
                 _defaultFile = project.CurrentReleaseFile;
 
 
 
 
-                if ((project.Vendor.Member.Id == mem.Id) ||
+                if ((project.VendorId == mem.Id) ||
                     Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 {
                     holder.Visible = true;
                     RebindFiles();
 
-                    umbraco.library.RegisterJavaScriptFile("swfUpload", "/scripts/swfupload/SWFUpload.js");
-                    umbraco.library.RegisterJavaScriptFile("swfUpload_cb", "/scripts/swfupload/callbacks.js");
-                    umbraco.library.RegisterJavaScriptFile("swfUpload_progress", "/scripts/swfupload/fileprogress.js");
+                    library.RegisterJavaScriptFile("swfUpload", "/scripts/swfupload/SWFUpload.js");
+                    library.RegisterJavaScriptFile("swfUpload_cb", "/scripts/swfupload/callbacks.js");
+                    library.RegisterJavaScriptFile("swfUpload_progress", "/scripts/swfupload/fileprogress.js");
 
                     MemberGuid = mem.UniqueId.ToString();
                     ProjectGuid = project.ProjectGuid.ToString();
@@ -253,7 +230,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                     string defaultVersion = UmbracoVersion.DefaultVersion().Version;
                     string umboptions = "";
 
-                    foreach (UmbracoVersion uv in UmbracoVersion.AvailableVersions().Values)
+                    foreach (OurUmbraco.Wiki.BusinessLogic.UmbracoVersion uv in UmbracoVersion.AvailableVersions().Values)
                     {
                         string selected = "checked='true'";
                         if (uv.Version != defaultVersion)
@@ -263,8 +240,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
                     lt_versions.Text = umboptions;
 
-                    
-                    string[] dotnetversions = {"2.0","3.5","4.0", "4.5"};
+
+                    string[] dotnetversions = { "2.0", "3.5", "4.0", "4.5" };
                     string dotnetoptions = string.Empty;
 
                     foreach (var opt in dotnetversions)
@@ -294,7 +271,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                     lt_trustlevels.Text = trustoptions;
 
 
-                    
+
                 }
 
 
@@ -305,7 +282,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
         protected void SaveStep(object sender, EventArgs e)
         {
             //move to the file upload step
-            ProjectCreatorHelper.MoveToNextStep(this,(int)ProjectId);
+            ProjectCreatorHelper.MoveToNextStep(this, (int)ProjectId);
         }
         protected void MoveLast(object sender, EventArgs e)
         {

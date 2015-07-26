@@ -114,25 +114,6 @@
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Marketplace.BusinessLogic, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Presentation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Providers, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Umbraco, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Umbraco.dll</HintPath>
-    </Reference>
-    <Reference Include="MarketPlace.Webservices">
-      <HintPath>..\dependencies\MarketPlace\MarketPlace.Webservices.dll</HintPath>
-    </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
       <Private>True</Private>
@@ -286,7 +267,6 @@
     <Compile Include="Extensions.cs" />
     <Compile Include="Helpers\ExtensionMethods.cs" />
     <Compile Include="Helpers\Helper.cs" />
-    <Compile Include="library.cs" />
     <Compile Include="Models\ProjectContributor.cs" />
     <Compile Include="Models\ProjectForum.cs" />
     <Compile Include="Models\VersionCompatibilityReportModel.cs" />
@@ -307,13 +287,6 @@
     </Compile>
     <Compile Include="usercontrols\Deli\Package\Steps\Complete.ascx.designer.cs">
       <DependentUpon>Complete.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Package\Steps\Licenses.ascx.cs">
-      <DependentUpon>Licenses.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="usercontrols\Deli\Package\Steps\Licenses.ascx.designer.cs">
-      <DependentUpon>Licenses.ascx</DependentUpon>
     </Compile>
     <Compile Include="usercontrols\Deli\Package\Steps\Screenshots.ascx.cs">
       <DependentUpon>Screenshots.ascx</DependentUpon>
@@ -355,7 +328,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="usercontrols\Deli\Package\Steps\Complete.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Licenses.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Screenshots.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
     <Content Include="usercontrols\Deli\Package\Editor.ascx" />

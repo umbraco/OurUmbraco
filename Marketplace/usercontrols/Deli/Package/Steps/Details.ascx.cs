@@ -3,15 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Providers;
-using Marketplace.Providers.Listing;
-using Marketplace.Providers.ListingItem;
 using OurUmbraco.MarketPlace.Interfaces;
 using umbraco;
 using uProject.Helpers;
 using Umbraco.Core.Models;
 using Umbraco.Web.UI.Controls;
-using Member = umbraco.cms.businesslogic.member.Member;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
@@ -81,7 +77,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
         private void SetupTags()
         {
             string taglist = string.Empty;
-            var tagProvider = ((IProjectTagProvider)MarketplaceProviderManager.Providers["TagProvider"]);
+            var tagProvider = new OurUmbraco.MarketPlace.Providers.UmbracoProjectTagProvider();
             var tags = tagProvider.GetAllTags();
             foreach(var t in tags)
             {
@@ -99,7 +95,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         private void BindCategories()
         {
-            var Categories = ((ICategoryProvider)MarketplaceProviderManager.Providers["CategoryProvider"]).GetAllCategories().Where(x => !x.HQOnly);
+            var categoryProvider = new OurUmbraco.MarketPlace.Providers.UmbracoCategoryProvider();
+            var Categories = categoryProvider.GetAllCategories().Where(x => !x.HQOnly);
             Category.DataSource = Categories;
             Category.DataValueField = "Id";
             Category.DataTextField = "Name";
@@ -108,8 +105,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void LoadProject()
         {
-            var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            var project = ProjectsProvider.GetListing((int)ProjectId);
+            var nodeListingProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
+            var project = nodeListingProvider.GetListing((int)ProjectId);
 
             Title.Text = project.Name;
             Description.Text = project.Description;
@@ -128,7 +125,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
             Collab.Checked = project.OpenForCollab;
             Terms.Checked = project.TermsAgreementDate != new DateTime();
             
-            var tagProvider = ((IProjectTagProvider)MarketplaceProviderManager.Providers["TagProvider"]);
+            var tagProvider = new OurUmbraco.MarketPlace.Providers.UmbracoProjectTagProvider();
             var projectTags = tagProvider.GetTagsByProjectId((int)ProjectId).ToList();
 
             if (projectTags.Any())
@@ -151,7 +148,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void SaveStep(object sender, EventArgs e)
         {
-            var nodeListingProvider = new OurUmbraco.MarketPlace.NodeLising.NodeListingProvider();
+            var nodeListingProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
             var project = (_editMode) ? nodeListingProvider.GetListing((int)ProjectId) : new OurUmbraco.MarketPlace.ListingItem.ListingItem(null,null);
 
             project.Name = Title.Text;
@@ -174,13 +171,12 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
             
-            var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            ProjectsProvider.SaveOrUpdate(project);
+            nodeListingProvider.SaveOrUpdate(project);
             ProjectId = project.Id;
 
             if (Request["projecttags[]"] != null)
             {
-                ProjectsProvider.SaveOrUpdate(project);
+                nodeListingProvider.SaveOrUpdate(project);
                 
                 var tags = new List<string>();
                 foreach (var tag in Request["projecttags[]"].Split(','))

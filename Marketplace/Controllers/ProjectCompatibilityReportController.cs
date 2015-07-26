@@ -1,9 +1,8 @@
-﻿using System;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
+using our;
 using uProject.Models;
 using uProject.Services;
 using uProject.uVersion;
-using Umbraco.Core.Models;
 using Umbraco.Web.Mvc;
 
 namespace uProject.Controllers
@@ -21,7 +20,7 @@ namespace uProject.Controllers
                 new VersionCompatibilityReportModel
                 {
                     VersionCompatibilities = compatReport.GetCompatibilityReport(projectId),
-                    CurrentMemberHasDownloaded = currentMember != null && uProject.library.HasDownloaded(currentMember.Id, projectId),
+                    CurrentMemberHasDownloaded = currentMember != null && Utils.HasMemberDownloadedPackage(currentMember.Id, projectId),
                     CurrentMemberIsLoggedIn = currentMember != null,
                     FileId = fileId,
                     ProjectId = projectId,

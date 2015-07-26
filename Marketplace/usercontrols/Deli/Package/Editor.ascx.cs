@@ -1,23 +1,23 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using umbraco.IO;
-using Marketplace.BusinessLogic.ListingCreator;
-using Marketplace.BusinessLogic.ListingCreator.StepDefinitions;
-using Marketplace.Providers;
-using umbraco.cms.businesslogic.member;
 using our;
+using OurUmbraco.MarketPlace.BusinessLogic.ListingCreator;
 using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.NodeListing;
+using umbraco.cms.businesslogic.member;
+using umbraco.IO;
+using uProject.usercontrols.Deli.Package.Steps;
+using Umbraco.Web.UI.Controls;
+using Complete = OurUmbraco.MarketPlace.BusinessLogic.ListingCreator.StepDefinitions.Complete;
+using Files = OurUmbraco.MarketPlace.BusinessLogic.ListingCreator.StepDefinitions.Files;
+using Screenshots = OurUmbraco.MarketPlace.BusinessLogic.ListingCreator.StepDefinitions.Screenshots;
 
 namespace uProject.usercontrols.Deli.Package
 {
-    public partial class Editor : System.Web.UI.UserControl
+    public partial class Editor : UmbracoUserControl
     {
         private string _currentStep = "";
-        private static IVendor _vendor;
         private static IListingItem _project;
         public string _currentStepClass = "current";
 
@@ -34,7 +34,7 @@ namespace uProject.usercontrols.Deli.Package
         }
 
 
-        protected void Page_Load(object sender, System.EventArgs e)
+        protected void Page_Load(object sender, EventArgs e)
         {
             StepNavigation.DataSource = ListingSteps().Values;
             StepNavigation.DataBind();
@@ -44,10 +44,10 @@ namespace uProject.usercontrols.Deli.Package
         private void loadContent(ListingCreatorStep currentStep)
         {
             StepPlaceHolder.Controls.Clear();
-            var controlToLoad = new System.Web.UI.UserControl().LoadControl(IOHelper.ResolveUrl(currentStep.UserControl));
+            var controlToLoad = new UserControl().LoadControl(IOHelper.ResolveUrl(currentStep.UserControl));
 
             if (currentStep.Alias == "details")
-                ((uProject.usercontrols.Deli.Package.Steps.Details)controlToLoad).IsDeliVendor = _vendor.Member.IsDeliVendor;
+                ((Details)controlToLoad).IsDeliVendor = false;
 
             StepPlaceHolder.Controls.Add(controlToLoad);
             Step.Value = currentStep.Alias;
@@ -62,7 +62,7 @@ namespace uProject.usercontrols.Deli.Package
 
             if (e.Item.ItemType == ListItemType.AlternatingItem || e.Item.ItemType == ListItemType.Item)
             {
-                ListingCreatorStep i = (ListingCreatorStep)e.Item.DataItem;
+                var i = (ListingCreatorStep)e.Item.DataItem;
 
                 if (!i.HideFromNavigation)
                 {
@@ -92,7 +92,7 @@ namespace uProject.usercontrols.Deli.Package
         public void GotoNextStep(string currentStep, int projectId)
         {
             ListingSteps().Get(currentStep).Completed = true;
-            ListingCreatorStep _s = ListingSteps().GotoNextStep(currentStep);
+            var _s = ListingSteps().GotoNextStep(currentStep);
             Response.Redirect("edit?editorStep=" + _s.Alias + "&id=" + projectId);
         }
 
@@ -109,17 +109,16 @@ namespace uProject.usercontrols.Deli.Package
             InitializeComponent();
             base.OnInit(e);
 
-
-
-            _vendor = ((IVendorProvider)MarketplaceProviderManager.Providers["VendorProvider"]).GetVendorById(Member.GetCurrentMember().Id);
-
             if (_projectId != null)
             {
-                _project = ((IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"]).GetListing((int)_projectId);
-
+                var nodeListingProvider = new NodeListingProvider();
+                _project = nodeListingProvider.GetListing((int)_projectId);
 
                 //check security to make sure the project belongs to the vendor
-                if (!((_project.Vendor.Member.Id == _vendor.Member.Id) || Utils.IsProjectContributor(_vendor.Member.Id, (int)_projectId)))
+                var currentMemberId = Members.GetCurrentMemberId();
+                var vendorIsCurrentMember = (_project.VendorId == currentMemberId);
+                var isProjectContributor = Utils.IsProjectContributor(currentMemberId, (int)_projectId);
+                if ((vendorIsCurrentMember || isProjectContributor) == false)
                 {
                     //this project does not belong to this member so kick them back to the project list in their profile.
                     Response.Redirect("~/member/profile/projects/");
@@ -147,21 +146,16 @@ namespace uProject.usercontrols.Deli.Package
 
         }
         #endregion
-
-
-
+        
         private static ListingCreatorStepCollection ListingSteps()
         {
-            ListingCreatorStepCollection lcs = new ListingCreatorStepCollection();
-            lcs.Add(new Details(), _vendor.Member.IsDeliVendor);
-            lcs.Add(new Files(), _vendor.Member.IsDeliVendor);
-            lcs.Add(new Screenshots(), _vendor.Member.IsDeliVendor);
-
-            //only add the licensing step is the project is commercial
-            if (_project != null)
-                lcs.Add(new Licenses(), (_project.ListingType == ListingType.commercial && _vendor.Member.IsDeliVendor));
-
-            lcs.Add(new Complete(), _vendor.Member.IsDeliVendor);
+            var lcs = new ListingCreatorStepCollection
+            {
+                { new OurUmbraco.MarketPlace.BusinessLogic.ListingCreator.StepDefinitions.Details(), false },
+                { new Files(), false },
+                { new Screenshots(), false },
+                { new Complete(), false }
+            };
             return lcs;
         }
     }

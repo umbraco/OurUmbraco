@@ -80,6 +80,12 @@ namespace our
             return result ?? 0;
         }
 
+        public static bool HasMemberDownloadedPackage(int memberId, int projectId)
+        {
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int>("select COUNT(*) from projectDownload where projectId = @0 and memberId = @1", projectId, memberId);
+            return result != 0;
+        }
+
 
         public static int GetReleaseDownloadCount(int projectId)
         {

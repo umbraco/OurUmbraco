@@ -1,15 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
-using System.Web.UI.WebControls;
-using Marketplace.Providers;
-using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.NodeListing;
+using Umbraco.Web.UI.Controls;
 
 namespace uProject.usercontrols.Deli.Profile
 {
-    public partial class MyProjects : System.Web.UI.UserControl
+    public partial class MyProjects : UmbracoUserControl
     {
         public int edit { get; set; }
         public int forum { get; set; }
@@ -27,18 +23,15 @@ namespace uProject.usercontrols.Deli.Profile
             forumUrl = umbraco.library.NiceUrl(forum);
             licenseUrl = umbraco.library.NiceUrl(licenses);
             teamUrl = umbraco.library.NiceUrl(team);
+            
+            var nodeListingProvider = new NodeListingProvider();
+            var memberId = Members.GetCurrentMemberId();
 
-
-            var memberProvider = (IMemberProvider)MarketplaceProviderManager.Providers["MemberProvider"];
-            var member = memberProvider.GetCurrentMember();
-            var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-
-
-            var projects = provider.GetListingsByVendor(member.Id, true, true).OrderBy(x=> x.Name);
+            var projects = nodeListingProvider.GetListingsByVendor(memberId, true, true).OrderBy(x=> x.Name);
             myProjects.DataSource = projects;
             myProjects.DataBind();
 
-            var contribProjects = provider.GetListingsForContributor(member.Id);
+            var contribProjects = nodeListingProvider.GetListingsForContributor(memberId);
             myTeamProjects.DataSource = contribProjects;
             myTeamProjects.DataBind();
         }

@@ -1,20 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
-using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Providers;
-using umbraco.cms.businesslogic.member;
 using our;
-using Marketplace.Umbraco.BusinessLogic;
-using Marketplace.Providers.Helpers;
 using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.NodeListing;
+using OurUmbraco.MarketPlace.Providers;
+using OurUmbraco.Wiki.BusinessLogic;
+using umbraco;
+using umbraco.cms.businesslogic.member;
 using uProject.Helpers;
+using Umbraco.Web.UI.Controls;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
-    public partial class Screenshots : System.Web.UI.UserControl
+    public partial class Screenshots : UmbracoUserControl
     {
 
         public string MemberGuid = "";
@@ -46,8 +45,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         private void RebindFiles()
         {
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var files = fileProvider.GetMediaFilesByProjectId((int)ProjectId).Where(x=>x.FileType == FileType.screenshot);
+            var mediaProvider = new MediaProvider();
+            var files = mediaProvider.GetMediaFilesByProjectId((int)ProjectId).Where(x=>x.FileType == FileType.screenshot.FileTypeAsString());
 
             if (string.IsNullOrEmpty(_defaultFile))
             {
@@ -67,31 +66,28 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void DeleteFile(object sender, CommandEventArgs e)
         {
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var f = fileProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
+            var mediaProvider = new MediaProvider();
+            var f = mediaProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
             _defaultFile = string.Empty;
 
             //update the project
-            var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            IListingItem project = provider.GetListing((int)ProjectId);
+            var nodeListingProvider = new NodeListingProvider();
+            IListingItem project = nodeListingProvider.GetListing((int)ProjectId);
             project.DefaultScreenshot = _defaultFile;
-            provider.SaveOrUpdate(project);
-
-
-
+            nodeListingProvider.SaveOrUpdate(project);
+            
             var mem = Member.GetCurrentMember();
 
             if (f.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id, (int)ProjectId))
-                fileProvider.Remove(f);
+                mediaProvider.Remove(f);
 
             RebindFiles();
         }
 
         protected void ArchiveFile(object sender, CommandEventArgs e)
         {
-
-            var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
-            var f = fileProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
+            var mediaProvider = new MediaProvider();
+            var f = mediaProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
 
             if (e.CommandName == "Unarchive")
             {
@@ -102,7 +98,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
                 f.Archived = true;
             }
 
-            fileProvider.SaveOrUpdate(f);
+            mediaProvider.SaveOrUpdate(f);
             RebindFiles();
         }
 
@@ -110,7 +106,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
             if (e.Item.ItemType == ListItemType.Item || e.Item.ItemType == ListItemType.AlternatingItem)
             {
-                IMediaFile f = (IMediaFile)e.Item.DataItem;
+                WikiFile f = (WikiFile)e.Item.DataItem;
                 Image _image = (Image)e.Item.FindControl("img_image");
                 Literal _date = (Literal)e.Item.FindControl("lt_date");
                 Button _delete = (Button)e.Item.FindControl("bt_delete");
@@ -147,10 +143,10 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         private void MarkFileAsCurrent(string defaultScreenshot)
         {
-            var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            IListingItem project = provider.GetListing((int)ProjectId);
+            var nodeListingProvider = new NodeListingProvider();
+            IListingItem project = nodeListingProvider.GetListing((int)ProjectId);
             project.DefaultScreenshot = defaultScreenshot;
-            provider.SaveOrUpdate(project);
+            nodeListingProvider.SaveOrUpdate(project);
             _defaultFile = project.DefaultScreenshot;
         }
 
@@ -158,23 +154,23 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
 
 
-            if (umbraco.library.IsLoggedOn() && ProjectId != null)
+            if (library.IsLoggedOn() && ProjectId != null)
             {
-                var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+                var nodeListingProvider = new NodeListingProvider();
                 Member mem = Member.GetCurrentMember();
-                IListingItem project = provider.GetListing((int)ProjectId);
+                IListingItem project = nodeListingProvider.GetListing((int)ProjectId);
                 _defaultFile = project.DefaultScreenshot;
 
 
-                if ((project.Vendor.Member.Id == mem.Id) ||
+                if ((project.VendorId == mem.Id) ||
                     Utils.IsProjectContributor(mem.Id, (int)ProjectId))
                 {
                     holder.Visible = true;
                     RebindFiles();
 
-                    umbraco.library.RegisterJavaScriptFile("swfUpload", "/scripts/swfupload/SWFUpload.js");
-                    umbraco.library.RegisterJavaScriptFile("swfUpload_cb", "/scripts/swfupload/callbacks.js");
-                    umbraco.library.RegisterJavaScriptFile("swfUpload_progress", "/scripts/swfupload/fileprogress.js");
+                    library.RegisterJavaScriptFile("swfUpload", "/scripts/swfupload/SWFUpload.js");
+                    library.RegisterJavaScriptFile("swfUpload_cb", "/scripts/swfupload/callbacks.js");
+                    library.RegisterJavaScriptFile("swfUpload_progress", "/scripts/swfupload/fileprogress.js");
 
                     MemberGuid = mem.UniqueId.ToString();
                     ProjectGuid = project.ProjectGuid.ToString();

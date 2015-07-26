@@ -1,17 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.UI;
-using System.Web.UI.WebControls;
-using Marketplace.Providers;
-using Marketplace.BusinessLogic;
-using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.NodeListing;
 using uProject.Helpers;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
-    public partial class Complete : System.Web.UI.UserControl
+    public partial class Complete : UserControl
     {
         public string NotificationClass;
 
@@ -22,7 +16,7 @@ namespace uProject.usercontrols.Deli.Package.Steps
             {
                 if (!string.IsNullOrEmpty(Request["id"]))
                 {
-                    _projectId = Int32.Parse(Request["id"]);
+                    _projectId = int.Parse(Request["id"]);
                 }
                 return _projectId;
             }
@@ -36,9 +30,9 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
             if (!IsPostBack)
             {
-                var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+                var nodeListingProvider = new NodeListingProvider();
 
-                IListingItem project = provider.GetListing((int)ProjectId);
+                var project = nodeListingProvider.GetListing((int)ProjectId);
                 ProjectName.Text = project.Name;
 
                 Live.Checked = project.Live;
@@ -49,10 +43,10 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void Complete_Click(object sender, EventArgs e)
         {
-            var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            var project = ProjectsProvider.GetListing((int)ProjectId);
+            var nodeListingProvider = new NodeListingProvider();
+            var project = nodeListingProvider.GetListing((int)ProjectId);
             project.Live = Live.Checked;
-            ProjectsProvider.SaveOrUpdate(project);
+            nodeListingProvider.SaveOrUpdate(project);
             Response.Redirect(project.NiceUrl);
         }
 

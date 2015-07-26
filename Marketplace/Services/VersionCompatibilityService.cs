@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Marketplace.Providers;
-using OurUmbraco.MarketPlace.Interfaces;
 using uProject.Models;
 using uProject.uVersion;
 using Umbraco.Core;
@@ -37,8 +35,8 @@ namespace uProject.Services
         public IEnumerable<VersionCompatibility> GetCompatibilityReport(int projectId)
         {
             var uVersions = UVersion.GetAllVersions();
-            var projectProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            var project = projectProvider.GetListing(projectId, false);
+            var projectProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
+            var project = projectProvider.GetListing(projectId, true);
 
             var compatList = new List<VersionCompatibility>();
 

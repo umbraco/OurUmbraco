@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Linq;
 using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
-using OurUmbraco.MarketPlace.Models;
-using OurUmbraco.Powers.BusinessLogic;
-using OurUmbraco.Wiki.BusinessLogic;
+using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
-namespace OurUmbraco.MarketPlace.NodeLising
+namespace OurUmbraco.MarketPlace.NodeListing
 {
     public class NodeListingProvider
     {    /// <summary>
@@ -31,6 +30,35 @@ namespace OurUmbraco.MarketPlace.NodeLising
                 return GetListing(content, optimized, projectKarma);
 
             throw new NullReferenceException("Content is Null cannot find a node with the id:" + id);
+        }
+
+        /// <summary>
+        /// get project listing  based on GUID
+        /// </summary>
+        /// <param name="guid"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <returns></returns>
+        public IListingItem GetListing(Guid guid, bool optimized = false)
+        {
+            var strGuid = guid.ToString().ToUpper();
+
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+
+            // we have to use the translate function to ensure that the casing is the same for comparison as there are GUIDS in the db in both upper and lowercase
+            var contents =
+                umbracoHelper.TypedContentAtXPath(
+                    string.Format(
+                        "//Project [@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz') = translate('{0}','ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')]",
+                        strGuid));
+
+            var content = contents.FirstOrDefault();
+
+            if (content != null)
+            {
+                return content.ToIListingItem(optimized);
+            }
+
+            throw new NullReferenceException("Node is Null cannot find a node with the guid:" + strGuid);
         }
 
         /// <summary>
@@ -82,7 +110,7 @@ namespace OurUmbraco.MarketPlace.NodeLising
                 listingItem.LicenseKey = content.GetPropertyValue<string>("licenseKey", "");
 
                 //this section was created to speed up loading operations and cut down on the number of database interactions
-                if (!optimized)
+                if (optimized == false)
                 {
                     listingItem.DocumentationFile = GetMediaForProjectByType(content.Id, FileType.docs);
                     listingItem.ScreenShots = GetMediaForProjectByType(content.Id, FileType.screenshot);
@@ -125,38 +153,9 @@ namespace OurUmbraco.MarketPlace.NodeLising
 
         public IEnumerable<IMediaFile> GetMediaForProjectByType(int projectId, FileType type)
         {
-            var wikiFiles = WikiFile.CurrentFiles(projectId);
-
-            var mediaFiles = new List<MediaFile>();
-
-            foreach (var wikiFile in wikiFiles)
-            {
-                var mediaFile = new MediaFile
-                {
-                    Current = wikiFile.Current,
-                    Archived = wikiFile.Archived,
-                    CreateDate = wikiFile.CreateDate,
-                    Name = wikiFile.Name,
-                    Id = wikiFile.Id,
-                    CreatedBy = wikiFile.CreatedBy,
-                    DotNetVersion = wikiFile.DotNetVersion,
-                    Downloads = wikiFile.Downloads,
-                    FileType = (FileType)Enum.Parse(typeof(FileType), wikiFile.FileType),
-                    FileVersion = wikiFile.NodeVersion,
-                    Path = wikiFile.Path,
-                    RemovedBy = wikiFile.RemovedBy,
-                    SupportsMediumTrust = false,
-                    UmbVersion = wikiFile.Versions,
-                    Verified = wikiFile.Verified
-                };
-                
-                if (mediaFiles.Contains(mediaFile) == false)
-                    mediaFiles.Add(mediaFile);
-            }
-
-            return mediaFiles;
+            var mediaProvider = new MediaProvider();
+            return mediaProvider.GetMediaForProjectByType(projectId, type);
         }
-
 
         /// <summary>
         /// Persists the listing object to the database
@@ -191,7 +190,7 @@ namespace OurUmbraco.MarketPlace.NodeLising
             content.SetValue("packageGuid", listingItem.ProjectGuid.ToString());
             content.SetValue("approved", (listingItem.Approved) ? "1" : "0");
             content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
-            content.SetValue("owner", listingItem.Vendor.Member.Id);
+            content.SetValue("owner", listingItem.VendorId);
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
             content.SetValue("licenseKey", listingItem.LicenseKey);
 
@@ -241,7 +240,93 @@ namespace OurUmbraco.MarketPlace.NodeLising
 
             listingItem.Id = content.Id;
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
+        }
 
+
+        /// <summary>
+        /// Gets all listings for a vendor
+        /// </summary>
+        /// <param name="vendorId"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">If set returns both live and not live listings</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetListingsByVendor(int vendorId, bool optimized = false, bool all = false)
+        {
+            var contents = GetProjectsFromDeliProjectRoot(all).Where(c => c.GetPropertyValue<int>("owner") == vendorId);
+
+            return contents.ToIListingItemList(optimized);
+        }
+
+        private static IEnumerable<IPublishedContent> GetProjectsFromDeliProjectRoot(bool all)
+        {
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var content = umbracoHelper.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+            if (content == null)
+                throw new Exception("Could not find the Deli project root.");
+            var contents = content.Descendants().Where(c => c.DocumentTypeAlias == "Project");
+
+            if (all == false)
+                contents = contents.Where(p => p.GetPropertyValue<bool>("projectLive"));
+
+            return contents;
+        }
+
+        /// <summary>
+        /// Returns a listing of projects that a specified member contributes to.
+        /// </summary>
+        /// <param name="memberId"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">if set returns both live and not live projects.</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetListingsForContributor(int memberId, bool optimized = false, bool all = false)
+        {
+
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var contribProjects = new List<IPublishedContent>();
+            const string sql = @"SELECT * FROM projectContributors WHERE memberId=@memberId";
+            var contribPackageIds = UmbracoContext.Current.Application.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
+
+            foreach (var contribPackageId in contribPackageIds)
+            {
+                contribProjects.Add(umbracoHelper.TypedContent(contribPackageId));
+            }
+
+            var listings = new List<IListingItem>();
+            foreach (var contribItem in contribProjects)
+            {
+                listings.Add(GetListing(contribItem.Id, optimized, -1));
+            }
+
+            return listings;
+        }
+
+        /// <summary>
+        /// gets a list of listings
+        /// </summary>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">if set returns both live and not live listings</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetAllListings(bool optimized = false, bool all = false)
+        {
+            return GetAllListings(0, 0, optimized, all);
+        }
+        
+        /// <summary>
+        /// gets paged list of listings
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">if set returns both live and not live listings</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetAllListings(int skip, int take, bool optimized = false, bool all = false)
+        {
+            var contents = GetProjectsFromDeliProjectRoot(all);
+
+            if (take > 0)
+                contents = contents.Skip(skip).Take(take);
+
+            return contents.ToIListingItemList(optimized);
         }
     }
 }

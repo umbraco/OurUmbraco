@@ -29,6 +29,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
         public bool Archived { get; set; }
 
         public bool Verified { get; set; }
+        public bool SupportsMediumTrust => true;
 
         public List<UmbracoVersion> Versions { get; set; }
         public UmbracoVersion Version { get; set; }
@@ -109,7 +110,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 return wikiFiles;
             }
         }
-
+        
         private readonly Events _events = new Events();
 
         private WikiFile() { }

@@ -5,12 +5,11 @@ using System.Web;
 using umbraco.cms.businesslogic.web;
 using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
-using Marketplace.Providers;
 using our;
-using Marketplace.Providers.MediaFile;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.Wiki.BusinessLogic;
-using UmbracoVersion = Marketplace.Umbraco.BusinessLogic.UmbracoVersion;
+using Umbraco.Core;
+using Umbraco.Web;
 
 namespace uProject
 {
@@ -51,20 +50,19 @@ namespace uProject
             }
 
 
-            if (!string.IsNullOrEmpty(userguid) && !string.IsNullOrEmpty(projectguid) && !string.IsNullOrEmpty(fileType) && !string.IsNullOrEmpty(fileName)) {
-
-                var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-                var p = provider.GetListing(new Guid(projectguid));
+            if (!string.IsNullOrEmpty(userguid) && !string.IsNullOrEmpty(projectguid) && !string.IsNullOrEmpty(fileType) && !string.IsNullOrEmpty(fileName))
+            {
+                var nodeListingProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
+                var p = nodeListingProvider.GetListing(new Guid(projectguid));
                 Member mem = new Member(new Guid(userguid));
 
-                if (p.Vendor != null && p.Vendor.Member.Id == mem.Id || Utils.IsProjectContributor(mem.Id, p.Id))
+                if (p.Vendor != null && p.VendorId == mem.Id || Utils.IsProjectContributor(mem.Id, p.Id))
                 {
-
-                    var fileProvider = (IMediaProvider)MarketplaceProviderManager.Providers["MediaProvider"];
+                    var mediaProvider = new OurUmbraco.MarketPlace.Providers.MediaProvider();
 
                     var packageFileType = (FileType)Enum.Parse(typeof(FileType), (string)fileType , true);
 
-                    fileProvider.CreateFile(fileName, p.Version, mem.UniqueId, file, packageFileType, v, dotNetVersion, trust);
+                    mediaProvider.CreateFile(fileName, p.Version, mem.UniqueId, file, packageFileType, v, dotNetVersion, trust);
 
                 } else {
                     umbraco.BusinessLogic.Log.Add(umbraco.BusinessLogic.LogTypes.Debug, 0, "wrong type or not a owner");
