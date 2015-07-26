@@ -1,6 +1,7 @@
 ﻿@inherits umbraco.MacroEngines.DynamicNodeContext
 @using System.Globalization
 @using System.Text.RegularExpressions
+@using OurUmbraco.MarketPlace.Models
 @using uForum.Businesslogic
 @{
     var queriedVersion = Request.QueryString["v"];
@@ -244,26 +245,6 @@
 }
 
 @functions {
-
-    public class UmbracoProject
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public DateTime CreateDate { get; set; }
-        public List<int> CompatibleVersions { get; set; }
-        public int TotalDownloads { get; set; }
-        public int DownloadsCurrentVersion { get; set; }
-        public int Karma { get; set; }
-        public int TotalDownloadsRank { get; set; }
-        public int CurrentVersionDownloadsRank { get; set; }
-        public int KarmaRank { get; set; }
-        public int TotalRank { get; set; }
-        public int FileId { get; set; }
-        public int ReportsCount { get; set; }
-        public int CompatibilityCount { get; set; }
-        public float CompatibilityScore { get; set; }
-    }
-
     public Version GetProperVersion(string version)
     {
         if (version == "4.1.0")

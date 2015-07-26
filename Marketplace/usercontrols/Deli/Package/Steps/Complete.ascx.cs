@@ -4,9 +4,9 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
 using Marketplace.BusinessLogic;
+using OurUmbraco.MarketPlace.Interfaces;
 using uProject.Helpers;
 
 namespace uProject.usercontrols.Deli.Package.Steps
@@ -36,23 +36,12 @@ namespace uProject.usercontrols.Deli.Package.Steps
         {
             if (!IsPostBack)
             {
-
                 var provider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
 
                 IListingItem project = provider.GetListing((int)ProjectId);
-                var eligible = Listing.CheckEligibility(project);
-                NotificationMessage.Text = eligible.Message;
-                NotificationClass = (eligible.IsEligible) ? "eligible" : "notEligible";
-
                 ProjectName.Text = project.Name;
 
                 Live.Checked = project.Live;
-
-
-                if (!eligible.IsEligible)
-                {
-                    MoveNext.Enabled = false;
-                }
             }
 
 

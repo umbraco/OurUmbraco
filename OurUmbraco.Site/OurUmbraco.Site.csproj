@@ -141,12 +141,6 @@
     <Reference Include="MarkdownSharp">
       <HintPath>..\packages\MarkdownSharp.1.13.0.0\lib\35\MarkdownSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.Data">
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Interfaces">
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="Marketplace.Providers">
       <HintPath>..\dependencies\MarketPlace\Marketplace.Providers.dll</HintPath>
     </Reference>

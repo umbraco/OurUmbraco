@@ -148,6 +148,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Data.Linq" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\System.Data.SqlServerCe.dll</HintPath>
       <Private>True</Private>
@@ -291,6 +292,27 @@
     <Compile Include="Forum\Services\ForumService.cs" />
     <Compile Include="Forum\Services\TopicService.cs" />
     <Compile Include="Forum\Singleton.cs" />
+    <Compile Include="MarketPlace\Extensions\NodeProviderExtensions.cs" />
+    <Compile Include="MarketPlace\Interfaces\FileType.cs" />
+    <Compile Include="MarketPlace\Interfaces\ICategory.cs" />
+    <Compile Include="MarketPlace\Interfaces\ICategoryProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\IListingItem.cs" />
+    <Compile Include="MarketPlace\Interfaces\IListingProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\IMediaFile.cs" />
+    <Compile Include="MarketPlace\Interfaces\IMediaProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\IMember.cs" />
+    <Compile Include="MarketPlace\Interfaces\IMemberProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\IProjectTag.cs" />
+    <Compile Include="MarketPlace\Interfaces\IProjectTagProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\IVendor.cs" />
+    <Compile Include="MarketPlace\Interfaces\IVendorProvider.cs" />
+    <Compile Include="MarketPlace\Interfaces\LicenseType.cs" />
+    <Compile Include="MarketPlace\Interfaces\ListingType.cs" />
+    <Compile Include="MarketPlace\Interfaces\TrustLevel.cs" />
+    <Compile Include="MarketPlace\ListingItem\ListingItem.cs" />
+    <Compile Include="MarketPlace\Models\MediaFile.cs" />
+    <Compile Include="MarketPlace\Models\UmbracoProject.cs" />
+    <Compile Include="MarketPlace\NodeLising\NodeListingProvider.cs" />
     <Compile Include="Powers\Api\PowersController.cs" />
     <Compile Include="Powers\Buddha\Buddha.cs" />
     <Compile Include="Powers\BusinessLogic\Action.cs" />
@@ -333,6 +355,7 @@
     <Compile Include="Wiki\BusinessLogic\WikiFile.cs" />
     <Compile Include="Wiki\BusinessLogic\WikiHelpRequest.cs" />
     <Compile Include="Wiki\BusinessLogic\WikiPage.cs" />
+    <Compile Include="Wiki\Extensions\MediaExtensions.cs" />
     <Compile Include="Wiki\iNotFoundHandler.cs" />
     <Compile Include="Wiki\Library\Utils.cs" />
     <Compile Include="Wiki\Library\xslt.cs" />
@@ -360,6 +383,9 @@
   <ItemGroup>
     <Folder Include="Repository\webservices\App_Data\" />
     <Folder Include="Wiki\usercontrols\scripts\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

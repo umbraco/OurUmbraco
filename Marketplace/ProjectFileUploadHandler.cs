@@ -5,11 +5,12 @@ using System.Web;
 using umbraco.cms.businesslogic.web;
 using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
 using our;
 using Marketplace.Providers.MediaFile;
-using Marketplace.Umbraco.BusinessLogic;
+using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.Wiki.BusinessLogic;
+using UmbracoVersion = Marketplace.Umbraco.BusinessLogic.UmbracoVersion;
 
 namespace uProject
 {
@@ -35,12 +36,12 @@ namespace uProject
 
 
 
-            List<UmbracoVersion> v = new List<UmbracoVersion>() { UmbracoVersion.DefaultVersion() };
+            List<OurUmbraco.Wiki.BusinessLogic.UmbracoVersion> v = new List<OurUmbraco.Wiki.BusinessLogic.UmbracoVersion>() { OurUmbraco.Wiki.BusinessLogic.UmbracoVersion.DefaultVersion() };
 
             if (!string.IsNullOrEmpty(umbraoVersion))
             {
                 v.Clear();
-                v = GetVersionsFromString(umbraoVersion);
+                v = WikiFile.GetVersionsFromString(umbraoVersion);
             }
 
             

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
+using Marketplace.Providers.Listing;
 using Marketplace.Providers.ListingItem;
+using OurUmbraco.MarketPlace.Interfaces;
 using umbraco;
 using uProject.Helpers;
 using Umbraco.Core.Models;
@@ -150,8 +151,8 @@ namespace uProject.usercontrols.Deli.Package.Steps
 
         protected void SaveStep(object sender, EventArgs e)
         {
-            var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
-            var project = (_editMode) ? ProjectsProvider.GetListing((int)ProjectId) : new ListingItem(null,null,null);
+            var nodeListingProvider = new OurUmbraco.MarketPlace.NodeLising.NodeListingProvider();
+            var project = (_editMode) ? nodeListingProvider.GetListing((int)ProjectId) : new OurUmbraco.MarketPlace.ListingItem.ListingItem(null,null);
 
             project.Name = Title.Text;
             project.Description = Description.Text;
@@ -165,19 +166,15 @@ namespace uProject.usercontrols.Deli.Package.Steps
             project.DemonstrationUrl = DemoUrl.Text;
             project.CategoryId = Int32.Parse(Category.SelectedValue);
             project.SupportUrl = SupportUrl.Text;
-
-            if (!_editMode)
-            {
-                project.Vendor = ((IVendorProvider)MarketplaceProviderManager.Providers["VendorProvider"]).GetVendorById(Member.GetCurrentMember().Id);
-            }
-
+            
             project.OpenForCollab = Collab.Checked;
             project.GACode = GaCode.Text;
             project.ProjectGuid = (project.ProjectGuid == Guid.Empty)?Guid.NewGuid():project.ProjectGuid; //this is used as the Unique project ID.
             project.ListingType = (CommercialOption.Visible) ? (ListingType)Enum.Parse(typeof(ListingType), (string)CommercialOrFree.SelectedValue, true) : ListingType.free;
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
-
+            
+            var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
             ProjectsProvider.SaveOrUpdate(project);
             ProjectId = project.Id;
 

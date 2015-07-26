@@ -118,14 +118,6 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\MarketPlace\Marketplace.BusinessLogic.dll</HintPath>
     </Reference>
-    <Reference Include="Marketplace.Data, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Data.dll</HintPath>
-    </Reference>
-    <Reference Include="Marketplace.Interfaces, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\dependencies\MarketPlace\Marketplace.Interfaces.dll</HintPath>
-    </Reference>
     <Reference Include="Marketplace.Presentation, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\dependencies\MarketPlace\Marketplace.Presentation.dll</HintPath>
@@ -284,9 +276,6 @@
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="uVersion">
-      <HintPath>..\forigndlls\uVersion.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Api\ProjectCompatibilityController.cs" />
@@ -371,7 +360,9 @@
     <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
     <Content Include="usercontrols\Deli\Package\Editor.ascx" />
     <Content Include="usercontrols\Deli\Package\Steps\Files.ascx" />
-    <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
+    <Content Include="usercontrols\Deli\Profile\MyProjects.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
@@ -397,6 +388,10 @@
     <ProjectReference Include="..\our.umbraco.org\our.umbraco.org.csproj">
       <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
       <Name>our.umbraco.org</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\OurUmbraco\OurUmbraco.csproj">
+      <Project>{a8e5c936-ecab-45b3-bfda-d12f680eb2a6}</Project>
+      <Name>OurUmbraco</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

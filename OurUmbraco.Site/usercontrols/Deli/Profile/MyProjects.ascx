@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="MyProjects.ascx.cs" Inherits="uProject.usercontrols.Deli.Profile.MyProjects" %>
-<%@ Import Namespace="Marketplace.Interfaces" %>
 <%@ Import Namespace="umbraco.cms.businesslogic.member" %>
 <%
     Member m = Member.GetCurrentMember();

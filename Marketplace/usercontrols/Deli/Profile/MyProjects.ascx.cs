@@ -4,9 +4,8 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-
-using Marketplace.Interfaces;
 using Marketplace.Providers;
+using OurUmbraco.MarketPlace.Interfaces;
 
 namespace uProject.usercontrols.Deli.Profile
 {

@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
 using umbraco;
 using our;
 using System.Text.RegularExpressions;
 using umbraco.NodeFactory;
 using System.Globalization;
-using Marketplace.Data;
+using OurUmbraco.MarketPlace.Interfaces;
 
 namespace uProject
 {
@@ -130,14 +129,7 @@ namespace uProject
         /// <returns></returns>
         public static bool HasDownloaded(int memberId, int packageId)
         {
-            using (var ctx = new MarketplaceDataContext())
-            {
-                var downs = ctx.projectDownloads.Where(x => x.memberId == memberId && x.projectId == packageId);
-                if (downs.Count() > 0)
-                    return true;
-                return false;
-
-            }
+            return Utils.GetProjectMemberVotes(packageId, memberId) > 0;
         }
     }
 }

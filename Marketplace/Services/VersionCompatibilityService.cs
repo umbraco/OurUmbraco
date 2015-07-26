@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
+using OurUmbraco.MarketPlace.Interfaces;
 using uProject.Models;
 using uProject.uVersion;
 using Umbraco.Core;

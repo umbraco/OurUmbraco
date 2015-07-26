@@ -8,9 +8,9 @@ using umbraco.IO;
 using Marketplace.BusinessLogic.ListingCreator;
 using Marketplace.BusinessLogic.ListingCreator.StepDefinitions;
 using Marketplace.Providers;
-using Marketplace.Interfaces;
 using umbraco.cms.businesslogic.member;
 using our;
+using OurUmbraco.MarketPlace.Interfaces;
 
 namespace uProject.usercontrols.Deli.Package
 {

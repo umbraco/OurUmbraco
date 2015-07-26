@@ -4,7 +4,6 @@ using System.Linq;
 using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
-using Marketplace.Interfaces;
 using Marketplace.Providers;
 using umbraco.cms.businesslogic.member;
 using our;
@@ -13,6 +12,8 @@ using Marketplace.Umbraco.BusinessLogic;
 using Marketplace.Providers.Helpers;
 using uProject.Helpers;
 using Marketplace.Providers.MediaFile;
+using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.Wiki.Extensions;
 
 namespace uProject.usercontrols.Deli.Package.Steps
 {
