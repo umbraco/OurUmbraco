@@ -94,6 +94,10 @@
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MarkdownDeep, Version=1.5.4615.26275, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.2.8-build103\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
       <Private>True</Private>
@@ -221,6 +225,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
+    <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
+    <Compile Include="Documentation\Busineslogic\Events.cs" />
+    <Compile Include="Documentation\Busineslogic\GithubSourcePull\ZipDownloader.cs" />
+    <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
+    <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Repository\Project.cs" />
     <Compile Include="Repository\Projects.cs" />

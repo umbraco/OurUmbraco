@@ -244,12 +244,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Busineslogic\ConventionExtensions.cs" />
-    <Compile Include="Busineslogic\DefaultVersion.cs" />
-    <Compile Include="Busineslogic\Events.cs" />
-    <Compile Include="Busineslogic\GithubSourcePull\ZipDownloader.cs" />
-    <Compile Include="Busineslogic\MarkdownLogic.cs" />
-    <Compile Include="DocumentationContentFinder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

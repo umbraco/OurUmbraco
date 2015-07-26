@@ -4730,10 +4730,6 @@
       <Project>{a625544f-660a-4c01-ba49-1b467d0322d9}</Project>
       <Name>our.umbraco.org</Name>
     </ProjectReference>
-    <ProjectReference Include="..\uDocumentation\uDocumentation.csproj">
-      <Project>{2040bdaf-a804-462f-8d5f-ca0df141bf89}</Project>
-      <Name>uDocumentation</Name>
-    </ProjectReference>
     <ProjectReference Include="..\uEvents\uEvents.csproj">
       <Project>{f356b339-296a-4594-81b6-cf69a802483e}</Project>
       <Name>uEvents</Name>

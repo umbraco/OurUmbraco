@@ -23,8 +23,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Notification", "Notificatio
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NotificationsWeb", "NotificationsWeb\NotificationsWeb.csproj", "{6CF53D68-BD81-47BB-8F56-350A1B04F114}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "uDocumentation", "uDocumentation\uDocumentation.csproj", "{2040BDAF-A804-462F-8D5F-CA0DF141BF89}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3A30EFB-C5EA-460A-A591-8FBD7176B131}"
 	ProjectSection(SolutionItems) = preProject
 		.nuget\NuGet.Config = .nuget\NuGet.Config
@@ -118,16 +116,6 @@ Global
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{6CF53D68-BD81-47BB-8F56-350A1B04F114}.Release|x86.ActiveCfg = Release|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Any CPU.Build.0 = Release|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|Mixed Platforms.Build.0 = Release|Any CPU
-		{2040BDAF-A804-462F-8D5F-CA0DF141BF89}.Release|x86.ActiveCfg = Release|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C5B74E6A-ABCE-4A9A-896D-89C33FDAFCD8}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
