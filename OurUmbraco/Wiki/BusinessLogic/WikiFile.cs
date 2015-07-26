@@ -29,7 +29,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
         public bool Archived { get; set; }
 
         public bool Verified { get; set; }
-        public bool SupportsMediumTrust => true;
+        public bool SupportsMediumTrust { get { return false; } }
 
         public List<UmbracoVersion> Versions { get; set; }
         public UmbracoVersion Version { get; set; }
