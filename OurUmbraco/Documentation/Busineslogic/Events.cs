@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Web;
 using System.ComponentModel;
 
-
-namespace uDocumentation.Busineslogic
+namespace OurUmbraco.Documentation.Busineslogic
 {
     public class Events {
         /// <summary>

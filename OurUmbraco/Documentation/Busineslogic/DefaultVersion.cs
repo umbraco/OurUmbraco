@@ -1,4 +1,4 @@
-﻿namespace uDocumentation.Busineslogic
+﻿namespace OurUmbraco.Documentation.Busineslogic
 {
     public class DefaultVersion
     {

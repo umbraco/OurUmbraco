@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 using MarkdownDeep;
 
-namespace uDocumentation.Busineslogic
+namespace OurUmbraco.Documentation.Busineslogic
 {
     public class MarkdownLogic
     {

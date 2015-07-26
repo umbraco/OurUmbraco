@@ -2,11 +2,11 @@
 using System.IO;
 using System.Linq;
 using System.Web;
-using uDocumentation.Busineslogic;
+using OurUmbraco.Documentation.Busineslogic;
 using Umbraco.Core;
 using Umbraco.Web.Routing;
 
-namespace uDocumentation
+namespace OurUmbraco.Documentation
 {
     public class DocumentationContentFinder : ContentFinderByNiceUrl
     {

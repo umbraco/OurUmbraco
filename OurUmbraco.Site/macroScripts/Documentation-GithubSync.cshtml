@@ -1,3 +1,4 @@
+@using OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 @inherits umbraco.MacroEngines.DynamicNodeContext
 @{
 
@@ -13,7 +14,7 @@
             Directory.CreateDirectory(rootFolderPath);
         }
 
-        var unzip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(rootFolderPath, configPath);
+        var unzip = new ZipDownloader(rootFolderPath, configPath);
         unzip.IsProjectDocumentation = true;
         unzip.Run();
     }
@@ -22,7 +23,7 @@
         int id = 0;
         if (int.TryParse(Request["id"], out id))
         {
-            uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader zip = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader(id);
+            ZipDownloader zip = new ZipDownloader(id);
             zip.Run();
         }
     }

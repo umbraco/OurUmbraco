@@ -7,7 +7,8 @@ using System.Web.UI;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using our.Examine;
-using uDocumentation.Busineslogic;
+using OurUmbraco.Documentation.Busineslogic;
+using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.Security;
@@ -23,7 +24,7 @@ namespace our.CustomHandlers
         {
             CreateRoutes();
             BindExamineEvents();
-            uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader.OnFinish += ZipDownloader_OnFinish;
+            ZipDownloader.OnFinish += ZipDownloader_OnFinish;
         }
 
         private void CreateRoutes()

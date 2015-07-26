@@ -1,5 +1,6 @@
+@using OurUmbraco.Documentation
+@using OurUmbraco.Documentation.Busineslogic
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uDocumentation.Busineslogic;
 
 @{
     string baseurl = "/";
@@ -12,7 +13,7 @@
     var linkToGithub = string.Empty;
     if (absolutePath.StartsWith("/project") == false)
     {
-        linkToGithub = uDocumentation.Github.MarkdownFileLink();
+        linkToGithub = Github.MarkdownFileLink();
     }
 }
 <div class="utilities">

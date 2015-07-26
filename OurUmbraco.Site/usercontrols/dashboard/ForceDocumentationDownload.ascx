@@ -1,5 +1,5 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" Inherits="System.Web.UI.UserControl" %>
-<%@ Import Namespace="uDocumentation.Busineslogic.GithubSourcePull" %>
+<%@ Import Namespace="OurUmbraco.Documentation.Busineslogic.GithubSourcePull" %>
 
 <script runat="server">
 
