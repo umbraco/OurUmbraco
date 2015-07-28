@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Umbraco.Core.Persistence.Querying;
 using Umbraco.Web.Mvc;
 
 namespace our.Controllers
@@ -45,6 +46,14 @@ namespace our.Controllers
                 return CurrentUmbracoPage();
             }
 
+            //Check to see if we can find a member with that github username already set
+            var tryFindMember = ms.GetMembersByPropertyValue("github", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
+            if (tryFindMember != null)
+            {
+                ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
+                return CurrentUmbracoPage();
+            }
+
             var mem = ms.CreateMemberWithIdentity(model.Email, model.Email, model.Name, "member");
 
             mem.SetValue("profileText", model.Bio);
@@ -52,7 +61,8 @@ namespace our.Controllers
             mem.SetValue("company", model.Company);
             mem.SetValue("twitter", model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
-           
+            mem.SetValue("github", model.GitHubUsername); 
+
 
             ms.AssignRole(mem.Username, "standard");
            

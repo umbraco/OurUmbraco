@@ -31,7 +31,11 @@ namespace our.Models
 
         public string Bio { get; set; }
 
+        [Display(Name = "Twitter")]
         public string TwitterAlias { get; set; }
+
+        [Display(Name = "GitHub")]
+        public string GitHubUsername { get; set; }
 
         public string Location { get; set; }
     }

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Mvc;
+using Umbraco.Core.Persistence.Querying;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -25,6 +26,7 @@ namespace our.Controllers
             m.Company = mem.GetValue<string>("company");
             m.TwitterAlias = mem.GetValue<string>("twitter");
             m.Avatar = mem.GetValue<string>("avatar");
+            m.GitHubUsername = mem.GetValue<string>("github");
 
             return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
         }
@@ -53,6 +55,20 @@ namespace our.Controllers
                 ModelState.AddModelError("RepeatPassword", "Passwords need to match");
                 return CurrentUmbracoPage();
             }
+
+            //Only check if github username already set
+            //If a value has been set & that the github username has not changed from last time
+            //May be updating other items on their profile
+            if (!string.IsNullOrEmpty(model.GitHubUsername) && model.GitHubUsername != mem.GetValue<string>("github"))
+            {
+                //Check to see if we can find a member with that github username already set
+                var tryFindMember = ms.GetMembersByPropertyValue("github", model.GitHubUsername, StringPropertyMatchType.Exact).FirstOrDefault();
+                if (tryFindMember != null)
+                {
+                    ModelState.AddModelError("GitHub", string.Format("The github username {0} is already in use.", model.GitHubUsername));
+                    return CurrentUmbracoPage();
+                }
+            }
             
             mem.Name = model.Name ;
             mem.Email = model.Email;
@@ -62,6 +78,7 @@ namespace our.Controllers
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
+            mem.SetValue("github", model.GitHubUsername);
             ms.Save(mem);
 
             var avatarImage = Utils.GetMemberAvatarImage(Members.GetById(mem.Id));
