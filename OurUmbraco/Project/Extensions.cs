@@ -1,4 +1,6 @@
 ﻿using System;
+using OurUmbraco.MarketPlace.Interfaces;
+using umbraco.presentation.nodeFactory;
 
 namespace OurUmbraco.Project
 {
@@ -28,5 +30,11 @@ namespace OurUmbraco.Project
             } return qs;
         }
 
+        public static string GetCategoryName(this IListingItem project)
+        {
+            var node = new Node(project.Id);
+            return node.Parent.Name;
+
+        }
     }
 }

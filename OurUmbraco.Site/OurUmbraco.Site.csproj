@@ -1793,6 +1793,8 @@
     <Content Include="Views\MacroPartials\Rss\Participated.cshtml" />
     <Content Include="Views\MacroPartials\Members\Activate.cshtml" />
     <Content Include="Views\MacroPartials\Spam\Overview.cshtml" />
+    <Content Include="macroScripts\repository-view-category.cshtml" />
+    <Content Include="macroScripts\repository-view-project.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

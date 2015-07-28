@@ -328,5 +328,27 @@ namespace OurUmbraco.MarketPlace.NodeListing
 
             return contents.ToIListingItemList(optimized);
         }
+
+        /// <summary>
+        /// Gets a paged list of listings by specified category
+        /// </summary>
+        /// <param name="category"></param>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">if set returns both live and not live listings</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetListingsByCategory(ICategory category, int skip, int take, bool optimized = false, bool all = false)
+        {
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var categoryContent = umbracoHelper.TypedContent(category.Id);
+            var items = categoryContent
+                .Children(x => x.DocumentTypeAlias == "Project");
+            if (!all)
+                items = items.Where(x => x.GetPropertyValue<bool>("projectLive"));
+            if (take > 0)
+                items = items.Skip(skip).Take(take);
+            return items.Select(x => x.ToIListingItem(optimized));
+        }
     }
 }
