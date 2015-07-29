@@ -105,15 +105,20 @@ namespace our.usercontrols
                         if (spamResult != null && spamResult.Blocked)
                             return;
 
+                        if (string.IsNullOrWhiteSpace(tb_flickr.Text) == false || string.IsNullOrWhiteSpace(tb_bio.Text) == false)
+                        {
+                            //These fields are hidden, only a bot will know to fill them in
+                            //This honeypot catches them
+                            return;
+                        }
+
                         member = memberService.CreateMember(tb_email.Text, tb_email.Text, tb_name.Text, memberType);
 
                         member.Name = tb_name.Text;
                         member.Email = tb_email.Text;
                         member.Username = tb_email.Text;
                         member.SetValue("twitter", tb_twitter.Text);
-                        member.SetValue("flickr", tb_flickr.Text);
                         member.SetValue("company", tb_company.Text);
-                        member.SetValue("profileText", tb_bio.Text);
                         member.SetValue("location", tb_location.Text);
                         member.SetValue("latitude", tb_lat.Value);
                         member.SetValue("longitude", tb_lng.Value);
