@@ -207,12 +207,10 @@
                 }
                 @if (reputationCurrent < 71 || rolesForUser.Contains("potentialspam") || rolesForUser.Contains("newaccount"))
                 {
-                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member</a><br />
+                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member (careful now! if you approve this member, EVERYTHING that they posted and is marked as spam will be marked as ham.. )</a><br />
                 }
                 else
                 {
-                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member</a><br />
-
                     <span>Member has been approved</span>
                 }
                 <br /><br />
