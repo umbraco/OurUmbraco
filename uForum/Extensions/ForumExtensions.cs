@@ -161,7 +161,7 @@ namespace uForum.Extensions
             
             foreach (var role in roles)
             {
-                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()) || role.ToLowerInvariant().Contains("wiki".ToLowerInvariant()) || role.ToLowerInvariant().Contains("potentialspam".ToLowerInvariant()))
+                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()) || role.ToLowerInvariant().Contains("wiki".ToLowerInvariant()) || role.ToLowerInvariant().Contains("potentialspam".ToLowerInvariant()) || role.ToLowerInvariant().Contains("newaccount".ToLowerInvariant()))
                     continue;
 
                 if (role == "CoreContrib")

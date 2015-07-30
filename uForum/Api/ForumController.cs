@@ -391,7 +391,7 @@ namespace uForum.Api
         [HttpPost]
         public int ApproveMember(int id)
         {
-            if (Members.IsHq() == false)
+            if (Members.IsAdmin() == false)
                 throw new Exception("You cannot approve this member");
 
             var memberService = UmbracoContext.Application.Services.MemberService;
@@ -405,10 +405,37 @@ namespace uForum.Api
             {
                 member.SetValue("reputationCurrent", minimumKarma);
                 member.SetValue("reputationTotal", minimumKarma);
+                memberService.Save(member);
+            }
+            
+            var rolesForUser = Roles.GetRolesForUser(member.Username);
+            if(rolesForUser.Contains("potentialspam"))
+                memberService.DissociateRole(member.Id, "potentialspam");
+            if(rolesForUser.Contains("newaccount"))
+                memberService.DissociateRole(member.Id, "newaccount");
+
+            var topicService = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var commentService = new CommentService(ApplicationContext.Current.DatabaseContext, topicService);
+            var comments = commentService.GetAllCommentsForMember(member.Id);
+            foreach (var comment in comments)
+            {
+                if (comment.IsSpam)
+                {
+                    comment.IsSpam = false;
+                    commentService.Save(comment);
+                }
             }
 
-            memberService.Save(member);
-
+            var topics = topicService.GetLatestTopicsForMember(member.Id, false, 100);
+            foreach (var topic in topics)
+            {
+                if (topic.IsSpam)
+                {
+                    topic.IsSpam = false;
+                    topicService.Save(topic);
+                }
+            }
+            
             return minimumKarma;
         }
 

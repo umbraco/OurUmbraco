@@ -153,6 +153,7 @@ namespace our.usercontrols
                             uForum.Library.Utils.SendMemberSignupMail(member);
                         }
                         memberService.AssignRole(member.Id, "notactivated");
+                        memberService.AssignRole(member.Id, "newaccount");
 
                         var redirectPage = "/";
                         var contentService = UmbracoContext.Current.Application.Services.ContentService;

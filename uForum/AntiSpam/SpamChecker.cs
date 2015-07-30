@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Web;
+using System.Web.Security;
 using HtmlAgilityPack;
 using uForum.Extensions;
 using uForum.Library;
@@ -27,7 +28,8 @@ namespace uForum.AntiSpam
             if (member.Karma() >= 50)
                 return false;
 
-            var isSpam = NewAndPostsALot(member) || TextContainsSpam(body) || IsSuspiciousBehavior(body);
+            var roles = Roles.GetRolesForUser(member.Username);
+            var isSpam = roles.Contains("potentialspam") || roles.Contains("newaccount") || NewAndPostsALot(member) || TextContainsSpam(body) || IsSuspiciousBehavior(body);
 
             if (isSpam)
             {
