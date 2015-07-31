@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Project
-
+@using Umbraco.Web
 @{
-    var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+    var ProjectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
     var projectId = int.Parse(Request.QueryString["project_id"]);
 
     var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&project_id=" + projectId, "");
@@ -10,7 +10,7 @@
     var Project = ProjectsProvider.GetListing(projectId, false);
     var node = new umbraco.NodeFactory.Node(projectId);
     var parentId = node.Parent.Id;
-
+    
     var pUrl = "repo/project?id=";
 
     string descCssClass = "noWrap";
@@ -61,7 +61,7 @@
 
 <ul id="breadcrumb">
     <li><a href="/repo?@qs">Repository</a> &rarr;</li>
-    <li><a href="/repo_category?@qs&category_id=@parentId">@uProject.library.GetCategoryName((int)Project.Id)</a> &rarr;</li>
+  <li><a href="/repo_category?@qs&category_id=@parentId">@Project.GetCategoryName()</a> &rarr;</li>
     <li>@Project.Name</li>
 </ul>
 
@@ -83,7 +83,11 @@
 
             <dl class="projetProps summary">
                 <dt>Project owner:</dt>
-                <dd>@Project.Vendor.Member.Name</dd>
+                @{
+                    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                    var ownerName = umbracoHelper.MembershipHelper.GetById(Project.VendorId).Name;
+                }
+            <dd>@ownerName</dd>
 
                 <dt>Package downloads</dt>
                 <dd>@Project.Downloads</dd>
