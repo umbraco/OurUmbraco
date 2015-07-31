@@ -61,6 +61,12 @@
                         <div class="public-profile">
                             <a href="/member/@member.Id">View my public profile</a>
                         </div>
+                        @if (member.IsAdmin())
+                        {
+                            <div class="public-profile">
+                                <a href="/antispam">Check the spam queue</a>
+                            </div>
+                        }
                         <div class="log-out">
                             <a href="/umbraco/Surface/Login/Logout">Log out</a>
                         </div>
