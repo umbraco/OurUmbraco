@@ -40,6 +40,9 @@
         var currentMember = Members.GetCurrentMember();
         var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
+        var dbMember = UmbracoContext.Application.Services.MemberService.GetById(member.Id);
+        var rolesForUser = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+
         <div class="public-member">
             <div class="row">
                 <div class="col-md-8">
@@ -155,7 +158,7 @@
                                                         <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
                                                     </div>
                                                 </div>
-                                            </div>
+                                               </div>
                                         </a>
                                     }
                                 </div>
@@ -212,9 +215,18 @@
                 else
                 {
                     <a href="#" class="unblock-member" style="color: green" rel="@member.Id">Unblock this member</a><br />
-                    <strong class="member-blocked">Member is blocked</strong>
+                    <strong class="member-blocked">Member is blocked</strong><br />
                 }
                 <br /><br />
+                @if (reputationCurrent < 71 || rolesForUser.Contains("potentialspam") || rolesForUser.Contains("newaccount"))
+                {
+                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member (careful now! if you approve this member, EVERYTHING that they posted and is marked as spam will be marked as ham.. )</a><br />
+                }
+                else
+                {
+                    <strong class="member-blocked">Member is blocked</strong><br />
+                }
+				<br /><br />
                 <p><strong>All threads this member was involved in (created or commented)</strong></p>
                 <ul style="margin-left: 20px;">
                     @foreach (var topic in allTopics)
@@ -227,17 +239,20 @@
         <br /><br />
         if (currentMember.IsHq())
         {
-            var dbMember = UmbracoContext.Application.Services.MemberService.GetById(member.Id);
-
             <div style="border: 1px solid red; padding: 4px;">
                 <p>HQ Tools (also known as "with great power comes great responsibility"):</p><br />
-                <span>Member is approved? <strong>@dbMember.IsApproved</strong></span><br />
-
-                <a href="#" class="delete-member-plus" style="color: red" rel="@member.Id">Delete this member including all their topics and comments</a><br />
-                @if (reputationCurrent < 71)
-                {
-                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Give enough karma to to stop spamchecks and allow posting packages</a><br />
+                @{
+                    if (rolesForUser.Contains("potentialspam"))
+                    {
+                        <span>Member is in role "potentialspam"</span><br />
+                    }
+                    if (rolesForUser.Contains("newaccount"))
+                    {
+                        <span>Member is in role "newaccount"</span><br />
+                    }
                 }
+                <br/><br/>
+                <a href="#" class="delete-member-plus" style="color: red" rel="@member.Id">Delete this member including all their topics and comments</a><br />
             </div>
         }
     }

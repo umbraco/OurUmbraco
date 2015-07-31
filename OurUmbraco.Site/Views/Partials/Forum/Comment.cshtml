@@ -15,7 +15,7 @@
     }
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
-@if (commentAuthor != null && (Model.IsSpam == false || currentMember.Id == commentAuthor.Id || Members.IsAdmin()))
+@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Members.IsAdmin()))
 {
     <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" id="comment-@Model.Id">
         <div class="meta">
