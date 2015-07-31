@@ -167,11 +167,11 @@
     
         
         a {
-            color: #000;
+            color: $color-headline;
             text-decoration: underline;
 
             &:hover {
-                color: #000;
+                color: #000000;
                 text-decoration: none;
             }
         }
@@ -368,6 +368,7 @@ $color-overview: lighten($color-our, 20%);
 
         h5 {
             font-size: 1.1rem;
+            margin-top: .6rem;
             margin-bottom: .2rem;
             font-weight: 600;
             
