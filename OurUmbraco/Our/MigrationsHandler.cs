@@ -9,6 +9,7 @@ using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using File = System.IO.File;
+using Macro = umbraco.cms.businesslogic.macro.Macro;
 
 namespace OurUmbraco.Our
 {

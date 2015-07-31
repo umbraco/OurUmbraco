@@ -23,13 +23,7 @@ function MainController($scope, $rootScope, $location, $routeParams, $timeout, $
     $scope.authenticated = null;
     $scope.avatar = "assets/img/application/logo.png";
     $scope.touchDevice = appState.getGlobalState("touchDevice");
-    //subscribes to notifications in the notification service
-    $scope.notifications = notificationsService.current;
-    $scope.$watch('notificationsService.current', function (newVal, oldVal, scope) {
-        if (newVal) {
-            $scope.notifications = newVal;
-        }
-    });
+    
 
     $scope.removeNotification = function (index) {
         notificationsService.remove(index);
@@ -1027,67 +1021,72 @@ angular.module("umbraco").controller("Umbraco.Dialogs.LinkPickerController",
 	        $scope.dialogTreeEventHandler.unbind("treeNodeExpanded", nodeExpandedHandler);
 	    });
 	});
-angular.module("umbraco").controller("Umbraco.Dialogs.LoginController", function ($scope, localizationService, userService) {
-    
-    /**
-     * @ngdoc function
-     * @name signin
-     * @methodOf MainController
-     * @function
-     *
-     * @description
-     * signs the user in
-     */
-    var d = new Date();
-    //var weekday = new Array("Super Sunday", "Manic Monday", "Tremendous Tuesday", "Wonderful Wednesday", "Thunder Thursday", "Friendly Friday", "Shiny Saturday");
-    localizationService.localize("login_greeting"+d.getDay()).then(function(label){
-        $scope.greeting = label;
-    }); // weekday[d.getDay()];
-    
-    $scope.errorMsg = "";
-    
-    $scope.loginSubmit = function (login, password) {
-        
-        //if the login and password are not empty we need to automatically 
-        // validate them - this is because if there are validation errors on the server
-        // then the user has to change both username & password to resubmit which isn't ideal,
-        // so if they're not empty , we'l just make sure to set them to valid.
-        if (login && password && login.length > 0 && password.length > 0) {
-            $scope.loginForm.username.$setValidity('auth', true);
-            $scope.loginForm.password.$setValidity('auth', true);
-        }
-        
-        
-        if ($scope.loginForm.$invalid) {
-            return;
-        }
+angular.module("umbraco").controller("Umbraco.Dialogs.LoginController",
+    function ($scope, localizationService, userService, externalLoginInfo) {
 
-        userService.authenticate(login, password)
-            .then(function (data) {               
-                $scope.submit(true);
-            }, function (reason) {
-                $scope.errorMsg = reason.errorMsg;
-                
-                //set the form inputs to invalid
-                $scope.loginForm.username.$setValidity("auth", false);
-                $scope.loginForm.password.$setValidity("auth", false);
-            });
-        
-        //setup a watch for both of the model values changing, if they change
-        // while the form is invalid, then revalidate them so that the form can 
-        // be submitted again.
-        $scope.loginForm.username.$viewChangeListeners.push(function () {
-            if ($scope.loginForm.username.$invalid) {
+        /**
+         * @ngdoc function
+         * @name signin
+         * @methodOf MainController
+         * @function
+         *
+         * @description
+         * signs the user in
+         */
+        var d = new Date();
+        //var weekday = new Array("Super Sunday", "Manic Monday", "Tremendous Tuesday", "Wonderful Wednesday", "Thunder Thursday", "Friendly Friday", "Shiny Saturday");
+        localizationService.localize("login_greeting" + d.getDay()).then(function (label) {
+            $scope.greeting = label;
+        }); // weekday[d.getDay()];
+
+        $scope.errorMsg = "";
+
+        $scope.externalLoginFormAction = Umbraco.Sys.ServerVariables.umbracoUrls.externalLoginsUrl;
+        $scope.externalLoginProviders = externalLoginInfo.providers;
+        $scope.externalLoginInfo = externalLoginInfo;
+
+        $scope.loginSubmit = function (login, password) {
+
+            //if the login and password are not empty we need to automatically 
+            // validate them - this is because if there are validation errors on the server
+            // then the user has to change both username & password to resubmit which isn't ideal,
+            // so if they're not empty , we'l just make sure to set them to valid.
+            if (login && password && login.length > 0 && password.length > 0) {
                 $scope.loginForm.username.$setValidity('auth', true);
-            }
-        });
-        $scope.loginForm.password.$viewChangeListeners.push(function () {
-            if ($scope.loginForm.password.$invalid) {
                 $scope.loginForm.password.$setValidity('auth', true);
             }
-        });
-    };
-});
+
+
+            if ($scope.loginForm.$invalid) {
+                return;
+            }
+
+            userService.authenticate(login, password)
+                .then(function (data) {
+                    $scope.submit(true);
+                }, function (reason) {
+                    $scope.errorMsg = reason.errorMsg;
+
+                    //set the form inputs to invalid
+                    $scope.loginForm.username.$setValidity("auth", false);
+                    $scope.loginForm.password.$setValidity("auth", false);
+                });
+
+            //setup a watch for both of the model values changing, if they change
+            // while the form is invalid, then revalidate them so that the form can 
+            // be submitted again.
+            $scope.loginForm.username.$viewChangeListeners.push(function () {
+                if ($scope.loginForm.username.$invalid) {
+                    $scope.loginForm.username.$setValidity('auth', true);
+                }
+            });
+            $scope.loginForm.password.$viewChangeListeners.push(function () {
+                if ($scope.loginForm.password.$invalid) {
+                    $scope.loginForm.password.$setValidity('auth', true);
+                }
+            });
+        };
+    });
 
 //used for the macro picker dialog
 angular.module("umbraco").controller("Umbraco.Dialogs.MacroPickerController", function ($scope, macroFactory, umbPropEditorHelper) {
@@ -1106,7 +1105,7 @@ angular.module("umbraco").controller("Umbraco.Dialogs.MacroPickerController", fu
 //used for the media picker dialog
 angular.module("umbraco")
     .controller("Umbraco.Dialogs.MediaPickerController",
-        function ($scope, mediaResource, umbRequestHelper, entityResource, $log, mediaHelper, eventsService, treeService, $cookies, $element, $timeout) {
+        function ($scope, mediaResource, umbRequestHelper, entityResource, $log, mediaHelper, eventsService, treeService, $cookies, $element, $timeout, notificationsService) {
 
             var dialogOptions = $scope.dialogOptions;
 
@@ -1202,6 +1201,12 @@ angular.module("umbraco")
                         $scope.progress = 0;
                         $scope.gotoFolder($scope.currentFolder);
                     });
+                }
+                //Show notifications!!!!
+                if (data.result && data.result.notifications && angular.isArray(data.result.notifications)) {
+                    for (var n = 0; n < data.result.notifications.length; n++) {
+                        notificationsService.showNotification(data.result.notifications[n]);
+                    }
                 }
             });
 
@@ -1504,7 +1509,8 @@ angular.module("umbraco").controller("Umbraco.Dialogs.TreePickerController",
 	        searchText = value + "...";
 	    });
 
-	    var entityType = "Document";
+        // Allow the entity type to be passed in but defaults to Document for backwards compatibility.
+	    var entityType = dialogOptions.entityType ? dialogOptions.entityType : "Document";
 	    
 
 	    //min / max values
@@ -1907,12 +1913,13 @@ angular.module("umbraco").controller("Umbraco.Dialogs.TreePickerController",
 	    });
 	});
 angular.module("umbraco")
-    .controller("Umbraco.Dialogs.UserController", function ($scope, $location, $timeout, userService, historyService, eventsService) {
+    .controller("Umbraco.Dialogs.UserController", function ($scope, $location, $timeout, userService, historyService, eventsService, externalLoginInfo, authResource) {
 
-        $scope.user = userService.getCurrentUser();
         $scope.history = historyService.getCurrent();
         $scope.version = Umbraco.Sys.ServerVariables.application.version + " assembly: " + Umbraco.Sys.ServerVariables.application.assemblyVersion;
 
+        $scope.externalLoginProviders = externalLoginInfo.providers;
+        $scope.externalLinkLoginFormAction = Umbraco.Sys.ServerVariables.umbracoUrls.externalLinkLoginsUrl;
         var evts = [];
         evts.push(eventsService.on("historyService.add", function (e, args) {
             $scope.history = args.all;
@@ -1957,16 +1964,49 @@ angular.module("umbraco")
             }, 1000, false); // 1 second, do NOT execute a global digest    
         }
 
-        //get the user
-        userService.getCurrentUser().then(function (user) {
-            $scope.user = user;
-            if ($scope.user) {
-                $scope.remainingAuthSeconds = $scope.user.remainingAuthSeconds;
-                $scope.canEditProfile = _.indexOf($scope.user.allowedSections, "users") > -1;
-                //set the timer
-                updateTimeout();
+        function updateUserInfo() {
+            //get the user
+            userService.getCurrentUser().then(function (user) {
+                $scope.user = user;
+                if ($scope.user) {
+                    $scope.remainingAuthSeconds = $scope.user.remainingAuthSeconds;
+                    $scope.canEditProfile = _.indexOf($scope.user.allowedSections, "users") > -1;
+                    //set the timer
+                    updateTimeout();
+
+                    authResource.getCurrentUserLinkedLogins().then(function(logins) {
+                        //reset all to be un-linked
+                        for (var provider in $scope.externalLoginProviders) {
+                            $scope.externalLoginProviders[provider].linkedProviderKey = undefined;
+                        }
+
+                        //set the linked logins
+                        for (var login in logins) {
+                            var found = _.find($scope.externalLoginProviders, function (i) {
+                                return i.authType == login;
+                            });
+                            if (found) {
+                                found.linkedProviderKey = logins[login];
+                            }
+                        }
+                    });
+                }
+            });
+        }
+
+        $scope.unlink = function (e, loginProvider, providerKey) {
+            var result = confirm("Are you sure you want to unlink this account?");
+            if (!result) {
+                e.preventDefault();
+                return;
             }
-        });
+
+            authResource.unlinkLogin(loginProvider, providerKey).then(function (a, b, c) {
+                updateUserInfo();
+            });
+        }
+
+        updateUserInfo();
 
         //remove all event handlers
         $scope.$on('$destroy', function () {
@@ -2243,7 +2283,7 @@ angular.module('umbraco').controller("Umbraco.Editors.Content.CreateController",
  * @description
  * The controller for deleting content
  */
-function ContentDeleteController($scope, contentResource, treeService, navigationService, editorState, $location) {
+function ContentDeleteController($scope, contentResource, treeService, navigationService, editorState, $location, dialogService, notificationsService) {
 
     $scope.performDelete = function() {
 
@@ -2268,10 +2308,30 @@ function ContentDeleteController($scope, contentResource, treeService, navigatio
             
             //if the current edited item is the same one as we're deleting, we need to navigate elsewhere
             if (editorState.current && editorState.current.id == $scope.currentNode.id) {
-                $location.path("/content/content/edit/" + $scope.currentNode.parentId);
+
+                //If the deleted item lived at the root then just redirect back to the root, otherwise redirect to the item's parent
+                var location = "/content";
+                if ($scope.currentNode.parentId.toString() !== "-1")
+                    location = "/content/content/edit/" + $scope.currentNode.parentId;
+
+                $location.path(location);
             }
 
             navigationService.hideMenu();
+        }, function(err) {
+
+            $scope.currentNode.loading = false;
+
+            //check if response is ysod
+            if (err.status && err.status >= 500) {
+                dialogService.ysodDialog(err);
+            }
+            
+            if (err.data && angular.isArray(err.data.notifications)) {
+                for (var i = 0; i < err.data.notifications.length; i++) {
+                    notificationsService.showNotification(err.data.notifications[i]);
+                }
+            }
         });
 
     };
@@ -2672,7 +2732,7 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.MoveController",
  * 
  */
 
-function ContentRecycleBinController($scope, $routeParams, dataTypeResource) {
+function ContentRecycleBinController($scope, $routeParams, dataTypeResource, navigationService) {
 
     //ensures the list view doesn't actually load until we query for the list view config
     // for the section
@@ -2688,10 +2748,84 @@ function ContentRecycleBinController($scope, $routeParams, dataTypeResource) {
 
     $scope.model = { config: { entityType: $routeParams.section } };
 
+    // sync tree node
+    navigationService.syncTree({ tree: "content", path: ["-1", $routeParams.id], forceReload: false });
 }
 
 angular.module('umbraco').controller("Umbraco.Editors.Content.RecycleBinController", ContentRecycleBinController);
 
+angular.module("umbraco").controller("Umbraco.Editors.Content.RestoreController",
+	function ($scope, relationResource, contentResource, navigationService, appState, treeService) {
+		var dialogOptions = $scope.dialogOptions;
+
+		var node = dialogOptions.currentNode;
+
+		$scope.error = null;
+	    $scope.success = false;
+
+		relationResource.getByChildId(node.id, "relateParentDocumentOnDelete").then(function (data) {
+
+            if (data.length == 0) {
+                $scope.success = false;
+                $scope.error = {
+                    errorMsg: "Cannot automatically restore this item",
+                    data: {
+                        Message: "There is no 'restore' relation found for this node. Use the Move menu item to move it manually."
+                    }
+                }
+                return;
+            }
+
+		    $scope.relation = data[0];
+
+			if ($scope.relation.parentId == -1) {
+				$scope.target = { id: -1, name: "Root" };
+
+			} else {
+			    contentResource.getById($scope.relation.parentId).then(function (data) {
+					$scope.target = data;
+
+				}, function (err) {
+					$scope.success = false;
+					$scope.error = err;
+				});
+			}
+
+		}, function (err) {
+			$scope.success = false;
+			$scope.error = err;
+		});
+
+		$scope.restore = function () {
+			// this code was copied from `content.move.controller.js`
+			contentResource.move({ parentId: $scope.target.id, id: node.id })
+				.then(function (path) {
+
+					$scope.success = true;
+
+					//first we need to remove the node that launched the dialog
+					treeService.removeNode($scope.currentNode);
+
+					//get the currently edited node (if any)
+					var activeNode = appState.getTreeState("selectedNode");
+
+					//we need to do a double sync here: first sync to the moved content - but don't activate the node,
+					//then sync to the currenlty edited content (note: this might not be the content that was moved!!)
+
+					navigationService.syncTree({ tree: "content", path: path, forceReload: true, activate: false }).then(function (args) {
+						if (activeNode) {
+							var activeNodePath = treeService.getPath(activeNode).join();
+							//sync to this node now - depending on what was copied this might already be synced but might not be
+							navigationService.syncTree({ tree: "content", path: activeNodePath, forceReload: false, activate: true });
+						}
+					});
+
+				}, function (err) {
+					$scope.success = false;
+					$scope.error = err;
+				});
+		};
+	});
 /**
  * @ngdoc controller
  * @name Umbraco.Editors.ContentType.EditController
@@ -3412,7 +3546,7 @@ angular.module('umbraco').controller("Umbraco.Editors.Media.CreateController", m
  * @description
  * The controller for deleting content
  */
-function MediaDeleteController($scope, mediaResource, treeService, navigationService, editorState, $location) {
+function MediaDeleteController($scope, mediaResource, treeService, navigationService, editorState, $location, dialogService, notificationsService) {
 
     $scope.performDelete = function() {
 
@@ -3437,13 +3571,31 @@ function MediaDeleteController($scope, mediaResource, treeService, navigationSer
             
             //if the current edited item is the same one as we're deleting, we need to navigate elsewhere
             if (editorState.current && editorState.current.id == $scope.currentNode.id) {
-                $location.path("/media/media/edit/" + $scope.currentNode.parentId);
+
+            	//If the deleted item lived at the root then just redirect back to the root, otherwise redirect to the item's parent
+            	var location = "/media";
+            	if ($scope.currentNode.parentId.toString() !== "-1")
+            		location = "/media/media/edit/" + $scope.currentNode.parentId;
+
+                $location.path(location);
             }
 
             navigationService.hideMenu();
 
-        },function() {
+        }, function (err) {
+
             $scope.currentNode.loading = false;
+
+            //check if response is ysod
+            if (err.status && err.status >= 500) {
+                dialogService.ysodDialog(err);
+            }
+
+            if (err.data && angular.isArray(err.data.notifications)) {
+                for (var i = 0; i < err.data.notifications.length; i++) {
+                    notificationsService.showNotification(err.data.notifications[i]);
+                }
+            }
         });
     };
 
@@ -3677,7 +3829,7 @@ angular.module("umbraco").controller("Umbraco.Editors.Media.MoveController",
  * 
  */
 
-function MediaRecycleBinController($scope, $routeParams, dataTypeResource) {
+function MediaRecycleBinController($scope, $routeParams, dataTypeResource, navigationService) {
 
     //ensures the list view doesn't actually load until we query for the list view config
     // for the section
@@ -3693,6 +3845,8 @@ function MediaRecycleBinController($scope, $routeParams, dataTypeResource) {
 
     $scope.model = { config: { entityType: $routeParams.section } };
 
+    // sync tree node
+    navigationService.syncTree({ tree: "media", path: ["-1", $routeParams.id], forceReload: false });
 }
 
 angular.module('umbraco').controller("Umbraco.Editors.Media.RecycleBinController", MediaRecycleBinController);
@@ -4135,7 +4289,7 @@ angular.module('umbraco')
 		$scope.openContentPicker =function() {
 		    var d = dialogService.treePicker({
 		        section: config.type,
-		        treeAlias: config.type,
+		        treeAlias: config.treeAlias,
 		        multiPicker: config.multiPicker,
 		        callback: populate
 		    });
@@ -4342,7 +4496,7 @@ angular.module("umbraco").controller("Umbraco.PropertyEditors.ChangePasswordCont
             if (!isNew) {
                 $scope.model.confirm = "";
             }
-            else if ($scope.model.value.newPassword.length > 0) {
+            else if ($scope.model.value.newPassword && $scope.model.value.newPassword.length > 0) {
                 //if it is new and a new password has been set, then set the confirm password too
                 $scope.model.confirm = $scope.model.value.newPassword;
             }
@@ -4785,10 +4939,11 @@ function contentPickerController($scope, dialogService, entityResource, editorSt
                 return d.id == id;
             });
            
-            if(entity) {
+            if (entity) {
                 entity.icon = iconHelper.convertFromLegacyIcon(entity.icon);
                 $scope.renderModel.push({ name: entity.name, id: entity.id, icon: entity.icon });
             }
+            
            
         });
 
@@ -4920,10 +5075,31 @@ function dateTimePickerController($scope, notificationsService, assetsService, a
 			    $scope.$on('$destroy', function () {
 			        element.find("input").unbind("blur");
 					element.datetimepicker("destroy");
-				});
+			    });
+
+
+			    var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
+			        if ($scope.hasDatetimePickerValue) {
+			            var elementData = $element.find("div:first").data().DateTimePicker;
+			            if ($scope.model.config.pickTime) {
+			                $scope.model.value = elementData.getDate().format("YYYY-MM-DD HH:mm:ss");
+			            }
+			            else {
+			                $scope.model.value = elementData.getDate().format("YYYY-MM-DD");
+			            }
+			        }
+			        else {
+			            $scope.model.value = null;
+			        }
+			    });
+			    //unbind doc click event!
+			    $scope.$on('$destroy', function () {
+			        unsubscribe();
+			    });
+
+
 			});
         });
-
         
     });
 
@@ -5862,6 +6038,9 @@ angular.module("umbraco")
             },
 
             start: function (e, ui) {
+                // reset dragged RTE settings in case a RTE isn't dragged
+                draggedRteSettings = undefined;
+
                 ui.item.find('.mceNoEditor').each(function () {
                     notIncludedRte = [];
 
@@ -5881,12 +6060,14 @@ angular.module("umbraco")
                     }
                 });
                 $timeout(function () {
-                    // reconstruct the dragged RTE
-                    tinyMCE.init(draggedRteSettings);
+                    // reconstruct the dragged RTE (could be undefined when dragging something else than RTE)
+                    if (draggedRteSettings !== undefined) {
+                        tinyMCE.init(draggedRteSettings);
+                    }
 
                     _.forEach(notIncludedRte, function (id) {
                         // reset all the other RTEs
-                        if (id != draggedRteSettings.id) {
+                        if (draggedRteSettings === undefined || id != draggedRteSettings.id) {
                             var rteSettings = _.findWhere(tinyMCE.editors, { id: id }).settings;
                             tinyMCE.execCommand('mceRemoveEditor', false, id);
                             tinyMCE.init(rteSettings);
@@ -5976,14 +6157,20 @@ angular.module("umbraco")
             $scope.currentInfohighlightRow = null;
         };
 
-        $scope.getAllowedLayouts = function (column) {
+        function getAllowedLayouts(section) {
+
             var layouts = $scope.model.config.items.layouts;
 
-            if (column.allowed && column.allowed.length > 0) {
+            //This will occur if it is a new section which has been
+            // created from a 'template'
+            if (section.allowed && section.allowed.length > 0) {
                 return _.filter(layouts, function (layout) {
-                    return _.indexOf(column.allowed, layout.name) >= 0;
+                    return _.indexOf(section.allowed, layout.name) >= 0;
                 });
-            } else {
+            }
+            else {
+                
+
                 return layouts;
             }
         };
@@ -6187,6 +6374,31 @@ angular.module("umbraco")
             }
 
             if ($scope.model.value && $scope.model.value.sections && $scope.model.value.sections.length > 0) {
+
+                if ($scope.model.value.name && angular.isArray($scope.model.config.items.templates)) {
+
+                    //This will occur if it is an existing value, in which case
+                    // we need to determine which layout was applied by looking up 
+                    // the name
+                    // TODO: We need to change this to an immutable ID!!
+
+                    var found = _.find($scope.model.config.items.templates, function (t) {
+                        return t.name === $scope.model.value.name;
+                    });
+
+                    if (found && angular.isArray(found.sections) && found.sections.length === $scope.model.value.sections.length) {
+
+                        //Cool, we've found the template associated with our current value with matching sections counts, now we need to 
+                        // merge this template data on to our current value (as if it was new) so that we can preserve what is and isn't
+                        // allowed for this template based on the current config.
+
+                        _.each(found.sections, function (templateSection, index) {
+                            angular.extend($scope.model.value.sections[index], angular.copy(templateSection));
+                        });
+                         
+                    }
+                }
+
                 _.forEach($scope.model.value.sections, function (section, index) {
 
                     if (section.grid > 0) {
@@ -6212,15 +6424,7 @@ angular.module("umbraco")
         $scope.initSection = function (section) {
             section.$percentage = $scope.percentage(section.grid);
 
-            var layouts = $scope.model.config.items.layouts;
-
-            if (section.allowed && section.allowed.length > 0) {
-                section.$allowedLayouts = _.filter(layouts, function (layout) {
-                    return _.indexOf(section.allowed, layout.name) >= 0;
-                });
-            } else {
-                section.$allowedLayouts = layouts;
-            }
+            section.$allowedLayouts = getAllowedLayouts(section);
 
             if (!section.rows) {
                 section.rows = [];
@@ -6368,6 +6572,52 @@ angular.module("umbraco")
             $scope.initContent();
 
         });
+
+        //Clean the grid value before submitting to the server, we don't need 
+        // all of that grid configuration in the value to be stored!! All of that
+        // needs to be merged in at runtime to ensure that the real config values are used
+        // if they are ever updated.
+
+        var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
+            
+            if ($scope.model.value && $scope.model.value.sections) {
+                _.each($scope.model.value.sections, function(section) {
+                    if (section.rows) {
+                        _.each(section.rows, function (row) {
+                            if (row.areas) {
+                                _.each(row.areas, function (area) {
+
+                                    //Remove the 'editors' - these are the allowed editors, these will
+                                    // be injected at runtime to this editor, it should not be persisted
+
+                                    if (area.editors) {
+                                        delete area.editors;
+                                    }
+
+                                    if (area.controls) {
+                                        _.each(area.controls, function (control) {
+                                            if (control.editor) {
+                                                //replace
+                                                var alias = control.editor.alias;
+                                                control.editor = {
+                                                    alias: alias
+                                                }
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        });
+                    }
+                });
+            }
+        });
+
+        //when the scope is destroyed we need to unsubscribe
+        $scope.$on('$destroy', function () {
+            unsubscribe();
+        });
+
     });
 
 angular.module("umbraco")
@@ -7067,6 +7317,27 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
         }
     });
 
+    function showNotificationsAndReset(err, reload) {
+
+        //check if response is ysod
+        if(err.status && err.status >= 500) {
+            dialogService.ysodDialog(err);
+        }
+
+        $scope.bulkStatus = "";        
+        $scope.actionInProgress = false;
+
+        if (reload === true) {
+            $scope.reloadView($scope.contentId);
+        }
+
+        if (err.data && angular.isArray(err.data.notifications)) {
+            for (var i = 0; i < err.data.notifications.length; i++) {
+                notificationsService.showNotification(err.data.notifications[i]);
+            }
+        }
+    }
+
     $scope.isSortDirection = function (col, direction) {
         return $scope.options.orderBy.toUpperCase() == col.toUpperCase() && $scope.options.orderDirection == direction;
     }
@@ -7116,8 +7387,12 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
     /*Pagination is done by an array of objects, due angularJS's funky way of monitoring state
     with simple values */
 
-    $scope.reloadView = function(id) {
+    $scope.reloadView = function (id) {
+
         getListResultsCallback(id, $scope.options).then(function (data) {
+
+            $scope.actionInProgress = false;
+
             $scope.listViewResultSet = data;
 
             //update all values for display
@@ -7179,11 +7454,17 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
         });
     };
 
-    //assign debounce method to the search to limit the queries
-    $scope.search = _.debounce(function() {
-        $scope.options.pageNumber = 1;
-        $scope.reloadView($scope.contentId);
-    }, 100);
+    $scope.$watch(function() {
+        return $scope.options.filter;
+    }, _.debounce(function(newVal, oldVal) {
+        $scope.$apply(function() {
+            if (newVal !== null && newVal !== undefined && newVal !== oldVal) {
+                $scope.options.pageNumber = 1;
+                $scope.actionInProgress = true;
+                $scope.reloadView($scope.contentId);
+            }
+        });
+    }, 200));
 
     $scope.enterSearch = function($event) {
         $($event.target).next().focus();
@@ -7242,12 +7523,13 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
                 $scope.bulkStatus = "Deleted item " + current + " out of " + total + " item" + pluralSuffix;
                 deleteItemCallback(getIdCallback(selected[i])).then(function (data) {
                     if (current === total) {
+                        //TODO: Should probably add notifications on the server side
                         notificationsService.success("Bulk action", "Deleted " + total + " item" + pluralSuffix);
-                        $scope.bulkStatus = "";
-                        $scope.reloadView($scope.contentId);
-                        $scope.actionInProgress = false;
+                        showNotificationsAndReset(data, true);
                     }
                     current++;
+                }, function (err) {
+                    showNotificationsAndReset(err, false);
                 });
             }
         }
@@ -7276,26 +7558,12 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
                 .then(function(content) {
                     if (current == total) {
                         notificationsService.success("Bulk action", "Published " + total + " document" + pluralSuffix);
-                        $scope.bulkStatus = "";
-                        $scope.reloadView($scope.contentId);
-                        $scope.actionInProgress = false;
+                        showNotificationsAndReset(content, true);
                     }
                     current++;
                 }, function(err) {
-
-                    $scope.bulkStatus = "";
-                    $scope.reloadView($scope.contentId);
-                    $scope.actionInProgress = false;
-
-                    //if there are validation errors for publishing then we need to show them
-                    if (err.status === 400 && err.data && err.data.Message) {
-                        notificationsService.error("Publish error", err.data.Message);
-                    }
-                    else {
-                        dialogService.ysodDialog(err);
-                    }
+                    showNotificationsAndReset(err, false);
                 });
-
         }
     };
 
@@ -7322,12 +7590,12 @@ function listViewController($rootScope, $scope, $routeParams, $injector, notific
 
                     if (current == total) {
                         notificationsService.success("Bulk action", "Unpublished " + total + " document" + pluralSuffix);
-                        $scope.bulkStatus = "";
-                        $scope.reloadView($scope.contentId);
-                        $scope.actionInProgress = false;
+                        showNotificationsAndReset(content, true);
                     }
 
                     current++;
+                }, function(err) {
+                    showNotificationsAndReset(err, false);
                 });
         }
     };
@@ -8468,11 +8736,11 @@ angular.module("umbraco")
 
 
                     editor.on('ObjectResized', function (e) {
-                        var qs = "?width=" + e.width + "px&height=" + e.height + "px";
+                        var qs = "?width=" + e.width + "&height=" + e.height;
                         var srcAttr = $(e.target).attr("src");
                         var path = srcAttr.split("?")[0];
                         $(e.target).attr("data-mce-src", path + qs);
-
+                        
                         syncContent(editor);
                     });
 
@@ -8651,7 +8919,7 @@ function sliderController($scope, $log, $element, assetsService, angularHelper) 
     /** This creates the slider with the model values - it's called on startup and if the model value changes */
     function createSlider() {
 
-        //the value that we'll give the slider - if it's a range, we store our value as a comma seperated val but this slider expects an array
+        //the value that we'll give the slider - if it's a range, we store our value as a comma separated val but this slider expects an array
         var sliderVal = null;
 
         //configure the model value based on if range is enabled or not
@@ -8734,7 +9002,7 @@ function sliderController($scope, $log, $element, assetsService, angularHelper) 
 
         });
 
-    //load the seperate css for the editor to avoid it blocking our js loading
+    //load the separate css for the editor to avoid it blocking our js loading
     assetsService.loadCss("lib/slider/slider.css");
 
 }
@@ -8748,7 +9016,7 @@ angular.module("umbraco")
         $scope.isLoading = true;
         $scope.tagToAdd = "";
 
-        assetsService.loadJs("lib/typeahead-js/typeahead.bundle.min.js").then(function () {
+        assetsService.loadJs("lib/typeahead.js/typeahead.bundle.min.js").then(function () {
 
             $scope.isLoading = false;
 
