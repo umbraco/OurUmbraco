@@ -2,7 +2,7 @@
 
 <asp:Content ContentPlaceHolderId="Main" runat="server">
 
-<% Response.Redirect("/page-not-found/"); %>
+<% Response.Redirect("/page-not-found/", false); %>
 
 <asp:ContentPlaceHolder Id="TitleArea" runat="server">
 </asp:ContentPlaceHolder>
