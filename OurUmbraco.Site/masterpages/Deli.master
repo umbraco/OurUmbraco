@@ -2,38 +2,11 @@
 
 <asp:Content ContentPlaceHolderId="Main" runat="server">
 
-<div id="body" class="subpage deliCategory">  
-
+<% Response.Redirect("/page-not-found/"); %>
 
 <asp:ContentPlaceHolder Id="TitleArea" runat="server">
 </asp:ContentPlaceHolder>
 
-<div class="options">
-   <%if(umbraco.library.IsLoggedOn()){ %>
-      <a class="act add" href="/member/profile/projects">Create a new project</a>
-  <% } %>
-</div>
-
-<div class="deliLeft">
-    <div class="deliNav">
-        <h3>Packages</h3>
-        <ul>
-            <li><a href="/projects/popular">Popular packages</a></li>
-            <li><a href="projects/newest">Newest packages</a></li>
-        </ul>        
-    </div>
-    <div class="deliNav">
-        <umbraco:Macro Alias="Deli-ProjectCategories" Cache="3600" runat="server"></umbraco:Macro>
-    </div>
-    <div class="deliNav">
-        <h3>By Umbraco Version</h3>
-        <p><small>Choose your Umbraco version to get a list of packages that have been marked as compatible for that version.</small></p>
-        <umbraco:Macro runat="server" Language="cshtml" Cache="600" FileLocation="~/macroScripts/ProjectsVersionList.cshtml"/>
-    </div>
-</div>
-<div class="deliRight">
-  <asp:ContentPlaceHolder Id="DeliRight" runat="server" />
-</div>
-</div>
+<asp:ContentPlaceHolder Id="DeliRight" runat="server" />
 
 </asp:Content>
