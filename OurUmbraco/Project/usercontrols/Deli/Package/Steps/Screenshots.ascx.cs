@@ -127,7 +127,7 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
                         _defaultScreenshot.Visible = false;
                     }
                 
-                _image.ImageUrl = "/umbraco/imagegen.ashx?image=" + f.Path + "&height=100";
+                _image.ImageUrl = f.Path + "?height=100";
                 _date.Text = f.CreateDate.ToShortDateString() + " - " + f.CreateDate.ToShortTimeString();
                 _delete.CommandArgument = f.Id.ToString();
 
