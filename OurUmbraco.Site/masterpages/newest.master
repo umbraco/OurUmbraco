@@ -1,13 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Deli.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderId="TitleArea" runat="server">
+    <% Response.Redirect("/projects/", false); %>
 </asp:Content>
-
-<asp:content ContentPlaceHolderId="DeliRight" runat="server">
-  <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-  <h1 class="deliCatHead">Newest Projects</h1>
-
-<div class="deliPromoBox clearfix">
-<umbraco:Macro MaxPageSize="20" paged="1" ListingType="[@nplt]" PageNumber="[@page]" viewAll="[@ViewAll]" Alias="Deli-NewestProjects" runat="server"></umbraco:Macro>
-</div>
-</asp:content>
