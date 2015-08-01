@@ -8,8 +8,8 @@
   <h1 id="wikiHeader" class="wikiheadline"><umbraco:Item field="pageName" runat="server"></umbraco:Item></h1>
   <input type="text" id="wikiHeaderEditor" class="wikiheadline" style="display: none;" />
   
-  <div id="wikiContent">
-    <umbraco:Macro content="bodyText" Alias="Util-SafeHtml" runat="server"></umbraco:Macro>
+  <div id="wikiContent">  
+	<umbraco:Item field="bodyText" runat="server" />
   </div>
   
   <div class="divider"></div>  
