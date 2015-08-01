@@ -1,0 +1,179 @@
+﻿@using System.Text.RegularExpressions
+@using System.Xml;
+@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.Our
+@using OurUmbraco.Project
+@using Umbraco.Core
+
+@{
+    var projectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
+    var take = 30;
+
+    var wrapperClass = "notLoggedIn";
+
+    var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 );
+
+    var version = "v45";
+    if(Request.QueryString["version"] != null){
+        version = Request.QueryString["version"].ToLower();
+    }
+
+    const string uniqueWhatever = "E295637E-E957-4CCA-92CE-BF5D58F9FF59";
+    var cacheKey = uniqueWhatever + "[" + version + "]";
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+
+    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>)cache.GetCacheItem(cacheKey, () =>
+    {
+        return projectsProvider
+             .GetListingsByKarma(0, take, true, false)
+             .Where(x => !x.NotAPackage &&
+                 (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
+                    string.Join("", x.UmbracoVerionsSupported).Contains(version)));
+    }, TimeSpan.FromMinutes(10));
+
+    var pUrl = "/repo_viewproject?" + qs + "&project_id=";
+    var favs = new List<IListingItem>();
+
+
+    if(umbraco.library.IsLoggedOn()){
+        wrapperClass = "loggedIn";
+
+        var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
+
+        var iterator = OurUmbraco.Powers.Library.Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
+        while (iterator.MoveNext() && iterator.CurrentPosition < 20)
+        {
+            var node = (IHasXmlNode)iterator.Current;
+
+            if(node != null){
+                string id = umbraco.xmlHelper.GetNodeValue(node.GetNode());
+
+                if(id != null){
+                    try{
+                        var project = projectsProvider.GetListing(int.Parse(id), false);
+                        if(project != null){
+                            favs.Add(project);
+                        }
+                    }catch{
+                        //do nothing       
+                    }
+                }
+            }
+        }
+
+        favs = favs.Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) )).ToList();
+    }
+
+ }
+
+
+<div class="@wrapperClass">
+
+<div class="projectDiv">
+<h1>Popular Packages</h1>
+<p>The most popular packages, based on karma and downloads</p>
+<ul class="projects">
+  @foreach(var project in projects)
+  {
+    <li class="clearfix">
+            <div class="deliPackage">
+            
+            <div class="brief">
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+				<a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
+              
+              <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
+
+              <div class="category">@project.GetCategoryName()</div>
+            </div>
+
+            <div class="hiLite">
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
+            </div>
+
+            <div class="popularity">
+                <div class="karma">
+                    @project.Karma    
+                    <small>Karma</small>
+                </div>
+                <div class="downloads">
+                    @project.Downloads    
+                    <small>Downloads</small>
+                </div>
+            </div>
+        </div>
+</li>
+}
+</ul>
+</div>
+
+@if(favs.Count() > 0){
+<div class="favsDiv">
+<h1>Your favorites</h1>
+<p>This is your favourites, based on your karma votes and downloads</p>
+<ul class="projects">
+@foreach(var project in @favs)
+{
+   <li class="clearfix">
+            <div class="deliPackage">
+            
+            <div class="brief">
+			
+				@{
+					var screenShot = project.DefaultScreenshot;
+					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+				}
+              <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
+              
+              <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
+
+              <div class="category">@project.GetCategoryName()</div>
+
+
+            </div>
+
+            <div class="hiLite">
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
+            </div>
+
+            <div class="popularity">
+                <div class="karma">
+                    @project.Karma    
+                    <small>Karma</small>
+                </div>
+                <div class="downloads">
+                    @project.Downloads    
+                    <small>Downloads</small>
+                </div>
+            </div>
+        </div>
+</li>
+}
+</ul>
+</div>
+}else{
+  <a href="#" id="loginToSeeFavs" class="rounded">Log in to see your favourites</a>      
+}
+</div>
+
+
+@functions
+{
+    public static string ShortenText(string text)
+    {
+        text = Utils.StripHTML(text).Replace("&nbsp;", "");
+        if (text.Length > 210)
+        {
+
+            text = text.Substring(0, 210);
+            text = text.Substring(0, text.LastIndexOf(' '));
+        }
+
+        text = Regex.Replace(text, @"[^a-zA-Z0-9\s.?!&;]", ""); //strip all crap from the listing such as ======================================= !!!!
+        return text.Trim();
+    }
+}

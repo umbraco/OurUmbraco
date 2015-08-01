@@ -1935,6 +1935,7 @@
     <Content Include="umbraco\lib\font-awesome\fonts\fontawesome-webfont.ttf" />
     <Content Include="umbraco\lib\font-awesome\fonts\fontawesome-webfont.woff" />
     <Content Include="umbraco\lib\font-awesome\fonts\FontAwesome.otf" />
+    <Content Include="macroScripts\repository-popularpackages.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

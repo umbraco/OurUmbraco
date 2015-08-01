@@ -350,5 +350,30 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 items = items.Skip(skip).Take(take);
             return items.Select(x => x.ToIListingItem(optimized));
         }
+
+        /// <summary>
+        /// Returns a paged list of projects ordered by Karma
+        /// </summary>
+        /// <param name="skip"></param>
+        /// <param name="take"></param>
+        /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
+        /// <param name="all">If set returns both live and not live</param>
+        /// <returns></returns>
+        public IEnumerable<IListingItem> GetListingsByKarma(int skip, int take, bool optimized = false, bool all = false)
+        {
+            var karmaProvider = new KarmaProvider();
+            var projectsByKarma = karmaProvider.GetProjectsKarmaList();
+            var projectsFromDeliProjectRoot = GetProjectsFromDeliProjectRoot(false).ToArray();
+            
+            var items = projectsByKarma
+                .Select(x => Tuple.Create(x, projectsFromDeliProjectRoot.FirstOrDefault(y => y.Id == x.ProjectId)))
+                .Where(x => x.Item2 != null);
+
+            if (take > 0)
+                items = items.Skip(skip).Take(take);
+
+            return items.Select(x => GetListing(x.Item2, optimized, x.Item1.Points));
+        }
+
     }
 }
