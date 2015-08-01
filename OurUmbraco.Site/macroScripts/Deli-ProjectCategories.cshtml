@@ -1,8 +1,8 @@
-﻿@using Marketplace.Interfaces
-@using Marketplace.Providers
+﻿@using OurUmbraco.MarketPlace.Interfaces
+@using Umbraco.Core
 
 @{
-    ICategoryProvider categoryProvider = (ICategoryProvider)MarketplaceProviderManager.Providers["CategoryProvider"];
+    var categoryProvider = new OurUmbraco.MarketPlace.Providers.UmbracoCategoryProvider();
     IEnumerable<ICategory> cats = categoryProvider.GetAllCategories();
     var selected = "";
 }
