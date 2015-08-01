@@ -10,7 +10,23 @@ Upon build a web.config file will be copied into the `OurUmbraco.Site` project w
 ##Database restore
 Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip
 
-Restore the database to SQL Server 2012 (won't work on earlier version) and update the connection strings (`umbracoDbDSN` and `Marketplace.Data.Properties.Settings.ourConnectionString`) in `OurUmbraco.Site/web.config`.
+Restore the database to SQL Server 2012 (won't work on earlier version) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
+
+Currently, we have some invalid data in the database that prevents the upgrade installer to run when you start the site. This is fixable by running the following queries first:
+```
+alter table umbracoLanguage drop constraint PK_language;
+alter table umbracoLanguage alter column id int not null;
+alter table umbracoLanguage add CONSTRAINT PK_language PRIMARY KEY CLUSTERED (id);
+
+CREATE UNIQUE NONCLUSTERED INDEX [IX_cmsDictionary_id] ON [dbo].[cmsDictionary]
+([id] ASC) WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, SORT_IN_TEMPDB = OFF, IGNORE_DUP_KEY = OFF, DROP_EXISTING = OFF, ONLINE = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY];
+
+delete from umbracoNode where id = 147605
+delete from umbracoNode where id = 147606
+delete from umbracoNode where id = 148645
+```
+
+After doing that you should be able to start the site and run the upgrade with no problems.
 
 ##Logging in
 All users and members use the same password: Not_A_Real_Password
