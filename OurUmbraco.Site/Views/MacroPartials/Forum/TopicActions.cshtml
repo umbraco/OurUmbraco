@@ -7,15 +7,19 @@
 }
 
 <div class="utility-actions">
-	@if(topic != null) 
-	{
-		if (Members.IsLoggedIn())
-		{
-			var mem = Members.GetCurrentMember();
-			var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
-		
-			if (Members.IsAdmin())
-			{
+	@if(topic != null)
+    {
+        if (Members.IsLoggedIn())
+        {
+            var mem = Members.GetCurrentMember();
+            var subscribed = false;
+            if (mem != null)
+            {
+                subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
+            }
+
+            if (Members.IsAdmin())
+            {
 				<a href="#" class="delete-thread button" data-id="@topic.Id">
 					<i class="icon-Delete-key"></i><span>Delete thread</span>
 				</a>

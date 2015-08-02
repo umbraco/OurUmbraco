@@ -157,7 +157,7 @@ $recordsPerPage )">
   <xsl:when test="string-length($project/defaultScreenshotPath) &gt; 0">
     <div style="float:left;padding-top:15px;width:75px;height:80px;">
       <div style="padding-left:16px;">
-        <img style="width:40px;height:40px" src="/umbraco/imagegen.ashx?image={$project/defaultScreenshotPath}&amp;pad=true&amp;width=40&amp;height=40;"  alt="{$project/@nodeName}"/>
+        <img style="width:40px;height:40px" src="{$project/defaultScreenshotPath}?width=40&amp;height=40;"  alt="{$project/@nodeName}"/>
       </div>
     </div>
   </xsl:when>

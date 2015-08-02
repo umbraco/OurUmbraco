@@ -12,8 +12,11 @@
         }
 
         var mem = Members.GetCurrentMember();
-
-        var subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
+        var subscribed = false;
+        if (mem != null)
+        {
+            subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
+        }
 
         if (CurrentPage.Level == 4)
         {
