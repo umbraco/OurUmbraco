@@ -22,8 +22,7 @@
 
         var roles = member.GetRoles();
 
-        var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-        var content = umbracoHelper.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+        var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
         IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
         var contribProjects = new List<IPublishedContent>();
         if (content != null)
@@ -33,7 +32,7 @@
             var contribPackageIds = UmbracoContext.Application.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
             foreach (var contribPackageId in contribPackageIds)
             {
-                contribProjects.Add(umbracoHelper.TypedContent(contribPackageId));
+                contribProjects.Add(Umbraco.TypedContent(contribPackageId));
             }
         }
 
