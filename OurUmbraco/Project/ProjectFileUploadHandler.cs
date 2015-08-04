@@ -51,7 +51,7 @@ namespace OurUmbraco.Project
                 var p = nodeListingProvider.GetListing(new Guid(projectguid));
                 Member mem = new Member(new Guid(userguid));
 
-                if (p.Vendor != null && p.VendorId == mem.Id || Utils.IsProjectContributor(mem.Id, p.Id))
+                if (p.VendorId == mem.Id || Utils.IsProjectContributor(mem.Id, p.Id))
                 {
                     var mediaProvider = new OurUmbraco.MarketPlace.Providers.MediaProvider();
 
