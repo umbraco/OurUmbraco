@@ -1937,6 +1937,7 @@
     <Content Include="umbraco\lib\font-awesome\fonts\FontAwesome.otf" />
     <Content Include="macroScripts\repository-popularpackages.cshtml" />
     <Content Include="Views\MacroPartials\RedirectProjectCategory.cshtml" />
+    <Content Include="Views\MacroPartials\Community\Home.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

@@ -22,6 +22,7 @@ namespace OurUmbraco.Our
             EnsureMigrationsMarkerPathExists();
             MemberActivationMigration();
             SpamOverview();
+            CommunityHome();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -122,6 +123,41 @@ namespace OurUmbraco.Our
                     var content = contentService.CreateContent(antiSpamPageName, rootNode.Id, "Textpage");
                     content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
                     contentService.SaveAndPublishWithStatus(content);
+                }
+                
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void CommunityHome()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroAlias = "CommunityHome";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "[Community] Home",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Community/Home.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
                 }
                 
                 string[] lines = { "" };
