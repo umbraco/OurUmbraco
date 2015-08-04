@@ -69,7 +69,7 @@ namespace OurUmbraco.Forum.Services
                     var p = GetById(comment.ParentCommentId);
                     if (p != null)
                         p.HasChildren = true;
-                    Save(p);
+                    Save(p, false);
                 }
 
                 if (newComment)
