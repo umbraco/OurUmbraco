@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Forum.Models;
@@ -18,8 +19,8 @@ namespace OurUmbraco.Our.Examine
         public static SimpleDataSet MapTopicToSimpleDataIndexItem(ReadOnlyTopic topic, SimpleDataSet simpleDataSet, int id, string indexType)
         {
             //First generate the accumulated comment text:
-            string commentText = string.Empty;
-            foreach (var currentComment in topic.Comments)
+            var commentText = string.Empty;
+            foreach (var currentComment in topic.Comments.Where(c => c.IsSpam == false))
                 commentText += currentComment.Body;
 
             var body = library.StripHtml(topic.Body + commentText);
