@@ -88,5 +88,16 @@
                 </li>
             }
         </ul>
+
+        <h3>Spam topics</h3>
+
+        var allTopics = topicService.GetLatestTopics(1000, 1, false).Where(t => t.IsSpam || (t.Comments != null && t.Comments.Any(c => c.IsSpam)));
+
+        <ul>
+            @foreach (var topic in allTopics)
+            {
+                <li>@topic.Id - @topic.Title</li>
+            }
+        </ul>
     }
 }
