@@ -38,8 +38,8 @@ namespace OurUmbraco.Our.Controllers
             foreach (var category in categories)
                 model.ProjectCategories.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString(), Selected = project.CategoryId == category.Id });
 
-            model.License = project.LicenseName == string.Empty ? "MIT" : project.LicenseName;
-            model.LicenseUrl = project.LicenseUrl == string.Empty ? "http://www.opensource.org/licenses/mit-license.php" : project.LicenseUrl;
+            model.License = string.IsNullOrWhiteSpace(project.LicenseName) ? "MIT" : project.LicenseName;
+            model.LicenseUrl = string.IsNullOrWhiteSpace(project.LicenseUrl) ? "http://www.opensource.org/licenses/mit-license.php" : project.LicenseUrl;
 
             model.Title = project.Name;
             model.Description = project.Description;
