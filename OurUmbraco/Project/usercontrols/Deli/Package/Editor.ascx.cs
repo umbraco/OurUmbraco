@@ -45,8 +45,8 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package
             StepPlaceHolder.Controls.Clear();
             var controlToLoad = new UserControl().LoadControl(IOHelper.ResolveUrl(currentStep.UserControl));
 
-            if (currentStep.Alias == "details")
-                ((Details)controlToLoad).IsDeliVendor = false;
+            //if (currentStep.Alias == "details")
+            //    ((Details)controlToLoad).IsDeliVendor = false;
 
             StepPlaceHolder.Controls.Add(controlToLoad);
             Step.Value = currentStep.Alias;

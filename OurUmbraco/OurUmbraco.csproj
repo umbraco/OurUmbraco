@@ -389,6 +389,7 @@
     <Compile Include="Our\Controllers\LoginController.cs" />
     <Compile Include="Our\Controllers\ProfileController.cs" />
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
+    <Compile Include="Our\Controllers\ProjectController.cs" />
     <Compile Include="Our\Controllers\RegisterController.cs" />
     <Compile Include="Our\CustomHandlers\CommentVote.cs" />
     <Compile Include="Our\CustomHandlers\ExternalVote.cs" />
@@ -421,6 +422,7 @@
     <Compile Include="Our\MigrationsHandler.cs" />
     <Compile Include="Our\Models\ProfileModel.cs" />
     <Compile Include="Our\Models\ProfileNotificationModel.cs" />
+    <Compile Include="Our\Models\ProjectDetails.cs" />
     <Compile Include="Our\Models\RegisterModel.cs" />
     <Compile Include="Our\Models\SearchResultContentModel.cs" />
     <Compile Include="Our\Models\SearchResultModel.cs" />

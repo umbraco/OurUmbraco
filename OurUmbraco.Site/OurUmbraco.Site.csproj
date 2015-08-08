@@ -1938,6 +1938,8 @@
     <Content Include="macroScripts\repository-popularpackages.cshtml" />
     <Content Include="Views\MacroPartials\RedirectProjectCategory.cshtml" />
     <Content Include="Views\MacroPartials\Community\Home.cshtml" />
+    <Content Include="Views\MacroPartials\Project\Edit.cshtml" />
+    <Content Include="masterpages\ProjectPage.master" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
@@ -4787,6 +4789,7 @@
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
     <Content Include="Views\Partials\Members\Register.cshtml" />
     <Content Include="Views\Partials\Projects\CompatibilityReport.cshtml" />
+    <Content Include="Views\Partials\Project\Edit.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
