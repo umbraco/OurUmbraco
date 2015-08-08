@@ -8,6 +8,10 @@
         border: 1px solid #e1e1e1;
         border-radius: 5px;
     }
+    #Description {
+        width: 100%; 
+        height: 350px;
+    }
     #Description_tbl {
         padding: 0;
         @if (ViewData.ModelState["Description"] != null && ViewData.ModelState["Description"].Errors.Count > 0)
@@ -74,9 +78,7 @@
                 <legend>Project Description</legend>
                 <p>Be clear and to the point about what your project does. Provide simple examples of how to use your project. DO NOT ask for Karma Votes. If you mention Karma in your description we will instantly mark your project as SPAM.</p>
                 <p>
-                    <textarea name="Description" rows="2" cols="20" id="Description" style="width: 100%; height: 350px;">
-                        @Model.Description
-                    </textarea>
+                    @Html.TextAreaFor(m => m.Description)
                 </p>
                 @Html.ValidationMessageFor(m => m.Description)
             </fieldset>
