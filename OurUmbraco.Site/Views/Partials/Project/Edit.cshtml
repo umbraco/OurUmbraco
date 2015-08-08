@@ -1,5 +1,27 @@
 ﻿@using OurUmbraco.Our.Controllers
 @inherits UmbracoViewPage<OurUmbraco.Our.Models.ProjectDetails>
+<style>
+    #Category, #Description_tbl {
+        width: 100%;
+        padding: 10px 20px 10px 8px;
+        font-size: 1rem;
+        border: 1px solid #e1e1e1;
+        border-radius: 5px;
+    }
+    #Description_tbl {
+        padding: 0;
+        @if (ViewData.ModelState["Description"] != null && ViewData.ModelState["Description"].Errors.Count > 0)
+        {
+            <text>border: 1px solid red !important;</text>
+        }
+    }
+    input[type=text].input-validation-error, select.input-validation-error {
+         border: 1px solid red !important;
+    }
+    .field-validation-error {
+        color: red;
+    }
+</style>
 <div class="package-create">
     
     <ul class="stepNavigation">
@@ -17,6 +39,9 @@
     <div class="form simpleForm" id="registrationForm">
         @using (Html.BeginUmbracoForm<ProjectController>("SaveDetails"))
         {
+            Html.EnableClientValidation();
+            Html.EnableUnobtrusiveJavaScript();
+
             @Html.ValidationSummary(true)
 
 
@@ -49,7 +74,9 @@
                 <legend>Project Description</legend>
                 <p>Be clear and to the point about what your project does. Provide simple examples of how to use your project. DO NOT ask for Karma Votes. If you mention Karma in your description we will instantly mark your project as SPAM.</p>
                 <p>
-                    <textarea name="Description" rows="2" cols="20" id="Description" style="width: 600px; height: 500px;">@Model.Description</textarea>
+                    <textarea name="Description" rows="2" cols="20" id="Description" style="width: 100%; height: 350px;">
+                        @Model.Description
+                    </textarea>
                 </p>
                 @Html.ValidationMessageFor(m => m.Description)
             </fieldset>
@@ -70,7 +97,6 @@
             <fieldset>
                 <legend>Resources</legend>
                 <p>
-
                     @Html.LabelFor(m => m.ProjectUrl)
                     @Html.TextBoxFor(m => m.ProjectUrl)
                     @Html.ValidationMessageFor(m => m.ProjectUrl)
@@ -125,9 +151,9 @@
 <script type="text/javascript" src="/scripts/tiny_mce/tiny_mce.js"></script>
 <script type="text/javascript">
 
-    $(document).ready(function () {
+    $(document).ready(function() {
         $("form").validate({
-            invalidHandler: function (f, v) {
+            invalidHandler: function(f, v) {
                 var errors = v.numberOfInvalids();
                 if (errors.length > 0) {
                     validator.focusInvalid();
@@ -151,3 +177,5 @@
     });
 
 </script>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/scripts/jquery.validate.unobtrusive.js"></script>

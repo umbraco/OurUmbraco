@@ -44,7 +44,6 @@ namespace OurUmbraco.Our.Controllers
             model.Title = project.Name;
             model.Description = project.Description;
             model.Version = project.CurrentVersion;
-            model.License = project.LicenseName;
             model.SourceCodeUrl = project.SourceCodeUrl;
             model.DemonstrationUrl = project.DemonstrationUrl;
             model.OpenForCollaboration = project.OpenForCollab;
