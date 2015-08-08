@@ -75,6 +75,7 @@ namespace OurUmbraco.Our.Controllers
             project.GACode = model.GoogleAnalyticsCode;
             project.ProjectGuid = (model.Guid == Guid.Empty) ? Guid.NewGuid() : model.Guid; //this is used as the Unique project ID.
             project.ListingType = ListingType.free;
+            project.VendorId = Members.GetCurrentMemberId();
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
 
