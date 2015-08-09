@@ -143,11 +143,11 @@
                 <div class="row">
                     <div class="col-xs-2 col-md-1">
                         @{
-            var defaultScreenshot = "/css/img/package2.png";
-            if (childContent != null)
-            {
-                defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
-            }
+                            var defaultScreenshot = "/css/img/package2.png";
+                            if (childContent != null)
+                            {
+                                defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
+                            }
                         }
                         <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
                     </div>
