@@ -2,6 +2,7 @@
 @using System.Configuration
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.MarketPlace.NodeListing
 @using OurUmbraco.Our
 @{
     var memberId = Request["id"];
@@ -35,11 +36,13 @@
                 contribProjects.Add(Umbraco.TypedContent(contribPackageId));
             }
         }
-
+        
         var currentMember = Members.GetCurrentMember();
         var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
-        var dbMember = UmbracoContext.Application.Services.MemberService.GetById(member.Id);
+        var nodeListingProvider = new NodeListingProvider();
+        var votedProjects = nodeListingProvider.GetVotedProjectsForMember(member.Id);
+
         var rolesForUser = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
 
         <div class="public-member">
@@ -164,6 +167,39 @@
                             </div>
                         </div>
                     }
+                    @if (projects.Any())
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="package-forum-activity">
+                                    <h3>Packages created</h3>
+                                    @foreach (var project in projects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
+                                    {
+                                        <a href="@project.Url" class="forum-thread">
+                                            <div class="row">
+                                                <div class="col-xs-2">
+                                                    @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
+                                                    {
+                                                        <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                    }
+                                                </div>
+                                                <div class="col-xs-10">
+                                                    <div class="forum-thread-text">
+                                                        <h3>@project.Name</h3>
+                                                        <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
+                                                    </div>
+                                                </div>
+                                               </div>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
                     @if (contribProjects.Any())
                     {
                         <div class="row">
@@ -188,6 +224,41 @@
                                                     <div class="forum-thread-text">
                                                         <h3>@project.Name</h3>
                                                         <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    @if (votedProjects.Any())
+                    {
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="package-forum-activity">
+                                    <h3>Packages voted up</h3>
+                                    @foreach (var project in votedProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.UpdateDate))
+                                    {
+                                        <a href="@project.Url" class="forum-thread">
+                                            <div class="row">
+                                                <div class="col-xs-2">
+                                                    @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
+                                                    {
+                                                        <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                    }
+                                                    else
+                                                    {
+                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                    }
+                                                </div>
+                                                <div class="col-xs-10">
+                                                    <div class="forum-thread-text">
+                                                        <h3>@project.Name</h3>
+                                                        <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
+                                                        <p><strong>Updated: </strong>@project.UpdateDate.ToLongDateString()</p>
                                                     </div>
                                                 </div>
                                             </div>

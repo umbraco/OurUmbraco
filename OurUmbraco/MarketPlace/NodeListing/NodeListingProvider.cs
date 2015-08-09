@@ -5,6 +5,7 @@ using System.Linq;
 using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Providers;
+using OurUmbraco.Our;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
@@ -375,5 +376,36 @@ namespace OurUmbraco.MarketPlace.NodeListing
             return items.Select(x => GetListing(x.Item2, optimized, x.Item1.Points));
         }
 
+        public IEnumerable<IPublishedContent> GetVotedProjectsForMember(int memberId)
+        {
+            var votedProjects = new List<IPublishedContent>();
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var projectsVoted = Utils.GetProjectsMemberHasVotedUp(memberId);
+
+            foreach (var projectId in projectsVoted)
+            {
+                var content = umbracoHelper.TypedContent(projectId);
+                if(content != null)
+                    votedProjects.Add(content);
+            }
+
+            return votedProjects;
+        }
+
+        public IEnumerable<IPublishedContent> GetDownloadedProjectsForMember(int memberId)
+        {
+            var downloadedProjects = new List<IPublishedContent>();
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var projectsDownloaded = Utils.GetProjectsMemberHasDownloaded(memberId);
+
+            foreach (var projectId in projectsDownloaded)
+            {
+                var content = umbracoHelper.TypedContent(projectId);
+                if(content != null)
+                    downloadedProjects.Add(content);
+            }
+
+            return downloadedProjects;
+        }
     }
 }

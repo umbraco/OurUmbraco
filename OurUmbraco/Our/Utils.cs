@@ -103,6 +103,20 @@ namespace OurUmbraco.Our
             return result ?? 0;
         }
 
+        public static IEnumerable<int> GetProjectsMemberHasVotedUp(int memberId)
+        {
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<int>(
+                "SELECT DISTINCT id FROM [powersProject] where memberId = @memberId", new { memberId = memberId });
+            return result;
+        }
+
+        public static IEnumerable<int> GetProjectsMemberHasDownloaded(int memberId)
+        {
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<int>(
+                "SELECT DISTINCT projectId FROM [projectDownload] where memberId = @memberId", new { memberId = memberId });
+            return result;
+        }
+
         public static IEnumerable<string> GetProjectCompatibleVersions(int projectId)
         {
             return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<string>(
