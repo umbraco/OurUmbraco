@@ -123,8 +123,8 @@ $(function () {
 
     //Go to solution
     $(".go-to-solution").click(function () {
-        $('html, body').animate({
-            scrollTop: $(this.getAttribute('href')).offset().top - 80
+        $("html, body").animate({
+            scrollTop: $(this.getAttribute("href")).offset().top - 80
         }, 800);
     });
 
@@ -134,7 +134,7 @@ $(function () {
         var data = $(this).data();
         var id = parseInt(data.id);
         community.markCommentAsSolution(id);
-        $(this).closest(".comment").addClass('solution');
+        $(this).closest(".comment").addClass("solution");
         $(".comment a.solved").remove();
     });
 
@@ -155,7 +155,7 @@ $(function () {
             body.removeClass("active copy-prompt");
             deepLinking = false;
         }
-        getLink.height(document.getElementsByClassName('getLink')[0].scrollHeight);
+        getLink.height(document.getElementsByClassName("getLink")[0].scrollHeight);
     });
 
     getLink.keydown(function (e) {
@@ -164,9 +164,9 @@ $(function () {
 
             console.log(thankYou);
 
-            thankYou.addClass('active');
+            thankYou.addClass("active");
             setTimeout(function () {
-                thankYou.removeClass('active');
+                thankYou.removeClass("active");
             }, 900);
             deepLinking = false;
         }
