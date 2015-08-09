@@ -148,7 +148,7 @@ $(function () {
         e.preventDefault();
         if (deepLinking === false) {
             body.addClass("active copy-prompt");
-            getLink.html(window.location.hostname + window.location.pathname + $(this).attr("data-id"));
+            getLink.html(window.location.protocol + "//" + window.location.hostname + window.location.pathname + $(this).attr("data-id"));
             getLink.focus().select();
             deepLinking = true;
         } else {
