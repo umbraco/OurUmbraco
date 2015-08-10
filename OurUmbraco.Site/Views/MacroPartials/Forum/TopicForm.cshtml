@@ -97,7 +97,7 @@
 
 <!-- Mustache template-->
 <script id="comment-template" type="x-tmpl-mustache">
-    <li class="comment  {{cssClass}}" id="comment-{{id}}">
+    <li class="comment  {{cssClass}}"  data-parent="{{id}}" id="comment-{{id}}">
         <div class="meta">
             <div class="profile">
                 <a href="/member/{{authorId}}">{{authorName}}</a> has in total {{authorKarma}} karma points
