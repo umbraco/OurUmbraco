@@ -53,6 +53,14 @@
 		}
 	}
 
+   .utility-actions.thread-bottom {
+        @media (min-width: $md) {
+			margin: 0 0 0 auto;
+            
+		}
+    }
+
+
 	.container {
 		padding: 0;
 

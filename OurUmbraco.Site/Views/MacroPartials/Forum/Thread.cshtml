@@ -1,6 +1,7 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Web.Mvc.Html
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.Forum.Extensions
 
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
@@ -66,8 +67,51 @@
 		}
 	</ul>
 
-	if (Members.IsLoggedIn())
-	{
+    if (Members.IsLoggedIn())
+    {
+
+        <div class="utilities">
+            <div class="utility-actions thread-bottom">
+
+                @if (Members.IsLoggedIn())
+                {
+                    var mem = Members.GetCurrentMember();
+                    var subscribed = false;
+                    if (mem != null)
+                    {
+                        subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
+                    }
+
+                    if (Members.IsAdmin())
+                    {
+                        <a href="#" class="delete-thread button" data-id="@topic.Id">
+                            <i class="icon-Delete-key"></i><span>Delete thread</span>
+                        </a>
+                    }
+
+                    if (subscribed)
+                    {
+                        <a href="#" class="follow button following" data-id="@topic.Id" data-controller="topic">
+                            <i class="icon-Bookmark"></i><span>Following</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="follow button transparent" data-id="@topic.Id" data-controller="topic">
+                            <i class="icon-Bookmark"></i><span>Follow</span>
+                        </a>
+                    }
+                }
+
+                @if (topic.Answer > 0)
+                {
+                    <a href="#comment-@topic.Answer.ToString()" class="go-to-solution button transparent">
+                        <i class="icon-Check"></i><span>Go to solution</span>
+                    </a>
+                }
+
+            </div>
+        </div>
 		<div class="replybutton">
 			<a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
 		</div>
