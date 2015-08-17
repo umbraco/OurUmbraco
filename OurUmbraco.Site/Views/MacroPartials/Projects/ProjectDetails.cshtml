@@ -52,13 +52,46 @@
 
         <div class="vote">
             <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
-            @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
+            
+            @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id)
             {
-                <span>@totalVotes votes</span>
+
+                if (totalVotes == 0 || totalVotes > 1)
+                {
+                    <span>@totalVotes votes</span>
+                }
+                else
+                {
+                    <span>@totalVotes vote</span>
+                }
+
+
             }
-            else
+
+           @if (Members.IsLoggedIn() && hasMemberVoted)
+           {
+               if (totalVotes == 0 || totalVotes > 1)
+               {
+                <span>@totalVotes votes</span>
+               }
+               else
+               {
+                <span>@totalVotes vote</span>
+               }
+           }
+
+            @if (Members.IsLoggedIn() && !hasMemberVoted)
             {
-                <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
+                if (totalVotes == 0 || totalVotes > 1)
+                {
+                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
+                }
+                else
+                {
+                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes vote</a>
+                }
+
+
             }
         </div>
 
