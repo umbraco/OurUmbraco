@@ -42,6 +42,10 @@
     var demoUrl = project.GetPropertyValue<string>("demoUrl");
     var licenseUrl = project.GetPropertyValue<string>("licenseUrl");
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
+
+    var voteText = "votes";
+    if (totalVotes == 1) { voteText = "vote"; } 
+
 }
 
 <section class="package-detail">
@@ -58,11 +62,11 @@
 
                 if (totalVotes == 0 || totalVotes > 1)
                 {
-                    <span>@totalVotes votes</span>
+                    <span>@totalVotes @voteText</span>
                 }
                 else
                 {
-                    <span>@totalVotes vote</span>
+                    <span>@totalVotes @voteText</span>
                 }
 
 
@@ -72,7 +76,7 @@
            {
                if (totalVotes == 0 || totalVotes > 1)
                {
-                <span>@totalVotes votes</span>
+                <span>@totalVotes @voteText</span>
                }
                else
                {
@@ -84,11 +88,11 @@
             {
                 if (totalVotes == 0 || totalVotes > 1)
                 {
-                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
+                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
                 }
                 else
                 {
-                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes vote</a>
+                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
                 }
 
 
