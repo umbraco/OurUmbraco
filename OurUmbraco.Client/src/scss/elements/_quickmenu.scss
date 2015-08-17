@@ -115,7 +115,8 @@ body.quickmenu {
 
 
 
-		.karma {
+		.posts,
+        .karma {
 			display: inline-block;
 			font-size: .9rem;
 			color: darken($color-space, 15%);
@@ -134,6 +135,13 @@ body.quickmenu {
 			}
 		}
 
+        
+        .posts{ 
+            &:before { 
+                content:"";
+            }
+
+        }
 
 
 		.user-twitter {
