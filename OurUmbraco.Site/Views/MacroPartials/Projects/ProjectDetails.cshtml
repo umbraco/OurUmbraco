@@ -59,43 +59,17 @@
             
             @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id)
             {
-
-                if (totalVotes == 0 || totalVotes > 1)
-                {
-                    <span>@totalVotes @voteText</span>
-                }
-                else
-                {
-                    <span>@totalVotes @voteText</span>
-                }
-
-
+                <span>@totalVotes @voteText</span>    
             }
 
            @if (Members.IsLoggedIn() && hasMemberVoted)
            {
-               if (totalVotes == 0 || totalVotes > 1)
-               {
                 <span>@totalVotes @voteText</span>
-               }
-               else
-               {
-                <span>@totalVotes vote</span>
-               }
            }
 
             @if (Members.IsLoggedIn() && !hasMemberVoted)
-            {
-                if (totalVotes == 0 || totalVotes > 1)
-                {
-                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
-                }
-                else
-                {
-                    <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
-                }
-
-
+            {               
+                <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
             }
         </div>
 
