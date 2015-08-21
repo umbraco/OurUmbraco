@@ -39,14 +39,24 @@ namespace OurUmbraco.Documentation
 
             // find the md file
             var mdFilepath = FindMarkdownFile(url);
+            
+            //return the broken link doc page
+            var is404 = false;
             if (mdFilepath == null)
             {
+                mdFilepath = FindMarkdownFile("/documentation/broken-link");
+                is404 = true;
+            }
+            if (mdFilepath == null)
+            {                
                 // clear the published content (that was set by FindContent) to cause a 404, and in
                 // both case return 'true' because there's no point other finders try to handle the request
                 contentRequest.PublishedContent = null;
                 return true;
             }
  
+            if (is404) contentRequest.SetIs404();
+
             // set the context vars
             var httpContext = contentRequest.RoutingContext.UmbracoContext.HttpContext;
             httpContext.Items[MarkdownLogic.MarkdownPathKey] = mdFilepath;
@@ -60,7 +70,7 @@ namespace OurUmbraco.Documentation
             var templateIsSet = contentRequest.TrySetTemplate(altTemplate);
             //httpContext.Trace.Write("Markdown Files Handler",
             //    string.Format("Template changed to: '{0}' is {1}", altTemplate, templateIsSet));
-
+            
             // be happy
             return true;
         }

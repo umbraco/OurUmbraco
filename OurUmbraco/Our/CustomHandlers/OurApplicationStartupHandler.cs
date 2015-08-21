@@ -7,6 +7,7 @@ using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using OurUmbraco.Our.Examine;
 using Umbraco.Core;
 using Umbraco.Web;
+using Umbraco.Web.Routing;
 
 namespace OurUmbraco.Our.CustomHandlers
 {
@@ -14,7 +15,8 @@ namespace OurUmbraco.Our.CustomHandlers
     /// Main Application startup handler
     /// </summary>
     public class OurApplicationStartupHandler : ApplicationEventHandler
-    {
+    {        
+
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             CreateRoutes();
