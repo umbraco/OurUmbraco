@@ -1,6 +1,9 @@
 <%@ Master Language="C#" MasterPageFile="Master.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderId="Main" runat="server">
+<% 
+    throw new Exception(Request.Url.AbsoluteUri);
+%>	
 <div id="body" class="subpage">  
 
 <div class="deliLeft">

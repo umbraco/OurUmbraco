@@ -209,7 +209,8 @@ function appState(eventsService) {
         showTray: null,
         stickyNavigation: null,
         navMode: null,
-        isReady: null
+        isReady: null,
+        isTablet: null
     };
     
     var sectionState = {
@@ -1907,7 +1908,7 @@ angular.module('umbraco.services')
 
         /**
         * @ngdoc method
-        * @name umbraco.services.dialogService#ysodDialog
+        * @name umbraco.services.dialogService#embedDialog
         * @methodOf umbraco.services.dialogService
         * @description
         * Opens a dialog to an embed dialog 
@@ -1930,7 +1931,7 @@ angular.module('umbraco.services')
             var newScope = $rootScope.$new();
             newScope.error = ysodError;
             return openDialog({
-                modalClass: "umb-modal wide",
+                modalClass: "umb-modal wide ysod",
                 scope: newScope,
                 //callback: options.callback,
                 template: 'views/common/dialogs/ysod.html',
@@ -3770,20 +3771,14 @@ angular.module('umbraco.services').factory('umbracoMenuActions', umbracoMenuActi
  */
 function navigationService($rootScope, $routeParams, $log, $location, $q, $timeout, $injector, dialogService, umbModelMapper, treeService, notificationsService, historyService, appState, angularHelper) {
 
-    var minScreenSize = 1100;
+    
     //used to track the current dialog object
     var currentDialog = null;
-    //tracks the screen size as a tablet
-    var isTablet = false;
+    
     //the main tree event handler, which gets assigned via the setupTreeEvents method
     var mainTreeEventHandler = null;
     //tracks the user profile dialog
     var userDialog = null;
-
-    function setTreeMode() {
-        isTablet = ($(window).width() <= minScreenSize);
-        appState.setGlobalState("showNavigation", !isTablet);
-    }
 
     function setMode(mode) {
         switch (mode) {
@@ -3833,7 +3828,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
             appState.setGlobalState("stickyNavigation", false);
             appState.setGlobalState("showTray", false);
 
-            if (isTablet) {
+            if (appState.getGlobalState("isTablet") === true) {
                 appState.setGlobalState("showNavigation", false);
             }
 
@@ -3846,8 +3841,6 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
         /** initializes the navigation service */
         init: function() {
 
-            setTreeMode();
-            
             //keep track of the current section - initially this will always be undefined so 
             // no point in setting it now until it changes.
             $rootScope.$watch(function () {
@@ -3856,10 +3849,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
                 appState.setSectionState("currentSection", newVal);
             });
 
-            //TODO: This does not belong here - would be much better off in a directive
-            $(window).bind("resize", function() {
-                setTreeMode();
-            });
+            
         },
 
         /**
@@ -4106,7 +4096,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
          */
         hideTree: function() {
 
-            if (isTablet && !appState.getGlobalState("stickyNavigation")) {
+            if (appState.getGlobalState("isTablet") === true && !appState.getGlobalState("stickyNavigation")) {
                 //reset it to whatever is in the url
                 appState.setSectionState("currentSection", $routeParams.section);
                 setMode("default-hidesectiontree");
@@ -5470,6 +5460,7 @@ function tinyMceService(dialogService, $log, imageHelper, $http, $timeout, macro
                                         alt: img.altText || "",
                                         src: (img.url) ? img.url : "nothing.jpg",
                                         rel: img.id,
+                                        'data-id': img.id,
                                         id: '__mcenew'
                                     };
 
@@ -7019,7 +7010,7 @@ angular.module('umbraco.services')
 
         /** 
         Method to count down the current user's timeout seconds, 
-        this will continually count down their current remaining seconds every 2 seconds until
+        this will continually count down their current remaining seconds every 5 seconds until
         there are no more seconds remaining.
         */
         function countdownUserTimeout() {
@@ -7027,8 +7018,8 @@ angular.module('umbraco.services')
             $timeout(function () {
 
                 if (currentUser) {
-                    //countdown by 2 seconds since that is how long our timer is for.
-                    currentUser.remainingAuthSeconds -= 2;
+                    //countdown by 5 seconds since that is how long our timer is for.
+                    currentUser.remainingAuthSeconds -= 5;
 
                     //if there are more than 30 remaining seconds, recurse!
                     if (currentUser.remainingAuthSeconds > 30) {
@@ -7065,7 +7056,14 @@ angular.module('umbraco.services')
                         if (Umbraco.Sys.ServerVariables.umbracoSettings.keepUserLoggedIn !== true) {
                             //NOTE: the safeApply because our timeout is set to not run digests (performance reasons)
                             angularHelper.safeApply($rootScope, function () {
-                                userAuthExpired();
+                                try {
+                                    //NOTE: We are calling this again so that the server can create a log that the timeout has expired, we
+                                    // don't actually care about this result.
+                                    authResource.getRemainingTimeoutSeconds();
+                                }
+                                finally {
+                                    userAuthExpired();
+                                } 
                             });
                         }
                         else {
@@ -7091,7 +7089,7 @@ angular.module('umbraco.services')
                         }
                     }
                 }
-            }, 2000, //every 2 seconds
+            }, 5000, //every 5 seconds
                 false); //false = do NOT execute a digest for every iteration
         }
 
@@ -7576,7 +7574,7 @@ function umbModelMapper() {
          * @param {String} source.name The node name
          * @param {String} source.icon The models icon as a css class (.icon-doc)
          * @param {Number} source.parentId The parentID, if no parent, set to -1
-         * @param {path} source.path comma-seperated string of ancestor IDs (-1,1234,1782,1234)
+         * @param {path} source.path comma-separated string of ancestor IDs (-1,1234,1782,1234)
          */
 
         /** This converts the source model to a basic entity model, it will throw an exception if there isn't enough data to create the model */

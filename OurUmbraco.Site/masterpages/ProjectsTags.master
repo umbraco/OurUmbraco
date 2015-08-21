@@ -1,21 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Deli.master" AutoEventWireup="true" %>
-
   
 <asp:Content ContentPlaceHolderId="TitleArea" runat="server">
-    <% Response.Redirect("/page-not-found/"); %>
-</asp:Content>
-
-<asp:content ContentPlaceHolderId="DeliRight" runat="server">
-  <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-  <h1 class="deliCatHead">Browse projects by tag</h1>
-  <div id="projectList" class="deliPromoBox clearfix">
-    <h2>Browse by tag</h2>
-    <umbraco:Macro Alias="Deli-TagCloud" runat="server"></umbraco:Macro>
-  </div>
-  <h2>Projects tagged with: <%= Request["tag"] %> </h2>
-<div class="deliPromoBox clearfix">
-  <%--<umbraco:Macro PageNumber="[@page]" Tag="[@tag]" IsCategoryListing="0" MaxPageSize="20" viewAll="[@ViewAll]" Alias="Deli-ProjectListing" runat="server"></umbraco:Macro>--%>
-</div>
-
-
+    
 </asp:Content>

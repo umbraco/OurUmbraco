@@ -1,9 +1,8 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Drawing
-@using our
-@using uForum
-@using uForum.Extensions
-@using uForum.Services
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
+@using OurUmbraco.Our
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     Image avatarImage = null;
@@ -34,7 +33,7 @@
 
 
                     <div class="user-image">
-                        @Html.Raw(our.Utils.GetMemberAvatar(member, 100))
+                        @Html.Raw(Utils.GetMemberAvatar(member, 100))
                     </div>
 
                     <div class="user-profile">
@@ -61,6 +60,12 @@
                         <div class="public-profile">
                             <a href="/member/@member.Id">View my public profile</a>
                         </div>
+                        @if (member.IsAdmin())
+                        {
+                            <div class="public-profile">
+                                <a href="/antispam">Check the spam queue</a>
+                            </div>
+                        }
                         <div class="log-out">
                             <a href="/umbraco/Surface/Login/Logout">Log out</a>
                         </div>

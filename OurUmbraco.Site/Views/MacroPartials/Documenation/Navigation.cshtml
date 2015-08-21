@@ -1,8 +1,8 @@
+@using OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
-@using uDocumentation;
 
 @{
-    var zipper = new uDocumentation.Busineslogic.GithubSourcePull.ZipDownloader();
+    var zipper = new ZipDownloader();
     dynamic sitemap = zipper.DocumentationSiteMap();
     var root = "/documentation";
     var currentUrl = HttpContext.Current.Request.Url.PathAndQuery;

@@ -1,26 +1,28 @@
-﻿@using Marketplace.Interfaces
-@using Marketplace.Providers
+﻿@using System.Text.RegularExpressions
 @using System.Xml;
-@using System.Xml.XPath;
+@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.Our
+@using OurUmbraco.Project
 @using Umbraco.Core
 
 @{
- var projectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
- var take = 30;
- 
- var wrapperClass = "notLoggedIn";
-  
- var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ); 
- 
- var version = "v45";
- if(Request.QueryString["version"] != null){
-  version = Request.QueryString["version"].ToLower();
- }
+    var projectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
+    var take = 30;
+
+    var wrapperClass = "notLoggedIn";
+
+    var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 );
+
+    var version = "v45";
+    if(Request.QueryString["version"] != null){
+        version = Request.QueryString["version"].ToLower();
+    }
 
     const string uniqueWhatever = "E295637E-E957-4CCA-92CE-BF5D58F9FF59";
     var cacheKey = uniqueWhatever + "[" + version + "]";
     var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>) cache.GetCacheItem(cacheKey, () =>
+
+    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>)cache.GetCacheItem(cacheKey, () =>
     {
         return projectsProvider
              .GetListingsByKarma(0, take, true, false)
@@ -28,44 +30,39 @@
                  (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
                     string.Join("", x.UmbracoVerionsSupported).Contains(version)));
     }, TimeSpan.FromMinutes(10));
- //var projects = projectsProvider
- //    .GetListingsByKarma(0, take, true, false)
- //    .Where(x => !x.NotAPackage &&
- //        (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || 
- //           string.Join("",x.UmbracoVerionsSupported).Contains(version) ) );
-  
- var pUrl = "/repo_viewproject?" + qs + "&project_id=";
- var favs = new List<IListingItem>();
-  
-  
-  if(umbraco.library.IsLoggedOn()){
-    wrapperClass = "loggedIn";
-                                   
-    var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
-    
-    var iterator = uPowers.Library.Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
-    while (iterator.MoveNext() && iterator.CurrentPosition < 20)
-    {
-     var node = (IHasXmlNode)iterator.Current;
-     
-     if(node != null){
-       string id = umbraco.xmlHelper.GetNodeValue(node.GetNode());
-      
-       if(id != null){
-          try{            
-          var project = projectsProvider.GetListing(int.Parse(id), false);
-          if(project != null){
-              favs.Add(project);
-          }
-          }catch{
-            //do nothing       
-          }
-       }
-     }
+
+    var pUrl = "/repo_viewproject?" + qs + "&project_id=";
+    var favs = new List<IListingItem>();
+
+
+    if(umbraco.library.IsLoggedOn()){
+        wrapperClass = "loggedIn";
+
+        var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
+
+        var iterator = OurUmbraco.Powers.Library.Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
+        while (iterator.MoveNext() && iterator.CurrentPosition < 20)
+        {
+            var node = (IHasXmlNode)iterator.Current;
+
+            if(node != null){
+                string id = umbraco.xmlHelper.GetNodeValue(node.GetNode());
+
+                if(id != null){
+                    try{
+                        var project = projectsProvider.GetListing(int.Parse(id), false);
+                        if(project != null){
+                            favs.Add(project);
+                        }
+                    }catch{
+                        //do nothing       
+                    }
+                }
+            }
+        }
+
+        favs = favs.Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) )).ToList();
     }
-  
-    favs = favs.Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) )).ToList();                                
-  }
 
  }
 
@@ -91,11 +88,11 @@
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@project.GetCategoryName()</div>
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">
@@ -134,13 +131,13 @@
               
               <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
 
-              <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
+              <div class="category">@project.GetCategoryName()</div>
 
 
             </div>
 
             <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
+                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
             </div>
 
             <div class="popularity">
@@ -162,3 +159,21 @@
   <a href="#" id="loginToSeeFavs" class="rounded">Log in to see your favourites</a>      
 }
 </div>
+
+
+@functions
+{
+    public static string ShortenText(string text)
+    {
+        text = Utils.StripHTML(text).Replace("&nbsp;", "");
+        if (text.Length > 210)
+        {
+
+            text = text.Substring(0, 210);
+            text = text.Substring(0, text.LastIndexOf(' '));
+        }
+
+        text = Regex.Replace(text, @"[^a-zA-Z0-9\s.?!&;]", ""); //strip all crap from the listing such as ======================================= !!!!
+        return text.Trim();
+    }
+}

@@ -1,0 +1,184 @@
+﻿@using OurUmbraco.Our.Controllers
+@inherits UmbracoViewPage<OurUmbraco.Our.Models.ProjectDetails>
+<script src="~/scripts/jquery.validate.min.js"></script>
+<script src="~/scripts/jquery.validate.unobtrusive.js"></script>
+
+<style>
+    #Category, #Description_tbl {
+        width: 100%;
+        padding: 10px 20px 10px 8px;
+        font-size: 1rem;
+        border: 1px solid #e1e1e1;
+        border-radius: 5px;
+    }
+    #Description {
+        width: 100%; 
+        height: 350px;
+    }
+    #Description_tbl {
+        padding: 0;
+        @if (ViewData.ModelState["Description"] != null && ViewData.ModelState["Description"].Errors.Count > 0)
+        {
+            <text>border: 1px solid red !important;</text>
+        }
+    }
+    input[type=text].input-validation-error, select.input-validation-error {
+         border: 1px solid red !important;
+    }
+    .field-validation-error {
+        color: red;
+    }
+</style>
+<div class="package-create">
+    
+    <ul class="stepNavigation">
+        <li class="current"><a href="/member/profile/projects/details/?projectId=@Model.Id">Package Details</a></li>
+        @if (Model.Id > 0)
+        {
+            <li class=""><a href="/member/profile/projects/edit?editorStep=files&id=@Model.Id">Package Files</a></li>
+
+            <li class=""><a href="/member/profile/projects/edit?editorStep=screenshots&id=@Model.Id">Screenshots</a></li>
+
+            <li class=""><a href="/member/profile/projects/edit?editorStep=complete&id=@Model.Id">Creation Complete</a></li>
+        }
+    </ul>
+
+    <div class="form simpleForm" id="registrationForm">
+        @using (Html.BeginUmbracoForm<ProjectController>("SaveDetails"))
+        {
+            Html.EnableClientValidation();
+            Html.EnableUnobtrusiveJavaScript();
+
+            @Html.ValidationSummary(true)
+
+
+            <fieldset>
+                <legend>Project Information</legend>
+                <p>
+                    @Html.LabelFor(m => m.Title)
+                    @Html.TextBoxFor(m => m.Title)
+                    @Html.ValidationMessageFor(m => m.Title)
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.Version)
+                    @Html.TextBoxFor(m => m.Version)
+                    @Html.ValidationMessageFor(m => m.Version)
+                </p>
+            </fieldset>
+
+            <fieldset>
+                <legend>Project Category</legend>
+                <p>
+                    Please select a category this project would fit into<br/>
+                    @Html.DropDownListFor(m => m.Category, Model.ProjectCategories)
+                    @Html.ValidationMessageFor(m => m.Category)
+                    <br/>
+                    <small>This will help users find your package</small>
+                </p>
+
+            </fieldset>
+            <fieldset>
+                <legend>Project Description</legend>
+                <p>Be clear and to the point about what your project does. Provide simple examples of how to use your project. DO NOT ask for Karma Votes. If you mention Karma in your description we will instantly mark your project as SPAM.</p>
+                <p>
+                    @Html.TextAreaFor(m => m.Description)
+                </p>
+                @Html.ValidationMessageFor(m => m.Description)
+            </fieldset>
+
+            <fieldset>
+                <legend>License Information</legend>
+                <p>
+                    @Html.LabelFor(m => m.License)
+                    @Html.TextBoxFor(m => m.License)
+                    @Html.ValidationMessageFor(m => m.License)
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.LicenseUrl)
+                    @Html.TextBoxFor(m => m.LicenseUrl)
+                    @Html.ValidationMessageFor(m => m.LicenseUrl)
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Resources</legend>
+                <p>
+                    @Html.LabelFor(m => m.ProjectUrl)
+                    @Html.TextBoxFor(m => m.ProjectUrl)
+                    @Html.ValidationMessageFor(m => m.ProjectUrl)
+                    <small>If you have a project website somewhere else, (like codeplex.com) link to it here.</small>
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.DemonstrationUrl)
+                    @Html.TextBoxFor(m => m.DemonstrationUrl)
+                    @Html.ValidationMessageFor(m => m.DemonstrationUrl)
+                    <small>url to where a demonstration or demostration video / description can be found</small>
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.SourceCodeUrl)
+                    @Html.TextBoxFor(m => m.SourceCodeUrl)
+                    @Html.ValidationMessageFor(m => m.SourceCodeUrl)
+                    <small>url to where the source code is stored, (ie: codeplex.com, github.com etc)</small>
+                </p>
+                <p>
+                    @Html.LabelFor(m => m.BugTrackingUrl)
+                    @Html.TextBoxFor(m => m.BugTrackingUrl)
+                    @Html.ValidationMessageFor(m => m.BugTrackingUrl)
+                    <small>url where users can go to get support and log bugs. (ie: codeplex.com discussion, github.com bug tracking etc)</small>
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Analytics and tracking</legend>
+                <p>To best understand how your Project is performing, we suggest that you sign up to Google Analytics and track your project. All you need to do is enter your tracking code. We will pass you custom tracking events such as views, downloads etc</p>
+                <p>
+                    @Html.LabelFor(m => m.GoogleAnalyticsCode)
+                    @Html.TextBoxFor(m => m.GoogleAnalyticsCode)
+                    @Html.ValidationMessageFor(m => m.GoogleAnalyticsCode)
+                </p>
+            </fieldset>
+            <fieldset>
+                <legend>Collaboration</legend>
+                <p>Are you looking for help making this package great? Why not open it up for collaboration?</p>
+                <p>
+                    @Html.LabelFor(m => m.OpenForCollaboration)
+                    @Html.CheckBoxFor(m => m.OpenForCollaboration)
+                    @Html.ValidationMessageFor(m => m.OpenForCollaboration)
+                </p>
+            </fieldset>
+            
+            @Html.HiddenFor(m => m.Id)
+
+            <div class="buttons">
+                <input type="submit" value="Next" class="submitButton button green tiny"/>
+            </div>
+        }
+    </div>
+</div>
+<script type="text/javascript" src="/scripts/tiny_mce/tiny_mce.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function() {
+        $("form").validate({
+            invalidHandler: function(f, v) {
+                var errors = v.numberOfInvalids();
+                if (errors.length > 0) {
+                    validator.focusInvalid();
+                }
+            }
+        });
+    });
+
+    tinyMCE.init({
+        // General options
+        mode: "exact",
+        elements: "Description",
+        content_css: "/css/fonts.css",
+        auto_resize: false,
+        theme: "advanced",
+        theme_advanced_toolbar_location: "top",
+        theme_advanced_buttons1: "bold,italic,underline,bullist,numlist",
+        theme_advanced_buttons2: "",
+        theme_advanced_buttons3: "",
+        remove_linebreaks: false
+    });
+
+</script>

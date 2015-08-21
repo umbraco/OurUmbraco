@@ -1,11 +1,12 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
-  
+<%@ Import Namespace="OurUmbraco.Release" %>
+
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
 </asp:Content>
 
 <asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">    
 <%
-    var allReleases = uRelease.Release.GetAllReleaseFromFile();
+    var allReleases = Release.GetAllReleaseFromFile();
 %>
 <div class="has-sidebar"><!-- Apply to body -->
 

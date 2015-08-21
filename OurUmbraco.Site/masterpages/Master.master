@@ -1,8 +1,9 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
 
 <%@ Import Namespace="Umbraco.Web" %>
+<%@ Import Namespace="Umbraco.Web.Security" %>
 <%@ Register TagPrefix="CD" Namespace="ClientDependency.Core.Controls" Assembly="ClientDependency.Core" %>
-<%@ Register TagPrefix="CD" Namespace="our" Assembly="our.umbraco.org" %>
+<%@ Register TagPrefix="CD" Namespace="OurUmbraco.Our" Assembly="OurUmbraco" %>
 
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
     <!doctype html>
@@ -104,7 +105,7 @@
 
     <body class="<%= bodyCss %>">
         <form runat="server">
-
+            
             <umbraco:Macro Alias="MembersQuickMenu" runat="server"></umbraco:Macro>
 
             <div class="wrapper">
@@ -134,21 +135,42 @@
                     </div>
 
                 </header>
+                
+                <%  
+                    var ms = new MembershipHelper(UmbracoContext.Current);
+                    var member = ms.GetCurrentMember();
+                    var memberIsBlocked = false;
+                    if (member != null)
+                    {
+                        memberIsBlocked = member.GetPropertyValue<bool>("blocked");
+                    }
+                    if (memberIsBlocked == false)
+                    {
+                %>
+                    <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
+                
+                    <asp:ContentPlaceHolder ID="Search" runat="server" />
 
-                <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
-
-                <asp:ContentPlaceHolder ID="Search" runat="server" />
-
-
-                <asp:ContentPlaceHolder ID="Main" runat="server" />
-
+                    <asp:ContentPlaceHolder ID="Main" runat="server" />
+                <% } else { %>
+                    <section class="forum">
+	                    <div class="container">
+		                    <div class="row">
+			                    <div class="col-md-12">
+				                    <h1 class="text-center">Computer says no</h1>
+                                    <p>Unfortunaly, it seems that your account has been blocked.</p>
+			                    </div>
+		                    </div>
+	                    </div>
+                    </section>
+                <% } %>
 
                 <footer>
                     <div class="container">
                         <div class="row">
 
                             <div class="col-xs-12">
-                                Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
+                                Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community. This site is running Umbraco version <%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %>
                             </div>
 
                         </div>

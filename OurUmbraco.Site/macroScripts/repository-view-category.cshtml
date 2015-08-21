@@ -1,11 +1,11 @@
-﻿@using Marketplace.Interfaces
-@using Marketplace.Providers
+﻿@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.Project
 @using Umbraco.Core
 
 @{
 
     var id = int.Parse(Request.QueryString["category_id"]);
-    var categoryProvider = (ICategoryProvider)MarketplaceProviderManager.Providers["CategoryProvider"];
+    var categoryProvider = new OurUmbraco.MarketPlace.Providers.UmbracoCategoryProvider();
     var category = categoryProvider.GetCategory(id);
     var fullversion = Request.QueryString["fullversion"];
 
@@ -20,7 +20,7 @@
         version = "v7";
     }
 
-    var ProjectsProvider = (IListingProvider)MarketplaceProviderManager.Providers["ListingProvider"];
+    var ProjectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
     var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&category_id=" + id, "");
 
     const string uniqueWhatever = "254D2E95-4E57-4777-AC01-2F45B28E942C";
@@ -28,7 +28,7 @@
     var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
     IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>) cache.GetCacheItem(cacheKey, () =>
         ProjectsProvider
-            .GetListingsByCategory(category, true, true)
+            .GetListingsByCategory(category, 0, 0, true, true)
             .Where(x => !x.NotAPackage && x.Approved &&
                         (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
                          string.Join("", x.UmbracoVerionsSupported).Contains(version))),
@@ -61,7 +61,7 @@
 
                         <h3><a href="@pUrl@project.Id">@project.Name</a></h3>
 
-                        <div class="category">@uProject.library.GetCategoryName((int)project.Id)</div>
+                        <div class="category">@project.GetCategoryName()</div>
 
 
                         <div class='commercialIndicator @project.ListingType'>@project.ListingType</div>
@@ -69,7 +69,7 @@
 
                     <div class="hiLite">
 
-                        <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@uProject.library.ShortenText(project.Description)</a></p>
+                        <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@project.GetCategoryName()</a></p>
 
                     </div>
 

@@ -1,3 +1,4 @@
+@using OurUmbraco.Release
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
@@ -15,7 +16,7 @@
     }
 
     var majorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending(x => x.Key);
-    var allVersions = new uRelease.Versions();
+    var allVersions = new Versions();
     var youTrackVersions = allVersions.GetAggregateVersionsFromFile();
 }
 

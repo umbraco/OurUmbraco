@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectFileUpload.ascx.cs" Inherits="our.usercontrols.ProjectFileUpload" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectFileUpload.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.ProjectFileUpload" %>
 
 
 <asp:PlaceHolder ID="holder" runat="server" Visible="false">

@@ -1,5 +1,5 @@
-<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="our.usercontrols.Signup" %>
-
+<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Signup.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.Signup" %>
+<style>.required-field { display: none !important; }</style>
 <asp:panel ID="MemberExists" Visible="False" runat="server">
     <p>There is already an account with this e-mail address! You can <a href="/member/login">login</a> or <a href="/member/forgot-password">reset your password</a>.</p>
 </asp:panel>
@@ -27,7 +27,7 @@
     <asp:label ID="Label4" AssociatedControlID="tb_password" CssClass="inputLabel" runat="server">Password</asp:label>
     <asp:TextBox ID="tb_password" runat="server" ToolTip="Please enter a password, minimum 5 characters" TextMode="Password" CssClass="password title"/>
   </p>
-  <p>
+  <p class="required-field">
     <asp:label ID="Label10" AssociatedControlID="tb_bio" CssClass="inputLabel" runat="server">Bio<br/><small>No html allowed</small></asp:label>
     <asp:TextBox ID="tb_bio" runat="server" TextMode="MultiLine" CssClass="title noHtml"/>
   	
@@ -44,7 +44,7 @@
     <asp:label ID="Label5" AssociatedControlID="tb_twitter" CssClass="inputLabel" runat="server">Twitter Alias</asp:label>
     <asp:TextBox ID="tb_twitter" runat="server" onBlur="lookupTwitter(this);" CssClass="title"/>
   </p>
-  <p>
+  <p class="required-field">
     <asp:label ID="Label6" AssociatedControlID="tb_flickr" CssClass="inputLabel" runat="server">Flickr Alias</asp:label>
     <asp:TextBox ID="tb_flickr" runat="server" onBlur="lookupFlickr(this);" CssClass="title"/>
   </p>

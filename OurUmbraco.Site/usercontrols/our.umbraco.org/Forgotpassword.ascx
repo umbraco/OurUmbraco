@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Forgotpassword.ascx.cs" Inherits="our.usercontrols.Forgotpassword" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="Forgotpassword.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.Forgotpassword" %>
 <asp:Panel runat="server" ID="message" Visible="False">
     <div class="notice">
         <p style="color: green;">A new password has been sent to the email address: <asp:Literal ID="lt_email" runat="server" /></p>

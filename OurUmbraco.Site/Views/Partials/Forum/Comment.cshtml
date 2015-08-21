@@ -1,5 +1,6 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.ReadOnlyComment>
-@using uForum.Extensions
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Forum.Models.ReadOnlyComment>
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Powers.Library
 
 @{
     var currentMember = Members.GetCurrentMember();
@@ -14,9 +15,9 @@
     }
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
-@if (commentAuthor != null && (Model.IsSpam == false || currentMember.Id == commentAuthor.Id || Members.IsAdmin()))
+@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Members.IsAdmin()))
 {
-    <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" id="comment-@Model.Id">
+    <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
                 <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a><span>@commentAuthor.Karma() karma points</span>
@@ -38,14 +39,14 @@
         </div>
 
         <div class="comment-inner">
-            <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(commentAuthor, 75))</a>
+            <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor, 75))</a>
 
             <div class="highfive highfive-comment">
 
                 <div class="highfive-count">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
+                @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
                 {
                     if (currentMember.Id != Model.MemberId)
                     {
@@ -61,10 +62,10 @@
                     <div class="alert">
                         @if (Members.IsAdmin())
                         {
-                            <span>You can see this comment because you're a moderator of the forum.</span><br /><br />
+                            <span>You can see this comment because you're a moderator of the forum.</span><br/><br/>
                         }
                         Sorry if we're causing you any inconvenience but this comment has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your comment. <br/>
-                        Only moderators and the comment author starter can see this comment. When this comment has been marked as clean, this comment will be shown as normal.<br />
+                        Only moderators and the comment author starter can see this comment. When this comment has been marked as clean, this comment will be shown as normal.<br/>
                     </div>
                 }
 
@@ -91,7 +92,14 @@
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }
-
+                
+                if (Model.ParentCommentId > 0)
+                {
+                    <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
+                        <i class="icon-Reply-arrow"></i><span>Reply</span>
+                    </a>
+                }
+                
                 if (Members.IsAdmin() || currentMember.Id == Model.MemberId)
                 {
                     <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">

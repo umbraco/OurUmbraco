@@ -1,4 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+<%@ Import Namespace="OurUmbraco.Release" %>
 <asp:Content ContentPlaceHolderID="Head" runat="server">
     <% if (Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap/" || Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap")
         {
@@ -29,7 +30,7 @@
             <h2>Planned Releases:</h2>
 
         </div>
-        <% var roadmap = uRelease.Roadmap.GetRoadmapReleasesFromFile(); %>
+        <% var roadmap = Roadmap.GetRoadmapReleasesFromFile(); %>
         <% foreach (var release in roadmap.OrderBy(x => x.version))
             {
                 var completedIssues = release.issues.Count(x => x.state == "Fixed");

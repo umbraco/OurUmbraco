@@ -1,5 +1,6 @@
 @using Examine.SearchCriteria
-@using our.Examine
+@using OurUmbraco.Our
+@using OurUmbraco.Our.Examine
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     const int pagesToShowLeft = 4;
@@ -142,13 +143,13 @@
                 <div class="row">
                     <div class="col-xs-2 col-md-1">
                         @{
-            var defaultScreenshot = "/css/img/package2.png";
-            if (childContent != null)
-            {
-                defaultScreenshot = childContent.GetPropertyValue<string>("defaultScreenshotPath");
-            }
+                            var defaultScreenshot = "/css/img/package2.png";
+                            if (childContent != null)
+                            {
+                                defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
+                            }
                         }
-                        <img src="@our.Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
+                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=50&height=50&bgcolor=fff" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">

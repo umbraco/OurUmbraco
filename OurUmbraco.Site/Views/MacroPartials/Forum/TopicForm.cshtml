@@ -97,7 +97,7 @@
 
 <!-- Mustache template-->
 <script id="comment-template" type="x-tmpl-mustache">
-    <li class="comment  {{cssClass}}" id="comment-{{id}}">
+    <li class="comment  {{cssClass}}"  data-parent="{{id}}" id="comment-{{id}}">
         <div class="meta">
             <div class="profile">
                 <a href="/member/{{authorId}}">{{authorName}}</a> has in total {{authorKarma}} karma points
@@ -141,19 +141,20 @@
         </div>
 
         <div class="actions">
-
-            <a href="#" class="copy-link" data-id="#{{id}}">
-                <i class="icon-Link"></i><span>Copy Link</span>
-            </a>
             {{#canHaveChildren}}
             <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
                 <i class="icon-Reply-arrow"></i><span>Reply</span>
             </a>
             {{/canHaveChildren}}
+            <a href="#" class="edit-post" data-id="{{id}}" data-topic="{{topicId}}" data-controller="comment">
+                <i class="icon-Edit"></i><span>Edit</span>
+            </a>
             <a href="#" class="delete-reply" data-id="{{id}}">
                 <i class="icon-Delete-key"></i><span>Delete post</span>
             </a>
-
+            <a href="#" class="copy-link" data-id="#{{id}}">
+                <i class="icon-Link"></i><span>Copy Link</span>
+            </a>
         </div>
     </li>
 </script>

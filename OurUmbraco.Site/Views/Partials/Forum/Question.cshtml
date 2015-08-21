@@ -1,5 +1,6 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<uForum.Models.Topic>
-@using uForum.Extensions
+﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Forum.Models.Topic>
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Powers.Library
 
 @{
     var currentMember = Members.GetCurrentMember();
@@ -36,13 +37,13 @@
             </div>
 
             <div class="comment-inner">
-                <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(our.Utils.GetMemberAvatar(topicAuthor, 75))</a>
+                <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(topicAuthor, 75))</a>
                 <div class="highfive highfive-question">
 
                     <div class="highfive-count">
                         @Model.Score
                     </div>
-                    @if (Members.IsLoggedIn() && !uPowers.Library.Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                    @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                     {
                         if (currentMember.Id != Model.MemberId)
                         {

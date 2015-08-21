@@ -32,7 +32,6 @@
   </ul>
   </div>
   <div id="events">
-  <umbraco:Macro Alias="Events-ShowUpcoming" runat="server"></umbraco:Macro>
   </div>
 </asp:ContentPlaceHolder>
 </div>

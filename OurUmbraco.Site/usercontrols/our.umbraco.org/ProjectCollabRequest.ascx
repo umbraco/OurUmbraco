@@ -1,4 +1,4 @@
-﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectCollabRequest.ascx.cs" Inherits="our.usercontrols.ProjectCollabRequest" %>
+﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectCollabRequest.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.ProjectCollabRequest" %>
 
 <h1><asp:Literal runat="server" ID="lt_title" Text="Create project"></asp:Literal> collaboration request</h1>
 

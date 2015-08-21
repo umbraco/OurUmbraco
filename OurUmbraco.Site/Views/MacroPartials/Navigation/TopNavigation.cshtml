@@ -1,6 +1,6 @@
 @using System.Collections.Specialized
 @using System.Drawing
-@using our
+@using OurUmbraco.Our
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
@@ -26,7 +26,7 @@
         {
             var member = Members.GetCurrentMember();
             <div class="user">
-                @Html.Raw(our.Utils.GetMemberAvatar(member, 75))
+                @Html.Raw(Utils.GetMemberAvatar(member, 75))
                 @if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
                 {
                     <span class="notificationCount">1</span>

@@ -5,9 +5,9 @@ using NotificationsCore;
 using umbraco.presentation.nodeFactory;
 using umbraco.cms.businesslogic.member;
 using Umbraco.Core;
-using uForum.Services;
-using uForum;
 using NotificationsWeb.Services;
+using OurUmbraco.Forum;
+using OurUmbraco.Forum.Services;
 using Umbraco.Web.Security;
 
 namespace NotificationsWeb.EventHandlers
@@ -29,13 +29,13 @@ namespace NotificationsWeb.EventHandlers
             ForumService.Deleted += ForumService_Deleted;
         }
 
-        void ForumService_Deleted(object sender, uForum.ForumEventArgs e)
+        void ForumService_Deleted(object sender, ForumEventArgs e)
         {
             var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
             ns.RemoveAllForumSubscriptions(e.Forum.Id);
         }
 
-        void ForumService_Created(object sender, uForum.ForumEventArgs e)
+        void ForumService_Created(object sender, ForumEventArgs e)
         {
             var content = Umbraco.Web.UmbracoContext.Current.Application.Services.ContentService.GetById(e.Forum.ParentId);
             if (content.ContentType.Alias == "Project")
@@ -47,7 +47,7 @@ namespace NotificationsWeb.EventHandlers
             }
         }
 
-        void TopicService_Created(object sender, uForum.TopicEventArgs e)
+        void TopicService_Created(object sender, TopicEventArgs e)
         {
            
             var ns = new NotificationService(ApplicationContext.Current.DatabaseContext);
@@ -66,7 +66,7 @@ namespace NotificationsWeb.EventHandlers
             not.Invoke(Config.ConfigurationFile, Config.AssemblyDir, "NewTopic", e.Topic, e.Topic.GetUrl(), memberName);
         }
 
-        void CommentService_Created(object sender, uForum.CommentEventArgs e)
+        void CommentService_Created(object sender, CommentEventArgs e)
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
 
