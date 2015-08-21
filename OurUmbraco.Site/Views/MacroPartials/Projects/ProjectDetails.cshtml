@@ -42,6 +42,10 @@
     var demoUrl = project.GetPropertyValue<string>("demoUrl");
     var licenseUrl = project.GetPropertyValue<string>("licenseUrl");
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
+
+    var voteText = "votes";
+    if (totalVotes == 1) { voteText = "vote"; } 
+
 }
 
 <section class="package-detail">
@@ -52,13 +56,20 @@
 
         <div class="vote">
             <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
-            @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
+            
+            @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id)
             {
-                <span>@totalVotes votes</span>
+                <span>@totalVotes @voteText</span>    
             }
-            else
-            {
-                <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
+
+           @if (Members.IsLoggedIn() && hasMemberVoted)
+           {
+                <span>@totalVotes @voteText</span>
+           }
+
+            @if (Members.IsLoggedIn() && !hasMemberVoted)
+            {               
+                <a href="#" id="projectVote" data-id="@project.Id">@totalVotes @voteText</a>
             }
         </div>
 
