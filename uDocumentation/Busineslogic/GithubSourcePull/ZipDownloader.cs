@@ -11,9 +11,21 @@ using umbraco.BusinessLogic;
 using System.Dynamic;
 using Examine;
 using Newtonsoft.Json;
+using Umbraco.Core;
 
 namespace uDocumentation.Busineslogic.GithubSourcePull
 {
+	// THIS WAS USED TO GENERATE THE SITE MAP WHEN TESTING LOCALLY, SO IF YOU ARE TESTING LOCALLY AND YOU WANT TO RE-GEN THE SiteMap
+	// YOU CAN UNCOMMENT THIS AND BUILD.... DON'T COMMIT THIS UNCOMMENTED
+    ///public class SitemapStartupHandler : ApplicationEventHandler
+    ///{
+    ///    protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+    ///    {
+    ///        var zip = new ZipDownloader();
+    ///        zip.BuildSitemap(zip.RootFolder);
+    ///    }
+    ///}
+
     public class ZipDownloader
     {
         private const string rootFolder = @"~\Documentation";
@@ -103,7 +115,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
 
                 Trace.WriteLine("Loading: " + url + " to " + path, "Gitsyncer");
 
-                process(url, folder);
+                Process(url, folder);
             }
 
 
@@ -119,10 +131,10 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             return d;
         }
 
-        public void process(string url, string foldername)
+        public void Process(string url, string foldername)
         {
             var zip = Download(url, foldername);
-            unzip(zip, foldername, RootFolder);
+            Unzip(zip, foldername, RootFolder);
             BuildSitemap(foldername);
 
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
@@ -130,7 +142,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].RebuildIndex();
         }
 
-        private void BuildSitemap(string foldername)
+        public void BuildSitemap(string foldername)
         {
             var folder = new DirectoryInfo(Path.Combine(RootFolder, foldername));
             dynamic root = GetFolderStructure(folder, folder.FullName, 0);
@@ -139,25 +151,69 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
             File.WriteAllText(Path.Combine(folder.FullName, "sitemap.js"), serializedRoot); 
         }
 
-        private dynamic GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
+        private class SiteMapItem
         {
-            dynamic d = new ExpandoObject();
+            public string name { get; set; }
+            public string path { get; set; }
+            public int level { get; set; }
+            public int sort { get; set; }
+            public bool hasChildren { get; set; }
+            public List<SiteMapItem> directories { get; set; }
+        }
+
+        private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
+        {
+            var d = new SiteMapItem();
             d.name = dir.Name;
             d.path = dir.FullName.Substring(rootPath.Length).Replace('\\','/');
-            d.level = level; 
+            d.level = level;            
+            d.sort = GetSort(dir.Name, level)
+                //default
+                ?? 100;
 
             if (dir.GetDirectories().Any())
             {
-                var list = new List<dynamic>();
+                var list = new List<SiteMapItem>();
                 foreach (var child in dir.GetDirectories())
-                    list.Add(GetFolderStructure(child, rootPath, level+1));
-
+                {
+                    list.Add(GetFolderStructure(child, rootPath, level + 1));
+                }
                 
                 d.hasChildren = true;
-                d.directories = list;
+                d.directories = list.OrderBy(x => x.sort).ToList();
             }
 
             return d;
+        }
+
+        private int? GetSort(string name, int level)
+        {
+            switch (level)
+            {
+                case 1:
+                    switch (name.ToLowerInvariant())
+                    {
+                        case "getting-started":
+                            return 0;
+                        case "implementation":
+                            return 1;
+                        case "extending":
+                            return 3;
+                    }
+                    break;
+                case 2:
+                    switch (name.ToLowerInvariant())
+                    {
+                        case "setup":
+                            return 0;
+                        case "data":
+                            return 1;
+                        case "design":
+                            return 3;
+                    }
+                    break;
+            }
+            return null;
         }
 
         private string Download(string url, string foldername)
@@ -190,7 +246,7 @@ namespace uDocumentation.Busineslogic.GithubSourcePull
         }
 
 
-        private void unzip(string path, string foldername, string rootFolder)
+        private void Unzip(string path, string foldername, string rootFolder)
         {
             ZipInputStream s = new ZipInputStream(File.OpenRead(path));
             ZipEntry theEntry;
