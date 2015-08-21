@@ -54,11 +54,11 @@
             <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
             @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
             {
-                <span>@totalVotes votes</span>
+                <span>@pluralize(totalVotes, "vote", "votes")</span>
             }
             else
             {
-                <a href="#" id="projectVote" data-id="@project.Id">@totalVotes votes</a>
+                <a href="#" id="projectVote" data-id="@project.Id">@pluralize(totalVotes, "vote", "votes")</a>
             }
         </div>
 
@@ -423,4 +423,13 @@
         ga('create', '@(Model.Content.GetPropertyValue("gaCode"))', 'auto', { 'name': 'PackageMaker' });
         ga('PackageMaker.send', 'pageview');
     </script>
+}
+
+@helper pluralize(int count, string oneValue, string pluralValue)
+{
+	if (count == 1) {
+		<text>@count @oneValue</text>
+	} else {
+		<text>@count @pluralValue</text>
+	}
 }
