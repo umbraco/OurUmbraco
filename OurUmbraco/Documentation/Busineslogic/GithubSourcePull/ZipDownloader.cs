@@ -199,6 +199,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "extending":
                             return 3;
+                        case "reference":
+                            return 4;
+                        case "tutorials":
+                            return 5;
                     }
                     break;
                 case 2:
