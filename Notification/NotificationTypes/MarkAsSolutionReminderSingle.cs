@@ -41,7 +41,7 @@ namespace NotificationsCore.NotificationTypes
 
                 body = string.Format(body,
                     t.Title,
-                   "http://" + domain + args[2].ToString());
+                   "https://" + domain + args[2].ToString());
 
 
                 if (m.getProperty("bugMeNot").Value.ToString() != "1")

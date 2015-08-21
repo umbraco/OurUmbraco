@@ -51,7 +51,7 @@ namespace NotificationsCore.NotificationTypes
 
                 string mbody = string.Format(body,
                         t.Title,
-                        "http://" + domain + args[1].ToString());
+                        "https://" + domain + args[1].ToString());
 
 
                 Member m = new Member(dr.GetInt32(1));

@@ -54,7 +54,7 @@ namespace NotificationsCore.NotificationTypes
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 var subject = string.Format(details.SelectSingleNode("//subject").InnerText, topic.Title);
                 var body = details.SelectSingleNode("//body").InnerText;
-                body = string.Format(body, topic.Title, "http://" + domain + url + "#comment-" + com.Id, memberName, HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
+                body = string.Format(body, topic.Title, "https://" + domain + url + "#comment-" + com.Id, memberName, HttpUtility.HtmlDecode(umbraco.library.StripHtml(com.Body)));
 
                 
                 //connect to DB

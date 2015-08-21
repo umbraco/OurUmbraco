@@ -55,7 +55,7 @@ namespace NotificationsCore.NotificationTypes
 
                 var domain = details.SelectSingleNode("//domain").InnerText;
                 
-                body = string.Format(body, forum.Text, "http://" + domain + url, memberName, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
+                body = string.Format(body, forum.Text, "https://" + domain + url, memberName, topic.Title, HttpUtility.HtmlDecode(umbraco.library.StripHtml(topic.Body)));
 
 
                 SqlConnection conn = new SqlConnection(System.Configuration.ConfigurationManager.ConnectionStrings["umbracoDbDSN"].ConnectionString);
