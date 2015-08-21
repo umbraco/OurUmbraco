@@ -642,6 +642,7 @@
     <Content Include="scripts\forum\Markdown.Sanitizer.js" />
     <Content Include="scripts\forum\select2\select2-new.js" />
     <Content Include="scripts\forum\tags.js" />
+    <Content Include="config\IISRewriteMaps.config" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
     <Content Include="scripts\jquery-1.4.1.min.js" />
