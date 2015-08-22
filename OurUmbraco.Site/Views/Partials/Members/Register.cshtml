@@ -1,3 +1,4 @@
+@using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.RegisterModel>
 @{
@@ -35,11 +36,11 @@
                 <div class="avatar-image inked">
                     @if (Model.Avatar != null)
                     {
-                        <img src="@Model.Avatar?width=100&height=100&mode=crop" alt="">
+                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar, 100, ""))
                     }
                     else
                     {
-                        <img src="/media/avatar/default.gif?width=100&height=100&mode=crop" alt="Umbraco Logo">
+                        @Html.Raw(Utils.GetLocalAvatar("/media/avatar/default.gif", 100, "Umbraco Logo"))
                     }
                     <span>Change image</span>
                 </div>
