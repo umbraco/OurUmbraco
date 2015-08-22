@@ -17,14 +17,14 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 {
 	// THIS WAS USED TO GENERATE THE SITE MAP WHEN TESTING LOCALLY, SO IF YOU ARE TESTING LOCALLY AND YOU WANT TO RE-GEN THE SiteMap
 	// YOU CAN UNCOMMENT THIS AND BUILD.... DON'T COMMIT THIS UNCOMMENTED
-    ///public class SitemapStartupHandler : ApplicationEventHandler
-    ///{
-    ///    protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
-    ///    {
-    ///        var zip = new ZipDownloader();
-    ///        zip.BuildSitemap(zip.RootFolder);
-    ///    }
-    ///}
+    //public class SitemapStartupHandler : ApplicationEventHandler
+    //{
+    //    protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+    //    {
+    //        var zip = new ZipDownloader();
+    //        zip.BuildSitemap(zip.RootFolder);
+    //    }
+    //}
 
     public class ZipDownloader
     {
@@ -203,17 +203,64 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 4;
                         case "tutorials":
                             return 5;
+                        case "add-ons":
+                            return 6;
                     }
                     break;
                 case 2:
                     switch (name.ToLowerInvariant())
                     {
+                        //Getting Started
                         case "setup":
                             return 0;
-                        case "data":
+                        case "backoffice":
                             return 1;
-                        case "design":
+                        case "data":
                             return 3;
+                        case "design":
+                            return 4;
+
+                        //Implementation
+                        case "default-routing":
+                            return 0;
+
+                        //Extending
+                        case "dashboards":
+                            return 0;
+                        case "section-trees":
+                            return 1;
+                        case "property-editors":
+                            return 2;
+                        case "macro-parameter-editors":
+                            return 3;
+
+                        //Reference
+                        case "config":
+                            return 0;
+                        case "templating":
+                            return 1;
+                        case "querying":
+                            return 2;
+                        case "routing":
+                            return 3;
+                        case "searching":
+                            return 4;
+                        case "events":
+                            return 5;
+                        case "management":
+                            return 6;
+                        case "plugins":
+                            return 7;
+                        case "cache":
+                            return 8;
+
+                        //Tutorials
+                        case "creating-basic-site":
+                            return 0;
+
+                        //Add ons
+                        case "umbracoforms":
+                            return 0;
                     }
                     break;
             }
