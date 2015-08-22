@@ -706,18 +706,19 @@ angular.module('umbraco.services')
 
                 _.each(assets, function (asset) {
                     LazyLoad.js(appendRnd(asset.path), function () {
+                        asset.state = "loaded";
                         if (!scope) {
-                            asset.state = "loaded";
                             asset.deferred.resolve(true);
-                        } else {
-                            asset.state = "loaded";
+                        }
+                        else {
                             angularHelper.safeApply(scope, function () {
                                 asset.deferred.resolve(true);
                             });
                         }
                     });
                 });
-            } else {
+            }
+            else {
                 //return and resolve
                 var deferred = $q.defer();
                 promise = deferred.promise;
@@ -788,6 +789,12 @@ function contentEditingHelper(fileManager, $q, $location, $routeParams, notifica
                             err: err,
                             rebindCallback: self.reBindChangedProperties(args.content, err.data)
                         });
+                        //show any notifications
+                        if (angular.isArray(err.data.notifications)) {
+                            for (var i = 0; i < err.data.notifications.length; i++) {
+                                notificationsService.showNotification(err.data.notifications[i]);
+                            }
+                        }
                         args.scope.busy = false;
                         deferred.reject(err);
                     });
@@ -1199,13 +1206,13 @@ function contentEditingHelper(fileManager, $q, $location, $routeParams, notifica
          * @description
          * Changes the location to be editing the newly created content after create was successful.
          * We need to decide if we need to redirect to edito mode or if we will remain in create mode. 
-         * We will only need to maintain create mode if we have not fulfilled the basic requirements for creating an entity which is at least having a name.
+         * We will only need to maintain create mode if we have not fulfilled the basic requirements for creating an entity which is at least having a name and ID
          */
         redirectToCreatedContent: function (id, modelState) {
 
             //only continue if we are currently in create mode and if there is no 'Name' modelstate errors
             // since we need at least a name to create content.
-            if ($routeParams.create && (!modelState || !modelState["Name"])) {
+            if ($routeParams.create && (id > 0 && (!modelState || !modelState["Name"]))) {
 
                 //need to change the location to not be in 'create' mode. Currently the route will be something like:
                 // /belle/#/content/edit/1234?doctype=newsArticle&create=true
@@ -6864,7 +6871,7 @@ function umbRequestHelper($http, $q, umbDataFormatter, angularHelper, dialogServ
                         //This is a bit of a hack to check if the error is due to a file being uploaded that is too large,
                         // we have to just check for the existence of a string value but currently that is the best way to
                         // do this since it's very hacky/difficult to catch this on the server
-                        if (data.indexOf("Maximum request length exceeded") >= 0) {
+                        if (typeof data !== "undefined" && typeof data.indexOf === "function" && data.indexOf("Maximum request length exceeded") >= 0) {
                             notificationsService.error("Server error", "The uploaded file was too large, check with your site administrator to adjust the maximum size allowed");
                         }                        
                         else if (Umbraco.Sys.ServerVariables["isDebuggingEnabled"] === true) {
@@ -7865,6 +7872,73 @@ angular.module('umbraco.services').factory('umbDataFormatter', umbDataFormatter)
 
 
 
+/**
+ * @ngdoc service
+ * @name umbraco.services.windowResizeListener
+ * @function
+ *
+ * @description
+ * A single window resize listener... we don't want to have more than one in theory to ensure that
+ * there aren't too many events raised. This will debounce the event with 100 ms intervals and force
+ * a $rootScope.$apply when changed and notify all listeners
+ *
+ */
+function windowResizeListener($rootScope) {
+
+    var WinReszier = (function () {
+        var registered = [];
+        var inited = false;        
+        var resize = _.debounce(function(ev) {
+            notify();
+        }, 100);
+        var notify = function () {
+            var h = $(window).height();
+            var w = $(window).width();
+            //execute all registrations inside of a digest
+            $rootScope.$apply(function() {
+                for (var i = 0, cnt = registered.length; i < cnt; i++) {
+                    registered[i].apply($(window), [{ width: w, height: h }]);
+                }
+            });
+        };
+        return {
+            register: function (fn) {
+                registered.push(fn);
+                if (inited === false) {
+                    $(window).bind('resize', resize);
+                    inited = true;
+                }
+            },
+            unregister: function (fn) {
+                var index = registered.indexOf(fn);
+                if (index > -1) {
+                    registered.splice(index, 1);
+                }
+            }
+        };
+    }());
+
+    return {
+
+        /**
+         * Register a callback for resizing
+         * @param {Function} cb 
+         */
+        register: function (cb) {
+            WinReszier.register(cb);
+        },
+
+        /**
+         * Removes a registered callback
+         * @param {Function} cb 
+         */
+        unregister: function(cb) {
+            WinReszier.unregister(cb);
+        }
+
+    };
+}
+angular.module('umbraco.services').factory('windowResizeListener', windowResizeListener);
 /**
  * @ngdoc service
  * @name umbraco.services.xmlhelper
