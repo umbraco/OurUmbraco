@@ -141,8 +141,8 @@ namespace OurUmbraco.Documentation
     {
         public static string MarkdownFileLink()
         {
-            string branchName = "v7-documentation";
-            string baseUrl = "https://github.com/umbraco/Umbraco4Docs/blob/" + branchName;
+            string branchName = "master";
+            string baseUrl = "https://github.com/umbraco/UmbracoDocs/blob/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
 
