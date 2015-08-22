@@ -50,7 +50,7 @@
     var notification = Model.Content.GetPropertyValue<string>("mainNotification");
     if (string.IsNullOrWhiteSpace(notification))
     {
-        notification = "Creating new topics is not allowed here";
+        notification = "This forum is in read only mode, you can no longer create new topics";
     }
 
     <div class="alertbar__yellow">
