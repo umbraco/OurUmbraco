@@ -400,6 +400,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             if (cookie != null && ignoreCookies == false)
                 return;
+
             var downloads = 0;
             var projectId = 0;
 
@@ -420,17 +421,16 @@ namespace OurUmbraco.Wiki.BusinessLogic
             
             if (isPackage)
             {
-                var currentMember = 0;
-                var member = Member.GetCurrentMember();
-                if (member != null)
-                    currentMember = member.Id;
+                var memberHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+                var memberId = memberHelper.GetCurrentMemberId();
+                var currentMemberId = memberId == -1 ? 0 : memberId;
 
                 //update download count update
                 Application.SqlHelper.ExecuteNonQuery(
                     @"insert into projectDownload(projectId,memberId,timestamp) 
                         values((select nodeId from wikiFiles where id = @id) ,@memberId, getdate())",
                     Application.SqlHelper.CreateParameter("@id", fileId),
-                    Application.SqlHelper.CreateParameter("@memberId", currentMember));
+                    Application.SqlHelper.CreateParameter("@memberId", currentMemberId));
             }
 
             var e = new FileDownloadUpdateEventArgs { ProjectId = projectId, Downloads = totalDownloads };
