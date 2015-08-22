@@ -193,7 +193,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "add-ons":
                             return 6;
                     }
-                    break;
+                break;
+
                 case 2:
                     switch (name.ToLowerInvariant())
                     {
@@ -249,7 +250,56 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "umbracoforms":
                             return 0;
                     }
-                    break;
+                break;
+
+                case 3:
+                    switch (name.ToLowerInvariant())
+	                {
+		                //Getting Started - Setup
+                        case "requirements":
+                            return 0;
+                        case "install":
+                            return 1;
+                        case "upgrading":
+                            return 2;
+                        case "server-setup":
+                            return 3;
+
+                        //Getting Started - Backoffice
+                        case "sections":
+                            return 0;
+                        case "property-editors":
+                            return 1;
+
+                        //Getting Started - Data
+                        case "defining-content":
+                            return 0;
+                        case "creating-media":
+                            return 1;
+                        case "members":
+                            return 2;
+                        case "data-types":
+                            return 3;
+
+                        //Getting Started - Design
+                        case "templates":
+                            return 0;
+                        case "rendering-content":
+                            return 1;
+                        case "rendering-media":
+                            return 2;
+                        case "stylesheets-javascript":
+                            return 3;
+
+                        //Getting Started - Code
+                        case "umbraco-services":
+                            return 0;
+                        case "subscribing-to-events":
+                            return 1;
+                        case "creating-forms":
+                            return 2;
+	                }
+                break;
             }
             return null;
         }
