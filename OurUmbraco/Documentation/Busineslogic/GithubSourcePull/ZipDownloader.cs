@@ -5,21 +5,21 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
+using System.Web.Hosting;
 using System.Xml;
 using Examine;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
-using umbraco.BusinessLogic;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 {
     public class ZipDownloader
     {
-        private const string rootFolder = @"~\Documentation";
-        private const string config = @"~\config\githubpull.config";
-        private string rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
-        private string configPath = HttpContext.Current.Server.MapPath(config);
-
+        private const string DocumentationFolder = @"~\Documentation";
+        private const string Config = @"~\config\githubpull.config";
+        private readonly string _rootFolderPath = HostingEnvironment.MapPath(DocumentationFolder);
+        private readonly string _configPath = HostingEnvironment.MapPath(Config);
 
         public string RootFolder { get; set; }
         public XmlDocument Configuration { get; set; }
@@ -34,20 +34,20 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
         public ZipDownloader()
         {
-            XmlDocument xd = new XmlDocument();
-            xd.Load(configPath);
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(_configPath);
 
-            Configuration = xd;
-            RootFolder = rootFolderPath;
+            Configuration = xmlDocument;
+            RootFolder = _rootFolderPath;
             IsProjectDocumentation = false;
         }
 
         public ZipDownloader(string rootFolder, string configurationPath)
         {
-            XmlDocument xd = new XmlDocument();
-            xd.Load(configurationPath);
+            var xmlDocument = new XmlDocument();
+            xmlDocument.Load(configurationPath);
 
-            Configuration = xd;
+            Configuration = xmlDocument;
             RootFolder = rootFolder;
             IsProjectDocumentation = false;
         }
@@ -56,14 +56,12 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         {
             var project = new umbraco.NodeFactory.Node(projectId);
             var githubRepo = project.GetProperty("documentationGitRepo");
-            var xd = new XmlDocument();
+            var xmlDocument = new XmlDocument();
 
-            xd.LoadXml(string.Format(
-                "<?xml version=\"1.0\"?><configuration><sources><add url=\"{0}/zipball/master\" folder=\"\" /></sources></configuration>",
-                githubRepo));
+            xmlDocument.LoadXml(string.Format("<?xml version=\"1.0\"?><configuration><sources><add url=\"{0}/zipball/master\" folder=\"\" /></sources></configuration>", githubRepo));
 
-            Configuration = xd;
-            RootFolder = HttpContext.Current.Server.MapPath(@"~" + project.Url.Replace("/",@"\") + @"\Documentation");
+            Configuration = xmlDocument;
+            RootFolder = HostingEnvironment.MapPath(@"~" + project.Url.Replace("/", @"\") + @"\Documentation");
             IsProjectDocumentation = true;
         }
 
@@ -72,21 +70,17 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         /// </summary>
         public static void EnsureGitHubDocs(bool overwrite = false)
         {
-            var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
-            var configPath = HttpContext.Current.Server.MapPath(config);
+            var rootFolderPath = HttpContext.Current.Server.MapPath(DocumentationFolder);
+            var configPath = HttpContext.Current.Server.MapPath(Config);
 
             //Check if it exists, if it does then exit
-            if (!overwrite && File.Exists(Path.Combine(rootFolderPath, "sitemap.js"))) return;
+            if (overwrite == false && File.Exists(Path.Combine(rootFolderPath, "sitemap.js")))
+                return;
 
-            if (!Directory.Exists(rootFolderPath))
-            {
+            if (Directory.Exists(rootFolderPath) == false)
                 Directory.CreateDirectory(rootFolderPath);
-            }
 
-            var unzip = new ZipDownloader(rootFolderPath, configPath)
-            {
-                IsProjectDocumentation = true
-            };
+            var unzip = new ZipDownloader(rootFolderPath, configPath) { IsProjectDocumentation = true };
             unzip.Run();
         }
 
@@ -94,28 +88,34 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         {
             Trace.WriteLine("Started git sync", "Gitsyncer");
 
-            foreach (XmlNode node in Configuration.SelectNodes("//add"))
+            var xmlNodeList = Configuration.SelectNodes("//add");
+            if (xmlNodeList != null)
             {
-                var url = node.Attributes["url"].Value;
-                var folder = node.Attributes["folder"].Value;
-                var path = Path.Combine(RootFolder, folder);
+                foreach (XmlNode node in xmlNodeList)
+                {
+                    if (node.Attributes != null)
+                    {
+                        var url = node.Attributes["url"].Value;
+                        var folder = node.Attributes["folder"].Value;
+                        var path = Path.Combine(RootFolder, folder);
 
-                Trace.WriteLine("Loading: " + url + " to " + path, "Gitsyncer");
+                        Trace.WriteLine(string.Format("Loading: {0} to {1}", url, path), "Gitsyncer");
 
-                Process(url, folder);
+                        Process(url, folder);
+                    }
+                }
             }
 
-
-            FinishEventArgs ev = new FinishEventArgs();
-            FireOnFinish(ev);
+            var finishEventArgs = new FinishEventArgs();
+            FireOnFinish(finishEventArgs);
         }
 
         public dynamic DocumentationSiteMap(string folder = "")
         {
             var path = Path.Combine(RootFolder, folder, "sitemap.js");
             var json = File.ReadAllText(path);
-            dynamic d = JsonConvert.DeserializeObject<dynamic>(json);
-            return d;
+            dynamic documentationSiteMap = JsonConvert.DeserializeObject<dynamic>(json);
+            return documentationSiteMap;
         }
 
         public void Process(string url, string foldername)
@@ -135,7 +135,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             dynamic root = GetFolderStructure(folder, folder.FullName, 0);
 
             var serializedRoot = JsonConvert.SerializeObject(root, Newtonsoft.Json.Formatting.Indented);
-            File.WriteAllText(Path.Combine(folder.FullName, "sitemap.js"), serializedRoot); 
+            File.WriteAllText(Path.Combine(folder.FullName, "sitemap.js"), serializedRoot);
         }
 
         private class SiteMapItem
@@ -150,27 +150,27 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
         {
-            var d = new SiteMapItem();
-            d.name = dir.Name;
-            d.path = dir.FullName.Substring(rootPath.Length).Replace('\\','/');
-            d.level = level;            
-            d.sort = GetSort(dir.Name, level)
-                //default
-                ?? 100;
-
-            if (dir.GetDirectories().Any())
+            var siteMapItem = new SiteMapItem
             {
-                var list = new List<SiteMapItem>();
-                foreach (var child in dir.GetDirectories().Where(x => x.Name != "images"))
-                {
-                    list.Add(GetFolderStructure(child, rootPath, level + 1));
-                }
-                
-                d.hasChildren = true;
-                d.directories = list.OrderBy(x => x.sort).ToList();
+                name = dir.Name.Replace("-", " "),
+                path = dir.FullName.Substring(rootPath.Length).Replace('\\', '/'),
+                level = level,
+                sort = GetSort(dir.Name, level) ?? 100
+            };
+
+            if (dir.GetDirectories().Any() == false)
+                return siteMapItem;
+
+            var list = new List<SiteMapItem>();
+            foreach (var child in dir.GetDirectories().Where(x => x.Name != "images"))
+            {
+                list.Add(GetFolderStructure(child, rootPath, level + 1));
             }
 
-            return d;
+            siteMapItem.hasChildren = true;
+            siteMapItem.directories = list.OrderBy(x => x.sort).ToList();
+
+            return siteMapItem;
         }
 
         private int? GetSort(string name, int level)
@@ -309,10 +309,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             var dir = new DirectoryInfo(Path.Combine(RootFolder, foldername));
             var dirsToCreate = new List<DirectoryInfo>();
 
-            while (!dir.Exists)
+            while (dir != null && dir.Exists == false)
             {
-               dirsToCreate.Add(dir);
-               dir = dir.Parent;
+                dirsToCreate.Add(dir);
+                dir = dir.Parent;
             }
 
             if (dirsToCreate.Any())
@@ -323,156 +323,138 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             }
 
             var path = Path.Combine(RootFolder, foldername + "archive.zip");
-            
+
             if (File.Exists(path))
                 File.Delete(path);
 
-            WebClient Client = new WebClient();
-            Client.DownloadFile(url, path);
+            using (var client = new WebClient())
+            {
+                client.DownloadFile(url, path);
+            }
 
             return path;
         }
 
-
         private void Unzip(string path, string foldername, string rootFolder)
         {
-            ZipInputStream s = new ZipInputStream(File.OpenRead(path));
-            ZipEntry theEntry;
-
-            var stopDir = "\\Documentation";
-            string serverFolder = rootFolder + "\\" + foldername;
-
-            List<string> existingFiles = new List<string>();
-
-            if (Directory.Exists(serverFolder))
+            using (var zipInputStream = new ZipInputStream(File.OpenRead(path)))
             {
-                foreach (var folder in Directory.GetDirectories(serverFolder))
-                    Directory.Delete(folder, true);
+                var stopDir = "\\Documentation";
+                var serverFolder = string.Format("{0}\\{1}", rootFolder, foldername);
 
-                foreach (var mdfile in Directory.GetFiles(serverFolder, "*.md"))
-                    File.Delete(mdfile);
-
-//                var files = string.Join("|", Directory.GetFiles(serverFolder, "*.md", SearchOption.AllDirectories)).ToLower().Split('|');
-//                existingFiles.AddRange(files);
-            }
-            else
-                Directory.CreateDirectory(serverFolder);
-
-            try
-            {
-                bool stopDirSet = false;
-
-                while ((theEntry = s.GetNextEntry()) != null)
+                if (Directory.Exists(serverFolder))
                 {
-                    if (IsProjectDocumentation && !stopDirSet)
+                    foreach (var folder in Directory.GetDirectories(serverFolder))
+                        Directory.Delete(folder, true);
+
+                    foreach (var mdfile in Directory.GetFiles(serverFolder, "*.md"))
+                        File.Delete(mdfile);
+                }
+                else
+                {
+                    Directory.CreateDirectory(serverFolder);
+                }
+
+                try
+                {
+                    var stopDirSet = false;
+
+                    ZipEntry theEntry;
+                    while ((theEntry = zipInputStream.GetNextEntry()) != null)
                     {
-                        stopDir = Path.GetDirectoryName(theEntry.Name);
-                        stopDirSet = true;
-                    }
-
-                    string directoryName = Path.GetDirectoryName(theEntry.Name);
-                    string fileName = Path.GetFileName(theEntry.Name);
-
-                    HttpContext.Current.Trace.Write("git", theEntry.Name + "  " + fileName + " - " + directoryName);
-
-                    if (directoryName.Contains(stopDir))
-                    {
-                        var startIndex = directoryName.LastIndexOf(stopDir) + stopDir.Length;
-                        directoryName = directoryName.Substring(startIndex);
-
-                        // create directory
-                        Directory.CreateDirectory(serverFolder + directoryName);
-
-                        if (fileName != String.Empty)
+                        if (IsProjectDocumentation && !stopDirSet)
                         {
-                            bool update = false;
+                            stopDir = Path.GetDirectoryName(theEntry.Name);
+                            stopDirSet = true;
+                        }
+
+                        var directoryName = Path.GetDirectoryName(theEntry.Name);
+                        var fileName = Path.GetFileName(theEntry.Name);
+
+                        HttpContext.Current.Trace.Write("git", theEntry.Name + "  " + fileName + " - " + directoryName);
+
+                        if (directoryName != null && stopDir != null && directoryName.Contains(stopDir))
+                        {
+                            var startIndex = directoryName.LastIndexOf(stopDir, StringComparison.Ordinal) +
+                                             stopDir.Length;
+                            directoryName = directoryName.Substring(startIndex);
+
+                            // create directory
+                            Directory.CreateDirectory(serverFolder + directoryName);
+
+                            if (fileName == string.Empty)
+                                continue;
+
                             var filepath = serverFolder + directoryName + "\\" + fileName;
 
-
-                            if (existingFiles.Contains(filepath.ToLower()))
+                            using (var streamWriter = File.Create(filepath))
                             {
-                                update = true;
-                                existingFiles.Remove(filepath.ToLower());
-                            }
-
-                            FileStream streamWriter = File.Create(filepath);
-                            int size = 2048;
-                            byte[] data = new byte[2048];
-                            while (true)
-                            {
-                                size = s.Read(data, 0, data.Length);
-                                if (size > 0)
+                                var data = new byte[2048];
+                                while (true)
                                 {
-                                    streamWriter.Write(data, 0, size);
-                                }
-                                else
-                                {
-                                    break;
+                                    var size = zipInputStream.Read(data, 0, data.Length);
+                                    if (size > 0)
+                                    {
+                                        streamWriter.Write(data, 0, size);
+                                    }
+                                    else
+                                    {
+                                        break;
+                                    }
                                 }
                             }
-                            streamWriter.Close();
 
-                            if (update)
-                            {
-                                UpdateEventArgs ev = new UpdateEventArgs();
-                                ev.FilePath = filepath;
-                                FireOnUpdate(ev);
-                            }
-                            else
-                            {
-                                CreateEventArgs ev = new CreateEventArgs();
-                                ev.FilePath = filepath;
-                                FireOnCreate(ev);
-                            }
+                            var createEventArgs = new CreateEventArgs { FilePath = filepath };
+                            FireOnCreate(createEventArgs);
                         }
                     }
                 }
-
-                s.Close();
-                foreach (var file in Directory.GetFiles(rootFolder, "*.zip"))
+                catch (Exception ex)
                 {
-                    //File.Delete(file);
+                    LogHelper.Error<ZipDownloader>("Error processing documentation", ex);
                 }
-
-            }
-            catch (Exception ex)
-            {
-                Log.Add(LogTypes.Error, -1, ex.ToString());
             }
         }
 
-        private Events _e = new Events();
+        private readonly Events _events = new Events();
 
         public static event EventHandler<UpdateEventArgs> OnUpdate;
         protected virtual void FireOnUpdate(UpdateEventArgs e)
         {
             try
             {
-                _e.FireCancelableEvent(OnUpdate, this, e);
+                _events.FireCancelableEvent(OnUpdate, this, e);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ZipDownloader>("Error firing update handler", ex);
+            }
         }
-
 
         public static event EventHandler<CreateEventArgs> OnCreate;
         protected virtual void FireOnCreate(CreateEventArgs e)
         {
             try
             {
-                _e.FireCancelableEvent(OnCreate, this, e);
+                _events.FireCancelableEvent(OnCreate, this, e);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ZipDownloader>("Error firing create handler", ex);
+            }
         }
-
 
         public static event EventHandler<DeleteEventArgs> OnDelete;
         protected virtual void FireOnDelete(DeleteEventArgs e)
         {
             try
             {
-                _e.FireCancelableEvent(OnDelete, this, e);
+                _events.FireCancelableEvent(OnDelete, this, e);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ZipDownloader>("Error firing delte handler", ex);
+            }
         }
 
         public static event EventHandler<FinishEventArgs> OnFinish;
@@ -480,10 +462,12 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         {
             try
             {
-                _e.FireCancelableEvent(OnFinish, this, e);
+                _events.FireCancelableEvent(OnFinish, this, e);
             }
-            catch (Exception ex) { }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ZipDownloader>("Error firing finish handler", ex);
+            }
         }
-
     }
 }
