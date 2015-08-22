@@ -95,9 +95,12 @@
                         <i class="icon-Flag"></i><span>Flag as spam</span>
                     </a>
 
-                    <a href="#" data-author="@topicAuthor.Name" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
-                        <i class="icon-Reply-arrow"></i><span>Reply</span>
-                    </a>
+                    if (forum.NewTopicsAllowed())
+                    {
+                        <a href="#" data-author="@topicAuthor.Name" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
+                            <i class="icon-Reply-arrow"></i><span>Reply</span>
+                        </a>
+                    }
 
                     if (Members.IsAdmin() || Members.GetCurrentMember().Id == topicAuthor.Id)
                     {
