@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -10,22 +9,10 @@ using System.Xml;
 using Examine;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
-using Umbraco.Core;
 using umbraco.BusinessLogic;
 
 namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 {
-	// THIS WAS USED TO GENERATE THE SITE MAP WHEN TESTING LOCALLY, SO IF YOU ARE TESTING LOCALLY AND YOU WANT TO RE-GEN THE SiteMap
-	// YOU CAN UNCOMMENT THIS AND BUILD.... DON'T COMMIT THIS UNCOMMENTED
-    //public class SitemapStartupHandler : ApplicationEventHandler
-    //{
-    //    protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
-    //    {
-    //        var zip = new ZipDownloader();
-    //        zip.BuildSitemap(zip.RootFolder);
-    //    }
-    //}
-
     public class ZipDownloader
     {
         private const string rootFolder = @"~\Documentation";
@@ -174,7 +161,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             if (dir.GetDirectories().Any())
             {
                 var list = new List<SiteMapItem>();
-                foreach (var child in dir.GetDirectories())
+                foreach (var child in dir.GetDirectories().Where(x => x.Name != "images"))
                 {
                     list.Add(GetFolderStructure(child, rootPath, level + 1));
                 }
