@@ -38,6 +38,19 @@
 
                     <div class="user-profile">
                         <h2>@member.Name</h2>
+                        <div class="posts">
+
+                            @member.ForumPosts()
+                            
+                            @if (member.ForumPosts() == 0 || member.ForumPosts() > 1)
+                            {
+                                <text>Posts</text>
+                            }
+                            else
+                            {
+                              <text>Post</text>
+                            }
+                        </div>
                         <div class="karma">
                             @member.Karma()
                         </div>
