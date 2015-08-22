@@ -6,6 +6,12 @@
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
+
+    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    if (string.IsNullOrWhiteSpace(notification))
+    {
+        notification = "This forum is in read only mode, you can no longer reply";
+    }
 }
 
 <!-- COPY LINK -->
@@ -49,7 +55,7 @@
     if (Model.Content.NewTopicsAllowed() == false)
     {
         <div class="alertbar__yellow" style="margin-bottom: 10px;">
-            @Html.Raw("This forum is in read-only mode, you can no longer reply")
+            @Html.Raw(notification)
         </div>
     }
 
@@ -86,7 +92,7 @@
         else
         {
             <div class="alertbar__yellow">
-                @Html.Raw("This forum is in read only mode, you can no longer reply")
+                @Html.Raw(notification)
             </div>
         }
     }
