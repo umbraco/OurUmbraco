@@ -24,6 +24,7 @@ namespace OurUmbraco.Our {
             string fileType = context.Request.Form["FILETYPE"];
             string fileName = context.Request.Form["FILENAME"];
             string umbraoVersion = context.Request.Form["UMBRACOVERSION"];
+            string dotNetVersion = context.Request.Form["DOTNETVERSION"];
 
             List<UmbracoVersion> v = new List<UmbracoVersion>() { UmbracoVersion.DefaultVersion() };
 
@@ -39,7 +40,7 @@ namespace OurUmbraco.Our {
                 Member mem = new Member(new Guid(userguid));
 
                 if (d.ContentType.Alias == "Project" && d.getProperty("owner") != null && (d.getProperty("owner").Value.ToString() == mem.Id.ToString() ||  Utils.IsProjectContributor(mem.Id,d.Id))) {
-                    WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v);
+                    WikiFile.Create(fileName, new Guid(nodeguid), new Guid(userguid), file, fileType, v, dotNetVersion);
 
                     //the package publish handler will make sure we got the right versions info on the package node itself.
                     //ProjectsEnsureGuid.cs is the handler

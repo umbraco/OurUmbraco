@@ -14,8 +14,7 @@
                 "USERGUID": "<%= MemberGuid %>",
                 "FILETYPE": jQuery("#wiki_fileType").val(),
                 "UMBRACOVERSION": getUmbracoVersionValsAsString(),
-                "DOTNETVERSION": jQuery("#wiki_dotnetversion").val(),
-                "TRUSTLEVEL": jQuery("#wiki_trustlevel").val()
+                "DOTNETVERSION": jQuery("#wiki_dotnetversion").val()
             },
 
             // Flash file settings
@@ -64,16 +63,13 @@
 
     jQuery(document).ready(function () {
         jQuery("#wiki_fileType").change(function () {
-            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val(), "TRUSTLEVEL": jQuery("#wiki_trustlevel").val() });
+            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val() });
         })
         jQuery("input:checkbox[name=wiki_version]").change(function () {
-            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val(), "TRUSTLEVEL": jQuery("#wiki_trustlevel").val() });
-        })
-        jQuery("#wiki_dotnetversion").change(function () {
-            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val(), "TRUSTLEVEL": jQuery("#wiki_trustlevel").val() });
-        })
-        jQuery("#wiki_trustlevel").change(function () {
-            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val(), "TRUSTLEVEL": jQuery("#wiki_trustlevel").val() });
+            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val() });
+        })                                                                                                                                                                                                                                                                              
+        jQuery("#wiki_dotnetversion").change(function () {                                                                                                                                                                                                                              
+            swfu.setPostParams({ ASPSESSID: "<%=Session.SessionID %>", NODEGUID: "<%= ProjectGuid %>", USERGUID: "<%= MemberGuid %>", FILETYPE: jQuery("#wiki_fileType").val(), "UMBRACOVERSION": getUmbracoVersionValsAsString(), "DOTNETVERSION": jQuery("#wiki_dotnetversion").val() });
         })
     });
 
@@ -110,9 +106,6 @@
   <asp:Literal ID="lt_dotnetversion" runat="server" />
 </td>
 <td>
-  <asp:Literal ID="lt_trustlevel" runat="server" />
-</td>
-<td>
   <asp:Literal ID="lt_date" runat="server" />
 </td>
 <td class="center">
@@ -139,7 +132,6 @@
   <th>Type</th>
   <th>Compatible Version</th>
   <th>.NET Version</th>
-  <th>Trust Level</th>
   <th>Uploaded</th>
   <th class="center">Default Release</th>
   <th class="center">Archive</th>
@@ -212,14 +204,6 @@
               </select><br />              
         </p>
 
-        <p id="pickTrustLevel">
-              <label class="inputLabel">Choose trust level supported</label>
-            
-              <select id="wiki_trustlevel" class="title">
-                <asp:literal ID="lt_trustlevels" runat="server" />
-              </select><br />              
-        </p>
-        
         <p>
             <input type="button" value="Upload file" id="btn_submit" class="button tiny" />
         </p>

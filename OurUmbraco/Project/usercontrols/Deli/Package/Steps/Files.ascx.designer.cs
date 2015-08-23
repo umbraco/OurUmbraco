@@ -49,15 +49,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps {
         protected global::System.Web.UI.WebControls.Literal lt_dotnetversions;
         
         /// <summary>
-        /// lt_trustlevels control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Literal lt_trustlevels;
-        
-        /// <summary>
         /// MovePrevious control.
         /// </summary>
         /// <remarks>
