@@ -252,7 +252,7 @@
 
         @if (currentRelease != null)
         {
-            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'",""))')">Download package</a>
+            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
         }
         else
         {
