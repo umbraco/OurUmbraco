@@ -57,7 +57,7 @@ FETCH NEXT @count ROWS ONLY";
             });
         }
 
-        public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true,
+        public IEnumerable<ReadOnlyTopic> GetLatestTopicsFiltered(long take = 50, long page = 1, bool ignoreSpam = true,
             int category = -1, bool unsolved = false, bool noreplies = false)
         {
             const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName

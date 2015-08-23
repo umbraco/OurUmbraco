@@ -30,13 +30,13 @@
     var pageSize = 50;
     if (page > 1)
     {
-        topics = topicService.GetLatestTopics(pageSize, page, true, cat, unsolved, noreplies);
+        topics = topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies);
     }
     else
     {
         var key = "OurForumForum[" + cat + unsolved + noreplies + "]";
         topics = (IEnumerable<ReadOnlyTopic>)cache.GetCacheItem(key,
-            () => topicService.GetLatestTopics(pageSize, page, true, cat, unsolved, noreplies).ToArray(),
+            () => topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies).ToArray(),
             TimeSpan.FromSeconds(4));
     }
 
