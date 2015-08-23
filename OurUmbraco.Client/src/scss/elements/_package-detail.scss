@@ -231,6 +231,15 @@
 		display: block;
 		font-weight: normal;
 	}
+
+	.smiley {
+		&.untested { color: #ccc; }
+		&.unhappy, &.superUnhappy { color: #f55b6d; }
+		&.neutral { color: rgba(0, 0, 0, 0.6); }
+		&.happy, &.joyous { color: #2ba92d; }
+		&.joyous { font-weight: bold; }
+	}
+
 	
 	.report-compat-item {
 		float: right;
