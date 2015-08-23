@@ -57,7 +57,12 @@
 
                 <div class="profile-input confirm-password" id="repeat-password">
                     @Html.LabelFor(m => m.RepeatPassword)
-                    @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
+                    @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
+                </div>
+
+                <div class="profile-input" id="company">
+                    @Html.LabelFor(m => m.Company)
+                    @Html.TextBoxFor(m => m.Company)
                 </div>
 
                 <div class="profile-input" id="bio">
