@@ -23,7 +23,7 @@ namespace OurUmbraco.Our.Examine
         
         public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20, IEnumerable<SearchFilters> filters = null)
         {
-            Term = QueryParser.Escape(term);
+            Term = string.IsNullOrWhiteSpace(term) ? term : QueryParser.Escape(term);
             NodeTypeAlias = nodeTypeAlias;
             OrderBy = orderBy;
          
