@@ -35,8 +35,10 @@ function redirectToSearch(ev){
 				}
 				newUri = updateQueryString("fid", filters.forumId, newUri);
 				newUri = updateQueryString("order", filters.order, newUri);
+				newUri = updateQueryString("noreplies", filters.noreplies, newUri);
 				newUri = updateQueryString("replies", filters.replies, newUri);
 				newUri = updateQueryString("solved", filters.solved, newUri);
+				newUri = updateQueryString("unsolved", filters.unsolved, newUri);
 					
 				window.location = newUri;
 			}
@@ -48,7 +50,9 @@ function GetSearchFilters(cssClass) {
 		forumId: undefined,
 		order: undefined,
 		solved: undefined,
-		replies: undefined
+		unsolved: undefined,
+		replies: undefined,
+		noreplies: undefined
 	};
 	if(cssClass === undefined) {
 		filters.category = undefined;
@@ -65,7 +69,9 @@ function GetSearchFilters(cssClass) {
 	filters.forumId = forumId;
 	filters.order = getParameterByName('order');
 	filters.solved = getParameterByName('solved');
+	filters.unsolved = getParameterByName('unsolved');
 	filters.replies = getParameterByName('replies');
+	filters.noreplies = getParameterByName('noreplies');
 	
 	return filters;
 }	
@@ -366,7 +372,9 @@ $('#search-options input[type=checkbox]').click(function () {
 });
 
 initCheckbox('replies');
+initCheckbox('noreplies');
 initCheckbox('solved');
+initCheckbox('unsolved');
 initCheckbox('order');
 
 });
