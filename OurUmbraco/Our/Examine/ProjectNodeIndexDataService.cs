@@ -37,11 +37,17 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("url", project.Url );
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
 
-            var image = files.FirstOrDefault(x => x.FileType == "screenshot");
-            var imageFile = "";
-            if (image != null)
-                imageFile = image.Path;
-
+            var imageFile = string.Empty;
+            if (project.HasValue("defaultScreenshotPath"))
+            {
+                imageFile = project.GetPropertyValue<string>("defaultScreenshotPath");
+            }
+            if(string.IsNullOrWhiteSpace(imageFile))
+            {
+                var image = files.FirstOrDefault(x => x.FileType == "screenshot");
+                if (image != null)
+                    imageFile = image.Path;
+            }
             //Clean up version data before its included in the index
             int o;
             var version = project.GetProperty("compatibleVersions").Value;
