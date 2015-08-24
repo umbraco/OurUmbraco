@@ -308,26 +308,28 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
         
                         //Reference - Config
-                        case "404handlers":
+                        case "webconfig":
                             return 0;
-                        case "appalications":
+                        case "404handlers":
                             return 1;
-                        case "embeddedmedia":
+                        case "appalications":
                             return 2;
-                        case "examineindex":
+                        case "embeddedmedia":
                             return 3;
-                        case "examinesettings":
+                        case "examineindex":
                             return 4;
-                        case "filesystemproviders":
+                        case "examinesettings":
                             return 5;
-                        case "baserestextensions":
+                        case "filesystemproviders":
                             return 6;
-                        case "tinymceconfig":
+                        case "baserestextensions":
                             return 7;
-                        case "trees":
+                        case "tinymceconfig":
                             return 8;
-                        case "umbracosettings":
+                        case "trees":
                             return 9;
+                        case "umbracosettings":
+                            return 10;
 
                         //Reference - Templating
                         case "mvc":
