@@ -335,46 +335,7 @@
                 <li>
                     <span>License</span> @project.GetPropertyValue("licenseName")
                 </li>
-                @{
-                    // Gets tags from the document property, if that's not available then get them using Umbraco.TagQuery
-                    // This is here because it was needed after the v7 upgrade
-                    var tagsCached = project.GetPropertyValue<string>("tags") == null ? new List<string>() : project.GetPropertyValue<string>("tags").Split(',').ToList();
-                    var tagList = tagsCached;
-                    if (tagList.Any())
-                    {
-                        tagList = new List<string>();
-                        foreach (var tag in tagsCached)
-                        {
-                            if (tagList.Any(x => string.Equals(x.Trim(), tag.Trim(), StringComparison.InvariantCultureIgnoreCase)) == false)
-                            {
-                                tagList.Add(tag.Trim());
-                            }
-                        }
-                    }
-                    else
-                    {
-                        var tags = Umbraco.TagQuery.GetTagsForProperty(project.Id, "tags").ToList();
-                        if (tags.Any())
-                        {
-                            tagList = new List<string>();
-                            foreach (var tag in tags)
-                            {
-                                if (tagList.Any(x => string.Equals(x.Trim(), tag.Text.Trim(), StringComparison.InvariantCultureIgnoreCase)) == false)
-                                {
-                                    tagList.Add(tag.Text.Trim());
-                                }
-                            }
-                        }
-                    }
-
-                    if (tagList.Any())
-                    {
-                        <li>
-                            <span>Tags</span>
-                            @string.Join(", ", tagList)
-                        </li>
-                    }
-                }
+                
                 <li>
                     <span>Downloads:</span> @downloads
                 </li>
