@@ -298,6 +298,74 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "creating-forms":
                             return 2;
+
+                        //Implementation - Default Routing
+                        case "inbound-pipeline":
+                            return 0;
+                        case "controller-selection":
+                            return 1;
+                        case "execute-request":
+                            return 2;
+        
+                        //Reference - Config
+                        case "404handlers":
+                            return 0;
+                        case "appalications":
+                            return 1;
+                        case "embeddedmedia":
+                            return 2;
+                        case "examineindex":
+                            return 3;
+                        case "examinesettings":
+                            return 4;
+                        case "filesystemproviders":
+                            return 5;
+                        case "baserestextensions":
+                            return 6;
+                        case "tinymceconfig":
+                            return 7;
+                        case "trees":
+                            return 8;
+                        case "umbracosettings":
+                            return 9;
+
+                        //Reference - Templating
+                        case "mvc":
+                            return 0;
+                        case "masterpages":
+                            return 1;
+                        case "macros":
+                            return 2;
+
+                        //Reference - Querying
+                        case "ipublishedcontent":
+                            return 0;
+                        case "dynamicpublishedcontent":
+                            return 1;
+                        case "umbracohelper":
+                            return 2;
+                        case "membershiphelper":
+                            return 3;
+
+                        //Reference - Routing
+                        case "authorized":
+                            return 0;
+                        case "request-pipeline":
+                            return 1;
+                        case "webapi":
+                            return 2;
+
+                        //Add Ons - UmbracoForms
+                        case "installation":
+                            return 0;
+                        case "editor":
+                            return 1;
+                        case "developer":
+                            return 2;
+
+                        //Add ons - UmbracoCourrier
+                        case "architechture":
+                            return 3;   
 	                }
                 break;
             }
