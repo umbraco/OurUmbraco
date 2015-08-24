@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine.Providers;
+using Lucene.Net.QueryParsers;
 using OurUmbraco.Our.Models;
 
 namespace OurUmbraco.Our.Examine
@@ -19,13 +20,10 @@ namespace OurUmbraco.Our.Examine
         public string OrderBy { get; set; }
         public int MaxResults { get; set; }
         public IEnumerable<SearchFilters> Filters { get; private set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="T:System.Object"/> class.
-        /// </summary>
+        
         public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20, IEnumerable<SearchFilters> filters = null)
         {
-            Term = term;
+            Term = string.IsNullOrWhiteSpace(term) ? term : QueryParser.Escape(term);
             NodeTypeAlias = nodeTypeAlias;
             OrderBy = orderBy;
          
@@ -37,7 +35,7 @@ namespace OurUmbraco.Our.Examine
         {
             var multiIndexSearchProvider = (MultiIndexSearcher)ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
             multiIndexSearchProvider.EnableLeadingWildcards = true;
-
+            
             var criteria = multiIndexSearchProvider.CreateSearchCriteria();
 
             var sb = new StringBuilder();

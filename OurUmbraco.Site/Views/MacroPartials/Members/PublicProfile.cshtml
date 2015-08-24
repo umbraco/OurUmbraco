@@ -91,7 +91,7 @@
                                     {
                                         <span> works at <span>@member.GetPropertyValue("company")</span></span>
                                     }
-                                    and has <em class="karma-points">@member.GetPropertyValue("reputationCurrent")</em> <span></span> karma points
+                                    and has <em class="posts">@member.GetPropertyValue("forumPosts")</em> @if (member.ForumPosts() == 0 || member.ForumPosts() > 1){<text>posts</text>}else{<text>post</text>} and <em class="karma-points">@member.GetPropertyValue("reputationCurrent")</em> <span></span> karma points
                                 </small>
                             </div>
                             <div class="member-bio">

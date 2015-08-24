@@ -97,8 +97,8 @@
 
 	.button {
 		max-width: 80%;
-		padding: 15px 20px;
-		font-size: 1rem;
+		padding: 5px 10px;
+		font-size: .9rem;
 		margin: .5rem 0 2.5rem;
 
 		i {
@@ -108,6 +108,11 @@
 			top: 4px;
 			left: 5px;
 		}
+	}
+
+	.button small {
+		color: white;
+		font-size: .7rem;
 	}
 
 	h2, h3, strong, span {
@@ -226,6 +231,15 @@
 		display: block;
 		font-weight: normal;
 	}
+
+	.smiley {
+		&.untested { color: #ccc; }
+		&.unhappy, &.superUnhappy { color: #f55b6d; }
+		&.neutral { color: rgba(0, 0, 0, 0.6); }
+		&.happy, &.joyous { color: #2ba92d; }
+		&.joyous { font-weight: bold; }
+	}
+
 	
 	.report-compat-item {
 		float: right;

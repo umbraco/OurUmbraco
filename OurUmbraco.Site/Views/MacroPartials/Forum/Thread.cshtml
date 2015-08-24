@@ -1,10 +1,17 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using System.Web.Mvc.Html
+@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
 
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
+
+    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    if (string.IsNullOrWhiteSpace(notification))
+    {
+        notification = "This forum is in read only mode, you can no longer reply";
+    }
 }
 
 <!-- COPY LINK -->
@@ -43,37 +50,54 @@
     <button type="button" class="button red tiny">No</button>
 </div>
 <!-- FLAG SPAM END -->
-@if(topic != null) 
-{	
-	<ul class="comments">
-		@Html.Partial("forum/question", topic)
-					
-		@foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
-		{
-			var comm = comment;
-			
-			Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
+@if (topic != null)
+{
+    if (Model.Content.NewTopicsAllowed() == false)
+    {
+        <div class="alertbar__yellow" style="margin-bottom: 10px;">
+            @Html.Raw(notification)
+        </div>
+    }
 
-			if (comm.HasChildren)
-			{
-				var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
+    <ul class="comments">
 
-				foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
-				{
-					Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
-				}
-			}
-		}
-	</ul>
+        @Html.Partial("forum/question", topic)
 
-	if (Members.IsLoggedIn())
-	{
-		<div class="replybutton">
-			<a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
-		</div>
-	}
-	else
-	{
+        @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
+        {
+            var comm = comment;
+
+            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary {{"level", 1}, {"answer", topic.Answer}});
+
+            if (comm.HasChildren)
+            {
+                var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
+
+                foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
+                {
+                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary {{"level", 2}, {"answer", topic.Answer}});
+                }
+            }
+        }
+    </ul>
+
+    if (Members.IsLoggedIn())
+    {
+        if (Model.Content.NewTopicsAllowed())
+        {
+            <div class="replybutton">
+                <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment">Reply to topic</a>
+            </div>
+        }
+        else
+        {
+            <div class="alertbar__yellow">
+                @Html.Raw(notification)
+            </div>
+        }
+    }
+    else
+    {
 		<div class="replybutton notloggedin">
 			Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
 		</div>

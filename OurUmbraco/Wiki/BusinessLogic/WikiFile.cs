@@ -114,7 +114,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
         private readonly Events _events = new Events();
 
         private WikiFile() { }
-        public static WikiFile Create(string name, Guid node, Guid memberGuid, HttpPostedFile file, string filetype, List<UmbracoVersion> versions)
+
+        public static WikiFile Create(string name, Guid node, Guid memberGuid, HttpPostedFile file, string filetype, List<UmbracoVersion> versions, string dotNetVersion)
         {
             try
             {
@@ -131,18 +132,19 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 if (content != null)
                 {
                     var wikiFile = new WikiFile
-                                   {
-                                       Name = name,
-                                       NodeId = content.Id,
-                                       NodeVersion = content.Version,
-                                       FileType = filetype,
-                                       CreatedBy = member.Id,
-                                       Downloads = 0,
-                                       Archived = false,
-                                       Versions = versions,
-                                       Version = versions[0],
-                                       Verified = false
-                                   };
+                    {
+                        Name = name,
+                        NodeId = content.Id,
+                        NodeVersion = content.Version,
+                        FileType = filetype,
+                        CreatedBy = member.Id,
+                        Downloads = 0,
+                        Archived = false,
+                        Versions = versions,
+                        Version = versions[0],
+                        Verified = false,
+                        DotNetVersion = dotNetVersion
+                    };
 
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
@@ -167,6 +169,10 @@ namespace OurUmbraco.Wiki.BusinessLogic
             }
 
             return null;
+        }
+        public static WikiFile Create(string name, Guid node, Guid memberGuid, HttpPostedFile file, string filetype, List<UmbracoVersion> versions)
+        {
+            return Create(name, node, memberGuid, file, filetype, versions, string.Empty);
         }
 
         private static bool ExtensionNotAllowed(string extension)
@@ -235,7 +241,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     return;
 
                 Application.SqlHelper.ExecuteNonQuery(
-                    "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified)",
+                    "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion)",
                     Application.SqlHelper.CreateParameter("@path", Path),
                     Application.SqlHelper.CreateParameter("@name", Name),
                     Application.SqlHelper.CreateParameter("@createdBy", CreatedBy),
@@ -245,7 +251,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@downloads", Downloads),
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Application.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@verified", Verified),
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion)
                     );
 
                 CreateDate = DateTime.Now;
@@ -263,7 +270,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     return;
 
                 Application.SqlHelper.ExecuteNonQuery(
-                    "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified WHERE id = @id",
+                    "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified, dotNetVersion = @dotNetVersion WHERE id = @id",
                     Application.SqlHelper.CreateParameter("@path", Path),
                     Application.SqlHelper.CreateParameter("@name", Name),
                     Application.SqlHelper.CreateParameter("@type", FileType),
@@ -274,7 +281,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@downloads", Downloads),
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Application.SqlHelper.CreateParameter("@verified", Verified)
+                    Application.SqlHelper.CreateParameter("@verified", Verified),
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion)
                     );
 
                 FireAfterUpdate(e);
@@ -400,6 +408,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             if (cookie != null && ignoreCookies == false)
                 return;
+
             var downloads = 0;
             var projectId = 0;
 
@@ -420,17 +429,16 @@ namespace OurUmbraco.Wiki.BusinessLogic
             
             if (isPackage)
             {
-                var currentMember = 0;
-                var member = Member.GetCurrentMember();
-                if (member != null)
-                    currentMember = member.Id;
+                var memberHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+                var memberId = memberHelper.GetCurrentMemberId();
+                var currentMemberId = memberId == -1 ? 0 : memberId;
 
                 //update download count update
                 Application.SqlHelper.ExecuteNonQuery(
                     @"insert into projectDownload(projectId,memberId,timestamp) 
                         values((select nodeId from wikiFiles where id = @id) ,@memberId, getdate())",
                     Application.SqlHelper.CreateParameter("@id", fileId),
-                    Application.SqlHelper.CreateParameter("@memberId", currentMember));
+                    Application.SqlHelper.CreateParameter("@memberId", currentMemberId));
             }
 
             var e = new FileDownloadUpdateEventArgs { ProjectId = projectId, Downloads = totalDownloads };

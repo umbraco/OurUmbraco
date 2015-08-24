@@ -1,5 +1,6 @@
 ﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Forum.Models.ReadOnlyComment>
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
 @using OurUmbraco.Powers.Library
 
 @{
@@ -13,6 +14,10 @@
     {
         roles = commentAuthor.GetRoles();
     }
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
+    var forum = Umbraco.TypedContent(topic.ParentId);
+    var forumReadOnly = forum.NewTopicsAllowed() == false;
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Members.IsAdmin()))
@@ -86,14 +91,14 @@
                     </a>
                 }
 
-                if (Model.ParentCommentId <= 0)
+                if (Model.ParentCommentId <= 0 && forumReadOnly == false)
                 {
                     <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }
-                
-                if (Model.ParentCommentId > 0)
+
+                if (Model.ParentCommentId > 0 && forumReadOnly == false)
                 {
                     <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>

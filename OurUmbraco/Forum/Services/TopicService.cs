@@ -26,7 +26,7 @@ namespace OurUmbraco.Forum.Services
         /// <param name="page"></param>
         /// <param name="ignoreSpam"></param>
         /// <param name="category"></param>
-        /// <returns></returns>
+        /// <returns></returns>        
         public IEnumerable<ReadOnlyTopic> GetLatestTopics(long take = 50, long page = 1, bool ignoreSpam = true, int category = -1)
         {
             const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
@@ -48,6 +48,50 @@ FETCH NEXT @count ROWS ONLY";
                 ? (category > 0 ? sqlic : sqlix)
                 : (category > 0 ? sqlxc : sqlxx);
             
+            // probably as fast as PetaPoco can be...
+            return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new
+            {
+                offset = (page - 1) * take,
+                count = take,
+                category = category
+            });
+        }
+
+        public IEnumerable<ReadOnlyTopic> GetLatestTopicsFiltered(long take = 50, long page = 1, bool ignoreSpam = true,
+            int category = -1, bool unsolved = false, bool noreplies = false)
+        {
+            const string sql1 = @"SELECT forumTopics.*, u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName
+FROM forumTopics
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+";
+            const string sql2 = @"
+ORDER BY updated DESC
+OFFSET @offset ROWS
+FETCH NEXT @count ROWS ONLY";
+            
+            const string sqlix = sql1 + "WHERE isSpam=0";
+            const string sqlxc = sql1 + "WHERE forumTopics.parentId=@category";
+            const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
+            
+            var sql = ignoreSpam
+                ? (category > 0 ? sqlic : sqlix)
+                : (category > 0 ? sqlxc : sql1);
+
+            if (unsolved)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND answer = 0";
+                else
+                    sql = sql + " WHERE answer = 0";
+            
+            if (noreplies)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND replies = 0";
+                else
+                    sql = sql + " WHERE replies = 0";
+
+            sql = sql + sql2;
+
             // probably as fast as PetaPoco can be...
             return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new
             {

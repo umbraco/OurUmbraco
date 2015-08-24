@@ -1,4 +1,6 @@
-﻿@using OurUmbraco.Our.Controllers
+﻿@using OurUmbraco.Our
+@using OurUmbraco.Our.Controllers
+
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
 @{
     Html.EnableClientValidation(true);
@@ -15,7 +17,6 @@
             <button class="button transparent tiny">Cancel<div class="span" style="display:none;"><div class=" loader"></div></div></button>
         </div>
     </div>
-
 </div>
 
     <div class="profile-settings">
@@ -33,7 +34,7 @@
                     </label>
 
                     <div class="avatar-image inked">
-                        <img src="@Model.Avatar?width=100&height=100&mode=crop" alt="">
+                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar, 100, ""))
                         <span>Change image</span>
                     </div>
                     @Html.HiddenFor(m => m.Avatar)
@@ -42,17 +43,12 @@
                 <div class="profile-input" id="username">
                     @Html.LabelFor(m => m.Name)
                     @Html.TextBoxFor(m => m.Name)
-
                 </div>
-
 
                 <div class="profile-input" id="email">
                     @Html.LabelFor(m => m.Email)
                     @Html.TextBoxFor(m => m.Email)
-                    
-
                 </div>
-
 
                 <div class="profile-input" id="password">
                     @Html.LabelFor(m => m.Password)
@@ -61,29 +57,28 @@
 
                 <div class="profile-input confirm-password" id="repeat-password">
                     @Html.LabelFor(m => m.RepeatPassword)
-                    @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
-
+                    @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
                 </div>
 
+                <div class="profile-input" id="company">
+                    @Html.LabelFor(m => m.Company)
+                    @Html.TextBoxFor(m => m.Company)
+                </div>
 
                 <div class="profile-input" id="bio">
                     @Html.LabelFor(m => m.Bio)
                     @Html.TextAreaFor(m => m.Bio)
-
                 </div>
-
 
                 <div class="profile-input" id="twitter-alias">
                     @Html.LabelFor(m => m.TwitterAlias)
                     @Html.TextBoxFor(m => m.TwitterAlias)
                 </div>
 
-
                 <div class="profile-input" id="located-at">
                     @Html.LabelFor(m => m.Location)
                     @Html.TextBoxFor(m => m.Location)
                 </div>
-
 
                 <input class="button green" type="submit" value="Save changes">
                 

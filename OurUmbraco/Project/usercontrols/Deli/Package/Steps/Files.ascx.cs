@@ -120,7 +120,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
                 Literal _type = (Literal)e.Item.FindControl("lt_type");
                 Literal _version = (Literal)e.Item.FindControl("lt_version");
                 Literal _dotNetVersion = (Literal)e.Item.FindControl("lt_dotNetVersion");
-                Literal _trustLevel = (Literal)e.Item.FindControl("lt_trustlevel");
                 Literal _currentRelease = (Literal)e.Item.FindControl("lt_currentRelease");
 
                 Button _defaultPackageFile = (Button)e.Item.FindControl("bt_default");
@@ -173,8 +172,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
                 if (f.DotNetVersion != null)
                     _dotNetVersion.Text = f.DotNetVersion;
 
-                _trustLevel.Text = (f.SupportsMediumTrust) ? "Medium" : "Full";
-
                 _type.Text = f.FileType;
 
                 _name.Text = "<a href='" + f.Path + "'>" + f.Name + "</a>";
@@ -202,8 +199,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
 
         protected void Page_Load(object sender, EventArgs e)
         {
-
-
             if (library.IsLoggedOn() && ProjectId != null)
             {
                 var nodeListingProvider = new NodeListingProvider();
@@ -226,52 +221,27 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
 
                     MemberGuid = mem.UniqueId.ToString();
                     ProjectGuid = project.ProjectGuid.ToString();
-
-                    string defaultVersion = UmbracoVersion.DefaultVersion().Version;
+                    
                     string umboptions = "";
 
-                    foreach (OurUmbraco.Wiki.BusinessLogic.UmbracoVersion uv in UmbracoVersion.AvailableVersions().Values)
+                    foreach (UmbracoVersion uv in UmbracoVersion.AvailableVersions().Values)
                     {
-                        string selected = "checked='true'";
-                        if (uv.Version != defaultVersion)
-                            selected = "";
-                        umboptions += string.Format("<input type='checkbox' name='wiki_version' value='{0}' {2}/><span> {1}</span></br>", uv.Version, uv.Name, selected);
+                        umboptions += string.Format("<input type='checkbox' name='wiki_version' value='{0}' /><span> {1}</span></br>", uv.Version, uv.Name);
                     }
 
                     lt_versions.Text = umboptions;
 
 
-                    string[] dotnetversions = { "2.0", "3.5", "4.0", "4.5" };
+                    string[] dotnetversions = { "", "2.0", "3.5", "4.0", "4.5" };
                     string dotnetoptions = string.Empty;
 
                     foreach (var opt in dotnetversions)
                     {
-                        string selected = "selected='true'";
-                        if (opt != "4.0")
-                            selected = "";
-                        dotnetoptions += string.Format("<option value='{0}' {2}>{1}</option>", opt, opt, selected);
+                        dotnetoptions += string.Format("<option value='{0}'>{1}</option>", opt, opt);
 
                     }
 
                     lt_dotnetversions.Text = dotnetoptions;
-
-
-                    string[] trustlevels = { "Full", "Medium" };
-                    string trustoptions = string.Empty;
-
-                    foreach (var opt in trustlevels)
-                    {
-                        string selected = "selected='true'";
-                        if (opt != "Full")
-                            selected = "";
-                        trustoptions += string.Format("<option value='{0}' {2}>{1}</option>", opt, opt, selected);
-
-                    }
-
-                    lt_trustlevels.Text = trustoptions;
-
-
-
                 }
 
 

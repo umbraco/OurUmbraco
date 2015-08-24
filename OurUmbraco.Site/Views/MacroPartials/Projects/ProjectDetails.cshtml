@@ -106,7 +106,7 @@
                     @foreach (var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version))
                     {
                         <li>
-                            <a href="/FileDownload?id=@release.Id">
+                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
                                     <i class="icon-Box"></i>
                                 </div>
@@ -134,7 +134,7 @@
                     @foreach (var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version))
                     {
                         <li>
-                            <a href="/FileDownload?id=@release.Id">
+                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/archived-files/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
                                     <i class="icon-Box"></i>
                                 </div>
@@ -162,7 +162,7 @@
                     @foreach (var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
                     {
                         <li>
-                            <a href="/FileDownload?id=@release.Id">
+                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/documentation/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
                                     <i class="icon-Box"></i>
                                 </div>
@@ -190,7 +190,7 @@
                     {
                         var uploader = Members.GetById(release.CreatedBy) ?? owner;
                         <li>
-                            <a href="/FileDownload?id=@release.Id">
+                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/source-code/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
                                     <i class="icon-Box"></i>
                                 </div>
@@ -252,7 +252,7 @@
 
         @if (currentRelease != null)
         {
-            <a href="/FileDownload?id=@currentRelease.Id" class="button green">Download package</a>
+            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
         }
         else
         {

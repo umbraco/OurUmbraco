@@ -11,6 +11,10 @@
     {
         page = 1;
     }
+    bool unsolved;
+    bool.TryParse(Request["unsolved"], out unsolved);
+    bool noreplies;
+    bool.TryParse(Request["noreplies"], out noreplies);
 
     var cat = -1;
     if (CurrentPage.Level > 3)
@@ -26,13 +30,13 @@
     var pageSize = 50;
     if (page > 1)
     {
-        topics = topicService.GetLatestTopics(pageSize, page, true, cat);
+        topics = topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies);
     }
     else
     {
-        var key = "OurForumForum[" + cat + "]";
+        var key = "OurForumForum[" + cat + unsolved + noreplies + "]";
         topics = (IEnumerable<ReadOnlyTopic>)cache.GetCacheItem(key,
-            () => topicService.GetLatestTopics(pageSize, page, true, cat).ToArray(),
+            () => topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies).ToArray(),
             TimeSpan.FromSeconds(4));
     }
 
@@ -50,7 +54,7 @@
     var notification = Model.Content.GetPropertyValue<string>("mainNotification");
     if (string.IsNullOrWhiteSpace(notification))
     {
-        notification = "Creating new topics is not allowed here";
+        notification = "This forum is in read only mode, you can no longer create new topics";
     }
 
     <div class="alertbar__yellow">
@@ -87,16 +91,30 @@
             {
                 <option class="all" value="@categories.Id">All categories</option>
                 foreach (var main in categories.Children)
-                 {
-                     foreach (var tag in main.Children)
-                     {
-                         <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
-                     }
-                 }
+                {
+                    foreach (var tag in main.Children)
+                    {
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                    }
+                }
             }
         </select>
     </div>
 
+    <div id="search-options" class="search-options">
+        <label>Filter by</label>
+        <div class="options">
+            <span>
+                <input type="checkbox" name="unsolved" />
+                <small>show only unsolved topics</small>
+            </span>
+            <br />
+            <span>
+                <input type="checkbox" name="noreplies" />
+                <small>show only topics with no replies</small>
+            </span>
+        </div>
+    </div>
 </div>
 
 <!-- FORUM HEADER END -->
