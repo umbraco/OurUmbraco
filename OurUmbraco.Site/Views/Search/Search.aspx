@@ -43,21 +43,31 @@
 
                 <% if(Request.QueryString["cat"] == "forum")
                     { %>
-                    <div id="search-options" class="search-options">
-                        <label>Sort by</label>
-                    <div class="options">
-                        <span>
-                            <input type="checkbox" name="solved"/>
-                            <small>show only solved topics</small
-                        ></span><br/>
-                        <span>
-                            <input type="checkbox" name="replies"/><small>show only topics with replies</small>
-                        </span><br/>
-                        <span>
-                            <input type="checkbox" name="order" value="updateDate"/><small>show last updated first</small>
-                        </span>
-                    </div>
-                    </div>
+                        <div id="search-options" class="search-options">
+                            <label>Sort by</label>
+                            <div class="options">
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="solved"/>
+                                    <span></span>
+                                    <small>show only solved topics</small>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="replies"/>
+                                    <span></span>
+                                    <small>show only topics with replies</small>
+                                </label>
+
+                                <label class="checkbox">
+                                    <input type="checkbox" name="order" value="updateDate"/>
+                                    <span></span>
+                                    <small>show last updated first</small>
+                                </label>
+
+                            </div>
+                        </div>
+
                 <% } %>
 
 <%--                <% if (Request.QueryString["cat"] == "project")
