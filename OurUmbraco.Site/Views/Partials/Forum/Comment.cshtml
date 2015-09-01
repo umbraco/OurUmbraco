@@ -20,7 +20,8 @@
     <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
-                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a><span>@commentAuthor.Karma() karma points</span>
+                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a> <span>@if (commentAuthor.ForumPosts() == 0 || commentAuthor.ForumPosts() > 1){@commentAuthor.ForumPosts() <text>posts</text>}else{@commentAuthor.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Karma() karma points</span>
+                
 
                 @if (roles.Any())
                 {
