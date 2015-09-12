@@ -15,71 +15,30 @@
         <ul></ul>
     </div>
 
-
-    <div class="search-text">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <strong>The friendliest CMS community on the planet</strong>
-                    <p>our.umbraco.org is the central hub for the friendly umbraco community. Search for documentation, get help and guidance from seasoned experts, download and collaborate on plugins and extensions.</p>
+    @if (!Members.IsLoggedIn())
+    {
+        <div class="search-text">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-6 col-md-offset-3">
+                        <strong>The friendliest CMS community on the planet</strong>
+                        <p>our.umbraco.org is the central hub for the friendly umbraco community. Search for documentation, get help and guidance from seasoned experts, download and collaborate on plugins and extensions.</p>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-
+    }
+    
 </section>
 <!-- Search end -->
 
-<section class="docs">
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-6">
-                <div class="beginners">
-                    <a href="/documentation/Getting-Started/"><img src="/documentation/images/icon-getting-started.png" alt=""></a>
-                    <h2>Getting started</h2>
-                    <p>All the basics of using Umbraco v7. <br>From your first local installation, to creating a simple form.</p>
-
-                    <a class="button transparent" href="/documentation/Getting-Started/">How to get started &rarr;</a>
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="advanced">
-                    <a href="/documentation/Implementation/"><img src="/documentation/images/icon-implementation.png" alt=""></a>
-                    <h2>Implementation</h2>
-                    <p>Get an overview of the Umbraco pipeline.<br>Learn how the routing, controllers and services work.</p>
-
-                    <a class="button transparent" href="/documentation/Implementation/">Go to implementation &rarr;</a>
-                </div>
-            </div>
-
-        </div>
-    </div>
-</section>
-
-<section class="forum">
-    <div class="container">
-        <div class="row">
-
-            <div class="col-md-12">
-                <h1 class="text-center">Forum Activity</h1>
-                <p>
-                    Recent activity in the forums, where people are helping each other with current problems.
-                </p>
-            </div>
-            <div class="col-md-12">
-                <small>Recent posts</small>
-            </div>
-
-            @Umbraco.RenderMacro("ForumLatestActivity")
-
-
-            <div class="col-md-12 goto-forum">
-                <a class="button green" href="/forum">Go to Forum &rarr;</a>
-            </div>
-
-        </div>
-    </div>
-</section>
-
+@if (Members.IsLoggedIn())
+{
+    @Html.Partial("home/forumactivity")
+    @Html.Partial("home/documentation")
+}
+else
+{
+    @Html.Partial("home/documentation")
+    @Html.Partial("home/forumactivity")
+}
