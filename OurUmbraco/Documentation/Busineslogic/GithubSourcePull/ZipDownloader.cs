@@ -384,6 +384,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         //UaaS - Getting Started
                         case "baselines":
                             return 0;
+                        case "baseline-merge-conflicts":
+                            return 1;
 
                         //UaaS - Set Up
                         case "working-locally":
