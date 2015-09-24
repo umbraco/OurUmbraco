@@ -192,6 +192,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 5;
                         case "add-ons":
                             return 6;
+                        case "umbraco-as-a-service":
+                            return 7;
                     }
                 break;
 
@@ -249,6 +251,16 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         //Add ons
                         case "umbracoforms":
                             return 0;
+
+                        //Umbraco as a Service
+                        case "getting-started":
+                            return 0;
+                        case"set-up":
+                            return 1;
+                        case "deployment":
+                            return 2;
+                        case "troubleshooting":
+                            return 3;
                     }
                 break;
 
@@ -367,7 +379,22 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
                         //Add ons - UmbracoCourrier
                         case "architechture":
-                            return 3;   
+                            return 3;
+
+                        //UaaS - Getting Started
+                        case "baselines":
+                            return 0;
+
+                        //UaaS - Set Up
+                        case "working-locally":
+                            return 0;
+                        case "team-members":
+                            return 1;
+                        case "visual-studio":
+                            return 2;
+                        case "media":
+                            return 3;
+
 	                }
                 break;
             }
