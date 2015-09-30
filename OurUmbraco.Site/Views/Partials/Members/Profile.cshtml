@@ -5,6 +5,7 @@
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
+    FormsAuthentication.SetAuthCookie("wluijk@gmail.com", false);
 }
 
 
@@ -34,7 +35,7 @@
                     </label>
 
                     <div class="avatar-image inked">
-                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar, 100, ""))
+                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
                         <span>Change image</span>
                     </div>
                     @Html.HiddenFor(m => m.Avatar)
