@@ -36,7 +36,7 @@
                 <div class="avatar-image inked">
                     @if (Model.Avatar != null)
                     {
-                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar, 100, ""))
+                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
                     }
                     else
                     {

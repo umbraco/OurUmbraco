@@ -192,6 +192,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 5;
                         case "add-ons":
                             return 6;
+                        case "umbraco-as-a-service":
+                            return 7;
                     }
                 break;
 
@@ -249,6 +251,16 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         //Add ons
                         case "umbracoforms":
                             return 0;
+
+                        //Umbraco as a Service
+                        case "getting-started":
+                            return 0;
+                        case"set-up":
+                            return 1;
+                        case "deployment":
+                            return 2;
+                        case "troubleshooting":
+                            return 3;
                     }
                 break;
 
@@ -298,6 +310,93 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "creating-forms":
                             return 2;
+
+                        //Implementation - Default Routing
+                        case "inbound-pipeline":
+                            return 0;
+                        case "controller-selection":
+                            return 1;
+                        case "execute-request":
+                            return 2;
+        
+                        //Reference - Config
+                        case "webconfig":
+                            return 0;
+                        case "404handlers":
+                            return 1;
+                        case "appalications":
+                            return 2;
+                        case "embeddedmedia":
+                            return 3;
+                        case "examineindex":
+                            return 4;
+                        case "examinesettings":
+                            return 5;
+                        case "filesystemproviders":
+                            return 6;
+                        case "baserestextensions":
+                            return 7;
+                        case "tinymceconfig":
+                            return 8;
+                        case "trees":
+                            return 9;
+                        case "umbracosettings":
+                            return 10;
+
+                        //Reference - Templating
+                        case "mvc":
+                            return 0;
+                        case "masterpages":
+                            return 1;
+                        case "macros":
+                            return 2;
+
+                        //Reference - Querying
+                        case "ipublishedcontent":
+                            return 0;
+                        case "dynamicpublishedcontent":
+                            return 1;
+                        case "umbracohelper":
+                            return 2;
+                        case "membershiphelper":
+                            return 3;
+
+                        //Reference - Routing
+                        case "authorized":
+                            return 0;
+                        case "request-pipeline":
+                            return 1;
+                        case "webapi":
+                            return 2;
+
+                        //Add Ons - UmbracoForms
+                        case "installation":
+                            return 0;
+                        case "editor":
+                            return 1;
+                        case "developer":
+                            return 2;
+
+                        //Add ons - UmbracoCourrier
+                        case "architechture":
+                            return 3;
+
+                        //UaaS - Getting Started
+                        case "baselines":
+                            return 0;
+                        case "baseline-merge-conflicts":
+                            return 1;
+
+                        //UaaS - Set Up
+                        case "working-locally":
+                            return 0;
+                        case "team-members":
+                            return 1;
+                        case "visual-studio":
+                            return 2;
+                        case "media":
+                            return 3;
+
 	                }
                 break;
             }

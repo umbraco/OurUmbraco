@@ -34,7 +34,7 @@
                     </label>
 
                     <div class="avatar-image inked">
-                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar, 100, ""))
+                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
                         <span>Change image</span>
                     </div>
                     @Html.HiddenFor(m => m.Avatar)
@@ -57,7 +57,12 @@
 
                 <div class="profile-input confirm-password" id="repeat-password">
                     @Html.LabelFor(m => m.RepeatPassword)
-                    @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
+                    @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
+                </div>
+
+                <div class="profile-input" id="company">
+                    @Html.LabelFor(m => m.Company)
+                    @Html.TextBoxFor(m => m.Company)
                 </div>
 
                 <div class="profile-input" id="bio">
