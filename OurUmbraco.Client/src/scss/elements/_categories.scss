@@ -2,31 +2,42 @@
 	display: inline-block;
 	margin: 0;
 
-	a, span.cat {
+	a,
+	span.cat {
 		display: inline-block;
+
 		font-weight: bold;
-		border-radius: 2px;
-		font-size: .70rem;
-		padding: 3px 5px;
 		text-decoration: none;
 		text-transform: capitalize;
-		@include transition(background, .2s);
+		font-size: .7rem;
+		line-height: 1;
 
 		background: #4ea7ff;
 		color: #fff;
 
+		border-radius: 36px;
+		padding: 6px 12px;
+
+		max-width: 100%;
+		word-wrap: break-word;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	a {
+		@include transition(background, .1s);
+
 		&:hover {
 			background: lighten(#4ea7ff, 5%);
 		}
-
-		@media (min-width: $md) {
-			padding: 4px 6px;
-			font-size: .85rem;
-		}
 	}
+
+
 
 	&.default {
-		a, span.cat {
+		a,
+		span.cat {
 			background: #4ea7ff;
 			color: #fff;
 
@@ -35,31 +46,38 @@
 			}
 		}
 	}
+
 
 	&.frontend {
-		a, span.cat {
+		a,
+		span.cat {
 			background: #4ea7ff;
 			color: #fff;
 
 			&:hover {
 				background: lighten(#4ea7ff, 5%);
+				color: #fff;
 			}
 		}
 	}
 
+
 	&.core {
-		a, span.cat {
+		a,
+		span.cat {
 			background: #ff661b;
 			color: #fff;
 
 			&:hover {
-				background: lighten(#ff661b, 5%);
+				background: lighten(#ff661b, 10%);
 			}
 		}
 	}
 
+
 	&.azure {
-		a, span.cat {
+		a,
+		span.cat {
 			background: #1ed45c;
 			color: #fff;
 
@@ -73,7 +91,8 @@
 
 
 .version {
-	a, span.cat {
+	a,
+	span.cat {
 		background: rgba($color-space, .22);
 		color: $color-space;
 
@@ -83,7 +102,8 @@
 	}
 
 	&.default {
-		a, span.cat {
+		a,
+		span.cat {
 			background: transparent;
 			border: 1px solid #cbcbcb;
 			color: darken(#cbcbcb, 10%);

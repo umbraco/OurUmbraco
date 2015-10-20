@@ -1,10 +1,10 @@
 button.button, .button, a.button {
 	background: $color-blue;
-	padding: 20px 40px;
+	padding: 14px 40px;
 	display: inline-block;
 	text-decoration: none;
 	border: none;
-	border-radius: 3px;
+	border-radius: 36px;
 	-webkit-appearance: none;
 	position: relative;
 	overflow: hidden;
@@ -12,12 +12,15 @@ button.button, .button, a.button {
 	color: #fff;
 	text-align: center;
 	font-size: 1rem;
+	line-height: 1;
 
 	margin: 0;
 
-	@include transition(background, .2s);
 	cursor: pointer;
 	user-select: none;
+
+	@include transition(background, .1s);
+
 
 	&:hover {
 		background: lighten($color-blue, 5%);
@@ -33,7 +36,7 @@ button.button, .button, a.button {
 	&.green {
 		background: $color-green;
 		border: 1px solid $color-green;
-		
+
 		&:hover {
 			background: lighten($color-green, 5%);
 			border: 1px solid lighten($color-green, 5%);
@@ -70,7 +73,7 @@ button.button, .button, a.button {
 
 
 	&.transparent {
-		border: 1px solid darken($color-space, 15%); 
+		border: 1px solid darken($color-space, 15%);
 		color: darken($color-space, 15%);
 		background: none;
 
@@ -90,7 +93,7 @@ button.button, .button, a.button {
 	&.pink {
 		background: $color-pink;
 		border: 1px solid $color-pink;
-		
+
 		&:hover {
 			background: lighten($color-pink, 5%);
 			border: 1px solid lighten($color-pink, 5%);
@@ -136,6 +139,7 @@ button.button {
 .animate {
     animation:ripple 0.65s $easeExpo;
 }
+
 
 @keyframes ripple {
     100% {

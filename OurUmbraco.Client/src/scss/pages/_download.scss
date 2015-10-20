@@ -269,7 +269,7 @@ body.download {
 			left: 0;
 			top: 0;
 			transform: translate(-50%, 0px);
-			@include transition(background, .2s);
+			@include transition(background, .1s);
 		}
 	}
 
