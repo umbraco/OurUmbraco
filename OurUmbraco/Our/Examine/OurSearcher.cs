@@ -54,7 +54,7 @@ namespace OurUmbraco.Our.Examine
 
             if (!string.IsNullOrEmpty(Term))
             {
-                Term = Term.Replace(" OR ", " ").Replace(" or ", " ").Trim('*').Trim('\'').Trim('"');
+                Term = Term.Replace("\"", string.Empty).Replace(" OR ", " ").Replace(" or ", " ").Replace("\\", string.Empty).Trim('*');
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
 
@@ -81,9 +81,7 @@ namespace OurUmbraco.Our.Examine
                         sb.AppendFormat("nodeName:*{0}* body:*{0}* ", s);
                     }
                     sb.Append(") ");
-
                 }
-
             }
 
             //if the node type alias and (term or filter) is specified we need to close the sub query
