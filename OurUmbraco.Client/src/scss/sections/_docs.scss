@@ -4,6 +4,12 @@
 
 	.row {
 		margin: 0;
+		display: flex;
+		flex-direction: row;
+
+		@media (max-width: $md) {
+			flex-direction: column;	
+		}
 	}
 
 	.container, .row, .col-md-6 {

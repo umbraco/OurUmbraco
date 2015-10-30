@@ -18,20 +18,6 @@
 		border: 1px solid rgba($color-space, 0.15);
 
 
-		.comment-inner {
-			padding: 15px;
-
-			border-bottom: none;
-			border-top: none;
-			@include transition(all, .2s);
-
-			@media (min-width: $md) {
-				padding: 20px 30px 30px 30px;
-			}
-		}
-
-
-
 		&.solution {
 			background: rgba($color-our, .23);
 			border: 1px solid rgba($color-our, .3);
@@ -67,7 +53,7 @@
 					color: #000;
 					word-wrap:break-word;
 					text-decoration: underline;
-					
+
 					&:hover {
 						text-decoration: none;
 					}
@@ -84,7 +70,7 @@
 			z-index: 10;
 
 			span {
-			display: none;	
+			display: none;
 
 				@media (min-width: $md) {
 					display: block;
@@ -107,7 +93,7 @@
 			&:hover {
 				img {
 					&:hover {
-						@extend .BoxShadow;	
+						@extend .BoxShadow;
 					}
 				}
 			}
@@ -127,108 +113,7 @@
 
 
 
-		.highfive {
-			position: absolute;
-			
-			top: 100%;
-			left: 0;
-			right: 0;
-
-			font-size: 1rem;
-			text-decoration: none;
-
-			padding: 10px 0;
-
-			background: rgba(85, 157, 255, 0.14);
-			border-right: 1px solid rgba(85, 157, 255, 0.20);
-			border-left: 1px solid rgba(85, 157, 255, 0.20);
-			border-bottom: 1px solid rgba(85, 157, 255, 0.20);
-			color: #5204d4;
-
-			font-weight: bold;
-
-			text-align: center;
-
-			a {
-				display: block;
-			}
-
-			.highfive-count, img {
-				display: none;
-			}
-
-			@media (min-width: $md) {
-				right: auto;
-				top: auto;
-
-				display: block;
-
-				transform: translate(-52px, 6px);
-
-				max-width: 44px;
-				min-width: 44px;
-
-				background: #fff;
-				padding: 3px;
-				border: none;
-
-				font-size: .8rem;
-				font-weight: normal;
-				line-height: 1.3;
-				text-align: center;
-				color: darken($color-space, 25%);
-
-
-
-				img {
-					margin: 0;
-				}
-
-				a {
-					margin: 0;
-				}
-
-				.highfive-count {
-					display: inline-block;
-					font-size: 1rem;
-					font-weight: bold;
-					padding-top: 3px;
-
-					+ a {
-						margin-top: 10px;
-					}
-				}
-
-				img {
-					display: block;
-					margin: 0 auto .2rem;
-				}
-			}
-
-
-
-			img {
-				@include transition(transform, .2s);
-				max-width: 22px;
-				height: auto;
-			}
-
-			a {
-				display: block;
-				text-decoration: none;
-				@include transition(all, .2s);
-			}
-
-			&:hover {
-				a {
-					color: #000;
-				}
-			}
-		}
-
-
-
-		.body {	
+		.body {
 			white-space: normal;
 
 			p, li {
@@ -240,7 +125,7 @@
 				margin-top: 15px;
 			}
 
-			a {	
+			a {
 				text-decoration: underline;
 				word-wrap:break-word;
 
@@ -263,18 +148,18 @@
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
-			
+
 			@media (min-width: $md) {
 				align-items: center;
 			}
 
 
-		
+
 			.profile {
 				width: auto;
 				flex: 0 0 50%;
 				flex-direction: column;
-				
+
 				a {
 					color: darken($color-space, 45%);
 					text-decoration: none;
@@ -298,7 +183,7 @@
 					span {
 						font-size: .7rem;
 						line-height: 1;
-						
+
 						@media (min-width: $md) {
 							padding: 4px 6px;
 						}
@@ -374,7 +259,7 @@
 
 			.topic {
 				flex: 0 0 100%;
-				
+
 				@media (min-width: $md) {
 					flex: 0 0 72%;
 					margin-right: 3%;
@@ -389,7 +274,7 @@
 			.categories {
 				display: flex;
 				flex: 0 0 100%;
-				
+
 				@media (min-width: $md) {
 					flex: 0 0 25%;
 					flex-direction: column;
@@ -417,7 +302,7 @@
 
 			border-top: none;
 
-			@include transition(background, .2s);
+			@include transition(background, .1s);
 
 			a {
 				display: flex;
@@ -483,6 +368,118 @@
 	}
 
 
+	.comment-inner {
+		padding: 15px;
+
+		border-bottom: none;
+		border-top: none;
+		@include transition(all, .2s);
+
+		@media (min-width: $md) {
+			padding: 20px 30px 30px 30px;
+		}
+	}
+
+
+	.highfive {
+		position: absolute;
+
+		top: 100%;
+		left: 0;
+		right: 0;
+
+		font-size: 1rem;
+		text-decoration: none;
+
+		padding: 10px 0;
+
+		background: rgba(85, 157, 255, 0.14);
+		border-right: 1px solid rgba(85, 157, 255, 0.20);
+		border-left: 1px solid rgba(85, 157, 255, 0.20);
+		border-bottom: 1px solid rgba(85, 157, 255, 0.20);
+		color: #5204d4;
+
+		font-weight: bold;
+
+		text-align: center;
+
+		a {
+			display: block;
+		}
+
+		.highfive-count, img {
+			display: none;
+		}
+
+		@media (min-width: $md) {
+			right: auto;
+			top: auto;
+
+			display: block;
+
+			transform: translate(-52px, 6px);
+
+			max-width: 44px;
+			min-width: 44px;
+
+			background: #fff;
+			padding: 3px;
+			border: none;
+
+			font-size: .8rem;
+			font-weight: normal;
+			line-height: 1.3;
+			text-align: center;
+			color: darken($color-space, 25%);
+
+
+
+			img {
+				margin: 0;
+			}
+
+			a {
+				margin: 0;
+			}
+
+			.highfive-count {
+				display: inline-block;
+				font-size: 1rem;
+				font-weight: bold;
+				padding-top: 3px;
+
+				+ a {
+					margin-top: 10px;
+				}
+			}
+
+			img {
+				display: block;
+				margin: 0 auto .2rem;
+			}
+		}
+
+
+
+		img {
+			@include transition(transform, .2s);
+			max-width: 22px;
+			height: auto;
+		}
+
+		a {
+			display: block;
+			text-decoration: none;
+			@include transition(all, .2s);
+		}
+
+		&:hover {
+			a {
+				color: #000;
+			}
+		}
+	}
+
 
 	.alert {
 		background: rgba($color-orange, .1);
@@ -524,7 +521,7 @@
 	text-align: center;
 	width: 100%;
 	margin: 0 auto;
-	
+
 	.button {
 		display: inline-block;
 		margin: 0px auto 50px;

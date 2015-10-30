@@ -1,4 +1,4 @@
-﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our
 @using OurUmbraco.Project.Services
@@ -33,7 +33,7 @@
     var currentMember = Members.GetCurrentMember();
     var hasMemberVoted = Members.IsLoggedIn() ? Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
     var downloads = Utils.GetProjectTotalDownloadCount(project.Id);
-    
+
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
     var contributors = cs.GetContributors(project.Id).ToList();
 
@@ -252,7 +252,7 @@
 
         @if (currentRelease != null)
         {
-            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
+            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')">Download package<small>version @project.GetPropertyValue("version")</small></a>
         }
         else
         {
@@ -335,7 +335,7 @@
                 <li>
                     <span>License</span> @project.GetPropertyValue("licenseName")
                 </li>
-                
+
                 <li>
                     <span>Downloads:</span> @downloads
                 </li>

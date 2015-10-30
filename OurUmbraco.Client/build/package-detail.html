@@ -7,7 +7,7 @@
  <meta charset="utf-8">
  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
- 	
+
  <title></title>
  <meta name="description" content="">
  <meta name="author" content="">
@@ -68,7 +68,7 @@
 
 				<div class="user-latest-posts">
 
-					
+
 					<a href="forum-thread.html" class="forum-thread">
 						<div class="row">
 							<div class="col-xs-10 col-md-8">
@@ -132,7 +132,7 @@
 		<div class="navigation">
 			<div class="container">
 				<div class="row">
-				
+
 		 			<div class="col-md-3">
 		 				<a class="logo" href="index.html">
 		 					Our Umbraco
@@ -191,16 +191,19 @@
 						<div class="col-md-7">
 							<div class="package-detail-content">
 
-								<div class="vote"><i class="icon-Hearts"></i><span>431 votes</span></div>
+								<div class="vote">
+                                    <i class="icon-Hearts"></i>
+                                    <a href="#" id="projectVote" data-id="150666">431 votes</a>
+                                </div>
 
 								<div class="package-detail-description">
-								<p style="box-sizing: border-box; margin-bottom: 16px; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px; margin-top: 0px !important;"><a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="https://raw.githubusercontent.com/ryanlewis/seo-metadata/master/images/epiphany-logo.png" target="_blank"><img style="box-sizing: border-box; border: 0px; max-width: 100%;" src="https://raw.githubusercontent.com/ryanlewis/seo-metadata/master/images/epiphany-logo.png" alt="SEO metadata" /></a></p>
+
 <h1>SEO Metadata for Umbraco</h1>
 <p>SEO Metadata for Umbraco is a property editor that is used for maintaining common SEO-related information for a page. It gives users a visual representation of how the page would look on a Google search result page and hints to when the title and description is too long, with optional validation.</p>
 <h2>Recent Changes</h2>
 <p> </p>
 <p> </p>
-<p><strong style="font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">0.2.1</strong></p>
+<p><strong style="font-size: 16px; line-height: 25.6000003814697px;">0.2.1</strong></p>
 <p> </p>
 <p> </p>
 <p> </p>
@@ -208,7 +211,7 @@
 <li><span><span style="font-size: 16px; line-height: 25.6000003814697px;">Fixed some issues with Umbraco package</span></span></li>
 <li><span><span style="font-size: 16px; line-height: 25.6000003814697px;">Resolved issue with PropertyEditorValueConverter returning null if page is saved when control is unused</span></span></li>
 </ul>
-<p><strong style="font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">0.2.0</strong></p>
+<p><strong style="font-size: 16px; line-height: 25.6000003814697px;">0.2.0</strong></p>
 <ul>
 <li><span><span style="font-size: 16px; line-height: 25.6000003814697px;">Fixed issue with custom URL Names not working if </span><span style="font-size: 16px; line-height: 25.6000003814697px;">SeoMetadata.NoSegmentProvider appSetting wasn't present</span></span></li>
 <li><span><span style="font-size: 16px; line-height: 25.6000003814697px;">Added new option to set the developer name</span></span></li>
@@ -227,10 +230,10 @@
 <p>After installing via Nuget, create a property editor of type <strong style="box-sizing: border-box;">SEO Metadata</strong> and include on your page. We recommend the property name <strong style="box-sizing: border-box;">"metadata"</strong> to work with all features out-of-the-box (see the <a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#using-the-url-name">URL Name</a> section for configuration options)</p>
 <p>Alternatively, if you want to hack around with the project, you can fork, checkout and develop locally. See the <a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#developing-seo-metadata">Developing SEO Metadata</a> section.</p>
 <h2><a id="user-content-configuration" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#configuration" class="anchor"></a>Configuration</h2>
-<dl style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; padding: 0px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;"><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">Allow long titles</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">If ticked, long titles will not invalidate the property editor.</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">Allow long descriptions</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">If ticked, long descriptions will not invalidate the property editor.</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">SERP Title Length</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">The maximum length of a title. This isn't an exact number, so your mileage may vary. The default value of 65 is a conservative value that should work for most cases. Google will truncate overly long titles with ellipses (…)</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">SERP Description Length</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">The maximum length of a title. This isn't an exact number, so your mileage may vary. The default value of 150 is a conservative value that should work for most cases. Google will truncate overly long descriptions with ellipses (…)</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;"></dt></dl>
+<dl style="box-sizing: border-box; margin-top: 0px; margin-bottom: 16px; padding: 0px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;"><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">Allow long titles</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">If ticked, long titles will not invalidate the property editor.</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">Allow long descriptions</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">If ticked, long descriptions will not invalidate the property editor.</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">SERP Title Length</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">The maximum length of a title. This isn't an exact number, so your mileage may vary. The default value of 65 is a conservative value that should work for most cases. Google will truncate overly long titles with ellipses (…)</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;">SERP Description Length</dt><dd style="box-sizing: border-box; margin-left: 0px; padding: 0px 16px; margin-bottom: 16px;">The maximum length of a title. This isn't an exact number, so your mileage may vary. The default value of 150 is a conservative value that should work for most cases. Google will truncate overly long descriptions with ellipses (…)</dd><dt style="box-sizing: border-box; padding: 0px; margin-top: 16px; font-size: 1em; font-style: italic; font-weight: bold;"></dt></dl>
 <h2><a id="user-content-usage" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#usage" class="anchor"></a>Usage</h2>
 <p>The SEO Metadata is stored as JSON, so can be used dynamically.</p>
-<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">&lt;pre&gt;
 Title: @CurrentPage.Metadata.Title
 Description: @CurrentPage.Metadata.Description
@@ -239,7 +242,7 @@ URL Name: @CurrentPage.Metadata.UrlName
 &lt;/pre&gt;</pre>
 </div>
 <p>A <a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="/documentation/extending-umbraco/Property-Editors/PropertyEditorValueConverters">Property Editor Value Converter</a> is installed for getting a strongly-typed <strong style="box-sizing: border-box;">SeoMetadata</strong> instance.</p>
-<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">@{
 <span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">var</span> metadata = Model.Content.GetPropertyValue&lt;Epiphany.SeoMetadata.SeoMetadata&gt;(<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>metadata<span class="pl-pds" style="box-sizing: border-box;">"</span></span>);
 }
@@ -252,47 +255,47 @@ URL Name: @metadata.UrlName
 &lt;/pre&gt;</pre>
 </div>
 <p>The following snippet can be used for using the <strong style="box-sizing: border-box;">Do Not Index</strong> checkbox.</p>
-<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">@<span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">if</span> (Model.Content.GetPropertyValue&lt;Epiphany.SeoMetadata.SeoMetadata&gt;(<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>metadata<span class="pl-pds" style="box-sizing: border-box;">"</span></span>).NoIndex)
 {
 &lt;meta name=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>robots<span class="pl-pds" style="box-sizing: border-box;">"</span></span> content=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>noindex<span class="pl-pds" style="box-sizing: border-box;">"</span></span>&gt;
 }</pre>
 </div>
 <p>If you're a fan of <a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="https://github.com/zpqrtbnk/Zbu.ModelsBuilder">ZpqrtBnk Umbraco Models Builder</a>, you can add something like the following in your partial class</p>
-<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-c#" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">[ImplementPropertyType(<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>metadata<span class="pl-pds" style="box-sizing: border-box;">"</span></span>)]
 <span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">public</span> <span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">virtual</span> SeoMetadata Metadata
 {
 <span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">get</span> { <span class="pl-k" style="box-sizing: border-box; color: #a71d5d;">return</span> <span class="pl-c1" style="box-sizing: border-box; color: #0086b3;">this</span>.GetPropertyValue&lt;SeoMetadata&gt;(<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>metadata<span class="pl-pds" style="box-sizing: border-box;">"</span></span>); }
 }</pre>
 </div>
-<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;"><a id="user-content-using-the-url-name" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#using-the-url-name" class="anchor"></a>Using the URL Name</h3>
+<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; "><a id="user-content-using-the-url-name" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#using-the-url-name" class="anchor"></a>Using the URL Name</h3>
 <p>SEO Metadata also installs a <a style="box-sizing: border-box; color: #4183c4; text-decoration: none; background: transparent;" href="/documentation/Reference/Request-Pipeline/outbound-pipeline#segments">UrlSegmentProvider</a> to ensure the URL Name property works as intended. By default, it expects your SEO Metadata property to be called metadata. You can configure this property by adding the following setting to your appSettings in your web.config</p>
-<div class="highlight highlight-xml" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-xml" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">&lt;<span class="pl-ent" style="box-sizing: border-box; color: #63a35c;">add</span> <span class="pl-e" style="box-sizing: border-box; color: #795da3;">key</span>=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>SeoMetadata.PropertyName<span class="pl-pds" style="box-sizing: border-box;">"</span></span> <span class="pl-e" style="box-sizing: border-box; color: #795da3;">value</span>=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>seoMetadata<span class="pl-pds" style="box-sizing: border-box;">"</span></span> /&gt;</pre>
 </div>
 <p>If you want to disable the SeoMetadataUrlSegmentProvider altogether (to add manually, or implement yourself), you can set the following appSetting to disable it.</p>
-<div class="highlight highlight-xml" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-xml" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">&lt;<span class="pl-ent" style="box-sizing: border-box; color: #63a35c;">add</span> <span class="pl-e" style="box-sizing: border-box; color: #795da3;">key</span>=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>SeoMetadata.NoSegmentProvider<span class="pl-pds" style="box-sizing: border-box;">"</span></span> <span class="pl-e" style="box-sizing: border-box; color: #795da3;">value</span>=<span class="pl-s" style="box-sizing: border-box; color: #183691;"><span class="pl-pds" style="box-sizing: border-box;">"</span>true<span class="pl-pds" style="box-sizing: border-box;">"</span></span> /&gt;</pre>
 </div>
 <h2><a id="user-content-developing-seo-metadata" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#developing-seo-metadata" class="anchor"></a>Developing SEO Metadata</h2>
-<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;"><a id="user-content-checkout-the-project" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#checkout-the-project" class="anchor"></a>Checkout the project</h3>
-<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; "><a id="user-content-checkout-the-project" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#checkout-the-project" class="anchor"></a>Checkout the project</h3>
+<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">git clone https://github.com/ryanlewis/seo-metadata.git
 <span class="pl-c1" style="box-sizing: border-box; color: #0086b3;">cd</span> seo-metadata</pre>
 </div>
-<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;"><a id="user-content-install-dependencies" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#install-dependencies" class="anchor"></a>Install Dependencies</h3>
-<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; "><a id="user-content-install-dependencies" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#install-dependencies" class="anchor"></a>Install Dependencies</h3>
+<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">npm install -g grunt-cli
 npm install</pre>
 </div>
-<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif;"><a id="user-content-build" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#build" class="anchor"></a>Build</h3>
-<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<h3 style="box-sizing: border-box; margin-top: 1em; margin-bottom: 16px; line-height: 1.43; font-size: 1.5em; position: relative; "><a id="user-content-build" style="box-sizing: border-box; color: #4183c4; text-decoration: none; position: absolute; top: 0px; left: 0px; display: block; padding-right: 6px; padding-left: 30px; margin-left: -30px; line-height: 1.2; background: transparent;" href="https://github.com/ryanlewis/seo-metadata/blob/master/README.md#build" class="anchor"></a>Build</h3>
+<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">build.cmd
 grunt</pre>
 </div>
 <p>If you wish to build it to a local Umbraco directory, use the target option.</p>
-<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-family: 'Helvetica Neue', Helvetica, 'Segoe UI', Arial, freesans, sans-serif; font-size: 16px; line-height: 25.6000003814697px;">
+<div class="highlight highlight-bash" style="box-sizing: border-box; margin-bottom: 16px; color: #333333; font-size: 16px; line-height: 25.6000003814697px;">
 <pre style="box-sizing: border-box; overflow: auto; font-family: Consolas, 'Liberation Mono', Menlo, Courier, monospace; font-size: 13.6000003814697px; margin-bottom: 0px; font-stretch: normal; line-height: 1.45; padding: 16px; border-radius: 3px; word-wrap: normal; word-break: normal; background-color: #f7f7f7;">grunt --target=c:<span class="pl-cce" style="box-sizing: border-box;">\d</span>ev<span class="pl-cce" style="box-sizing: border-box;">\p</span>ath-to-umbraco-root-dir</pre>
 </div>
 									<h1>Umbraco Forms</h1>
@@ -356,7 +359,7 @@ grunt</pre>
 
 									<a class="fancybox" rel="gallery1" href="https://our.umbraco.org/media/wiki/144341/635600404913591689_ForumsPNG.PNG" title="">
 										<img src="https://our.umbraco.org/media/wiki/144341/635600404913591689_ForumsPNG.PNG" alt="" />
-									</a>			                
+									</a>
 								</div>
 
 								<div class="package-misc">
@@ -369,7 +372,7 @@ grunt</pre>
 
 									<div id="tab-1" class="tab-content current">
 										<h3>Overskrift</h3>
-										
+
 										<ul class="search-all-results">
 											<li>
 												<a href="#">
@@ -388,7 +391,7 @@ grunt</pre>
 													</div>
 												</a>
 											</li>
-											
+
 											<li>
 												<a href="#">
 													<div class="type-icon">
@@ -411,7 +414,7 @@ grunt</pre>
 									</div>
 									<div id="tab-2" class="tab-content">
 									 	<h3>Overskrift</h3>
-										
+
 										<ul class="search-all-results">
 											<li>
 												<a href="#">
@@ -430,7 +433,7 @@ grunt</pre>
 													</div>
 												</a>
 											</li>
-											
+
 											<li>
 												<a href="#">
 													<div class="type-icon">
@@ -453,7 +456,7 @@ grunt</pre>
 									</div>
 									<div id="tab-3" class="tab-content">
 										<h3>Overskrift</h3>
-										
+
 										<ul class="search-all-results">
 											<li>
 												<a href="#">
@@ -472,7 +475,7 @@ grunt</pre>
 													</div>
 												</a>
 											</li>
-											
+
 											<li>
 												<a href="#">
 													<div class="type-icon">
@@ -495,7 +498,7 @@ grunt</pre>
 									</div>
 									<div id="tab-4" class="tab-content">
 										<h3>Overskrift</h3>
-										
+
 										<ul class="search-all-results">
 											<li>
 												<a href="#">
@@ -514,7 +517,7 @@ grunt</pre>
 													</div>
 												</a>
 											</li>
-											
+
 											<li>
 												<a href="#">
 													<div class="type-icon">
@@ -540,10 +543,8 @@ grunt</pre>
 										<h3>Activity</h3>
 										<a href="forum-thread.html" class="forum-thread">
 											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
+
+												<div class="col-xs-12 col-md-12">
 													<div class="forum-thread-text">
 														<h3>Allow user to change site design</h3>
 														<p>Reply by Dennis Aaen 7 minutes ago</p>
@@ -555,10 +556,8 @@ grunt</pre>
 
 										<a href="forum-thread.html" class="forum-thread">
 											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
+
+												<div class="col-xs-12 col-md-12">
 													<div class="forum-thread-text">
 														<h3>Allow user to change site design</h3>
 														<p>Reply by Dennis Aaen 7 minutes ago</p>
@@ -570,10 +569,8 @@ grunt</pre>
 
 										<a href="forum-thread.html" class="forum-thread">
 											<div class="row">
-												<div class="col-xs-2 col-md-2">
-													<img src="https://s3.amazonaws.com/uifaces/faces/twitter/kfriedson/128.jpg" alt="">
-												</div>
-												<div class="col-xs-8 col-md-8">
+
+												<div class="col-xs-12 col-md-12">
 													<div class="forum-thread-text">
 														<h3>Allow user to change site design</h3>
 														<p>Reply by Dennis Aaen 7 minutes ago</p>
@@ -594,8 +591,9 @@ grunt</pre>
 						<div class="col-md-4 col-md-offset-1">
 							<div class="package-detail-sidebar">
 
-								<a href="" class="button green hidden-xs">
-									Download package <i class="icon-Download-alt"></i>
+								<a href="" class="button green">
+									Download package
+                                    <small>Version 1.0.0</small>
 								</a>
 
 								<div class="package-creator">
@@ -624,7 +622,10 @@ grunt</pre>
 									<small>This project is compatible with the following versions as reported by community members who have downloaded this package:</small>
 
 									<div class="package-compatibility-versions">
+
 										<div class="versions">
+                                            <span class="smiley joyous">Umbraco as a Service (Works)</span>
+                                            <span class="smiley untested">Umbraco as a Service (Not working yet)</span>
 								            <span class="smiley untested"> 7.2.x (untested)</span>
 								            <span class="smiley  happy"> 7.1.x (91%)</span>
 								            <span class="smiley  joyous"> 7.0.x (100%)</span>
@@ -644,7 +645,7 @@ grunt</pre>
 
 								<div class="package-compatibility-information">
 									<h3>Project Information</h3>
-									
+
 									<ul>
 										<li>
 											<span>Project owner:</span> Per Ploug
@@ -717,7 +718,7 @@ grunt</pre>
 		e.stopPropagation();
 		$(".vote i").toggleClass( "liked" );
 	});
-		
+
 	$('.tabs li').click(function(){
 		var tab_id = $(this).attr('data-tab');
 
