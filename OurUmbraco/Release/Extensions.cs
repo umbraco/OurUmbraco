@@ -43,6 +43,8 @@ namespace OurUmbraco.Release
                     return "icon-Checkbox-dotted";
                 case "open":
                     return "icon-Checkbox-empty";
+                case "review":
+                    return "icon-Paper-plane-alt";
                 case "inprogress":
                     return "icon-Paper-plane-alt";
                 case "fixed":
