@@ -305,6 +305,7 @@
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
     <Compile Include="Documentation\Busineslogic\Events.cs" />
+    <Compile Include="Documentation\Busineslogic\GithubSourcePull\Retry.cs" />
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\ZipDownloader.cs" />
     <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />

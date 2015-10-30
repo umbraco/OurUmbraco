@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Web;
 using System.Web.Hosting;
@@ -195,7 +196,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "umbraco-as-a-service":
                             return 7;
                     }
-                break;
+                    break;
 
                 case 2:
                     switch (name.ToLowerInvariant())
@@ -255,19 +256,19 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         //Umbraco as a Service
                         case "getting-started":
                             return 0;
-                        case"set-up":
+                        case "set-up":
                             return 1;
                         case "deployment":
                             return 2;
                         case "troubleshooting":
                             return 3;
                     }
-                break;
+                    break;
 
                 case 3:
                     switch (name.ToLowerInvariant())
-	                {
-		                //Getting Started - Setup
+                    {
+                        //Getting Started - Setup
                         case "requirements":
                             return 0;
                         case "install":
@@ -318,7 +319,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "execute-request":
                             return 2;
-        
+
                         //Reference - Config
                         case "webconfig":
                             return 0;
@@ -397,8 +398,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "media":
                             return 3;
 
-	                }
-                break;
+                    }
+                    break;
             }
             return null;
         }
@@ -444,10 +445,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                 if (Directory.Exists(serverFolder))
                 {
                     foreach (var folder in Directory.GetDirectories(serverFolder))
-                        Directory.Delete(folder, true);
+                        Retry.Do(() => Directory.Delete(folder, true), TimeSpan.FromSeconds(1), 5);
 
                     foreach (var mdfile in Directory.GetFiles(serverFolder, "*.md"))
-                        File.Delete(mdfile);
+                        Retry.Do(() => File.Delete(mdfile), TimeSpan.FromSeconds(1), 5);
                 }
                 else
                 {
