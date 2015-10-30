@@ -3,7 +3,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
-using umbraco.cms.businesslogic.macro;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -23,6 +22,7 @@ namespace OurUmbraco.Our
             MemberActivationMigration();
             SpamOverview();
             CommunityHome();
+            OverrideYouTrack();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -160,6 +160,45 @@ namespace OurUmbraco.Our
                     macro.Save();
                 }
                 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void OverrideYouTrack()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var releaseContentType = contentTypeService.GetContentType("Release");
+                var propertyTypeAlias = "overrideYouTrackDescription";
+                if (releaseContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Override YouTrack Description?" };
+                    releaseContentType.AddPropertyType(checkboxPropertyType, "Content");
+                    contentTypeService.Save(releaseContentType);
+                }
+
+                propertyTypeAlias = "overrideYouTrackReleaseDate";
+                if (releaseContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, propertyTypeAlias) { Name = "Override YouTrack release date" };
+                    releaseContentType.AddPropertyType(textboxPropertyType, "Content");
+                    contentTypeService.Save(releaseContentType);
+                }
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }

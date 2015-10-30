@@ -1,6 +1,7 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <%@ Import Namespace="Umbraco.Web" %>
 <%@ Import Namespace="OurUmbraco.Release" %>
+<%@ Import Namespace="Umbraco.Core.Models" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
 </asp:Content>
@@ -29,10 +30,29 @@
     var completedIssues = release.issues.Count(x => x.state == "Fixed");
     var totalIssues = release.issues.Count();
     var percentComplete = Math.Round(((double) 100/totalIssues)*completedIssues);
-    var releaseDate = DateTime.Now;
+    var releaseDateParsed = DateTime.Now;
     if (release.releaseDate != string.Empty)
     {
-        releaseDate = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
+        releaseDateParsed = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
+    }
+
+    var releaseDate = release.releaseDate == "" ? "Not yet determined" : releaseDateParsed.ToString("dddd, MMMM d yyyy");
+
+    
+    var umbracoHelper = new Umbraco.Web.UmbracoHelper(UmbracoContext.Current);
+    var releaseContent = umbracoHelper.TypedContent(umbracoHelper.UmbracoContext.PageId);
+    if (releaseContent != null)
+    {
+        var overrideDescription = releaseContent.GetPropertyValue<bool>("overrideYouTrackDescription");
+        if (overrideDescription)
+        {
+            release.releaseDescription = releaseContent.GetPropertyValue<string>("bodyText");
+        }
+        var overrideReleaseDate = releaseContent.GetPropertyValue<string>("overrideYouTrackReleaseDate");
+        if (string.IsNullOrWhiteSpace(overrideReleaseDate) == false)
+        {
+            releaseDate = overrideReleaseDate;
+        }
     }
 %>
   <div class="has-sidebar release">
@@ -156,7 +176,7 @@
                                 <span><%= percentComplete %>% complete</span>
                                 <span><%= 100 - percentComplete %>% in progress</span>
                             </h3>
-                            <h3>Target release date: <span style="color:#5B5B5B"><%= release.releaseDate == "" ? "Not yet determined" : releaseDate.ToString("dddd, MMMM d yyyy") %></span></h3>
+                            <h3>Target release date: <span style="color:#5B5B5B"><%= releaseDate %></span></h3>
                             <% } %>
                             
                             <umbraco:Macro ID="Macro5" Language="cshtml" runat="server">

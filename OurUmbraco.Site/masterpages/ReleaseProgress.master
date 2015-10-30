@@ -1,5 +1,8 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <%@ Import Namespace="OurUmbraco.Release" %>
+<%@ Import Namespace="InfoCaster.Umbraco.UrlTracker.Helpers" %>
+<%@ Import Namespace="Umbraco.Web" %>
+<%@ Import Namespace="Umbraco.Core.Models" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="server">
 </asp:Content>
 
@@ -7,6 +10,10 @@
     <%
         var allReleases = Release.GetAllReleaseFromFile();
         var inProgress = allReleases.Where(x => x.inProgressRelease).ToList();
+
+        var umbracoHelper = new Umbraco.Web.UmbracoHelper(UmbracoContext.Current);
+        var currentPage = umbracoHelper.TypedContent(umbracoHelper.UmbracoContext.PageId);
+        var releaseLanding = currentPage.Parent.Children().FirstOrDefault(x => x.ContentType.Alias == "ReleaseLanding");
     %>
     <div class="has-sidebar">
         <div class="page-content">
@@ -76,12 +83,35 @@
                                 var completedIssues = release.issues.Count(x => x.state == "Fixed");
                                 var totalIssues = release.issues.Count();
                                 var percentComplete = Math.Round(((double)100 / totalIssues) * completedIssues);
-                                var releaseDate = DateTime.Now;
+                                var releaseDateParsed = DateTime.Now;
                                 if (release.releaseDate != string.Empty)
                                 {
-                                    releaseDate = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
+                                    releaseDateParsed = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
                                 }
+
+                                var releaseDate = release.releaseDate == "" ? "Not yet determined" : releaseDateParsed.ToString("dddd, MMMM d yyyy");
+                                IPublishedContent releaseContent = null;
+                                if (releaseLanding != null)
+                                {
+                                    releaseContent = releaseLanding.Children().FirstOrDefault(x => x.Name.ToLowerInvariant() == release.version.ToLowerInvariant());
+                                    if (releaseContent != null)
+                                    {
+                                        var overrideDescription = releaseContent.GetPropertyValue<bool>("overrideYouTrackDescription");
+                                        if (overrideDescription)
+                                        {
+                                            release.releaseDescription = releaseContent.GetPropertyValue<string>("bodyText");
+                                        }
+                                        var overrideReleaseDate = releaseContent.GetPropertyValue<string>("overrideYouTrackReleaseDate");
+                                        if (string.IsNullOrWhiteSpace(overrideReleaseDate) == false)
+                                        {
+                                            releaseDate = overrideReleaseDate;
+                                        }
+                                        
+                                    }
+                                }
+
                             %>
+
                             <div class="inprogress">
                                 <div class="col-xs-3">
                                     <span class="dot big progress">
@@ -116,7 +146,7 @@
                                         <div class="col-xs-6">
                                             <div class="changes">
                                                 <small>Release date:</small>
-                                                <small><%= release.releaseDate == "" ?  "Not yet determined" : releaseDate.ToString("dddd, MMMM d yyyy") %></small>
+                                                <small><%= releaseDate %></small>
                                             </div>
                                         </div>
 
