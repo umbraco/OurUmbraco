@@ -11,5 +11,6 @@ namespace OurUmbraco.Project.Models
         public int FileId { get; set; }
         public int ProjectId { get; set; }
         public IEnumerable<UVersion> AllVersions { get; set; }
+        public bool WorksOnUaaS { get; set; }
     }
 }

@@ -23,6 +23,7 @@ namespace OurUmbraco.Our
             SpamOverview();
             CommunityHome();
             OverrideYouTrack();
+            UaaSProjectCheckbox();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -199,6 +200,36 @@ namespace OurUmbraco.Our
                     contentTypeService.Save(releaseContentType);
                 }
 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UaaSProjectCheckbox()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var projectContentType = contentTypeService.GetContentType("Project");
+                var propertyTypeAlias = "worksOnUaaS";
+                if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Works on Umbraco as a Service?" };
+                    projectContentType.AddPropertyType(checkboxPropertyType, "Project");
+                    contentTypeService.Save(projectContentType);
+                }
+                
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }

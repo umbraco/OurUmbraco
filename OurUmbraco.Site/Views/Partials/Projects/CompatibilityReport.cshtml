@@ -64,9 +64,14 @@
 
     <div class="package-compatibility-versions">
         <div class="versions">
-
-            <span class="smiley joyous">Umbraco as a Service (Works)</span>
-            <span class="smiley untested">Umbraco as a Service (Not working yet)</span>
+            @if (Model.WorksOnUaaS)
+            {
+                <span class="smiley joyous">Works on Umbraco as a Service</span>
+            }
+            else
+            {
+                <span class="smiley untested">Untested or doesn't work on Umbraco as a Service</span>
+            }
             @foreach (var ver in Model.VersionCompatibilities)
             {
                 <div>

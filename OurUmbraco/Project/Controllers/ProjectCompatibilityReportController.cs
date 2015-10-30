@@ -3,6 +3,7 @@ using OurUmbraco.Our;
 using OurUmbraco.Project.Models;
 using OurUmbraco.Project.Services;
 using OurUmbraco.Project.uVersion;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Project.Controllers
@@ -16,6 +17,8 @@ namespace OurUmbraco.Project.Controllers
 
             var currentMember = Members.IsLoggedIn() ? Members.GetCurrentMember() : null;
 
+            var project = Umbraco.TypedContent(projectId);
+
             return PartialView("~/Views/Partials/Projects/CompatibilityReport.cshtml", 
                 new VersionCompatibilityReportModel
                 {
@@ -24,7 +27,8 @@ namespace OurUmbraco.Project.Controllers
                     CurrentMemberIsLoggedIn = currentMember != null,
                     FileId = fileId,
                     ProjectId = projectId,
-                    AllVersions = UVersion.GetAllVersions()
+                    AllVersions = UVersion.GetAllVersions(),
+                    WorksOnUaaS = project.GetPropertyValue<bool>("worksOnUaaS")
                 });
         }
 
