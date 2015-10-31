@@ -18,7 +18,7 @@
     }
     if (category != null)
     {
-        headline = category.ToLowerInvariant();
+        headline = category == "uaas" ? "Umbraco as a Service" : category.ToLowerInvariant();
     }
 
     var filters = new List<SearchFilters>();
