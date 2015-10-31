@@ -55,7 +55,7 @@
                     <div class="brief">
                         @{
                             var screenShot = project.DefaultScreenshot;
-                            var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?width=50&height=50&bgcolor=fff" : "/css/img/package2.png";
+                            var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?bgcolor=fff&width=50&height=50" : "/css/img/package2.png";
                         }
                         <a rel="@project.ProjectGuid" href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
 
