@@ -30,7 +30,16 @@
         // since it is an "OR" clause above it will match any of the categories
         //NOTE: categories are indexed as lower case and are not tokenized so must be an exact match and therefore
         // require quotes
-        categoryFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category.ToLowerInvariant().Trim())));
+
+        if (category.ToLowerInvariant() == "uaas".ToLowerInvariant())
+        {
+            categoryFilters.Filters.Add(new SearchFilter("worksOnUaaS", string.Format("\"{0}\"", "True")));
+        }
+        else
+        {
+            categoryFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category.ToLowerInvariant().Trim())));
+        }
+
         filters.Add(categoryFilters);
     }
 

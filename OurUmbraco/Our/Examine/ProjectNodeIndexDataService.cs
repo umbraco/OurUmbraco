@@ -36,6 +36,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url );
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
+            simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))
