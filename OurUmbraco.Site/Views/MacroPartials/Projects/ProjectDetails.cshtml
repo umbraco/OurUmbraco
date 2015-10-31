@@ -74,12 +74,12 @@
             <div class="package-detail-screenshots">
                 <h3>Screenshots</h3>
 
-                <div class="row">
+                <div class="row" style="margin: 20px 0;">
 
                     @foreach (var image in screenshots)
                     {
                         <a class="fancybox" rel="gallery1" href="@Utils.GetScreenshotPath(image.Path)" title="">
-                            <img src="@Utils.GetScreenshotPath(image.Path)" alt=""/>
+                            <img src="@Utils.GetScreenshotPath(image.Path)?bgcolor=fff&height=154&width=281" alt=""/>
                         </a>
                     }
 
