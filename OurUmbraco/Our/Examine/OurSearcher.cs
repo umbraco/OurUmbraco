@@ -54,7 +54,7 @@ namespace OurUmbraco.Our.Examine
 
             if (!string.IsNullOrEmpty(Term))
             {
-                Term = Term.Replace("\"", string.Empty).Replace(" OR ", " ").Replace(" or ", " ").Replace("\\", string.Empty).Trim('*');
+                Term = Term.Replace("\"", string.Empty).Replace(":", string.Empty).Replace(" OR ", " ").Replace(" or ", " ").Replace("\\", string.Empty).Trim('*');
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
 
