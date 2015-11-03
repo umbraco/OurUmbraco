@@ -85,6 +85,10 @@
     {
         if (Model.Content.NewTopicsAllowed())
         {
+            <div class="replybutton">
+                <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
+            </div>
+			
             <div class="utilities">
                 <div class="utility-actions thread-bottom">
 
@@ -126,9 +130,6 @@
                     }
 
                 </div>
-            </div>
-            <div class="replybutton">
-                <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
             </div>
         }
         else
