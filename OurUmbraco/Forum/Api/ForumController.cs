@@ -432,7 +432,9 @@ namespace OurUmbraco.Forum.Api
                     topicService.Save(topic);
                 }
             }
-            
+			
+			SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+			
             return minimumKarma;
         }
 
@@ -486,7 +488,7 @@ namespace OurUmbraco.Forum.Api
 
         private static string BuildBlockedNotifactionPost(string adminName, int memberId, bool blocked)
         {
-            var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked*", adminName);
+            var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked/approved*", adminName);
             post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
 
             if (memberId != 0)
