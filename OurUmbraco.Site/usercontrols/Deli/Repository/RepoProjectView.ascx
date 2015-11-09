@@ -158,7 +158,7 @@
                     <asp:Repeater runat="server" ID="ScreenshotRepeater">
                     <ItemTemplate>
                         <a href="<%# Eval("Path") %>" class="projectscreenshot" rel="shadowbox">
-                            <img src="<%# Eval("Path") %>?bgcolor=fff&amp;width=100&amp;height=100" style="border:0;"/>
+                            <img src="<%# Eval("Path") %>?bgcolor=fff&amp;width=100&amp;height=100&amp;format=png" style="border:0;"/>
                         </a>
                     </ItemTemplate>
                     </asp:Repeater>

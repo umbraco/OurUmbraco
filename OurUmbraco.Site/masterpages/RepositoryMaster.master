@@ -32,11 +32,11 @@
         <div class="deliPackage">
             <div class="brief">
                 {{if  Fields.image == null}}
-                <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url(/css/img/package2.png?bgcolor=fff&amp;width=50&amp;height=50;) no-repeat top left;">
+                <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url(/css/img/package2.png?bgcolor=fff&amp;width=50&amp;height=50&amp;format=png;) no-repeat top left;">
                     Package</a>
                 {{/if}}
                 {{if  Fields.image != null}}
-                <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url({{= Fields.image}}?bgcolor=fff&amp;width=50&amp;height=50;) no-repeat top left;">
+                <a href="/repo_viewproject?<%= Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ) %>&project_id={{= Id}}" class="packageIcon" style="background: url({{= Fields.image}}?bgcolor=fff&amp;width=50&amp;height=50&amp;format=png;) no-repeat top left;">
                     Package</a>
                 {{/if}}
                 <h3>
