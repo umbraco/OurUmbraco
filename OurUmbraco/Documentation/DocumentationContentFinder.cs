@@ -5,6 +5,7 @@ using System.Web;
 using OurUmbraco.Documentation.Busineslogic;
 using Umbraco.Core;
 using Umbraco.Web.Routing;
+using System.Text.RegularExpressions;
 
 namespace OurUmbraco.Documentation
 {
@@ -154,6 +155,15 @@ namespace OurUmbraco.Documentation
 
                 //Ensure beginning part of url is right case for GitHub URL
                 originalUrl = originalUrl.Replace("/documentation/", "/");
+
+                //Ensure parts of URL (after forward slash) begin with uppercase to match GitHub URLs.
+                string expression = @"[\/]([a-z])";
+                char[] charArray = originalUrl.ToCharArray();
+                foreach (Match match in Regex.Matches(originalUrl, expression, RegexOptions.Singleline))
+                {
+                    charArray[match.Groups[1].Index] = Char.ToUpper(charArray[match.Groups[1].Index]);
+                }
+                originalUrl = new string(charArray);
 
                 //If ends with / then it's an index.md file in a folder
                 if (originalUrl.EndsWith("/"))
