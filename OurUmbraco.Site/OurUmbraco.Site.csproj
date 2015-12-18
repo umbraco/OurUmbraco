@@ -1548,14 +1548,8 @@
     <Content Include="umbraco\preview\editors\slider.html" />
     <Content Include="umbraco\preview\index.html" />
     <Content Include="umbraco\scripting\templates\cshtml\Breadcrumb.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\ListSubPagesByDateAndLimit.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\Macro-Parameters.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\Media.cshtml" />
     <Content Include="umbraco\scripting\templates\cshtml\Navigation.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\Paging.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\SelectChildrenByDocumentType.cshtml" />
     <Content Include="umbraco\scripting\templates\cshtml\SiteMap.cshtml" />
-    <Content Include="umbraco\scripting\templates\cshtml\UsingRelatedLinks.cshtml" />
     <Content Include="umbraco\Search\QuickSearchHandler.ashx" />
     <Content Include="umbraco\Views\common\dashboard.html" />
     <Content Include="umbraco\Views\common\dialogs\approvedcolorpicker.html" />
