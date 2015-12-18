@@ -24,6 +24,7 @@ ECHO Change directory to %CD%\..\OurUmbraco.Client\
 CD %CD%\..\OurUmbraco.Client\
 
 ECHO Do npm install and the gulp build
+call npm cache clean
 call npm install
 call npm install -g install gulp -g --quiet
 call gulp build
