@@ -461,7 +461,6 @@
     <Content Include="css\select2.css" />
     <Content Include="Global.asax" />
     <Content Include="Hiccup.aspx" />
-    <Content Include="ImageGen.ashx" />
     <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="images\releases\download.png" />
     <Content Include="macroScripts\ContentLanding-Summary.cshtml" />
@@ -700,7 +699,6 @@
     <Content Include="umbraco\dashboard\UserControlProxy.aspx" />
     <Content Include="umbraco\dialogs\AssignDomain2.aspx" />
     <Content Include="umbraco\dialogs\ChangeDocType.aspx" />
-    <Content Include="umbraco\ImageGen.ashx" />
     <Content Include="umbraco\images\editor\ghost.gif" />
     <Content Include="umbraco\images\editor\renderbody.gif" />
     <Content Include="umbraco\images\pinnedIcons\task_content.ico" />
