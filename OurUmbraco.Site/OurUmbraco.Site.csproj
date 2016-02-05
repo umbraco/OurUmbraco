@@ -483,6 +483,7 @@
     <Content Include="css\search\documentation.gif" />
     <Content Include="css\select2-new.css" />
     <Content Include="css\select2.css" />
+    <Content Include="css\tooltipster.css" />
     <Content Include="Global.asax" />
     <Content Include="Hiccup.aspx" />
     <Content Include="css\forum\wmd-buttons.png" />
@@ -672,6 +673,7 @@
     <Content Include="scripts\jquery-1.4.1.js" />
     <Content Include="scripts\jquery-1.4.1.min.js" />
     <None Include="scripts\jquery.validate-vsdoc.js" />
+    <Content Include="scripts\jquery.tooltipster.min.js" />
     <Content Include="scripts\jquery.validate.js" />
     <Content Include="scripts\jquery.validate.min.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.js" />
@@ -703,6 +705,7 @@
     <Content Include="umbraco\assets\img\application\logo.png" />
     <Content Include="umbraco\assets\img\application\logo_black.png" />
     <Content Include="umbraco\assets\img\application\logo_white.png" />
+    <Content Include="umbraco\assets\img\checkered-background-20.png" />
     <Content Include="umbraco\assets\img\checkered-background.png" />
     <Content Include="umbraco\assets\img\forms\installer-background.png" />
     <Content Include="umbraco\assets\img\installer.jpg" />
