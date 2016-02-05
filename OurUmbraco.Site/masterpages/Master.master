@@ -171,7 +171,11 @@
 
                             <div class="col-xs-12">
                                 Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
-                                This site is running <data id="umbraco-version" value='<%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %>'>Umbraco version <%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %></data>
+                                <% if (Request.UserAgent.ToLower().Contains("googlebot")) { %>
+                                    This site is running Umbraco.
+                                <% } else { %>
+                                    This site is running <data id="umbraco-version" value='<%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %>'>Umbraco version <%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %></data>
+                                <% } %>
                             </div>
 
                         </div>
