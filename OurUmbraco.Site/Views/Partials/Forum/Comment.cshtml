@@ -18,6 +18,7 @@
     var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
     var forum = Umbraco.TypedContent(topic.ParentId);
     var forumReadOnly = forum.NewTopicsAllowed() == false;
+
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Members.IsAdmin()))
@@ -48,8 +49,23 @@
             <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor, 75))</a>
 
             <div class="highfive highfive-comment">
+                @{
+                    var html = "High fives from:<br />";
+                    foreach (var vote in Model.Votes)
+                    {
+                        if (Model.Id == answer && vote.MemberId == Model.TopicAuthorId)
+                        {
+                            html = string.Format("{0}<a href=\"/member/{1}\">{2}</a> (marked as the answer)<br />", html, vote.MemberId, vote.MemberName);
+                        }
+                        else
+                        {
+                            html = string.Format("{0}<a href=\"/member/{1}\">{2}</a><br />", html, vote.MemberId, vote.MemberName);
+                        }
+                    }
 
-                <div class="highfive-count">
+                    @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
+                }
+                <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                     @Model.Score
                 </div>
                 @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
@@ -140,3 +156,13 @@
         </div>
     </li>
 }
+                    
+
+<link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
+<script type="text/javascript" src="/scripts/jquery.tooltipster.min.js"></script>
+<script type="text/javascript">
+    $('.highfive-count').tooltipster({
+        contentAsHTML: true,
+        interactive: true
+    });
+</script>

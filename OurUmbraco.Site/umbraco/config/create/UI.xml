@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<createUI>
+<createUI>  
   <nodeType alias="templates">
     <header>Template</header>
     <usercontrol>/create/simple.ascx</usercontrol>
@@ -57,7 +57,7 @@
     <tasks>
       <delete assembly="umbraco" type="userTasks" />
     </tasks>
-  </nodeType>
+  </nodeType> 
   <nodeType alias="initmemberGroup">
     <header>membergroup</header>
     <usercontrol>/create/simple.ascx</usercontrol>
@@ -78,7 +78,7 @@
     <tasks>
       <create assembly="umbraco" type="XsltTasks" />
     </tasks>
-  </nodeType>
+  </nodeType>    
   <nodeType alias="initmember">
     <header>member</header>
     <usercontrol>/create/member.ascx</usercontrol>
@@ -92,7 +92,7 @@
     <tasks>
       <create assembly="umbraco" type="memberTasks" />
     </tasks>
-  </nodeType>
+  </nodeType>  
   <nodeType alias="memberGroups">
     <header>membergroup</header>
     <usercontrol>/create/simple.ascx</usercontrol>
@@ -237,7 +237,7 @@
   </nodeType>
   <nodeType alias="partialViews">
     <header>Macro</header>
-    <usercontrol>/Create/PartialView.ascx</usercontrol>
+		<usercontrol>/Create/PartialView.ascx</usercontrol>
     <tasks>
       <create assembly="umbraco" type="PartialViewTasks" />
       <delete assembly="umbraco" type="PartialViewTasks" />

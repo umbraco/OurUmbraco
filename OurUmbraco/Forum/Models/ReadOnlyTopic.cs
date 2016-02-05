@@ -15,6 +15,6 @@ namespace OurUmbraco.Forum.Models
         public string AuthorName { get; set; }
 
         [ResultColumn("LastReplyAuthorName")]
-        public string LastReplyAuthorName { get; set; } 
+        public string LastReplyAuthorName { get; set; }
     }
 }

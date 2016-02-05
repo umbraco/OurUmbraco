@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
 
 namespace OurUmbraco.Forum.Models
@@ -40,5 +42,7 @@ namespace OurUmbraco.Forum.Models
 
         [Column("hasChildren")]
         public bool HasChildren { get; set; }
+
+        public List<SimpleMember> Votes { get; set; }
     }
 }

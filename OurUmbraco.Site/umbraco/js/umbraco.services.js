@@ -1,7 +1,7 @@
 /*! umbraco
  * https://github.com/umbraco/umbraco-cms/
- * Copyright (c) 2015 Umbraco HQ;
- * Licensed MIT
+ * Copyright (c) 2016 Umbraco HQ;
+ * Licensed 
  */
 
 (function() { 
@@ -739,7 +739,7 @@ angular.module('umbraco.services')
 * @description A helper service for most editors, some methods are specific to content/media/member model types but most are used by
 * all editors to share logic and reduce the amount of replicated code among editors.
 **/
-function contentEditingHelper(fileManager, $q, $location, $routeParams, notificationsService, serverValidationManager, dialogService, formHelper, appState, keyboardService) {
+function contentEditingHelper(fileManager, $q, $location, $routeParams, notificationsService, serverValidationManager, dialogService, formHelper, appState) {
 
     function isValidIdentifier(id){
         //empty id <= 0
@@ -780,6 +780,8 @@ function contentEditingHelper(fileManager, $q, $location, $routeParams, notifica
                 throw "args.saveMethod is not defined";
             }
 
+            var redirectOnFailure = args.redirectOnFailure !== undefined ? args.redirectOnFailure : true;
+
             var self = this;
 
             //we will use the default one for content if not specified
@@ -809,7 +811,7 @@ function contentEditingHelper(fileManager, $q, $location, $routeParams, notifica
 
                     }, function (err) {
                         self.handleSaveError({
-                            redirectOnFailure: true,
+                            redirectOnFailure: redirectOnFailure,
                             err: err,
                             rebindCallback: function() {
                                 rebindCallback.apply(self, [args.content, err.data]);
@@ -860,41 +862,39 @@ function contentEditingHelper(fileManager, $q, $location, $routeParams, notifica
                 switch (ch) {
                     case "U":
                         //publish action
-                        keyboardService.bind("ctrl+p", args.methods.saveAndPublish);
-
                         return {
                             letter: ch,
                             labelKey: "buttons_saveAndPublish",
                             handler: args.methods.saveAndPublish,
-                            hotKey: "ctrl+p"
+                            hotKey: "ctrl+p",
+                            hotKeyWhenHidden: true
                         };
                     case "H":
                         //send to publish
-                        keyboardService.bind("ctrl+p", args.methods.sendToPublish);
-
                         return {
                             letter: ch,
                             labelKey: "buttons_saveToPublish",
                             handler: args.methods.sendToPublish,
-                            hotKey: "ctrl+p"
+                            hotKey: "ctrl+p",
+                            hotKeyWhenHidden: true
                         };
                     case "A":
                         //save
-                        keyboardService.bind("ctrl+s", args.methods.save);
                         return {
                             letter: ch,
                             labelKey: "buttons_save",
                             handler: args.methods.save,
-                            hotKey: "ctrl+s"
+                            hotKey: "ctrl+s",
+                            hotKeyWhenHidden: true
                         };
                     case "Z":
                         //unpublish
-                        keyboardService.bind("ctrl+u", args.methods.unPublish);
-
                         return {
                             letter: ch,
                             labelKey: "content_unPublish",
-                            handler: args.methods.unPublish
+                            handler: args.methods.unPublish,
+                            hotKey: "ctrl+u",
+                            hotKeyWhenHidden: true
                         };
                     default:
                         return null;
@@ -1266,7 +1266,7 @@ angular.module('umbraco.services').factory('contentEditingHelper', contentEditin
  * @name umbraco.services.contentTypeHelper
  * @description A helper service for the content type editor
  **/
-function contentTypeHelper(contentTypeResource, dataTypeResource, $filter) {
+function contentTypeHelper(contentTypeResource, dataTypeResource, $filter, $injector, $q) {
 
     var contentTypeHelperService = {
 
@@ -1288,6 +1288,44 @@ function contentTypeHelper(contentTypeResource, dataTypeResource, $filter) {
 
         },
 
+        generateModels: function () {
+            var deferred = $q.defer();
+            var modelsResource = $injector.has("modelsBuilderResource") ? $injector.get("modelsBuilderResource") : null;
+            var modelsBuilderEnabled = Umbraco.Sys.ServerVariables.umbracoPlugins.modelsBuilder.enabled;
+            if (modelsBuilderEnabled && modelsResource) {
+                modelsResource.buildModels().then(function(result) {
+                    deferred.resolve(result);
+
+                    //just calling this to get the servar back to life
+                    modelsResource.getModelsOutOfDateStatus();
+
+                }, function(e) {
+                    deferred.reject(e);
+                });
+            }
+            else {                
+                deferred.resolve(false);                
+            }
+            return deferred.promise;
+        },
+
+        checkModelsBuilderStatus: function () {
+            var deferred = $q.defer();
+            var modelsResource = $injector.has("modelsBuilderResource") ? $injector.get("modelsBuilderResource") : null;
+            var modelsBuilderEnabled = (Umbraco && Umbraco.Sys && Umbraco.Sys.ServerVariables && Umbraco.Sys.ServerVariables.umbracoPlugins && Umbraco.Sys.ServerVariables.umbracoPlugins.modelsBuilder && Umbraco.Sys.ServerVariables.umbracoPlugins.modelsBuilder.enabled === true);            
+            
+            if (modelsBuilderEnabled && modelsResource) {
+                modelsResource.getModelsOutOfDateStatus().then(function(result) {
+                    //Generate models buttons should be enabled if its not 100
+                    deferred.resolve(result.status !== 100);
+                });
+            }
+            else {
+                deferred.resolve(false);
+            }
+            return deferred.promise;
+        },
+
         makeObjectArrayFromId: function (idArray, objectArray) {
            var newArray = [];
 
@@ -1306,7 +1344,40 @@ function contentTypeHelper(contentTypeResource, dataTypeResource, $filter) {
            return newArray;
         },
 
+        validateAddingComposition: function(contentType, compositeContentType) {
+
+            //Validate that by adding this group that we are not adding duplicate property type aliases
+
+            var propertiesAdding = _.flatten(_.map(compositeContentType.groups, function(g) {
+                return _.map(g.properties, function(p) {
+                    return p.alias;
+                });
+            }));
+            var propAliasesExisting = _.filter(_.flatten(_.map(contentType.groups, function(g) {
+                return _.map(g.properties, function(p) {
+                    return p.alias;
+                });
+            })), function(f) {
+                return f !== null && f !== undefined;
+            });
+
+            var intersec = _.intersection(propertiesAdding, propAliasesExisting);
+            if (intersec.length > 0) {
+                //return the overlapping property aliases
+                return intersec;
+            }
+
+            //no overlapping property aliases
+            return [];
+        },
+
         mergeCompositeContentType: function(contentType, compositeContentType) {
+
+            //Validate that there are no overlapping aliases
+            var overlappingAliases = this.validateAddingComposition(contentType, compositeContentType);
+            if (overlappingAliases.length > 0) {
+                throw new Error("Cannot add this composition, these properties already exist on the content type: " + overlappingAliases.join());
+            }
 
            angular.forEach(compositeContentType.groups, function(compositionGroup) {
 
@@ -1397,7 +1468,7 @@ function contentTypeHelper(contentTypeResource, dataTypeResource, $filter) {
 
                  // push id to array of merged composite content types
                  compositionGroup.parentTabContentTypes.push(compositeContentType.id);
-
+                  
                  // push group before placeholder tab
                  contentType.groups.unshift(compositionGroup);
 
@@ -3165,7 +3236,7 @@ angular.module('umbraco.services')
 		'target':           $window.document,
 		'keyCode':          false
 	};
-	
+
 	var isMac = navigator.platform.toUpperCase().indexOf('MAC')>=0;
 
 	// Store all keyboard combination shortcuts
@@ -3180,19 +3251,16 @@ angular.module('umbraco.services')
 		  label = label.replace("ctrl","meta");
 		}
 
-		//always try to unbind first, so we dont have multiple actions on the same key
-		keyboardManagerService.unbind(label);
-
 		var fct, elt, code, k;
 		// Initialize opt object
 		opt   = angular.extend({}, defaultOpt, opt);
 		label = label.toLowerCase();
 		elt   = opt.target;
 		if(typeof opt.target === 'string'){
-			elt = document.getElementById(opt.target);	
-		} 
+			elt = document.getElementById(opt.target);
+		}
 
-	
+
 		fct = function (e) {
 			e = e || $window.event;
 
@@ -3200,21 +3268,21 @@ angular.module('umbraco.services')
 			if (opt['inputDisabled']) {
 				var elt;
 				if (e.target){
-					elt = e.target;	
+					elt = e.target;
 				}else if (e.srcElement){
-					elt = e.srcElement;	
-				} 
+					elt = e.srcElement;
+				}
 
-				if (elt.nodeType === 3){elt = elt.parentNode;} 
+				if (elt.nodeType === 3){elt = elt.parentNode;}
 				if (elt.tagName === 'INPUT' || elt.tagName === 'TEXTAREA'){return;}
 			}
 
 			// Find out which key is pressed
 			if (e.keyCode){
-				code = e.keyCode;	
+				code = e.keyCode;
 			}else if (e.which){
-				code = e.which;	
-			} 
+				code = e.which;
+			}
 
 			var character = String.fromCharCode(code).toLowerCase();
 
@@ -3250,7 +3318,7 @@ angular.module('umbraco.services')
 			var special_keys = {
 				'esc':27,
 				'escape':27,
-				'tab':9,				
+				'tab':9,
 				'space':32,
 				'return':13,
 				'enter':13,
@@ -3303,11 +3371,11 @@ angular.module('umbraco.services')
 			// Some modifiers key
 			var modifiers = {
 				shift: {
-					wanted:		false, 
+					wanted:		false,
 					pressed:	e.shiftKey ? true : false
 				},
 				ctrl : {
-					wanted:		false, 
+					wanted:		false,
 					pressed:	e.ctrlKey ? true : false
 				},
 				alt  : {
@@ -3315,7 +3383,7 @@ angular.module('umbraco.services')
 					pressed:	e.altKey ? true : false
 				},
 				meta : { //Meta is Mac specific
-					wanted:		false, 
+					wanted:		false,
 					pressed:	e.metaKey ? true : false
 				}
 			};
@@ -3407,13 +3475,13 @@ angular.module('umbraco.services')
 		label = label.toLowerCase();
 		var binding = keyboardManagerService.keyboardEvent[label];
 		delete(keyboardManagerService.keyboardEvent[label]);
-		
+
 		if(!binding){return;}
 
 		var type		= binding['event'],
 		elt			= binding['target'],
 		callback	= binding['callback'];
-		
+
 		if(elt.detachEvent){
 			elt.detachEvent('on' + type, callback);
 		}else if(elt.removeEventListener){
@@ -3425,20 +3493,21 @@ angular.module('umbraco.services')
 	//
 
 	return keyboardManagerService;
-}]);
+}]);
 (function() {
    'use strict';
 
-   function listViewHelper($cookieStore) {
+   function listViewHelper(localStorageService) {
 
       var firstSelectedIndex = 0;
+      var localStorageKey = "umblistViewLayout";
 
       function getLayout(nodeId, availableLayouts) {
 
           var storedLayouts = [];
 
-          if ($cookieStore.get("umblistViewLayout")) {
-              storedLayouts = $cookieStore.get("umblistViewLayout");
+          if(localStorageService.get(localStorageKey)) {
+              storedLayouts = localStorageService.get(localStorageKey);
           }
 
           if (storedLayouts && storedLayouts.length > 0) {
@@ -3475,19 +3544,18 @@ angular.module('umbraco.services')
               activeLayout = getFirstAllowedLayout(availableLayouts);
           }
 
-          setLayoutCookie(nodeId, activeLayout);
+          saveLayoutInLocalStorage(nodeId, activeLayout);
 
           return activeLayout;
 
       }
 
-      function setLayoutCookie(nodeId, selectedLayout) {
-
+      function saveLayoutInLocalStorage(nodeId, selectedLayout) {
           var layoutFound = false;
           var storedLayouts = [];
 
-          if($cookieStore.get("umblistViewLayout")) {
-              storedLayouts = $cookieStore.get("umblistViewLayout");
+          if(localStorageService.get(localStorageKey)) {
+              storedLayouts = localStorageService.get(localStorageKey);
           }
 
           if(storedLayouts.length > 0) {
@@ -3501,14 +3569,14 @@ angular.module('umbraco.services')
           }
 
           if(!layoutFound) {
-              var cookieObject = {
+              var storageObject = {
                   "nodeId": nodeId,
                   "path": selectedLayout.path
               };
-              storedLayouts.push(cookieObject);
+              storedLayouts.push(storageObject);
           }
 
-          document.cookie="umblistViewLayout=" + JSON.stringify(storedLayouts);
+          localStorageService.set(localStorageKey, storedLayouts);
 
       }
 
@@ -3534,7 +3602,7 @@ angular.module('umbraco.services')
          var item = null;
 
          if ($event.shiftKey === true) {
-             
+
             if(selectedIndex > firstSelectedIndex) {
 
                start = firstSelectedIndex;
@@ -3694,7 +3762,7 @@ angular.module('umbraco.services')
          getLayout: getLayout,
          getFirstAllowedLayout: getFirstAllowedLayout,
          setLayout: setLayout,
-         setLayoutCookie: setLayoutCookie,
+         saveLayoutInLocalStorage: saveLayoutInLocalStorage,
          selectHandler: selectHandler,
          selectItem: selectItem,
          deselectItem: deselectItem,
@@ -3718,6 +3786,7 @@ angular.module('umbraco.services')
 angular.module('umbraco.services')
 .factory('localizationService', function ($http, $q, eventsService, $window, $filter, userService) {
 
+    //TODO: This should be injected as server vars
     var url = "LocalizedText";
     var resourceFileLoadStatus = "none";
     var resourceLoadingPromise = [];
@@ -3753,6 +3822,11 @@ angular.module('umbraco.services')
         // loads the language resource file from the server
         initLocalizedResources: function () {
             var deferred = $q.defer();
+
+            if (resourceFileLoadStatus === "loaded") {
+                deferred.resolve(service.dictionary);
+                return deferred.promise;
+            }
 
             //if the resource is already loading, we don't want to force it to load another one in tandem, we'd rather
             // wait for that initial http promise to finish and then return this one with the dictionary loaded
@@ -3808,25 +3882,13 @@ angular.module('umbraco.services')
 
         // checks the dictionary for a localized resource string
         localize: function (value, tokens) {
-            var deferred = $q.defer();
-
-            if (resourceFileLoadStatus === "loaded") {
-                var val = _lookup(value, tokens, service.dictionary);
-                deferred.resolve(val);
-            } else {
-                service.initLocalizedResources().then(function (dic) {
-                    var val = _lookup(value, tokens, dic);
-                    deferred.resolve(val);
-                });
-            }
-
-            return deferred.promise;
+            return service.initLocalizedResources().then(function (dic) {
+                var val = _lookup(value, tokens, dic);
+                return val;
+            });
         },
-        
-    };
 
-    // force the load of the resource file
-    service.initLocalizedResources();
+    };
 
     //This happens after login / auth and assets loading
     eventsService.on("app.authenticated", function () {
@@ -3837,6 +3899,7 @@ angular.module('umbraco.services')
     // return the local instance when called
     return service;
 });
+
 /**
  * @ngdoc service
  * @name umbraco.services.macroService
@@ -4604,7 +4667,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
          * @param {String} source The URL to load into the iframe
          */
         loadLegacyIFrame: function (source) {
-            $location.path("/" + appState.getSectionState("currentSection").toLowerCase() + "/framed/" + encodeURIComponent(source));
+            $location.path("/" + appState.getSectionState("currentSection") + "/framed/" + encodeURIComponent(source));
         },
 
         /**
@@ -4628,7 +4691,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
             appState.setSectionState("currentSection", sectionAlias);
             this.showTree(sectionAlias);
 
-            $location.path(sectionAlias.toLowerCase());
+            $location.path(sectionAlias);
         },
 
         /**
@@ -4710,7 +4773,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
 
             //this reacts to tree items themselves being clicked
             //the tree directive should not contain any handling, simply just bubble events
-            mainTreeEventHandler.bind("treeNodeSelect", function(ev, args) {
+            mainTreeEventHandler.bind("treeNodeSelect", function (ev, args) {
                 var n = args.node;
                 ev.stopPropagation();
                 ev.preventDefault();
@@ -4746,10 +4809,10 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
                     appState.setMenuState("currentNode", args.node);
 
                     //not legacy, lets just set the route value and clear the query string if there is one.
-                    $location.path(n.routePath.toLowerCase()).search("");
+                    $location.path(n.routePath).search("");
                 }
                 else if (args.element.section) {
-                    $location.path(args.element.section.toLowerCase()).search("");
+                    $location.path(args.element.section).search("");
                 }
 
                 service.hideNavigation();
@@ -4942,7 +5005,7 @@ function navigationService($rootScope, $routeParams, $log, $location, $q, $timeo
             if (action.metaData && action.metaData["actionRoute"] && angular.isString(action.metaData["actionRoute"])) {
                 //first check if the menu item simply navigates to a route
                 var parts = action.metaData["actionRoute"].split("?");
-                $location.path(parts[0].toLowerCase()).search(parts.length > 1 ? parts[1] : "");
+                $location.path(parts[0]).search(parts.length > 1 ? parts[1] : "");
                 this.hideNavigation();
                 return;
             }
@@ -8804,7 +8867,7 @@ function umbDataFormatter() {
                 });
 
                 var saveProperties = _.map(realProperties, function (p) {
-                    var saveProperty = _.pick(p, 'id', 'alias', 'description', 'validation', 'label', 'sortOrder', 'dataTypeId', 'groupId');
+                    var saveProperty = _.pick(p, 'id', 'alias', 'description', 'validation', 'label', 'sortOrder', 'dataTypeId', 'groupId', 'memberCanEdit', 'showOnMemberProfile');
                     return saveProperty;
                 });
 

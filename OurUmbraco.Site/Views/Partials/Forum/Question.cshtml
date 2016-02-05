@@ -39,15 +39,22 @@
             <div class="comment-inner">
                 <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(topicAuthor, 75))</a>
                 <div class="highfive highfive-question">
-
-                    <div class="highfive-count">
+                    @{
+                        var html = "High fives from:<br />";
+                        foreach (var vote in Model.Votes)
+                        {
+                            html = string.Format("{0}<a href='/member/{1}'>{2}</a><br />", html, vote.MemberId, vote.MemberName);
+                        }
+                        @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
+                    }                    
+                    <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                         @Model.Score
                     </div>
                     @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                     {
                         if (currentMember.Id != Model.MemberId)
                         {
-                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
+                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five"/>High Five</a>
                         }
                     }
                 </div>
@@ -77,10 +84,10 @@
                         <div class="alert">
                             @if (Members.IsAdmin())
                             {
-                                <span>You can see this topic because you're a moderator of the forum.</span><br /><br />
+                                <span>You can see this topic because you're a moderator of the forum.</span><br/><br/>
                             }
-                            Sorry if we're causing you any inconvenience but this topic has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your topic. <br />
-                            Only moderators and the topic author starter can see this topic. When this topic has been marked as clean, this topic will be shown as normal.<br />
+                            Sorry if we're causing you any inconvenience but this topic has been automatically marked as spam. A moderator has been notified and will evaluate the validity of your topic. <br/>
+                            Only moderators and the topic author starter can see this topic. When this topic has been marked as clean, this topic will be shown as normal.<br/>
                         </div>
                     }
 

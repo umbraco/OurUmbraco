@@ -47,7 +47,7 @@ FETCH NEXT @count ROWS ONLY";
             var sql = ignoreSpam
                 ? (category > 0 ? sqlic : sqlix)
                 : (category > 0 ? sqlxc : sqlxx);
-            
+
             // probably as fast as PetaPoco can be...
             return _databaseContext.Database.Fetch<ReadOnlyTopic>(sql, new
             {
@@ -69,11 +69,11 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
 ORDER BY updated DESC
 OFFSET @offset ROWS
 FETCH NEXT @count ROWS ONLY";
-            
+
             const string sqlix = sql1 + "WHERE isSpam=0";
             const string sqlxc = sql1 + "WHERE forumTopics.parentId=@category";
             const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
-            
+
             var sql = ignoreSpam
                 ? (category > 0 ? sqlic : sqlix)
                 : (category > 0 ? sqlxc : sql1);
@@ -83,7 +83,7 @@ FETCH NEXT @count ROWS ONLY";
                     sql = sql + " AND answer = 0";
                 else
                     sql = sql + " WHERE answer = 0";
-            
+
             if (noreplies)
                 if (sql.Contains("WHERE"))
                     sql = sql + " AND replies = 0";
@@ -129,7 +129,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
             const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
 
             var sql = (category > 0 ? sqlic : sqlix);
-            
+
             return _databaseContext.Database.ExecuteScalar<int>(sql, new { category = category });
         }
 
@@ -217,17 +217,43 @@ ORDER BY forumTopics.updated DESC, forumComments.created DESC
             const string sql = @"SELECT forumTopics.*,  u1.[text] as LastReplyAuthorName, u2.[text] as AuthorName, u2.[id] as topicAuthorId,
     forumComments.body as commentBody, forumComments.created as commentCreated, forumComments.haschildren, 
 	forumComments.id as commentId, forumComments.isSpam as commentIsSpam, forumComments.memberId as commentMemberId, forumComments.parentCommentId,
-	forumComments.position, forumComments.score, forumComments.topicId
+	forumComments.position, forumComments.score, forumComments.topicId, u3.text AS solvedMemberName
 FROM forumTopics
 LEFT OUTER JOIN forumComments ON (forumTopics.id = forumComments.topicId)
 LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
 LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u3 ON (forumTopics.answer = u3.id AND u3.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
 WHERE forumTopics.id=@id
 ";
 
-            return _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
+            var results = _databaseContext.Database.Fetch<ReadOnlyTopic, ReadOnlyComment, ReadOnlyTopic>(
                 new TopicCommentRelator().Map,
                 sql, new { id = id }).FirstOrDefault();
+
+            if (results != null)
+            {
+                const string topicVoteQuery = @"SELECT memberId, umbracoNode.text AS memberName FROM powersTopic LEFT JOIN umbracoNode ON (powersTopic.memberId = umbracoNode.Id) WHERE powersTopic.id = @id AND receiverId != 0";
+                var topicVotes = _databaseContext.Database.Fetch<SimpleMember>(topicVoteQuery, new { id = id });
+                results.Votes = topicVotes;
+
+                if (results.Comments.Any())
+                {
+                    const string commentsVotesQuery = @"SELECT powersComment.id, powersComment.memberId, umbracoNode.text AS memberName FROM powersComment LEFT JOIN umbracoNode ON (powersComment.memberId = umbracoNode.id) WHERE powersComment.id in (SELECT id FROM forumComments WHERE topicId = @id) AND receiverId != 0";
+                    var commentsVotes = _databaseContext.Database.Fetch<SimpleMember>(commentsVotesQuery, new { id = id });
+
+                    foreach (var readOnlyComment in results.Comments)
+                    {
+                        var votes = commentsVotes.Where(x => x.CommentId == readOnlyComment.Id);
+                        readOnlyComment.Votes = new List<SimpleMember>();
+                        foreach (var simpleMember in votes)
+                        {
+                            readOnlyComment.Votes.Add(simpleMember);
+                        }
+                    }
+                }
+            }
+
+            return results;
         }
 
         public Topic GetById(int id)
@@ -317,17 +343,17 @@ WHERE forumTopics.id=@id
         /// </remarks>
         public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache)
         {
-            return (ReadOnlyTopic)cache.GetCacheItem(typeof (TopicService) + "-CurrentTopic", () =>
-            {
-                var contextId = context.Items["topicID"] as string;
-                if (contextId != null)
-                {
-                    int topicId;
-                    if (int.TryParse(contextId, out topicId))
-                        return QueryById(topicId);
-                }
-                return null;
-            });
+            return (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
+           {
+               var contextId = context.Items["topicID"] as string;
+               if (contextId != null)
+               {
+                   int topicId;
+                   if (int.TryParse(contextId, out topicId))
+                       return QueryById(topicId);
+               }
+               return null;
+           });
         }
 
         public static event EventHandler<TopicEventArgs> Created;

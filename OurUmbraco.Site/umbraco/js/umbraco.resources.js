@@ -1,7 +1,7 @@
 /*! umbraco
  * https://github.com/umbraco/umbraco-cms/
- * Copyright (c) 2015 Umbraco HQ;
- * Licensed MIT
+ * Copyright (c) 2016 Umbraco HQ;
+ * Licensed 
  */
 
 (function() { 
@@ -868,13 +868,46 @@ function contentTypeResource($q, $http, umbRequestHelper, umbDataFormatter) {
 
     return {
 
-        getAvailableCompositeContentTypes: function (contentTypeId) {
+        getCount: function () {
+            return umbRequestHelper.resourcePromise(
+               $http.get(
+                   umbRequestHelper.getApiUrl(
+                       "contentTypeApiBaseUrl",
+                       "GetCount")),
+               'Failed to retrieve count');
+        },
+
+        getAvailableCompositeContentTypes: function (contentTypeId, filterContentTypes, filterPropertyTypes) {
+            if (!filterContentTypes) {
+                filterContentTypes = [];
+            }
+            if (!filterPropertyTypes) {
+                filterPropertyTypes = [];
+            }
+
+            var query = "";
+            _.each(filterContentTypes, function (item) {
+                query += "filterContentTypes=" + item + "&";
+            });
+            // if filterContentTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterContentTypes.length === 0) {
+                query += "filterContentTypes=&";
+            }
+            _.each(filterPropertyTypes, function (item) {
+                query += "filterPropertyTypes=" + item + "&";
+            });
+            // if filterPropertyTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterPropertyTypes.length === 0) {
+                query += "filterPropertyTypes=&";
+            }
+            query += "contentTypeId=" + contentTypeId;
+            
             return umbRequestHelper.resourcePromise(
                $http.get(
                    umbRequestHelper.getApiUrl(
                        "contentTypeApiBaseUrl",
                        "GetAvailableCompositeContentTypes",
-                       [{ contentTypeId: contentTypeId }])),
+                       query)),
                'Failed to retrieve data for content type id ' + contentTypeId);
         },
 
@@ -2557,13 +2590,46 @@ function mediaTypeResource($q, $http, umbRequestHelper, umbDataFormatter) {
 
     return {
 
-        getAvailableCompositeContentTypes: function (contentTypeId) {
+        getCount: function () {
+            return umbRequestHelper.resourcePromise(
+               $http.get(
+                   umbRequestHelper.getApiUrl(
+                       "mediaTypeApiBaseUrl",
+                       "GetCount")),
+               'Failed to retrieve count');
+        },
+
+        getAvailableCompositeContentTypes: function (contentTypeId, filterContentTypes, filterPropertyTypes) {
+            if (!filterContentTypes) {
+                filterContentTypes = [];
+            }
+            if (!filterPropertyTypes) {
+                filterPropertyTypes = [];
+            }
+
+            var query = "";
+            _.each(filterContentTypes, function (item) {
+                query += "filterContentTypes=" + item + "&";
+            });
+            // if filterContentTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterContentTypes.length === 0) {
+                query += "filterContentTypes=&";
+            }
+            _.each(filterPropertyTypes, function (item) {
+                query += "filterPropertyTypes=" + item + "&";
+            });
+            // if filterPropertyTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterPropertyTypes.length === 0) {
+                query += "filterPropertyTypes=&";
+            }
+            query += "contentTypeId=" + contentTypeId;
+
             return umbRequestHelper.resourcePromise(
                $http.get(
                    umbRequestHelper.getApiUrl(
                        "mediaTypeApiBaseUrl",
                        "GetAvailableCompositeMediaTypes",
-                       [{ contentTypeId: contentTypeId }])),
+                       query)),
                'Failed to retrieve data for content type id ' + contentTypeId);
         },
 
@@ -2960,13 +3026,37 @@ function memberTypeResource($q, $http, umbRequestHelper, umbDataFormatter) {
 
     return {
 
-        getAvailableCompositeContentTypes: function (contentTypeId) {
+        getAvailableCompositeContentTypes: function (contentTypeId, filterContentTypes, filterPropertyTypes) {
+            if (!filterContentTypes) {
+                filterContentTypes = [];
+            }
+            if (!filterPropertyTypes) {
+                filterPropertyTypes = [];
+            }
+
+            var query = "";
+            _.each(filterContentTypes, function (item) {
+                query += "filterContentTypes=" + item + "&";
+            });
+            // if filterContentTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterContentTypes.length === 0) {
+                query += "filterContentTypes=&";
+            }
+            _.each(filterPropertyTypes, function (item) {
+                query += "filterPropertyTypes=" + item + "&";
+            });
+            // if filterPropertyTypes array is empty we need a empty variable in the querystring otherwise the service returns a error
+            if (filterPropertyTypes.length === 0) {
+                query += "filterPropertyTypes=&";
+            }
+            query += "contentTypeId=" + contentTypeId;
+
             return umbRequestHelper.resourcePromise(
                $http.get(
                    umbRequestHelper.getApiUrl(
                        "memberTypeApiBaseUrl",
                        "GetAvailableCompositeMemberTypes",
-                       [{ contentTypeId: contentTypeId }])),
+                       query)),
                'Failed to retrieve data for content type id ' + contentTypeId);
         },
 
@@ -3037,32 +3127,6 @@ function memberTypeResource($q, $http, umbRequestHelper, umbDataFormatter) {
     };
 }
 angular.module('umbraco.resources').factory('memberTypeResource', memberTypeResource);
-
-function modelsResource($q, $http, umbRequestHelper) {
-
-    // fixme - should use BackOfficeController to register urls? How can we extend it?
-
-    return {
-        getModelsOutOfDateStatus: function() {
-            return umbRequestHelper.resourcePromise(
-                $http.get(
-                    /*umbRequestHelper.getApiUrl(
-                        "modelsApiBaseUrl",
-                        "GetModelsOutOfDateStatus")*/ "/Umbraco/BackOffice/Zbu/ModelsBuilderApi/GetModelsOutOfDateStatus"),
-                "Failed to get models out-of-date status");
-        },
-
-        buildModels: function() {
-            return umbRequestHelper.resourcePromise(
-                $http.get(
-                    /*umbRequestHelper.getApiUrl(
-                        "modelsApiBaseUrl",
-                        "BuildModels")*/ "/Umbraco/BackOffice/Zbu/ModelsBuilderApi/BuildModels"),
-                "Failed to build models");
-        }
-    };
-}
-angular.module("umbraco.resources").factory("modelsResource", modelsResource);
 
 /**
     * @ngdoc service

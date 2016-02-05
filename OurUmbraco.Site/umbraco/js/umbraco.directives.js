@@ -1,7 +1,7 @@
 /*! umbraco
  * https://github.com/umbraco/umbraco-cms/
- * Copyright (c) 2015 Umbraco HQ;
- * Licensed MIT
+ * Copyright (c) 2016 Umbraco HQ;
+ * Licensed 
  */
 
 (function() { 
@@ -939,43 +939,53 @@ function sectionsDirective($timeout, $window, navigationService, treeService, se
 
 			scope.avatarClick = function(){
 
+                if(scope.helpDialog) {
+                    closeHelpDialog();
+                }
+
                 if(!scope.userDialog) {
-
-                    scope.userDialog = {};
-                    scope.userDialog.view = "user";
-                    scope.userDialog.show = true;
-
-                    scope.userDialog.close = function(oldModel) {
-                        scope.userDialog.show = false;
-                        scope.userDialog = null;
+                    scope.userDialog = {
+                        view: "user",
+                        show: true,
+                        close: function(oldModel) {
+                            closeUserDialog();
+                        }
                     };
-
                 } else {
-                    scope.userDialog.show = false;
-                    scope.userDialog = null;
+                    closeUserDialog();
                 }
 
 			};
+
+            function closeUserDialog() {
+                scope.userDialog.show = false;
+                scope.userDialog = null;
+            }
 
 			scope.helpClick = function(){
 
+                if(scope.userDialog) {
+                    closeUserDialog();
+                }
+
                 if(!scope.helpDialog) {
-
-                    scope.helpDialog = {};
-                    scope.helpDialog.show = true;
-                    scope.helpDialog.view = "help";
-
-                    scope.helpDialog.close = function(oldModel) {
-                        scope.helpDialog.show = false;
-                        scope.helpDialog = null;
+                    scope.helpDialog = {
+                        view: "help",
+                        show: true,
+                        close: function(oldModel) {
+                            closeHelpDialog();
+                        }
                     };
-
                 } else {
-                    scope.helpDialog.show = false;
-                    scope.helpDialog = null;
+                    closeHelpDialog();
                 }
 
 			};
+
+            function closeHelpDialog() {
+                scope.helpDialog.show = false;
+                scope.helpDialog = null;
+            }
 
 			scope.sectionClick = function (event, section) {
 
@@ -987,12 +997,11 @@ function sectionsDirective($timeout, $window, navigationService, treeService, se
 			        return;
 			    }
 
-
-			    if (navigationService.userDialog) {
-			        navigationService.userDialog.close();
+                if (scope.userDialog) {
+                    closeUserDialog();
 			    }
-			    if (navigationService.helpDialog) {
-			        navigationService.helpDialog.close();
+			    if (scope.helpDialog) {
+                    closeHelpDialog();
 			    }
 
 			    navigationService.hideSearch();
@@ -1006,11 +1015,11 @@ function sectionsDirective($timeout, $window, navigationService, treeService, se
 
 			scope.trayClick = function () {
                 // close dialogs
-			    if (navigationService.userDialog) {
-			        navigationService.userDialog.close();
+			    if (scope.userDialog) {
+                    closeUserDialog();
 			    }
-			    if (navigationService.helpDialog) {
-			        navigationService.helpDialog.close();
+			    if (scope.helpDialog) {
+                    closeHelpDialog();
 			    }
 
 			    if (appState.getGlobalState("showTray") === true) {
@@ -1080,6 +1089,7 @@ angular.module('umbraco.directives').directive("umbSections", sectionsDirective)
             buttonStyle: "@?",
             state: "=?",
             shortcut: "@?",
+            shortcutWhenHidden: "@",
             label: "@?",
             labelKey: "@?",
             icon: "@?",
@@ -1309,55 +1319,60 @@ angular.module('umbraco.directives').directive("umbSections", sectionsDirective)
 })();
 
 (function() {
-   'use strict';
+    'use strict';
 
-   function EditorHeaderDirective(iconHelper) {
+    function EditorHeaderDirective(iconHelper) {
 
-      function link(scope, el, attr, ctrl) {
+        function link(scope, el, attr, ctrl) {
 
-         scope.openIconPicker = function() {
-            scope.dialogModel = {
-                view: "iconpicker",
-                show: true,
-                submit: function(model) {
-                    if (model.color) {
-                       scope.icon = model.icon + " " + model.color;
-                    } else {
-                       scope.icon = model.icon;
+            scope.openIconPicker = function() {
+                scope.dialogModel = {
+                    view: "iconpicker",
+                    show: true,
+                    submit: function(model) {
+                        if (model.color) {
+                            scope.icon = model.icon + " " + model.color;
+                        } else {
+                            scope.icon = model.icon;
+                        }
+
+                        // set form to dirty
+                        ctrl.$setDirty();
+
+                        scope.dialogModel.show = false;
+                        scope.dialogModel = null;
                     }
-                    scope.dialogModel.show = false;
-                    scope.dialogModel = null;
-                }
+                };
             };
-         };
-      }
+        }
 
-      var directive = {
-         transclude: true,
-         restrict: 'E',
-         replace: true,
-         templateUrl: 'views/components/editor/umb-editor-header.html',
-         scope: {
-            tabs: "=",
-            actions: "=",
-            name: "=",
-            nameLocked: "=",
-            menu: "=",
-            icon: "=",
-            hideIcon: "@",
-            alias: "=",
-            hideAlias: "@",
-            description: "=",
-            hideDescription: "@",
-            navigation: "="
-         },
-         link: link
-      };
+        var directive = {
+            require: '^form',
+            transclude: true,
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'views/components/editor/umb-editor-header.html',
+            scope: {
+                tabs: "=",
+                actions: "=",
+                name: "=",
+                nameLocked: "=",
+                menu: "=",
+                icon: "=",
+                hideIcon: "@",
+                alias: "=",
+                hideAlias: "@",
+                description: "=",
+                hideDescription: "@",
+                navigation: "="
+            },
+            link: link
+        };
 
-      return directive;
-   }
+        return directive;
+    }
 
-   angular.module('umbraco.directives').directive('umbEditorHeader', EditorHeaderDirective);
+    angular.module('umbraco.directives').directive('umbEditorHeader', EditorHeaderDirective);
 
 })();
 
@@ -1529,34 +1544,22 @@ angular.module('umbraco.directives').directive("umbSections", sectionsDirective)
 (function() {
    'use strict';
 
-   function EditorToolbarDirective() {
-
-      var directive = {
-         restrict: 'E',
-         replace: true,
-         templateUrl: 'views/components/editor/umb-editor-toolbar.html',
-         scope: {
-            tools: "="
-         }
-      };
-
-      return directive;
-   }
-
-   angular.module('umbraco.directives').directive('umbEditorToolbar', EditorToolbarDirective);
-
-})();
-
-(function() {
-   'use strict';
-
    function EditorViewDirective() {
+
+       function link(scope, el, attr) {
+
+           if(attr.footer) {
+               scope.footer = attr.footer;
+           }
+
+       }
 
       var directive = {
          transclude: true,
          restrict: 'E',
          replace: true,
-         templateUrl: 'views/components/editor/umb-editor-view.html'
+         templateUrl: 'views/components/editor/umb-editor-view.html',
+         link: link
       };
 
       return directive;
@@ -1718,6 +1721,7 @@ angular.module('umbraco.directives')
 
         function oneTimeClick(event) {
                 var el = event.target.nodeName;
+
                 //ignore link and button clicks
                 var els = ["INPUT","A","BUTTON"];
                 if(els.indexOf(el) >= 0){return;}
@@ -1732,6 +1736,12 @@ angular.module('umbraco.directives')
                 // ignore clicks on dialog from old dialog service
                 var oldDialog = $(el).parents("#old-dialog-service");
                 if (oldDialog.length === 1) {
+                    return;
+                }
+
+                // ignore clicks in tinyMCE dropdown(floatpanel)
+                var floatpanel = $(el).parents(".mce-floatpanel");
+                if (floatpanel.length === 1) {
                     return;
                 }
 
@@ -2087,60 +2097,64 @@ function hexBgColor() {
 }
 angular.module('umbraco.directives').directive("hexBgColor", hexBgColor);
 /**
-* @ngdoc directive
-* @name umbraco.directives.directive:headline
-**/
+ * @ngdoc directive
+ * @name umbraco.directives.directive:headline
+ **/
 angular.module("umbraco.directives")
-  .directive('hotkey', function ($window, keyboardService, $log) {
+    .directive('hotkey', function($window, keyboardService, $log) {
 
-      return function (scope, el, attrs) {
+        return function(scope, el, attrs) {
 
-          var options = {};
-          var keyCombo = attrs.hotkey;
+            var options = {};
+            var keyCombo = attrs.hotkey;
 
-          if (!keyCombo) {
-            //support data binding
-            keyCombo = scope.$eval(attrs["hotkey"]);
-          }
+            if (!keyCombo) {
+                //support data binding
+                keyCombo = scope.$eval(attrs["hotkey"]);
+            }
 
-          // disable shortcuts in input fields if keycombo is 1 character
-          if(keyCombo) {
+            // disable shortcuts in input fields if keycombo is 1 character
+            if (keyCombo) {
 
-             if(keyCombo.length === 1) {
-               options = {
-                 inputDisabled: true
-               };
-             }
-
-             keyboardService.bind(keyCombo, function(){
-
-                var element = $(el);
-                var activeElementType = document.activeElement.tagName;
-                var clickableElements = ["A", "BUTTON"];
-
-                if(element.is("a,div,button,input[type='button'],input[type='submit'],input[type='checkbox']") && !element.is(':disabled') ){
-
-                  // when keycombo is enter and a link or button has focus - click the link or button instead of using the hotkey
-                  if(keyCombo === "enter" && clickableElements.indexOf(activeElementType) === 0) {
-                    document.activeElement.click();
-                  } else {
-                    element.click();
-                  }
-
-                }else{
-                  element.focus();
+                if (keyCombo.length === 1) {
+                    options = {
+                        inputDisabled: true
+                    };
                 }
 
-            }, options);
+                keyboardService.bind(keyCombo, function() {
 
-            el.on('$destroy', function(){
-              keyboardService.unbind(keyCombo);
-            });
+                    var element = $(el);
+                    var activeElementType = document.activeElement.tagName;
+                    var clickableElements = ["A", "BUTTON"];
 
-          }
+                    if (element.is("a,div,button,input[type='button'],input[type='submit'],input[type='checkbox']") && !element.is(':disabled')) {
 
-      };
-  });
+                        if (element.is(':visible') || attrs.hotkeyWhenHidden) {
+
+                            // when keycombo is enter and a link or button has focus - click the link or button instead of using the hotkey
+                            if (keyCombo === "enter" && clickableElements.indexOf(activeElementType) === 0) {
+                                document.activeElement.click();
+                            } else {
+                                element.click();
+                            }
+
+                        }
+
+                    } else {
+                        element.focus();
+                    }
+
+                }, options);
+
+                el.on('$destroy', function() {
+                    keyboardService.unbind(keyCombo);
+                });
+
+            }
+
+        };
+    });
 
 /**
 * @ngdoc directive
@@ -2522,6 +2536,35 @@ angular.module("umbraco.directives")
 		};
 	});
 
+(function() {
+    'use strict';
+
+    function SelectWhen($timeout) {
+
+        function link(scope, el, attr, ctrl) {
+
+            attr.$observe("umbSelectWhen", function(newValue) {
+                if (newValue === "true") {
+                    $timeout(function() {
+                        el.select();
+                    });
+                }
+            });
+
+        }
+
+        var directive = {
+            restrict: 'A',
+            link: link
+        };
+
+        return directive;
+    }
+
+    angular.module('umbraco.directives').directive('umbSelectWhen', SelectWhen);
+
+})();
+
 angular.module("umbraco.directives")
     .directive('gridRte', function (tinyMceService, stylesheetResource, angularHelper, assetsService, $q, $timeout) {
         return {
@@ -2554,7 +2597,7 @@ angular.module("umbraco.directives")
 
                         //These are absolutely required in order for the macros to render inline
                         //we put these as extended elements because they get merged on top of the normal allowed elements by tiny mce
-                        var extendedValidElements = "@[id|class|style],-div[id|dir|class|align|style],ins[datetime|cite],-ul[class|style],-li[class|style],-h1[id|dir|class|align|style],-h2[id|dir|class|align|style],-h3[id|dir|class|align|style],-h4[id|dir|class|align|style],-h5[id|dir|class|align|style],-h6[id|style|dir|class|align]";
+                        var extendedValidElements = "@[id|class|style],-div[id|dir|class|align|style],ins[datetime|cite],-ul[class|style],-li[class|style],-h1[id|dir|class|align|style],-h2[id|dir|class|align|style],-h3[id|dir|class|align|style],-h4[id|dir|class|align|style],-h5[id|dir|class|align|style],-h6[id|style|dir|class|align],span[id|class|style]";
 
                         var invalidElements = tinyMceConfig.inValidElements;
                         var plugins = _.map(tinyMceConfig.plugins, function (plugin) {
@@ -2628,13 +2671,38 @@ angular.module("umbraco.directives")
                                 statusbar: false,
                                 relative_urls: false,
                                 toolbar: toolbar,
-                                content_css: stylesheets.join(','),
+                                content_css: stylesheets,
                                 style_formats: styleFormats,
                                 autoresize_bottom_margin: 0
                             };
 
 
                             if (tinyMceConfig.customConfig) {
+
+                                //if there is some custom config, we need to see if the string value of each item might actually be json and if so, we need to
+                                // convert it to json instead of having it as a string since this is what tinymce requires
+                                for (var i in tinyMceConfig.customConfig) {
+                                    var val = tinyMceConfig.customConfig[i];
+                                    if (val) {
+                                        val = val.toString().trim();
+                                        if (val.detectIsJson()) {
+                                            try {
+                                                tinyMceConfig.customConfig[i] = JSON.parse(val);
+                                                //now we need to check if this custom config key is defined in our baseline, if it is we don't want to
+                                                //overwrite the baseline config item if it is an array, we want to concat the items in the array, otherwise
+                                                //if it's an object it will overwrite the baseline
+                                                if (angular.isArray(baseLineConfigObj[i]) && angular.isArray(tinyMceConfig.customConfig[i])) {
+                                                    //concat it and below this concat'd array will overwrite the baseline in angular.extend
+                                                    tinyMceConfig.customConfig[i] = baseLineConfigObj[i].concat(tinyMceConfig.customConfig[i]);
+                                                }
+                                            }
+                                            catch (e) {
+                                                //cannot parse, we'll just leave it
+                                            }
+                                        }
+                                    }
+                                }
+
                                 angular.extend(baseLineConfigObj, tinyMceConfig.customConfig);
                             }
 
@@ -3468,6 +3536,10 @@ angular.module("umbraco.directives")
 
       function link(scope, el, attr, ctrl) {
 
+          scope.directive = {
+              enableConfirmButton: false
+          };
+
          var overlayNumber = 0;
          var numberOfOverlays = 0;
          var isRegistered = false;
@@ -3480,8 +3552,6 @@ angular.module("umbraco.directives")
 
             setButtonText();
 
-            registerOverlay();
-
             modelCopy = makeModelCopy(scope.model);
 
             $timeout(function() {
@@ -3489,6 +3559,10 @@ angular.module("umbraco.directives")
                if (scope.position === "target") {
                   setTargetPosition();
                }
+
+               // this has to be done inside a timeout to ensure the destroy
+               // event on other overlays is run before registering a new one
+               registerOverlay();
 
                setOverlayIndent();
 
@@ -3511,10 +3585,10 @@ angular.module("umbraco.directives")
 
          function setButtonText() {
              if (!scope.model.closeButtonLabelKey && !scope.model.closeButtonLabel) {
-                 scope.model.closeButtonLabel = localizationService.localize("general_close").then(function (value) {return value;});
+                 scope.model.closeButtonLabel = localizationService.localize("general_close");
              }
              if (!scope.model.submitButtonLabelKey && !scope.model.submitButtonLabel) {
-                 scope.model.submitButtonLabel = localizationService.localize("general_submit").then(function (value) {return value;});
+                 scope.model.submitButtonLabel = localizationService.localize("general_submit");
              }
          }
 
@@ -3677,21 +3751,23 @@ angular.module("umbraco.directives")
          }
 
          scope.submitForm = function(model) {
-
             if(scope.model.submit) {
+                 if (formHelper.submitForm({scope: scope})) {
+                    formHelper.resetForm({ scope: scope });
 
-               if (formHelper.submitForm({scope: scope})) {
+                    if(scope.model.confirmSubmit && scope.model.confirmSubmit.enable && !scope.directive.enableConfirmButton) {
+                        scope.model.submit(model, modelCopy, scope.directive.enableConfirmButton);
+                    } else {
+                        unregisterOverlay();
+                        scope.model.submit(model, modelCopy, scope.directive.enableConfirmButton);
+                    }
 
-                  formHelper.resetForm({ scope: scope });
+                 }
+             }
+         };
 
-                  unregisterOverlay();
-
-                  scope.model.submit(model);
-
-               }
-
-            }
-
+         scope.cancelConfirmSubmit = function() {
+             scope.model.confirmSubmit.show = false;
          };
 
          scope.closeOverLay = function() {
@@ -3828,7 +3904,8 @@ var _umbPropertyEditor = function (umbPropEditorHelper) {
         return {
             scope: {
                 model: "=",
-                isPreValue: "@"
+                isPreValue: "@",
+                preview: "@"
             },
             
             require: "^form",
@@ -3856,6 +3933,7 @@ var _umbPropertyEditor = function (umbPropEditorHelper) {
 //Preffered is the umb-property-editor as its more explicit - but we keep umb-editor for backwards compat
 angular.module("umbraco.directives").directive('umbPropertyEditor', _umbPropertyEditor);
 angular.module("umbraco.directives").directive('umbEditor', _umbPropertyEditor);
+
 angular.module("umbraco.directives.html")
     .directive('umbPropertyGroup', function () {
         return {
@@ -4041,8 +4119,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
             var template = '<ul class="umb-tree ' + hideoptions + '"><li class="root">';
             template += '<div ng-hide="hideheader" on-right-click="altSelect(tree.root, $event)">' +
                 '<h5>' +
-                '<i ng-if="enablecheckboxes == \'true\'" ng-class="selectEnabledNodeClass(tree.root)"></i>' +
-                '<a href="#/{{section}}" ng-click="select(tree.root, $event)"  class="root-link">{{tree.name}}</a></h5>' +
+                '<a href="#/{{section}}" ng-click="select(tree.root, $event)"  class="root-link"><i ng-if="enablecheckboxes == \'true\'" ng-class="selectEnabledNodeClass(tree.root)"></i> {{tree.name}}</a></h5>' +
                 '<a class="umb-options" ng-hide="tree.root.isContainer || !tree.root.menuUrl" ng-click="options(tree.root, $event)" ng-swipe-right="options(tree.root, $event)"><i></i><i></i><i></i></a>' +
                 '</div>';
             template += '<ul>' +
@@ -4057,12 +4134,12 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
 
                 //flag to track the last loaded section when the tree 'un-loads'. We use this to determine if we should
                 // re-load the tree again. For example, if we hover over 'content' the content tree is shown. Then we hover
-                // outside of the tree and the tree 'un-loads'. When we re-hover over 'content', we don't want to re-load the 
+                // outside of the tree and the tree 'un-loads'. When we re-hover over 'content', we don't want to re-load the
                 // entire tree again since we already still have it in memory. Of course if the section is different we will
                 // reload it. This saves a lot on processing if someone is navigating in and out of the same section many times
                 // since it saves on data retreival and DOM processing.
                 var lastSection = "";
-                
+
                 //setup a default internal handler
                 if (!scope.eventhandler) {
                     scope.eventhandler = $({});
@@ -4078,7 +4155,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                         $(scope.eventhandler).trigger(eventName, args);
                     }
                 }
-                
+
                 /** This will deleteAnimations to true after the current digest */
                 function enableDeleteAnimations() {
                     //do timeout so that it re-enables them after this digest
@@ -4112,9 +4189,9 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                                 scope.loadChildren(node, true);
                             }
                         };
-                        
-                        /** 
-                            Used to do the tree syncing. If the args.tree is not specified we are assuming it has been 
+
+                        /**
+                            Used to do the tree syncing. If the args.tree is not specified we are assuming it has been
                             specified previously using the _setActiveTreeType
                         */
                         scope.eventhandler.syncTree = function(args) {
@@ -4124,7 +4201,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                             if (!args.path) {
                                 throw "args.path cannot be null";
                             }
-                            
+
                             var deferred = $q.defer();
 
                             //this is super complex but seems to be working in other places, here we're listening for our
@@ -4133,7 +4210,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                                 deferred.resolve(syncArgs);
                             });
 
-                            //this should normally be set unless it is being called from legacy 
+                            //this should normally be set unless it is being called from legacy
                             // code, so set the active tree type before proceeding.
                             if (args.tree) {
                                 loadActiveTree(args.tree);
@@ -4150,7 +4227,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
 
                             args.path = _.filter(args.path, function (item) { return (item !== "init" && item !== "-1"); });
 
-                            //Once those are filtered we need to check if the current user has a special start node id, 
+                            //Once those are filtered we need to check if the current user has a special start node id,
                             // if they do, then we're going to trim the start of the array for anything found from that start node
                             // and previous so that the tree syncs properly. The tree syncs from the top down and if there are parts
                             // of the tree's path in there that don't actually exist in the dom/model then syncing will not work.
@@ -4172,13 +4249,13 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
 
                             });
 
-                            
+
 
                             return deferred.promise;
                         };
 
-                        /** 
-                            Internal method that should ONLY be used by the legacy API wrapper, the legacy API used to 
+                        /**
+                            Internal method that should ONLY be used by the legacy API wrapper, the legacy API used to
                             have to set an active tree and then sync, the new API does this in one method by using syncTree.
                             loadChildren is optional but if it is set, it will set the current active tree and load the root
                             node's children - this is synonymous with the legacy refreshTree method - again should not be used
@@ -4204,7 +4281,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                     }
                 }
 
-                
+
                 //given a tree alias, this will search the current section tree for the specified tree alias and
                 //set that to the activeTree
                 //NOTE: loadChildren is ONLY used for legacy purposes, do not use this when syncing the tree as it will cause problems
@@ -4224,7 +4301,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                             }
                             return false;
                         });
-                        
+
                         if (!scope.activeTree) {
                             throw "Could not find the tree " + treeAlias + ", activeTree has not been set";
                         }
@@ -4273,7 +4350,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                             .then(function(data) {
                                 //set the data once we have it
                                 scope.tree = data;
-                                
+
                                 enableDeleteAnimations();
 
                                 scope.loading = false;
@@ -4282,7 +4359,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                                 scope.activeTree = scope.tree.root;
                                 emitEvent("treeLoaded", { tree: scope.tree });
                                 emitEvent("treeNodeExpanded", { tree: scope.tree, node: scope.tree.root, children: scope.tree.root.children });
-                           
+
                             }, function(reason) {
                                 scope.loading = false;
                                 notificationsService.error("Tree Error", reason);
@@ -4304,9 +4381,9 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                         if (activate === undefined || activate === true) {
                             scope.currentNode = data;
                         }
-                        
+
                         emitEvent("treeSynced", { node: data, activate: activate });
-                        
+
                         enableDeleteAnimations();
                     });
 
@@ -4320,8 +4397,8 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                         '';
                 };
 
-                /** method to set the current animation for the node. 
-                 *  This changes dynamically based on if we are changing sections or just loading normal tree data. 
+                /** method to set the current animation for the node.
+                 *  This changes dynamically based on if we are changing sections or just loading normal tree data.
                  *  When changing sections we don't want all of the tree-ndoes to do their 'leave' animations.
                  */
                 scope.animation = function() {
@@ -4340,7 +4417,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                     //emit treeNodeExpanding event, if a callback object is set on the tree
                     emitEvent("treeNodeExpanding", { tree: scope.tree, node: node });
 
-                    //standardising                
+                    //standardising
                     if (!node.children) {
                         node.children = [];
                     }
@@ -4351,7 +4428,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                             .then(function(data) {
                                 //emit expanded event
                                 emitEvent("treeNodeExpanded", { tree: scope.tree, node: node, children: data });
-                                
+
                                 enableDeleteAnimations();
 
                                 deferred.resolve(data);
@@ -4360,7 +4437,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                     else {
                         emitEvent("treeNodeExpanded", { tree: scope.tree, node: node, children: node.children });
                         node.expanded = true;
-                        
+
                         enableDeleteAnimations();
 
                         deferred.resolve(node.children);
@@ -4379,13 +4456,13 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                 };
 
                 /**
-                  Method called when an item is clicked in the tree, this passes the 
+                  Method called when an item is clicked in the tree, this passes the
                   DOM element, the tree node object and the original click
                   and emits it as a treeNodeSelect element if there is a callback object
                   defined on the tree
                 */
                 scope.select = function (n, ev) {
-                    //on tree select we need to remove the current node - 
+                    //on tree select we need to remove the current node -
                     // whoever handles this will need to make sure the correct node is selected
                     //reset current node selection
                     scope.currentNode = null;
@@ -4396,7 +4473,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                 scope.altSelect = function(n, ev) {
                     emitEvent("treeNodeAltSelect", { element: elem, tree: scope.tree, node: n, event: ev });
                 };
-                
+
                 //watch for section changes
                 scope.$watch("section", function(newVal, oldVal) {
 
@@ -4418,7 +4495,7 @@ function umbTreeDirective($compile, $log, $q, $rootScope, treeService, notificat
                         lastSection = newVal;
                     }
                 });
-                
+
                 setupExternalEvents();
                 loadTree();
             };
@@ -4791,7 +4868,8 @@ angular.module("umbraco.directives")
             scope: {
                 alias: '=',
                 aliasFrom: '=',
-                enableLock: '=?'
+                enableLock: '=?',
+                serverValidationField: '@'
             },
             link: function (scope, element, attrs, ctrl) {
 
@@ -4816,7 +4894,7 @@ angular.module("umbraco.directives")
                     generateAliasTimeout = $timeout(function () {
                        updateAlias = true;
                         entityResource.getSafeAlias(value, true).then(function (safeAlias) {
-                           if(updateAlias) {
+                            if (updateAlias) {
                               scope.alias = safeAlias.alias;
                            }
                       });
@@ -5045,16 +5123,15 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
       function link(scope, el, attr, ctrl) {
 
-         scope.clickItem = function(item) {
+         scope.clickItem = function(item, $event, $index) {
             if(scope.onClick) {
-               scope.onClick(item);
+               scope.onClick(item, $event, $index);
             }
          };
 
-         scope.selectItem = function(item, $event, $index) {
-            if(scope.onSelect) {
-               scope.onSelect(item, $event, $index);
-               $event.stopPropagation();
+         scope.clickItemName = function(item, $event, $index) {
+            if(scope.onClickName) {
+               scope.onClickName(item, $event, $index);
             }
          };
 
@@ -5067,8 +5144,8 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
          scope: {
             content: '=',
             contentProperties: "=",
-            onSelect: '=',
-            onClick: "="
+            onClick: "=",
+            onClickName: "="
          },
          link: link
       };
@@ -5081,23 +5158,67 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 })();
 
 (function() {
+  'use strict';
+
+  function UmbDisableFormValidation() {
+
+      var directive = {
+          restrict: 'A',
+          require: '?form',
+          link: function (scope, elm, attrs, ctrl) {
+              //override the $setValidity function of the form to disable validation
+              ctrl.$setValidity = function () { };
+          }
+      };
+
+    return directive;
+  }
+
+  angular.module('umbraco.directives').directive('umbDisableFormValidation', UmbDisableFormValidation);
+
+})();
+
+(function() {
+   'use strict';
+
+   function EmptyStateDirective() {
+
+      var directive = {
+         restrict: 'E',
+         replace: true,
+         transclude: true,
+         templateUrl: 'views/components/umb-empty-state.html',
+         scope: {
+            size: '@',
+            position: '@'
+         }
+      };
+
+      return directive;
+   }
+
+   angular.module('umbraco.directives').directive('umbEmptyState', EmptyStateDirective);
+
+})();
+
+(function() {
    'use strict';
 
    function FolderGridDirective() {
 
       function link(scope, el, attr, ctrl) {
 
-         scope.clickFolder = function(folder) {
+         scope.clickFolder = function(folder, $event, $index) {
             if(scope.onClick) {
-               scope.onClick(folder);
+               scope.onClick(folder, $event, $index);
             }
          };
 
-         scope.selectFolder = function(folder, $event, $index) {
-            if(scope.onSelect) {
-               scope.onSelect(folder, $event, $index);
+         scope.clickFolderName = function(folder, $event, $index) {
+            if(scope.onClickName) {
+               scope.onClickName(folder, $event, $index);
+               $event.stopPropagation();
             }
-            $event.stopPropagation();
          };
 
       }
@@ -5108,8 +5229,8 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
          templateUrl: 'views/components/umb-folder-grid.html',
          scope: {
             folders: '=',
-            onSelect: '=',
-            onClick: "="
+            onClick: "=",
+            onClickName: "="
          },
          link: link
       };
@@ -5282,18 +5403,20 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 (function() {
   'use strict';
 
-  function GroupsBuilderDirective(contentTypeHelper, contentTypeResource, mediaTypeResource, dataTypeHelper, dataTypeResource, $filter) {
+  function GroupsBuilderDirective(contentTypeHelper, contentTypeResource, mediaTypeResource, dataTypeHelper, dataTypeResource, $filter, iconHelper, $q, $timeout, notificationsService, localizationService) {
 
     function link(scope, el, attr, ctrl) {
+
+        var validationTranslated = "";
+        var tabNoSortOrderTranslated = "";
 
       scope.sortingMode = false;
       scope.toolbar = [];
       scope.sortableOptionsGroup = {};
       scope.sortableOptionsProperty = {};
+      scope.sortingButtonKey = "general_reorder";
 
       function activate() {
-
-          setToolbar();
 
           setSortingOptions();
 
@@ -5307,36 +5430,14 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
           // add init tab
           addInitGroup(scope.model.groups);
 
-      }
+          // localize texts
+          localizationService.localize("validation_validation").then(function(value) {
+              validationTranslated = value;
+          });
 
-      function setToolbar() {
-
-        scope.toolbar = [];
-
-        var compositionTool = {
-          "name": "Compositions",
-          "icon": "icon-merge",
-          "action": function(tool) {
-            scope.openCompositionsDialog(tool);
-          }
-        };
-
-        var sortingTool = {
-          "name": "Reorder",
-          "icon": "icon-navigation",
-          "action": function(tool) {
-            scope.toggleSortingMode(tool);
-          }
-        };
-
-        if(scope.compositions || scope.compositions === undefined) {
-          scope.toolbar.push(compositionTool);
-        }
-
-        if(scope.sorting || scope.sorting === undefined) {
-          scope.toolbar.push(sortingTool);
-        }
-
+          localizationService.localize("contentTypeEditor_tabHasNoSortOrder").then(function(value) {
+              tabNoSortOrderTranslated = value;
+          });
       }
 
       function setSortingOptions() {
@@ -5428,6 +5529,49 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
       }
 
+        function filterAvailableCompositions(selectedContentType, selecting) {
+
+            //selecting = true if the user has check the item, false if the user has unchecked the item
+
+            var selectedContentTypeAliases = selecting ?
+                //the user has selected the item so add to the current list
+                _.union(scope.compositionsDialogModel.compositeContentTypes, [selectedContentType.alias]) :
+                //the user has unselected the item so remove from the current list
+                _.reject(scope.compositionsDialogModel.compositeContentTypes, function(i) {
+                    return i === selectedContentType.alias;
+                });
+
+            //get the currently assigned property type aliases - ensure we pass these to the server side filer
+            var propAliasesExisting = _.filter(_.flatten(_.map(scope.model.groups, function(g) {
+                return _.map(g.properties, function(p) {
+                    return p.alias;
+                });
+            })), function (f) {
+                return f !== null && f !== undefined;
+            });
+
+            //use a different resource lookup depending on the content type type
+            var resourceLookup = scope.contentType === "documentType" ? contentTypeResource.getAvailableCompositeContentTypes : mediaTypeResource.getAvailableCompositeContentTypes;
+
+            return resourceLookup(scope.model.id, selectedContentTypeAliases, propAliasesExisting).then(function (filteredAvailableCompositeTypes) {
+                _.each(scope.compositionsDialogModel.availableCompositeContentTypes, function (current) {
+                    //reset first 
+                    current.allowed = true;
+                    //see if this list item is found in the response (allowed) list
+                    var found = _.find(filteredAvailableCompositeTypes, function (f) {
+                        return current.contentType.alias === f.contentType.alias;
+                    });
+
+                    //allow if the item was  found in the response (allowed) list - 
+                    // and ensure its set to allowed if it is currently checked,
+                    // DO not allow if it's a locked content type.
+                    current.allowed = scope.model.lockedCompositeContentTypes.indexOf(current.contentType.alias) === -1 &&
+                        (selectedContentTypeAliases.indexOf(current.contentType.alias) !== -1) || ((found !== null && found !== undefined) ? found.allowed : false);
+
+                });
+            });
+        }
+
       function updatePropertiesSortOrder() {
 
         angular.forEach(scope.model.groups, function(group){
@@ -5437,6 +5581,25 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
         });
 
       }
+
+        function setupAvailableContentTypesModel(result) {
+            scope.compositionsDialogModel.availableCompositeContentTypes = result;            
+            //iterate each one and set it up
+            _.each(scope.compositionsDialogModel.availableCompositeContentTypes, function (c) {
+                //enable it if it's part of the selected model
+                if (scope.compositionsDialogModel.compositeContentTypes.indexOf(c.contentType.alias) !== -1) {
+                    c.allowed = true;
+                }
+
+                //set the inherited flags
+                c.inherited = false;
+                if (scope.model.lockedCompositeContentTypes.indexOf(c.contentType.alias) > -1) {
+                    c.inherited = true;
+                }
+                // convert icons for composite content types
+                iconHelper.formatContentTypeIcons([c.contentType]);
+            });
+        }
 
       /* ---------- DELETE PROMT ---------- */
 
@@ -5452,76 +5615,164 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
       scope.toggleSortingMode = function(tool) {
 
-         scope.sortingMode = !scope.sortingMode;
+          if (scope.sortingMode === true) {
 
-         if(scope.sortingMode === true) {
-            tool.name = "I'm done reordering";
-         } else {
-            tool.name = "Reorder";
-         }
+              var sortOrderMissing = false;
+
+              for (var i = 0; i < scope.model.groups.length; i++) {
+                  var group = scope.model.groups[i];
+                  if (group.tabState !== "init" && group.sortOrder === undefined) {
+                      sortOrderMissing = true;
+                      group.showSortOrderMissing = true;
+                      notificationsService.error(validationTranslated + ": " + group.name + " " + tabNoSortOrderTranslated);
+                  }
+              }
+
+              if (!sortOrderMissing) {
+                  scope.sortingMode = false;
+                  scope.sortingButtonKey = "general_reorder";
+              }
+
+          } else {
+
+              scope.sortingMode = true;
+              scope.sortingButtonKey = "general_reorderDone";
+
+          }
 
       };
 
       scope.openCompositionsDialog = function() {
-        scope.compositionsDialogModel = {};
-        scope.compositionsDialogModel.title = "Compositions";
-        scope.compositionsDialogModel.contentType = scope.model;
-        scope.compositionsDialogModel.availableCompositeContentTypes = scope.model.availableCompositeContentTypes;
-        scope.compositionsDialogModel.compositeContentTypes = scope.model.compositeContentTypes;
-        scope.compositionsDialogModel.view = "views/common/overlays/contenttypeeditor/compositions/compositions.html";
-        scope.compositionsDialogModel.show = true;
 
-        scope.compositionsDialogModel.submit = function(model) {
+        scope.compositionsDialogModel = {
+            title: "Compositions",
+            contentType: scope.model,
+            compositeContentTypes: scope.model.compositeContentTypes,
+            view: "views/common/overlays/contenttypeeditor/compositions/compositions.html",
+            confirmSubmit: {
+                title: "Warning",
+                description: "Removing a composition will delete all the associated property data. Once you save the document type there's no way back, are you sure?",
+                checkboxLabel: "I know what I'm doing",
+                enable: true
+            },
+            submit: function(model, oldModel, confirmed) {
 
-          // make sure that all tabs has an init property
-          if (scope.model.groups.length !== 0) {
-            angular.forEach(scope.model.groups, function(group) {
-              addInitProperty(group);
-            });
-          }
+                var compositionRemoved = false;
 
-          // remove overlay
-          scope.compositionsDialogModel.show = false;
-          scope.compositionsDialogModel = null;
-        };
+                // check if any compositions has been removed
+                for(var i = 0; oldModel.compositeContentTypes.length > i; i++) {
 
-        scope.compositionsDialogModel.close = function(oldModel) {
-          // reset composition changes
-          scope.model.groups = oldModel.contentType.groups;
-          scope.model.compositeContentTypes = oldModel.contentType.compositeContentTypes;
+                    var oldComposition = oldModel.compositeContentTypes[i];
 
-          // remove overlay
-          scope.compositionsDialogModel.show = false;
-          scope.compositionsDialogModel = null;
-        };
+                    if(_.contains(model.compositeContentTypes, oldComposition) === false) {
+                        compositionRemoved = true;
+                    }
 
-        scope.compositionsDialogModel.selectCompositeContentType = function(compositeContentType) {
+                }
 
-          if (scope.model.compositeContentTypes.indexOf(compositeContentType.alias) === -1) {
-            //merge composition with content type
+                // show overlay confirm box if compositions has been removed.
+                if(compositionRemoved && confirmed === false) {
 
-            if(scope.contentType === "documentType") {
+                    scope.compositionsDialogModel.confirmSubmit.show = true;
 
-               contentTypeResource.getById(compositeContentType.id).then(function(composition){
-                  contentTypeHelper.mergeCompositeContentType(scope.model, composition);
-               });
+                // submit overlay if no compositions has been removed
+                // or the action has been confirmed
+                } else {
+                    
+                    // make sure that all tabs has an init property
+                    if (scope.model.groups.length !== 0) {
+                      angular.forEach(scope.model.groups, function(group) {
+                        addInitProperty(group);
+                      });
+                    }
 
+                    // remove overlay
+                    scope.compositionsDialogModel.show = false;
+                    scope.compositionsDialogModel = null;
+                }
 
-            } else if(scope.contentType === "mediaType") {
+            },
+            close: function(oldModel) {
 
-               mediaTypeResource.getById(compositeContentType.id).then(function(composition){
-                  contentTypeHelper.mergeCompositeContentType(scope.model, composition);
-               });
+                // reset composition changes
+                scope.model.groups = oldModel.contentType.groups;
+                scope.model.compositeContentTypes = oldModel.contentType.compositeContentTypes;
+
+                // remove overlay
+                scope.compositionsDialogModel.show = false;
+                scope.compositionsDialogModel = null;
+
+            },
+            selectCompositeContentType: function (selectedContentType) {
+
+                //first check if this is a new selection - we need to store this value here before any further digests/async
+                // because after that the scope.model.compositeContentTypes will be populated with the selected value.
+                var newSelection = scope.model.compositeContentTypes.indexOf(selectedContentType.alias) === -1;
+
+                if (newSelection) {
+                    //merge composition with content type
+
+                    //use a different resource lookup depending on the content type type
+                    var resourceLookup = scope.contentType === "documentType" ? contentTypeResource.getById : mediaTypeResource.getById;
+
+                    resourceLookup(selectedContentType.id).then(function (composition) {
+                        //based on the above filtering we shouldn't be able to select an invalid one, but let's be safe and
+                        // double check here.
+                        var overlappingAliases = contentTypeHelper.validateAddingComposition(scope.model, composition);
+                        if (overlappingAliases.length > 0) {
+                            //this will create an invalid composition, need to uncheck it
+                            scope.compositionsDialogModel.compositeContentTypes.splice(
+                                scope.compositionsDialogModel.compositeContentTypes.indexOf(composition.alias), 1);
+                            //dissallow this until something else is unchecked
+                            selectedContentType.allowed = false;
+                        }
+                        else {
+                            contentTypeHelper.mergeCompositeContentType(scope.model, composition);
+                        }
+
+                        //based on the selection, we need to filter the available composite types list
+                        filterAvailableCompositions(selectedContentType, newSelection).then(function () {
+                            //TODO: Here we could probably re-enable selection if we previously showed a throbber or something
+                        });
+                    });
+                }
+                else {
+                    // split composition from content type
+                    contentTypeHelper.splitCompositeContentType(scope.model, selectedContentType);
+
+                    //based on the selection, we need to filter the available composite types list
+                    filterAvailableCompositions(selectedContentType, newSelection).then(function () {
+                        //TODO: Here we could probably re-enable selection if we previously showed a throbber or something
+                    });
+                }
 
             }
-
-
-          } else {
-            // split composition from content type
-            contentTypeHelper.splitCompositeContentType(scope.model, compositeContentType);
-          }
-
         };
+
+        var availableContentTypeResource = scope.contentType === "documentType" ? contentTypeResource.getAvailableCompositeContentTypes : mediaTypeResource.getAvailableCompositeContentTypes;
+        var countContentTypeResource = scope.contentType === "documentType" ? contentTypeResource.getCount : mediaTypeResource.getCount;
+
+          //get the currently assigned property type aliases - ensure we pass these to the server side filer
+          var propAliasesExisting = _.filter(_.flatten(_.map(scope.model.groups, function(g) {
+              return _.map(g.properties, function(p) {
+                  return p.alias;
+              });
+          })), function(f) {
+              return f !== null && f !== undefined;
+          });
+          $q.all([
+              //get available composite types
+              availableContentTypeResource(scope.model.id, [], propAliasesExisting).then(function (result) {
+                  setupAvailableContentTypesModel(result);
+              }),
+              //get content type count
+              countContentTypeResource().then(function(result) {
+                  scope.compositionsDialogModel.totalContentTypes = parseInt(result, 10);
+              })
+          ]).then(function() {
+              //resolves when both other promises are done, now show it
+              scope.compositionsDialogModel.show = true;
+          });
 
       };
 
@@ -5564,6 +5815,7 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
       scope.removeGroup = function(groupIndex) {
         scope.model.groups.splice(groupIndex, 1);
+        addInitGroup(scope.model.groups);
       };
 
       scope.updateGroupTitle = function(group) {
@@ -5572,8 +5824,12 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
         }
       };
 
-      scope.changeSortOrderValue = function() {
-        scope.model.groups = $filter('orderBy')(scope.model.groups, 'sortOrder');
+      scope.changeSortOrderValue = function(group) {
+
+          if (group.sortOrder !== undefined) {
+              group.showSortOrderMissing = false;
+          }
+          scope.model.groups = $filter('orderBy')(scope.model.groups, 'sortOrder');
       };
 
       function addInitGroup(groups) {
@@ -5624,11 +5880,12 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
       scope.editPropertyTypeSettings = function(property, group) {
 
-        if (!property.inherited) {
+        if (!property.inherited && !property.locked) {
 
           scope.propertySettingsDialogModel = {};
           scope.propertySettingsDialogModel.title = "Property settings";
           scope.propertySettingsDialogModel.property = property;
+          scope.propertySettingsDialogModel.contentType = scope.contentType;
           scope.propertySettingsDialogModel.contentTypeName = scope.model.name;
           scope.propertySettingsDialogModel.view = "views/common/overlays/contenttypeeditor/propertysettings/propertysettings.html";
           scope.propertySettingsDialogModel.show = true;
@@ -5677,6 +5934,10 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
             property.dataTypeId = oldModel.property.dataTypeId;
             property.dataTypeIcon = oldModel.property.dataTypeIcon;
             property.dataTypeName = oldModel.property.dataTypeName;
+            property.validation.mandatory = oldModel.property.validation.mandatory;
+            property.validation.pattern = oldModel.property.validation.pattern;
+            property.showOnMemberProfile = oldModel.property.showOnMemberProfile;
+            property.memberCanEdit = oldModel.property.memberCanEdit;
 
             // because we set state to active, to show a preview, we have to check if has been filled out
             // label is required so if it is not filled we know it is a placeholder
@@ -6231,9 +6492,7 @@ angular.module("umbraco.directives")
 
 	function LockedFieldDirective($timeout, localizationService) {
 
-	    function link(scope, el, attr, ngModel) {
-
-			var input = el.find('.umb-locked-field__input');
+	    function link(scope, el, attr, ngModelCtrl) {
 
 			function activate() {
 
@@ -6261,35 +6520,13 @@ angular.module("umbraco.directives")
 
 			scope.lock = function() {
 				scope.locked = true;
-				input.unbind("blur");
 			};
 
 			scope.unlock = function() {
 				scope.locked = false;
-				autoFocusField();
 			};
 
-			function autoFocusField() {
-
-				var onBlurHandler = function() {
-					scope.$apply(function(){
-						scope.lock();
-					});
-				};
-
-				$timeout(function() {
-					input.focus();
-					input.select();
-					input.on("blur", onBlurHandler);
-				});
-
-			}
-
 			activate();
-
-			scope.$on('$destroy', function() {
-				input.unbind('blur');
-			});
 
 		}
 
@@ -6299,7 +6536,7 @@ angular.module("umbraco.directives")
 			replace: true,
 			templateUrl: 'views/components/umb-locked-field.html',
 			scope: {
-				model: '=ngModel',
+			    ngModel: "=",
 				locked: "=?",
 				placeholderText: "=?",
 				regexValidation: "=?",
@@ -6317,165 +6554,197 @@ angular.module("umbraco.directives")
 })();
 
 (function() {
-   'use strict';
+    'use strict';
 
-   function MediaGridDirective($filter, mediaHelper) {
+    function MediaGridDirective($filter, mediaHelper) {
 
-      function link(scope, el, attr, ctrl) {
+        function link(scope, el, attr, ctrl) {
 
-         var itemDefaultHeight = 200;
-         var itemDefaultWidth = 200;
-         var itemMaxWidth = 300;
-         var itemMaxHeight = 300;
+            var itemDefaultHeight = 200;
+            var itemDefaultWidth = 200;
+            var itemMaxWidth = 200;
+            var itemMaxHeight = 200;
+            var itemMinWidth = 125;
+            var itemMinHeight = 125;
 
-         function activate() {
+            function activate() {
 
-            for (var i = 0; scope.items.length > i; i++) {
-               var item = scope.items[i];
-               setItemData(item);
-               setOriginalSize(item, itemMaxHeight);
-            }
+                if (scope.itemMaxWidth) {
+                    itemMaxWidth = scope.itemMaxWidth;
+                }
 
-            if(scope.items.length > 0) {
-               setFlexValues(scope.items);
-            }
+                if (scope.itemMaxHeight) {
+                    itemMaxHeight = scope.itemMaxHeight;
+                }
 
-         }
+                if (scope.itemMinWidth) {
+                    itemMinWidth = scope.itemMinWidth;
+                }
 
-         function setItemData(item) {
-             item.isFolder = !mediaHelper.hasFilePropertyType(item);
-             if(!item.isFolder){
-                 item.thumbnail = mediaHelper.resolveFile(item, true);
-                 item.image = mediaHelper.resolveFile(item, false);
-             }
-         }
+                if (scope.itemMinWidth) {
+                    itemMinHeight = scope.itemMinHeight;
+                }
 
-         function setOriginalSize(item, maxHeight) {
+                for (var i = 0; scope.items.length > i; i++) {
+                    var item = scope.items[i];
+                    setItemData(item);
+                    setOriginalSize(item, itemMaxHeight);
+                }
 
-             //set to a square by default
-             item.width = itemDefaultWidth;
-             item.height = itemDefaultHeight;
-             item.aspectRatio = 1;
-
-             var widthProp = _.find(item.properties, function(v) { return (v.alias === "umbracoWidth"); });
-
-             if (widthProp && widthProp.value) {
-                 item.width = parseInt(widthProp.value, 10);
-                 if (isNaN(item.width)) {
-                     item.width = itemDefaultWidth;
-                 }
-             }
-
-             var heightProp = _.find(item.properties, function(v) { return (v.alias === "umbracoHeight"); });
-
-             if (heightProp && heightProp.value) {
-                 item.height = parseInt(heightProp.value, 10);
-                 if (isNaN(item.height)) {
-                     item.height = itemDefaultWidth;
-                 }
-             }
-
-             item.aspectRatio = item.width / item.height;
-
-             // set max width and height
-             if(item.width > itemMaxWidth) {
-                item.width = itemMaxWidth;
-                item.height = itemMaxWidth / item.aspectRatio;
-             }
-
-             if(item.height > itemMaxHeight) {
-                item.height = itemMaxHeight;
-                item.width = itemMaxHeight * item.aspectRatio;
-             }
-
-         }
-
-         function setFlexValues(mediaItems) {
-
-            var flexSortArray = mediaItems;
-            var smallestImageWidth = null;
-            var widestImageAspectRatio = null;
-
-            // sort array after image width with the widest image first
-            flexSortArray = $filter('orderBy')(flexSortArray, 'width', true);
-
-            // find widest image aspect ratio
-            widestImageAspectRatio = flexSortArray[0].aspectRatio;
-
-            // find smallest image width
-            smallestImageWidth = flexSortArray[flexSortArray.length - 1].width;
-
-            for (var i = 0; flexSortArray.length > i; i++) {
-
-               var mediaItem = flexSortArray[i];
-               var flex = 1 / (widestImageAspectRatio / mediaItem.aspectRatio);
-
-               if (flex === 0) {
-                  flex = 1;
-               }
-
-               var imageMinWidth = smallestImageWidth * flex;
-
-               var flexStyle = {
-                  "flex": flex + " 1 " + imageMinWidth + "px",
-                  "max-width": mediaItem.width + "px"
-               };
-
-               mediaItem.flexStyle = flexStyle;
+                if (scope.items.length > 0) {
+                    setFlexValues(scope.items);
+                }
 
             }
 
-         }
-
-         scope.selectItem = function(item, $event, $index) {
-            if(scope.onSelect) {
-               scope.onSelect(item, $event, $index);
-               $event.stopPropagation();
+            function setItemData(item) {
+                item.isFolder = !mediaHelper.hasFilePropertyType(item);
+                if (!item.isFolder) {
+                    item.thumbnail = mediaHelper.resolveFile(item, true);
+                    item.image = mediaHelper.resolveFile(item, false);
+                }
             }
-         };
 
-         scope.clickItem = function(item) {
-            if(scope.onClick) {
-               scope.onClick(item);
+            function setOriginalSize(item, maxHeight) {
+
+                //set to a square by default
+                item.width = itemDefaultWidth;
+                item.height = itemDefaultHeight;
+                item.aspectRatio = 1;
+
+                var widthProp = _.find(item.properties, function(v) {
+                    return (v.alias === "umbracoWidth");
+                });
+
+                if (widthProp && widthProp.value) {
+                    item.width = parseInt(widthProp.value, 10);
+                    if (isNaN(item.width)) {
+                        item.width = itemDefaultWidth;
+                    }
+                }
+
+                var heightProp = _.find(item.properties, function(v) {
+                    return (v.alias === "umbracoHeight");
+                });
+
+                if (heightProp && heightProp.value) {
+                    item.height = parseInt(heightProp.value, 10);
+                    if (isNaN(item.height)) {
+                        item.height = itemDefaultWidth;
+                    }
+                }
+
+                item.aspectRatio = item.width / item.height;
+
+                // set max width and height
+                // landscape
+                if (item.aspectRatio >= 1) {
+                    if (item.width > itemMaxWidth) {
+                        item.width = itemMaxWidth;
+                        item.height = itemMaxWidth / item.aspectRatio;
+                    }
+                    // portrait
+                } else {
+                    if (item.height > itemMaxHeight) {
+                        item.height = itemMaxHeight;
+                        item.width = itemMaxHeight * item.aspectRatio;
+                    }
+                }
+
             }
-         };
 
-         scope.hoverItemDetails = function(item, $event, hover) {
-            if(scope.onDetailsHover) {
-               scope.onDetailsHover(item, $event, hover);
+            function setFlexValues(mediaItems) {
+
+                var flexSortArray = mediaItems;
+                var smallestImageWidth = null;
+                var widestImageAspectRatio = null;
+
+                // sort array after image width with the widest image first
+                flexSortArray = $filter('orderBy')(flexSortArray, 'width', true);
+
+                // find widest image aspect ratio
+                widestImageAspectRatio = flexSortArray[0].aspectRatio;
+
+                // find smallest image width
+                smallestImageWidth = flexSortArray[flexSortArray.length - 1].width;
+
+                for (var i = 0; flexSortArray.length > i; i++) {
+
+                    var mediaItem = flexSortArray[i];
+                    var flex = 1 / (widestImageAspectRatio / mediaItem.aspectRatio);
+
+                    if (flex === 0) {
+                        flex = 1;
+                    }
+
+                    var imageMinFlexWidth = smallestImageWidth * flex;
+
+                    var flexStyle = {
+                        "flex": flex + " 1 " + imageMinFlexWidth + "px",
+                        "max-width": mediaItem.width + "px",
+                        "min-width": itemMinWidth + "px",
+                        "min-height": itemMinHeight + "px"
+                    };
+
+                    mediaItem.flexStyle = flexStyle;
+
+                }
+
             }
-         };
 
-         var unbindItemsWatcher = scope.$watch('items', function(newValue, oldValue){
-            if(angular.isArray(newValue)) {
-               activate();
-            }
-         });
+            scope.clickItem = function(item, $event, $index) {
+                if (scope.onClick) {
+                    scope.onClick(item, $event, $index);
+                }
+            };
 
-         scope.$on('$destroy', function(){
-           unbindItemsWatcher();
-         });
+            scope.clickItemName = function(item, $event, $index) {
+                if (scope.onClickName) {
+                    scope.onClickName(item, $event, $index);
+                    $event.stopPropagation();
+                }
+            };
 
-      }
+            scope.hoverItemDetails = function(item, $event, hover) {
+                if (scope.onDetailsHover) {
+                    scope.onDetailsHover(item, $event, hover);
+                }
+            };
 
-      var directive = {
-         restrict: 'E',
-         replace: true,
-         templateUrl: 'views/components/umb-media-grid.html',
-         scope: {
-            items: '=',
-            onDetailsHover: "=",
-            onSelect: '=',
-            onClick: '=',
-            filterBy: "="
-         },
-         link: link
-      };
+            var unbindItemsWatcher = scope.$watch('items', function(newValue, oldValue) {
+                if (angular.isArray(newValue)) {
+                    activate();
+                }
+            });
 
-      return directive;
-   }
+            scope.$on('$destroy', function() {
+                unbindItemsWatcher();
+            });
 
-   angular.module('umbraco.directives').directive('umbMediaGrid', MediaGridDirective);
+        }
+
+        var directive = {
+            restrict: 'E',
+            replace: true,
+            templateUrl: 'views/components/umb-media-grid.html',
+            scope: {
+                items: '=',
+                onDetailsHover: "=",
+                onClick: '=',
+                onClickName: "=",
+                filterBy: "=",
+                itemMaxWidth: "@",
+                itemMaxHeight: "@",
+                itemMinWidth: "@",
+                itemMinHeight: "@"
+            },
+            link: link
+        };
+
+        return directive;
+    }
+
+    angular.module('umbraco.directives').directive('umbMediaGrid', MediaGridDirective);
 
 })();
 
@@ -6755,13 +7024,14 @@ angular.module("umbraco.directives")
          templateUrl: 'views/components/umb-table.html',
          scope: {
             items: '=',
-            itemProperties: "=",
+            itemProperties: '=',
+            allowSelectAll: '=',
             onSelect: '=',
-            onClick: "=",
-            onSelectAll: "=",
-            onSelectedAll: "=",
-            onSortingDirection: "=",
-            onSort:"="
+            onClick: '=',
+            onSelectAll: '=',
+            onSelectedAll: '=',
+            onSortingDirection: '=',
+            onSort: '='
          },
          link: link
       };
@@ -6794,8 +7064,12 @@ angular.module("umbraco.directives")
 
          function setTooltipPosition(event) {
 
-            var viewportWidth = null;
-            var viewportHeight = null;
+            var container = $("#contentwrapper");
+            var containerLeft = container[0].offsetLeft;
+            var containerRight = containerLeft + container[0].offsetWidth;
+            var containerTop = container[0].offsetTop;
+            var containerBottom = containerTop + container[0].offsetHeight;
+
             var elementHeight = null;
             var elementWidth = null;
 
@@ -6806,10 +7080,6 @@ angular.module("umbraco.directives")
                bottom: "inherit"
             };
 
-            // viewport size
-            viewportWidth = $(window).innerWidth();
-            viewportHeight = $(window).innerHeight();
-
             // element size
             elementHeight = el.context.clientHeight;
             elementWidth = el.context.clientWidth;
@@ -6819,18 +7089,32 @@ angular.module("umbraco.directives")
 
             // check to see if element is outside screen
             // outside right
-            if (position.left + elementWidth > viewportWidth) {
-               position.right = 0;
+            if (position.left + elementWidth > containerRight) {
+               position.right = 10;
                position.left = "inherit";
             }
 
             // outside bottom
-            if (position.top + elementHeight > viewportHeight) {
-               position.bottom = 0;
+            if (position.top + elementHeight > containerBottom) {
+               position.bottom = 10;
                position.top = "inherit";
             }
 
+            // outside left
+            if (position.left < containerLeft) {
+               position.left = containerLeft + 10;
+               position.right = "inherit";
+            }
+
+            // outside top
+            if (position.top < containerTop) {
+               position.top = 10;
+               position.bottom = "inherit";
+            }
+
             scope.tooltipStyles = position;
+
+            el.css(position);
 
          }
 
@@ -7785,6 +8069,7 @@ function valRegex() {
 
             var flags = "";
             var regex;
+            var eventBindings = [];
 
             attrs.$observe("valRegexFlags", function (newVal) {
                 if (newVal) {
@@ -7809,6 +8094,12 @@ function valRegex() {
                 }
             });
 
+            eventBindings.push(scope.$watch('ngModel', function(newValue, oldValue){
+                if(newValue && newValue !== oldValue) {
+                    patternValidator(newValue);
+                }
+            }));
+
             var patternValidator = function (viewValue) {
                 if (regex) {
                     //NOTE: we don't validate on empty values, use required validator for that
@@ -7829,11 +8120,18 @@ function valRegex() {
                 }
             };
 
-            ctrl.$parsers.push(patternValidator);
+            scope.$on('$destroy', function(){
+              // unbind watchers
+              for(var e in eventBindings) {
+                eventBindings[e]();
+               }
+            });
+
         }
     };
 }
 angular.module('umbraco.directives.validation').directive("valRegex", valRegex);
+
 /**
     * @ngdoc directive
     * @name umbraco.directives.directive:valServer
@@ -7942,6 +8240,7 @@ function valServerField(serverValidationManager) {
         link: function (scope, element, attr, ctrl) {
             
             var fieldName = null;
+            var eventBindings = [];
 
             attr.$observe("valServerField", function (newVal) {
                 if (newVal && fieldName === null) {
@@ -7952,11 +8251,11 @@ function valServerField(serverValidationManager) {
                     // resubmitted. So once a field is changed that has a server error assigned to it
                     // we need to re-validate it for the server side validator so the user can resubmit
                     // the form. Of course normal client-side validators will continue to execute.
-                    ctrl.$viewChangeListeners.push(function () {
+                    eventBindings.push(scope.$watch('ngModel', function(newValue){
                         if (ctrl.$invalid) {
                             ctrl.$setValidity('valServerField', true);
                         }
-                    });
+                    }));
 
                     //subscribe to the server validation changes
                     serverValidationManager.subscribe(null, fieldName, function (isValid, fieldErrors, allErrors) {
@@ -7978,13 +8277,21 @@ function valServerField(serverValidationManager) {
                     element.bind('$destroy', function () {
                         serverValidationManager.unsubscribe(null, fieldName);
                     });
-
                 }
             });
+
+            scope.$on('$destroy', function(){
+              // unbind watchers
+              for(var e in eventBindings) {
+                eventBindings[e]();
+               }
+            });
+
         }
     };
 }
 angular.module('umbraco.directives.validation').directive("valServerField", valServerField);
+
 
 /**
 * @ngdoc directive
