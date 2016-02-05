@@ -136,6 +136,14 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.1.0.0\lib\net45\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -193,6 +201,10 @@
       <HintPath>..\packages\UmbracoCms.Core.7.4.0-RC1\lib\SQLCE4Umbraco.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data.SqlServerCe, Version=4.0.0.0, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.4.0-RC1\lib\System.Data.SqlServerCe.dll</HintPath>
@@ -216,6 +228,10 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Reflection.Metadata, Version=1.0.21.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.1.0.21\lib\portable-net45+win8\System.Reflection.Metadata.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
@@ -286,6 +302,10 @@
       <HintPath>..\packages\UmbracoCms.Core.7.4.0-RC1\lib\umbraco.MacroEngines.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Umbraco.ModelsBuilder, Version=3.0.0.80, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Umbraco.ModelsBuilder.3.0.0-RC1\lib\Umbraco.ModelsBuilder.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="umbraco.providers, Version=1.0.5878.33807, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.4.0-RC1\lib\umbraco.providers.dll</HintPath>
       <Private>True</Private>
@@ -330,6 +350,9 @@
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\access.xml" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
+    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
+    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
+    <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
     <Content Include="Assets\css\style.min.css" />
     <Content Include="Assets\images\app-icons\acme-tile-large.png" />
@@ -643,6 +666,7 @@
     <Content Include="scripts\forum\select2\select2-new.js" />
     <Content Include="scripts\forum\tags.js" />
     <Content Include="config\IISRewriteMaps.config" />
+    <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
     <Content Include="scripts\jquery-1.4.1.min.js" />
@@ -4565,7 +4589,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\migrations\" />
-    <Folder Include="App_Plugins\" />
     <Folder Include="css\img\Cached\" />
     <Folder Include="umbraco\dashboard\air\" />
     <Folder Include="umbraco\dashboard\swfs\" />
@@ -4573,6 +4596,10 @@
     <Folder Include="umbraco\plugins\uComponents\" />
     <Folder Include="umbraco\Views\directives\" />
     <Folder Include="usercontrols\Deli\Admin\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
