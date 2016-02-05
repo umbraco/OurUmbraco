@@ -667,6 +667,7 @@
     <Content Include="scripts\forum\tags.js" />
     <Content Include="config\IISRewriteMaps.config" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
+    <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
     <Content Include="scripts\jquery-1.4.1.min.js" />
@@ -1160,11 +1161,6 @@
     <Content Include="umbraco\lib\tinymce\plugins\code\plugin.min.js" />
     <Content Include="umbraco\lib\tinymce\plugins\colorpicker\plugin.js" />
     <Content Include="umbraco\lib\tinymce\plugins\colorpicker\plugin.min.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\compat3x\editable_selects.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\compat3x\form_utils.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\compat3x\mctabs.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\compat3x\tiny_mce_popup.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\compat3x\validate.js" />
     <Content Include="umbraco\lib\tinymce\plugins\contextmenu\plugin.js" />
     <Content Include="umbraco\lib\tinymce\plugins\contextmenu\plugin.min.js" />
     <Content Include="umbraco\lib\tinymce\plugins\directionality\plugin.js" />
@@ -1187,8 +1183,6 @@
     <Content Include="umbraco\lib\tinymce\plugins\emoticons\img\smiley-yell.gif" />
     <Content Include="umbraco\lib\tinymce\plugins\emoticons\plugin.js" />
     <Content Include="umbraco\lib\tinymce\plugins\emoticons\plugin.min.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\example\plugin.min.js" />
-    <Content Include="umbraco\lib\tinymce\plugins\example_dependency\plugin.min.js" />
     <Content Include="umbraco\lib\tinymce\plugins\fullpage\plugin.js" />
     <Content Include="umbraco\lib\tinymce\plugins\fullpage\plugin.min.js" />
     <Content Include="umbraco\lib\tinymce\plugins\fullscreen\plugin.js" />
