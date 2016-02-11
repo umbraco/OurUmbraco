@@ -2113,45 +2113,55 @@ angular.module("umbraco.directives")
                 keyCombo = scope.$eval(attrs["hotkey"]);
             }
 
-            // disable shortcuts in input fields if keycombo is 1 character
-            if (keyCombo) {
+            function activate() {
 
-                if (keyCombo.length === 1) {
-                    options = {
-                        inputDisabled: true
-                    };
-                }
+                if (keyCombo) {
 
-                keyboardService.bind(keyCombo, function() {
-
-                    var element = $(el);
-                    var activeElementType = document.activeElement.tagName;
-                    var clickableElements = ["A", "BUTTON"];
-
-                    if (element.is("a,div,button,input[type='button'],input[type='submit'],input[type='checkbox']") && !element.is(':disabled')) {
-
-                        if (element.is(':visible') || attrs.hotkeyWhenHidden) {
-
-                            // when keycombo is enter and a link or button has focus - click the link or button instead of using the hotkey
-                            if (keyCombo === "enter" && clickableElements.indexOf(activeElementType) === 0) {
-                                document.activeElement.click();
-                            } else {
-                                element.click();
-                            }
-
-                        }
-
-                    } else {
-                        element.focus();
+                    // disable shortcuts in input fields if keycombo is 1 character
+                    if (keyCombo.length === 1) {
+                        options = {
+                            inputDisabled: true
+                        };
                     }
 
-                }, options);
+                    keyboardService.bind(keyCombo, function() {
 
-                el.on('$destroy', function() {
-                    keyboardService.unbind(keyCombo);
-                });
+                        var element = $(el);
+                        var activeElementType = document.activeElement.tagName;
+                        var clickableElements = ["A", "BUTTON"];
+
+                        if (element.is("a,div,button,input[type='button'],input[type='submit'],input[type='checkbox']") && !element.is(':disabled')) {
+
+                            if (element.is(':visible') || attrs.hotkeyWhenHidden) {
+
+                                if (attrs.hotkeyWhen && attrs.hotkeyWhen === "false") {
+                                    return;
+                                }
+
+                                // when keycombo is enter and a link or button has focus - click the link or button instead of using the hotkey
+                                if (keyCombo === "enter" && clickableElements.indexOf(activeElementType) === 0) {
+                                    document.activeElement.click();
+                                } else {
+                                    element.click();
+                                }
+
+                            }
+
+                        } else {
+                            element.focus();
+                        }
+
+                    }, options);
+
+                    el.on('$destroy', function() {
+                        keyboardService.unbind(keyCombo);
+                    });
+
+                }
 
             }
+
+            activate();
 
         };
     });
@@ -4889,7 +4899,8 @@ angular.module("umbraco.directives")
 
                   if( value !== undefined && value !== "" && value !== null) {
 
-                    scope.alias = "Generating Alias...";
+                      scope.alias = "";
+                    scope.placeholderText = "Generating Alias...";
 
                     generateAliasTimeout = $timeout(function () {
                        updateAlias = true;
@@ -5430,6 +5441,8 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
           // add init tab
           addInitGroup(scope.model.groups);
 
+          activateFirstGroup(scope.model.groups);
+
           // localize texts
           localizationService.localize("validation_validation").then(function(value) {
               validationTranslated = value;
@@ -5555,14 +5568,14 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
 
             return resourceLookup(scope.model.id, selectedContentTypeAliases, propAliasesExisting).then(function (filteredAvailableCompositeTypes) {
                 _.each(scope.compositionsDialogModel.availableCompositeContentTypes, function (current) {
-                    //reset first 
+                    //reset first
                     current.allowed = true;
                     //see if this list item is found in the response (allowed) list
                     var found = _.find(filteredAvailableCompositeTypes, function (f) {
                         return current.contentType.alias === f.contentType.alias;
                     });
 
-                    //allow if the item was  found in the response (allowed) list - 
+                    //allow if the item was  found in the response (allowed) list -
                     // and ensure its set to allowed if it is currently checked,
                     // DO not allow if it's a locked content type.
                     current.allowed = scope.model.lockedCompositeContentTypes.indexOf(current.contentType.alias) === -1 &&
@@ -5583,7 +5596,7 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
       }
 
         function setupAvailableContentTypesModel(result) {
-            scope.compositionsDialogModel.availableCompositeContentTypes = result;            
+            scope.compositionsDialogModel.availableCompositeContentTypes = result;
             //iterate each one and set it up
             _.each(scope.compositionsDialogModel.availableCompositeContentTypes, function (c) {
                 //enable it if it's part of the selected model
@@ -5678,7 +5691,7 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
                 // submit overlay if no compositions has been removed
                 // or the action has been confirmed
                 } else {
-                    
+
                     // make sure that all tabs has an init property
                     if (scope.model.groups.length !== 0) {
                       angular.forEach(scope.model.groups, function(group) {
@@ -5854,6 +5867,15 @@ angular.module('umbraco.directives').directive("umbConfirm", confirmDirective);
         }
 
         return groups;
+      }
+
+      function activateFirstGroup(groups) {
+          if (groups && groups.length > 0) {
+              var firstGroup = groups[0];
+              if(!firstGroup.tabState || firstGroup.tabState === "inActive") {
+                  firstGroup.tabState = "active";
+              }
+          }
       }
 
       /* ---------- PROPERTIES ---------- */
@@ -7437,6 +7459,36 @@ function noDirtyCheck() {
     };
 }
 angular.module('umbraco.directives.validation').directive("noDirtyCheck", noDirtyCheck);
+(function() {
+    'use strict';
+
+    function SetDirtyOnChange() {
+
+        function link(scope, el, attr, ctrl) {
+
+            var initValue = attr.umbSetDirtyOnChange;
+
+            attr.$observe("umbSetDirtyOnChange", function (newValue) {
+                if(newValue !== initValue) {
+                    ctrl.$setDirty();
+                }
+            });
+
+        }
+
+        var directive = {
+            require: "^form",
+            restrict: 'A',
+            link: link
+        };
+
+        return directive;
+    }
+
+    angular.module('umbraco.directives').directive('umbSetDirtyOnChange', SetDirtyOnChange);
+
+})();
+
 /**
  * General-purpose validator for ngModel.
  * angular.js comes with several built-in validation mechanism for input fields (ngRequired, ngPattern etc.) but using
@@ -7570,9 +7622,9 @@ function valHighlight($timeout) {
     return {
         restrict: "A",
         link: function (scope, element, attrs, ctrl) {
-            
+
             attrs.$observe("valHighlight", function (newVal) {
-                if (newVal === true) {
+                if (newVal === "true") {
                     element.addClass("highlight-error");
                     $timeout(function () {
                         //set the bound scope property to false
@@ -7588,6 +7640,7 @@ function valHighlight($timeout) {
     };
 }
 angular.module('umbraco.directives.validation').directive("valHighlight", valHighlight);
+
 angular.module('umbraco.directives.validation')
 	.directive('valCompare',function () {
 	return {

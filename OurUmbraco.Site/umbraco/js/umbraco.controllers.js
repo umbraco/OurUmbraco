@@ -4236,18 +4236,18 @@ angular.module("umbraco")
             var pendingChangeEvent = eventsService.on("valFormManager.pendingChanges", function (e, args) {
                 //one time listener, remove the event
                 pendingChangeEvent();
-                $scope.closeOverLay();
+                $scope.model.close();
             });
 
 
             //perform the path change, if it is successful then the promise will resolve otherwise it will fail
-            $scope.closeOverLay();
+            $scope.model.close();
             $location.path("/logout");
         };
 
         $scope.gotoHistory = function (link) {
             $location.path(link);
-            $scope.closeOverLay();
+            $scope.model.close();
         };
 
         //Manually update the remaining timeout seconds
@@ -4353,6 +4353,9 @@ angular.module("umbraco")
                     formHelper.resetForm({ scope: $scope, notifications: data.notifications });
 
                     $scope.changePasswordButtonState = "success";
+                    $timeout(function() {
+                        $scope.togglePasswordFields();
+                    }, 2000);
 
                 }, function (err) {
 
@@ -5028,7 +5031,7 @@ angular.module("umbraco").controller("Umbraco.Editors.Content.MoveController",
  * 
  */
 
-function ContentRecycleBinController($scope, $routeParams, dataTypeResource, navigationService, localizationService) {
+function ContentRecycleBinController($scope, $routeParams, contentResource, navigationService, localizationService) {
 
     //ensures the list view doesn't actually load until we query for the list view config
     // for the section
@@ -5036,17 +5039,23 @@ function ContentRecycleBinController($scope, $routeParams, dataTypeResource, nav
     $scope.page.name = "Recycle Bin";
     $scope.page.nameLocked = true;
 
+    //ensures the list view doesn't actually load until we query for the list view config
+    // for the section
     $scope.listViewPath = null;
 
     $routeParams.id = "-20";
-    dataTypeResource.getById(-95).then(function (result) {
-        _.each(result.preValues, function (i) {
-            $scope.model.config[i.key] = i.value;
+    contentResource.getRecycleBin().then(function (result) {
+        //we'll get the 'content item' for the recycle bin, we know that it will contain a single tab and a 
+        // single property, so we'll extract that property (list view) and use it's data.
+        var listproperty = result.tabs[0].properties[0];
+
+        _.each(listproperty.config, function (val, key) {
+            $scope.model.config[key] = val;
         });
         $scope.listViewPath = 'views/propertyeditors/listview/listview.html';
     });
 
-    $scope.model = { config: { entityType: $routeParams.section } };
+    $scope.model = { config: { entityType: $routeParams.section, layouts: [] } };
 
     // sync tree node
     navigationService.syncTree({ tree: "content", path: ["-1", $routeParams.id], forceReload: false });
@@ -5055,11 +5064,11 @@ function ContentRecycleBinController($scope, $routeParams, dataTypeResource, nav
 
     function localizePageName() {
 
-       var pageName = "general_recycleBin";
+        var pageName = "general_recycleBin";
 
-       localizationService.localize(pageName).then(function(value) {
-          $scope.page.name = value;
-       });
+        localizationService.localize(pageName).then(function (value) {
+            $scope.page.name = value;
+        });
 
     }
 }
@@ -6180,6 +6189,7 @@ angular.module("umbraco").controller("Umbraco.Editors.DocumentTypes.DeleteContro
                 //Models builder mode:
                 vm.page.defaultButton = {
                     hotKey: "ctrl+s",
+                    hotKeyWhenHidden: true,
                     labelKey: "buttons_save",
                     letter: "S",
                     type: "submit",
@@ -6187,21 +6197,54 @@ angular.module("umbraco").controller("Umbraco.Editors.DocumentTypes.DeleteContro
                 };
                 vm.page.subButtons = [{
                     hotKey: "ctrl+g",
-                    labelKey: "buttons_generateModels",
+                    hotKeyWhenHidden: true,
+                    labelKey: "buttons_saveAndGenerateModels",
                     letter: "G",
                     handler: function () {
 
                         vm.page.saveButtonState = "busy";
-                        notificationsService.info("Building models", "this can take abit of time, don't worry");
 
-                        contentTypeHelper.generateModels().then(function (result) {
-                            vm.page.saveButtonState = "init";
-                            //clear and add success
-                            notificationsService.success("Models Generated");
-                        }, function () {
-                            notificationsService.error("Models could not be generated");
-                            vm.page.saveButtonState = "error";
+                        vm.save().then(function (result) {
+
+                            vm.page.saveButtonState = "busy";
+
+                            localizationService.localize("modelsBuilder_buildingModels").then(function (headerValue) {
+                                localizationService.localize("modelsBuilder_waitingMessage").then(function(msgValue) {
+                                    notificationsService.info(headerValue, msgValue);
+                                });
+                            });
+
+                            contentTypeHelper.generateModels().then(function (result) {
+
+                                if (result.success) {
+
+                                    //re-check model status
+                                    contentTypeHelper.checkModelsBuilderStatus().then(function(statusResult) {
+                                        vm.page.modelsBuilder = statusResult;
+                                    });
+
+                                    //clear and add success
+                                    vm.page.saveButtonState = "init";
+                                    localizationService.localize("modelsBuilder_modelsGenerated").then(function(value) {
+                                        notificationsService.success(value);
+                                    });
+
+                                } else {
+                                    vm.page.saveButtonState = "error";
+                                    localizationService.localize("modelsBuilder_modelsExceptionInUlog").then(function(value) {
+                                        notificationsService.error(value);
+                                    });
+                                }
+
+                            }, function () {
+                                vm.page.saveButtonState = "error";
+                                localizationService.localize("modelsBuilder_modelsGeneratedError").then(function(value) {
+                                    notificationsService.error(value);
+                                });
+                            });
+
                         });
+
                     }
                 }];
             }
@@ -6326,7 +6369,7 @@ angular.module("umbraco").controller("Umbraco.Editors.DocumentTypes.DeleteContro
         }
 
         function init(contentType) {
-            
+
             // set all tab to inactive
             if (contentType.groups.length !== 0) {
                 angular.forEach(contentType.groups, function (group) {
@@ -6936,8 +6979,10 @@ angular.module("umbraco").controller("Umbraco.Editors.Media.MoveController",
  * 
  */
 
-function MediaRecycleBinController($scope, $routeParams, dataTypeResource, navigationService, localizationService) {
+function MediaRecycleBinController($scope, $routeParams, mediaResource, navigationService, localizationService) {
 
+    //ensures the list view doesn't actually load until we query for the list view config
+    // for the section
     $scope.page = {};
     $scope.page.name = "Recycle Bin";
     $scope.page.nameLocked = true;
@@ -6947,14 +6992,18 @@ function MediaRecycleBinController($scope, $routeParams, dataTypeResource, navig
     $scope.listViewPath = null;
 
     $routeParams.id = "-21";
-    dataTypeResource.getById(-96).then(function (result) {
-        _.each(result.preValues, function (i) {
-            $scope.model.config[i.key] = i.value;
+    mediaResource.getRecycleBin().then(function (result) {
+        //we'll get the 'content item' for the recycle bin, we know that it will contain a single tab and a 
+        // single property, so we'll extract that property (list view) and use it's data.
+        var listproperty = result.tabs[0].properties[0];
+
+        _.each(listproperty.config, function (val, key) {
+            $scope.model.config[key] = val;
         });
         $scope.listViewPath = 'views/propertyeditors/listview/listview.html';
     });
 
-    $scope.model = { config: { entityType: $routeParams.section } };
+    $scope.model = { config: { entityType: $routeParams.section, layouts: [] } };
 
     // sync tree node
     navigationService.syncTree({ tree: "media", path: ["-1", $routeParams.id], forceReload: false });
@@ -6963,14 +7012,13 @@ function MediaRecycleBinController($scope, $routeParams, dataTypeResource, navig
 
     function localizePageName() {
 
-      var pageName = "general_recycleBin";
+        var pageName = "general_recycleBin";
 
-      localizationService.localize(pageName).then(function(value) {
-          $scope.page.name = value;
-      });
+        localizationService.localize(pageName).then(function (value) {
+            $scope.page.name = value;
+        });
 
     }
-
 }
 
 angular.module('umbraco').controller("Umbraco.Editors.Media.RecycleBinController", MediaRecycleBinController);
@@ -7185,6 +7233,7 @@ angular.module("umbraco").controller("Umbraco.Editors.MediaTypes.DeleteControlle
                 //Models builder mode:
                 vm.page.defaultButton = {
                     hotKey: "ctrl+s",
+                    hotKeyWhenHidden: true,
                     labelKey: "buttons_save",
                     letter: "S",
                     type: "submit",
@@ -7192,21 +7241,54 @@ angular.module("umbraco").controller("Umbraco.Editors.MediaTypes.DeleteControlle
                 };
                 vm.page.subButtons = [{
                     hotKey: "ctrl+g",
-                    labelKey: "buttons_generateModels",
+                    hotKeyWhenHidden: true,
+                    labelKey: "buttons_saveAndGenerateModels",
                     letter: "G",
                     handler: function () {
 
                         vm.page.saveButtonState = "busy";
-                        notificationsService.info("Building models", "this can take abit of time, don't worry");
 
-                        contentTypeHelper.generateModels().then(function(result) {
-                            vm.page.saveButtonState = "init";
-                            //clear and add success
-                            notificationsService.success("Models Generated");                            
-                        }, function() {
-                            notificationsService.error("Models could not be generated");
-                            vm.page.saveButtonState = "error";
+                        vm.save().then(function (result) {
+
+                            vm.page.saveButtonState = "busy";
+
+                            localizationService.localize("modelsBuilder_buildingModels").then(function (headerValue) {
+                                localizationService.localize("modelsBuilder_waitingMessage").then(function(msgValue) {
+                                    notificationsService.info(headerValue, msgValue);
+                                });
+                            });
+
+                            contentTypeHelper.generateModels().then(function (result) {
+
+                                if (result.success) {
+
+                                    //re-check model status
+                                    contentTypeHelper.checkModelsBuilderStatus().then(function (statusResult) {
+                                        vm.page.modelsBuilder = statusResult;
+                                    });
+
+                                    //clear and add success
+                                    vm.page.saveButtonState = "init";
+                                    localizationService.localize("modelsBuilder_modelsGenerated").then(function(value) {
+                                        notificationsService.success(value);
+                                    });
+
+                                } else {
+                                    vm.page.saveButtonState = "error";
+                                    localizationService.localize("modelsBuilder_modelsExceptionInUlog").then(function(value) {
+                                        notificationsService.error(value);
+                                    });
+                                }
+
+                            }, function () {
+                                vm.page.saveButtonState = "error";
+                                localizationService.localize("modelsBuilder_modelsGeneratedError").then(function(value) {
+                                    notificationsService.error(value);
+                                });
+                            });
+
                         });
+
                     }
                 }];
             }
@@ -7325,7 +7407,7 @@ angular.module("umbraco").controller("Umbraco.Editors.MediaTypes.DeleteControlle
         }
 
         function init(contentType) {
-           
+
             // set all tab to inactive
             if (contentType.groups.length !== 0) {
                 angular.forEach(contentType.groups, function (group) {
@@ -7969,6 +8051,7 @@ angular.module("umbraco").controller("Umbraco.Editors.MemberTypes.DeleteControll
                 //Models builder mode:
                 vm.page.defaultButton = {
                     hotKey: "ctrl+s",
+                    hotKeyWhenHidden: true,
                     labelKey: "buttons_save",
                     letter: "S",
                     type: "submit",
@@ -7976,21 +8059,55 @@ angular.module("umbraco").controller("Umbraco.Editors.MemberTypes.DeleteControll
                 };
                 vm.page.subButtons = [{
                     hotKey: "ctrl+g",
-                    labelKey: "buttons_generateModels",
+                    hotKeyWhenHidden: true,
+                    labelKey: "buttons_saveAndGenerateModels",
                     letter: "G",
                     handler: function () {
 
                         vm.page.saveButtonState = "busy";
-                        notificationsService.info("Building models", "this can take abit of time, don't worry");
 
-                        contentTypeHelper.generateModels().then(function (result) {
-                            vm.page.saveButtonState = "init";
-                            //clear and add success
-                            notificationsService.success("Models Generated");
-                        }, function () {
-                            notificationsService.error("Models could not be generated");
-                            vm.page.saveButtonState = "error";
+                        vm.save().then(function (result) {
+
+                            vm.page.saveButtonState = "busy";
+
+                            localizationService.localize("modelsBuilder_buildingModels").then(function (headerValue) {
+                                localizationService.localize("modelsBuilder_waitingMessage").then(function(msgValue) {
+                                    notificationsService.info(headerValue, msgValue);
+                                });
+                            });
+
+                            contentTypeHelper.generateModels().then(function (result) {
+
+                                if (result.success) { 
+
+                                    //re-check model status
+                                    contentTypeHelper.checkModelsBuilderStatus().then(function (statusResult) {
+                                        vm.page.modelsBuilder = statusResult;
+                                    });
+
+                                    //clear and add success
+                                    vm.page.saveButtonState = "init";
+                                    localizationService.localize("modelsBuilder_modelsGenerated").then(function(value) {
+                                        notificationsService.success(value);
+                                    });
+
+                                } else {
+                                    vm.page.saveButtonState = "error";
+                                    localizationService.localize("modelsBuilder_modelsExceptionInUlog").then(function(value) {
+                                        notificationsService.error(value);
+                                    });
+                                }
+
+                            }, function () {
+                                vm.page.saveButtonState = "error";
+                                localizationService.localize("modelsBuilder_modelsGeneratedError").then(function(value) {
+                                    notificationsService.error(value);
+                                });
+                            });
+
+
                         });
+
                     }
                 }];
             }
@@ -9579,7 +9696,7 @@ angular.module("umbraco")
                         if (thumbnail) {
                             if (mediaHelper.detectIfImageByExtension(property.value)) {
                                 //get default big thumbnail from image processor
-                                var thumbnailUrl = property.value + "?rnd=" + moment(entity.updateDate).format("YYYYMMDDHHmmss") + "&width=500";
+                                var thumbnailUrl = property.value + "?rnd=" + moment(entity.updateDate).format("YYYYMMDDHHmmss") + "&width=500&animationprocessmode=first";
                                 return thumbnailUrl;
                             }
                             else {
@@ -10025,6 +10142,7 @@ angular.module("umbraco")
                 if($scope.control.editor.config && $scope.control.editor.config.size){
                     url += "?width=" + $scope.control.editor.config.size.width;
                     url += "&height=" + $scope.control.editor.config.size.height;
+                    url += "&animationprocessmode=first";
 
                     if($scope.control.value.focalPoint){
                         url += "&center=" + $scope.control.value.focalPoint.top +"," + $scope.control.value.focalPoint.left;
@@ -10032,6 +10150,11 @@ angular.module("umbraco")
                     }
                 }
 
+                // set default size if no crop present (moved from the view)
+                if (url.indexOf('?') == -1)
+                {
+                    url += "?width=800&upscale=false&animationprocessmode=false"
+                }
                 $scope.url = url;
             }
         };
@@ -10131,10 +10254,12 @@ angular.module("umbraco")
 
 angular.module("umbraco")
     .controller("Umbraco.PropertyEditors.GridController",
-    function ($scope, $http, assetsService, localizationService, $rootScope, dialogService, gridService, mediaResource, imageHelper, $timeout, umbRequestHelper) {
+    function ($scope, $http, assetsService, localizationService, $rootScope, dialogService, gridService, mediaResource, imageHelper, $timeout, umbRequestHelper, angularHelper) {
 
         // Grid status variables
         var placeHolder = "";
+        var currentForm = angularHelper.getCurrentForm($scope);
+
         $scope.currentRow = null;
         $scope.currentCell = null;
         $scope.currentToolsControl = null;
@@ -10204,6 +10329,7 @@ angular.module("umbraco")
                     tinyMCE.execCommand("mceRemoveEditor", false, id);
                     tinyMCE.init(draggedRteSettings[id]);
                 });
+                currentForm.$setDirty();
             }
         };
 
@@ -10291,6 +10417,7 @@ angular.module("umbraco")
                         }
                     });
                 }
+                currentForm.$setDirty();
             },
 
             start: function (e, ui) {
@@ -10451,6 +10578,8 @@ angular.module("umbraco")
                 section.rows.push(row);
             }
 
+            currentForm.$setDirty();
+
             $scope.showRowConfigurations = false;
 
         };
@@ -10460,8 +10589,7 @@ angular.module("umbraco")
                 section.rows.splice($index, 1);
                 $scope.currentRow = null;
                 $scope.openRTEToolbarId = null;
-
-                //$scope.initContent();
+                currentForm.$setDirty();
             }
 
             if(section.rows.length === 0) {
@@ -10528,6 +10656,8 @@ angular.module("umbraco")
                 gridItem.config = configObject;
                 gridItem.hasConfig = gridItemHasConfig(styleObject, configObject);
 
+                currentForm.$setDirty();
+
                 $scope.gridItemSettingsDialog.show = false;
                 $scope.gridItemSettingsDialog = null;
             };
@@ -10538,7 +10668,7 @@ angular.module("umbraco")
             };
 
         };
-        
+
         function stripModifier(val, modifier) {
             if (!val || !modifier || modifier.indexOf(placeHolder) < 0) {
                 return val;
@@ -11422,7 +11552,7 @@ angular.module('umbraco')
                 if (property.value.src) {
 
                     if (thumbnail === true) {
-                        return property.value.src + "?width=500&mode=max";
+                        return property.value.src + "?width=500&mode=max&animationprocessmode=first";
                     }
                     else {
                         return property.value.src;
@@ -11757,7 +11887,10 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.IncludePropertiesL
       var vm = this;
 
       vm.nodeId = $scope.contentId;
-      vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.imageFileTypes);
+       //vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.imageFileTypes);
+        //instead of passing in a whitelist, we pass in a blacklist by adding ! to the ext
+      vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.disallowedUploadFiles).replace(/./g, "!.");
+
       vm.maxFileSize = Umbraco.Sys.ServerVariables.umbracoSettings.maxFileSize + "KB";
       vm.activeDrag = false;
       vm.mediaDetailsTooltip = {};
