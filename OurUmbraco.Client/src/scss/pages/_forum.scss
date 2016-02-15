@@ -145,6 +145,10 @@
 				font-size: .95rem;
 				line-height: 1.3;
 
+				h3 {
+					word-break: break-all;
+				}
+
 				a {
 					text-decoration: none;
 					display: block;

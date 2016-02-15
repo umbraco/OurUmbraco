@@ -259,7 +259,8 @@
 
 			.topic {
 				flex: 0 0 100%;
-
+				word-break: break-all;
+				
 				@media (min-width: $md) {
 					flex: 0 0 72%;
 					margin-right: 3%;
