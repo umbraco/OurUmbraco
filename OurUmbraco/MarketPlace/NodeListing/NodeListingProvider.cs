@@ -171,6 +171,12 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 ? contentService.GetById(listingItem.Id)
                 : contentService.CreateContent(listingItem.Name, listingItem.CategoryId, "Project");
 
+            Guid packageGuid;
+            var packageGuidValue = content.GetValue<string>("packageGuid");
+            var packageGuidString = Guid.TryParse(packageGuidValue, out packageGuid) 
+                ? packageGuid.ToString() 
+                : Guid.NewGuid().ToString();
+
             //set all the document properties
             content.SetValue("description", listingItem.Description);
             content.SetValue("version", listingItem.CurrentVersion);
@@ -188,7 +194,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("demoUrl", listingItem.DemonstrationUrl);
             content.SetValue("openForCollab", listingItem.OpenForCollab);
             content.SetValue("notAPackage", listingItem.NotAPackage);
-            content.SetValue("packageGuid", listingItem.ProjectGuid.ToString());
+            content.SetValue("packageGuid", packageGuidString);
             content.SetValue("approved", (listingItem.Approved) ? "1" : "0");
             content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
             content.SetValue("owner", listingItem.VendorId);
