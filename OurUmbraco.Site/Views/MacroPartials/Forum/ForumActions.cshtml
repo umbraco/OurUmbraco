@@ -18,20 +18,17 @@
             subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
         }
 
-        if (CurrentPage.Level == 4)
+        if (subscribed)
         {
-            if (subscribed)
-            {
-                <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">
-                    <i class="icon-Bookmark"></i><span>Following</span>
-                </a>
-            }
-            else
-            {
-                <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="">
-                    <i class="icon-Bookmark"></i><span>Follow</span>
-                </a>
-            }
+            <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Following</span>
+            </a>
+        }
+        else
+        {
+            <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Follow</span>
+            </a>
         }
     }
     else
