@@ -4,7 +4,7 @@
 <div class="utility-actions">
     @if (Members.IsLoggedIn())
     {
-        if (Model.Content.NewTopicsAllowed())
+        if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
             <a href="#" class="button create-new-thread" data-controller="topic">
                 <i class="icon-Add"></i><span>Create new</span>

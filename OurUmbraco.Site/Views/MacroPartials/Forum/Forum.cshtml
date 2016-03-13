@@ -17,7 +17,7 @@
     bool.TryParse(Request["noreplies"], out noreplies);
 
     var cat = -1;
-    if (CurrentPage.Level > 3)
+    if (CurrentPage.Level > 2)
     {
         cat = CurrentPage.Id;
     }
@@ -47,9 +47,9 @@
 
     var pages = (totalTopics / pageSize) + 1;
 
-    var categories = CurrentPage.AncestorOrSelf(2);
+    var categories = Model.Content.AncestorOrSelf(2);
 }
-@if (Model.Content.NewTopicsAllowed() == false)
+@if (Model.Content.NewTopicsAllowed() == false || Model.Content.AncestorOrSelfIsArchived())
 {
     var notification = Model.Content.GetPropertyValue<string>("mainNotification");
     if (string.IsNullOrWhiteSpace(notification))
@@ -84,17 +84,17 @@
             {
                 foreach (var tag in CurrentPage.Parent.Children)
                 {
-                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
                 }
             }
             else
             {
                 <option class="all" value="@categories.Id">All categories</option>
-                foreach (var main in categories.Children)
+                foreach (var tag in categories.Children)
                 {
-                    foreach (var tag in main.Children)
+                    if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
                     {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Parent.Name - @tag.Name</option>
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
                     }
                 }
             }

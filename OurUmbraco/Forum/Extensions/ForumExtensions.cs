@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
@@ -158,10 +159,10 @@ namespace OurUmbraco.Forum.Extensions
         {
             var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
             var memberRoles = new List<string>();
-            
+
             foreach (var role in roles)
             {
-                 if(role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()) || role.ToLowerInvariant().Contains("wiki".ToLowerInvariant()) || role.ToLowerInvariant().Contains("potentialspam".ToLowerInvariant()) || role.ToLowerInvariant().Contains("newaccount".ToLowerInvariant()))
+                if (role == "standard" || role.StartsWith("201") || role.ToLowerInvariant().Contains("vendor".ToLowerInvariant()) || role.ToLowerInvariant().Contains("wiki".ToLowerInvariant()) || role.ToLowerInvariant().Contains("potentialspam".ToLowerInvariant()) || role.ToLowerInvariant().Contains("newaccount".ToLowerInvariant()))
                     continue;
 
                 if (role == "CoreContrib")
@@ -178,7 +179,33 @@ namespace OurUmbraco.Forum.Extensions
 
         public static bool NewTopicsAllowed(this IPublishedContent forum)
         {
-            return forum.Level <= 3 || forum.GetPropertyValue<bool>("forumAllowNewTopics");
+            return forum.GetPropertyValue<bool>("forumAllowNewTopics");
+        }
+
+        public static bool IsArchived(this IPublishedContent forum)
+        {
+            const string archivedProperty = "archived";
+            return forum.HasProperty(archivedProperty) && forum.GetPropertyValue<bool>(archivedProperty);
+        }
+
+        public static bool AncestorOrSelfIsArchived(this IPublishedContent forum)
+        {
+            const string archivedProperty = "archived";
+            if (forum.GetPropertyValue<bool>(archivedProperty))
+                return true;
+            
+            return GetBoolValueRecursive(forum, "Forum", archivedProperty);
+        }
+        
+        private static bool GetBoolValueRecursive(IPublishedContent content, string contentTypeAlias, string propertyAlias)
+        {
+            if (content.Parent.ContentType.Alias != contentTypeAlias)
+                return false;
+
+            if (content.Parent.GetPropertyValue<bool>(propertyAlias))
+                return true;
+
+            return GetBoolValueRecursive(content.Parent, contentTypeAlias, propertyAlias);
         }
     }
 }

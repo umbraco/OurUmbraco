@@ -20,15 +20,9 @@
                 <div class="col-sm-3 col-xs-6">
                     <select name="topic-category" id="topic-category" class="markdown-control">
                         <option value="" selected="" disabled="">Choose a category</option>
-                        @foreach (var main in Model.Content.AncestorOrSelf(2).Children)
+                        @foreach (var cat in Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()))
                         {
-                            foreach (var cat in main.Children)
-                            {
-                                if (cat.NewTopicsAllowed())
-                                {
-                                    <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id">@cat.Parent.Name - @cat.Name</option>
-                                }
-                            }
+                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id">@cat.Name</option>
                         }
                     </select>
                 </div>

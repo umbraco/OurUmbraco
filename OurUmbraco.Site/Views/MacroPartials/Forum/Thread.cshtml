@@ -52,7 +52,7 @@
 <!-- FLAG SPAM END -->
 @if (topic != null)
 {
-    if (Model.Content.NewTopicsAllowed() == false)
+    if (Model.Content.AncestorOrSelfIsArchived() || Model.Content.NewTopicsAllowed() == false)
     {
         <div class="alertbar__yellow" style="margin-bottom: 10px;">
             @Html.Raw(notification)
@@ -83,7 +83,7 @@
 
     if (Members.IsLoggedIn())
     {
-        if (Model.Content.NewTopicsAllowed())
+        if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
             <div class="replybutton">
                 <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
