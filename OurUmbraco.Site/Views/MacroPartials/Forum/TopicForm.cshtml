@@ -17,12 +17,22 @@
 
             @if (CurrentPage.Parent.DocumentTypeAlias != "Project")
             {
+                var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
+                var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
+
                 <div class="col-sm-3 col-xs-6">
                     <select name="topic-category" id="topic-category" class="markdown-control">
-                        <option value="" selected="" disabled="">Choose a category</option>
-                        @foreach (var cat in Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()))
+                        @if (categoriesIncludeCurrentPage)
                         {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id">@cat.Name</option>
+                            <option value="" disabled="">Choose a category</option>
+                        }
+                        else
+                        {
+                            <option value="" selected="" disabled="">Choose a category</option>
+                        }
+                        @foreach (var cat in categories)
+                        {
+                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
                         }
                     </select>
                 </div>
