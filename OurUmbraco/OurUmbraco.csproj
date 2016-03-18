@@ -361,6 +361,20 @@
     <Compile Include="MarketPlace\Providers\ProjectTag.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoCategoryProvider.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoProjectTagProvider.cs" />
+    <Compile Include="NotificationsCore\InstantNotification.cs" />
+    <Compile Include="NotificationsCore\Interfaces\INotification.cs" />
+    <Compile Include="NotificationsCore\Notification.cs" />
+    <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />
+    <Compile Include="NotificationsCore\NotificationTypes\NewForumTopicComment.cs" />
+    <Compile Include="NotificationsCore\SheduledNotification.cs" />
+    <Compile Include="NotificationsWeb\Api\NotificationsController.cs" />
+    <Compile Include="NotificationsWeb\Config.cs" />
+    <Compile Include="NotificationsWeb\EventHandlers\Forum.cs" />
+    <Compile Include="NotificationsWeb\Library\Utils.cs" />
+    <Compile Include="NotificationsWeb\Models\ForumSubscriber.cs" />
+    <Compile Include="NotificationsWeb\Models\ForumTopicSubscriber.cs" />
+    <Compile Include="NotificationsWeb\Services\NotificationService.cs" />
+    <Compile Include="NotificationsWeb\Singleton.cs" />
     <Compile Include="Our\Api\CommunityController.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
@@ -688,6 +702,12 @@
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v11.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v11.0</VSToolsPath>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0</VSToolsPath>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0</VSToolsPath>
+  </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>XCOPY "$(ProjectDir)Project\usercontrols\Deli\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\Deli" /y /s
 XCOPY "$(ProjectDir)Our\usercontrols\*.ascx" "$(ProjectDir)..\OurUmbraco.Site\usercontrols\our.umbraco.org" /y</PostBuildEvent>

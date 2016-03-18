@@ -4398,14 +4398,6 @@
     <Content Include="xslt\Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\NotificationsWeb\NotificationsWeb.csproj">
-      <Project>{6cf53d68-bd81-47bb-8f56-350a1b04f114}</Project>
-      <Name>NotificationsWeb</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Notification\Notification.csproj">
-      <Project>{80e5f59d-a7a0-4cee-aeb6-6c626c44b2b2}</Project>
-      <Name>Notification</Name>
-    </ProjectReference>
     <ProjectReference Include="..\OurUmbraco\OurUmbraco.csproj">
       <Project>{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}</Project>
       <Name>OurUmbraco</Name>
@@ -4423,8 +4415,10 @@
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
   </ItemGroup>
   <PropertyGroup>
-    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
-    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">11.0</VisualStudioVersion>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v11.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v11.0</VSToolsPath>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0</VSToolsPath>
+    <VSToolsPath Condition="exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0\WebApplications\Microsoft.WebApplication.targets')">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v14.0</VSToolsPath>
   </PropertyGroup>
   <PropertyGroup>
     <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>

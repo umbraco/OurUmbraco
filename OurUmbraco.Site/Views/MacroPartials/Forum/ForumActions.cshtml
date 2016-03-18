@@ -1,4 +1,5 @@
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.NotificationsWeb.Library
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 <div class="utility-actions">
@@ -15,7 +16,7 @@
         var subscribed = false;
         if (mem != null)
         {
-            subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
+            subscribed = Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
         }
 
         if (subscribed)

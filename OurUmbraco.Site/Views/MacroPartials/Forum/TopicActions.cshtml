@@ -1,5 +1,6 @@
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
+@using OurUmbraco.NotificationsWeb.Library
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
@@ -15,7 +16,7 @@
             var subscribed = false;
             if (mem != null)
             {
-                subscribed = NotificationsWeb.Library.Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
+                subscribed = Utils.IsSubscribedToForumTopic(topic.Id, mem.Id);
             }
 
             if (Members.IsAdmin())
