@@ -4703,7 +4703,8 @@ function ContentEditController($scope, $rootScope, $routeParams, $q, $timeout, $
             statusMessage: args.statusMessage,
             saveMethod: args.saveMethod,
             scope: $scope,
-            content: $scope.content
+            content: $scope.content,
+            action: args.action
         }).then(function (data) {
             //success            
             init($scope.content);
@@ -4816,15 +4817,15 @@ function ContentEditController($scope, $rootScope, $routeParams, $q, $timeout, $
     };
 
     $scope.sendToPublish = function () {
-        return performSave({ saveMethod: contentResource.sendToPublish, statusMessage: "Sending..." });
+        return performSave({ saveMethod: contentResource.sendToPublish, statusMessage: "Sending...", action: "sendToPublish" });
     };
 
     $scope.saveAndPublish = function () {
-        return performSave({ saveMethod: contentResource.publish, statusMessage: "Publishing..." });
+        return performSave({ saveMethod: contentResource.publish, statusMessage: "Publishing...", action: "publish" });
     };
 
     $scope.save = function () {
-        return performSave({ saveMethod: contentResource.save, statusMessage: "Saving..." });
+        return performSave({ saveMethod: contentResource.save, statusMessage: "Saving...", action: "save" });
     };
 
     $scope.preview = function (content) {
@@ -5941,6 +5942,70 @@ angular.module("umbraco")
         });
     });
 
+angular.module("umbraco")
+.controller("Umbraco.Editors.DocumentTypes.CopyController",
+    function ($scope, contentTypeResource, treeService, navigationService, notificationsService, appState, eventsService) {
+        var dialogOptions = $scope.dialogOptions;
+        $scope.dialogTreeEventHandler = $({});
+
+        function nodeSelectHandler(ev, args) {
+            args.event.preventDefault();
+            args.event.stopPropagation();
+
+            if ($scope.target) {
+                //un-select if there's a current one selected
+                $scope.target.selected = false;
+            }
+
+            $scope.target = args.node;
+            $scope.target.selected = true;
+        }
+
+        $scope.copy = function () {
+
+            $scope.busy = true;
+            $scope.error = false;
+
+            contentTypeResource.copy({ parentId: $scope.target.id, id: dialogOptions.currentNode.id })
+                .then(function (path) {
+                    $scope.error = false;
+                    $scope.success = true;
+                    $scope.busy = false;
+
+                    //get the currently edited node (if any)
+                    var activeNode = appState.getTreeState("selectedNode");
+
+                    //we need to do a double sync here: first sync to the copied content - but don't activate the node,
+                    //then sync to the currenlty edited content (note: this might not be the content that was copied!!)
+
+                    navigationService.syncTree({ tree: "documentTypes", path: path, forceReload: true, activate: false }).then(function (args) {
+                        if (activeNode) {
+                            var activeNodePath = treeService.getPath(activeNode).join();
+                            //sync to this node now - depending on what was copied this might already be synced but might not be
+                            navigationService.syncTree({ tree: "documentTypes", path: activeNodePath, forceReload: false, activate: true });
+                        }
+                    });
+
+                }, function (err) {
+                    $scope.success = false;
+                    $scope.error = err;
+                    $scope.busy = false;
+                    //show any notifications
+                    if (angular.isArray(err.data.notifications)) {
+                        for (var i = 0; i < err.data.notifications.length; i++) {
+                            notificationsService.showNotification(err.data.notifications[i]);
+                        }
+                    }
+                });
+        };
+
+        $scope.dialogTreeEventHandler.bind("treeNodeSelect", nodeSelectHandler);
+
+        $scope.$on('$destroy', function () {
+            $scope.dialogTreeEventHandler.unbind("treeNodeSelect", nodeSelectHandler);
+        });
+    });
+
 /**
  * @ngdoc controller
  * @name Umbraco.Editors.DocumentType.CreateController
@@ -7022,6 +7087,70 @@ function MediaRecycleBinController($scope, $routeParams, mediaResource, navigati
 }
 
 angular.module('umbraco').controller("Umbraco.Editors.Media.RecycleBinController", MediaRecycleBinController);
+
+angular.module("umbraco")
+.controller("Umbraco.Editors.MediaTypes.CopyController",
+    function ($scope, mediaTypeResource, treeService, navigationService, notificationsService, appState, eventsService) {
+        var dialogOptions = $scope.dialogOptions;
+        $scope.dialogTreeEventHandler = $({});
+
+        function nodeSelectHandler(ev, args) {
+            args.event.preventDefault();
+            args.event.stopPropagation();
+
+            if ($scope.target) {
+                //un-select if there's a current one selected
+                $scope.target.selected = false;
+            }
+
+            $scope.target = args.node;
+            $scope.target.selected = true;
+        }
+
+        $scope.copy = function () {
+
+            $scope.busy = true;
+            $scope.error = false;
+
+            mediaTypeResource.copy({ parentId: $scope.target.id, id: dialogOptions.currentNode.id })
+                .then(function (path) {
+                    $scope.error = false;
+                    $scope.success = true;
+                    $scope.busy = false;
+
+                    //get the currently edited node (if any)
+                    var activeNode = appState.getTreeState("selectedNode");
+
+                    //we need to do a double sync here: first sync to the copied content - but don't activate the node,
+                    //then sync to the currenlty edited content (note: this might not be the content that was copied!!)
+
+                    navigationService.syncTree({ tree: "mediaTypes", path: path, forceReload: true, activate: false }).then(function (args) {
+                        if (activeNode) {
+                            var activeNodePath = treeService.getPath(activeNode).join();
+                            //sync to this node now - depending on what was copied this might already be synced but might not be
+                            navigationService.syncTree({ tree: "mediaTypes", path: activeNodePath, forceReload: false, activate: true });
+                        }
+                    });
+
+                }, function (err) {
+                    $scope.success = false;
+                    $scope.error = err;
+                    $scope.busy = false;
+                    //show any notifications
+                    if (angular.isArray(err.data.notifications)) {
+                        for (var i = 0; i < err.data.notifications.length; i++) {
+                            notificationsService.showNotification(err.data.notifications[i]);
+                        }
+                    }
+                });
+        };
+
+        $scope.dialogTreeEventHandler.bind("treeNodeSelect", nodeSelectHandler);
+
+        $scope.$on('$destroy', function () {
+            $scope.dialogTreeEventHandler.unbind("treeNodeSelect", nodeSelectHandler);
+        });
+    });
 
 /**
  * @ngdoc controller
@@ -8671,6 +8800,11 @@ function booleanEditorController($scope, $rootScope, assetsService) {
         $scope.renderModel = {
             value: false
         };
+        
+        if ($scope.model.config && $scope.model.config.default && $scope.model.config.default.toString() === "1" && $scope.model && !$scope.model.value) {
+            $scope.renderModel.value = true;
+        }
+
         if ($scope.model && $scope.model.value && ($scope.model.value.toString() === "1" || angular.lowercase($scope.model.value) === "true")) {
             $scope.renderModel.value = true;
         }
@@ -8681,7 +8815,7 @@ function booleanEditorController($scope, $rootScope, assetsService) {
     $scope.$watch("renderModel.value", function (newVal) {
         $scope.model.value = newVal === true ? "1" : "0";
     });
-    
+
     //here we declare a special method which will be called whenever the value has changed from the server
     //this is instead of doing a watch on the model.value = faster
     $scope.model.onValueChanged = function (newVal, oldVal) {
@@ -8691,6 +8825,7 @@ function booleanEditorController($scope, $rootScope, assetsService) {
 
 }
 angular.module("umbraco").controller("Umbraco.PropertyEditors.BooleanController", booleanEditorController);
+
 angular.module("umbraco").controller("Umbraco.PropertyEditors.ChangePasswordController",
     function ($scope, $routeParams) {
         
@@ -11441,6 +11576,7 @@ angular.module('umbraco')
     function ($rootScope, $routeParams, $scope, $log, mediaHelper, cropperHelper, $timeout, editorState, umbRequestHelper, fileManager, angularHelper) {
 
         var config = angular.copy($scope.model.config);
+        $scope.imageIsLoaded = false;
 
         //move previously saved value to the editor
         if ($scope.model.value) {
@@ -11505,6 +11641,10 @@ angular.module('umbraco')
             } else {
                 $scope.showPreviews = true;
             }
+        };
+
+        $scope.imageLoaded = function() {
+            $scope.imageIsLoaded = true;
         };
 
         //on image selected, update the cropper
@@ -11889,7 +12029,7 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.IncludePropertiesL
       vm.nodeId = $scope.contentId;
        //vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.imageFileTypes);
         //instead of passing in a whitelist, we pass in a blacklist by adding ! to the ext
-      vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.disallowedUploadFiles).replace(/./g, "!.");
+      vm.acceptedFileTypes = mediaHelper.formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.disallowedUploadFiles).replace(/\./g, "!.");
 
       vm.maxFileSize = Umbraco.Sys.ServerVariables.umbracoSettings.maxFileSize + "KB";
       vm.activeDrag = false;
@@ -12064,7 +12204,7 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.IncludePropertiesL
 
 })();
 
-function listViewController($rootScope, $scope, $routeParams, $injector, $cookieStore, notificationsService, iconHelper, dialogService, editorState, localizationService, $location, appState, $timeout, $q, mediaResource, listViewHelper) {
+function listViewController($rootScope, $scope, $routeParams, $injector, $cookieStore, notificationsService, iconHelper, dialogService, editorState, localizationService, $location, appState, $timeout, $q, mediaResource, listViewHelper, userService) {
 
     //this is a quick check to see if we're in create mode, if so just exit - we cannot show children for content
     // that isn't created yet, if we continue this will use the parent id in the route params which isn't what
@@ -12124,8 +12264,85 @@ function listViewController($rootScope, $scope, $routeParams, $injector, $cookie
         totalPages: 0,
         items: []
     };
+    
+    $scope.currentNodePermissions = {}
+
+    //Just ensure we do have an editorState
+    if (editorState.current) {
+        //Fetch current node allowed actions for the current user
+        //This is the current node & not each individual child node in the list
+        var currentUserPermissions = editorState.current.allowedActions;
+
+        //Create a nicer model rather than the funky & hard to remember permissions strings
+        $scope.currentNodePermissions = {
+            "canCopy": _.contains(currentUserPermissions, 'O'), //Magic Char = O
+            "canCreate": _.contains(currentUserPermissions, 'C'), //Magic Char = C
+            "canDelete": _.contains(currentUserPermissions, 'D'), //Magic Char = D
+            "canMove": _.contains(currentUserPermissions, 'M'), //Magic Char = M                
+            "canPublish": _.contains(currentUserPermissions, 'U'), //Magic Char = U
+            "canUnpublish": _.contains(currentUserPermissions, 'U'), //Magic Char = Z (however UI says it can't be set, so if we can publish 'U' we can unpublish)
+        };
+    }
+
+    //when this is null, we don't check permissions
+    $scope.buttonPermissions = null;
+
+    //When we are dealing with 'content', we need to deal with permissions on child nodes.
+    // Currently there is no real good way to 
+    if ($scope.entityType === "content") {
+
+        var idsWithPermissions = null;
+
+        $scope.buttonPermissions = {
+            canCopy: true,
+            canCreate: true,
+            canDelete: true,
+            canMove: true,
+            canPublish: true,
+            canUnpublish: true
+        };
+
+        $scope.$watch(function() {
+            return $scope.selection.length;
+        }, function(newVal, oldVal) {
+
+            if ((idsWithPermissions == null && newVal > 0) || (idsWithPermissions != null)) {
+                
+                //get all of the selected ids
+                var ids = _.map($scope.selection, function(i) {
+                    return i.id.toString();
+                });
+
+                //remove the dictionary items that don't have matching ids
+                var filtered = {};
+                _.each(idsWithPermissions, function (value, key, list) {
+                    if (_.contains(ids, key)) {
+                        filtered[key] = value;
+                    }
+                });
+                idsWithPermissions = filtered;
+
+                //find all ids that we haven't looked up permissions for
+                var existingIds = _.keys(idsWithPermissions);
+                var missingLookup = _.map(_.difference(ids, existingIds), function (i) {
+                    return Number(i);
+                });
+
+                if (missingLookup.length > 0) {
+                    contentResource.getPermissions(missingLookup).then(function(p) {
+                        $scope.buttonPermissions = listViewHelper.getButtonPermissions(p, idsWithPermissions);
+                    });
+                }
+                else {
+                    $scope.buttonPermissions = listViewHelper.getButtonPermissions({}, idsWithPermissions);
+                }
+            }
+        });
+
+    }
 
     $scope.options = {
+        displayAtTabNumber: $scope.model.config.displayAtTabNumber ? $scope.model.config.displayAtTabNumber : 1,
         pageSize: $scope.model.config.pageSize ? $scope.model.config.pageSize : 10,
         pageNumber: ($routeParams.page && Number($routeParams.page) != NaN && Number($routeParams.page) > 0) ? $routeParams.page : 1,
         filter: '',
@@ -12231,9 +12448,8 @@ function listViewController($rootScope, $scope, $routeParams, $injector, $cookie
         getListResultsCallback(id, $scope.options).then(function(data) {
 
             $scope.actionInProgress = false;
-
             $scope.listViewResultSet = data;
-
+            
             //update all values for display
             if ($scope.listViewResultSet.items) {
                 _.each($scope.listViewResultSet.items, function(e, index) {
@@ -13725,7 +13941,7 @@ angular.module("umbraco")
                         };
 
                     });
-
+                    
                     //Create the embedded plugin
                     tinyMceService.createInsertEmbeddedMedia(editor, $scope, function() {
 
@@ -13811,7 +14027,7 @@ angular.module("umbraco")
     });
 
 angular.module("umbraco").controller("Umbraco.PrevalueEditors.RteController",
-    function ($scope, $timeout, $log, tinyMceService, stylesheetResource) {
+    function ($scope, $timeout, $log, tinyMceService, stylesheetResource, assetsService) {
         var cfg = tinyMceService.defaultPrevalues();
 
         if($scope.model.value){
@@ -13835,6 +14051,14 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.RteController",
         tinyMceService.configuration().then(function(config){
             $scope.tinyMceConfig = config;
 
+            // extend commands with properties for font-icon and if it is a custom command
+            $scope.tinyMceConfig.commands = _.map($scope.tinyMceConfig.commands, function (obj) {
+                var icon = getFontIcon(obj.frontEndCommand);
+                return angular.extend(obj, {
+                    fontIcon: icon.name,
+                    isCustom: icon.isCustom
+                });
+            });
         });
 
         stylesheetResource.getAll().then(function(stylesheets){
@@ -13869,6 +14093,43 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.RteController",
                 $scope.model.value.stylesheets.splice(index, 1);
             }
         };
+        
+        // map properties for specific commands
+        function getFontIcon(alias) {
+            var icon = { name: alias, isCustom: false };
+
+            switch (alias) {
+                case "codemirror":
+                    icon.name = "code";
+                    icon.isCustom = false;
+                    break;
+                case "styleselect":
+                    icon.name = "icon-list";
+                    icon.isCustom = true;
+                    break;
+                case "umbembeddialog":
+                    icon.name = "icon-tv";
+                    icon.isCustom = true;
+                    break;
+                case "umbmediapicker":
+                    icon.name = "icon-picture";
+                    icon.isCustom = true;
+                    break;
+                case "umbmacro":
+                    icon.name = "icon-settings-alt";
+                    icon.isCustom = true;
+                    break;
+                case "umbmacro":
+                    icon.name = "icon-settings-alt";
+                    icon.isCustom = true;
+                    break;
+                default:
+                    icon.name = alias;
+                    icon.isCustom = false;
+            }
+
+            return icon;
+        }
 
         var unsubscribe = $scope.$on("formSubmitting", function (ev, args) {
 
@@ -13877,13 +14138,14 @@ angular.module("umbraco").controller("Umbraco.PrevalueEditors.RteController",
             
         });
 
-        //when the scope is destroyed we need to unsubscribe
+        // when the scope is destroyed we need to unsubscribe
         $scope.$on('$destroy', function () {
             unsubscribe();
         });
 
+        // load TinyMCE skin which contains css for font-icons
+        assetsService.loadCss("lib/tinymce/skins/umbraco/skin.min.css");
     });
-
 function sliderController($scope, $log, $element, assetsService, angularHelper) {
 
     //configure some defaults
