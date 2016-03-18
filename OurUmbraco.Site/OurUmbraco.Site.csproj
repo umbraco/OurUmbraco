@@ -100,8 +100,8 @@
       <HintPath>..\packages\ImageProcessor.Web.4.5.3.0\lib\net45\ImageProcessor.Web.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="InfoCaster.Umbraco.UrlTracker, Version=3.8.5620.26854, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UrlTracker.3.8\lib\InfoCaster.Umbraco.UrlTracker.dll</HintPath>
+    <Reference Include="InfoCaster.Umbraco.UrlTracker, Version=3.11.5900.30099, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UrlTracker.3.11\lib\InfoCaster.Umbraco.UrlTracker.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="interfaces, Version=1.0.5921.26487, Culture=neutral, processorArchitecture=MSIL">
@@ -302,8 +302,8 @@
       <HintPath>..\packages\UmbracoCms.Core.7.4.2\lib\umbraco.MacroEngines.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.ModelsBuilder, Version=3.0.0.90, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Umbraco.ModelsBuilder.3.0.0\lib\Umbraco.ModelsBuilder.dll</HintPath>
+    <Reference Include="Umbraco.ModelsBuilder, Version=3.0.2.93, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Umbraco.ModelsBuilder.3.0.2\lib\Umbraco.ModelsBuilder.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="umbraco.providers, Version=1.0.5921.26494, Culture=neutral, processorArchitecture=MSIL">
