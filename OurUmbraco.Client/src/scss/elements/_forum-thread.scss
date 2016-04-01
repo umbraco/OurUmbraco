@@ -228,7 +228,7 @@
 				font-size: 1.1rem;
 
 				@media (min-width: $md) {
-					font-size: 1.5rem;
+					font-size: 1.35rem;
 				}
 			}
 		}
@@ -244,7 +244,7 @@
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
-			align-items: center;
+			align-items: flex-start;
 
 			.category, .version {
 				a {
@@ -259,15 +259,14 @@
 
 			.topic {
 				flex: 0 0 100%;
-				word-break: break-all;
-				
-				@media (min-width: $md) {
-					flex: 0 0 72%;
-					margin-right: 3%;
-				}
-
 
 				margin-bottom: .2rem;
+				word-break: break-all;
+
+				@media (min-width: $md) {
+					flex: 0 0 70%;
+					padding-right: 3px;
+				}
 			}
 
 
@@ -277,7 +276,7 @@
 				flex: 0 0 100%;
 
 				@media (min-width: $md) {
-					flex: 0 0 25%;
+					flex: 0 0 30%;
 					flex-direction: column;
 				}
 

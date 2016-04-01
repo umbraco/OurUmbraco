@@ -30,7 +30,7 @@ header {
 		left: 0;
 		width: 100%;
 	}
- 
+
 	.navigation {
 		position: relative;
 		z-index: 200;
@@ -58,7 +58,7 @@ header {
 		background-repeat: no-repeat;
 		background-position: left center;
 		background-size: 30px auto;
-		
+
 		height: 60px;
 		line-height: 60px;
 
@@ -66,24 +66,21 @@ header {
 
 		text-indent: 40px;
 		text-decoration: none;
-		
+
 		position: relative;
 		z-index: 300;
 
-		font-size: 1rem;
+		font-size: 1.15rem;
 
 		@include transition(all, .2s);
 
 		@media (min-width: $md) {
 			background-size: 40px auto;
-			text-indent: 46px;
+			text-indent: 50px;
 
 
 			&:hover {
-				color: rgba(#fff, .66);
-
-				background-size: 36px auto;
-				background-position: 4px center;
+				opacity: .6;
 			}
 		}
 	}
@@ -381,10 +378,10 @@ header {
 			height: 100%;
 
 			background: rgba($color-our, .98);
-			
+
 			transform: translate(0, -100%);
 			@include transition(transform, .3s);
-			
+
 			visibility: hidden;
 			opacity: 0;
 
@@ -480,4 +477,3 @@ header {
 		background: transparent;
 	}
 }
-
