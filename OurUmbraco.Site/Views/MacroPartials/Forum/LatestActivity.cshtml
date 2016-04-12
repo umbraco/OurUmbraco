@@ -19,7 +19,7 @@
         var cat = Umbraco.TypedContent(topic.ParentId);
         var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
 
-        <a href="@topic.GetUrl()" class="forum-thread">
+        <a href="@topic.GetUrl()" class="forum-thread @Umbraco.If(topic.Answer > 0, " solved")">
 
             <div class="avatar">
 				@if(mem != null)
