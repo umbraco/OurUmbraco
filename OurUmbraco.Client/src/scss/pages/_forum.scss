@@ -549,3 +549,8 @@
 .topic-row.solved + .topic-row.solved {
 	margin-top: 20px;
 }
+
+.forum .forum-thread.solved {
+	background: rgba(163, 219, 120, 0.23) none repeat scroll 0 0;
+	border: 2px solid rgba(163, 219, 120, 0.66);
+}
