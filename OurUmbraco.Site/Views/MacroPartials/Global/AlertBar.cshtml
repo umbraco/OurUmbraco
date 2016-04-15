@@ -12,7 +12,8 @@
     }
 }
 
-@if (showNotification)
+@* We'll show it differently on the homepage *@ 
+@if (showNotification && Model.Content.Id != home.Id)
 {
     <div class="alertbar__yellow">
         @Html.Raw(notificationText)

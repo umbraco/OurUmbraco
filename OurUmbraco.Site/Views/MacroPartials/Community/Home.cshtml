@@ -1,5 +1,10 @@
 ﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
-
+@{
+    var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
+    var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
+    var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
+    var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
+}
 <!-- Search start -->
 <section id="search-all" class="search-all">
 
@@ -29,8 +34,6 @@
         </div>
     }
 
-    
-    
 </section>
 <!-- Search end -->
 
@@ -39,6 +42,20 @@
         line-height: 1.4rem;
     }
 </style>
+
+@if (showGlobalNotification)
+{
+    <div class="alertbar__yellow">
+        @Html.Raw(globalNotificationText)
+    </div>
+}
+
+@if (showHomeNotification)
+{
+    <div class="alertbar__yellow">
+        @Html.Raw(homeNotificationText)
+    </div>
+}
 
 <div class="alertbar__yellow bannertext">
     <h2>Umbraco HQ is hiring!</h2>

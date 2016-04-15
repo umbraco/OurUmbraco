@@ -25,6 +25,7 @@ namespace OurUmbraco.Our
             OverrideYouTrack();
             UaaSProjectCheckbox();
             ForumArchivedCheckbox();
+            AddHomeOnlyBannerTextArea();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -259,6 +260,37 @@ namespace OurUmbraco.Our
                     var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Archived" };
                     projectContentType.AddPropertyType(checkboxPropertyType, "Forum Information");
                     contentTypeService.Save(projectContentType);
+                }
+                
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddHomeOnlyBannerTextArea()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var communityContentType = contentTypeService.GetContentType("Community");
+                var propertyTypeAlias = "homeOnlyBanner";
+                if (communityContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textarea = new DataTypeDefinition("Umbraco.TextboxMultiple");
+                    var textareaPropertyType = new PropertyType(textarea, propertyTypeAlias) { Name = "Banner (only shown on home)" };
+                    communityContentType.AddPropertyType(textareaPropertyType, "Banners");
+                    communityContentType.MovePropertyType("mainNotification", "Banners");
+                    contentTypeService.Save(communityContentType);
                 }
                 
                 string[] lines = { "" };
