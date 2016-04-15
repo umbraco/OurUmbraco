@@ -45,14 +45,14 @@
 
 @if (showGlobalNotification)
 {
-    @Html.Raw(globalNotificationText)
+    <div class="alertbar__yellow">
+        @Html.Raw(globalNotificationText)
+    </div>
 }
 
 @if (showHomeNotification)
 {
-    <div class="alertbar__yellow">
-        @Html.Raw(homeNotificationText)
-    </div>
+    @Html.Raw(homeNotificationText)
 }
 
 @if (Members.IsLoggedIn())
