@@ -46,13 +46,13 @@
         </title>
         <meta name="description" content="">
         <meta name="author" content="">
-        
+
         <CD:HackedCdfLoader runat="server" ID="Loader" />
-        
+
         <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
 
         <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-        
+
         <CD:HtmlInclude runat="server">
         </CD:HtmlInclude>
 
@@ -73,7 +73,7 @@
 
         <script>
             var _prum = [['id', '529dbcf6abe53d055a000000'],
-                            ['mark', 'firstbyte', (new Date()).getTime()]];
+            ['mark', 'firstbyte', (new Date()).getTime()]];
             (function () {
                 var s = document.getElementsByTagName('script')[0]
                     , p = document.createElement('script');
@@ -84,15 +84,156 @@
         </script>
         <script>
             (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-            (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+                i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                    (i[r].q = i[r].q || []).push(arguments)
+                }, i[r].l = 1 * new Date(); a = s.createElement(o),
+                    m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
             })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-        
+
             ga('create', 'UA-120590-4', 'auto');
             ga('send', 'pageview');
         </script>
+
+        <!-- temp css for survery (will be removed by April 22nd 2016 -->
+        <style>
+            body {
+                height: 100%;
+                width: 100%;
+                position: relative;
+            }
+
+            .unicorn-going-rouge {
+                width: 300px;
+                position: fixed;
+                right: 0px;
+                bottom: 0px;
+                z-index: 100;
+                -webkit-animation-name: fadeIn;
+                animation-name: fadeIn;
+                -webkit-animation-duration: 1s;
+                animation-duration: 1s;
+                -webkit-animation-delay: 1s;
+                animation-delay: 1s;
+                -webkit-animation-fill-mode: both;
+                animation-fill-mode: both;
+            }
+
+            .rouge-unicorn {
+                margin: 0 auto;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: end;
+                -webkit-justify-content: flex-end;
+                -ms-flex-pack: end;
+                justify-content: flex-end;
+            }
+
+            .rouge-unicorn-famous-words {
+                background: white;
+                padding: 20px;
+                text-align: center;
+            }
+
+                .rouge-unicorn-famous-words h2 {
+                    font-size: 20px;
+                    margin-bottom: 10px;
+                    font-weight: bold;
+                }
+
+                .rouge-unicorn-famous-words p {
+                    line-height: 1.5;
+                }
+
+                .rouge-unicorn-famous-words a {
+                    color: #4ea7ff;
+                }
+
+            .speech-bubble {
+                min-width: 300px;
+                padding: 25px;
+                border: 2px solid whitesmoke;
+                position: absolute;
+                top: 0;
+                left: 0;
+                border-radius: 6px;
+                -webkit-transform: translate(-100px, -75%);
+                transform: translate(-100px, -75%);
+            }
+
+                .speech-bubble:before, .speech-bubble:after {
+                    content: '';
+                    height: 12px;
+                    position: absolute;
+                    top: 100%;
+                }
+
+                .speech-bubble:before {
+                    width: 3px;
+                    background-color: whitesmoke;
+                    right: 10px;
+                    border-bottom-left-radius: 50px;
+                    border-bottom-right-radius: 100px;
+                    -webkit-transform: rotateY(-160deg);
+                    transform: rotateY(-160deg);
+                }
+
+                .speech-bubble:after {
+                    width: 4px;
+                    background-color: whitesmoke;
+                    right: 16px;
+                    border-bottom-left-radius: 100px;
+                    border-bottom-right-radius: 50px;
+                    -webkit-transform: skew(45deg, 0);
+                    transform: skew(45deg, 0);
+                }
+
+                .speech-bubble > :first-child:after, .speech-bubble > :first-child:before {
+                    content: '';
+                    position: absolute;
+                    background-color: white;
+                    top: 100%;
+                }
+
+                .speech-bubble > :first-child:before {
+                    width: 6px;
+                    height: 3px;
+                    right: 13px;
+                }
+
+                .speech-bubble > :first-child:after {
+                    width: 5px;
+                    height: 5px;
+                    right: 16px;
+                    -webkit-transform: skew(45deg, 0);
+                    transform: skew(45deg, 0);
+                }
+
+            @-webkit-keyframes fadeIn {
+                from {
+                    -webkit-transform: translate3d(0, 200%, 0);
+                    transform: translate3d(0, 200%, 0);
+                }
+
+                to {
+                    -webkit-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+
+            @keyframes fadeIn {
+                from {
+                    -webkit-transform: translate3d(0, 200%, 0);
+                    transform: translate3d(0, 200%, 0);
+                }
+
+                to {
+                    -webkit-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+        </style>
     </head>
 
     <%
@@ -105,7 +246,7 @@
 
     <body class="<%= bodyCss %>">
         <form runat="server">
-            
+
             <umbraco:Macro Alias="MembersQuickMenu" runat="server"></umbraco:Macro>
 
             <div class="wrapper">
@@ -135,7 +276,7 @@
                     </div>
 
                 </header>
-                
+
                 <%  
                     var ms = new MembershipHelper(UmbracoContext.Current);
                     var member = ms.GetCurrentMember();
@@ -147,22 +288,24 @@
                     if (memberIsBlocked == false)
                     {
                 %>
-                    <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
-                
-                    <asp:ContentPlaceHolder ID="Search" runat="server" />
+                <umbraco:Macro Alias="GlobalAlertBar" runat="server"></umbraco:Macro>
 
-                    <asp:ContentPlaceHolder ID="Main" runat="server" />
-                <% } else { %>
-                    <section class="forum">
-	                    <div class="container">
-		                    <div class="row">
-			                    <div class="col-md-12">
-				                    <h1 class="text-center">Computer says no</h1>
-                                    <p>Unfortunaly, it seems that your account has been blocked.</p>
-			                    </div>
-		                    </div>
-	                    </div>
-                    </section>
+                <asp:ContentPlaceHolder ID="Search" runat="server" />
+
+                <asp:ContentPlaceHolder ID="Main" runat="server" />
+                <% }
+                    else
+                    { %>
+                <section class="forum">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <h1 class="text-center">Computer says no</h1>
+                                <p>Unfortunaly, it seems that your account has been blocked.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
                 <% } %>
 
                 <footer>
@@ -171,10 +314,14 @@
 
                             <div class="col-xs-12">
                                 Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
-                                <% if (Request.UserAgent.ToLower().Contains("googlebot")) { %>
+                                <% if (Request.UserAgent.ToLower().Contains("googlebot"))
+                                   { %>
                                     This site is running Umbraco.
-                                <% } else { %>
-                                    This site is running <data id="umbraco-version" value='<%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %>'>Umbraco version <%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %></data>
+                                <% }
+                                   else
+                                   { %>
+                                    This site is running
+                                <data id="umbraco-version" value='<%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %>'>Umbraco version <%= Umbraco.Core.Configuration.UmbracoVersion.GetSemanticVersion() %></data>
                                 <% } %>
                             </div>
 
@@ -184,7 +331,19 @@
 
             </div>
             <!--.wrapper-->
-            
+
+            <!-- temp survey markup - will be removed April 22nd 2016 -->
+            <div id="unicornSurvery" class="unicorn-going-rouge" style="display: none;">
+                <div class="rouge-unicorn">
+                    <img src="/assets/images/crap-anim.gif" alt="" />
+                </div>
+
+                <div class="rouge-unicorn-famous-words speech-bubble">
+                    <h2>Help Make Umbraco Better</h2>
+                    <p>Take this <a href="javascript:unicornClick();">two minute survey</a> and I'll promise I'll disappear too.</p>
+                </div>
+            </div>
+
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
             <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
@@ -193,13 +352,13 @@
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
             <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
-            
+
             <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
             <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
             <script type="text/javascript" src="/assets/js/community.js"></script>
             <script type="text/javascript" src="/assets/js/app.min.js"></script>
             <script type="text/javascript" src="/assets/js/editor.min.js"></script>
-            
+
             <CD:HtmlInclude runat="server">
             </CD:HtmlInclude>
 
@@ -207,6 +366,24 @@
 
             <script type="text/javascript">
                 classOnScroll('header', 'sticky', 10);
+            </script>
+
+            <!-- temp survey script - will be removed April 22nd 2016 -->
+            <script type="text/javascript">
+                function unicornClick() {
+                    // set cookie
+                    document.cookie = 'surveyTaken=true; expires=Wed, 1 Jan 2020 20:47:11 UTC; path=/';
+                    document.getElementById("unicornSurvery").style.display = 'none';
+                    var win = window.open('https://docs.google.com/a/umbraco.dk/forms/d/1DAxY1OD5P-7pIwUA4uY8xG4ZtRyaBfrYNIFiNyZCvXU/viewform', '_blank');
+                    win.focus();
+                }
+
+                // test for cookie
+                $(document).ready(function () {
+                    if (document.cookie.indexOf("surveyTaken") == -1) {
+                        document.getElementById("unicornSurvery").style.display = 'block';
+                    }
+                });
             </script>
 
             <asp:ContentPlaceHolder ID="EndScripts" runat="server" />
