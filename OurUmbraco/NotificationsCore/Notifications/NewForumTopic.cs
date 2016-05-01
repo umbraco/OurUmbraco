@@ -85,7 +85,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
                         }
                         catch (Exception exception)
                         {
-                            LogHelper.Error<NotificationTypes.NewForumTopic>(
+                            LogHelper.Error<NewForumTopic>(
                                 string.Format("Error sending mail to member id {0}", memberId), exception);
                         }
                     }

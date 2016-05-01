@@ -365,6 +365,7 @@
     <Compile Include="NotificationsCore\InstantNotification.cs" />
     <Compile Include="NotificationsCore\Interfaces\INotification.cs" />
     <Compile Include="NotificationsCore\Notification.cs" />
+    <Compile Include="NotificationsCore\Notifications\AccountApproved.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumComment.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />

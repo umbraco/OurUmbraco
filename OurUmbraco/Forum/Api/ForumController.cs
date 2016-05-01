@@ -438,8 +438,11 @@ namespace OurUmbraco.Forum.Api
                     topicService.SendNotifications(topic, member.Name, topic.GetUrl());
                 }
             }
-			
-			SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+
+            var newForumTopicNotification = new NotificationsCore.Notifications.AccountApproved();
+            newForumTopicNotification.SendNotification(member.Email);
+
+            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
 			
             return minimumKarma;
         }
