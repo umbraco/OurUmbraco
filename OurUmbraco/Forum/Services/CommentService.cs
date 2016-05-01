@@ -110,7 +110,12 @@ namespace OurUmbraco.Forum.Services
             else
                 CancelledByEvent.Raise(this, eventArgs);
         }
-
+        
+        public void SendNotifications(Comment comment, string memberName, string commentUrl)
+        {
+            var newForumCommentNotification = new NotificationsCore.Notifications.NewForumComment();
+            newForumCommentNotification.SendNotification(comment, memberName, commentUrl);
+        }
 
         public static event EventHandler<CommentEventArgs> Created;
         public static event EventHandler<CommentEventArgs> Creating;
@@ -125,9 +130,9 @@ namespace OurUmbraco.Forum.Services
         public static event EventHandler<CommentEventArgs> MarkingAsSpam;
 
         public static event EventHandler<CommentEventArgs> MarkedAsHam;
+        
         public static event EventHandler<CommentEventArgs> MarkingAsHam;
 
         public static event EventHandler<CommentEventArgs> CancelledByEvent;
-
     }
 }

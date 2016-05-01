@@ -356,6 +356,13 @@ WHERE forumTopics.id=@id
            });
         }
 
+
+        public void SendNotifications(ReadOnlyTopic topic, string memberName, string url)
+        {
+            var newForumTopicNotification = new NotificationsCore.Notifications.NewForumTopic();
+            newForumTopicNotification.SendNotification(topic, memberName, url);
+        }
+
         public static event EventHandler<TopicEventArgs> Created;
         public static event EventHandler<TopicEventArgs> Creating;
 
@@ -378,6 +385,5 @@ WHERE forumTopics.id=@id
         public static event EventHandler<TopicEventArgs> MarkingAsHam;
 
         public static event EventHandler<TopicEventArgs> CancelledByEvent;
-
     }
 }

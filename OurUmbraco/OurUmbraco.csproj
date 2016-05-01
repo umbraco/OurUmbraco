@@ -361,9 +361,12 @@
     <Compile Include="MarketPlace\Providers\ProjectTag.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoCategoryProvider.cs" />
     <Compile Include="MarketPlace\Providers\UmbracoProjectTagProvider.cs" />
+    <Compile Include="NotificationsCore\ContextHelper.cs" />
     <Compile Include="NotificationsCore\InstantNotification.cs" />
     <Compile Include="NotificationsCore\Interfaces\INotification.cs" />
     <Compile Include="NotificationsCore\Notification.cs" />
+    <Compile Include="NotificationsCore\Notifications\NewForumTopic.cs" />
+    <Compile Include="NotificationsCore\Notifications\NewForumComment.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopicComment.cs" />
     <Compile Include="NotificationsCore\SheduledNotification.cs" />

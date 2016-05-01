@@ -420,6 +420,11 @@ namespace OurUmbraco.Forum.Api
                 {
                     comment.IsSpam = false;
                     commentService.Save(comment);
+                    var topic = topicService.GetById(comment.TopicId);
+                    var topicUrl = topic.GetUrl();
+                    var commentUrl = string.Format("{0}#comment-{1}", topicUrl, comment.Id);
+                    var memberName = member.Name;
+                    commentService.SendNotifications(comment, memberName, commentUrl);
                 }
             }
 
@@ -430,6 +435,7 @@ namespace OurUmbraco.Forum.Api
                 {
                     topic.IsSpam = false;
                     topicService.Save(topic);
+                    topicService.SendNotifications(topic, member.Name, topic.GetUrl());
                 }
             }
 			
