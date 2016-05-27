@@ -120,11 +120,12 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             return documentationSiteMap;
         }
 
-        public void Process(string url, string foldername)
+        public void Process(string url)
         {
-            var zip = Download(url, foldername);
-            ZipFile.ExtractToDirectory(zip, foldername);
-            BuildSitemap(foldername);
+            var target = HostingEnvironment.MapPath("~/Documentation");
+            var zip = Download(url, "Documentation");
+            ZipFile.ExtractToDirectory(zip, target);
+            BuildSitemap("Documentation");
 
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
             // a consistent integer id per document. I'm sure we can make that happen but I don't have time right now.
