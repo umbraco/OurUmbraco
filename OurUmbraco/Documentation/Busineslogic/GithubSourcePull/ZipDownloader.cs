@@ -103,7 +103,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
                         Trace.WriteLine(string.Format("Loading: {0} to {1}", url, path), "Gitsyncer");
 
-                        Process(url, folder);
+                        Process(url);
                     }
                 }
             }
