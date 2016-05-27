@@ -10,9 +10,11 @@ using OurUmbraco.Documentation.Models;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using System.IO.Compression;
+using System.Web.Http.Filters;
 
 namespace OurUmbraco.Documentation.Controllers
 {
+    [AppVeyorAuthorizeFilter]
     [PluginController("Documentation")]
     public class DocfxController : UmbracoApiController
     {
