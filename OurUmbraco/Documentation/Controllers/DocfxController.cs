@@ -23,36 +23,44 @@ namespace OurUmbraco.Documentation.Controllers
             var job = model.eventData.jobs.FirstOrDefault();
             if (job == null) throw new FormatException("No job found in payload");
 
-            var artifact = job.artifacts.FirstOrDefault();
-            if (artifact == null) throw new FormatException("No artifact found in payload");
+            var artifacts = job.artifacts;
+            if (artifacts == null) throw new FormatException("No artifacts found in payload");
 
-            using (var client = new HttpClient())
+            foreach (var artifact in artifacts)
             {
-                var bytes = await client.GetByteArrayAsync(artifact.url);
-
-                var docZip = HostingEnvironment.MapPath("~/App_Data/Documentation/csharp/docs.zip");
-                var docsFolder = HostingEnvironment.MapPath("~/App_Data/Documentation/csharp");
-                var hostedDocsFolder = HostingEnvironment.MapPath("~/apidocs/csharp");
-
-                //clear everything
-                if (Directory.Exists(docsFolder))
-                    Directory.Delete(docsFolder);
-                Directory.CreateDirectory(docsFolder);
-
-                if (Directory.Exists(hostedDocsFolder))
-                    Directory.Delete(hostedDocsFolder);
-                Directory.CreateDirectory(hostedDocsFolder);
-
-                using (var memStream = new MemoryStream(bytes))
-                using (var stream = new FileStream(docZip, FileMode.Create))
+                if (artifact.fileName.Contains("-"))
                 {
-                    await memStream.CopyToAsync(stream);
+                    var folder = artifact.fileName.Split('-')[0];
+
+                    using (var client = new HttpClient())
+                    {
+                        var bytes = await client.GetByteArrayAsync(artifact.url);
+
+                        var docZip = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}/{1}", folder, artifact.fileName));
+                        var docsFolder = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}", folder));
+                        var hostedDocsFolder = HostingEnvironment.MapPath(string.Format("~/apidocs/{0}", folder));
+
+                        //clear everything
+                        if (Directory.Exists(docsFolder))
+                            Directory.Delete(docsFolder, true);
+                        Directory.CreateDirectory(docsFolder);
+
+                        if (Directory.Exists(hostedDocsFolder))
+                            Directory.Delete(hostedDocsFolder, true);
+                        Directory.CreateDirectory(hostedDocsFolder);
+
+                        using (var memStream = new MemoryStream(bytes))
+                        using (var stream = new FileStream(docZip, FileMode.Create))
+                        {
+                            await memStream.CopyToAsync(stream);
+                        }
+
+                        ZipFile.ExtractToDirectory(docZip, hostedDocsFolder);
+                    }
                 }
-
-                ZipFile.ExtractToDirectory(docZip, hostedDocsFolder);
-
-                return Request.CreateResponse(HttpStatusCode.OK);
             }
+
+            return Request.CreateResponse(HttpStatusCode.OK);
         }
     }
 }
