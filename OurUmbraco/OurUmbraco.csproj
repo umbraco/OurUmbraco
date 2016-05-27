@@ -188,6 +188,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net.Http.Formatting, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Client.5.2.3\lib\net45\System.Net.Http.Formatting.dll</HintPath>
       <Private>True</Private>
@@ -288,7 +289,13 @@
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\Retry.cs" />
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\ZipDownloader.cs" />
     <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
+    <Compile Include="Documentation\Models\Artifact.cs" />
+    <Compile Include="Documentation\Models\Compilationmessage.cs" />
+    <Compile Include="Documentation\Models\DocFxUpdateModel.cs" />
+    <Compile Include="Documentation\Models\Eventdata.cs" />
+    <Compile Include="Documentation\Models\Job.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
+    <Compile Include="Documentation\Controllers\DocfxController.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
     <Compile Include="Events\App_Startup\ControllerRouting.cs" />
     <Compile Include="Events\Library\Xslt.cs" />
