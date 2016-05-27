@@ -1,20 +1,15 @@
 ﻿using System;
-using System.Data;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using System.Web;
 using System.Web.Hosting;
 using System.Web.Http;
 using OurUmbraco.Documentation.Models;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
-//using ICSharpCode.SharpZipLib.Zip;
 using System.IO.Compression;
-using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
-using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Documentation.Controllers
 {
@@ -40,10 +35,12 @@ namespace OurUmbraco.Documentation.Controllers
                 var hostedDocsFolder = HostingEnvironment.MapPath("~/apidocs/csharp");
 
                 //clear everything
-                Directory.Delete(docsFolder);
+                if (Directory.Exists(docsFolder))
+                    Directory.Delete(docsFolder);
                 Directory.CreateDirectory(docsFolder);
 
-                Directory.Delete(hostedDocsFolder);
+                if (Directory.Exists(hostedDocsFolder))
+                    Directory.Delete(hostedDocsFolder);
                 Directory.CreateDirectory(hostedDocsFolder);
 
                 using (var memStream = new MemoryStream(bytes))
@@ -56,7 +53,6 @@ namespace OurUmbraco.Documentation.Controllers
 
                 return Request.CreateResponse(HttpStatusCode.OK);
             }
-
         }
     }
 }
