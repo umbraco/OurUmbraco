@@ -13,7 +13,11 @@ namespace OurUmbraco.Documentation.Controllers
         protected override bool IsAuthorized(HttpActionContext actionContext)
         {
             var authorization = actionContext.Request.Headers.Authorization;
-            if (authorization == null) return false;
+            if (authorization == null)
+            {
+                LogHelper.Info<AppVeyorAuthorizeFilterAttribute>("Authorization headers not found, access denied");
+                return false;
+            }
             
             if (authorization.Scheme != "Basic")
             {
