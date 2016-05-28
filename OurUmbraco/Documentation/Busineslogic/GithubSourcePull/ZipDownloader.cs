@@ -128,9 +128,9 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
             var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
             foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
-                Directory.Move(directory.FullName, RootFolder);
-            foreach (var fileInfo in new DirectoryInfo(unzippedPath).GetFiles())
-                File.Move(fileInfo.FullName, RootFolder);
+                Directory.Move(directory.FullName, RootFolder + "\\" + directory.Name);
+            foreach (var file in new DirectoryInfo(unzippedPath).GetFiles())
+                File.Move(file.FullName, RootFolder + "\\" + file.Name);
             Directory.Delete(unzippedPath, true);
 
             BuildSitemap(foldername);
