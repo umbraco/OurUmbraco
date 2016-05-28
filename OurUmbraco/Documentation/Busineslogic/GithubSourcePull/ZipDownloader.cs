@@ -12,6 +12,7 @@ using Examine;
 using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Umbraco.Core.Logging;
+using ZipFile = System.IO.Compression.ZipFile;
 
 namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 {
@@ -122,7 +123,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         public void Process(string url, string foldername)
         {
             var zip = Download(url, foldername);
-            Unzip(zip, foldername, RootFolder);
+            ZipFile.ExtractToDirectory(zip, RootFolder);
             BuildSitemap(foldername);
 
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
@@ -434,88 +435,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
             return path;
         }
-
-        private void Unzip(string path, string foldername, string rootFolder)
-        {
-            using (var zipInputStream = new ZipInputStream(File.OpenRead(path)))
-            {
-                var stopDir = "\\Documentation";
-                var serverFolder = string.Format("{0}\\{1}", rootFolder, foldername);
-
-                if (Directory.Exists(serverFolder))
-                {
-                    foreach (var folder in Directory.GetDirectories(serverFolder))
-                        Retry.Do(() => Directory.Delete(folder, true), TimeSpan.FromSeconds(1), 5);
-
-                    foreach (var mdfile in Directory.GetFiles(serverFolder, "*.md"))
-                        Retry.Do(() => File.Delete(mdfile), TimeSpan.FromSeconds(1), 5);
-                }
-                else
-                {
-                    Directory.CreateDirectory(serverFolder);
-                }
-
-                try
-                {
-                    var stopDirSet = false;
-
-                    ZipEntry theEntry;
-                    while ((theEntry = zipInputStream.GetNextEntry()) != null)
-                    {
-                        if (IsProjectDocumentation && !stopDirSet)
-                        {
-                            stopDir = Path.GetDirectoryName(theEntry.Name);
-                            stopDirSet = true;
-                        }
-
-                        var directoryName = Path.GetDirectoryName(theEntry.Name);
-                        var fileName = Path.GetFileName(theEntry.Name);
-
-                        HttpContext.Current.Trace.Write("git", theEntry.Name + "  " + fileName + " - " + directoryName);
-
-                        if (directoryName != null && stopDir != null && directoryName.Contains(stopDir))
-                        {
-                            var startIndex = directoryName.LastIndexOf(stopDir, StringComparison.Ordinal) +
-                                             stopDir.Length;
-                            directoryName = directoryName.Substring(startIndex);
-
-                            // create directory
-                            Directory.CreateDirectory(serverFolder + directoryName);
-
-                            if (fileName == string.Empty)
-                                continue;
-
-                            var filepath = serverFolder + directoryName + "\\" + fileName;
-
-                            using (var streamWriter = File.Create(filepath))
-                            {
-                                var data = new byte[2048];
-                                while (true)
-                                {
-                                    var size = zipInputStream.Read(data, 0, data.Length);
-                                    if (size > 0)
-                                    {
-                                        streamWriter.Write(data, 0, size);
-                                    }
-                                    else
-                                    {
-                                        break;
-                                    }
-                                }
-                            }
-
-                            var createEventArgs = new CreateEventArgs { FilePath = filepath };
-                            FireOnCreate(createEventArgs);
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<ZipDownloader>("Error processing documentation", ex);
-                }
-            }
-        }
-
+        
         private readonly Events _events = new Events();
 
         public static event EventHandler<UpdateEventArgs> OnUpdate;
