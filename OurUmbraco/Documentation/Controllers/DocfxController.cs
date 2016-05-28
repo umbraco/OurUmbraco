@@ -35,15 +35,18 @@ namespace OurUmbraco.Documentation.Controllers
 
                 if (artifact.fileName.Contains("-"))
                 {
-                    var folder = artifact.fileName.Split('-')[0];
+                    // Take the filename which exists after the last "/" in the string
+                    var fileName = artifact.fileName.Substring(artifact.fileName.LastIndexOf("/", StringComparison.Ordinal) + 1);
+
+                    var folder = fileName.Split('-')[0];
 
                     using (var client = new HttpClient())
                     {
                         var bytes = await client.GetByteArrayAsync(artifact.url);
 
-                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} downloaded", artifact.fileName));
+                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} downloaded", fileName));
 
-                        var docZip = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}/{1}", folder, artifact.fileName));
+                        var docZip = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}/{1}", folder, fileName));
                         var docsFolder = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}", folder));
                         var hostedDocsFolder = HostingEnvironment.MapPath(string.Format("~/apidocs/{0}", folder));
 
@@ -60,11 +63,11 @@ namespace OurUmbraco.Documentation.Controllers
                         using (var stream = new FileStream(docZip, FileMode.Create))
                         {
                             await memStream.CopyToAsync(stream);
-                            LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} written to {1}", artifact.fileName, docZip));
+                            LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} written to {1}", fileName, docZip));
                         }
 
                         ZipFile.ExtractToDirectory(docZip, hostedDocsFolder);
-                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} unzipped to {1}", artifact.fileName, hostedDocsFolder));
+                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} unzipped to {1}", fileName, hostedDocsFolder));
                     }
                 }
             }
