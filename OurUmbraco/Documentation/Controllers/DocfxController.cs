@@ -10,7 +10,7 @@ using OurUmbraco.Documentation.Models;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using System.IO.Compression;
-using System.Web.Http.Filters;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Documentation.Controllers
 {
@@ -18,7 +18,6 @@ namespace OurUmbraco.Documentation.Controllers
     [PluginController("Documentation")]
     public class DocfxController : UmbracoApiController
     {
-
         [HttpPost]
         public async Task<HttpResponseMessage> Update(DocFxUpdateModel model)
         {
@@ -28,8 +27,12 @@ namespace OurUmbraco.Documentation.Controllers
             var artifacts = job.artifacts;
             if (artifacts == null) throw new FormatException("No artifacts found in payload");
 
+            LogHelper.Info<DocFxUpdateModel>(string.Format("Found {0} artifacts in the notification", artifacts.Length));
+
             foreach (var artifact in artifacts)
             {
+                LogHelper.Info<DocFxUpdateModel>(string.Format("Processing artifact {0}", artifact.fileName));
+
                 if (artifact.fileName.Contains("-"))
                 {
                     var folder = artifact.fileName.Split('-')[0];
@@ -37,6 +40,8 @@ namespace OurUmbraco.Documentation.Controllers
                     using (var client = new HttpClient())
                     {
                         var bytes = await client.GetByteArrayAsync(artifact.url);
+
+                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} downloaded", artifact.fileName));
 
                         var docZip = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}/{1}", folder, artifact.fileName));
                         var docsFolder = HostingEnvironment.MapPath(string.Format("~/App_Data/Documentation/{0}", folder));
@@ -55,9 +60,11 @@ namespace OurUmbraco.Documentation.Controllers
                         using (var stream = new FileStream(docZip, FileMode.Create))
                         {
                             await memStream.CopyToAsync(stream);
+                            LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} written to {1}", artifact.fileName, docZip));
                         }
 
                         ZipFile.ExtractToDirectory(docZip, hostedDocsFolder);
+                        LogHelper.Info<DocFxUpdateModel>(string.Format("Artifact {0} unzipped to {1}", artifact.fileName, hostedDocsFolder));
                     }
                 }
             }
