@@ -123,7 +123,16 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         public void Process(string url, string foldername)
         {
             var zip = Download(url, foldername);
+            RemoveExistingDocumentation(RootFolder);
             ZipFile.ExtractToDirectory(zip, RootFolder);
+
+            var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
+            foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
+                Directory.Move(directory.FullName, RootFolder);
+            foreach (var fileInfo in new DirectoryInfo(unzippedPath).GetFiles())
+                File.Move(fileInfo.FullName, RootFolder);
+            Directory.Delete(unzippedPath, true);
+
             BuildSitemap(foldername);
 
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
@@ -436,6 +445,22 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             return path;
         }
         
+        private static void RemoveExistingDocumentation(string folder)
+        {
+            if (Directory.Exists(folder))
+            {
+                foreach (var directory in Directory.GetDirectories(folder))
+                    Retry.Do(() => Directory.Delete(directory, true), TimeSpan.FromSeconds(1), 5);
+
+                foreach (var mdfile in Directory.GetFiles(folder, "*.md"))
+                    Retry.Do(() => File.Delete(mdfile), TimeSpan.FromSeconds(1), 5);
+            }
+            else
+            {
+                Directory.CreateDirectory(folder);
+            }
+        }
+
         private readonly Events _events = new Events();
 
         public static event EventHandler<UpdateEventArgs> OnUpdate;
