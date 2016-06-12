@@ -621,6 +621,7 @@
     <Compile Include="Release\Roadmap.cs" />
     <Compile Include="Release\Versions.cs" />
     <Compile Include="Repository\Controllers\PackageRepositoryController.cs" />
+    <Compile Include="Repository\Models\Category.cs" />
     <Compile Include="Repository\Models\PacakgeDetails.cs" />
     <Compile Include="Repository\Models\Package.cs" />
     <Compile Include="Repository\Models\PackageCompatibility.cs" />

@@ -123,8 +123,45 @@ namespace OurUmbraco.Repository.Controllers
                 }
             };
         }
+        
+        public IEnumerable<Models.Category> GetCategories()
+        {
+            return new[]
+            {
+                new Models.Category
+                {
+                    Icon = "icon-male-and-female",
+                    Name = "Collaboration"
+                },
+                new Models.Category
+                {
+                    Icon = "icon-molecular-network",
+                    Name = "Backoffice extensions"
+                },
+                new Models.Category
+                {
+                    Icon = "icon-brackets",
+                    Name = "Developer tools"
+                },                
+                new Models.Category
+                {
+                    Icon = "icon-wand",
+                    Name = "Starter kits"
+                },
+                new Models.Category
+                {
+                    Icon = "icon-medal",
+                    Name = "Umbraco Pro"
+                },
+                new Models.Category
+                {
+                    Icon = "icon-wrench",
+                    Name = "Website utilities"
+                }
+            };
+        }
 
-        public IEnumerable<Models.Package> GetPopular(int maxResults = 10)
+        public IEnumerable<Models.Package> GetPopular(int maxResults)
         {
             return GetTestData().Take(maxResults);
         }
