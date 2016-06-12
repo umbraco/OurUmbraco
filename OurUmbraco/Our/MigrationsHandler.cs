@@ -316,6 +316,14 @@ namespace OurUmbraco.Our
                     return;
 
                 var userService = UmbracoContext.Current.Application.Services.UserService;
+                var rootUser = userService.GetUserById(0);
+                if (rootUser == null)
+                    return;
+                
+                // Don't run this on Seb's database which has slightly different data in it
+                if (rootUser.Email == "pph@umrbaco.org")
+                    return;
+                
                 var db = UmbracoContext.Current.Application.DatabaseContext.Database;
                 db.Execute("DELETE FROM [umbracoUser] WHERE id != 0");
                 db.Execute("DELETE FROM [umbracoUser2app] WHERE [user] != 0");
@@ -328,7 +336,7 @@ namespace OurUmbraco.Our
                     var userType = userService.GetUserTypeByAlias("admin");
                     userService.CreateUserWithIdentity(string.Format("user{0}", i), string.Format("user{0}@test.com", i), userType);
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
