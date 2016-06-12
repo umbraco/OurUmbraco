@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web.Http;
 using System.Web.Http.Cors;
+using Newtonsoft.Json.Serialization;
 using OurUmbraco.Repository.Models;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
@@ -16,8 +17,10 @@ namespace OurUmbraco.Repository.Controllers
     /// This is NOT auto-routed
     /// </remarks>
     [EnableCors(origins: "*", headers: "*", methods: "get")]
+    [JsonCamelCaseFormatter]
     public class PackageRepositoryController : ApiController
-    {
+    {       
+
         private Models.PacakgeDetails GetTestDetails()
         {
             return new Models.PacakgeDetails
@@ -123,7 +126,7 @@ namespace OurUmbraco.Repository.Controllers
 
         public IEnumerable<Models.Package> GetPopular(int maxResults = 10)
         {
-            return GetTestData();
+            return GetTestData().Take(maxResults);
         }
 
         public IEnumerable<Models.Package> GetLatest(int pageIndex, int pageSize, string category = null)
