@@ -317,8 +317,8 @@ namespace OurUmbraco.Our
 
                 var userService = UmbracoContext.Current.Application.Services.UserService;
                 var db = UmbracoContext.Current.Application.DatabaseContext.Database;
-                db.Execute("DELETE FROM [OurDev2].[dbo].[umbracoUser] WHERE id != 0");
-                db.Execute("DELETE FROM [OurDev2].[dbo].[umbracoUser2app] WHERE [user] != 0");
+                db.Execute("DELETE FROM [umbracoUser] WHERE id != 0");
+                db.Execute("DELETE FROM [umbracoUser2app] WHERE [user] != 0");
                 db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser');");
                 db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser', NORESEED);");
                 db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser', RESEED, 1);");
