@@ -1,9 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Web;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using ICSharpCode.SharpZipLib.Zip;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Models;
 using OurUmbraco.Wiki.BusinessLogic;
+using Umbraco.Core;
+using Umbraco.Core.IO;
 
 namespace OurUmbraco.MarketPlace.Providers
 {
@@ -120,9 +127,51 @@ namespace OurUmbraco.MarketPlace.Providers
 
             //Convert to Deli Media file
             var MediaFile = GetFileById(uWikiFile.Id);
+
+            // If upload is package, extract the package XML manifest and check the version number + type [LK:2016-06-12@CGRT16]
+            if (fileType == FileType.package)
+            {
+                var minimumUmbracoVersion = GetMinimumUmbracoVersion(MediaFile);
+                if (!string.IsNullOrWhiteSpace(minimumUmbracoVersion))
+                {
+                    MediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Version = minimumUmbracoVersion } };
+                }
+            }
+
             MediaFile.DotNetVersion = dotNetVersion;
             SaveOrUpdate(MediaFile);
             return MediaFile;
+        }
+
+        private string GetMinimumUmbracoVersion(WikiFile mediaFile)
+        {
+            var extractor = new PackageExtraction();
+            var filePath = IOHelper.MapPath(mediaFile.Path);
+            var packageXml = extractor.ReadTextFileFromArchive(filePath, Constants.Packaging.PackageXmlFileName);
+            if (string.IsNullOrWhiteSpace(packageXml))
+            {
+                return null;
+            }
+
+            var packageXmlDoc = XDocument.Parse(packageXml);
+            if (packageXmlDoc == null)
+            {
+                return null;
+            }
+
+            // The XPath query will detect if the 'requirements' element has the attribute that we're looking for,
+            // and if the child elements also exist. [LK:2016-06-12@CGRT16]
+            var requirements = packageXmlDoc.XPathSelectElement("/umbPackage/info/package/requirements[@type='strict' and major and minor and patch]");
+            if (requirements == null)
+            {
+                return null;
+            }
+
+            var major = requirements.Element("major").Value;
+            var minor = requirements.Element("minor").Value;
+            var patch = requirements.Element("patch").Value;
+
+            return string.Join(".", new[] { major, minor, patch });
         }
 
         public static string ToVersionString(List<UmbracoVersion> Versions)
@@ -151,5 +200,89 @@ namespace OurUmbraco.MarketPlace.Providers
         }
 
 
+    }
+
+    // [LK:2016-06-12] This code has been copied over from Umbraco v7.5.0, (coded during CGRT16)
+    // Once Our has upgraded to v7.5+, then this code can be replaced with references to the core code.
+    class PackageExtraction
+    {
+        public string ReadTextFileFromArchive(string packageFilePath, string fileToRead)
+        {
+            string retVal = null;
+            bool fileFound = false;
+            string foundDir = null;
+
+            ReadZipfileEntries(packageFilePath, (entry, stream) =>
+            {
+                string fileName = Path.GetFileName(entry.Name);
+
+                if (string.IsNullOrEmpty(fileName) == false &&
+                    fileName.Equals(fileToRead, StringComparison.CurrentCultureIgnoreCase))
+                {
+
+                    foundDir = entry.Name.Substring(0, entry.Name.Length - fileName.Length);
+                    fileFound = true;
+                    using (var reader = new StreamReader(stream))
+                    {
+                        retVal = reader.ReadToEnd();
+                        return false;
+                    }
+                }
+                return true;
+            });
+
+            if (fileFound == false)
+            {
+                throw new FileNotFoundException(string.Format("Could not find file in package {0}", packageFilePath), fileToRead);
+            }
+
+            return retVal;
+        }
+
+        private static void CheckPackageExists(string packageFilePath)
+        {
+            if (string.IsNullOrEmpty(packageFilePath))
+            {
+                throw new ArgumentNullException("packageFilePath");
+            }
+
+            if (File.Exists(packageFilePath) == false)
+            {
+                if (File.Exists(packageFilePath) == false)
+                    throw new ArgumentException(string.Format("Package file: {0} could not be found", packageFilePath));
+            }
+
+            string extension = Path.GetExtension(packageFilePath).ToLower();
+
+            var alowedExtension = new[] { ".umb", ".zip" };
+
+            // Check if the file is a valid package
+            if (alowedExtension.All(ae => ae.Equals(extension) == false))
+            {
+                throw new ArgumentException(
+                    string.Format("Error - file isn't a package. only extentions: \"{0}\" is allowed", string.Join(", ", alowedExtension)));
+            }
+        }
+
+        private void ReadZipfileEntries(string packageFilePath, Func<ZipEntry, ZipInputStream, bool> entryFunc, bool skipsDirectories = true)
+        {
+            CheckPackageExists(packageFilePath);
+
+            using (var fs = File.OpenRead(packageFilePath))
+            {
+                using (var zipInputStream = new ZipInputStream(fs))
+                {
+                    ZipEntry zipEntry;
+                    while ((zipEntry = zipInputStream.GetNextEntry()) != null)
+                    {
+                        if (zipEntry.IsDirectory && skipsDirectories) continue;
+                        if (entryFunc(zipEntry, zipInputStream) == false) break;
+                    }
+
+                    zipInputStream.Close();
+                }
+                fs.Close();
+            }
+        }
     }
 }
