@@ -9,11 +9,20 @@ namespace OurUmbraco.Repository
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             RouteTable.Routes.MapHttpRoute(
-                name: "RepoApi", 
-                routeTemplate: "webapi/{controller}/{id}",
-                defaults: new { id = RouteParameter.Optional },
-                constraints: new { controller = "StarterKit" }
+                name: "PackageRepositoryApi",
+                routeTemplate: "webapi/packages/v1/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "PackageRepository" },
+                constraints: new { }
             );
+
+            RouteTable.Routes.MapHttpRoute(
+                name: "RepoApi",
+                routeTemplate: "webapi/starterkit/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "StarterKit" },
+                constraints: new { }
+            );
+
+            GlobalConfiguration.Configuration.EnableCors();
         }
     }
 }

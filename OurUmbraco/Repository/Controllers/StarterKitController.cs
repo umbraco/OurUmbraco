@@ -8,8 +8,11 @@ using System.Xml.XPath;
 using OurUmbraco.Version;
 using umbraco.NodeFactory;
 
-namespace OurUmbraco.Repository
+namespace OurUmbraco.Repository.Controllers
 {
+    /// <summary>
+    /// TODO: This is probably obsolete, this probably shouldn't exist now but we have to leave here for backwards compat
+    /// </summary>
     public class StarterKitController : ApiController
     {
         public List<StarterKit> Get(string umbracoVersion = null)
