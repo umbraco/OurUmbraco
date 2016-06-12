@@ -232,7 +232,7 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
                     lt_versions.Text = umboptions;
 
 
-                    string[] dotnetversions = { "", "2.0", "3.5", "4.0", "4.5" };
+                    string[] dotnetversions = { "", "2.0", "3.5", "4.0", "4.5", "4.5.1", "4.5.2", "4.6.0", "4.6.1" };
                     string dotnetoptions = string.Empty;
 
                     foreach (var opt in dotnetversions)

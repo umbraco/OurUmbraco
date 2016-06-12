@@ -192,9 +192,10 @@
                 
          
             </p>
-            <div class="pickVersion">
+            <div class="pickVersion" style="float:left;margin-bottom:10px;">
                 <asp:literal ID="lt_versions" runat="server" />
                 </div>
+            <p style="clear:both;margin-bottom:10px;">If your package manifest references a specific version of Umbraco, then that will be used instead.</p>
         </div>
         <p id="pickNetVersion">
               <label class="inputLabel">Choose supported .NET runtime</label>
