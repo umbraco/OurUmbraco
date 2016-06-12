@@ -3,9 +3,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
+using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.Membership;
 using Umbraco.Web;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
@@ -26,6 +28,7 @@ namespace OurUmbraco.Our
             UaaSProjectCheckbox();
             ForumArchivedCheckbox();
             AddHomeOnlyBannerTextArea();
+            AddMissingUmbracoUsers();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -291,6 +294,39 @@ namespace OurUmbraco.Our
                     communityContentType.AddPropertyType(textareaPropertyType, "Banners");
                     communityContentType.MovePropertyType("mainNotification", "Banners");
                     contentTypeService.Save(communityContentType);
+                }
+                
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddMissingUmbracoUsers()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var userService = UmbracoContext.Current.Application.Services.UserService;
+                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                db.Execute("DELETE FROM [OurDev2].[dbo].[umbracoUser] WHERE id != 0");
+                db.Execute("DELETE FROM [OurDev2].[dbo].[umbracoUser2app] WHERE [user] != 0");
+                db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser');");
+                db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser', NORESEED);");
+                db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser', RESEED, 1);");
+
+                for (var i = 0; i < 17; i++)
+                {
+                    var userType = userService.GetUserTypeByAlias("admin");
+                    userService.CreateUserWithIdentity(string.Format("user{0}", i), string.Format("user{0}@test.com", i), userType);
                 }
                 
                 string[] lines = { "" };
