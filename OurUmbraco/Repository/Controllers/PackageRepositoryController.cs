@@ -16,7 +16,7 @@ namespace OurUmbraco.Repository.Controllers
     /// <remarks>
     /// This is NOT auto-routed
     /// </remarks>
-    [EnableCors(origins: "*", headers: "*", methods: "get")]
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     [JsonCamelCaseFormatter]
     public class PackageRepositoryController : ApiController
     {       
@@ -31,7 +31,7 @@ namespace OurUmbraco.Repository.Controllers
                 Id = Guid.NewGuid(),
                 Likes = 444,
                 Name = "The Donald",
-                Thumbnail = "https://our.umbraco.org/media/wiki/150283/635768313097111400_usightlylogopng.png?bgcolor=fff&height=154&width=281&format=png",
+                Icon = "https://our.umbraco.org/media/wiki/150283/635768313097111400_usightlylogopng.png?bgcolor=fff&height=154&width=281&format=png",
                 Created = DateTime.Now,
                 Compatibility = new List<PackageCompatibility>
                 {
@@ -46,7 +46,7 @@ namespace OurUmbraco.Repository.Controllers
                         Version = "7.4.0"
                     }
                 },
-                DotNetVersion = "4.5.0",
+                NetVersion = "4.5.0",
                 LatestVersion = "1.2.0",
                 LicenseName = "MIT",
                 LicenseUrl = "https://opensource.org/licenses/MIT",
@@ -59,9 +59,46 @@ namespace OurUmbraco.Repository.Controllers
                         "Matt Brailsford"
                     },
                     Karma = 1000000,
-                    Owner = "Shannon Deminick"
+                    Owner = "Shannon Deminick",
+                    OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
                 },
-                Summary = "<p>This package is so great, I mean, it's really really good</p><p>It has lots of words because I know words, I have the best words</p>"
+                Description = "<p>This package is so great, I mean, it's really really good</p><p>It has lots of words because I know words, I have the best words</p>",
+                Images = new List<PackageImage>
+                {
+                    new PackageImage
+                    {
+                        Thumbnail = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png?bgcolor=fff&height=154&width=281&format=png",
+                        Source = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png"
+                    },
+                    new PackageImage
+                    {
+                        Thumbnail = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png?bgcolor=fff&height=154&width=281&format=png",
+                        Source = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png"
+                    },
+                    new PackageImage
+                    {
+                        Thumbnail = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png?bgcolor=fff&height=154&width=281&format=png",
+                        Source = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png"
+                    },
+                    new PackageImage
+                    {
+                        Thumbnail = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png?bgcolor=fff&height=154&width=281&format=png",
+                        Source = "https://our.umbraco.org/media/wiki/104946/635591947547374885_Product-Listpng.png"
+                    }
+                },
+                ExternalSources = new List<ExternalSource>
+                {
+                    new ExternalSource
+                    {
+                        Name = "Source code",
+                        Url = "https://github.com/merchello/Merchello"
+                    },
+                    new ExternalSource
+                    {
+                        Name = "Issue tracker",
+                        Url = "http://issues.merchello.com/youtrack/oauth?state=%2Fyoutrack%2FrootGo"
+                    }
+                }
             };
         }
 
@@ -77,9 +114,20 @@ namespace OurUmbraco.Repository.Controllers
                     Id = Guid.NewGuid(),
                     Likes = 444,
                     Name = "The Donald",
-                    Thumbnail = "https://our.umbraco.org/media/wiki/150283/635768313097111400_usightlylogopng.png?bgcolor=fff&height=154&width=281&format=png",                    
+                    Icon = "https://our.umbraco.org/media/wiki/150283/635768313097111400_usightlylogopng.png?bgcolor=fff&height=154&width=281&format=png",                    
                     LatestVersion = "1.2.0",                    
                     MinimumVersion = "7.4.0",
+                    OwnerInfo = new PackageOwnerInfo
+                    {
+                        Contributors = new[]
+                        {
+                            "Lee Kelleher",
+                            "Matt Brailsford"
+                        },
+                        Karma = 1000000,
+                        Owner = "Shannon Deminick",
+                        OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
+                    }
                 },
                 new Models.Package
                 {
@@ -89,7 +137,18 @@ namespace OurUmbraco.Repository.Controllers
                     Id = Guid.NewGuid(),
                     Likes = 444,
                     Name = "Kill IE6",
-                    Thumbnail = "https://our.umbraco.org/media/wiki/9138/634697622367666000_offroadcode-100x100.png?bgcolor=fff&height=154&width=281&format=png"
+                    Icon = "https://our.umbraco.org/media/wiki/9138/634697622367666000_offroadcode-100x100.png?bgcolor=fff&height=154&width=281&format=png",
+                    OwnerInfo = new PackageOwnerInfo
+                    {
+                        Contributors = new[]
+                        {
+                            "Lee Kelleher",
+                            "Matt Brailsford"
+                        },
+                        Karma = 1000000,
+                        Owner = "Shannon Deminick",
+                        OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
+                    }
                 },
                 new Models.Package
                 {
@@ -99,7 +158,18 @@ namespace OurUmbraco.Repository.Controllers
                     Id = Guid.NewGuid(),
                     Likes = 4,
                     Name = "Great!",
-                    Thumbnail = "https://our.umbraco.org/media/wiki/50703/634782902373558000_cogworks.jpg?bgcolor=fff&height=154&width=281&format=png"
+                    Icon = "https://our.umbraco.org/media/wiki/50703/634782902373558000_cogworks.jpg?bgcolor=fff&height=154&width=281&format=png",
+                    OwnerInfo = new PackageOwnerInfo
+                    {
+                        Contributors = new[]
+                        {
+                            "Lee Kelleher",
+                            "Matt Brailsford"
+                        },
+                        Karma = 1000000,
+                        Owner = "Shannon Deminick",
+                        OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
+                    }
                 },
                 new Models.Package
                 {
@@ -109,7 +179,18 @@ namespace OurUmbraco.Repository.Controllers
                     Id = Guid.NewGuid(),
                     Likes = 44334,
                     Name = "Amazeballs",
-                    Thumbnail = "https://our.umbraco.org/media/wiki/154472/635997115126742822_logopng.png?bgcolor=fff&height=154&width=281&format=png"
+                    Icon = "https://our.umbraco.org/media/wiki/154472/635997115126742822_logopng.png?bgcolor=fff&height=154&width=281&format=png",
+                    OwnerInfo = new PackageOwnerInfo
+                    {
+                        Contributors = new[]
+                        {
+                            "Lee Kelleher",
+                            "Matt Brailsford"
+                        },
+                        Karma = 1000000,
+                        Owner = "Shannon Deminick",
+                        OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
+                    }
                 },
                 new Models.Package
                 {
@@ -119,7 +200,18 @@ namespace OurUmbraco.Repository.Controllers
                     Id = Guid.NewGuid(),
                     Likes = 433,
                     Name = "uBeMeAndIBeU",
-                    Thumbnail = "https://our.umbraco.org/media/wiki/152476/635917291068518788_pipeline-crm-logopng.png?bgcolor=fff&height=154&width=281&format=png"
+                    Icon = "https://our.umbraco.org/media/wiki/152476/635917291068518788_pipeline-crm-logopng.png?bgcolor=fff&height=154&width=281&format=png",
+                    OwnerInfo = new PackageOwnerInfo
+                    {
+                        Contributors = new[]
+                        {
+                            "Lee Kelleher",
+                            "Matt Brailsford"
+                        },
+                        Karma = 1000000,
+                        Owner = "Shannon Deminick",
+                        OwnerAvatar = "https://our.umbraco.org/media/upload/d476d257-a494-46d9-9a00-56c2f94a55c8/our-profile.jpg?width=200&height=200&mode=crop"
+                    }
                 }
             };
         }
@@ -161,20 +253,26 @@ namespace OurUmbraco.Repository.Controllers
             };
         }
 
-        public IEnumerable<Models.Package> GetPopular(int maxResults)
+        public IEnumerable<Models.Package> GetPopular(int maxResults = 10)
         {
             return GetTestData().Take(maxResults);
         }
 
-        public IEnumerable<Models.Package> GetLatest(int pageIndex, int pageSize, string category = null)
+        public PagedPackages GetLatest(int pageIndex, int pageSize, string category)
         {
-            return GetTestData()
+            var packages = GetTestData()
                 .Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category)
                 .Skip(pageIndex*pageSize)
                 .Take(pageSize);
+
+            return new PagedPackages
+            {
+                Packages = packages,
+                Total = GetTestData().Count()
+            };
         }
 
-        public Models.PacakgeDetails Get(Guid id)
+        public Models.PacakgeDetails GetDetails(Guid id)
         {
             return GetTestDetails();
         }

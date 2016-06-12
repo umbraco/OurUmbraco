@@ -7,15 +7,20 @@ namespace OurUmbraco.Repository.Models
 {
     public class Package
     {
+        public Package()
+        {
+            OwnerInfo = new PackageOwnerInfo();
+        }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Excerpt { get; set; }
-        public string Thumbnail { get; set; }
+        public string Icon { get; set; }
         public string Url { get; set; }
         public int Downloads { get; set; }
         public int Likes { get; set; }
         public string Category { get; set; }
         public string LatestVersion { get; set; }
+        public PackageOwnerInfo OwnerInfo { get; set; }
 
         /// <summary>
         /// This is the minimum Umbraco version that this package supports
