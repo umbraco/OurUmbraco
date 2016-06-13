@@ -253,22 +253,21 @@ namespace OurUmbraco.Repository.Controllers
             };
         }
 
-        public IEnumerable<Models.Package> GetPopular(int maxResults = 10)
+        public IEnumerable<Models.Package> GetPopular(int maxResults, string category)
         {
-            return GetTestData().Take(maxResults);
+            var packages = GetTestData().Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category).ToArray();
+
+            return packages.Take(maxResults);
         }
 
         public PagedPackages GetLatest(int pageIndex, int pageSize, string category)
         {
-            var packages = GetTestData()
-                .Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category)
-                .Skip(pageIndex*pageSize)
-                .Take(pageSize);
-
+            var packages = GetTestData().Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category).ToArray();
+            
             return new PagedPackages
             {
-                Packages = packages,
-                Total = GetTestData().Count()
+                Packages = packages.Skip(pageIndex * pageSize).Take(pageSize),
+                Total = packages.Length
             };
         }
 
