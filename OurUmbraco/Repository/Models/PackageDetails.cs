@@ -14,16 +14,19 @@ namespace OurUmbraco.Repository.Models
         public PackageDetails(Package package)
             : base()
         {
-            this.Category = package.Category;
-            this.Excerpt = package.Excerpt;
-            this.Downloads = package.Downloads;
-            this.Id = package.Id;
-            this.Likes = package.Likes;
-            this.Name = package.Name;
-            this.Icon = package.Icon;
-            this.LatestVersion = package.LatestVersion;
-            this.MinimumVersion = package.MinimumVersion;
-            this.OwnerInfo = package.OwnerInfo;
+            if (package != null)
+            {
+                this.Category = package.Category;
+                this.Excerpt = package.Excerpt;
+                this.Downloads = package.Downloads;
+                this.Id = package.Id;
+                this.Likes = package.Likes;
+                this.Name = package.Name;
+                this.Icon = package.Icon;
+                this.LatestVersion = package.LatestVersion;
+                this.MinimumVersion = package.MinimumVersion;
+                this.OwnerInfo = package.OwnerInfo;
+            }
         }
 
         public string Description { get; set; }

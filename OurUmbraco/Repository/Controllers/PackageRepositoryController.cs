@@ -77,32 +77,7 @@ namespace OurUmbraco.Repository.Controllers
             string query = null,
             PackageSortOrder order = PackageSortOrder.Latest)
         {
-            var packages = Service.GetPackages(category, query, order);
-
-            //TODO: This will be interesting - not sure if we are using Examine for searching but if we are
-            // and if the query is not empty, then we should order by score,
-            // otherwise if there is no query we will order by the 'order' parameter
-            Models.Package[] sorted;
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                //TODO: order by score if possible
-                sorted = packages.OrderBy(x => x.Created).ToArray();
-            }
-            else if (order == PackageSortOrder.Latest)
-            {
-                sorted = packages.OrderBy(x => x.Created).ToArray();
-            }
-            else
-            {
-                //TODO: Also included downloads somehow?
-                sorted = packages.OrderBy(x => x.Likes).ToArray();
-            }
-
-            return new PagedPackages
-            {
-                Packages = sorted.Skip(pageIndex * pageSize).Take(pageSize),
-                Total = sorted.Length
-            };
+            return Service.GetPackages(pageIndex, pageSize, category, query, order);
         }
 
         public Models.PackageDetails GetDetails(Guid id)

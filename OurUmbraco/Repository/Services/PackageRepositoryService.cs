@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using Examine;
 using OurUmbraco.Forum.Extensions;
+using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
 using OurUmbraco.Project.Services;
 using OurUmbraco.Repository.Controllers;
@@ -45,12 +48,89 @@ namespace OurUmbraco.Repository.Services
                 });
         }
 
-        public IEnumerable<Models.Package> GetPackages(
+        public PagedPackages GetPackages(
+            int pageIndex,
+            int pageSize,
             string category = null,
             string query = null,
             PackageSortOrder order = PackageSortOrder.Latest)
         {
-            return UmbracoHelper.TypedContent(9325, 8985, 145710, 10020).Select(x => MapContentToPackage(x));
+            var items = Enumerable.Empty<IPublishedContent>();
+
+            if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(query))
+            {
+                if (order == PackageSortOrder.Latest)
+                {
+                    // [LK:2016-06-13@CGRT16] This feels hacky, but unsure how else to get
+                    // a list of all the newly created projects.
+                    var xpath = "//Project[@isDoc and projectLive = 1 and approved = 1 and notAPackage = 0]";
+                    items = UmbracoHelper
+                        .TypedContentAtXPath(xpath)
+                        .OrderByDescending(x => x.CreateDate);
+                }
+                else
+                {
+                    // [LK:2016-06-13@CGRT16] Attempting to reuse legacy code
+                    var karmaProvider = new KarmaProvider();
+                    var projectsByKarma = karmaProvider.GetProjectsKarmaList();
+
+                    items = UmbracoHelper
+                        .TypedContent(projectsByKarma.Select(x => x.ProjectId))
+                        .Where(x =>
+                            x.GetPropertyValue<bool>("projectLive") &&
+                            x.GetPropertyValue<bool>("approved") &&
+                            !x.GetPropertyValue<bool>("notAPackage"));
+                }
+            }
+            else
+            {
+                var q = new StringBuilder();
+
+                if (!string.IsNullOrWhiteSpace(category))
+                {
+                    q.AppendFormat("+categoryFolder: \"{0}\" ", category);
+                }
+
+                if (!string.IsNullOrWhiteSpace(query))
+                {
+                    q.AppendFormat("+nodeName:{0}", query);
+                }
+
+                var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
+                var criteria = searcher.CreateSearchCriteria().RawQuery(q.ToString());
+
+                items = UmbracoHelper.TypedSearch(criteria, searcher);
+            }
+
+            if (items == null)
+            {
+                return null;
+            }
+
+            var packages = items
+                .Skip(pageIndex * pageSize)
+                .Take(pageSize)
+                .Select(x => MapContentToPackage(x));
+
+            IEnumerable<Models.Package> sorted;
+
+            if (order == PackageSortOrder.Latest)
+            {
+                sorted = packages
+                    .OrderByDescending(x => x.Created);
+            }
+            else
+            {
+                sorted = packages
+                    .OrderByDescending(x => x.Downloads)
+                    .ThenByDescending(x => x.Likes);
+            }
+
+            return new PagedPackages
+            {
+                Packages = packages,
+                Total = items.Count()
+            };
         }
 
         public Models.PackageDetails GetDetails(Guid id)
@@ -58,7 +138,7 @@ namespace OurUmbraco.Repository.Services
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
             // The XPath 'translate' is being used to force the 'packageGuid' to be lowercase for comparison.
-            var xpath = string.Format("//Project[@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
+            var xpath = string.Format("//Project[@isDoc and projectLive = 1 and approved = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
             var item = UmbracoHelper.TypedContentSingleAtXPath(xpath);
 
             if (item == null)
@@ -69,30 +149,37 @@ namespace OurUmbraco.Repository.Services
 
         private Models.Package MapContentToPackage(IPublishedContent content)
         {
+            if (content == null)
+                return null;
+
             var wikiFiles = WikiFile.CurrentFiles(content.Id);
 
             return new Models.Package
             {
                 Category = content.Parent.Name,
-                Excerpt = GetPackageExcerpt(content, 10),
+                Created = content.CreateDate,
+                Excerpt = GetPackageExcerpt(content, 12),
                 Downloads = Utils.GetProjectTotalDownloadCount(content.Id),
                 Id = content.GetPropertyValue<Guid>("packageGuid"),
                 Likes = Utils.GetProjectTotalVotes(content.Id),
                 Name = content.Name,
-                Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath"), 154, 281),
+                Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"), 154, 281),
                 LatestVersion = content.GetPropertyValue<string>("version"),
-                MinimumVersion = GetMinimumVersion(content, wikiFiles),
-                OwnerInfo = GetPackageOwnerInfo(content)
+                MinimumVersion = GetMinimumVersion(content, wikiFiles.Where(x => x.FileType.InvariantEquals("package"))),
+                OwnerInfo = GetPackageOwnerInfo(content),
+                Url = string.Concat(BASE_URL, content.Url)
             };
         }
 
         private Models.PackageDetails MapContentToPackageDetails(IPublishedContent content)
         {
+            if (content == null)
+                return null;
+
             var package = MapContentToPackage(content);
             var packageDetails = new PackageDetails(package);
             var wikiFiles = WikiFile.CurrentFiles(content.Id);
 
-            packageDetails.Created = content.CreateDate;
             packageDetails.Compatibility = GetPackageCompatibility(content);
             packageDetails.NetVersion = content.GetPropertyValue<string>("dotNetVersion");
             packageDetails.LicenseName = content.GetPropertyValue<string>("licenseName");
@@ -100,7 +187,6 @@ namespace OurUmbraco.Repository.Services
             packageDetails.Description = content.GetPropertyValue<string>("description");
             packageDetails.Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281);
             packageDetails.ExternalSources = GetExternalSources(content);
-            packageDetails.Url = string.Concat(BASE_URL, content.Url);
             packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"));
 
             return packageDetails;
@@ -128,7 +214,7 @@ namespace OurUmbraco.Repository.Services
             var currentVersion = content.GetPropertyValue<int>("file");
             var latest = packages.FirstOrDefault(x => x.Id == currentVersion);
 
-            if (string.IsNullOrWhiteSpace(latest.Version.Version) || latest.Version.Version.InvariantEquals("nan"))
+            if (latest == null || string.IsNullOrWhiteSpace(latest.Version.Version) || latest.Version.Version.InvariantEquals("nan"))
                 return null;
 
             if (latest.Version.Version.InvariantStartsWith("v"))
