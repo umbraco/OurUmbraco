@@ -4,6 +4,7 @@ using System.Linq;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Our;
 using OurUmbraco.Project.Services;
+using OurUmbraco.Repository.Controllers;
 using OurUmbraco.Repository.Models;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
@@ -11,13 +12,13 @@ using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
 
-namespace OurUmbraco.Repository
+namespace OurUmbraco.Repository.Services
 {
     internal class PackageRepositoryService
     {
-        private DatabaseContext DatabaseContext;
-        private MembershipHelper MembershipHelper;
-        private UmbracoHelper UmbracoHelper;
+        private readonly DatabaseContext DatabaseContext;
+        private readonly MembershipHelper MembershipHelper;
+        private readonly UmbracoHelper UmbracoHelper;
 
         const string BASE_URL = "https://our.umbraco.org";
 
@@ -44,6 +45,14 @@ namespace OurUmbraco.Repository
                 });
         }
 
+        public IEnumerable<Models.Package> GetPackages(
+            string category = null,
+            string query = null,
+            PackageSortOrder order = PackageSortOrder.Latest)
+        {
+            return UmbracoHelper.TypedContent(9325, 8985, 145710, 10020).Select(x => MapContentToPackage(x));
+        }
+
         public Models.PackageDetails GetDetails(Guid id)
         {
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
@@ -52,36 +61,49 @@ namespace OurUmbraco.Repository
             var xpath = string.Format("//Project[@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
             var item = UmbracoHelper.TypedContentSingleAtXPath(xpath);
 
-            return MapContentToPackageDetails(id, item);
+            if (item == null)
+                return null;
+
+            return MapContentToPackageDetails(item);
         }
 
-        private Models.PackageDetails MapContentToPackageDetails(Guid id, IPublishedContent content)
+        private Models.Package MapContentToPackage(IPublishedContent content)
         {
             var wikiFiles = WikiFile.CurrentFiles(content.Id);
 
-            return new Models.PackageDetails
+            return new Models.Package
             {
                 Category = content.Parent.Name,
                 Excerpt = GetPackageExcerpt(content, 10),
                 Downloads = Utils.GetProjectTotalDownloadCount(content.Id),
-                Id = id,
+                Id = content.GetPropertyValue<Guid>("packageGuid"),
                 Likes = Utils.GetProjectTotalVotes(content.Id),
                 Name = content.Name,
                 Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath"), 154, 281),
-                Created = content.CreateDate,
-                Compatibility = GetPackageCompatibility(content),
-                NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
                 LatestVersion = content.GetPropertyValue<string>("version"),
-                LicenseName = content.GetPropertyValue<string>("licenseName"),
-                LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
                 MinimumVersion = GetMinimumVersion(content, wikiFiles),
-                OwnerInfo = GetPackageOwnerInfo(content),
-                Description = content.GetPropertyValue<string>("description"),
-                Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281),
-                ExternalSources = GetExternalSources(content),
-                Url = string.Concat(BASE_URL, content.Url),
-                ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"))
+                OwnerInfo = GetPackageOwnerInfo(content)
             };
+        }
+
+        private Models.PackageDetails MapContentToPackageDetails(IPublishedContent content)
+        {
+            var package = MapContentToPackage(content);
+            var packageDetails = new PackageDetails(package);
+            var wikiFiles = WikiFile.CurrentFiles(content.Id);
+
+            packageDetails.Created = content.CreateDate;
+            packageDetails.Compatibility = GetPackageCompatibility(content);
+            packageDetails.NetVersion = content.GetPropertyValue<string>("dotNetVersion");
+            packageDetails.LicenseName = content.GetPropertyValue<string>("licenseName");
+            packageDetails.LicenseUrl = content.GetPropertyValue<string>("licenseUrl");
+            packageDetails.Description = content.GetPropertyValue<string>("description");
+            packageDetails.Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281);
+            packageDetails.ExternalSources = GetExternalSources(content);
+            packageDetails.Url = string.Concat(BASE_URL, content.Url);
+            packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"));
+
+            return packageDetails;
         }
 
         private List<PackageCompatibility> GetPackageCompatibility(IPublishedContent content)
@@ -105,6 +127,23 @@ namespace OurUmbraco.Repository
         {
             var currentVersion = content.GetPropertyValue<int>("file");
             var latest = packages.FirstOrDefault(x => x.Id == currentVersion);
+
+            if (string.IsNullOrWhiteSpace(latest.Version.Version) || latest.Version.Version.InvariantEquals("nan"))
+                return null;
+
+            if (latest.Version.Version.InvariantStartsWith("v"))
+            {
+                var legacyFormat = latest.Version.Version;
+
+                if (legacyFormat.InvariantStartsWith("v4"))
+                {
+                    return string.Concat(legacyFormat.Replace("v4", "4."), ".0");
+                }
+                else
+                {
+                    return string.Join(".", legacyFormat.ToCharArray().Skip(1));
+                }
+            }
 
             return latest.Version.Version;
         }

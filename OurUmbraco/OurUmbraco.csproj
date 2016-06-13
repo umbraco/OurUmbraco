@@ -630,7 +630,7 @@
     <Compile Include="Repository\Models\PackageImage.cs" />
     <Compile Include="Repository\Models\PackageOwnerInfo.cs" />
     <Compile Include="Repository\Models\PagedPackages.cs" />
-    <Compile Include="Repository\PackageRepositoryService.cs" />
+    <Compile Include="Repository\Services\PackageRepositoryService.cs" />
     <Compile Include="Repository\Project.cs" />
     <Compile Include="Repository\Projects.cs" />
     <Compile Include="Repository\RepoStartupHandler.cs" />
