@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Examine;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
@@ -10,6 +12,7 @@ using OurUmbraco.Project.Services;
 using OurUmbraco.Repository.Controllers;
 using OurUmbraco.Repository.Models;
 using OurUmbraco.Wiki.BusinessLogic;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -89,11 +92,13 @@ namespace OurUmbraco.Repository.Services
                 if (!string.IsNullOrWhiteSpace(category))
                 {
                     q.AppendFormat("+categoryFolder: \"{0}\" ", category);
+                    q.Append(" ");
                 }
 
                 if (!string.IsNullOrWhiteSpace(query))
-                {
-                    q.AppendFormat("+nodeName:{0}", query);
+                {                    
+                    q.AppendFormat(GenerateLuceneQuery(query));
+                    q.Append(" ");
                 }
 
                 var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
@@ -132,6 +137,61 @@ namespace OurUmbraco.Repository.Services
                 Total = items.Count()
             };
         }
+
+        private string GenerateLuceneQuery(string query)
+        {
+            var sb = new StringBuilder();
+            if (query.Trim(new[] { '\"', '\'' }).IsNullOrWhiteSpace())
+            {
+                return string.Empty;
+            }
+            
+            query = Lucene.Net.QueryParsers.QueryParser.Escape(query);
+
+            var querywords = query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            //check if text is surrounded by single or double quotes, if so, then exact match
+            var surroundedByQuotes = Regex.IsMatch(query, "^\".*?\"$")
+                                     || Regex.IsMatch(query, "^\'.*?\'$");
+
+            //node name exactly boost x 10
+            sb.Append("nodeName:");
+            if (surroundedByQuotes == false) sb.Append("\"");
+            sb.Append(query.ToLower());
+            if (surroundedByQuotes == false) sb.Append("\"");
+            sb.Append("^10.0 ");
+
+            //node name normally with wildcards
+            sb.Append(" nodeName:");
+            sb.Append("(");
+            foreach (var w in querywords)
+            {
+                sb.Append(w.ToLower());
+                sb.Append("* ");
+            }
+            sb.Append(") ");
+
+            //other fields to search that are less important
+            var fields = new[] { "body" };
+
+            foreach (var f in fields)
+            {
+                //additional fields normally
+                sb.Append(f);
+                sb.Append(":");
+                sb.Append("(");
+                foreach (var w in querywords)
+                {
+                    sb.Append(w.ToLower());
+                }
+                //boost less if found in body
+                sb.Append("^0.5)");
+                sb.Append(" ");
+            }
+
+            return sb.ToString();
+        }
+    
 
         public Models.PackageDetails GetDetails(Guid id)
         {
