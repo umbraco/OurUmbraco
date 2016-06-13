@@ -11,6 +11,7 @@ namespace OurUmbraco.Repository.Models
         {
             OwnerInfo = new PackageOwnerInfo();
         }
+        public DateTime Created { get; set; }
         public Guid Id { get; set; }
         public string Name { get; set; }
         public string Excerpt { get; set; }

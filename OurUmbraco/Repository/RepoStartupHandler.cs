@@ -10,8 +10,8 @@ namespace OurUmbraco.Repository
         {
             RouteTable.Routes.MapHttpRoute(
                 name: "PackageRepositoryApi",
-                routeTemplate: "webapi/packages/v1/{action}/{id}",
-                defaults: new { id = RouteParameter.Optional, controller = "PackageRepository", action= "GetPopular" },
+                routeTemplate: "webapi/packages/v1/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "PackageRepository"},
                 constraints: new { }
             );
 

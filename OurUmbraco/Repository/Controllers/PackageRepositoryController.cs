@@ -5,6 +5,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using Newtonsoft.Json.Serialization;
 using OurUmbraco.Repository.Models;
+using Umbraco.Core;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 
@@ -253,24 +254,42 @@ namespace OurUmbraco.Repository.Controllers
             };
         }
 
-        public IEnumerable<Models.Package> GetPopular(int maxResults, string category)
+        [HttpGet]
+        public PagedPackages Search(int pageIndex, int pageSize, 
+            string category = null, 
+            string query = null, 
+            PackageSortOrder order = PackageSortOrder.Latest )
         {
-            var packages = GetTestData().Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category).ToArray();
+            var packages = GetTestData()
+                .Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category)
+                .Where(x => string.IsNullOrWhiteSpace(query) || x.Name.InvariantContains(query));                
 
-            return packages.Take(maxResults);
-        }
+            //TODO: This will be interesting - not sure if we are using Examine for searching but if we are
+            // and if the query is not empty, then we should order by score,
+            // otherwise if there is no query we will order by the 'order' parameter
+            Models.Package[] sorted;
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                //TODO: order by score if possible
+                sorted = packages.OrderBy(x => x.Created).ToArray();
+            }
+            else if (order == PackageSortOrder.Latest)
+            {
+                sorted = packages.OrderBy(x => x.Created).ToArray();
+            }
+            else
+            {
+                //TODO: Also included downloads somehow?
+                sorted = packages.OrderBy(x => x.Likes).ToArray();
+            }
 
-        public PagedPackages GetLatest(int pageIndex, int pageSize, string category)
-        {
-            var packages = GetTestData().Where(x => string.IsNullOrWhiteSpace(category) || x.Category == category).ToArray();
-            
             return new PagedPackages
             {
-                Packages = packages.Skip(pageIndex * pageSize).Take(pageSize),
-                Total = packages.Length
+                Packages = sorted.Skip(pageIndex * pageSize).Take(pageSize),
+                Total = sorted.Length
             };
         }
-
+        
         public Models.PacakgeDetails GetDetails(Guid id)
         {
             return GetTestDetails();
