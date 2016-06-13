@@ -219,6 +219,9 @@ namespace OurUmbraco.Repository.Controllers
         
         public IEnumerable<Models.Category> GetCategories()
         {
+            // [LK:2016-06-13@CGRT16] We're hardcoding the categories as the 'icon' isn't
+            // content-manageable (yet). There is a media-picker icon, but that's for a different use.
+            // When the time comes, we can switch to query for the Category nodes directly.
             return new[]
             {
                 new Models.Category
