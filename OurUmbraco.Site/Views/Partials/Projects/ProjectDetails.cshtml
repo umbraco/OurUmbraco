@@ -108,6 +108,7 @@
 
                     @foreach (var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version))
                     {
+                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
                         <li>
                             <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
@@ -119,7 +120,7 @@
                                         @release.Name
                                     </div>
                                     <div class="type-description">
-                                        uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
                                         <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
                                         @if (string.IsNullOrWhiteSpace(release.MinimumVersionStrict) == false)
                                         {
@@ -140,6 +141,7 @@
 
                     @foreach (var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version))
                     {
+                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
                         <li>
                             <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/archived-files/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
@@ -151,7 +153,7 @@
                                         @release.Name
                                     </div>
                                     <div class="type-description">
-                                        uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
                                         <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version:  @release.DotNetVersion</span>
                                     </div>
                                 </div>
@@ -168,6 +170,7 @@
 
                     @foreach (var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
                     {
+                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
                         <li>
                             <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/documentation/@(release.Name.Replace("'",""))')">
                                 <div class="type-icon">
@@ -179,7 +182,7 @@
                                         @release.Name
                                     </div>
                                     <div class="type-description">
-                                        uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
+                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
                                     </div>
                                 </div>
                             </a>
