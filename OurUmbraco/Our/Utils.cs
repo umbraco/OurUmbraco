@@ -214,13 +214,17 @@ namespace OurUmbraco.Our
                 Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0));
         }
 
-        public static string GetMemberAvatar(IPublishedContent member, int avatarSize)
+        public static string GetMemberAvatar(IPublishedContent member, int avatarSize, bool getRawUrl = false)
         {
             var memberAvatarPath = MemberAvatarPath(member);
             if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
-                return MemberAvatarPath(member) == string.Empty ? GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name) : GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name);
+            {
+                return MemberAvatarPath(member) == string.Empty
+                    ? GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name, getRawUrl)
+                    : GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name, getRawUrl);
+            }
 
-            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name);
+            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name, getRawUrl);
         }
 
         private static string MemberAvatarPath(IPublishedContent member)
@@ -288,18 +292,25 @@ namespace OurUmbraco.Our
             return null;
         }
 
-        public static string GetGravatar(string email, int size, string memberName)
+        public static string GetGravatar(string email, int size, string memberName, bool getRawUrl = false)
         {
             var emailId = email.ToLower();
             var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
 
-            return string.Format("<img src=\"//www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro\" alt=\"{2}\" />", hash, size, memberName);
+            var url = string.Format("https://www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro", hash, size);
+
+            return !getRawUrl
+                ? string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, memberName)
+                : url;
         }
 
-        public static string GetLocalAvatar(string imgPath, int minSize, string memberName)
+        public static string GetLocalAvatar(string imgPath, int minSize, string memberName, bool getRawUrl = false)
         {
-            return string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />",
-             imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName);
+            var url = string.Format("{0}?width={1}&height={1}&mode=crop", imgPath.Replace(" ", "%20"), minSize);
+
+            return !getRawUrl
+                ? string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />", imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName)
+                : url;
         }
     }
 

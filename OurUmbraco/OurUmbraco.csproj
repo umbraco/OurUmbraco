@@ -624,12 +624,13 @@
     <Compile Include="Repository\Controllers\PackageSortOrder.cs" />
     <Compile Include="Repository\Models\Category.cs" />
     <Compile Include="Repository\Models\ExternalSource.cs" />
-    <Compile Include="Repository\Models\PacakgeDetails.cs" />
+    <Compile Include="Repository\Models\PackageDetails.cs" />
     <Compile Include="Repository\Models\Package.cs" />
     <Compile Include="Repository\Models\PackageCompatibility.cs" />
     <Compile Include="Repository\Models\PackageImage.cs" />
     <Compile Include="Repository\Models\PackageOwnerInfo.cs" />
     <Compile Include="Repository\Models\PagedPackages.cs" />
+    <Compile Include="Repository\Services\PackageRepositoryService.cs" />
     <Compile Include="Repository\Project.cs" />
     <Compile Include="Repository\Projects.cs" />
     <Compile Include="Repository\RepoStartupHandler.cs" />

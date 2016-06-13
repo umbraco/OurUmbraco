@@ -19,7 +19,7 @@ namespace OurUmbraco.MarketPlace.Providers
         {
             var karmaList = new List<IKarma>();
 
-            using (var reader = Data.SqlHelper.ExecuteReader("SELECT id as ProjectId, SUM(points) Points FROM powersProject GROUP BY id"))
+            using (var reader = Data.SqlHelper.ExecuteReader("SELECT id as ProjectId, SUM(points) Points FROM powersProject GROUP BY id ORDER BY SUM(points) DESC"))
             {
                 while (reader.Read())
                 {
