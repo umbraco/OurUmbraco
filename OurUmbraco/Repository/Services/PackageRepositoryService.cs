@@ -133,7 +133,7 @@ namespace OurUmbraco.Repository.Services
 
             return new PagedPackages
             {
-                Packages = packages,
+                Packages = sorted,
                 Total = items.Count()
             };
         }
