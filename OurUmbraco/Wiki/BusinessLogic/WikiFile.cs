@@ -386,6 +386,11 @@ namespace OurUmbraco.Wiki.BusinessLogic
             {
                 if (UmbracoVersion.AvailableVersions().ContainsKey(ver))
                     umbracoVersions.Add(UmbracoVersion.AvailableVersions()[ver]);
+
+                // [LK:2016-06-13@CGRT16] Added to support v7.5+ package repository REST API
+                System.Version v;
+                if (System.Version.TryParse(ver, out v))
+                    umbracoVersions.Add(new UmbracoVersion { Version = v.ToString(3) });
             }
 
             return umbracoVersions;

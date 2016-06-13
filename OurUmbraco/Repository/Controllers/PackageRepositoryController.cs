@@ -19,12 +19,12 @@ namespace OurUmbraco.Repository.Controllers
     /// </remarks>
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     [JsonCamelCaseFormatter]
-    public class PackageRepositoryController : ApiController
+    public class PackageRepositoryController : UmbracoApiControllerBase
     {       
 
-        private Models.PacakgeDetails GetTestDetails()
+        private Models.PackageDetails GetTestDetails()
         {
-            return new Models.PacakgeDetails
+            return new Models.PackageDetails
             {
                 Category = "Collaboration",
                 Excerpt = "You will make me be president",
@@ -293,9 +293,11 @@ namespace OurUmbraco.Repository.Controllers
             };
         }
         
-        public Models.PacakgeDetails GetDetails(Guid id)
+        public Models.PackageDetails GetDetails(Guid id)
         {
-            return GetTestDetails();
+            var service = new PackageRepositoryService(Umbraco, Members, DatabaseContext);
+
+            return service.GetDetails(id);
         }
 
     }
