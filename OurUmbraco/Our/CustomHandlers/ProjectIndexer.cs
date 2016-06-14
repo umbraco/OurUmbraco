@@ -65,7 +65,7 @@ namespace OurUmbraco.Our.CustomHandlers
             var karma = Utils.GetProjectTotalVotes(content.Id);
             var files = WikiFile.CurrentFiles(content.Id).ToArray();
             var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
-
+            
             var simpleDataIndexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             simpleDataSet = ((ProjectNodeIndexDataService)simpleDataIndexer.DataService)
                 .MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads, compatVersions);

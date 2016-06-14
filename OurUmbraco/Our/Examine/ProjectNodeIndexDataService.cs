@@ -22,6 +22,9 @@ namespace OurUmbraco.Our.Examine
         public SimpleDataSet MapProjectToSimpleDataIndexItem(IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
             int karma, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
         {
+            var isLive = project.GetPropertyValue<bool>("projectLive");
+            var isApproved = project.GetPropertyValue<bool>("approved");
+
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
 
@@ -70,6 +73,9 @@ namespace OurUmbraco.Our.Examine
 
             var packageFiles = files.Count(x => x.FileType == "package");
             simpleDataSet.RowData.Add("packageFiles", packageFiles.ToString());
+
+            simpleDataSet.RowData.Add("projectLive", isLive ? "1" : "0");
+            simpleDataSet.RowData.Add("approved", isApproved ? "1" : "0");
 
             //now we need to add the versions and compat versions
             // first, this is the versions that the project has files tagged against

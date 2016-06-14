@@ -60,6 +60,8 @@ namespace OurUmbraco.Repository.Services
         {
             var items = Enumerable.Empty<IPublishedContent>();
 
+            //TODO: If query is empty and we are only searching on category, it should just
+            // use this XPATH instead of continuing to use Lucene
             if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(query))
             {
                 if (order == PackageSortOrder.Latest)
@@ -89,6 +91,9 @@ namespace OurUmbraco.Repository.Services
             {
                 var q = new StringBuilder();
 
+                //MUST be approved and live
+                q.Append("+approved:1 +projectLive:1 +(");
+
                 if (!string.IsNullOrWhiteSpace(category))
                 {
                     q.AppendFormat("+categoryFolder: \"{0}\" ", category);
@@ -100,6 +105,8 @@ namespace OurUmbraco.Repository.Services
                     q.AppendFormat(GenerateLuceneQuery(query));
                     q.Append(" ");
                 }
+
+                q.Append(")");
 
                 var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
                 var criteria = searcher.CreateSearchCriteria().RawQuery(q.ToString());
@@ -154,91 +161,94 @@ namespace OurUmbraco.Repository.Services
             var surroundedByQuotes = Regex.IsMatch(query, "^\".*?\"$")
                                      || Regex.IsMatch(query, "^\'.*?\'$");
 
-            //node name exactly boost x 10
-            sb.Append("(nodeName:");
+            
+            //sb.Append("(");
+            sb.Append("nodeName:");
             if (surroundedByQuotes == false) sb.Append("\"");
             sb.Append(query.ToLower());
             if (surroundedByQuotes == false) sb.Append("\"");
-            sb.Append(")^10.0 ");
+            sb.Append("^10.0 ");
 
             //node name normally
             if (!surroundedByQuotes)
-            {
-                sb.Append("(nodeName:");
+            {                
                 foreach (var w in querywords)
                 {
+                    sb.Append("nodeName:");
                     sb.Append(w.ToLower());
+                    sb.Append("^5 ");
                 }
-                sb.Append(")^5 ");
 
-                //node name normally with wildcards
-                sb.Append("(nodeName:");
+                //node name normally with wildcards                
                 foreach (var w in querywords)
                 {
+                    sb.Append("nodeName:");
                     sb.Append(w.ToLower());
                     sb.Append("*");
+                    sb.Append("^2 ");
                 }
-                sb.Append(") ");
 
-                //node name normally with fuzzy
-                sb.Append("(nodeName:");
+                //node name normally with fuzzy                
                 foreach (var w in querywords)
                 {
+                    sb.Append("(nodeName:");
                     sb.Append(w.ToLower());
-                }
-                sb.Append("~0.8) ");
-            }
-
-            //other fields to search that are less important
-            var fields = new[] { "body" };
-
-            foreach (var f in fields)
-            {
-                //additional fields exactly
-                sb.Append("(");
-                sb.Append(f);
-                sb.Append(":");
-                if (surroundedByQuotes == false) sb.Append("\"");
-                sb.Append(query.ToLower());
-                if (surroundedByQuotes == false) sb.Append("\"");
-                sb.Append(")^0.7 ");
-
-                //additional fields normally
-                if (!surroundedByQuotes)
-                {
-                    sb.Append("(");
-                    sb.Append(f);
-                    sb.Append(":");
-                    foreach (var w in querywords)
-                    {
-                        sb.Append(w.ToLower());
-                    }
-                    sb.Append(")^0.5 ");
-
-                    //additional fields fuzzy
-                    sb.Append("(");
-                    sb.Append(f);
-                    sb.Append(":");
-                    foreach (var w in querywords)
-                    {
-                        sb.Append(w.ToLower());
-                    }
-                    //boost less for these fields
-                    sb.Append("~0.8)^0.2 ");
-
-                    //additional fields wildcard
-                    sb.Append("(");
-                    sb.Append(f);
-                    sb.Append(":");
-                    foreach (var w in querywords)
-                    {
-                        sb.Append(w.ToLower());
-                        sb.Append("*");
-                    }
-                    //boost less for these fields with wildcard
-                    sb.Append(")^0.1 ");
+                    sb.Append("~0.8)^2 ");
                 }
             }
+            //sb.Append(")^10 ");
+
+            //TODO: Fix this... anytime we add this is mucks with the results big time
+
+            ////other fields to search that are less important
+            //var fields = new string[] { "body" };
+
+            //sb.Append("(");
+            //foreach (var f in fields)
+            //{
+            //    sb.Append("(");
+            //    //additional fields exactly
+            //    sb.Append(f);
+            //    sb.Append(":");
+            //    if (surroundedByQuotes == false) sb.Append("\"");
+            //    sb.Append(query.ToLower());
+            //    if (surroundedByQuotes == false) sb.Append("\"");
+            //    sb.Append("^0.7 ");
+
+            //    //additional fields normally
+            //    if (!surroundedByQuotes)
+            //    {
+            //        foreach (var w in querywords)
+            //        {
+            //            sb.Append(f);
+            //            sb.Append(":");
+            //            sb.Append(w.ToLower());
+            //            sb.Append("^0.5 ");
+            //        }
+
+            //        //additional fields fuzzy                    
+            //        foreach (var w in querywords)
+            //        {
+            //            sb.Append("(");
+            //            sb.Append(f);
+            //            sb.Append(":");
+            //            sb.Append(w.ToLower());
+            //            sb.Append("~0.8)^0.2 ");
+            //        }
+
+            //        //additional fields wildcard                    
+            //        foreach (var w in querywords)
+            //        {
+            //            sb.Append(f);
+            //            sb.Append(":");
+            //            sb.Append(w.ToLower());
+            //            sb.Append("*");
+            //            sb.Append("^0.1 ");
+            //        }
+            //    }
+            //    sb.Append(") ");
+            //}
+            //sb.Append(")^0.5 ");
 
             return sb.ToString();
         }
