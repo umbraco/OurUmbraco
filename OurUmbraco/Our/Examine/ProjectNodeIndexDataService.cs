@@ -20,7 +20,7 @@ namespace OurUmbraco.Our.Examine
     public class ProjectNodeIndexDataService : ISimpleDataService
     {
         public SimpleDataSet MapProjectToSimpleDataIndexItem(IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
-            int karma, IEnumerable<WikiFile> files, int downloads, IEnumerable<string> compatVersions)
+            int karma, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
         {
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
@@ -47,7 +47,7 @@ namespace OurUmbraco.Our.Examine
             {
                 var image = files.FirstOrDefault(x => x.FileType == "screenshot");
                 if (image != null)
-                    imageFile = image.Path;
+                    imageFile = image.Path;                
             }
             //Clean up version data before its included in the index
             int o;
@@ -67,6 +67,9 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("karma", karma.ToString());
             simpleDataSet.RowData.Add("downloads", downloads.ToString());
             simpleDataSet.RowData.Add("image", imageFile);
+
+            var packageFiles = files.Count(x => x.FileType == "package");
+            simpleDataSet.RowData.Add("packageFiles", packageFiles.ToString());
 
             //now we need to add the versions and compat versions
             // first, this is the versions that the project has files tagged against
@@ -98,7 +101,7 @@ namespace OurUmbraco.Our.Examine
 
                 var projectDownloads = allProjectDownloads.ContainsKey(project.Id) ? allProjectDownloads[project.Id] : 0;
                 var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
-                var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id] : Enumerable.Empty<WikiFile>();
+                var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] {};
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
                 yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);

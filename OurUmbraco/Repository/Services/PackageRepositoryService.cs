@@ -155,38 +155,89 @@ namespace OurUmbraco.Repository.Services
                                      || Regex.IsMatch(query, "^\'.*?\'$");
 
             //node name exactly boost x 10
-            sb.Append("nodeName:");
+            sb.Append("(nodeName:");
             if (surroundedByQuotes == false) sb.Append("\"");
             sb.Append(query.ToLower());
             if (surroundedByQuotes == false) sb.Append("\"");
-            sb.Append("^10.0 ");
+            sb.Append(")^10.0 ");
 
-            //node name normally with wildcards
-            sb.Append(" nodeName:");
-            sb.Append("(");
-            foreach (var w in querywords)
+            //node name normally
+            if (!surroundedByQuotes)
             {
-                sb.Append(w.ToLower());
-                sb.Append("* ");
+                sb.Append("(nodeName:");
+                foreach (var w in querywords)
+                {
+                    sb.Append(w.ToLower());
+                }
+                sb.Append(")^5 ");
+
+                //node name normally with wildcards
+                sb.Append("(nodeName:");
+                foreach (var w in querywords)
+                {
+                    sb.Append(w.ToLower());
+                    sb.Append("*");
+                }
+                sb.Append(") ");
+
+                //node name normally with fuzzy
+                sb.Append("(nodeName:");
+                foreach (var w in querywords)
+                {
+                    sb.Append(w.ToLower());
+                }
+                sb.Append("~0.8) ");
             }
-            sb.Append(") ");
 
             //other fields to search that are less important
             var fields = new[] { "body" };
 
             foreach (var f in fields)
             {
-                //additional fields normally
+                //additional fields exactly
+                sb.Append("(");
                 sb.Append(f);
                 sb.Append(":");
-                sb.Append("(");
-                foreach (var w in querywords)
+                if (surroundedByQuotes == false) sb.Append("\"");
+                sb.Append(query.ToLower());
+                if (surroundedByQuotes == false) sb.Append("\"");
+                sb.Append(")^0.7 ");
+
+                //additional fields normally
+                if (!surroundedByQuotes)
                 {
-                    sb.Append(w.ToLower());
+                    sb.Append("(");
+                    sb.Append(f);
+                    sb.Append(":");
+                    foreach (var w in querywords)
+                    {
+                        sb.Append(w.ToLower());
+                    }
+                    sb.Append(")^0.5 ");
+
+                    //additional fields fuzzy
+                    sb.Append("(");
+                    sb.Append(f);
+                    sb.Append(":");
+                    foreach (var w in querywords)
+                    {
+                        sb.Append(w.ToLower());
+                    }
+                    //boost less for these fields
+                    sb.Append("~0.8)^0.2 ");
+
+                    //additional fields wildcard
+                    sb.Append("(");
+                    sb.Append(f);
+                    sb.Append(":");
+                    foreach (var w in querywords)
+                    {
+                        sb.Append(w.ToLower());
+                        sb.Append("*");
+                    }
+                    //boost less for these fields with wildcard
+                    sb.Append(")^0.1 ");
                 }
-                //boost less if found in body
-                sb.Append("^0.5)");
-                sb.Append(" ");
             }
 
             return sb.ToString();
