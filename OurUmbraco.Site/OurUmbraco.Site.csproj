@@ -672,6 +672,7 @@
     <Content Include="config\feedProxy.config" />
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
+    <Content Include="config\CommunityBlogs.config" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
@@ -4412,6 +4413,7 @@
     <Folder Include="umbraco\lib\datetimepicker\langs\" />
     <Folder Include="umbraco\Views\directives\" />
     <Folder Include="usercontrols\Deli\Admin\" />
+    <Folder Include="Views\MacroPartials\CommunityBlogs\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />

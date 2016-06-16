@@ -726,6 +726,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="CommunityBlogs\" />
     <Folder Include="Repository\webservices\App_Data\" />
     <Folder Include="Wiki\usercontrols\scripts\" />
   </ItemGroup>
