@@ -1,5 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/umbraco/masterpages/default.master" AutoEventWireup="true" %>
 
 <asp:Content ContentPlaceHolderID="ContentPlaceHolderDefault" runat="server">
-	<h1>Community Blogs</h1>
+	<umbraco:Macro Alias="BlogPosts" runat="server"></umbraco:Macro>
 </asp:Content>
