@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
+using Examine.SearchCriteria;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
+using OurUmbraco.Our.Examine;
 using OurUmbraco.Project.Services;
 using OurUmbraco.Repository.Controllers;
 using OurUmbraco.Repository.Models;
@@ -89,27 +91,16 @@ namespace OurUmbraco.Repository.Services
             }
             else
             {
-                var q = new StringBuilder();
-
+                var filters = new List<SearchFilters>();
+                var searchFilters = new SearchFilters(BooleanOperation.And);
                 //MUST be approved and live
-                q.Append("+approved:1 +projectLive:1 +(");
+                searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+                searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                filters.Add(searchFilters);
 
-                if (!string.IsNullOrWhiteSpace(category))
-                {
-                    q.AppendFormat("+categoryFolder: \"{0}\" ", category);
-                    q.Append(" ");
-                }
-
-                if (!string.IsNullOrWhiteSpace(query))
-                {                    
-                    q.AppendFormat(GenerateLuceneQuery(query));
-                    q.Append(" ");
-                }
-
-                q.Append(")");
-
+                var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", filters: filters);
                 var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
-                var criteria = searcher.CreateSearchCriteria().RawQuery(q.ToString());
+                var criteria = ourSearcher.GetSearchCriteria(searcher);
 
                 items = UmbracoHelper.TypedSearch(criteria, searcher);
             }
@@ -143,114 +134,6 @@ namespace OurUmbraco.Repository.Services
                 Packages = sorted,
                 Total = items.Count()
             };
-        }
-
-        private string GenerateLuceneQuery(string query)
-        {
-            var sb = new StringBuilder();
-            if (query.Trim(new[] { '\"', '\'' }).IsNullOrWhiteSpace())
-            {
-                return string.Empty;
-            }
-            
-            query = Lucene.Net.QueryParsers.QueryParser.Escape(query);
-
-            var querywords = query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-
-            //check if text is surrounded by single or double quotes, if so, then exact match
-            var surroundedByQuotes = Regex.IsMatch(query, "^\".*?\"$")
-                                     || Regex.IsMatch(query, "^\'.*?\'$");
-
-            
-            //sb.Append("(");
-            sb.Append("nodeName:");
-            if (surroundedByQuotes == false) sb.Append("\"");
-            sb.Append(query.ToLower());
-            if (surroundedByQuotes == false) sb.Append("\"");
-            sb.Append("^10.0 ");
-
-            //node name normally
-            if (!surroundedByQuotes)
-            {                
-                foreach (var w in querywords)
-                {
-                    sb.Append("nodeName:");
-                    sb.Append(w.ToLower());
-                    sb.Append("^5 ");
-                }
-
-                //node name normally with wildcards                
-                foreach (var w in querywords)
-                {
-                    sb.Append("nodeName:");
-                    sb.Append(w.ToLower());
-                    sb.Append("*");
-                    sb.Append("^2 ");
-                }
-
-                //node name normally with fuzzy                
-                foreach (var w in querywords)
-                {
-                    sb.Append("(nodeName:");
-                    sb.Append(w.ToLower());
-                    sb.Append("~0.8)^2 ");
-                }
-            }
-            //sb.Append(")^10 ");
-
-            //TODO: Fix this... anytime we add this is mucks with the results big time
-
-            ////other fields to search that are less important
-            //var fields = new string[] { "body" };
-
-            //sb.Append("(");
-            //foreach (var f in fields)
-            //{
-            //    sb.Append("(");
-            //    //additional fields exactly
-            //    sb.Append(f);
-            //    sb.Append(":");
-            //    if (surroundedByQuotes == false) sb.Append("\"");
-            //    sb.Append(query.ToLower());
-            //    if (surroundedByQuotes == false) sb.Append("\"");
-            //    sb.Append("^0.7 ");
-
-            //    //additional fields normally
-            //    if (!surroundedByQuotes)
-            //    {
-            //        foreach (var w in querywords)
-            //        {
-            //            sb.Append(f);
-            //            sb.Append(":");
-            //            sb.Append(w.ToLower());
-            //            sb.Append("^0.5 ");
-            //        }
-
-            //        //additional fields fuzzy                    
-            //        foreach (var w in querywords)
-            //        {
-            //            sb.Append("(");
-            //            sb.Append(f);
-            //            sb.Append(":");
-            //            sb.Append(w.ToLower());
-            //            sb.Append("~0.8)^0.2 ");
-            //        }
-
-            //        //additional fields wildcard                    
-            //        foreach (var w in querywords)
-            //        {
-            //            sb.Append(f);
-            //            sb.Append(":");
-            //            sb.Append(w.ToLower());
-            //            sb.Append("*");
-            //            sb.Append("^0.1 ");
-            //        }
-            //    }
-            //    sb.Append(") ");
-            //}
-            //sb.Append(")^0.5 ");
-
-            return sb.ToString();
         }
     
 

@@ -19,7 +19,7 @@ namespace OurUmbraco.Repository.Controllers
     /// This is NOT auto-routed
     /// </remarks>
     [EnableCors(origins: "*", headers: "*", methods: "*")]
-    [JsonCamelCaseFormatter]
+    [CamelCaseFormatter]
     public class PackageRepositoryController : UmbracoApiControllerBase
     {
         private readonly PackageRepositoryService Service;

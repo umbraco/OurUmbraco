@@ -20,15 +20,22 @@ namespace OurUmbraco.Our.Api
 
         public SearchResultModel GetProjectSearchResults(string term)
         {
-            var searcher = new OurSearcher(term, nodeTypeAlias:"project");
-            var searchResult = searcher.Search();
+            var filters = new List<SearchFilters>();
+            var searchFilters = new SearchFilters(BooleanOperation.And);
+            //MUST be approved and live
+            searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+            searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+            filters.Add(searchFilters);
+
+            var searcher = new OurSearcher(term, nodeTypeAlias:"project", filters: filters);
+            var searchResult = searcher.Search("projectSearcher");
             return searchResult;
         }
 
         public SearchResultModel GetDocsSearchResults(string term)
         {
             var searcher = new OurSearcher(term, nodeTypeAlias: "documentation");
-            var searchResult = searcher.Search();
+            var searchResult = searcher.Search("documentationSearcher");
             return searchResult;
         }
 
@@ -44,7 +51,7 @@ namespace OurUmbraco.Our.Api
             }
 
             var searcher = new OurSearcher(term, nodeTypeAlias: "forum", filters: filters);
-            var searchResult = searcher.Search();
+            var searchResult = searcher.Search("ForumSearcher");
 
             foreach (var result in searchResult.SearchResults)
             {

@@ -291,6 +291,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
     <Compile Include="Documentation\Busineslogic\Events.cs" />

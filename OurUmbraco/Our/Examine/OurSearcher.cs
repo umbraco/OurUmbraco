@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine.Providers;
+using Examine.SearchCriteria;
 using Lucene.Net.QueryParsers;
 using OurUmbraco.Our.Models;
 
@@ -31,15 +32,17 @@ namespace OurUmbraco.Our.Examine
             Filters = filters ?? Enumerable.Empty<SearchFilters>();
         }
 
-        public SearchResultModel Search()
-        {
-            var multiIndexSearchProvider = (MultiIndexSearcher)ExamineManager.Instance.SearchProviderCollection["MultiIndexSearcher"];
-            multiIndexSearchProvider.EnableLeadingWildcards = true;
-            
-            var criteria = multiIndexSearchProvider.CreateSearchCriteria();
+        /// <summary>
+        /// Generates the search criteria that we want to search on
+        /// </summary>
+        /// <param name="searcher"></param>
+        /// <returns></returns>
+        public ISearchCriteria GetSearchCriteria(ISearcher searcher)
+        {            
+            var criteria = searcher.CreateSearchCriteria();
 
             var sb = new StringBuilder();
-            
+
             if (string.IsNullOrEmpty(NodeTypeAlias) == false)
             {
                 //if node type alias is specified, make it a MUST
@@ -54,33 +57,37 @@ namespace OurUmbraco.Our.Examine
 
             if (!string.IsNullOrEmpty(Term))
             {
-                Term = Term.Replace("\"", string.Empty).Replace(":", string.Empty).Replace(" OR ", " ").Replace(" or ", " ").Replace("\\", string.Empty).Trim('*');
+                //Cleanup the term so there are no errors
+                Term = Term.Replace("\"", string.Empty)
+                    .Replace(":", string.Empty)
+                    .Replace("\\", string.Empty).Trim('*');
+                //replace OR's with case insensitive matching
+                Term = Regex.Replace(Term, @" OR ", " ", RegexOptions.IgnoreCase);
                 // Replace double whitespaces with single space as they were giving errors
                 Term = Regex.Replace(Term, @"\s{2,}", " ");
 
                 //now we need to split the phrase into individual terms so the query parser can understand
                 var split = Term.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (split.Length > 0)
+                if (split.Length > 1)
                 {
                     //do an exact phrase match with boost
-                    sb.AppendFormat("(nodeName:\"{0}\" body:\"{0}\")^100 ", Term);
-                    
-                    //do standard match with boost on each term
-                    sb.Append("(");
-                    foreach (var s in split)
-                    {
-                        sb.AppendFormat("nodeName:{0} body:{0} ", s);    
-                    }
-                    sb.Append(")^50 ");
+                    sb.AppendFormat("nodeName:\"{0}\"^200 body:\"{0}\"^50 ", Term);
+                }
 
-                    //do prefix/suffix phrase with wildcards
-                    sb.Append("(");
+                if (split.Length > 0)
+                {
+                    //do standard match with boost on each term
                     foreach (var s in split)
                     {
-                        sb.AppendFormat("nodeName:*{0}* body:*{0}* ", s);
+                        sb.AppendFormat("nodeName:{0}^100 body:{0}^50 ", s);
                     }
-                    sb.Append(") ");
+
+                    //do suffix with wildcards
+                    foreach (var s in split)
+                    {
+                        sb.AppendFormat("nodeName:{0}*^0.9 body:{0}*^0.5 ", s);
+                    }
                 }
             }
 
@@ -92,18 +99,18 @@ namespace OurUmbraco.Our.Examine
 
             if (sb.Length == 0)
             {
-                return new SearchResultModel(new EmptySearchResults(), 0, "", "");
+                return null;
             }
 
             if (Filters.Any())
             {
                 //If there is a filter applied to the entire result then add it here, this is a MUST sub query
-                
+
                 foreach (var filter in Filters)
                 {
                     sb.Append(filter.GetLuceneAddFilters());
                 }
-                
+
 
                 foreach (var filter in Filters)
                 {
@@ -118,6 +125,21 @@ namespace OurUmbraco.Our.Examine
             if (string.IsNullOrEmpty(OrderBy) == false)
             {
                 criteria.OrderByDescending(OrderBy);
+            }
+
+            return criteria;
+        }
+
+        public SearchResultModel Search(string searcherName = null)
+        {
+            var multiIndexSearchProvider = ExamineManager.Instance.SearchProviderCollection[
+                string.IsNullOrWhiteSpace(searcherName) ? "MultiIndexSearcher" : searcherName];
+
+            var criteria = GetSearchCriteria(multiIndexSearchProvider);
+
+            if (criteria == null)
+            {
+                return new SearchResultModel(new EmptySearchResults(), 0, "", "");
             }
 
             var watch = new Stopwatch();

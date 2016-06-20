@@ -19,23 +19,18 @@ namespace OurUmbraco.Our.Examine
         public string GetLuceneAddFilters()
         {
             var sb = new StringBuilder();
-            bool addedGrouping = false;
+            sb.Append("+(");
+
             foreach (var filter in Filters)
             {
                 if (_booleanOperation != BooleanOperation.Not)
                 {
-                    if (addedGrouping == false)
-                        sb.Append("+(");
-                    
                     sb.Append("+");
-                    sb.AppendFormat("{0}:{1} ", filter.FieldName, filter.Value);
-                    
-                    if (addedGrouping == false)
-                        sb.Append(")");
-
-                    addedGrouping = true;
+                    sb.AppendFormat("{0}:{1} ", filter.FieldName, filter.Value);                 
                 }
             }
+
+            sb.Append(")");
 
             return sb.ToString();
         }
