@@ -96,6 +96,10 @@ namespace OurUmbraco.Repository.Services
                 //MUST be approved and live
                 searchFilters.Filters.Add(new SearchFilter("approved", "1"));
                 searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                if (!string.IsNullOrWhiteSpace(category))
+                {
+                    searchFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
+                }
                 filters.Add(searchFilters);
 
                 var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", filters: filters);
