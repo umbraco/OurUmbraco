@@ -12,10 +12,12 @@
 
 
 <h1>Contribute to the Umbraco Project</h1>
-  <div class="options">
+  <div>
     <umbraco:Item field="bodyText" runat="server" />
   </div>
-  <umbraco:Macro Alias="ContentLanding-Summary" runat="server" />
+    <div class="options">
+        <umbraco:Macro Alias="ContentLanding-Summary" runat="server" />
+    </div>
   </div>
   </div>
   </asp:Content>
