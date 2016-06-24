@@ -1,0 +1,221 @@
+@using OurUmbraco.Release
+@using OurUmbraco.Release.Models
+@using Version = System.Version
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    var from = Request.Params.Get("from");
+    var to = Request.Params.Get("to");
+
+    var fromVersion = new Version();
+    var toVersion = new Version();
+
+    var fromInt = 0;
+    var toInt = 0;
+
+    if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to))
+    {
+        fromVersion = new Version(from);
+        toVersion = new Version(to);
+        fromInt = (fromVersion.Major * 100000) + (fromVersion.Minor * 1000) + fromVersion.Build;
+        toInt = (toVersion.Major * 100000) + (toVersion.Minor * 1000) + toVersion.Build;
+    }
+
+    var sortedVersions = new Dictionary<Version, IPublishedContent>();
+    var selectedVersions = new Dictionary<Version, IPublishedContent>();
+
+    foreach (var release in Model.Content.Parent.Children.Where(x => x.GetPropertyValue<string>("releaseStatus") == "Released"))
+    {
+        try
+        {
+            sortedVersions.Add(new Version(release.Name), release);
+        }
+        catch (Exception ex)
+        {
+            <span style="display: none">Couldn't add version @release.Name</span>
+        }
+    }
+
+    var majorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending(x => x.Key);
+    var allVersions = new Versions();
+    var youTrackVersions = allVersions.GetAggregateVersionsFromFile();
+
+    var newFeatures = 0;
+    var breakingChanges = 0;
+    var issuesTasks = 0;
+
+    var newFeatureList = new List<AggregateView>();
+    var breakingList = new List<AggregateView>();
+    var issueList = new List<AggregateView>();
+
+
+    <form name="compare">
+        <div class="titles">From:</div> <select name="from">
+            @foreach (var majorVersion in majorVersionGroups)
+            {
+                var versions = majorVersion.OrderByDescending(x => x.Key);
+                <optgroup label="@majorVersion.Key">
+                    @foreach (var version in versions)
+                    {
+                        if (version.Key.ToString() == from)
+                        {
+                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                        }
+                        else
+                        {
+                            <option name="@version.Key" value="@version.Key">@version.Key</option>
+                        }
+                    }
+                </optgroup>
+            }
+        </select>
+
+        <div class="titles to">To:</div> <select name="to">
+                @foreach (var majorVersion in majorVersionGroups)
+            {
+                var versions = majorVersion.OrderByDescending(x => x.Key);
+                    <optgroup label="@majorVersion.Key">
+                        @foreach (var version in versions)
+                        {
+                            if (version.Key.ToString() == to)
+                            {
+                                <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                            }
+                            else
+                            {
+                                <option name="@version.Key" value="@version.Key">@version.Key</option>
+                            }
+                        }
+                    </optgroup>
+                }
+            </select>
+            <input type="submit" value="Compare" class="button" />
+</form>
+    <br/>
+
+    if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && fromInt < toInt)
+    {
+        foreach (var release in sortedVersions)
+        {
+            if (release.Key != fromVersion && (((release.Key.Major * 100000) + (release.Key.Minor * 1000) + release.Key.Build) >= fromInt) && (((release.Key.Major * 100000) + (release.Key.Minor * 1000) + release.Key.Build) <= toInt))
+            {
+                selectedVersions.Add(release.Key, release.Value);
+            }
+        }
+
+        foreach (var version in selectedVersions.OrderByDescending(x => x.Key))
+        {
+            var release = youTrackVersions.FirstOrDefault(x => x.version == version.Key.ToString());
+
+            if (release != null)
+            {
+                var newFeatureIssues = release.issues.Where(x => x.type.ToLowerInvariant().Contains("feature")).ToList();
+                newFeatureList.Add(new AggregateView { version = version.Key.ToString(), issues = newFeatureIssues });
+                newFeatures += newFeatureIssues.Count;
+
+                var breakingIssues = release.issues.Where(x => x.breaking).ToList();
+                breakingList.Add(new AggregateView { version = version.Key.ToString(), issues = breakingIssues });
+                breakingChanges += breakingIssues.Count;
+
+                var issueIssues = release.issues.Where(x => x.breaking == false && x.type.ToLowerInvariant().Contains("feature") == false).ToList();
+                issueList.Add(new AggregateView { version = version.Key.ToString(), issues = issueIssues });
+                issuesTasks += issueIssues.Count;
+            }
+        }
+        <div class="row">
+            <div class="col-sm-12 explain">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <div class="dot big progress">
+                            <div class="chart" data-percent="100">
+                                <p>@newFeatures</p>
+                            </div>
+                        </div>
+                        <div class="chartDesc">
+                            <h3><a href="#newFeatures">New Features</a></h3>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="dot big progress">
+                            <div class="chart" data-percent="100">
+                                <p>@breakingChanges</p>
+                            </div>
+                        </div>
+                        <div class="chartDesc">
+                            <h3><a href="#breakingChanges">Breaking Changes</a></h3>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <div class="dot big progress">
+                            <div class="chart" data-percent="100">
+                                <p>@issuesTasks</p>
+                            </div>
+                        </div>
+                        <div class="chartDesc">
+                            <h3><a href="#issuesTasks">Issues & Tasks</a></h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-12 statuses">
+                @if (newFeatures > 0)
+                {
+                    <div id="newFeatures" class="status features">
+                        <h2>New Features</h2>
+                        @foreach (var release in newFeatureList.Where(x => x.issues.Any()))
+                        {
+                            <h3>Features released in version @release.version</h3>
+                            foreach (var issue in release.issues)
+                            {
+                                <ul>
+                                    <li class="@issue.StateIcon()" title="@issue.state">
+                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </div>
+                }
+
+                @if (breakingChanges > 0)
+                {
+                    <div id="breakingChanges" class="status breaking">
+                        <h2>Breaking Changes</h2>
+                        @foreach (var release in breakingList.Where(x => x.issues.Any()))
+                        {
+                            <h3>Breaking changes in version @release.version</h3>
+                            foreach (var issue in release.issues)
+                            {
+                                <ul>
+                                    <li class="@issue.StateIcon()" title="@issue.state">
+                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </div>
+                }
+
+                @if (issuesTasks > 0)
+                {
+                    <div id="issuesTasks" class="status issues">
+                        <h2>Issues & Tasks</h2>
+                        @foreach (var release in issueList.Where(x => x.issues.Any()))
+                        {
+                            <h3>Issues & Tasks fixed in version @release.version</h3>
+                            foreach (var issue in release.issues)
+                            {
+                                <ul>
+                                    <li class="@issue.StateIcon()" title="@issue.state">
+                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                    </li>
+                                </ul>
+                            }
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+    }
+}

@@ -672,6 +672,7 @@
     <Content Include="config\feedProxy.config" />
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
+    <Content Include="masterpages\ReleaseCompare.master" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
@@ -1739,6 +1740,7 @@
     <Content Include="Views\MacroPartials\Project\Edit.cshtml" />
     <Content Include="masterpages\ProjectPage.master" />
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
+    <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

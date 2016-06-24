@@ -31,9 +31,14 @@
 					    <li>
 						    <a href="/contribute/progress"><h3>In Progress</h3></a>
 					    </li>
-                        <li class="active">
+                        <li class="active open">
 						    <a href="/contribute/releases"><h3>All releases</h3></a>
-					    </li>
+								<ul class="level-2">
+									<li>
+										<a href="/contribute/releases/compare"><h4>Compare Versions</h4></a>
+									</li>
+                                </ul>
+                        </li>
 				    </ul>
 			    </nav>
 
