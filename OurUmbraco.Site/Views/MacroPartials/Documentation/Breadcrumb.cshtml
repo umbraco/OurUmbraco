@@ -5,11 +5,15 @@
 @{
     string baseurl = "/";
     string absolutePath = HttpContext.Current.Request.Url.AbsolutePath;
-    string directoryName = Path.GetDirectoryName(absolutePath);
+    string directoryName = string.Empty + Path.GetDirectoryName(absolutePath);
 
-    directoryName = directoryName.Substring(1);
+    if (!string.IsNullOrEmpty(directoryName))
+    {
+        directoryName = directoryName.Substring(1);
+    }
+
     string[] strDirs = directoryName.Split('\\');
-    
+
     var linkToGithub = string.Empty;
     if (absolutePath.StartsWith("/project") == false)
     {

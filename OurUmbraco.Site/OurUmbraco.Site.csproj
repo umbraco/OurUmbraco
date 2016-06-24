@@ -1701,9 +1701,9 @@
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
+    <Content Include="Views\MacroPartials\Documentation\Breadcrumb.cshtml" />
+    <Content Include="Views\MacroPartials\Documentation\DisplayMarkdown.cshtml" />
+    <Content Include="Views\MacroPartials\Documentation\Navigation.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
