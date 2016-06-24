@@ -100,8 +100,8 @@
                         .release .chart {
                             height: 60px;
                             width: 60px;
-                            top: initial;
-                            left: initial;
+                            top: inherit;
+                            left: inherit;
                             text-align: center;
                         }
 
@@ -127,6 +127,7 @@
                             padding: 10px;
                             background-position: 95% center;
                             float: left;
+                            width: 100%;
                         }
 
                         .release .titles {
@@ -135,25 +136,23 @@
                             text-transform: uppercase;
                             font-weight: 700;
                             letter-spacing: .5px;
-                            float: left;
-                            margin-right: 10px;
-                        }
-                        .release .to {
-                            margin-left: 20px;
-                            margin-right: 20px;
                         }
 
                         .release .button {
-                            float: left;
-                            margin-left: 30px;
+                            float: right;
+                        }
+                        .explain .col-xs-12 {
+                            min-height: 50px;
                         }
                     </style>
+                    <div class="container">
                         <div class="row markdown-syntax douh">
                             <div class="col-sm-12">
                                 <h1>Compare Releases</h1>
 				                <umbraco:Macro Alias="ReleasesDropdown" runat="server" />
                             </div>
                         </div>
+                    </div>
                     </div><!-- .content-wrapper -->
 				</div><!-- .main-content -->
 			</div><!-- .main-area -->

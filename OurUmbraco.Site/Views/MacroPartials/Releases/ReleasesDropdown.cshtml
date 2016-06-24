@@ -48,50 +48,68 @@
     var breakingList = new List<AggregateView>();
     var issueList = new List<AggregateView>();
 
-
     <form name="compare">
-        <div class="titles">From:</div> <select name="from">
-            @foreach (var majorVersion in majorVersionGroups)
-            {
-                var versions = majorVersion.OrderByDescending(x => x.Key);
-                <optgroup label="@majorVersion.Key">
-                    @foreach (var version in versions)
-                    {
-                        if (version.Key.ToString() == from)
-                        {
-                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
-                        }
-                        else
-                        {
-                            <option name="@version.Key" value="@version.Key">@version.Key</option>
-                        }
-                    }
-                </optgroup>
-            }
-        </select>
-
-        <div class="titles to">To:</div> <select name="to">
-                @foreach (var majorVersion in majorVersionGroups)
-            {
-                var versions = majorVersion.OrderByDescending(x => x.Key);
-                    <optgroup label="@majorVersion.Key">
-                        @foreach (var version in versions)
-                        {
-                            if (version.Key.ToString() == to)
+        <div class="row">
+            <div class="col-xs-6 col-sm-4">
+                <div class="row">
+                    <div class="col-sm-3 titles">From:</div>
+                    <div class="col-sm-9">
+                        <select name="from">
+                            @foreach (var majorVersion in majorVersionGroups)
                             {
-                                <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                                var versions = majorVersion.OrderByDescending(x => x.Key);
+                                <optgroup label="@majorVersion.Key">
+                                    @foreach (var version in versions)
+                                    {
+                                        if (version.Key.ToString() == from)
+                                        {
+                                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option name="@version.Key" value="@version.Key">@version.Key</option>
+                                        }
+                                    }
+                                </optgroup>
                             }
-                            else
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                <div class="row">
+                    <div class="col-sm-3 titles">To:</div>
+                    <div class="col-sm-9">
+                        <select name="to">
+                            @foreach (var majorVersion in majorVersionGroups)
                             {
-                                <option name="@version.Key" value="@version.Key">@version.Key</option>
+                                var versions = majorVersion.OrderByDescending(x => x.Key);
+                                <optgroup label="@majorVersion.Key">
+                                    @foreach (var version in versions)
+                                    {
+                                        if (version.Key.ToString() == to)
+                                        {
+                                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option name="@version.Key" value="@version.Key">@version.Key</option>
+                                        }
+                                    }
+                                </optgroup>
                             }
-                        }
-                    </optgroup>
-                }
-            </select>
-            <input type="submit" value="Compare" class="button" />
-</form>
-    <br/>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xm-12 col-sm-4">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <input type="submit" value="Compare" class="button" />
+                    </div></div>
+            </div>
+        </div>
+        </form>
 
     if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && fromInt < toInt)
     {
@@ -125,7 +143,7 @@
         <div class="row">
             <div class="col-sm-12 explain">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@newFeatures</p>
@@ -135,7 +153,7 @@
                             <h3><a href="#newFeatures">New Features</a></h3>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@breakingChanges</p>
@@ -145,7 +163,7 @@
                             <h3><a href="#breakingChanges">Breaking Changes</a></h3>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@issuesTasks</p>
