@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
-using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.Membership;
 using Umbraco.Web;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
@@ -17,7 +17,7 @@ namespace OurUmbraco.Our
     public class MigrationsHandler : ApplicationEventHandler
     {
         private const string MigrationMarkersPath = "~/App_Data/migrations/";
-        
+
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             EnsureMigrationsMarkerPathExists();
@@ -29,6 +29,7 @@ namespace OurUmbraco.Our
             ForumArchivedCheckbox();
             AddHomeOnlyBannerTextArea();
             AddMissingUmbracoUsers();
+            AddReleaseCompareFeature();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -53,7 +54,7 @@ namespace OurUmbraco.Our
                 if (macroService.GetByAlias(macroAlias) == null)
                 {
                     // Run migration
-                    
+
                     var macro = new Macro
                     {
                         Name = "[Members] Activate",
@@ -84,8 +85,8 @@ namespace OurUmbraco.Our
                     activatePage.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
                     contentService.SaveAndPublishWithStatus(activatePage);
                 }
-                
-                string[] lines = {""};
+
+                string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
             catch (Exception ex)
@@ -124,13 +125,13 @@ namespace OurUmbraco.Our
                 var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
 
                 var antiSpamPageName = "AntiSpam";
-                if(rootNode.Children().Any(x => x.Name == antiSpamPageName) == false)
+                if (rootNode.Children().Any(x => x.Name == antiSpamPageName) == false)
                 {
                     var content = contentService.CreateContent(antiSpamPageName, rootNode.Id, "Textpage");
                     content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
                     contentService.SaveAndPublishWithStatus(content);
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -165,7 +166,7 @@ namespace OurUmbraco.Our
                     };
                     macro.Save();
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -234,7 +235,7 @@ namespace OurUmbraco.Our
                     projectContentType.AddPropertyType(checkboxPropertyType, "Project");
                     contentTypeService.Save(projectContentType);
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -264,7 +265,7 @@ namespace OurUmbraco.Our
                     projectContentType.AddPropertyType(checkboxPropertyType, "Forum Information");
                     contentTypeService.Save(projectContentType);
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -295,7 +296,7 @@ namespace OurUmbraco.Our
                     communityContentType.MovePropertyType("mainNotification", "Banners");
                     contentTypeService.Save(communityContentType);
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -319,11 +320,11 @@ namespace OurUmbraco.Our
                 var rootUser = userService.GetUserById(0);
                 if (rootUser == null)
                     return;
-                
+
                 // Don't run this on Seb's database which has slightly different data in it
                 if (rootUser.Email == "pph@umrbaco.org")
                     return;
-                
+
                 var db = UmbracoContext.Current.Application.DatabaseContext.Database;
                 db.Execute("DELETE FROM [umbracoUser] WHERE id != 0");
                 db.Execute("DELETE FROM [umbracoUser2app] WHERE [user] != 0");
@@ -345,5 +346,102 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+
+        private void AddReleaseCompareFeature()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var releaseCompareAlias = "ReleaseCompare";
+                var compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
+                if (compareContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Release Compare",
+                        Alias = releaseCompareAlias
+                    };
+                    contentTypeService.Save(contentType);
+                }
+
+                compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
+
+                var releaseLandingContentType = contentTypeService.GetContentType("ReleaseLanding");
+                
+                var allowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(compareContentType.Id, 0) };
+                releaseLandingContentType.AllowedContentTypes = allowedContentTypes;
+                contentTypeService.Save(releaseLandingContentType);
+
+                var templatePathRelative = "~/masterpages/ReleaseCompare.master";
+                var templatePath = HostingEnvironment.MapPath(templatePathRelative);
+                var templateContent = File.ReadAllText(templatePath);
+                var releaseCompareTemplate = new Template("Release Compare", releaseCompareAlias)
+                {
+                    MasterTemplateAlias = "Master",
+                    Content = templateContent
+                };
+
+                var fileService = UmbracoContext.Current.Application.Services.FileService;
+
+                var masterTemplate = fileService.GetTemplate("Master");
+                releaseCompareTemplate.SetMasterTemplate(masterTemplate);
+
+                fileService.SaveTemplate(releaseCompareTemplate);
+                contentTypeService.Save(compareContentType);
+
+                compareContentType.AllowedTemplates = new List<ITemplate> { releaseCompareTemplate };
+                compareContentType.SetDefaultTemplate(releaseCompareTemplate);
+
+                contentTypeService.Save(compareContentType);
+
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
+                if (rootNode == null)
+                    return;
+
+                var contributeNode = rootNode.Children().FirstOrDefault(x => x.Name == "Contribute");
+                if (contributeNode == null)
+                    return;
+
+                var releasesNode = contributeNode.Children().FirstOrDefault(x => x.Name == "Releases");
+
+                if (releasesNode == null)
+                    return;
+
+                var compareContent = contentService.CreateContent("Compare", releasesNode.Id, "ReleaseCompare");
+                compareContent.Template = releaseCompareTemplate;
+                contentService.SaveAndPublishWithStatus(compareContent);
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                const string macroAlias = "ReleasesDropdown";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    var macro = new Macro
+                    {
+                        Name = "ReleasesDropdown",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Releases/ReleasesDropdown.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
+
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
     }
 }
