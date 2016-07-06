@@ -1,22 +1,23 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
 <%@ Import Namespace="Umbraco.Web" %>
 <%@ Import Namespace="OurUmbraco.Release" %>
 <%@ Import Namespace="Umbraco.Core.Models" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderId="Head" runat="server">
+<asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="server">
 </asp:Content>
-  
-<asp:Content ID="Content2" ContentPlaceHolderId="Main" runat="server">
 
-  <div class="has-sidebar release">
-      <div class="page-content">
-			<div class="sidebar-area">
-				<div class="sidebar-content">
-					<div class="content-wrapper">
-                        
-					<nav>
-						<ul class="level-1">
-<%--                            <%
+<asp:Content ID="Content2" ContentPlaceHolderID="Main" runat="server">
+
+    <div class="has-sidebar release">
+        <div class="page-content">
+            <div class="sidebar-area">
+                <div class="sidebar-content">
+                    <div class="content-wrapper">
+
+                        <nav>
+                            <ul class="level-1">
+                                <%--                            <%
                                 foreach (var currentRelease in allReleases.Where(x => x.released && x.currentRelease))
                                 {
                             %>
@@ -24,146 +25,173 @@
 						                <a class="active" href="/contribute/releases/<%= currentRelease.version.Replace(".", string.Empty) %>"><h3>Latest Release - v<%= currentRelease.version %></h3></a>
 					                </li>
                             <% } %>--%>
-							<li>
-								<a href="/contribute/progress"><h3>In Progress</h3></a>
-							</li>
-                            <li class="active open">
-						        <a href="/contribute/releases"><h3>All releases</h3></a>
-								    <ul class="level-2">
-									    <li class="active">
-										    <a href="/contribute/releases/compare"><h4>Compare Versions</h4></a>
-									    </li>
+                                <li>
+                                    <a href="/contribute/progress">
+                                        <h3>In Progress</h3>
+                                    </a>
+                                </li>
+                                <li class="active open">
+                                    <a href="/contribute/releases">
+                                        <h3>All releases</h3>
+                                    </a>
+                                    <ul class="level-2">
+                                        <li class="active">
+                                            <a href="/contribute/releases/compare">
+                                                <h4>Compare Versions</h4>
+                                            </a>
+                                        </li>
                                     </ul>
-                            </li>
-					    </ul>
-				    </nav>
+                                </li>
+                            </ul>
+                        </nav>
 
-				</div><!-- .content-wrapper -->
-			</div><!-- .sidebar-content -->
-		</div>
-		<div class="main-area">
-			<div class="main-content">
-				<div class="content-wrapper">
-
-                    <div>
-                        <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
                     </div>
-                    
-                    <style>
-                        .release .explain {
-                            margin-top: 20px;
-                            border-bottom: 1px solid #eee;
-                            border-top: 1px solid #eee;
-                        }
-                         .release .explain h2 {
-                             margin-top: 12px;
-                             font-size: 2em;
-                             margin-bottom: .3rem;
-                             color: rgba(0,0,0,.8);
-                         }
+                    <!-- .content-wrapper -->
+                </div>
+                <!-- .sidebar-content -->
+            </div>
+            <div class="main-area">
+                <div class="main-content">
+                    <div class="content-wrapper">
 
-                        .release .dot {
-                            border: none;
-                        }
+                        <div>
+                            <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
+                        </div>
 
-                        .release .dot.big {
-                            position: relative;
-                            text-indent: 0;
-                            margin: 15px !important;
-                            float: left;
-                        }
+                        <style>
+                            .release .explain {
+                                margin-top: 20px;
+                                border-bottom: 1px solid #eee;
+                                border-top: 1px solid #eee;
+                            }
 
-                        .statuses ul {
-                            list-style-type: none; 
-                        }
-                        .statuses ul li  { 
-                            position: relative;
-                            margin-bottom: 10px;
-                            padding-left: 10px;
-                        }
-                        .statuses li:before {
-                            position: absolute;
-                            top: -4px;
-                            left: -25px;
-                            font-size: 1.5em;
-                        }
-                        .release .markdown-syntax a {
-                            text-decoration: none;
-                        }
-                        .release .markdown-syntax a:hover {
-                            text-decoration: underline;
-                        }
-                        .markdown-syntax.douh {
-                            margin-top: 0 !important;
-                        }
-                                                
-                        .release .chart {
-                            height: 60px;
-                            width: 60px;
-                            top: initial;
-                            left: initial;
-                            text-align: center;
-                        }
+                                .release .explain h2 {
+                                    margin-top: 12px;
+                                    font-size: 2em;
+                                    margin-bottom: .3rem;
+                                    color: rgba(0,0,0,.8);
+                                }
 
-                        .release .chart p {
-                            vertical-align: middle;
-                            line-height: 2.7rem;
-                            display: inline-block;
-                        }
+                            .release .dot {
+                                border: none;
+                            }
 
-                        .release .chart canvas {
-                            top: 0;
-                            left: 0;
-                        }
+                                .release .dot.big {
+                                    position: relative;
+                                    text-indent: 0;
+                                    margin: 15px !important;
+                                    float: left;
+                                }
 
-                        .release .chartDesc {
-                            float: left;
-                            position: relative;
-                            line-height: 3.6em;
-                        }
+                            .statuses ul {
+                                list-style-type: none;
+                            }
 
-                        .release select {
-                            border-radius: 0;
-                            padding: 10px;
-                            background-position: 95% center;
-                            float: left;
-                        }
+                                .statuses ul li {
+                                    position: relative;
+                                    margin-bottom: 10px;
+                                    padding-left: 10px;
+                                }
 
-                        .release .titles {
-                            padding: 12px 15px;
-                            font-size: .8rem;
-                            text-transform: uppercase;
-                            font-weight: 700;
-                            letter-spacing: .5px;
-                            float: left;
-                            margin-right: 10px;
-                        }
-                        .release .to {
-                            margin-left: 20px;
-                            margin-right: 20px;
-                        }
+                            .statuses li:before {
+                                position: absolute;
+                                top: -4px;
+                                left: -25px;
+                                font-size: 1.5em;
+                            }
 
-                        .release .button {
-                            float: left;
-                            margin-left: 30px;
-                        }
-                    </style>
-                        <div class="row markdown-syntax douh">
-                            <div class="col-sm-12">
-                                <h1>Compare Releases</h1>
-				                <umbraco:Macro Alias="ReleasesDropdown" runat="server" />
+                            .release .markdown-syntax a {
+                                text-decoration: none;
+                            }
+
+                                .release .markdown-syntax a:hover {
+                                    text-decoration: underline;
+                                }
+
+                            .markdown-syntax.douh {
+                                margin-top: 0 !important;
+                            }
+
+                            .release .chart {
+                                height: 60px;
+                                width: 60px;
+                                top: inherit;
+                                left: inherit;
+                                text-align: center;
+                            }
+
+                                .release .chart p {
+                                    vertical-align: middle;
+                                    line-height: 2.7rem;
+                                    display: inline-block;
+                                }
+
+                                .release .chart canvas {
+                                    top: 0;
+                                    left: 0;
+                                }
+
+                            .release .chartDesc {
+                                float: left;
+                                position: relative;
+                                line-height: 3.6em;
+                            }
+
+                            .release select {
+                                border-radius: 0;
+                                padding: 10px;
+                                background-position: 95% center;
+                                float: left;
+                            }
+
+                            .release .titles {
+                                padding: 12px 15px;
+                                font-size: .8rem;
+                                text-transform: uppercase;
+                                font-weight: 700;
+                                letter-spacing: .5px;
+                            }
+
+                            .release .to {
+                                margin-left: 20px;
+                                margin-right: 20px;
+                            }
+
+                            .release .button {
+                                float: right;
+                            }
+
+                            .explain .col-xs-12 {
+                                min-height: 50px;
+                            }
+
+                            .error {
+                                color: red !important;
+                            }
+                        </style>
+                        <div class="container">
+                            <div class="row markdown-syntax douh">
+                                <div class="col-sm-12">
+                                    <h1>Compare Releases</h1>
+                                    <umbraco:Macro Alias="ReleasesDropdown" runat="server" />
+                                </div>
                             </div>
                         </div>
-                    </div><!-- .content-wrapper -->
-				</div><!-- .main-content -->
-			</div><!-- .main-area -->
-	    </div><!-- .page-content -->
-	</div><!-- has-sidebar -->
+                    </div>
+                    <!-- .content-wrapper -->
+                </div>
+                <!-- .main-content -->
+            </div>
+            <!-- .main-area -->
+        </div>
+        <!-- .page-content -->
+    </div>
+    <!-- has-sidebar -->
 
 </asp:Content>
 
-<asp:Content ContentPlaceHolderId="EndScripts" runat="server">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.4/jquery.easypiechart.min.js"></script>    
+<asp:Content ContentPlaceHolderID="EndScripts" runat="server">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.4/jquery.easypiechart.min.js"></script>
     <script type="text/javascript">
         function offsetAnchor() {
             if (location.hash.length !== 0) {

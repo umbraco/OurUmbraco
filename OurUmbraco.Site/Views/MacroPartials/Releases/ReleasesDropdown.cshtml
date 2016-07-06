@@ -4,21 +4,17 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
-    var from = Request.Params.Get("from");
-    var to = Request.Params.Get("to");
+    Version fromVersion;
+    Version toVersion;
 
-    var fromVersion = new Version();
-    var toVersion = new Version();
+    Version.TryParse(Request.QueryString["from"], out fromVersion);
+    Version.TryParse(Request.QueryString["to"], out toVersion);
 
-    var fromInt = 0;
-    var toInt = 0;
-
-    if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to))
+    // If there's values in the POST (from the form) then those overrule the values in the querystring
+    if (Request.Form["from"] != null && Request.Form["to"] != null)
     {
-        fromVersion = new Version(from);
-        toVersion = new Version(to);
-        fromInt = (fromVersion.Major * 100000) + (fromVersion.Minor * 1000) + fromVersion.Build;
-        toInt = (toVersion.Major * 100000) + (toVersion.Minor * 1000) + toVersion.Build;
+        Version.TryParse(Request.Form["from"], out fromVersion);
+        Version.TryParse(Request.Form["to"], out toVersion);
     }
 
     var sortedVersions = new Dictionary<Version, IPublishedContent>();
@@ -48,84 +44,116 @@
     var breakingList = new List<AggregateView>();
     var issueList = new List<AggregateView>();
 
-
-    <form name="compare">
-        <div class="titles">From:</div> <select name="from">
-            @foreach (var majorVersion in majorVersionGroups)
-            {
-                var versions = majorVersion.OrderByDescending(x => x.Key);
-                <optgroup label="@majorVersion.Key">
-                    @foreach (var version in versions)
-                    {
-                        if (version.Key.ToString() == from)
-                        {
-                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
-                        }
-                        else
-                        {
-                            <option name="@version.Key" value="@version.Key">@version.Key</option>
-                        }
-                    }
-                </optgroup>
-            }
-        </select>
-
-        <div class="titles to">To:</div> <select name="to">
-                @foreach (var majorVersion in majorVersionGroups)
-            {
-                var versions = majorVersion.OrderByDescending(x => x.Key);
-                    <optgroup label="@majorVersion.Key">
-                        @foreach (var version in versions)
-                        {
-                            if (version.Key.ToString() == to)
-                            {
-                                <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
-                            }
-                            else
-                            {
-                                <option name="@version.Key" value="@version.Key">@version.Key</option>
-                            }
-                        }
-                    </optgroup>
-                }
-            </select>
-            <input type="submit" value="Compare" class="button" />
-</form>
-    <br/>
-
-    if (!string.IsNullOrWhiteSpace(from) && !string.IsNullOrWhiteSpace(to) && fromInt < toInt)
+    if (fromVersion != null && toVersion != null && toVersion <= fromVersion)
     {
-        foreach (var release in sortedVersions)
+        <p class="error">Can't compare versions that are equal to each other or where the "to" is lower than the "from".</p>
+    }
+
+    // Reset to show the compare between the previous version and the newest available version
+    if ((fromVersion == null && toVersion == null) || (toVersion <= fromVersion))
+    {
+        toVersion = sortedVersions.Last().Key;
+        fromVersion = sortedVersions.Skip(sortedVersions.Count - 2).First().Key;
+    }
+
+    <form name="compare" method="post">
+        <div class="row">
+            <div class="col-xs-6 col-sm-4">
+                <div class="row">
+                    <div class="col-sm-3 titles">From:</div>
+                    <div class="col-sm-9">
+                        <select name="from">
+                            @foreach (var majorVersion in majorVersionGroups)
+                            {
+                                var versions = majorVersion.OrderByDescending(x => x.Key);
+                                <optgroup label="@majorVersion.Key">
+                                    @foreach (var version in versions)
+                                    {
+                                        if (version.Key.ToString() == fromVersion.ToString())
+                                        {
+                                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option name="@version.Key" value="@version.Key">@version.Key</option>
+                                        }
+                                    }
+                                </optgroup>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-6 col-sm-4">
+                <div class="row">
+                    <div class="col-sm-3 titles">To:</div>
+                    <div class="col-sm-9">
+                        <select name="to">
+                            @foreach (var majorVersion in majorVersionGroups)
+                            {
+                                var versions = majorVersion.OrderByDescending(x => x.Key);
+                                <optgroup label="@majorVersion.Key">
+                                    @foreach (var version in versions)
+                                    {
+                                        if (version.Key.ToString() == toVersion.ToString())
+                                        {
+                                            <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
+                                        }
+                                        else
+                                        {
+                                            <option name="@version.Key" value="@version.Key">@version.Key</option>
+                                        }
+                                    }
+                                </optgroup>
+                            }
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xm-12 col-sm-4">
+                <div class="row">
+                    <div class="col-xs-12">
+                        <input type="submit" value="Compare" class="button" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <br />
+    
+    if (fromVersion != null && toVersion != null && fromVersion < toVersion)
+    {
+        foreach (var release in sortedVersions.Where(release => release.Key != fromVersion && (release.Key >= fromVersion) && (release.Key <= toVersion)))
         {
-            if (release.Key != fromVersion && (((release.Key.Major * 100000) + (release.Key.Minor * 1000) + release.Key.Build) >= fromInt) && (((release.Key.Major * 100000) + (release.Key.Minor * 1000) + release.Key.Build) <= toInt))
-            {
-                selectedVersions.Add(release.Key, release.Value);
-            }
+            selectedVersions.Add(release.Key, release.Value);
         }
 
         foreach (var version in selectedVersions.OrderByDescending(x => x.Key))
         {
             var release = youTrackVersions.FirstOrDefault(x => x.version == version.Key.ToString());
 
-            if (release != null)
+            if (release == null)
             {
-                var newFeatureIssues = release.issues.Where(x => x.type.ToLowerInvariant().Contains("feature")).ToList();
-                newFeatureList.Add(new AggregateView { version = version.Key.ToString(), issues = newFeatureIssues });
-                newFeatures += newFeatureIssues.Count;
-
-                var breakingIssues = release.issues.Where(x => x.breaking).ToList();
-                breakingList.Add(new AggregateView { version = version.Key.ToString(), issues = breakingIssues });
-                breakingChanges += breakingIssues.Count;
-
-                var issueIssues = release.issues.Where(x => x.breaking == false && x.type.ToLowerInvariant().Contains("feature") == false).ToList();
-                issueList.Add(new AggregateView { version = version.Key.ToString(), issues = issueIssues });
-                issuesTasks += issueIssues.Count;
+                continue;
             }
+
+            var newFeatureIssues = release.issues.Where(x => x.type.ToLowerInvariant().Contains("feature")).ToList();
+            newFeatureList.Add(new AggregateView { version = version.Key.ToString(), issues = newFeatureIssues });
+            newFeatures += newFeatureIssues.Count;
+
+            var breakingIssues = release.issues.Where(x => x.breaking).ToList();
+            breakingList.Add(new AggregateView { version = version.Key.ToString(), issues = breakingIssues });
+            breakingChanges += breakingIssues.Count;
+
+            var issueIssues = release.issues.Where(x => x.breaking == false && x.type.ToLowerInvariant().Contains("feature") == false).ToList();
+            issueList.Add(new AggregateView { version = version.Key.ToString(), issues = issueIssues });
+            issuesTasks += issueIssues.Count;
         }
+        
         <div class="row">
             <div class="col-sm-12 explain">
                 <div class="row">
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@newFeatures</p>
@@ -135,7 +163,7 @@
                             <h3><a href="#newFeatures">New Features</a></h3>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@breakingChanges</p>
@@ -145,7 +173,7 @@
                             <h3><a href="#breakingChanges">Breaking Changes</a></h3>
                         </div>
                     </div>
-                    <div class="col-sm-4">
+                    <div class="col-xs-12 col-sm-4">
                         <div class="dot big progress">
                             <div class="chart" data-percent="100">
                                 <p>@issuesTasks</p>
