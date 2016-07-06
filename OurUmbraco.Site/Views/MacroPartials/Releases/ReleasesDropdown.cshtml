@@ -256,6 +256,13 @@
 
                 <div id="issuesTasks" class="status issues">
                     <h2>Release Notes</h2>
+                    
+                    @if (notesOnly)
+                    {
+                        <p>
+                            What follows is a list of release notes, <a href="@RemoveQueryStringByKey(Request.Url.OriginalString, "notes")" style="text-decoration: underline">want to see the list of related issues?</a>
+                        </p>
+                    }
                     @foreach (var version in selectedVersions.OrderByDescending(x => x.Key))
                     {
                         <h2>Notes for version @version.Key</h2>
@@ -265,4 +272,26 @@
             </div>
         </div>
     }
+}
+
+@functions {
+
+    public static string RemoveQueryStringByKey(string url, string key)
+    {
+        var uri = new Uri(url);
+
+        // this gets all the query string key value pairs as a collection
+        var newQueryString = HttpUtility.ParseQueryString(uri.Query);
+
+        // this removes the key if exists
+        newQueryString.Remove(key);
+
+        // this gets the page path from root without QueryString
+        string pagePathWithoutQueryString = uri.GetLeftPart(UriPartial.Path);
+
+        return newQueryString.Count > 0
+            ? String.Format("{0}?{1}", pagePathWithoutQueryString, newQueryString)
+            : pagePathWithoutQueryString;
+    }
+
 }
