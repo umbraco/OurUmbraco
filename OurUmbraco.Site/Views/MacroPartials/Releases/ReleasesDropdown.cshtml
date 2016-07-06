@@ -4,6 +4,12 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
+    var notesOnly = false;
+    if (Request.QueryString["notes"] != null)
+    {
+        notesOnly = true;
+    }
+
     Version fromVersion;
     Version toVersion;
 
@@ -120,7 +126,7 @@
         </div>
     </form>
     <br />
-    
+
     if (fromVersion != null && toVersion != null && fromVersion < toVersion)
     {
         foreach (var release in sortedVersions.Where(release => release.Key != fromVersion && (release.Key >= fromVersion) && (release.Key <= toVersion)))
@@ -149,7 +155,7 @@
             issueList.Add(new AggregateView { version = version.Key.ToString(), issues = issueIssues });
             issuesTasks += issueIssues.Count;
         }
-        
+
         <div class="row">
             <div class="col-sm-12 explain">
                 <div class="row">
@@ -187,62 +193,75 @@
             </div>
 
             <div class="col-sm-12 statuses">
-                @if (newFeatures > 0)
+
+                @if (notesOnly == false)
                 {
-                    <div id="newFeatures" class="status features">
-                        <h2>New Features</h2>
-                        @foreach (var release in newFeatureList.Where(x => x.issues.Any()))
-                        {
-                            <h3>Features released in version @release.version</h3>
-                            foreach (var issue in release.issues)
+                    if (newFeatures > 0)
+                    {
+                        <div id="newFeatures" class="status features">
+                            <h2>New Features</h2>
+                            @foreach (var release in newFeatureList.Where(x => x.issues.Any()))
                             {
-                                <ul>
-                                    <li class="@issue.StateIcon()" title="@issue.state">
-                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
-                                    </li>
-                                </ul>
+                                <h3>Features released in version @release.version</h3>
+                                foreach (var issue in release.issues)
+                                {
+                                    <ul>
+                                        <li class="@issue.StateIcon()" title="@issue.state">
+                                            <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                        </li>
+                                    </ul>
+                                }
                             }
-                        }
-                    </div>
+                        </div>
+                    }
+
+                    if (breakingChanges > 0)
+                    {
+                        <div id="breakingChanges" class="status breaking">
+                            <h2>Breaking Changes</h2>
+                            @foreach (var release in breakingList.Where(x => x.issues.Any()))
+                            {
+                                <h3>Breaking changes in version @release.version</h3>
+                                foreach (var issue in release.issues)
+                                {
+                                    <ul>
+                                        <li class="@issue.StateIcon()" title="@issue.state">
+                                            <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                        </li>
+                                    </ul>
+                                }
+                            }
+                        </div>
+                    }
+
+                    if (issuesTasks > 0)
+                    {
+                        <div id="issuesTasks" class="status issues">
+                            <h2>Issues & Tasks</h2>
+                            @foreach (var release in issueList.Where(x => x.issues.Any()))
+                            {
+                                <h3>Issues & Tasks fixed in version @release.version</h3>
+                                foreach (var issue in release.issues)
+                                {
+                                    <ul>
+                                        <li class="@issue.StateIcon()" title="@issue.state">
+                                            <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
+                                        </li>
+                                    </ul>
+                                }
+                            }
+                        </div>
+                    }
                 }
 
-                @if (breakingChanges > 0)
-                {
-                    <div id="breakingChanges" class="status breaking">
-                        <h2>Breaking Changes</h2>
-                        @foreach (var release in breakingList.Where(x => x.issues.Any()))
-                        {
-                            <h3>Breaking changes in version @release.version</h3>
-                            foreach (var issue in release.issues)
-                            {
-                                <ul>
-                                    <li class="@issue.StateIcon()" title="@issue.state">
-                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
-                                    </li>
-                                </ul>
-                            }
-                        }
-                    </div>
-                }
-
-                @if (issuesTasks > 0)
-                {
-                    <div id="issuesTasks" class="status issues">
-                        <h2>Issues & Tasks</h2>
-                        @foreach (var release in issueList.Where(x => x.issues.Any()))
-                        {
-                            <h3>Issues & Tasks fixed in version @release.version</h3>
-                            foreach (var issue in release.issues)
-                            {
-                                <ul>
-                                    <li class="@issue.StateIcon()" title="@issue.state">
-                                        <a href="http://issues.umbraco.org/issue/@(issue.id)" target="_blank">@issue.id - @issue.title</a>
-                                    </li>
-                                </ul>
-                            }
-                        }
-                    </div>
-                }
+                <div id="issuesTasks" class="status issues">
+                    <h2>Release Notes</h2>
+                    @foreach (var version in selectedVersions.OrderByDescending(x => x.Key))
+                    {
+                        <h2>Notes for version @version.Key</h2>
+                        @Html.Raw(version.Value.GetPropertyValue<string>("bodyText"))
+                    }
+                </div>
             </div>
         </div>
     }
