@@ -4,11 +4,7 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
-    var notesOnly = false;
-    if (Request.QueryString["notes"] != null)
-    {
-        notesOnly = true;
-    }
+    var notesOnly = Request.QueryString["notes"] != null;
 
     Version fromVersion;
     Version toVersion;
@@ -26,7 +22,9 @@
     var sortedVersions = new Dictionary<Version, IPublishedContent>();
     var selectedVersions = new Dictionary<Version, IPublishedContent>();
 
-    foreach (var release in Model.Content.Parent.Children.Where(x => x.GetPropertyValue<string>("releaseStatus") == "Released"))
+    foreach (var release in Model.Content.Parent.Children.Where(x => x.GetPropertyValue<string>("releaseStatus") != "Planning" 
+                        && x.GetPropertyValue<string>("releaseStatus") != "Unreleased" 
+                        && string.IsNullOrWhiteSpace(x.GetPropertyValue<string>("releaseStatus")) == false))
     {
         try
         {
