@@ -72,8 +72,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         /// </summary>
         public static void EnsureGitHubDocs(bool overwrite = false)
         {
-            var rootFolderPath = HttpContext.Current.Server.MapPath(DocumentationFolder);
-            var configPath = HttpContext.Current.Server.MapPath(Config);
+            var rootFolderPath = HostingEnvironment.MapPath(DocumentationFolder);
+            var configPath = HostingEnvironment.MapPath(Config);
 
             //Check if it exists, if it does then exit
             if (overwrite == false && File.Exists(Path.Combine(rootFolderPath, "sitemap.js")))
