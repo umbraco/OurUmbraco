@@ -1460,6 +1460,7 @@
     <Content Include="umbraco\Views\components\tabs\umb-tabs-nav.html" />
     <Content Include="umbraco\Views\components\tree\umb-tree-search-box.html" />
     <Content Include="umbraco\Views\components\tree\umb-tree-search-results.html" />
+    <Content Include="umbraco\Views\components\umb-avatar.html" />
     <Content Include="umbraco\Views\components\umb-child-selector.html" />
     <Content Include="umbraco\Views\components\umb-confirm-action.html" />
     <Content Include="umbraco\Views\components\umb-confirm.html" />
@@ -1471,12 +1472,14 @@
     <Content Include="umbraco\Views\components\umb-groups-builder.html" />
     <Content Include="umbraco\Views\components\umb-keyboard-shortcuts-overview.html" />
     <Content Include="umbraco\Views\components\umb-layout-selector.html" />
+    <Content Include="umbraco\Views\components\umb-lightbox.html" />
     <Content Include="umbraco\Views\components\umb-list-view-layout.html" />
     <Content Include="umbraco\Views\components\umb-list-view-settings.html" />
     <Content Include="umbraco\Views\components\umb-load-indicator.html" />
     <Content Include="umbraco\Views\components\umb-locked-field.html" />
     <Content Include="umbraco\Views\components\umb-media-grid.html" />
     <Content Include="umbraco\Views\components\umb-pagination.html" />
+    <Content Include="umbraco\Views\components\umb-progress-bar.html" />
     <Content Include="umbraco\Views\components\umb-table.html" />
     <Content Include="umbraco\Views\components\umb-tooltip.html" />
     <Content Include="umbraco\Views\components\upload\umb-file-dropzone.html" />
@@ -1499,6 +1502,7 @@
     <Content Include="umbraco\Views\dashboard\developer\developerdashboardintro.html" />
     <Content Include="umbraco\Views\dashboard\developer\developerdashboardvideos.html" />
     <Content Include="umbraco\Views\dashboard\developer\examinemanagement.html" />
+    <Content Include="umbraco\Views\dashboard\developer\healthcheck.html" />
     <Content Include="umbraco\Views\dashboard\developer\xmldataintegrityreport.html" />
     <Content Include="umbraco\Views\dashboard\forms\formsdashboardintro.html" />
     <Content Include="umbraco\Views\dashboard\media\desktopmediauploader.html" />
@@ -1553,6 +1557,11 @@
     <Content Include="umbraco\Views\member\delete.html" />
     <Content Include="umbraco\Views\member\edit.html" />
     <Content Include="umbraco\Views\member\list.html" />
+    <Content Include="umbraco\Views\packager\delete.html" />
+    <Content Include="umbraco\Views\packager\overview.html" />
+    <Content Include="umbraco\Views\packager\views\install-local.html" />
+    <Content Include="umbraco\Views\packager\views\installed.html" />
+    <Content Include="umbraco\Views\packager\views\repo.html" />
     <Content Include="umbraco\Views\prevalueeditors\boolean.html" />
     <Content Include="umbraco\Views\prevalueeditors\decimal.html" />
     <Content Include="umbraco\Views\prevalueeditors\hidden.html" />
@@ -1568,6 +1577,7 @@
     <Content Include="umbraco\Views\prevalueeditors\textstring.html" />
     <Content Include="umbraco\Views\prevalueeditors\treepicker.html" />
     <Content Include="umbraco\Views\prevalueeditors\treesource.html" />
+    <Content Include="umbraco\Views\prevalueeditors\valuetype.html" />
     <Content Include="umbraco\Views\propertyeditors\boolean\boolean.html" />
     <Content Include="umbraco\Views\propertyeditors\changepassword\changepassword.html" />
     <Content Include="umbraco\Views\propertyeditors\checkboxlist\checkboxlist.html" />
