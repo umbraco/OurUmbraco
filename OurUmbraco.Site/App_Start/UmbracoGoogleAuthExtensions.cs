@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Owin;
 using Owin;
@@ -50,7 +51,8 @@ namespace OurUmbraco.Site
                 {
                     OnAuthenticated = context =>
                     {
-                        if (context.Email.EndsWith("umbraco.dk") || context.Email.EndsWith("umbraco.com"))
+                        var emailParts = context.Email.Split('@');
+                        if (emailParts.Last() == "umbraco.dk" || emailParts.Last() == "umbraco.com")
                             // All good, return as usual
                             return Task.FromResult(0);
 
