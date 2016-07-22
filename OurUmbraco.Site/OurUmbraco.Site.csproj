@@ -351,10 +351,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\UmbracoAuthTokenServerExtensions.cs" />
-    <Compile Include="App_Start\UmbracoCustomOwinStartup.cs" />
-    <Compile Include="App_Start\UmbracoGoogleAuthExtensions.cs" />
-    <Compile Include="App_Start\UmbracoStandardOwinStartup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Views\Search\Search.aspx.cs">
       <DependentUpon>Search.aspx</DependentUpon>

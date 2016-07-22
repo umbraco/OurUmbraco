@@ -5,7 +5,7 @@ using Microsoft.Owin.Security.OAuth;
 using Owin;
 using Umbraco.IdentityExtensions;
 
-namespace OurUmbraco.Site
+namespace OurUmbraco.Our.GoogleOAuth
 {
     /// <summary>
     /// Extension methods to configure Umbraco for issuing and processing tokens for authentication

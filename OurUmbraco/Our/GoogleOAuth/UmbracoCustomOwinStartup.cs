@@ -1,15 +1,15 @@
 using Microsoft.Owin;
+using OurUmbraco.Our.GoogleOAuth;
 using Owin;
 using Umbraco.Core;
 using Umbraco.Core.Security;
 using Umbraco.Web.Security.Identity;
-using OurUmbraco.Site;
 
 //To use this startup class, change the appSetting value in the web.config called 
 // "owin:appStartup" to be "UmbracoCustomOwinStartup"
 
 [assembly: OwinStartup("UmbracoCustomOwinStartup", typeof(UmbracoCustomOwinStartup))]
-namespace OurUmbraco.Site
+namespace OurUmbraco.Our.GoogleOAuth
 {
     /// <summary>
     /// A custom way to configure OWIN for Umbraco

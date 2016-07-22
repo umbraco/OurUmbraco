@@ -138,6 +138,10 @@
       <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.Owin.Security.Google, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Owin.Security.Google.3.0.1\lib\net45\Microsoft.Owin.Security.Google.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
       <Private>True</Private>
@@ -263,6 +267,10 @@
     </Reference>
     <Reference Include="umbraco.editorControls, Version=1.0.5948.18148, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.4.3\lib\umbraco.editorControls.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Umbraco.IdentityExtensions, Version=1.0.5779.34109, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\UmbracoCms.IdentityExtensions.1.0.0\lib\net45\Umbraco.IdentityExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="umbraco.MacroEngines, Version=1.0.5948.18149, Culture=neutral, processorArchitecture=MSIL">
@@ -429,6 +437,10 @@
     <Compile Include="Our\Examine\SearchFilters.cs" />
     <Compile Include="Our\Examine\VersionAnalyzer.cs" />
     <Compile Include="Our\Examine\VersionTokenizer.cs" />
+    <Compile Include="Our\GoogleOAuth\UmbracoAuthTokenServerExtensions.cs" />
+    <Compile Include="Our\GoogleOAuth\UmbracoCustomOwinStartup.cs" />
+    <Compile Include="Our\GoogleOAuth\UmbracoGoogleAuthExtensions.cs" />
+    <Compile Include="Our\GoogleOAuth\UmbracoStandardOwinStartup.cs" />
     <Compile Include="Our\HackedCdfLoader.cs" />
     <Compile Include="Our\Hiccup.cs">
       <SubType>ASPXCodeBehind</SubType>

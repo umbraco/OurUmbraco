@@ -1,13 +1,12 @@
-using System.Runtime;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Owin;
+using Microsoft.Owin.Security.Google;
 using Owin;
 using Umbraco.Core;
 using Umbraco.Web.Security.Identity;
-using Microsoft.Owin.Security.Google;
 
-namespace OurUmbraco.Site
+namespace OurUmbraco.Our.GoogleOAuth
 {
     public static class UmbracoGoogleAuthExtensions
     {

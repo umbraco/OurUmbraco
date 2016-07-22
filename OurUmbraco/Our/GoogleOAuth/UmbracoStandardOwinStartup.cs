@@ -1,11 +1,11 @@
 using System.Web.Configuration;
 using Microsoft.Owin;
+using OurUmbraco.Our.GoogleOAuth;
 using Owin;
 using Umbraco.Web;
-using OurUmbraco.Site;
 
 [assembly: OwinStartup("UmbracoStandardOwinStartup", typeof(UmbracoStandardOwinStartup))]
-namespace OurUmbraco.Site
+namespace OurUmbraco.Our.GoogleOAuth
 {
     /// <summary>
     /// The standard way to configure OWIN for Umbraco
@@ -22,7 +22,7 @@ namespace OurUmbraco.Site
 
             var clientId = WebConfigurationManager.AppSettings["GoogleOAuthClientID"];
             var secret = WebConfigurationManager.AppSettings["GoogleOAuthSecret"];
-            app.ConfigureBackOfficeGoogleAuth(clientId, secret);
+            UmbracoGoogleAuthExtensions.ConfigureBackOfficeGoogleAuth(app, clientId, secret);
         }
     }
 }
