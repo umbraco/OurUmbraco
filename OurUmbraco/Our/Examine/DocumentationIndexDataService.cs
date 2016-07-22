@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Web;
+using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
@@ -18,9 +18,8 @@ namespace OurUmbraco.Our.Examine
             //Before getting all data, we need to make sure that the docs are available from GitHub
             ZipDownloader.EnsureGitHubDocs();
 
-
             var config = DocumentationIndexConfig.Settings;
-            var fullPath = HttpContext.Current.Server.MapPath(config.DirectoryToIndex);
+            var fullPath = HostingEnvironment.MapPath(config.DirectoryToIndex);
 
             var directory = new DirectoryInfo(fullPath);
 

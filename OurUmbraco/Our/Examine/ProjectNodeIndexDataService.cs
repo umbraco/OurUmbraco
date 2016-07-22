@@ -7,9 +7,12 @@ using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
@@ -145,17 +148,19 @@ namespace OurUmbraco.Our.Examine
             //TODO: To get at the IPublishedCaches it is only available on the UmbracoContext (which we need to fix)
             // but since this method operates async, there isn't one, so we need to make our own to get at the cache
             // object by creating a fake HttpContext. Not pretty but it works for now.
-            if (UmbracoContext.Current == null)
-            {
-                var dummyHttpContext = new HttpContextWrapper(
-                    new HttpContext(
-                        new SimpleWorkerRequest("blah.aspx", "", new StringWriter())));
-                UmbracoContext.EnsureContext(dummyHttpContext,
-                    ApplicationContext.Current,
-                    new WebSecurity(dummyHttpContext, ApplicationContext.Current), false);
-            }
-        }
+            if (UmbracoContext.Current != null)
+                return;
 
+            var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("blah.aspx", "", new StringWriter())));
+
+            UmbracoContext.EnsureContext(dummyHttpContext,
+                ApplicationContext.Current,
+                new WebSecurity(dummyHttpContext, ApplicationContext.Current), 
+                UmbracoConfig.For.UmbracoSettings(),
+                UrlProviderResolver.Current.Providers, 
+                false);
+        }
+        
         /// <summary>
         /// Need to ensures some custom data is added to this index
         /// </summary>
