@@ -15,6 +15,7 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Events.Api
 {
+    [Authorize]
     public class EventsController : UmbracoApiController
     {
         [HttpGet]

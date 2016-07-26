@@ -16,19 +16,9 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
 {
+    [Authorize]
     public class CommunityController : UmbracoApiController
     {
-        [HttpGet]
-        public string IsEmailUnique(string email)
-        {
-            //if user is already logged in and tries to re-enter his own email...
-            Member mem = Member.GetCurrentMember();
-            if (mem != null && mem.Email == email)
-                return "true";
-
-            return (Member.GetMemberFromEmail(email) == null).ToString().ToLower();
-        }
-
         public static string SetAvatar(int mId, string service)
         {
             var member = new Member(mId);

@@ -56,38 +56,6 @@ window.location = "/search?q=" + encodeURIComponent(jQuery('#searchField').val()
 
 
 
-/* SIGNUP FORM RELATED */
-function lookupTwitter(field){
-var f = $(field);
-if(f.val() != ""){
-var turl = "/base/twitter/Profile/" + f.val() + ".aspx";
-	$.get(turl, function(d){
-	var buddyIcon = $(d).find("user profile_image_url").text();
-	if(buddyIcon != ""){
-		$("label[class != 'inputLabel']",f.parent()).remove();
-		f.after("<label class='success'><img src='" + buddyIcon + "'/> We found you!</label>");
-		}
-	else
-	$("label[class != 'inputLabel']",f.parent()).remove();
-	});
-}}
-
-function lookupEmail(field){
-var f = $(field);
-
-if(!f.hasClass("error") && f.val() != ""){
-    var turl = "/umbraco/api/Community/IsEmailUnique/?email=" + f.val();
-	$.get(turl, function(d){
-
-	if( jQuery("value",d).text() != "true"){
-		$("label[class != 'inputLabel']",f.parent()).remove();
-		f.after("<label class='error'>Email already registered</label>");}
-	else
-	$("label[class != 'inputLabel']",f.parent()).remove();
-	});
-}
-}
-
 function killButton(button, label){
 	var b = $(button);
 	b.after("<em class='yellow'>" + label + "</em>");

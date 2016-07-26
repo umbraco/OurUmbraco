@@ -7,6 +7,7 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Wiki.Api
 {
+    [Authorize]
     public class WikiController : UmbracoApiController
     {
 

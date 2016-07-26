@@ -14,7 +14,6 @@ namespace OurUmbraco.Our.usercontrols
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            library.RegisterJavaScriptFile("jquery.validation", "/scripts/jquery.validation.js");
         }
 
         protected void login(object sender, EventArgs e)

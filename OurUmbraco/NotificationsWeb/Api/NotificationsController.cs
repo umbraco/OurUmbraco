@@ -4,6 +4,7 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.NotificationsWeb.Api
 {
+    [Authorize]
     public class NotificationsController : UmbracoApiController
     {
         public NotificationsController()

@@ -4,6 +4,7 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Powers.Api
 {
+    [Authorize]
     public class PowersController : UmbracoApiController
     {
         [HttpGet]
