@@ -7,13 +7,27 @@
         font-size: 20px !important;
         text-decoration: none !important;
     }
+    #markdown-docs a.offset-anchor {
+        visibility: hidden;
+        position: relative;
+        top: -100px;
+        display: block;
+    }
 </style>
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.2.1/anchor.js"></script>
+@*<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/anchor-js/3.2.1/anchor.js"></script>*@
+<script type="text/javascript" src="/scripts/anchorjs/anchorjs.custom.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         anchors.options = {
             placement: 'left',
-            visible: "hover"
+            visible: "hover",
+            anchorCreated: function(e) {
+                var id = $(e).attr('id');
+                //clear it's id since we'll be creating a custom anchor point with an offset
+                $(e).removeAttr("id");
+                $(e).addClass("anchorjs-heading");
+                $(e).prepend("<a class='offset-anchor' id='" + id + "'></a>");
+            }
         };
         anchors.add('.markdown-syntax h1, .markdown-syntax h2, .markdown-syntax h3, .markdown-syntax h4, .markdown-syntax h5, .markdown-syntax h5');
         
@@ -21,14 +35,16 @@
         if (element.length === 1) {
             setTimeout(function() {
                 //hightlight it 
-                element.find("a").not(".anchorjs-link").css("color", "#ff6e00");
+                element.closest(".anchorjs-heading").css("color", "#ff6e00");
+                element.closest(".anchorjs-heading").find("a").not(".anchorjs-link").css("color", "#ff6e00");
             }, 100);            
         }
 
         $("#markdown-docs .anchorjs-link").click(function() {
             if (element.length === 1) {
                 //un hightlight it 
-                element.find("a").not(".anchorjs-link").css("color", "inherit");
+                element.closest(".anchorjs-heading").css("color", "inherit");
+                element.closest(".anchorjs-heading").find("a").not(".anchorjs-link").css("color", "inherit");
             }
         });
     });
