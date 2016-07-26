@@ -1,6 +1,8 @@
 using System.Linq;
+using System.Security.Authentication;
 using System.Threading.Tasks;
 using Microsoft.Owin;
+using Microsoft.Owin.Security;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using Umbraco.Core;
@@ -56,9 +58,9 @@ namespace OurUmbraco.Our.GoogleOAuth
                             // All good, return as usual
                             return Task.FromResult(0);
 
-                        // Whoa, this one doesn't belong in our backoffice, set Identity to null
-                        context.Identity = null;
-                        return Task.FromResult(0);
+                        // Whoa, this one doesn't belong in our backoffice, throw exception, this will return a nulled out Auth Ticket
+                        var errorMessage = string.Format("User tried to log in with {0}, which does not end with an accepted domain name.", context.Email);
+                        throw new AuthenticationException(errorMessage);
                     }
                 }
             };
