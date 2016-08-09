@@ -25,7 +25,7 @@ namespace OurUmbraco.Our.CustomHandlers
         void ContentService_Deleted(IContentService sender, Umbraco.Core.Events.DeleteEventArgs<IContent> e)
         {
             foreach (var item in e.DeletedEntities.Where(x => x.ContentType.Alias == "Project"))
-                ((SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"]).DeleteFromIndex(item.Id.ToString());
+                ExamineManager.Instance.IndexProviderCollection["projectIndexer"].DeleteFromIndex(item.Id.ToString());
         }
 
         void ContentService_Published(Umbraco.Core.Publishing.IPublishingStrategy sender, Umbraco.Core.Events.PublishEventArgs<IContent> e)

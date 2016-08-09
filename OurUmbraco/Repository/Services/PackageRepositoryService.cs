@@ -5,19 +5,25 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
+using Examine.LuceneEngine;
 using Examine.SearchCriteria;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
 using OurUmbraco.Our.Examine;
+using OurUmbraco.Our.Models;
 using OurUmbraco.Project.Services;
 using OurUmbraco.Repository.Controllers;
 using OurUmbraco.Repository.Models;
 using OurUmbraco.Wiki.BusinessLogic;
 using umbraco;
+using umbraco.MacroEngines;
 using Umbraco.Core;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.PublishedContent;
+using Umbraco.Core.Cache;
 using Umbraco.Web;
+using Umbraco.Web.PublishedCache;
 using Umbraco.Web.Security;
 
 namespace OurUmbraco.Repository.Services
@@ -53,95 +59,82 @@ namespace OurUmbraco.Repository.Services
                 });
         }
 
+        /// <summary>
+        /// Returns a list of packages based on a search
+        /// </summary>
+        /// <param name="pageIndex"></param>
+        /// <param name="pageSize"></param>
+        /// <param name="category"></param>
+        /// <param name="query"></param>
+        /// <param name="order"></param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This caches each query for 2 minutes (non-sliding)
+        /// </remarks>
         public PagedPackages GetPackages(
             int pageIndex,
             int pageSize,
             string category = null,
             string query = null,
-            PackageSortOrder order = PackageSortOrder.Latest)
+            PackageSortOrder order = PackageSortOrder.Default)
         {
-            var items = Enumerable.Empty<IPublishedContent>();
+            var filters = new List<SearchFilters>();
+            var searchFilters = new SearchFilters(BooleanOperation.And);
+            //MUST be approved and live
+            searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+            searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
 
-            //TODO: If query is empty and we are only searching on category, it should just
-            // use this XPATH instead of continuing to use Lucene
-            if (string.IsNullOrWhiteSpace(category) && string.IsNullOrWhiteSpace(query))
+            query = string.IsNullOrWhiteSpace(query) ? string.Empty : query;
+
+            var orderBy = string.Empty;
+            switch (order)
             {
-                if (order == PackageSortOrder.Latest)
-                {
-                    // [LK:2016-06-13@CGRT16] This feels hacky, but unsure how else to get
-                    // a list of all the newly created projects.
-                    var xpath = "//Project[@isDoc and projectLive = 1 and approved = 1 and notAPackage = 0]";
-                    items = UmbracoHelper
-                        .TypedContentAtXPath(xpath)
-                        .OrderByDescending(x => x.CreateDate);
-                }
-                else
-                {
-                    // [LK:2016-06-13@CGRT16] Attempting to reuse legacy code
-                    var karmaProvider = new KarmaProvider();
-                    var projectsByKarma = karmaProvider.GetProjectsKarmaList();
-
-                    items = UmbracoHelper
-                        .TypedContent(projectsByKarma.Select(x => x.ProjectId))
-                        .Where(x =>
-                            x.GetPropertyValue<bool>("projectLive") &&
-                            x.GetPropertyValue<bool>("approved") &&
-                            !x.GetPropertyValue<bool>("notAPackage"));
-                }
+                case PackageSortOrder.Latest:
+                    orderBy = "updateDate";
+                    break;
+                case PackageSortOrder.Popular:
+                    orderBy = "popularity";
+                    break;
             }
-            else
+
+            var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", maxResults: pageSize * (pageIndex + 1), orderBy: orderBy, filters:filters);
+
+            if (!string.IsNullOrWhiteSpace(category) || !string.IsNullOrWhiteSpace(query))
             {
-                var filters = new List<SearchFilters>();
-                var searchFilters = new SearchFilters(BooleanOperation.And);
-                //MUST be approved and live
-                searchFilters.Filters.Add(new SearchFilter("approved", "1"));
-                searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                //Return based on a query
                 if (!string.IsNullOrWhiteSpace(category))
                 {
                     searchFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
                 }
                 filters.Add(searchFilters);
 
-                var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", filters: filters);
-                var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
-                var criteria = ourSearcher.GetSearchCriteria(searcher);
-
-                items = UmbracoHelper.TypedSearch(criteria, searcher);
+                ourSearcher.Filters = filters;
             }
+            
+            var searchResult = ourSearcher.Search("projectSearcher", skip: pageIndex * pageSize);
+            return FromSearchResults(searchResult, pageIndex, pageSize);
+        }
 
-            if (items == null)
+        private PagedPackages FromSearchResults(SearchResultModel searchResult, int pageIndex, int pageSize)
+        {
+            if (searchResult == null)
             {
                 return null;
             }
 
-            var packages = items
-                .Skip(pageIndex * pageSize)
-                .Take(pageSize)
-                .Select(x => MapContentToPackage(x));
-
-            IEnumerable<Models.Package> sorted;
-
-            if (order == PackageSortOrder.Latest)
-            {
-                sorted = packages
-                    .OrderByDescending(x => x.Created);
-            }
-            else
-            {
-                sorted = packages
-                    .OrderByDescending(x => x.Downloads)
-                    .ThenByDescending(x => x.Likes);
-            }
-
             return new PagedPackages
             {
-                Packages = sorted,
-                Total = items.Count()
+                Packages = searchResult.SearchResults
+                    .Skip(pageIndex * pageSize)
+                    .Select(x => UmbracoHelper.TypedContent(x.Id))
+                    //TODO: This will cause strangeness with paging if someething is actually null
+                    .WhereNotNull()
+                    .Select(MapContentToPackage).ToArray(),
+                Total = searchResult.SearchResults.TotalItemCount
             };
         }
-    
 
-        public Models.PackageDetails GetDetails(Guid id)
+        public PackageDetails GetDetails(Guid id)
         {
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
@@ -173,13 +166,13 @@ namespace OurUmbraco.Repository.Services
                 Name = content.Name,
                 Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"), 154, 281),
                 LatestVersion = content.GetPropertyValue<string>("version"),
-                MinimumVersion = GetMinimumVersion(content, wikiFiles.Where(x => x.FileType.InvariantEquals("package"))),
-                OwnerInfo = GetPackageOwnerInfo(content),
+                MinimumVersion = GetMinimumVersion(content.GetPropertyValue<int>("file"), wikiFiles.Where(x => x.FileType.InvariantEquals("package"))),
+                OwnerInfo = GetPackageOwnerInfo(content.GetPropertyValue<int>("owner"), content.GetPropertyValue<bool>("openForCollab", false), content.Id),
                 Url = string.Concat(BASE_URL, content.Url)
             };
         }
-
-        private Models.PackageDetails MapContentToPackageDetails(IPublishedContent content)
+        
+        private PackageDetails MapContentToPackageDetails(IPublishedContent content)
         {
             if (content == null)
                 return null;
@@ -217,9 +210,9 @@ namespace OurUmbraco.Repository.Services
                 .ToList();
         }
 
-        private string GetMinimumVersion(IPublishedContent content, IEnumerable<WikiFile> packages)
+        private string GetMinimumVersion(int filePropertyValue, IEnumerable<WikiFile> packages)
         {
-            var currentVersion = content.GetPropertyValue<int>("file");
+            var currentVersion = filePropertyValue;
             var latest = packages.FirstOrDefault(x => x.Id == currentVersion);
 
             if (latest == null || string.IsNullOrWhiteSpace(latest.Version.Version) || latest.Version.Version.InvariantEquals("nan"))
@@ -242,9 +235,8 @@ namespace OurUmbraco.Repository.Services
             return latest.Version.Version;
         }
 
-        private PackageOwnerInfo GetPackageOwnerInfo(IPublishedContent content)
+        private PackageOwnerInfo GetPackageOwnerInfo(int ownerId, bool openForCollab, int contentId)
         {
-            var ownerId = content.GetPropertyValue<int>("owner");
             var owner = MembershipHelper.GetById(ownerId);
 
             var ownerInfo = new PackageOwnerInfo
@@ -254,10 +246,10 @@ namespace OurUmbraco.Repository.Services
                 OwnerAvatar = Utils.GetMemberAvatar(owner, 200, true)
             };
 
-            if (content.GetPropertyValue<bool>("openForCollab", false))
+            if (openForCollab)
             {
                 var service = new ContributionService(DatabaseContext);
-                var contributors = service.GetContributors(content.Id).ToList();
+                var contributors = service.GetContributors(contentId).ToList();
 
                 if (contributors != null && contributors.Any())
                 {
@@ -362,5 +354,7 @@ namespace OurUmbraco.Repository.Services
 
             return string.Concat(string.Join(" ", words), "...");
         }
+
+
     }
 }

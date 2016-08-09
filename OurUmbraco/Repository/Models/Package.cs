@@ -38,5 +38,7 @@ namespace OurUmbraco.Repository.Models
         /// This could be null if it is a legacy package
         /// </remarks>
         public string MinimumVersion { get; set; }
+
+        public long Score { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.Web.Http;
 using System.Web.Http.Cors;
 using OurUmbraco.Repository.Models;
 using OurUmbraco.Repository.Services;
-using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Web.WebApi;
 using System.Net.Http;
 using System.Net;
@@ -76,8 +76,14 @@ namespace OurUmbraco.Repository.Controllers
             string category = null,
             string query = null,
             PackageSortOrder order = PackageSortOrder.Latest)
-        {
-            return Service.GetPackages(pageIndex, pageSize, category, query, order);
+        {            
+            //return the results, but cache for 1 minute
+            var key = string.Format("PackageRepositoryController.{0}.{1}.{2}.{3}.{4}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, order);
+            return ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PagedPackages>
+                (key,
+                    () => Service.GetPackages(pageIndex, pageSize, category, query, order),
+                    TimeSpan.FromMinutes(1)); //cache for 1 min
+
         }
 
         public Models.PackageDetails GetDetails(Guid id)

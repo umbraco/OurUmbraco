@@ -254,6 +254,8 @@ namespace OurUmbraco.Our
         {
             if (HttpContext.Current.IsDebuggingEnabled == false)
                 return screenshot;
+            
+            //NOTE: I guess the below is all to do with testing - even the random images i guess
 
             try
             {

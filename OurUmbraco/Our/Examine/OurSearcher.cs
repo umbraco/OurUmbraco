@@ -20,7 +20,7 @@ namespace OurUmbraco.Our.Examine
         public string NodeTypeAlias { get; set; }
         public string OrderBy { get; set; }
         public int MaxResults { get; set; }
-        public IEnumerable<SearchFilters> Filters { get; private set; }
+        public IEnumerable<SearchFilters> Filters { get; set; }
         
         public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20, IEnumerable<SearchFilters> filters = null)
         {
@@ -130,7 +130,7 @@ namespace OurUmbraco.Our.Examine
             return criteria;
         }
 
-        public SearchResultModel Search(string searcherName = null)
+        public SearchResultModel Search(string searcherName = null, int skip = 0, bool populateUrls = true)
         {
             var multiIndexSearchProvider = ExamineManager.Instance.SearchProviderCollection[
                 string.IsNullOrWhiteSpace(searcherName) ? "MultiIndexSearcher" : searcherName];
@@ -146,11 +146,16 @@ namespace OurUmbraco.Our.Examine
             watch.Start();
 
             var result = multiIndexSearchProvider.Search(criteria, MaxResults);
-            foreach (var searchResult in result)
+
+            if (populateUrls)
             {
-                if (searchResult.Fields.ContainsKey("url") == false)
-                    searchResult.Fields["url"] = searchResult.FullUrl();
+                foreach (var searchResult in result.Skip(skip))
+                {
+                    if (searchResult.Fields.ContainsKey("url") == false)
+                        searchResult.Fields["url"] = searchResult.FullUrl();
+                }
             }
+            
             watch.Stop();
 
             
