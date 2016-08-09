@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
+using Lucene.Net.Documents;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
@@ -37,6 +39,7 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet.RowData.Add("body", umbraco.library.StripHtml(desciption));
             }
             simpleDataSet.RowData.Add("nodeName", project.Name);
+            simpleDataSet.RowData.Add("categoryFolder", project.Parent.Name.ToLowerInvariant().Trim());
             simpleDataSet.RowData.Add("updateDate", project.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("createDate", project.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
@@ -92,9 +95,9 @@ namespace OurUmbraco.Our.Examine
 
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
-            EnsureUmbracoContext();
+            var umbContxt = EnsureUmbracoContext();
 
-            var projects = UmbracoContext.Current.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
+            var projects = umbContxt.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
@@ -124,36 +127,34 @@ namespace OurUmbraco.Our.Examine
         /// <param name="e"></param>
         public static void ProjectIndexer_DocumentWriting(object sender, DocumentWritingEventArgs e)
         {
-            //TODO: This will be good to do but we need the bleeding edge version of examine v1.x which i haven't released yet
+            //If there is a versions field, we'll split it and index the same field on each version
+            if (e.Fields.ContainsKey("versions"))
+            {
+                //split into separate versions
+                var versions = e.Fields["versions"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
 
-            ////If there is a versions field, we'll split it and index the same field on each version
-            //if (e.Fields.ContainsKey("versions"))
-            //{
-            //    //split into separate versions
-            //    var versions = e.Fields["versions"].Split(new[] {','}, StringSplitOptions.RemoveEmptyEntries);
+                //remove the current version field from the lucene doc
+                e.Document.RemoveField("versions");
 
-            //    //remove the current version field from the lucene doc
-            //    e.Document.RemoveField("versions");
-
-            //    foreach (var version in versions)
-            //    {
-            //        //add a 'versions' field for each version (same field name but different values)
-            //        e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
-            //    }
-            //}
+                foreach (var version in versions)
+                {
+                    //add a 'versions' field for each version (same field name but different values)
+                    e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+                }
+            }
         }
 
-        private static void EnsureUmbracoContext()
+        private static UmbracoContext EnsureUmbracoContext()
         {
             //TODO: To get at the IPublishedCaches it is only available on the UmbracoContext (which we need to fix)
             // but since this method operates async, there isn't one, so we need to make our own to get at the cache
             // object by creating a fake HttpContext. Not pretty but it works for now.
             if (UmbracoContext.Current != null)
-                return;
+                return UmbracoContext.Current;
 
             var dummyHttpContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("blah.aspx", "", new StringWriter())));
 
-            UmbracoContext.EnsureContext(dummyHttpContext,
+            return UmbracoContext.EnsureContext(dummyHttpContext,
                 ApplicationContext.Current,
                 new WebSecurity(dummyHttpContext, ApplicationContext.Current), 
                 UmbracoConfig.For.UmbracoSettings(),
@@ -171,17 +172,19 @@ namespace OurUmbraco.Our.Examine
             //Need to add category, which is a parent folder if it has one, we only care about published data
             // so we can just look this up from the published cache
 
-            EnsureUmbracoContext();
-
-            var node = UmbracoContext.Current.ContentCache.GetById(e.NodeId);
-            if (node == null) return;
-
-            //this has a project group which is it's category
-            if (node.Parent.DocumentTypeAlias == "ProjectGroup")
+            var umbContxt = EnsureUmbracoContext();
+            
+            if (e.Fields["categoryFolder"].IsNullOrWhiteSpace())
             {
-                e.Fields["categoryFolder"] = node.Parent.Name.ToLowerInvariant().Trim();
-            }
+                var node = umbContxt.ContentCache.GetById(e.NodeId);
+                if (node == null) return;
 
+                //this has a project group which is it's category
+                if (node.Parent.DocumentTypeAlias == "ProjectGroup")
+                {
+                    e.Fields["categoryFolder"] = node.Parent.Name.ToLowerInvariant().Trim();
+                }
+            }
 
         }      
     }
