@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace OurUmbraco.MarketPlace.Interfaces
 {
+    //TODO: All of this data should probably be in the Lucene index! 
+    // Then we can use that index for querying and returning these results. Alternatively, another DB table 
+    // should be created to store all of this normalized data.
     public interface IListingItem
     {
         int Id { get; set; }
