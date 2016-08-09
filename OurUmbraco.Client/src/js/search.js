@@ -112,7 +112,7 @@ var projectSearch = _.debounce(function(ev) {
 		  	//iterate
 		  	_.each(response.items, function(item){
 
-		  		var image = (item.Fields.image && item.Fields.image.length > 0) ? item.Fields.image : "<i class='icon-Box'></i>";
+		  		var image = (item.Fields.image && item.Fields.image.length > 0) ? item.Fields.image : null;
 		  		var itemData = {	
 		  							nodeName: item.Fields.nodeName, 
 		  							body: _.escape(item.Fields.body.substring(0, 150)), 

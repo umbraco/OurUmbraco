@@ -114,7 +114,11 @@
     <div class="box">
         <div class="row">
             <div class="col-xs-2 col-md-1">
-                <img src="{{image}}" alt="">
+                {[ if (image != null) { ]}
+                    <img src="{{image}}" alt="">
+                {[ } else { ]}
+                    <i class='icon-Box'></i>
+                {[ } ]}                
             </div>
             <div class="col-xs-10 col-md-6">
                 <div class="forum-thread-text">
