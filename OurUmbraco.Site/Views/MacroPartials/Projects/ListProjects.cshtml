@@ -1,17 +1,17 @@
 @using Examine.SearchCriteria
 @using OurUmbraco.Our
+@using Umbraco.Core.Cache
 @using OurUmbraco.Our.Examine
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     const int pagesToShowLeft = 4;
-    const int pagesToShowRight = 2;
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "updateDate";
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 20;
-    var headline = orderMode == "createDate" ? "latest" : "most popular";
+    var headline = orderMode == "updateDate" ? "latest" : "most popular";
     if (version != null)
     {
         headline = "version " + version;
@@ -25,9 +25,6 @@
     if (!string.IsNullOrEmpty(category))
     {
         var categoryFilters = new SearchFilters(BooleanOperation.Or);
-        //NOTE: We could add multiple category searches here if we wanted to match on multiple,
-        // you'd need to split the 'category' query string into each category and add a filter per item
-        // since it is an "OR" clause above it will match any of the categories
         //NOTE: categories are indexed as lower case and are not tokenized so must be an exact match and therefore
         // require quotes
 
@@ -47,15 +44,14 @@
     {
         var versionFilters = new SearchFilters(BooleanOperation.Or);
         //NOTE: We could add multiple version searches here if we wanted to match on multiple,
-        // you'd need to split the 'version' query string into each version and add a filter per item
-        // since it is an "OR" clause above it will match any of the versions, if however you wanted to filter
-        // to only match projects that are tagged for the inclusive versions, you'd change the Boolean op to AND.
-        //NOTE: We are doing a *wildcard* search here because versions are stored as comma delimited values in the index
-        // when I release the next version of Examine this will be different since we'll store each version separately in the same version
-        // field which will be nicer to query.
-        versionFilters.Filters.Add(new SearchFilter("versions", string.Format("{0}.*", version.Trim())));
+        // you'd need to add a filter per item since it is an "OR" clause above it will match any of the versions, if however you wanted to filter
+        // to only match projects that are tagged for the inclusive versions, you'd change the Boolean op to AND.        
+        versionFilters.Filters.Add(new SearchFilter("versions", version.Trim()));
         filters.Add(versionFilters);
     }
+
+    //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
+    //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);    
 
     var searcher = new OurSearcher(term, "project", orderMode, filters: filters, maxResults: pageSize * page);
 
