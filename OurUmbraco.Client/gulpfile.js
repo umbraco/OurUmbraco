@@ -10,7 +10,7 @@ var gulp         = require('gulp'),
     imageMin     = require('gulp-imagemin'),
     clean        = require('gulp-clean'),
     svgmin       = require('gulp-svgmin'),
-    cmq          = require('gulp-combine-media-queries');
+    cmq          = require('gulp-group-css-media-queries');
 	rename       = require('gulp-rename');
 
 var settings = {
