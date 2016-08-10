@@ -62,13 +62,13 @@ namespace OurUmbraco.Our.CustomHandlers
                 RowData = new Dictionary<string, string>()
             };
 
-            var karma = Utils.GetProjectTotalVotes(content.Id);
+            var projectVotes = Utils.GetProjectTotalVotes(content.Id);
             var files = WikiFile.CurrentFiles(content.Id).ToArray();
             var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
             
             var simpleDataIndexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             simpleDataSet = ((ProjectNodeIndexDataService)simpleDataIndexer.DataService)
-                .MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", karma, files, downloads, compatVersions);
+                .MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", projectVotes, files, downloads, compatVersions);
 
             var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
             simpleDataIndexer.ReIndexNode(xml, "project");

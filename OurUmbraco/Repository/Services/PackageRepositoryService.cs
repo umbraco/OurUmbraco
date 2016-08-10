@@ -90,10 +90,10 @@ namespace OurUmbraco.Repository.Services
             switch (order)
             {
                 case PackageSortOrder.Latest:
-                    orderBy = "updateDate";
+                    orderBy = "updateDate[Type=LONG]";
                     break;
                 case PackageSortOrder.Popular:
-                    orderBy = "popularity";
+                    orderBy = "popularity[Type=INT]";
                     break;
             }
 

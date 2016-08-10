@@ -49,11 +49,22 @@
         versionFilters.Filters.Add(new SearchFilter("versions", version.Trim()));
         filters.Add(versionFilters);
     }
+    
+    var examineOrder = orderMode;
+    if (examineOrder == "popularity")
+    {
+        examineOrder = string.Concat(orderMode, "[Type=INT]");
+    }
+    else if (examineOrder == "updateDate")
+    {
+        examineOrder = string.Concat(orderMode, "[Type=LONG]");
+    }
 
     //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
     //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);    
-
-    var searcher = new OurSearcher(term, "project", orderMode, filters: filters, maxResults: pageSize * page);
+    var searcher = new OurSearcher(term,
+        "project", examineOrder,
+        filters: filters, maxResults: pageSize * page);
 
     var search = searcher.Search();
     var total = search.SearchResults.TotalItemCount;

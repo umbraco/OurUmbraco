@@ -25,7 +25,7 @@ namespace OurUmbraco.Our.Examine
     public class ProjectNodeIndexDataService : ISimpleDataService
     {
         public SimpleDataSet MapProjectToSimpleDataIndexItem(IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
-            int karma, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
+            int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
         {
             var isLive = project.GetPropertyValue<bool>("projectLive");
             var isApproved = project.GetPropertyValue<bool>("approved");
@@ -70,10 +70,10 @@ namespace OurUmbraco.Our.Examine
                             .Select(x => (decimal.Parse(x.PadRight(3, '0') ) / 100));
 
             //popularity for sorting number = downloads + karma * 100;
-            var pop = downloads + (karma * 100);
+            var pop = downloads + (projectVotes * 100);
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
-            simpleDataSet.RowData.Add("karma", karma.ToString());
+            simpleDataSet.RowData.Add("karma", projectVotes.ToString());
             simpleDataSet.RowData.Add("downloads", downloads.ToString());
             simpleDataSet.RowData.Add("image", imageFile);
 
