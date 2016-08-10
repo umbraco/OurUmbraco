@@ -57,7 +57,7 @@ function GetSearchFilters(cssClass) {
 	if(cssClass === undefined) {
 		filters.category = undefined;
 	} else {
-		var category = cssClass.replace("-search-input", "");
+		var category = cssClass.replace("-search-input valid", "").replace("-search-input", "");
 		filters.category = category;
 	}
 	
