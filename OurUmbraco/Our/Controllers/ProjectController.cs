@@ -16,15 +16,17 @@ namespace OurUmbraco.Our.Controllers
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
         {
-            var project = new ListingItem(null, null);
+            //TODO: What if this is not found??! 
+            var project = new PublishedContentListingItem();
             if (projectId != 0)
             {
                 var nodeListingProvider = new NodeListingProvider();
-                project = (ListingItem) nodeListingProvider.GetListing(projectId);
+                project = (PublishedContentListingItem) nodeListingProvider.GetListing(projectId);
 
                 var memberId = Members.GetCurrentMemberId();
                 if ((project.VendorId == memberId) == false && Utils.IsProjectContributor(memberId, projectId) == false)
                 {
+                    //TODO: Ummm... this is a child action/partial view - you cannot redirect from here
                     Response.Redirect("/member/profile/projects/", true);
                 }
             }
@@ -60,7 +62,7 @@ namespace OurUmbraco.Our.Controllers
                 return CurrentUmbracoPage();
 
             var nodeListingProvider = new NodeListingProvider();
-            var project = (model.Id != 0) ? nodeListingProvider.GetListing(model.Id) : new ListingItem(null, null);
+            var project = (model.Id != 0) ? nodeListingProvider.GetListing(model.Id) : new PublishedContentListingItem();
 
             project.Name = model.Title;
             project.Description = model.Description;

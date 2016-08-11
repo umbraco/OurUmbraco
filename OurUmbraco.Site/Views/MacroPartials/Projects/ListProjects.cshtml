@@ -2,8 +2,11 @@
 @using OurUmbraco.Our
 @using Umbraco.Core.Cache
 @using OurUmbraco.Our.Examine
+@using OurUmbraco.Project
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
+    //This is the main Our project search
+
     const int pagesToShowLeft = 4;
     var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "updateDate";
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
@@ -21,12 +24,16 @@
         headline = category == "uaas" ? "Umbraco as a Service" : category.ToLowerInvariant();
     }
 
-    var filters = new List<SearchFilters>();
+    var searchFilters = new SearchFilters(BooleanOperation.And);
+    //MUST be approved and live
+    searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+    searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+    var filters = new List<SearchFilters> { searchFilters };
+
     if (!string.IsNullOrEmpty(category))
     {
         var categoryFilters = new SearchFilters(BooleanOperation.Or);
-        //NOTE: categories are indexed as lower case and are not tokenized so must be an exact match and therefore
-        // require quotes
+        //NOTE: categories are indexed as lower case and are not tokenized so must be an exact match and therefore require quotes
 
         if (category.ToLowerInvariant() == "uaas".ToLowerInvariant())
         {
@@ -42,14 +49,18 @@
 
     if (!string.IsNullOrEmpty(version))
     {
-        var versionFilters = new SearchFilters(BooleanOperation.Or);
-        //NOTE: We could add multiple version searches here if we wanted to match on multiple,
-        // you'd need to add a filter per item since it is an "OR" clause above it will match any of the versions, if however you wanted to filter
-        // to only match projects that are tagged for the inclusive versions, you'd change the Boolean op to AND.        
-        versionFilters.Filters.Add(new SearchFilter("versions", version.Trim()));
-        filters.Add(versionFilters);
+        //need to clean up this string, it could be all sorts of things
+        var parsedVersion = version.GetFromUmbracoString();
+        if (parsedVersion != null)
+        {
+            var numericalVersion = parsedVersion.GetNumericalValue();
+            var versionFilters = new SearchFilters(BooleanOperation.Or);
+            versionFilters.Filters.Add(new RangeSearchFilter("num_version", numericalVersion, long.MaxValue));
+            versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", numericalVersion, long.MaxValue));
+            filters.Add(versionFilters);
+        }
     }
-    
+
     var examineOrder = orderMode;
     if (examineOrder == "popularity")
     {
@@ -61,12 +72,12 @@
     }
 
     //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
-    //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);    
+    //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);
     var searcher = new OurSearcher(term,
         "project", examineOrder,
         filters: filters, maxResults: pageSize * page);
 
-    var search = searcher.Search();
+    var search = searcher.Search("projectSearcher");
     var total = search.SearchResults.TotalItemCount;
     var pages = (total / pageSize) + 1;
 

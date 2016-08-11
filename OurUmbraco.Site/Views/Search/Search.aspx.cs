@@ -22,6 +22,8 @@ namespace OurUmbraco.Site.Views.Search
 
                 var nodeTypeAlias = Request.QueryString["cat"];
 
+                //TODO: If we are searching on projects, they need to be filtered to approved/live!
+
                 int forumId;
                 var forumName = string.Empty;
                 var filters = new List<SearchFilters>();
@@ -66,6 +68,8 @@ namespace OurUmbraco.Site.Views.Search
                 }
 
                 var ourSearcher = new OurSearcher(Request.QueryString["q"],
+                    //TODO: Depending on what order by this is, we need to pass in a data
+                    // type here, for example, if its an INT or a Date!
                     orderBy: orderBy,
                     maxResults: 100,
                     nodeTypeAlias:

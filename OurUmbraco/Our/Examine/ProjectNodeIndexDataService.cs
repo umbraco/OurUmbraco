@@ -6,8 +6,11 @@ using System.Web;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
+using Examine.LuceneEngine.Providers;
 using Lucene.Net.Documents;
+using OurUmbraco.Project;
 using OurUmbraco.Wiki.BusinessLogic;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Configuration.UmbracoSettings;
@@ -19,6 +22,7 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
+
     /// <summary>
     /// Data service used for projects
     /// </summary>
@@ -33,17 +37,13 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
 
-            var desciption = project.GetPropertyValue<string>("description");
-            if (!string.IsNullOrEmpty(desciption))
-            {
-                simpleDataSet.RowData.Add("body", umbraco.library.StripHtml(desciption));
-            }
+            simpleDataSet.RowData.Add("body", project.GetPropertyValue<string>("description"));
             simpleDataSet.RowData.Add("nodeName", project.Name);
             simpleDataSet.RowData.Add("categoryFolder", project.Parent.Name.ToLowerInvariant().Trim());
             simpleDataSet.RowData.Add("updateDate", project.UpdateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("createDate", project.CreateDate.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
-            simpleDataSet.RowData.Add("url", project.Url );
+            simpleDataSet.RowData.Add("url", project.Url);
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
             simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
 
@@ -52,24 +52,59 @@ namespace OurUmbraco.Our.Examine
             {
                 imageFile = project.GetPropertyValue<string>("defaultScreenshotPath");
             }
-            if(string.IsNullOrWhiteSpace(imageFile))
+            if (string.IsNullOrWhiteSpace(imageFile))
             {
                 var image = files.FirstOrDefault(x => x.FileType == "screenshot");
                 if (image != null)
-                    imageFile = image.Path;                
+                    imageFile = image.Path;
             }
-            //Clean up version data before its included in the index
-            int o;
-            var version = project.GetProperty("compatibleVersions").Value;
-            var versions = version.ToString().ToLower()
-                            .Replace("nan", "")
-                            .Replace("saved", "")
-                            .Replace("v", "")
-                            .Trim(',').Split(',')
-                            .Where(x => int.TryParse(x, out o))
-                            .Select(x => (decimal.Parse(x.PadRight(3, '0') ) / 100));
+
+            //Clean up version data before its included in the index, the reason we have to do this
+            // is due to the way the version data is stored, you can see it in uVersion.config - it's super strange
+            // because of the 3 digit nature but when it doesn't end with a '0' it's actually just the major/minor version
+            // so we have to do all of this parsing.
+            var version = project.GetPropertyValue<string>("compatibleVersions") ?? string.Empty;
+            var cleanedVersions = version.ToLower()
+                .Replace("nan", "")
+                .Replace("saved", "")
+                .Replace("v", "")
+                .Trim(',')
+                .Split(',')
+                //it's stored as an int like 721 (for version 7.2.1)
+                .Where(x => x.Length <= 3 && x.Length > 0)
+                //pad it out to 3 digits
+                .Select(x => x.PadRight(3, '0'))
+                .Select(x =>
+                {
+                    int o;
+                    if (int.TryParse(x, out o))
+                    {
+                        //if it ends with '0', that means it's a X.X.X version
+                        // if it does not end with '0', that means that the last 2 digits are the 
+                        // Minor part of the version
+                        return x.EndsWith("0")
+                            ? string.Format("{0}.{1}.{2}", x[0], x[1], 0)
+                            : string.Format("{0}.{1}.{2}", x[0], x.Substring(1), 0);
+                    }
+                    return null;
+                })
+                .Where(x => x != null);
+
+            var cleanedCompatVersions = compatVersions.Select(x => x.Replace("nan", "")
+                .Replace("saved", "")
+                .Replace("nan", "")
+                .Replace("v", "")
+                .Replace(".x", "")
+                .Trim(','));
 
             //popularity for sorting number = downloads + karma * 100;
+            //TODO: Change score so that we take into account:
+            // - recently updated
+            // - works on latest umbraco versions
+            // - works on uaas
+            // - has a forum
+            // - has source code link
+            // - open for collab / has collaborators
             var pop = downloads + (projectVotes * 100);
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
@@ -85,10 +120,9 @@ namespace OurUmbraco.Our.Examine
 
             //now we need to add the versions and compat versions
             // first, this is the versions that the project has files tagged against
-            simpleDataSet.RowData.Add("versions", string.Join(",", versions));
-
+            simpleDataSet.RowData.Add("versions", string.Join(",", cleanedVersions));
             //then we index the versions that the project has actually been flagged as compatible against
-            simpleDataSet.RowData.Add("compatVersions", string.Join(",", compatVersions));
+            simpleDataSet.RowData.Add("compatVersions", string.Join(",", cleanedCompatVersions));
 
             return simpleDataSet;
         }
@@ -113,10 +147,41 @@ namespace OurUmbraco.Our.Examine
 
                 var projectDownloads = allProjectDownloads.ContainsKey(project.Id) ? allProjectDownloads[project.Id] : 0;
                 var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
-                var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] {};
+                var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] { };
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
                 yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
+            }
+        }
+
+        /// <summary>
+        /// Given the string versions, this will put them into the index as numerical versions, this way we can compare/range query, etc... on versions
+        /// </summary>
+        /// <param name="e"></param>
+        /// <param name="fieldName"></param>
+        /// <param name="versions"></param>
+        /// <remarks>
+        /// This stores a numerical version as a Right padded 3 digit combined long number. Example:
+        /// 7.5.0 would be:
+        ///     007005000 = 7005000
+        /// 4.11.0 would be:
+        ///     004011000 = 4011000
+        /// </remarks>
+        private static void AddNumericalVersionValue(DocumentWritingEventArgs e, string fieldName, IEnumerable<string> versions)
+        {
+            var numericalVersions = versions.Select(x =>
+                {
+                    System.Version o;
+                    return System.Version.TryParse(x, out o) ? o : null;
+                })
+                .Where(x => x != null)
+                .Select(x => x.GetNumericalValue())
+                .ToArray();
+
+            foreach (var numericalVersion in numericalVersions)
+            {
+                var versionField = new NumericField(fieldName, Field.Store.YES, true).SetLongValue(numericalVersion);
+                e.Document.Add(versionField);
             }
         }
 
@@ -127,11 +192,27 @@ namespace OurUmbraco.Our.Examine
         /// <param name="e"></param>
         public static void ProjectIndexer_DocumentWriting(object sender, DocumentWritingEventArgs e)
         {
+            //if there is a "body" field, we'll strip the html but also store it's raw value
+            if (e.Fields.ContainsKey("body"))
+            {
+                //store the raw value
+                e.Document.Add(new Field(
+                    string.Concat(LuceneIndexer.SpecialFieldPrefix, "body"),
+                    e.Fields["body"],
+                    Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
+                //remove the current version field from the lucene doc
+                e.Document.RemoveField("body");
+                //add a 'body' field with stripped html
+                e.Document.Add(new Field("body", library.StripHtml(e.Fields["body"]), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+            }
+
             //If there is a versions field, we'll split it and index the same field on each version
             if (e.Fields.ContainsKey("versions"))
             {
                 //split into separate versions
                 var versions = e.Fields["versions"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                AddNumericalVersionValue(e, "num_versions", versions);
 
                 //remove the current version field from the lucene doc
                 e.Document.RemoveField("versions");
@@ -140,6 +221,24 @@ namespace OurUmbraco.Our.Examine
                 {
                     //add a 'versions' field for each version (same field name but different values)
                     e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+                }
+            }
+
+            //If there is a compatVersions field, we'll split it and index the same field on each version
+            if (e.Fields.ContainsKey("compatVersions"))
+            {
+                //split into separate versions
+                var compatVersions = e.Fields["compatVersions"].Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                AddNumericalVersionValue(e, "num_compatVersions", compatVersions);
+
+                //remove the current compatVersions field from the lucene doc
+                e.Document.RemoveField("compatVersions");
+
+                foreach (var version in compatVersions)
+                {
+                    //add a 'compatVersions' field for each compatVersion (same field name but different values)
+                    e.Document.Add(new Field("compatVersions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
                 }
             }
         }
@@ -156,12 +255,12 @@ namespace OurUmbraco.Our.Examine
 
             return UmbracoContext.EnsureContext(dummyHttpContext,
                 ApplicationContext.Current,
-                new WebSecurity(dummyHttpContext, ApplicationContext.Current), 
+                new WebSecurity(dummyHttpContext, ApplicationContext.Current),
                 UmbracoConfig.For.UmbracoSettings(),
-                UrlProviderResolver.Current.Providers, 
+                UrlProviderResolver.Current.Providers,
                 false);
         }
-        
+
         /// <summary>
         /// Need to ensures some custom data is added to this index
         /// </summary>
@@ -173,7 +272,7 @@ namespace OurUmbraco.Our.Examine
             // so we can just look this up from the published cache
 
             var umbContxt = EnsureUmbracoContext();
-            
+
             if (e.Fields["categoryFolder"].IsNullOrWhiteSpace())
             {
                 var node = umbContxt.ContentCache.GetById(e.NodeId);
@@ -186,6 +285,6 @@ namespace OurUmbraco.Our.Examine
                 }
             }
 
-        }      
+        }
     }
 }

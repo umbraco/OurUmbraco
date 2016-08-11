@@ -15,13 +15,14 @@ using Umbraco.Web;
 namespace OurUmbraco.MarketPlace.NodeListing
 {
     public class NodeListingProvider
-    {    /// <summary>
-         /// get project listing based on ID
-         /// </summary>
-         /// <param name="id"></param>
-         /// <param name="optimized"></param>
-         /// <param name="projectKarma"></param>
-         /// <returns></returns>
+    {
+        /// <summary>
+        /// get project listing based on ID
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="optimized"></param>
+        /// <param name="projectKarma"></param>
+        /// <returns></returns>
         public IListingItem GetListing(int id, bool optimized = false, int projectKarma = -1)
         {
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
@@ -71,58 +72,26 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <returns></returns>
         public IListingItem GetListing(IPublishedContent content, bool optimized = false, int projectKarma = -1)
         {
-            if (content != null)
+            if (content == null) throw new ArgumentNullException(nameof(content));
+
+            //TODO: could easily cache this for a short period of time
+
+            var listingItem = new ListingItem.PublishedContentListingItem(content);
+            
+            //this section was created to speed up loading operations and cut down on the number of database interactions
+            // TODO: N+1+1+1+1, etc...
+            if (optimized == false)
             {
-                var listingItem = new ListingItem.ListingItem(
-                    p => GetProjectDownloadCount(p),
-                    p => projectKarma < 0 ? GetProjectKarma(p) : projectKarma
-                    );
-
-                listingItem.Id = content.Id;
-                listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
-                listingItem.Name = content.Name;
-                listingItem.Description = content.GetPropertyValue<string>("description", "");
-                listingItem.CurrentVersion = content.GetPropertyValue<string>("version", "");
-                listingItem.CurrentReleaseFile = content.GetPropertyValue<string>("file", "");
-                listingItem.DefaultScreenshot = content.GetPropertyValue<string>("defaultScreenshotPath", "");
-                listingItem.DevelopmentStatus = content.GetPropertyValue<string>("status", "");
-                listingItem.ListingType = content.GetPropertyAsListingType("listingType");
-                listingItem.GACode = content.GetPropertyValue<string>("gaCode", "");
-                listingItem.CategoryId = content.GetPropertyValue<int>("category");
-                listingItem.Stable = content.GetPropertyValue<bool>("stable");
-                listingItem.Live = content.GetPropertyValue<bool>("projectLive");
-                listingItem.LicenseName = content.GetPropertyValue<string>("licenseName", "");
-                listingItem.LicenseUrl = content.GetPropertyValue<string>("licenseUrl", "");
-                listingItem.ProjectUrl = content.GetPropertyValue<string>("websiteUrl", "");
-                listingItem.SupportUrl = content.GetPropertyValue<string>("supportUrl", "");
-                listingItem.SourceCodeUrl = content.GetPropertyValue<string>("sourceUrl", "");
-                listingItem.DemonstrationUrl = content.GetPropertyValue<string>("demoUrl", "");
-                listingItem.OpenForCollab = content.GetPropertyValue<bool>("openForCollab", false);
-                listingItem.NotAPackage = content.GetPropertyValue<bool>("notAPackage", false);
-                listingItem.ProjectGuid = new Guid(content.GetPropertyValue<string>("packageGuid"));
-                listingItem.Approved = content.GetPropertyValue<bool>("approved", false);
-                listingItem.UmbracoVerionsSupported = content.GetPropertyValue<string>("compatibleVersions", "").Split(';');
-                listingItem.NETVersionsSupported = (content.GetPropertyValue<string>("dotNetVersion", "") != null) ? content.GetPropertyValue<string>("dotNetVersion", "").Split(';') : "".Split(';');
-                listingItem.TrustLevelSupported = content.GetPropertyAsTrustLevel("trustLevelSupported");
-                listingItem.TermsAgreementDate = content.GetPropertyValue<DateTime>("termsAgreementDate");
-                listingItem.CreateDate = content.CreateDate;
-                listingItem.VendorId = content.GetPropertyValue<int>("owner");
-                listingItem.Logo = content.GetPropertyValue<string>("logo", "");
-                listingItem.LicenseKey = content.GetPropertyValue<string>("licenseKey", "");
-
-                //this section was created to speed up loading operations and cut down on the number of database interactions
-                if (optimized == false)
-                {
-                    listingItem.DocumentationFile = GetMediaForProjectByType(content.Id, FileType.docs);
-                    listingItem.ScreenShots = GetMediaForProjectByType(content.Id, FileType.screenshot);
-                    listingItem.PackageFile = GetMediaForProjectByType(content.Id, FileType.package);
-                    listingItem.HotFixes = GetMediaForProjectByType(content.Id, FileType.hotfix);
-                    listingItem.SourceFile = GetMediaForProjectByType(content.Id, FileType.source);
-                }
-
-                return listingItem;
+                listingItem.Karma = projectKarma < 0 ? GetProjectKarma(content.Id) : projectKarma;
+                listingItem.Downloads = GetProjectDownloadCount(content.Id);
+                listingItem.DocumentationFile = GetMediaForProjectByType(content.Id, FileType.docs);
+                listingItem.ScreenShots = GetMediaForProjectByType(content.Id, FileType.screenshot);
+                listingItem.PackageFile = GetMediaForProjectByType(content.Id, FileType.package);
+                listingItem.HotFixes = GetMediaForProjectByType(content.Id, FileType.hotfix);
+                listingItem.SourceFile = GetMediaForProjectByType(content.Id, FileType.source);
             }
-            throw new NullReferenceException("Content is Null");
+
+            return listingItem;
         }
 
 
@@ -173,8 +142,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
 
             Guid packageGuid;
             var packageGuidValue = content.GetValue<string>("packageGuid");
-            var packageGuidString = Guid.TryParse(packageGuidValue, out packageGuid) 
-                ? packageGuid.ToString() 
+            var packageGuidString = Guid.TryParse(packageGuidValue, out packageGuid)
+                ? packageGuid.ToString()
                 : Guid.NewGuid().ToString();
 
             //set all the document properties
@@ -317,7 +286,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
         {
             return GetAllListings(0, 0, optimized, all);
         }
-        
+
         /// <summary>
         /// gets paged list of listings
         /// </summary>
@@ -371,7 +340,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             var karmaProvider = new KarmaProvider();
             var projectsByKarma = karmaProvider.GetProjectsKarmaList();
             var projectsFromDeliProjectRoot = GetProjectsFromDeliProjectRoot(false).ToArray();
-            
+
             var items = projectsByKarma
                 .Select(x => Tuple.Create(x, projectsFromDeliProjectRoot.FirstOrDefault(y => y.Id == x.ProjectId)))
                 .Where(x => x.Item2 != null);
@@ -391,7 +360,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             foreach (var projectId in projectsVoted)
             {
                 var content = umbracoHelper.TypedContent(projectId);
-                if(content != null)
+                if (content != null)
                     votedProjects.Add(content);
             }
 
@@ -407,7 +376,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             foreach (var projectId in projectsDownloaded)
             {
                 var content = umbracoHelper.TypedContent(projectId);
-                if(content != null)
+                if (content != null)
                     downloadedProjects.Add(content);
             }
 

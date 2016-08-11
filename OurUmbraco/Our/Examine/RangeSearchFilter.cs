@@ -2,34 +2,33 @@
 
 namespace OurUmbraco.Our.Examine
 {
-    public class SearchFilter
+    public class RangeSearchFilter : SearchFilter
     {
+        public long To { get; private set; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.
         /// </summary>
-        public SearchFilter(string fieldName, object value)
+        public RangeSearchFilter(string fieldName, long from, long to) : base(fieldName, from)
         {
-            FieldName = fieldName;
-            Value = value;
+            To = to;
         }
-
-        public string FieldName { get; private set; }
-        public object Value { get; private set; }
 
         /// <summary>Returns a string that represents the current object.</summary>
         /// <returns>A string that represents the current object.</returns>
         public override string ToString()
         {
-            return string.Format("{0}:{1}", FieldName, Value);
+            //see https://lucene.apache.org/core/2_9_4/queryparsersyntax.html#Range Searches
+            return string.Format("{0}:[{1} TO {2}]", FieldName, Value, To);
         }
 
         /// <summary>
         /// Can be used to return a true LUcene query object if the string format is not good enough
         /// </summary>
         /// <returns></returns>
-        public virtual Query GetLuceneQuery()
+        public override Query GetLuceneQuery()
         {
-            return null;
+            return NumericRangeQuery.NewLongRange(FieldName, (long)Value, To, true, true);
         }
     }
 }

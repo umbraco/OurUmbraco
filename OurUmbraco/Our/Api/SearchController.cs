@@ -4,7 +4,9 @@ using Lucene.Net.Documents;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Project;
 using Umbraco.Web.WebApi;
+using Umbraco.Core;
 
 namespace OurUmbraco.Our.Api
 {
@@ -18,7 +20,7 @@ namespace OurUmbraco.Our.Api
         }
 
 
-        public SearchResultModel GetProjectSearchResults(string term)
+        public SearchResultModel GetProjectSearchResults(string term, string version = null)
         {
             var filters = new List<SearchFilters>();
             var searchFilters = new SearchFilters(BooleanOperation.And);
@@ -26,6 +28,16 @@ namespace OurUmbraco.Our.Api
             searchFilters.Filters.Add(new SearchFilter("approved", "1"));
             searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
             filters.Add(searchFilters);
+            //need to clean up this string, it could be all sorts of things
+            var parsedVersion = version.GetFromUmbracoString();
+            if (parsedVersion != null)
+            {
+                var numericalVersion = parsedVersion.GetNumericalValue();
+                var versionFilters = new SearchFilters(BooleanOperation.Or);
+                versionFilters.Filters.Add(new RangeSearchFilter("num_version", numericalVersion, long.MaxValue));
+                versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", numericalVersion, long.MaxValue));
+                filters.Add(versionFilters);
+            }
 
             var searcher = new OurSearcher(term, nodeTypeAlias:"project", filters: filters);
             var searchResult = searcher.Search("projectSearcher");

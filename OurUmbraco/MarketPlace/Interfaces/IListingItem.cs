@@ -19,8 +19,8 @@ namespace OurUmbraco.MarketPlace.Interfaces
         IEnumerable<IProjectTag> Tags { get;set; }
         int CategoryId { get; set; }
         string Logo { get; set; }
-        String LicenseName { get; set; }
-        String LicenseUrl { get; set; }
+        string LicenseName { get; set; }
+        string LicenseUrl { get; set; }
         ListingType ListingType { get; set; }
         string SupportUrl { get; set; }
         IEnumerable<IMediaFile> PackageFile { get; set; }
@@ -39,13 +39,13 @@ namespace OurUmbraco.MarketPlace.Interfaces
         DateTime TermsAgreementDate { get; set; }
         DateTime CreateDate { get; set; }
         Guid ProjectGuid { get; set; }
-        Boolean Stable { get; set; }
-        Boolean Approved { get; set; }
-        Boolean StarterKitModule { get; set; }
-        Boolean NotAPackage { get; set; }
-        Boolean OpenForCollab { get; set; }
-        Boolean Live { get; set; }
-        Boolean Disabled { get; set; }
+        bool Stable { get; set; }
+        bool Approved { get; set; }
+        bool StarterKitModule { get; set; }
+        bool NotAPackage { get; set; }
+        bool OpenForCollab { get; set; }
+        bool Live { get; set; }
+        bool Disabled { get; set; }
         String SourceCodeUrl { get; set; }
         int Downloads { get; }
         int Karma { get; }

@@ -7,6 +7,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine.Providers;
+using Examine.LuceneEngine.SearchCriteria;
 using Examine.SearchCriteria;
 using Lucene.Net.QueryParsers;
 using OurUmbraco.Our.Models;
@@ -37,9 +38,9 @@ namespace OurUmbraco.Our.Examine
         /// </summary>
         /// <param name="searcher"></param>
         /// <returns></returns>
-        public ISearchCriteria GetSearchCriteria(ISearcher searcher)
-        {            
-            var criteria = searcher.CreateSearchCriteria();
+        public ISearchCriteria GetSearchCriteria(BaseLuceneSearcher searcher)
+        {   
+            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
 
             var sb = new StringBuilder();
 
@@ -102,26 +103,25 @@ namespace OurUmbraco.Our.Examine
                 return null;
             }
 
+            //First, render out the raw query that was constructed above
+            criteria = (LuceneSearchCriteria)criteria.RawQuery(sb.ToString().Replace("+()", string.Empty));
+
+            //Now we can apply any filters, this is done by using native Lucene query objects
             if (Filters.Any())
             {
                 //If there is a filter applied to the entire result then add it here, this is a MUST sub query
-
                 foreach (var filter in Filters)
                 {
-                    sb.Append(filter.GetLuceneAddFilters());
+                    filter.ProcessLuceneAddFilters(searcher, criteria);
                 }
 
-
+                //need to process the excludes after - since that is how lucene works, you can only exclude after you've included
                 foreach (var filter in Filters)
                 {
-                    sb.Append(filter.GetLuceneExcludeFilters());
+                    filter.ProcessLuceneExcludeFilters(searcher, criteria);
                 }
             }
-
-
-            var query = sb.ToString().Replace("+()", string.Empty);
-            criteria.RawQuery(query);
-
+            
             if (string.IsNullOrEmpty(OrderBy) == false)
             {
                 criteria.OrderByDescending(OrderBy);
@@ -132,7 +132,7 @@ namespace OurUmbraco.Our.Examine
 
         public SearchResultModel Search(string searcherName = null, int skip = 0, bool populateUrls = true)
         {
-            var multiIndexSearchProvider = ExamineManager.Instance.SearchProviderCollection[
+            var multiIndexSearchProvider = (BaseLuceneSearcher) ExamineManager.Instance.SearchProviderCollection[
                 string.IsNullOrWhiteSpace(searcherName) ? "MultiIndexSearcher" : searcherName];
 
             var criteria = GetSearchCriteria(multiIndexSearchProvider);

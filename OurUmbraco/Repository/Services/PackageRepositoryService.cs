@@ -12,6 +12,7 @@ using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Project;
 using OurUmbraco.Project.Services;
 using OurUmbraco.Repository.Controllers;
 using OurUmbraco.Repository.Models;
@@ -66,6 +67,7 @@ namespace OurUmbraco.Repository.Services
         /// <param name="pageSize"></param>
         /// <param name="category"></param>
         /// <param name="query"></param>
+        /// <param name="version"></param>
         /// <param name="order"></param>
         /// <returns></returns>
         /// <remarks>
@@ -76,6 +78,7 @@ namespace OurUmbraco.Repository.Services
             int pageSize,
             string category = null,
             string query = null,
+            string version = null,
             PackageSortOrder order = PackageSortOrder.Default)
         {
             var filters = new List<SearchFilters>();
@@ -83,6 +86,20 @@ namespace OurUmbraco.Repository.Services
             //MUST be approved and live
             searchFilters.Filters.Add(new SearchFilter("approved", "1"));
             searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+            filters.Add(searchFilters);
+            if (version.IsNullOrWhiteSpace() == false)
+            {
+                //need to clean up this string, it could be all sorts of things
+                var parsedVersion = version.GetFromUmbracoString();
+                if (parsedVersion != null)
+                {
+                    var numericalVersion = parsedVersion.GetNumericalValue();
+                    var versionFilters = new SearchFilters(BooleanOperation.Or);
+                    versionFilters.Filters.Add(new RangeSearchFilter("num_version", numericalVersion, long.MaxValue));
+                    versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", numericalVersion, long.MaxValue));
+                    filters.Add(versionFilters);
+                }
+            }
 
             query = string.IsNullOrWhiteSpace(query) ? string.Empty : query;
 

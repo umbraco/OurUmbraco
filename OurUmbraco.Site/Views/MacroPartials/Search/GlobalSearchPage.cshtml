@@ -9,12 +9,16 @@
     var term = Request["term"];
     var pageSize = 50;
 
+    //TODO: If we are searching on projects, they need to be filtered to approved/live!
+
+    //TODO: Depending on what order by this is, we need to pass in a data
+    // type here, for example, if its an INT or a Date!
     OurSearcher searcher = new OurSearcher(term, orderBy: orderMode);
-    
+
     IEnumerable<SearchResult> result = new List<SearchResult>();
     var url = "orderBy=" + orderMode + "&q=" + term + "&version=" + version;
     var pages = 0;
-    
+
     if(string.IsNullOrEmpty(term) == false){
         var search = searcher.Search();
         var total = search.SearchResults.TotalItemCount;
