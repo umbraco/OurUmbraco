@@ -105,6 +105,8 @@ namespace OurUmbraco.Our.Examine
             // - has a forum
             // - has source code link
             // - open for collab / has collaborators
+            // - download count in a recent timeframe - since old downloads should count for less
+
             var pop = downloads + (projectVotes * 100);
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
@@ -180,7 +182,8 @@ namespace OurUmbraco.Our.Examine
 
             foreach (var numericalVersion in numericalVersions)
             {
-                var versionField = new NumericField(fieldName, Field.Store.YES, true).SetLongValue(numericalVersion);
+                //don't store, we're just using this to search
+                var versionField = new NumericField(fieldName, Field.Store.NO, true).SetLongValue(numericalVersion);
                 e.Document.Add(versionField);
             }
         }
@@ -220,7 +223,8 @@ namespace OurUmbraco.Our.Examine
                 foreach (var version in versions)
                 {
                     //add a 'versions' field for each version (same field name but different values)
-                    e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+                    //not analyzed, we don't use this for searching
+                    e.Document.Add(new Field("versions", version, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
                 }
             }
 
@@ -238,7 +242,8 @@ namespace OurUmbraco.Our.Examine
                 foreach (var version in compatVersions)
                 {
                     //add a 'compatVersions' field for each compatVersion (same field name but different values)
-                    e.Document.Add(new Field("compatVersions", version, Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+                    //not analyzed, we don't use this for searching
+                    e.Document.Add(new Field("compatVersions", version, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
                 }
             }
         }

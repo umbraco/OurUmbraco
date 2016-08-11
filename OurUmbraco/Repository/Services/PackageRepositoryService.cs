@@ -83,8 +83,7 @@ namespace OurUmbraco.Repository.Services
         {
             var filters = new List<SearchFilters>();
             var searchFilters = new SearchFilters(BooleanOperation.And);
-            //MUST be approved and live
-            searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+            //MUST be live
             searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
             filters.Add(searchFilters);
             if (version.IsNullOrWhiteSpace() == false)
@@ -113,21 +112,16 @@ namespace OurUmbraco.Repository.Services
                     orderBy = "popularity[Type=INT]";
                     break;
             }
-
-            var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", maxResults: pageSize * (pageIndex + 1), orderBy: orderBy, filters:filters);
-
-            if (!string.IsNullOrWhiteSpace(category) || !string.IsNullOrWhiteSpace(query))
-            {
-                //Return based on a query
-                if (!string.IsNullOrWhiteSpace(category))
-                {
-                    searchFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
-                }
-                filters.Add(searchFilters);
-
-                ourSearcher.Filters = filters;
-            }
             
+            //Return based on a query
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                var catFilters = new SearchFilters(BooleanOperation.And);
+                catFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
+                filters.Add(catFilters);
+            }
+
+            var ourSearcher = new OurSearcher(query, nodeTypeAlias: "project", maxResults: pageSize * (pageIndex + 1), orderBy: orderBy, filters: filters);
             var searchResult = ourSearcher.Search("projectSearcher", skip: pageIndex * pageSize);
             return FromSearchResults(searchResult, pageIndex, pageSize);
         }
@@ -156,7 +150,7 @@ namespace OurUmbraco.Repository.Services
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
             // The XPath 'translate' is being used to force the 'packageGuid' to be lowercase for comparison.
-            var xpath = string.Format("//Project[@isDoc and projectLive = 1 and approved = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
+            var xpath = string.Format("//Project[@isDoc and projectLive = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
             var item = UmbracoHelper.TypedContentSingleAtXPath(xpath);
 
             if (item == null)

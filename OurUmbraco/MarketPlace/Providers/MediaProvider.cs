@@ -126,21 +126,21 @@ namespace OurUmbraco.MarketPlace.Providers
             //return the IMediaFile
 
             //Convert to Deli Media file
-            var MediaFile = GetFileById(uWikiFile.Id);
+            var mediaFile = GetFileById(uWikiFile.Id);
 
             // If upload is package, extract the package XML manifest and check the version number + type [LK:2016-06-12@CGRT16]
             if (fileType == FileType.package)
             {
-                var minimumUmbracoVersion = GetMinimumUmbracoVersion(MediaFile);
+                var minimumUmbracoVersion = GetMinimumUmbracoVersion(mediaFile);
                 if (!string.IsNullOrWhiteSpace(minimumUmbracoVersion))
                 {
-                    MediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Version = minimumUmbracoVersion } };
+                    mediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Version = minimumUmbracoVersion } };
                 }
             }
 
-            MediaFile.DotNetVersion = dotNetVersion;
-            SaveOrUpdate(MediaFile);
-            return MediaFile;
+            mediaFile.DotNetVersion = dotNetVersion;
+            SaveOrUpdate(mediaFile);
+            return mediaFile;
         }
 
         private string GetMinimumUmbracoVersion(WikiFile mediaFile)
@@ -154,10 +154,6 @@ namespace OurUmbraco.MarketPlace.Providers
             }
 
             var packageXmlDoc = XDocument.Parse(packageXml);
-            if (packageXmlDoc == null)
-            {
-                return null;
-            }
 
             // The XPath query will detect if the 'requirements' element has the attribute that we're looking for,
             // and if the child elements also exist. [LK:2016-06-12@CGRT16]

@@ -24,8 +24,7 @@ namespace OurUmbraco.Our.Api
         {
             var filters = new List<SearchFilters>();
             var searchFilters = new SearchFilters(BooleanOperation.And);
-            //MUST be approved and live
-            searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+            //MUST be live
             searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
             filters.Add(searchFilters);
             //need to clean up this string, it could be all sorts of things

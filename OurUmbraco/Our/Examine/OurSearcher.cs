@@ -10,7 +10,10 @@ using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
 using Examine.SearchCriteria;
 using Lucene.Net.QueryParsers;
+using Lucene.Net.Search;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Project;
+using Umbraco.Core;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -41,21 +44,17 @@ namespace OurUmbraco.Our.Examine
         public ISearchCriteria GetSearchCriteria(BaseLuceneSearcher searcher)
         {   
             var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
-
-            var sb = new StringBuilder();
+            
+            //check if there's anything to process
+            if (NodeTypeAlias.IsNullOrWhiteSpace() && Term.IsNullOrWhiteSpace() && !Filters.Any())
+                return null;
 
             if (string.IsNullOrEmpty(NodeTypeAlias) == false)
-            {
-                //if node type alias is specified, make it a MUST
-                sb.Append("+nodeTypeAlias:" + NodeTypeAlias);
-
-                //if the term or filter is also specified then  group the next queries as a sub MUST query
-                if (!string.IsNullOrEmpty(Term) || Filters.Any())
-                {
-                    sb.Append(" +(");
-                }
+            {                
+                criteria.Field("nodeTypeAlias", NodeTypeAlias);
             }
 
+            var sb = new StringBuilder();
             if (!string.IsNullOrEmpty(Term))
             {
                 //Cleanup the term so there are no errors
@@ -73,7 +72,7 @@ namespace OurUmbraco.Our.Examine
                 if (split.Length > 1)
                 {
                     //do an exact phrase match with boost
-                    sb.AppendFormat("nodeName:\"{0}\"^200 body:\"{0}\"^50 ", Term);
+                    sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
                 }
 
                 if (split.Length > 0)
@@ -81,30 +80,29 @@ namespace OurUmbraco.Our.Examine
                     //do standard match with boost on each term
                     foreach (var s in split)
                     {
-                        sb.AppendFormat("nodeName:{0}^100 body:{0}^50 ", s);
+                        sb.AppendFormat("nodeName:{0}^10000 body:{0}^50 ", s);
                     }
 
                     //do suffix with wildcards
                     foreach (var s in split)
                     {
-                        sb.AppendFormat("nodeName:{0}*^0.9 body:{0}*^0.5 ", s);
+                        sb.AppendFormat("nodeName:{0}*^1000 body:{0}* ", s);
+                    }
+
+                    //do fuzzy (close match 0.9)
+                    foreach (var s in split)
+                    {
+                        sb.AppendFormat("nodeName:{0}~0.9^0.1 body:{0}~0.9^0.1 ", s);
                     }
                 }
             }
 
-            //if the node type alias and (term or filter) is specified we need to close the sub query
-            if (!string.IsNullOrEmpty(NodeTypeAlias) && (!string.IsNullOrEmpty(Term) || Filters.Any()))
+            //nothing to process, return
+            if (sb.Length > 0)
             {
-                sb.Append(")");
+                //render out the raw query that was constructed above
+                criteria = (LuceneSearchCriteria)criteria.RawQuery(sb.ToString());
             }
-
-            if (sb.Length == 0)
-            {
-                return null;
-            }
-
-            //First, render out the raw query that was constructed above
-            criteria = (LuceneSearchCriteria)criteria.RawQuery(sb.ToString().Replace("+()", string.Empty));
 
             //Now we can apply any filters, this is done by using native Lucene query objects
             if (Filters.Any())

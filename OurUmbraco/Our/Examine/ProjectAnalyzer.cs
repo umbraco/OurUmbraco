@@ -11,9 +11,6 @@ namespace OurUmbraco.Our.Examine
         public ProjectAnalyzer()
             : base(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29))
         {
-            //Add custom analyzer for versions field
-            AddAnalyzer("versions", new VersionAnalyzer());
-            AddAnalyzer("compatVersions", new VersionAnalyzer());
             AddAnalyzer("projectFolder", new KeywordAnalyzer());
         }
 
