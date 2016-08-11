@@ -68,7 +68,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Examine, Version=0.1.69.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Examine.0.1.69.0-beta2\lib\Examine.dll</HintPath>
+      <HintPath>..\packages\Examine.0.1.69.0\lib\Examine.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.4.9.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
@@ -376,7 +376,7 @@
     <Compile Include="MarketPlace\Interfaces\LicenseType.cs" />
     <Compile Include="MarketPlace\Interfaces\ListingType.cs" />
     <Compile Include="MarketPlace\Interfaces\TrustLevel.cs" />
-    <Compile Include="MarketPlace\ListingItem\ListingItem.cs" />
+    <Compile Include="MarketPlace\ListingItem\PublishedContentListingItem.cs" />
     <Compile Include="MarketPlace\Models\MediaFile.cs" />
     <Compile Include="MarketPlace\Models\UmbracoProject.cs" />
     <Compile Include="MarketPlace\NodeListing\NodeListingProvider.cs" />
@@ -434,6 +434,7 @@
     <Compile Include="Our\Examine\OurSearcher.cs" />
     <Compile Include="Our\Examine\ProjectAnalyzer.cs" />
     <Compile Include="Our\Examine\ProjectNodeIndexDataService.cs" />
+    <Compile Include="Our\Examine\RangeSearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilters.cs" />
     <Compile Include="Our\Examine\VersionAnalyzer.cs" />
@@ -564,7 +565,7 @@
     <Compile Include="Project\Api\ProjectForumController.cs" />
     <Compile Include="Project\Controllers\ProjectCompatibilityReportController.cs" />
     <Compile Include="Project\Controllers\RepositoryController.cs" />
-    <Compile Include="Project\Extensions.cs" />
+    <Compile Include="Project\ProjectExtensions.cs" />
     <Compile Include="Project\Helpers\ExtensionMethods.cs" />
     <Compile Include="Project\Helpers\Helper.cs" />
     <Compile Include="Project\Models\ProjectContributor.cs" />
@@ -617,7 +618,7 @@
     <Compile Include="Project\usercontrols\Deli\Profile\MyProjects.ascx.designer.cs">
       <DependentUpon>MyProjects.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Project\uVersion\config.cs" />
+    <Compile Include="Project\uVersion\UVersionConfig.cs" />
     <Compile Include="Project\uVersion\uVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Release\App_Start\ControllerRouting.cs" />

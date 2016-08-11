@@ -7,23 +7,22 @@ using umbraco.BusinessLogic;
 
 namespace OurUmbraco.Project.uVersion
 {
-    public class config
+    public class UVersionConfig
     {
-
-        public static XmlDocument _Settings
+        public static XmlDocument Settings
         {
             get
             {
                 XmlDocument us = (XmlDocument)HttpRuntime.Cache["uVersionSettingsFile"];
                 if (us == null)
-                    us = ensureSettingsDocument();
+                    us = EnsureSettingsDocument();
                 return us;
             }
         }
 
-        private static string _path = umbraco.GlobalSettings.FullpathToRoot + Path.DirectorySeparatorChar + "config" + Path.DirectorySeparatorChar;
+        private static readonly string Path = umbraco.GlobalSettings.FullpathToRoot + System.IO.Path.DirectorySeparatorChar + "config" + System.IO.Path.DirectorySeparatorChar;
         private static string _filename = "uVersion.config";
-        private static XmlDocument ensureSettingsDocument()
+        private static XmlDocument EnsureSettingsDocument()
         {
             object settingsFile = HttpRuntime.Cache["uVersionSettingsFile"];
 
@@ -31,11 +30,11 @@ namespace OurUmbraco.Project.uVersion
             if (settingsFile == null)
             {
                 XmlDocument temp = new XmlDocument();
-                XmlTextReader settingsReader = new XmlTextReader(_path + _filename);
+                XmlTextReader settingsReader = new XmlTextReader(Path + _filename);
                 try
                 {
                     temp.Load(settingsReader);
-                    HttpRuntime.Cache.Insert("uVersionSettingsFile", temp, new CacheDependency(_path + _filename));
+                    HttpRuntime.Cache.Insert("uVersionSettingsFile", temp, new CacheDependency(Path + _filename));
                 }
                 catch (Exception e)
                 {
@@ -48,11 +47,6 @@ namespace OurUmbraco.Project.uVersion
                 return (XmlDocument)settingsFile;
         }
 
-        private static void save()
-        {
-            _Settings.Save(_path + _filename);
-        }
-
         /// <summary>
         /// Selects a xml node in the umbraco settings config file.
         /// </summary>
@@ -62,10 +56,10 @@ namespace OurUmbraco.Project.uVersion
         {
             if (Key == null)
                 throw new ArgumentException("Key cannot be null");
-            ensureSettingsDocument();
-            if (_Settings == null || _Settings.DocumentElement == null)
+            EnsureSettingsDocument();
+            if (Settings == null || Settings.DocumentElement == null)
                 return null;
-            return _Settings.DocumentElement.SelectSingleNode(Key);
+            return Settings.DocumentElement.SelectSingleNode(Key);
         }
 
         /// <summary>
@@ -75,9 +69,9 @@ namespace OurUmbraco.Project.uVersion
         /// <returns></returns>
         public static string GetKey(string Key)
         {
-            ensureSettingsDocument();
+            EnsureSettingsDocument();
 
-            XmlNode node = _Settings.DocumentElement.SelectSingleNode(Key);
+            XmlNode node = Settings.DocumentElement.SelectSingleNode(Key);
             if (node == null || node.FirstChild == null || node.FirstChild.Value == null)
                 return string.Empty;
             return node.FirstChild.Value;

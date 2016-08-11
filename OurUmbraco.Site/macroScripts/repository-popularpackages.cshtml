@@ -1,163 +1,203 @@
 ﻿@using System.Text.RegularExpressions
 @using System.Xml;
+@using Examine.LuceneEngine.Providers
+@using Examine.SearchCriteria
 @using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.MarketPlace.ListingItem
 @using OurUmbraco.Our
+@using OurUmbraco.Our.Examine
 @using OurUmbraco.Project
 @using Umbraco.Core
+@using Umbraco.Web
 
 @{
-    var projectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
     var take = 30;
+
+    var filters = new List<SearchFilters>();
+    var searchFilters = new SearchFilters(BooleanOperation.And);
+    //MUST be approved and live
+    searchFilters.Filters.Add(new SearchFilter("approved", "1"));
+    searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+    filters.Add(searchFilters);
+    //Get the version that the package repository is displaying for
+    var version = "v45";
+    if (Request.QueryString["fullVersion"] != null)
+    {
+        version = Request.QueryString["fullVersion"];
+    }
+    //need to clean up this string, it could be all sorts of things
+    var parsedVersion = version.GetFromUmbracoString();
+    if (parsedVersion != null)
+    {
+        var numericalVersion = parsedVersion.GetNumericalValue();
+        var versionFilters = new SearchFilters(BooleanOperation.Or);
+        versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
+        versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
+        filters.Add(versionFilters);
+    }
+
+    var ourSearcher = new OurSearcher(string.Empty, "project", "popularity[Type=INT]", maxResults: take, filters: filters);
 
     var wrapperClass = "notLoggedIn";
 
-    var qs = Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 );
+    var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1);
 
-    var version = "v45";
-    if(Request.QueryString["version"] != null){
-        version = Request.QueryString["version"].ToLower();
-    }
-
-    const string uniqueWhatever = "E295637E-E957-4CCA-92CE-BF5D58F9FF59";
-    var cacheKey = uniqueWhatever + "[" + version + "]";
-    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-
-    IEnumerable<IListingItem> projects = (IEnumerable<IListingItem>)cache.GetCacheItem(cacheKey, () =>
-    {
-        return projectsProvider
-             .GetListingsByKarma(0, take, true, false)
-             .Where(x => !x.NotAPackage &&
-                 (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
-                    string.Join("", x.UmbracoVerionsSupported).Contains(version)));
-    }, TimeSpan.FromMinutes(10));
+    var found = ourSearcher.Search("projectSearcher");
+    //var result = projectsProvider
+    // .GetListingsByKarma(0, take, true, false)
+    // .Where(x => !x.NotAPackage &&
+    //     (string.Join("", x.UmbracoVerionsSupported).Contains("nan") ||
+    //        string.Join("", x.UmbracoVerionsSupported).Contains(version)));
 
     var pUrl = "/repo_viewproject?" + qs + "&project_id=";
-    var favs = new List<IListingItem>();
+    var favs = new List<PublishedContentListingItem>();
 
-
-    if(umbraco.library.IsLoggedOn()){
+    if (umbraco.library.IsLoggedOn())
+    {
         wrapperClass = "loggedIn";
 
-        var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
+        var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
 
+        var memId = umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id;
+        var projectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
         var iterator = OurUmbraco.Powers.Library.Xslt.ItemsVotedFor(memId, "powersproject").Current.Select("//id");
         while (iterator.MoveNext() && iterator.CurrentPosition < 20)
         {
             var node = (IHasXmlNode)iterator.Current;
 
-            if(node != null){
-                string id = umbraco.xmlHelper.GetNodeValue(node.GetNode());
-
-                if(id != null){
-                    try{
-                        var project = projectsProvider.GetListing(int.Parse(id), false);
-                        if(project != null){
-                            favs.Add(project);
+            if (node != null)
+            {
+                var id = umbraco.xmlHelper.GetNodeValue(node.GetNode());
+                if (id != null)
+                {
+                    var content = umbracoHelper.TypedContent(id);
+                    if (content != null)
+                    {
+                        try
+                        {
+                            var project = (PublishedContentListingItem)projectsProvider.GetListing(content, false);
+                            if (project != null)
+                            {
+                                //set the category name
+                                favs.Add(project);
+                            }
                         }
-                    }catch{
-                        //do nothing       
+                        catch
+                        {
+                            //do nothing
+                        }
                     }
                 }
             }
         }
 
-        favs = favs.Where(x => !x.NotAPackage && (string.Join("",x.UmbracoVerionsSupported).Contains("nan") || string.Join("",x.UmbracoVerionsSupported).Contains(version) )).ToList();
+        favs = favs.Where(x => !x.NotAPackage && (string.Join("", x.UmbracoVerionsSupported).Contains("nan") || string.Join("", x.UmbracoVerionsSupported).Contains(version))).ToList();
     }
 
- }
+}
 
 
 <div class="@wrapperClass">
 
-<div class="projectDiv">
-<h1>Popular Packages</h1>
-<p>The most popular packages, based on karma and downloads</p>
-<ul class="projects">
-  @foreach(var project in projects)
-  {
-    <li class="clearfix">
-            <div class="deliPackage">
-            
-            <div class="brief">
-			
-				@{
-					var screenShot = project.DefaultScreenshot;
-					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?bgcolor=fff&width=50&height=50&format=png" : "/css/img/package2.png";
-				}
-				<a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
-              
-              <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
+    <div class="projectDiv">
+        <h1>Popular Packages</h1>
+        <p>The most popular packages, based on karma and downloads</p>
+        <ul class="projects">
+            @foreach (var project in found.SearchResults)
+            {
+                <li class="clearfix">
+                    <div class="deliPackage">
 
-              <div class="category">@project.GetCategoryName()</div>
-            </div>
+                        <div class="brief">
 
-            <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
-            </div>
+                            @{
+                                var screenShot = project.Fields.ContainsKey("image") ? project["image"] : string.Empty;
+                                var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?bgcolor=fff&width=50&height=50&format=png" : "/css/img/package2.png";
+                            }
+                            <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
 
-            <div class="popularity">
-                <div class="karma">
-                    @project.Karma    
-                    <small>Karma</small>
-                </div>
-                <div class="downloads">
-                    @project.Downloads    
-                    <small>Downloads</small>
-                </div>
-            </div>
+                            <h3><a rel="@project["uniqueId"]" href="@pUrl@project.Id">@project["nodeName"]</a>
+                            </h3>
+
+                            <div class="category">@project["categoryFolder"]</div>
+                        </div>
+
+                        <div class="hiLite">
+                            <p>
+                                <a rel="@project["uniqueId"]" title="@project["nodeName"]" href="@pUrl@project.Id">
+                                    @ShortenText(project[string.Concat(LuceneIndexer.SpecialFieldPrefix, "body")])
+                                </a>
+                            </p>
+                        </div>
+
+                        <div class="popularity">
+                            <div class="karma">
+                                @project["karma"]
+                                <small>Karma</small>
+                            </div>
+                            <div class="downloads">
+                                @project["downloads"]
+                                <small>Downloads</small>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+
+    @if (favs.Any())
+    {
+        <div class="favsDiv">
+            <h1>Your favorites</h1>
+            <p>This is your favourites, based on your karma votes and downloads</p>
+            <ul class="projects">
+                @foreach (var project in @favs)
+                {
+                    <li class="clearfix">
+                        <div class="deliPackage">
+
+                            <div class="brief">
+
+                                @{
+                                    var screenShot = project.DefaultScreenshot;
+                                    var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?bgcolor=fff&width=50&height=50" : "/css/img/package2.png";
+                                }
+                                <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
+
+                                <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a>
+                                </h3>
+
+                                <div class="category">@project.PublishedContent.Parent.Name</div>
+
+
+                            </div>
+
+                            <div class="hiLite">
+                                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a>
+                                </p>
+                            </div>
+
+                            <div class="popularity">
+                                <div class="karma">
+                                    @project.Karma
+                                    <small>Karma</small>
+                                </div>
+                                <div class="downloads">
+                                    @project.Downloads
+                                    <small>Downloads</small>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                }
+            </ul>
         </div>
-</li>
-}
-</ul>
-</div>
-
-@if(favs.Count() > 0){
-<div class="favsDiv">
-<h1>Your favorites</h1>
-<p>This is your favourites, based on your karma votes and downloads</p>
-<ul class="projects">
-@foreach(var project in @favs)
-{
-   <li class="clearfix">
-            <div class="deliPackage">
-            
-            <div class="brief">
-			
-				@{
-					var screenShot = project.DefaultScreenshot;
-					var image = string.IsNullOrEmpty(screenShot) == false ? screenShot + "?bgcolor=fff&width=50&height=50" : "/css/img/package2.png";
-				}
-              <a href="@pUrl@project.Id" class="packageIcon" style="background: url('@image') no-repeat top left;">Package</a>
-              
-              <h3><a rel="@project.ProjectGuid" href="@pUrl@project.Id">@project.Name</a></h3>
-
-              <div class="category">@project.GetCategoryName()</div>
-
-
-            </div>
-
-            <div class="hiLite">
-                <p><a rel="@project.ProjectGuid" title="@project.Name" href="@pUrl@project.Id">@ShortenText(project.Description)</a></p>
-            </div>
-
-            <div class="popularity">
-                <div class="karma">
-                    @project.Karma    
-                    <small>Karma</small>
-                </div>
-                <div class="downloads">
-                    @project.Downloads    
-                    <small>Downloads</small>
-                </div>
-            </div>
-        </div>
-</li>
-}
-</ul>
-</div>
-}else{
-  <a href="#" id="loginToSeeFavs" class="rounded">Log in to see your favourites</a>      
-}
+    }
+    else
+    {
+        <a href="#" id="loginToSeeFavs" class="rounded">Log in to see your favourites</a>
+    }
 </div>
 
 

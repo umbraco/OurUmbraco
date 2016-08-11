@@ -34,8 +34,8 @@ namespace OurUmbraco.Our.Api
             {
                 var numericalVersion = parsedVersion.GetNumericalValue();
                 var versionFilters = new SearchFilters(BooleanOperation.Or);
-                versionFilters.Filters.Add(new RangeSearchFilter("num_version", numericalVersion, long.MaxValue));
-                versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", numericalVersion, long.MaxValue));
+                versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
+                versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
                 filters.Add(versionFilters);
             }
 

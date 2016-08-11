@@ -1,6 +1,9 @@
 ﻿using System;
+using System.Linq;
 using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.Project.uVersion;
 using umbraco.presentation.nodeFactory;
+using Umbraco.Core;
 
 namespace OurUmbraco.Project
 {
@@ -10,8 +13,12 @@ namespace OurUmbraco.Project
         /// This tries to clean the string to convert to a Version instance based on the various ways we store version string values for projects
         /// </summary>
         /// <param name="version"></param>
-        /// <returns></returns>
-        public static System.Version GetFromUmbracoString(this string version)
+        /// <param name="reduceToConfigured"></param>
+        /// <returns>
+        /// This compares the version passed in, then checks what the latest configured minor version is in uVersion.config with comparison
+        /// to this minor version and uses that.
+        /// </returns>
+        public static System.Version GetFromUmbracoString(this string version, bool reduceToConfigured = true)
         {
             //need to clean up this string, it could be all sorts of things
             version = version.ToLower()
@@ -39,7 +46,31 @@ namespace OurUmbraco.Project
             }
 
             System.Version result;
-            return System.Version.TryParse(version, out result) ? result : null;
+            if (!System.Version.TryParse(version, out result))
+                return null;
+
+            if (!reduceToConfigured)
+                return result;
+
+            //Now we need to check what the latest configured major/minor version that corresponds to this one is and use that version.
+            // This is so that search results are actually returned. Example, if running 7.4.3 but the latest configured minor is 7.4.0, then
+            // no search results are returned because nothing would be tagged as compatible with 7.4.3, only 7.4.0
+
+            //get all Version's configured order by latest
+            var all = UVersion.GetAllAsVersions().ToArray();
+            //search for the latest compatible version to search on
+            foreach (var v in all)
+            {
+                if (result > v)
+                {
+                    return v;
+                }
+            }
+            
+            //we couldn't find anything, 
+            //this will occur if the passed in version is not greater than any configured versions, in this case we have no choice 
+            // but to return a very small version, we'll stick with 4.5 since this is the infamous hard coded value
+            return new System.Version(4, 5, 0);
         }
 
         /// <summary>
