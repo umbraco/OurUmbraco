@@ -301,6 +301,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
     <Compile Include="Documentation\Busineslogic\Events.cs" />
@@ -437,8 +438,6 @@
     <Compile Include="Our\Examine\RangeSearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilters.cs" />
-    <Compile Include="Our\Examine\VersionAnalyzer.cs" />
-    <Compile Include="Our\Examine\VersionTokenizer.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoAuthTokenServerExtensions.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoCustomOwinStartup.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoGoogleAuthExtensions.cs" />
@@ -551,6 +550,7 @@
       <DependentUpon>SignupSimple.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\Utils.cs" />
+    <Compile Include="OutgoingDateTimeFormatAttribute.cs" />
     <Compile Include="Powers\Api\PowersController.cs" />
     <Compile Include="Powers\Buddha\Buddha.cs" />
     <Compile Include="Powers\BusinessLogic\Action.cs" />

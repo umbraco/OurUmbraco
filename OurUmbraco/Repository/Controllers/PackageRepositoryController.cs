@@ -20,13 +20,14 @@ namespace OurUmbraco.Repository.Controllers
     /// </remarks>
     [EnableCors(origins: "*", headers: "*", methods: "*")]
     [CamelCaseFormatter]
+    [OutgoingDateTimeFormat]
     public class PackageRepositoryController : UmbracoApiControllerBase
     {
-        private readonly PackageRepositoryService Service;
+        private PackageRepositoryService _service;
 
-        public PackageRepositoryController()
+        internal PackageRepositoryService Service
         {
-            Service = new PackageRepositoryService(Umbraco, Members, DatabaseContext);
+            get { return _service ?? (_service = new PackageRepositoryService(Umbraco, Members, DatabaseContext)); }
         }
 
         public IEnumerable<Models.Category> GetCategories()
@@ -77,20 +78,24 @@ namespace OurUmbraco.Repository.Controllers
             string query = null,
             string version = null,
             PackageSortOrder order = PackageSortOrder.Latest)
-        {            
+        {
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.{0}.{1}.{2}.{3}.{4}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, order);
+            var key = string.Format("PackageRepositoryController.GetCategories.{0}.{1}.{2}.{3}.{4}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, order);
             return ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PagedPackages>
                 (key,
                     () => Service.GetPackages(pageIndex, pageSize, category, query, version, order),
-                    TimeSpan.FromMinutes(1)); //cache for 1 min
-
+                    TimeSpan.FromMinutes(1)); //cache for 1 min    
         }
 
         public Models.PackageDetails GetDetails(Guid id)
         {
-            var package = Service.GetDetails(id);
-
+            //return the results, but cache for 1 minute
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}", id);
+            var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
+                (key,
+                    () => Service.GetDetails(id),
+                    TimeSpan.FromMinutes(1)); //cache for 1 min    
+            
             if (package == null)
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));

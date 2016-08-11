@@ -200,6 +200,7 @@ namespace OurUmbraco.Repository.Services
             packageDetails.Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281);
             packageDetails.ExternalSources = GetExternalSources(content);
             packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"));
+            packageDetails.Created = content.CreateDate;
 
             return packageDetails;
         }
