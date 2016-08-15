@@ -8,13 +8,13 @@
     //This is the main Our project search
 
     const int pagesToShowLeft = 4;
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "updateDate";
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 20;
-    var headline = orderMode == "updateDate" ? "latest" : "most popular";
+    var headline = orderMode == "createDate" ? "latest" : "most popular";
     if (version != null)
     {
         headline = "version " + version;
@@ -65,7 +65,7 @@
     {
         examineOrder = string.Concat(orderMode, "[Type=INT]");
     }
-    else if (examineOrder == "updateDate")
+    else if (examineOrder == "createDate")
     {
         examineOrder = string.Concat(orderMode, "[Type=LONG]");
     }

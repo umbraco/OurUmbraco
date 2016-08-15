@@ -71,6 +71,7 @@ namespace OurUmbraco.Our.Api
                 //Since these results are going to be displayed in the forum, we need to convert the date field to 
                 // the 'relative' value that is normally shown for the forum date
                 var updateDate = result.Fields["updateDate"] = DateTools.StringToDate(result.Fields["updateDate"]).ConvertToRelativeTime();
+                var createDate = result.Fields["createDate"] = DateTools.StringToDate(result.Fields["createDate"]).ConvertToRelativeTime();
             }
 
             

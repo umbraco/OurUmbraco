@@ -2,7 +2,7 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 
 @{
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "updateDate";
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
     var version = Request["version"];

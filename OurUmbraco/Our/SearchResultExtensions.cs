@@ -64,20 +64,6 @@ namespace OurUmbraco.Our
             return string.Empty;
         }
 
-        public static string GetDateSortable(this SearchResult result)
-        {
-            try
-            {
-                return GetFormattedDateTime(result["updateDate"], "yyyy-MM-dd HH:mm");
-            }
-            catch (FormatException ex)
-            {
-                // Catches "String was not recognized as a valid DateTime." errors
-                // TODO: Figure out why these errors occur..
-            }
-            return string.Empty;
-        }
-
         public static string GetFormattedDateTime(string date, string format)
         {
             try
