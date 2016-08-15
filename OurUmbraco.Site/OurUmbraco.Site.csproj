@@ -363,7 +363,6 @@
   <ItemGroup>
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
-    <Content Include="App_Data\access.xml" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
@@ -4245,7 +4244,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
-    <Content Include="App_Data\access.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
     <Content Include="masterpages\ArchivedRelease.master" />
