@@ -3,6 +3,7 @@
 @using Umbraco.Core.Cache
 @using OurUmbraco.Our.Examine
 @using OurUmbraco.Project
+@using OurUmbraco.Project.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     //This is the main Our project search
@@ -52,10 +53,11 @@
         var parsedVersion = version.GetFromUmbracoString();
         if (parsedVersion != null)
         {
-            var numericalVersion = parsedVersion.GetNumericalValue();
+            var fromVersion = parsedVersion.GetNumericalValue();
+            var toVersion = new Version(parsedVersion.Major, 999, 999).GetNumericalValue();
             var versionFilters = new SearchFilters(BooleanOperation.Or);
-            versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
-            versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
+            versionFilters.Filters.Add(new RangeSearchFilter("num_version", fromVersion, toVersion));
+            versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", fromVersion, toVersion));
             filters.Add(versionFilters);
         }
     }
@@ -109,23 +111,28 @@
 
     public string ParseVersion(SearchResult result)
     {
-        var versions = result.GetValues("versions").Union(new[] { result["versions"] })
+        var versions = result.GetValues("versions").ToList();
+        if (result.Fields.Keys.Contains("versions"))
+        {
+            versions.Add(result["versions"]);
+        }
+
+        var orderedVersions = versions
             .Select(x =>
             {
                 Version v;
                 return Version.TryParse(x, out v) ? v : null;
-            })
-            .WhereNotNull()
+            }).WhereNotNull()
             .OrderByDescending(x => x)
             .ToArray();
 
-        if (versions.Length == 0)
+        if (orderedVersions.Any() == false)
             return "n/a";
 
-        if (versions.Length == 1)
-            return versions.First() + "+";
+        if (orderedVersions.Length == 1)
+            return orderedVersions.First() + "+";
 
-        return versions.Min() + " - " + versions.Max();
+        return orderedVersions.Min() + " - " + orderedVersions.Max();
     }
 }
 <h1>Browse @headline projects</h1>
@@ -134,10 +141,10 @@
         <div class="row">
             <div class="col-xs-2 col-md-1">
                 {[ if (image != null) { ]}
-                    <img src="{{image}}" alt="">
+                <img src="{{image}}" alt="">
                 {[ } else { ]}
-                    <i class='icon-Box'></i>
-                {[ } ]}                
+                <i class='icon-Box'></i>
+                {[ } ]}
             </div>
             <div class="col-xs-10 col-md-6">
                 <div class="forum-thread-text">
@@ -210,8 +217,8 @@
                     </div>
                 </div>
             </div>
-        }
-    }
+                                }
+                            }
     <nav class="pagination" role="navigation">
         @if (page > 1)
         {
@@ -222,7 +229,7 @@
         {
             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
         }
-        
+
         @if (page < pages)
         {
             <span>&hellip;</span>
