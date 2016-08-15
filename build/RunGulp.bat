@@ -1,4 +1,7 @@
 @ECHO OFF
+SETLOCAL
+	:: SETLOCAL is on, so changes to the path not persist to the actual user's path
+
 SET release=%1
 ECHO Installing Npm NuGet Package
 
@@ -11,10 +14,8 @@ ECHO Current folder: %CD%
 for /f "delims=" %%A in ('dir %nuGetFolder%node.js.* /b') do set "nodePath=%nuGetFolder%%%A\"
 for /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') do set "npmPath=%nuGetFolder%%%A\tools\"
 
-ECHO Temporarily adding Npm and Node to path
-SET oldPath=%PATH%
-
-path=%npmPath%;%nodePath%;%PATH%
+REM Ensures that we look for the just downloaded NPM, not whatever the user has installed on their machine
+path=%npmPath%;%nodePath%
 
 ECHO %path%
 
@@ -27,9 +28,6 @@ ECHO Do npm install and the gulp build
 call npm install
 call npm install -g install gulp -g --quiet
 call gulp
-
-ECHO Reset path to what it was before
-path=%oldPath%
 
 ECHO Move back to the build folder
 CD %buildFolder% 
