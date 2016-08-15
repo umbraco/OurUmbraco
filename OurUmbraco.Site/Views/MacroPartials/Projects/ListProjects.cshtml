@@ -107,23 +107,25 @@
         return defaultVal;
     }
 
-    public string ParseVersion(string version)
+    public string ParseVersion(SearchResult result)
     {
-        if (string.IsNullOrEmpty(version))
+        var versions = result.GetValues("versions").Union(new[] { result["versions"] })
+            .Select(x =>
+            {
+                Version v;
+                return Version.TryParse(x, out v) ? v : null;
+            })
+            .WhereNotNull()
+            .OrderByDescending(x => x)
+            .ToArray();
+
+        if (versions.Length == 0)
             return "n/a";
 
-        var versions = version.Trim(',').Split(',').Select(decimal.Parse).ToArray();
+        if (versions.Length == 1)
+            return versions.First() + "+";
 
-        if (!versions.Any())
-            return "n/a";
-
-        if (versions.Count() == 1)
-            return (versions.First()) + "+";
-
-        var high = versions.Max();
-        var low = versions.Min();
-
-        return high.ToString("N2") + "-" + low.ToString("N2");
+        return versions.Min() + " - " + versions.Max();
     }
 }
 <h1>Browse @headline projects</h1>
@@ -194,7 +196,7 @@
                         <div class="other">
                             <div class="package-badge">
                                 <span class="package-name">version</span>
-                                <span class="package-number">@ParseVersion(GetField(childPage.Fields, "versions"))</span>
+                                <span class="package-number">@ParseVersion(childPage)</span>
                             </div>
                             <span class="stats">
                                 <span class="downloads">
