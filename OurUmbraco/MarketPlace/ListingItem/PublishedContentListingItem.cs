@@ -18,7 +18,7 @@ namespace OurUmbraco.MarketPlace.ListingItem
     {
         public PublishedContentListingItem(IPublishedContent content)
         {
-            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (content == null) throw new ArgumentNullException("content");
             PublishedContent = content;
 
             //set simple properties based on the content item

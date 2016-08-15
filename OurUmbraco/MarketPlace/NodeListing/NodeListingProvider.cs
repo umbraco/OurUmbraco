@@ -72,7 +72,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <returns></returns>
         public IListingItem GetListing(IPublishedContent content, bool optimized = false, int projectKarma = -1)
         {
-            if (content == null) throw new ArgumentNullException(nameof(content));
+            if (content == null) throw new ArgumentNullException("content");
 
             //TODO: could easily cache this for a short period of time
 

@@ -22,7 +22,7 @@ namespace OurUmbraco.Project
         /// </returns>
         public static System.Version GetFromUmbracoString(this string version, bool reduceToConfigured = true)
         {
-            if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(version));
+            if (string.IsNullOrWhiteSpace(version)) throw new ArgumentException("Value cannot be null or whitespace.", "version");
 
             //need to clean up this string, it could be all sorts of things
             version = version.ToLower()

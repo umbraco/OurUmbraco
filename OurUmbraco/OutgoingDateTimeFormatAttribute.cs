@@ -21,7 +21,7 @@ namespace OurUmbraco
         /// <param name="format"></param>
         public OutgoingDateTimeFormatAttribute(string format)
         {
-            if (string.IsNullOrWhiteSpace(format)) throw new ArgumentException("Value cannot be null or whitespace.", nameof(format));
+            if (string.IsNullOrWhiteSpace(format)) throw new ArgumentException("Value cannot be null or whitespace.", "format");
             _format = format;
         }
 
