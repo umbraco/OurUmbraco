@@ -10,7 +10,8 @@
     var Project = ProjectsProvider.GetListing(projectId, false);
     var node = new umbraco.NodeFactory.Node(projectId);
     var parentId = node.Parent.Id;
-    
+    var categoryName = node.Parent.Name;
+
     var pUrl = "repo/project?id=";
 
     string descCssClass = "noWrap";
@@ -61,7 +62,7 @@
 
 <ul id="breadcrumb">
     <li><a href="/repo?@qs">Repository</a> &rarr;</li>
-  <li><a href="/repo_category?@qs&category_id=@parentId">@Project.GetCategoryName()</a> &rarr;</li>
+  <li><a href="/repo_category?@qs&category_id=@parentId">@categoryName</a> &rarr;</li>
     <li>@Project.Name</li>
 </ul>
 
@@ -130,7 +131,7 @@
     <div>
 
         <div id="projectDescriptionText" class="@descCssClass">
-            @Html.Raw(Project.Description)
+            @Html.Raw(Project.Description.CleanHtmlAttributes())
         </div>
 
         <div class="divider" style="clear:left;"></div>
