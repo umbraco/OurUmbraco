@@ -1,6 +1,7 @@
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our
+@using OurUmbraco.Project
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
 
@@ -65,7 +66,7 @@
         <div class="package-detail-description">
             <h1>@project.Name</h1>
 
-            @Html.Raw(project.GetPropertyValue("description"))
+            @Html.Raw(project.GetPropertyValue<string>("description").CleanHtmlAttributes())
 
         </div>
 

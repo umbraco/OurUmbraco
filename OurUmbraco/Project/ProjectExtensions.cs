@@ -1,5 +1,7 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using HtmlAgilityPack;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.Project.uVersion;
 using umbraco.presentation.nodeFactory;
@@ -69,7 +71,7 @@ namespace OurUmbraco.Project
                     return v;
                 }
             }
-            
+
             //we couldn't find anything, 
             //this will occur if the passed in version is not greater than any configured versions, in this case we have no choice 
             // but to return a very small version, we'll stick with 4.5 since this is the infamous hard coded value
@@ -104,7 +106,7 @@ namespace OurUmbraco.Project
             return str;
 
         }
-        
+
         public static string BuildExamineString(this string term, int boost, string field, bool andSearch)
         {
             term = Lucene.Net.QueryParsers.QueryParser.Escape(term);
@@ -115,7 +117,43 @@ namespace OurUmbraco.Project
             if (!andSearch)
             {
                 qs += field + ":(" + term + ")^" + boost.ToString() + " ";
-            } return qs;
+            }
+            return qs;
+        }
+
+        public static string CleanHtmlAttributes(this string description)
+        {
+            var doc = new HtmlDocument();
+            doc.LoadHtml(description);
+            var elementsWithAttribute = doc.DocumentNode.SelectNodes("//@*");
+            if (elementsWithAttribute != null)
+            {
+                foreach (var element in elementsWithAttribute)
+                {
+                    var href = element.Attributes["href"];
+                    var src = element.Attributes["src"];
+
+                    element.Attributes.RemoveAll();
+                    if (href != null)
+                    {
+                        element.Attributes.Add("href", href.Value);
+                    }
+
+                    if (src != null)
+                    {
+                        element.Attributes.Add("src", src.Value);
+                    }
+                }
+            }
+
+            string result;
+            using (var stringWriter = new StringWriter())
+            {
+                doc.Save(stringWriter);
+                result = stringWriter.ToString();
+            }
+
+            return result;
         }
 
     }

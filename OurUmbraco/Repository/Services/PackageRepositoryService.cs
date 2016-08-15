@@ -106,7 +106,7 @@ namespace OurUmbraco.Repository.Services
             switch (order)
             {
                 case PackageSortOrder.Latest:
-                    orderBy = "updateDate[Type=LONG]";
+                    orderBy = "createDate[Type=LONG]";
                     break;
                 case PackageSortOrder.Popular:
                     orderBy = "popularity[Type=INT]";
@@ -152,7 +152,7 @@ namespace OurUmbraco.Repository.Services
             // The XPath 'translate' is being used to force the 'packageGuid' to be lowercase for comparison.
             var xpath = string.Format("//Project[@isDoc and projectLive = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
             var item = UmbracoHelper.TypedContentSingleAtXPath(xpath);
-
+            
             if (item == null)
                 return null;
 
@@ -196,7 +196,7 @@ namespace OurUmbraco.Repository.Services
             packageDetails.NetVersion = content.GetPropertyValue<string>("dotNetVersion");
             packageDetails.LicenseName = content.GetPropertyValue<string>("licenseName");
             packageDetails.LicenseUrl = content.GetPropertyValue<string>("licenseUrl");
-            packageDetails.Description = content.GetPropertyValue<string>("description");
+            packageDetails.Description = content.GetPropertyValue<string>("description").CleanHtmlAttributes();
             packageDetails.Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281);
             packageDetails.ExternalSources = GetExternalSources(content);
             packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"));
