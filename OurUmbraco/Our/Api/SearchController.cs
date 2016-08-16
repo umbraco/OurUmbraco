@@ -28,14 +28,17 @@ namespace OurUmbraco.Our.Api
             searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
             filters.Add(searchFilters);
             //need to clean up this string, it could be all sorts of things
-            var parsedVersion = version.GetFromUmbracoString();
-            if (parsedVersion != null)
+            if (version != null)
             {
-                var numericalVersion = parsedVersion.GetNumericalValue();
-                var versionFilters = new SearchFilters(BooleanOperation.Or);
-                versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
-                versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
-                filters.Add(versionFilters);
+                var parsedVersion = version.GetFromUmbracoString();
+                if (parsedVersion != null)
+                {
+                    var numericalVersion = parsedVersion.GetNumericalValue();
+                    var versionFilters = new SearchFilters(BooleanOperation.Or);
+                    versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
+                    versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
+                    filters.Add(versionFilters);
+                }
             }
 
             var searcher = new OurSearcher(term, nodeTypeAlias:"project", filters: filters);
