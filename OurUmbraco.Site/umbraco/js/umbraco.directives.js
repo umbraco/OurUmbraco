@@ -3535,6 +3535,7 @@ angular.module("umbraco.directives")
                                     await.push(stylesheetResource.getRulesByName(stylesheet).then(function (rules) {
                                         angular.forEach(rules, function (rule) {
                                           var r = {};
+                                          var split = "";
                                           r.title = rule.name;
                                           if (rule.selector[0] === ".") {
                                               r.inline = "span";
@@ -3545,6 +3546,14 @@ angular.module("umbraco.directives")
                                               // since only one element can have one id.
                                               r.inline = "span";
                                               r.attributes = { id: rule.selector.substring(1) };
+                                          }else if (rule.selector[0] !== "." && rule.selector.indexOf(".") > -1) {
+                                              split = rule.selector.split(".");
+                                              r.block = split[0];
+                                              r.classes = rule.selector.substring(rule.selector.indexOf(".") + 1).replace(".", " ");
+                                          }else if (rule.selector[0] !== "#" && rule.selector.indexOf("#") > -1) {
+                                              split = rule.selector.split("#");
+                                              r.block = split[0];
+                                              r.classes = rule.selector.substring(rule.selector.indexOf("#") + 1);
                                           }else {
                                               r.block = rule.selector;
                                           }
@@ -6137,7 +6146,6 @@ function treeSearchBox(localizationService, searchService, $q) {
 
                     //a canceler exists, so perform the cancelation operation and reset
                     if (canceler) {
-                        console.log("CANCELED!");
                         canceler.resolve();
                         canceler = $q.defer();
                     }
@@ -8443,7 +8451,7 @@ angular.module("umbraco.directives")
 (function() {
   'use strict';
 
-  function ListViewSettingsDirective(contentTypeResource, dataTypeResource, dataTypeHelper) {
+  function ListViewSettingsDirective(contentTypeResource, dataTypeResource, dataTypeHelper, listViewPrevalueHelper) {
 
     function link(scope, el, attr, ctrl) {
 
@@ -8462,6 +8470,7 @@ angular.module("umbraco.directives")
 
               scope.dataType = dataType;
 
+              listViewPrevalueHelper.setPrevalues(dataType.preValues);
               scope.customListViewCreated = checkForCustomListView();
 
             });
@@ -8910,6 +8919,22 @@ Use this directive to generate a thumbnail grid of media items.
                 if (!item.isFolder) {
                     item.thumbnail = mediaHelper.resolveFile(item, true);
                     item.image = mediaHelper.resolveFile(item, false);
+
+                    var fileProp = _.find(item.properties, function (v) {
+                        return (v.alias === "umbracoFile");
+                    });
+
+                    if (fileProp && fileProp.value) {
+                        item.file = fileProp.value;
+                    }
+
+                    var extensionProp = _.find(item.properties, function (v) {
+                        return (v.alias === "umbracoExtension");
+                    });
+
+                    if (extensionProp && extensionProp.value) {
+                        item.extension = extensionProp.value;
+                    }
                 }
             }
 

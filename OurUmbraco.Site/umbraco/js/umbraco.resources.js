@@ -1878,16 +1878,6 @@ function entityResource($q, $http, umbRequestHelper) {
                        [{ id: id}, {type: type }])),
                'Failed to retrieve entity data for id ' + id);
         },
-        
-        getByQuery: function (query, nodeContextId, type) {            
-            return umbRequestHelper.resourcePromise(
-               $http.get(
-                   umbRequestHelper.getApiUrl(
-                       "entityApiBaseUrl",
-                       "GetByQuery",
-                       [{query: query},{ nodeContextId: nodeContextId}, {type: type }])),
-               'Failed to retrieve entity data for query ' + query);
-        },
 
         /**
          * @ngdoc method
@@ -1937,7 +1927,41 @@ function entityResource($q, $http, umbRequestHelper) {
 
         /**
          * @ngdoc method
-         * @name umbraco.resources.entityResource#getEntityById
+         * @name umbraco.resources.entityResource#getByQuery
+         * @methodOf umbraco.resources.entityResource
+         *
+         * @description
+         * Gets an entity from a given xpath
+         *
+         * ##usage
+         * <pre>
+         * //get content by xpath
+         * entityResource.getByQuery("$current", -1, "Document")
+         *    .then(function(ent) {
+         *        var myDoc = ent; 
+         *        alert('its here!');
+         *    });
+         * </pre> 
+         * 
+         * @param {string} query xpath to use in query
+         * @param {Int} nodeContextId id id to start from
+         * @param {string} type Object type name        
+         * @returns {Promise} resourcePromise object containing the entity.
+         *
+         */
+        getByQuery: function (query, nodeContextId, type) {
+            return umbRequestHelper.resourcePromise(
+               $http.get(
+                   umbRequestHelper.getApiUrl(
+                       "entityApiBaseUrl",
+                       "GetByQuery",
+                       [{ query: query }, { nodeContextId: nodeContextId }, { type: type }])),
+               'Failed to retrieve entity data for query ' + query);
+        },
+
+        /**
+         * @ngdoc method
+         * @name umbraco.resources.entityResource#getAll
          * @methodOf umbraco.resources.entityResource
          *
          * @description
@@ -2029,7 +2053,7 @@ function entityResource($q, $http, umbRequestHelper) {
      
         /**
          * @ngdoc method
-         * @name umbraco.resources.entityResource#searchMedia
+         * @name umbraco.resources.entityResource#search
          * @methodOf umbraco.resources.entityResource
          *
          * @description
@@ -3461,6 +3485,7 @@ angular.module('umbraco.resources').factory('memberTypeResource', memberTypeReso
     **/
 function ourPackageRepositoryResource($q, $http, umbDataFormatter, umbRequestHelper) {
 
+    //var baseurl = "http://localhost:24292/webapi/packages/v1";
     var baseurl = "https://our.umbraco.org/webapi/packages/v1";
 
     return {
@@ -3489,17 +3514,17 @@ function ourPackageRepositoryResource($q, $http, umbDataFormatter, umbRequestHel
             }
 
             return umbRequestHelper.resourcePromise(
-               $http.get(baseurl + "?pageIndex=0&pageSize=" + maxResults + "&category=" + category + "&order=Popular"),
+               $http.get(baseurl + "?pageIndex=0&pageSize=" + maxResults + "&category=" + category + "&order=Popular&version=" + Umbraco.Sys.ServerVariables.application.version),
                'Failed to query packages');
         },
        
-        search: function (pageIndex, pageSize, category, query, canceler) {
+        search: function (pageIndex, pageSize, orderBy, category, query, canceler) {
 
             var httpConfig = {};
             if (canceler) {
                 httpConfig["timeout"] = canceler;
             }
-
+            
             if (category === undefined) {
                 category = "";
             }
@@ -3507,8 +3532,11 @@ function ourPackageRepositoryResource($q, $http, umbDataFormatter, umbRequestHel
                 query = "";
             }
 
+            //order by score if there is nothing set
+            var order = !orderBy ? "&order=Default" : ("&order=" + orderBy);
+
             return umbRequestHelper.resourcePromise(
-               $http.get(baseurl + "?pageIndex=" + pageIndex + "&pageSize=" + pageSize + "&category=" + category + "&query=" + query),
+               $http.get(baseurl + "?pageIndex=" + pageIndex + "&pageSize=" + pageSize + "&category=" + category + "&query=" + query + order + "&version=" + Umbraco.Sys.ServerVariables.application.version),
                httpConfig,
                'Failed to query packages');
         }
@@ -3667,6 +3695,126 @@ function packageResource($q, $http, umbDataFormatter, umbRequestHelper) {
 }
 
 angular.module('umbraco.resources').factory('packageResource', packageResource);
+
+/**
+ * @ngdoc service
+ * @name umbraco.resources.redirectUrlResource
+ * @function
+ *
+ * @description
+ * Used by the redirect url dashboard to get urls and send requests to remove redirects.
+ */
+(function() {
+    'use strict';
+
+    function redirectUrlsResource($http, umbRequestHelper) {
+
+        /**
+         * @ngdoc function
+         * @name umbraco.resources.redirectUrlResource#searchRedirectUrls
+         * @methodOf umbraco.resources.redirectUrlResource
+         * @function
+         *
+         * @description
+         * Called to search redirects
+         * ##usage
+         * <pre>
+         * redirectUrlsResource.searchRedirectUrls("", 0, 20)
+         *    .then(function(response) {
+         *
+         *    });
+         * </pre>
+         * @param {String} searchTerm Searh term
+         * @param {Int} pageIndex index of the page to retrive items from
+         * @param {Int} pageSize The number of items on a page
+         */
+        function searchRedirectUrls(searchTerm, pageIndex, pageSize) {
+
+            return umbRequestHelper.resourcePromise(
+                $http.get(
+                    umbRequestHelper.getApiUrl(
+                        "redirectUrlManagementApiBaseUrl",
+                        "SearchRedirectUrls",
+                        { searchTerm: searchTerm, page: pageIndex, pageSize: pageSize })),
+                'Failed to retrieve data for searching redirect urls');
+        }
+
+        function isEnabled() {
+
+            return umbRequestHelper.resourcePromise(
+                $http.get(
+                    umbRequestHelper.getApiUrl(
+                        "redirectUrlManagementApiBaseUrl",
+                        "IsEnabled")),
+                'Failed to retrieve data to check if the 301 redirect is enabled');
+        }
+
+        /**
+         * @ngdoc function
+         * @name umbraco.resources.redirectUrlResource#deleteRedirectUrl
+         * @methodOf umbraco.resources.redirectUrlResource
+         * @function
+         *
+         * @description
+         * Called to delete a redirect
+         * ##usage
+         * <pre>
+         * redirectUrlsResource.deleteRedirectUrl(1234)
+         *    .then(function() {
+         *
+         *    });
+         * </pre>
+         * @param {Int} id Id of the redirect
+         */
+        function deleteRedirectUrl(id) {
+            return umbRequestHelper.resourcePromise(
+                $http.post(
+                    umbRequestHelper.getApiUrl(
+                        "redirectUrlManagementApiBaseUrl",
+                        "DeleteRedirectUrl", { id: id })),
+                'Failed to remove redirect');
+        }
+
+        /**
+         * @ngdoc function
+         * @name umbraco.resources.redirectUrlResource#toggleUrlTracker
+         * @methodOf umbraco.resources.redirectUrlResource
+         * @function
+         *
+         * @description
+         * Called to enable or disable redirect url tracker
+         * ##usage
+         * <pre>
+         * redirectUrlsResource.toggleUrlTracker(true)
+         *    .then(function() {
+         *
+         *    });
+         * </pre>
+         * @param {Bool} disable true/false to disable/enable the url tracker
+         */
+        function toggleUrlTracker(disable) {
+            return umbRequestHelper.resourcePromise(
+                $http.post(
+                    umbRequestHelper.getApiUrl(
+                        "redirectUrlManagementApiBaseUrl",
+                        "ToggleUrlTracker", { disable: disable })),
+                'Failed to toggle redirect url tracker');
+        }
+
+        var resource = {
+            searchRedirectUrls: searchRedirectUrls,
+            deleteRedirectUrl: deleteRedirectUrl,
+            toggleUrlTracker: toggleUrlTracker,
+            isEnabled: isEnabled
+        };
+
+        return resource;
+
+    }
+
+    angular.module('umbraco.resources').factory('redirectUrlsResource', redirectUrlsResource);
+
+})();
 
 /**
   * @ngdoc service
