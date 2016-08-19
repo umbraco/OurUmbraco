@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using HtmlAgilityPack;
@@ -146,6 +147,21 @@ namespace OurUmbraco.Project
                 }
             }
 
+            var preElements = doc.DocumentNode.SelectNodes("//pre");
+            if (preElements != null)
+            {
+                foreach (var element in preElements)
+                {
+                    // Just take the very inner text and remove everything else leaving: <pre>the text</pre>
+                    element.InnerHtml = string.Format("<code>{0}</code>", element.InnerText);
+                }
+                foreach (var element in preElements)
+                {
+                    // Wrap the <pre/> in <div class="body markdown-syntax" />
+                    element.InnerHtml = WrapWithHtmlNode(element, "div", "body markdown-syntax").OuterHtml;
+                }
+            }
+
             string result;
             using (var stringWriter = new StringWriter())
             {
@@ -156,5 +172,21 @@ namespace OurUmbraco.Project
             return result;
         }
 
+        private static HtmlNode WrapWithHtmlNode(HtmlNode node, string name, string className = "")
+        {
+            var parent = node.ParentNode;
+            var newParent = node.OwnerDocument.CreateElement(name);
+            if (string.IsNullOrWhiteSpace(className) == false)
+                newParent.Attributes.Add("class", className);
+
+            parent.InsertBefore(newParent, node);
+
+            var clone = node.CloneNode(true);
+            newParent.AppendChild(clone);
+
+            parent.RemoveChild(node);
+
+            return newParent;
+        }
     }
 }
