@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Web.Http.Cors;
 using Examine.SearchCriteria;
 using Lucene.Net.Documents;
 using OurUmbraco.Forum.Extensions;
@@ -10,6 +11,7 @@ using Umbraco.Core;
 
 namespace OurUmbraco.Our.Api
 {
+    [EnableCors(origins: "*", headers: "*", methods: "*")]
     public class OurSearchController : UmbracoApiController
     {
         public SearchResultModel GetGlobalSearchResults(string term)
