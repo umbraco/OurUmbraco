@@ -30,6 +30,7 @@ namespace OurUmbraco.Our
             AddHomeOnlyBannerTextArea();
             AddMissingUmbracoUsers();
             AddReleaseCompareFeature();
+            AddTermsAndConditionsPage();
             UseNewRegistrationForm();
         }
 
@@ -444,7 +445,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void UseNewRegistrationForm()
+        private void AddTermsAndConditionsPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -454,14 +455,44 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var rootContent = contentService.GetRootContent().FirstOrDefault();
+                if (rootContent != null)
+                {
+                    var termsAndConditionsContent = rootContent.Children().FirstOrDefault(x => x.Name == "Terms and conditions");
+                    if (termsAndConditionsContent == null)
+                    {
+                        var content = contentService.CreateContent("Terms and conditions", rootContent.Id, "TextPage");
+                        content.SetValue("bodyText", "<p>These are our terms and conditions...:</p>");
+                        var status = contentService.SaveAndPublishWithStatus(content);
+                    }
+                }
 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewRegistrationForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+                
                 var macroService = UmbracoContext.Current.Application.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberSignup");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
                 macroService.Save(macro);
                 
-
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
