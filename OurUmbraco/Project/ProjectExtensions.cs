@@ -138,11 +138,12 @@ namespace OurUmbraco.Project
                     if (href != null)
                     {
                         element.Attributes.Add("href", href.Value);
+                        element.Attributes.Add("target", "_blank");
+
                         if (href.Value.StartsWith("https://our.umbraco.org/") == false &&
                             href.Value.StartsWith("http://our.umbraco.org/") == false &&
                             href.Value.StartsWith("our.umbraco.org/") == false)
                         {
-                            element.Attributes.Add("target", "_blank");
                             element.Attributes.Add("rel", "nofollow");
                         }
                     }
