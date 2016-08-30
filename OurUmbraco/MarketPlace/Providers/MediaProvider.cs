@@ -134,7 +134,7 @@ namespace OurUmbraco.MarketPlace.Providers
                 var minimumUmbracoVersion = GetMinimumUmbracoVersion(mediaFile);
                 if (!string.IsNullOrWhiteSpace(minimumUmbracoVersion))
                 {
-                    mediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Version = minimumUmbracoVersion } };
+                    mediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Name = minimumUmbracoVersion, Version = minimumUmbracoVersion } };
                 }
             }
 
@@ -167,7 +167,7 @@ namespace OurUmbraco.MarketPlace.Providers
             var minor = requirements.Element("minor").Value;
             var patch = requirements.Element("patch").Value;
 
-            return string.Join(".", new[] { major, minor, patch });
+            return string.Format("v{0}{1}{2}", major, minor, patch);
         }
 
         public static string ToVersionString(List<UmbracoVersion> Versions)
