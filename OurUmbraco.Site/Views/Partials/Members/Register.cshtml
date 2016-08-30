@@ -1,106 +1,261 @@
-@using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
-@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.RegisterModel>
+@inherits UmbracoViewPage<OurUmbraco.Our.Models.RegisterModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
 }
 
-
-<div id="update-avatar-dialog" class="community-dialog">
-    <div>
-        <p><b>Upload avatar</b></p>
-        <p class="invalid-file">The select file type is invalid. File must be gif, png, jpg, jpeg.</p>
-        <input type="file" name="file" id="file" data-action="/umbraco/api/community/imageupload" />
-        <div style="text-align:center;">
-            <button class="button transparent tiny">Cancel<div class="span" style="display:none;"><div class=" loader"></div></div></button>
-        </div>
-    </div>
-
-</div>
-
 <div class="profile-settings">
-    <strong>Your details</strong>
-    <div class="profile-settings-forms">
+    <p>We just need some basic information from you:</p>
+    <div id="registrationForm" class="profile-settings-forms">
 
         @using (Html.BeginUmbracoForm<RegisterController>("HandleSubmit"))
         {
             @Html.ValidationSummary(true)
             @Html.AntiForgeryToken()
 
-            <div class="avatar" id="avatar">
-                <label for="avatar">
-                    Avatar
-                </label>
-
-                <div class="avatar-image inked">
-                    @if (Model.Avatar != null)
-                    {
-                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
-                    }
-                    else
-                    {
-                        @Html.Raw(Utils.GetLocalAvatar("/media/avatar/default.gif", 100, "Umbraco Logo"))
-                    }
-                    <span>Change image</span>
-                </div>
-                @Html.HiddenFor(m => m.Avatar)
-                @Html.ValidationMessageFor(m => m.Avatar)
-            </div>
-
             <div class="profile-input" id="username">
                 @Html.LabelFor(m => m.Name)
-                @Html.TextBoxFor(m => m.Name)
                 @Html.ValidationMessageFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
             </div>
 
 
             <div class="profile-input" id="email">
                 @Html.LabelFor(m => m.Email)
-                @Html.TextBoxFor(m => m.Email)
                 @Html.ValidationMessageFor(m => m.Email)
-
+                @Html.TextBoxFor(m => m.Email)
             </div>
 
 
             <div class="profile-input" id="password">
                 @Html.LabelFor(m => m.Password)
+                @Html.ValidationMessageFor(m => m.Password)
                 @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
-                @Html.ValidationMessageFor(m => m.Password)
             </div>
-
-            <div class="profile-input confirm-password" id="repeat-password">
-                @Html.LabelFor(m => m.RepeatPassword)
-                @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
-                @Html.ValidationMessageFor(m => m.Password)
-
-            </div>
-
-
-            <div class="profile-input" id="bio">
-                @Html.LabelFor(m => m.Bio)
-                @Html.TextAreaFor(m => m.Bio)
-
-            </div>
-
 
             <div class="profile-input" id="twitter-alias">
                 @Html.LabelFor(m => m.TwitterAlias)
+                <em>Are you on Twitter? We have an active Twitter community. Follow the <a href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank">umbraco search term</a> and join the conversation.</em>
                 @Html.TextBoxFor(m => m.TwitterAlias)
             </div>
 
-
             <div class="profile-input" id="located-at">
                 @Html.LabelFor(m => m.Location)
-                @Html.TextBoxFor(m => m.Location)
+                <em>When your location is displayed correctly on the map below, enough information has been provided.</em>
+                @Html.ValidationMessageFor(m => m.Location)
+                @Html.HiddenFor(m => m.Location)
+                @Html.HiddenFor(m => m.Latitude)
+                @Html.HiddenFor(m => m.Longitude)
+
+                <div id="map"></div>
+                <input id="pac-input" class="controls" type="text" placeholder="Search for your location">
             </div>
 
+            <div class="profile-input" id="personal">
+                @Html.HiddenFor(m => m.Flickr)
+                @Html.HiddenFor(m => m.Bio)
+            </div>
 
-            <input class="button green" type="submit" value="Register">
+            <div class="profile-input" id="terms-conditions">
+                @Html.CheckBoxFor(m => m.AgreeTerms) <label for="AgreeTerms"><em>I agree to the <a href="/terms-and-conditions" target="_blank">terms and conditions</a> of using the Our Umbraco website.</em></label>
+                @Html.ValidationMessageFor(m => m.AgreeTerms)
+            </div>
 
+            <input class="button green" type="submit" value="Sign up">
         }
-
     </div>
 </div>
 
+<script type="text/javascript">
+    // Largely copied from the example at: https://developers.google.com/maps/documentation/javascript/examples/places-searchbox
+    function initAutocomplete() {
+        var map = new google.maps.Map(document.getElementById('map'),
+        {
+            center: { lat: 0, lng: 0 },
+            zoom: 1,
+            zoomControl: false,
+            mapTypeControl: false,
+            streetViewControl: false,
+            scaleControl: false
+        });
 
+        // Create the search box and link it to the UI element.
+        var input = document.getElementById('pac-input');
+        var searchBox = new google.maps.places.SearchBox(input);
+        map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+        // Don't submit the form on pressing enter
+        input.onkeypress = function (e) {
+            var key = e.charCode || e.keyCode || 0;
+            if (key === 13) {
+                e.preventDefault();
+            }
+        };
+
+        $('#pac-input').css('display', 'block');
+
+        // Bias the SearchBox results towards current map's viewport.
+        map.addListener('bounds_changed',
+            function () {
+                searchBox.setBounds(map.getBounds());
+            });
+
+        var markers = [];
+        // Listen for the event fired when the user selects a prediction and retrieve
+        // more details for that place.
+        searchBox.addListener('places_changed',
+            function () {
+                var places = searchBox.getPlaces();
+
+                if (places.length === 0) {
+                    return;
+                }
+
+                // Clear out the old markers.
+                markers.forEach(function (marker) {
+                    marker.setMap(null);
+                });
+                markers = [];
+
+                // For each place, get the icon, name and location.
+                var bounds = new google.maps.LatLngBounds();
+                places.forEach(function (place) {
+                    if (!place.geometry) {
+                        console.log("Returned place contains no geometry");
+                        return;
+                    }
+                    var icon = {
+                        url: place.icon,
+                        size: new google.maps.Size(71, 71),
+                        origin: new google.maps.Point(0, 0),
+                        anchor: new google.maps.Point(17, 34),
+                        scaledSize: new google.maps.Size(25, 25)
+                    };
+
+                    // Create a marker for each place.
+                    markers.push(new google.maps.Marker({
+                        map: map,
+                        icon: icon,
+                        title: place.name,
+                        position: place.geometry.location
+                    }));
+
+                    document.getElementById("Location").value = place.formatted_address;
+                    document.getElementById("Latitude").value = place.geometry.location.lat();
+                    document.getElementById("Longitude").value = place.geometry.location.lng();
+
+                    if (place.geometry.viewport) {
+                        // Only geocodes have viewport.
+                        bounds.union(place.geometry.viewport);
+                    } else {
+                        bounds.extend(place.geometry.location);
+                    }
+                });
+                map.fitBounds(bounds);
+            });
+    }
+</script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASbfPWsRxZgSnmH2jaQlrWNE7VTV5QuwI&libraries=places&callback=initAutocomplete"></script>
+
+<style>
+    .controls {
+        margin-top: 10px;
+        border: 1px solid transparent;
+        border-radius: 2px 0 0 2px;
+        box-sizing: border-box;
+        -moz-box-sizing: border-box;
+        height: 32px;
+        outline: none;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    #pac-input {
+        background-color: #fff;
+        font-family: Roboto;
+        font-size: 15px;
+        font-weight: 300;
+        margin-left: 12px;
+        padding: 0 11px 0 13px;
+        text-overflow: ellipsis;
+        width: 470px !important;
+        display: none;
+    }
+
+    #pac-input:focus {
+        border-color: #4d90fe;
+    }
+
+    .pac-container {
+        font-family: Roboto;
+    }
+
+    #type-selector {
+        color: #fff;
+        background-color: #4d90fe;
+        padding: 5px 11px 0px 11px;
+    }
+
+    #type-selector label {
+        font-family: Roboto;
+        font-size: 13px;
+        font-weight: 300;
+    }
+
+    #target {
+        width: 345px;
+    }
+
+    #map {
+        width: 500px; 
+        height: 460px; 
+        margin-top: 4px;
+    }
+
+    #registrationForm {
+        max-width: 640px;
+    }
+
+    #registrationForm label {
+        margin: 4px 0;
+        display: block;
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    #registrationForm .profile-input em {
+        margin: 4px 0;
+        display: block;
+    }
+
+    #registrationForm input.button {
+        margin: 10px 0;
+        display: block;
+    }
+
+    #terms-conditions input {
+        display: inline;
+        float: left;
+    }
+
+    #terms-conditions {
+        margin-top: 20px;
+        margin-bottom: 20px;
+    }
+
+    #terms-conditions label {
+        padding-top: 1px;
+        padding-left: 28px;
+    }
+
+    .field-validation-error {
+        color: red;
+        display: block;
+        margin: 4px 0;
+    }
+    
+    .input-validation-error {
+        border-color: red !important;
+    }
+</style>

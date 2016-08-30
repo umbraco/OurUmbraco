@@ -30,6 +30,7 @@ namespace OurUmbraco.Our
             AddHomeOnlyBannerTextArea();
             AddMissingUmbracoUsers();
             AddReleaseCompareFeature();
+            UseNewRegistrationForm();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -443,5 +444,31 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void UseNewRegistrationForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberSignup");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
+                macroService.Save(macro);
+                
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }
