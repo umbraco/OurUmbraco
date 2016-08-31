@@ -3,14 +3,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web;
-using System.Xml.Linq;
-using System.Xml.XPath;
 using ICSharpCode.SharpZipLib.Zip;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Models;
 using OurUmbraco.Wiki.BusinessLogic;
-using Umbraco.Core;
-using Umbraco.Core.IO;
+using OurUmbraco.Wiki.Extensions;
 
 namespace OurUmbraco.MarketPlace.Providers
 {
@@ -40,9 +37,10 @@ namespace OurUmbraco.MarketPlace.Providers
                     RemovedBy = wikiFile.RemovedBy,
                     SupportsMediumTrust = false,
                     UmbVersion = wikiFile.Versions,
-                    Verified = wikiFile.Verified
+                    Verified = wikiFile.Verified,
+                    MinimumUmbracoVersion = wikiFile.MinimumVersionStrict
                 };
-
+                
                 if (mediaFiles.Contains(mediaFile) == false)
                     mediaFiles.Add(mediaFile);
             }
@@ -128,46 +126,11 @@ namespace OurUmbraco.MarketPlace.Providers
             //Convert to Deli Media file
             var mediaFile = GetFileById(uWikiFile.Id);
 
-            // If upload is package, extract the package XML manifest and check the version number + type [LK:2016-06-12@CGRT16]
-            if (fileType == FileType.package)
-            {
-                var minimumUmbracoVersion = GetMinimumUmbracoVersion(mediaFile);
-                if (!string.IsNullOrWhiteSpace(minimumUmbracoVersion))
-                {
-                    mediaFile.Versions = new List<UmbracoVersion>() { new UmbracoVersion { Name = minimumUmbracoVersion, Version = minimumUmbracoVersion } };
-                }
-            }
+            mediaFile.SetMinimumUmbracoVersion();
 
             mediaFile.DotNetVersion = dotNetVersion;
             SaveOrUpdate(mediaFile);
             return mediaFile;
-        }
-
-        private string GetMinimumUmbracoVersion(WikiFile mediaFile)
-        {
-            var extractor = new PackageExtraction();
-            var filePath = IOHelper.MapPath(mediaFile.Path);
-            var packageXml = extractor.ReadTextFileFromArchive(filePath, Constants.Packaging.PackageXmlFileName);
-            if (string.IsNullOrWhiteSpace(packageXml))
-            {
-                return null;
-            }
-
-            var packageXmlDoc = XDocument.Parse(packageXml);
-
-            // The XPath query will detect if the 'requirements' element has the attribute that we're looking for,
-            // and if the child elements also exist. [LK:2016-06-12@CGRT16]
-            var requirements = packageXmlDoc.XPathSelectElement("/umbPackage/info/package/requirements[@type='strict' and major and minor and patch]");
-            if (requirements == null)
-            {
-                return null;
-            }
-
-            var major = requirements.Element("major").Value;
-            var minor = requirements.Element("minor").Value;
-            var patch = requirements.Element("patch").Value;
-
-            return string.Format("v{0}{1}{2}", major, minor, patch);
         }
 
         public static string ToVersionString(List<UmbracoVersion> Versions)

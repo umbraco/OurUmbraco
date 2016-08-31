@@ -4,6 +4,8 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Xml;
+using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.Wiki.Extensions;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
@@ -33,6 +35,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
         public List<UmbracoVersion> Versions { get; set; }
         public UmbracoVersion Version { get; set; }
+
+        public string MinimumVersionStrict { get; set; }
 
 
         public void Delete()
@@ -73,7 +77,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                         Downloads = result.downloads,
                         Archived = result.archived,
                         Verified = result.verified,
-                        Versions = GetVersionsFromString(result.umbracoVersion)
+                        Versions = GetVersionsFromString(result.umbracoVersion),
+                        MinimumVersionStrict = result.minimumVersionStrict
                     };
 
                     file.Version = file.Versions.Any()
@@ -145,7 +150,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                         Verified = false,
                         DotNetVersion = dotNetVersion
                     };
-
+                    
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
@@ -156,6 +161,9 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     file.SaveAs(HttpContext.Current.Server.MapPath(path));
 
                     wikiFile.Path = path;
+
+                    // Note: make sure to do this AFTER setting the path, else it will fail
+                    wikiFile.SetMinimumUmbracoVersion();
 
                     wikiFile.Save();
 
@@ -206,6 +214,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                                        Verified = false
                                    };
 
+                    wikiFile.SetMinimumUmbracoVersion();
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
@@ -241,7 +250,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     return;
 
                 Application.SqlHelper.ExecuteNonQuery(
-                    "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion)",
+                    "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
                     Application.SqlHelper.CreateParameter("@path", Path),
                     Application.SqlHelper.CreateParameter("@name", Name),
                     Application.SqlHelper.CreateParameter("@createdBy", CreatedBy),
@@ -252,7 +261,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
                     Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion)
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion),
+                    Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
 
                 CreateDate = DateTime.Now;
@@ -270,7 +280,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     return;
 
                 Application.SqlHelper.ExecuteNonQuery(
-                    "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified, dotNetVersion = @dotNetVersion WHERE id = @id",
+                    "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified, dotNetVersion = @dotNetVersion, minimumVersionStrict = @minimumVersionStrict WHERE id = @id",
                     Application.SqlHelper.CreateParameter("@path", Path),
                     Application.SqlHelper.CreateParameter("@name", Name),
                     Application.SqlHelper.CreateParameter("@type", FileType),
@@ -282,7 +292,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
                     Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion)
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion),
+                    Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
 
                 FireAfterUpdate(e);
@@ -360,6 +371,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Version = Versions.Any()
                         ? GetVersionsFromString(reader.GetString("umbracoVersion"))[0]
                         : UmbracoVersion.DefaultVersion();
+                    MinimumVersionStrict = reader.GetString("minimumVersionStrict");
                 }
                 else
                 {
@@ -384,9 +396,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             foreach (var ver in p.Split(','))
             {
-                umbracoVersions.Add(UmbracoVersion.AvailableVersions().ContainsKey(ver)
-                    ? UmbracoVersion.AvailableVersions()[ver]
-                    : new UmbracoVersion {Name = ver, Version = ver});
+                if (UmbracoVersion.AvailableVersions().ContainsKey(ver))
+                    umbracoVersions.Add(UmbracoVersion.AvailableVersions()[ver]);
             }
 
             return umbracoVersions;

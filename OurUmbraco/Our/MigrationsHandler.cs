@@ -32,6 +32,7 @@ namespace OurUmbraco.Our
             AddReleaseCompareFeature();
             AddTermsAndConditionsPage();
             UseNewRegistrationForm();
+            AddStrictMinimumVersionForPackages();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -493,6 +494,28 @@ namespace OurUmbraco.Our
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
                 macroService.Save(macro);
                 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddStrictMinimumVersionForPackages()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                db.Execute("ALTER TABLE [wikiFiles] ADD [minimumVersionStrict] VARCHAR(50)");
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }

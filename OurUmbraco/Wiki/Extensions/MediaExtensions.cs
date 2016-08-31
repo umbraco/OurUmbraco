@@ -1,5 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Xml.Linq;
+using System.Xml.XPath;
+using OurUmbraco.MarketPlace.Interfaces;
+using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Wiki.BusinessLogic;
+using Umbraco.Core;
+using Umbraco.Core.IO;
 
 namespace OurUmbraco.Wiki.Extensions
 {
@@ -25,6 +32,38 @@ namespace OurUmbraco.Wiki.Extensions
             }
 
             return verStr.Trim().TrimEnd(',');
+        }
+
+        public static void SetMinimumUmbracoVersion(this WikiFile mediaFile)
+        {
+            var fileType = (FileType)Enum.Parse(typeof(FileType), mediaFile.FileType);
+            if (fileType != FileType.package)
+                return;
+
+            System.Version minimumUmbracoVersion = null;
+
+            var extractor = new PackageExtraction();
+            var filePath = IOHelper.MapPath(mediaFile.Path);
+            var packageXml = extractor.ReadTextFileFromArchive(filePath, Constants.Packaging.PackageXmlFileName);
+            if (string.IsNullOrWhiteSpace(packageXml))
+                return;
+
+            var packageXmlDoc = XDocument.Parse(packageXml);
+
+            // The XPath query will detect if the 'requirements' element has the attribute that we're looking for,
+            // and if the child elements also exist. [LK:2016-06-12@CGRT16]
+            var requirements = packageXmlDoc.XPathSelectElement("/umbPackage/info/package/requirements[@type='strict' and major and minor and patch]");
+            if (requirements == null)
+                return;
+
+            var major = requirements.Element("major").Value;
+            var minor = requirements.Element("minor").Value;
+            var patch = requirements.Element("patch").Value;
+
+            System.Version.TryParse(string.Format("{0}.{1}.{2}", major, minor, patch), out minimumUmbracoVersion);
+
+            if (minimumUmbracoVersion != default(System.Version))
+                mediaFile.MinimumVersionStrict = minimumUmbracoVersion.ToString(3);
         }
     }
 }

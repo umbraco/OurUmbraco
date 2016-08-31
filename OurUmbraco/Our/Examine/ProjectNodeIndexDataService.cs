@@ -34,6 +34,15 @@ namespace OurUmbraco.Our.Examine
             var isLive = project.GetPropertyValue<bool>("projectLive");
             var isApproved = project.GetPropertyValue<bool>("approved");
 
+            var minimumVersionStrict = string.Empty;
+            var currentFileId = project.GetPropertyValue<int>("file");
+            if (currentFileId > 0)
+            {
+                var currentFile = files.FirstOrDefault(x => x.Id == currentFileId);
+                if (currentFile != null)
+                    minimumVersionStrict = currentFile.MinimumVersionStrict;
+            }
+
             simpleDataSet.NodeDefinition.NodeId = project.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
 
@@ -46,6 +55,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("url", project.Url);
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
             simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
+            simpleDataSet.RowData.Add("minimumVersionStrict", minimumVersionStrict);
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))

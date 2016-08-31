@@ -119,6 +119,10 @@
                                     <div class="type-description">
                                         uploaded @release.CreateDate.ToShortDateString() by @owner.Name<br>
                                         <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
+                                        @if (string.IsNullOrWhiteSpace(release.MinimumVersionStrict) == false)
+                                        {
+                                            <span><strong>Note that the minimum version required to install this package is @release.MinimumVersionStrict</strong></span>
+                                        }
                                     </div>
                                 </div>
                             </a>

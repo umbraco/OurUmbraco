@@ -25,8 +25,8 @@ namespace OurUmbraco.MarketPlace.Models
         protected string _dotNetVersion;
         protected Boolean _supportsMediumTrust;
         protected Boolean _verified;
-
-
+        protected string _minimumUmbracoVersion;
+        
         public int Id
         {
             get
@@ -204,6 +204,18 @@ namespace OurUmbraco.MarketPlace.Models
             set
             {
                 _verified = value;
+            }
+        }
+
+        public string MinimumUmbracoVersion
+        {
+            get
+            {
+                return _minimumUmbracoVersion;
+            }
+            set
+            {
+                _minimumUmbracoVersion = value;
             }
         }
     }
