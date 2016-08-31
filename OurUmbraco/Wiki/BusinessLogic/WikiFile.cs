@@ -261,7 +261,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
                     Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion),
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
                     Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
 
@@ -292,7 +292,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     Application.SqlHelper.CreateParameter("@archived", Archived),
                     Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
                     Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", DotNetVersion),
+                    Application.SqlHelper.CreateParameter("@dotNetVersion", string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
                     Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
 
