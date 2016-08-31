@@ -104,6 +104,7 @@ namespace OurUmbraco.NotificationsWeb.Services
                 .From<ForumSubscriber>();
 
             sql.Where<ForumSubscriber>(x => x.MemberId == memberId);
+            sql.OrderBy<ForumSubscriber>(x => x.ForumId); // have to order by something when paging
 
             return _databaseContext.Database.Page<ForumSubscriber>(page, take, sql);
         }
@@ -120,6 +121,7 @@ namespace OurUmbraco.NotificationsWeb.Services
                 .From<ForumTopicSubscriber>();
 
             sql.Where<ForumTopicSubscriber>(x => x.MemberId == memberId);
+            sql.OrderBy<ForumTopicSubscriber>(x => x.TopicId); // have to order by something when paging
 
             return _databaseContext.Database.Page<ForumTopicSubscriber>(page, take, sql);
         }
