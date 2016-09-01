@@ -479,6 +479,7 @@
     <Content Include="css\jquery.ui.core.css" />
     <Content Include="css\jquery.ui.slider.css" />
     <Content Include="css\jquery.ui.theme.css" />
+    <Content Include="css\register.css" />
     <Content Include="css\search\documentation.gif" />
     <Content Include="css\select2-new.css" />
     <Content Include="css\select2.css" />
@@ -687,6 +688,7 @@
     <Content Include="scripts\jquery.validate.min.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="scripts\register.js" />
     <Content Include="scripts\shadowbox\languages\README" />
     <Content Include="scripts\shadowbox\libraries\sizzle\sizzle.js" />
     <Content Include="scripts\shadowbox\players\README" />
