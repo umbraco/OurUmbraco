@@ -1,0 +1,13 @@
+﻿@using OurUmbraco.Our.Controllers
+@model OurUmbraco.Our.Models.TermsAndConditionsModel
+@if (Model.ShowTermsAndConditionsBanner)
+{
+    <div class="alertbar__blue">
+        Hi! Our <a href="/terms-and-conditions">terms and conditions</a> for Our Umbraco have changed. <a href="/terms-and-conditions">Give them a read (we promise they're short)</a>.<br />
+        Your continued use of this site after changes are posted constitutes your acceptance of the terms and conditions as modified.<br />
+        @using (Html.BeginUmbracoForm<TermsAndConditionsController>("AcceptTerms"))
+        {
+            <input type="submit" value="Okay, noted. Close this notification." style="margin: 4px 0;"/>
+        }
+    </div>
+}

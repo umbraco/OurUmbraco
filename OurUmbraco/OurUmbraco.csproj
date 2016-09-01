@@ -415,6 +415,7 @@
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
     <Compile Include="Our\Controllers\ProjectController.cs" />
     <Compile Include="Our\Controllers\RegisterController.cs" />
+    <Compile Include="Our\Controllers\TermsAndConditionsController.cs" />
     <Compile Include="Our\CustomHandlers\CommentVote.cs" />
     <Compile Include="Our\CustomHandlers\ExternalVote.cs" />
     <Compile Include="Our\CustomHandlers\ForumIndexer.cs" />
@@ -453,6 +454,7 @@
     <Compile Include="Our\Models\RegisterModel.cs" />
     <Compile Include="Our\Models\SearchResultContentModel.cs" />
     <Compile Include="Our\Models\SearchResultModel.cs" />
+    <Compile Include="Our\Models\TermsAndConditionsModel.cs" />
     <Compile Include="Our\ProjectFileUploadHandler.cs" />
     <Compile Include="Our\Rest.cs" />
     <Compile Include="Our\Scheduling\Scheduler.cs" />

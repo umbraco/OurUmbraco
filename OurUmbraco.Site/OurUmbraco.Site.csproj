@@ -1755,6 +1755,7 @@
     <Content Include="masterpages\ProjectPage.master" />
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
     <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
+    <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
