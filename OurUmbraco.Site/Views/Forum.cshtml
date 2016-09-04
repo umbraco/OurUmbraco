@@ -1,0 +1,39 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+
+<!-- FORUM OVERVIEW START -->
+<section class="forum-overview">
+    <div class="forum-archive">
+        @Umbraco.RenderMacro("ForumForum")
+    </div>
+</section>
+@Umbraco.RenderMacro("ForumForm")
+
+@section EndScripts {
+    @{
+        var cat = -1;
+        if (Model.Content.Level > 3)
+        {
+            cat = Model.Content.Id;
+        }
+
+        var page = 1;
+        if (Request["page"] != null)
+        {
+            int.TryParse(Request["page"], out page);
+        }
+    }
+    <script type="text/javascript">
+
+        $('table')
+            .scrolly({
+                page: @page,
+                dataUrl: '/umbraco/api/PublicForum/LatestPaged/?cat=@cat',
+                template: '#forum-template',
+                loadingHtml: '<div class="span"><div class=" loader"></div></div>'
+            });
+
+    </script>
+}
