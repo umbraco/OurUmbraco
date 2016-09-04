@@ -46,16 +46,12 @@
         </title>
         <meta name="description" content="">
         <meta name="author" content="">
-
+        
         <CD:HackedCdfLoader runat="server" ID="Loader" />
-
-        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-
-        <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-
         <CD:HtmlInclude runat="server">
+            <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
         </CD:HtmlInclude>
-
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
         <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
 
         <asp:PlaceHolder runat="server" ID="CssPlaceHolder"></asp:PlaceHolder>
@@ -191,8 +187,7 @@
 
             </div>
             <!--.wrapper-->
-
-
+            
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
             <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
@@ -200,15 +195,15 @@
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
             <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-            <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
-
-            <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
-            <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
-            <script type="text/javascript" src="/assets/js/community.js"></script>
-            <script type="text/javascript" src="/assets/js/app.min.js"></script>
-            <script type="text/javascript" src="/assets/js/editor.min.js"></script>
 
             <CD:HtmlInclude runat="server">
+                <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
+
+                <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
+                <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
+                <script type="text/javascript" src="/assets/js/community.js"></script>
+                <script type="text/javascript" src="/assets/js/app.min.js"></script>
+                <script type="text/javascript" src="/assets/js/editor.min.js"></script>                
             </CD:HtmlInclude>
 
             <asp:PlaceHolder runat="server" ID="JavaScriptPlaceHolder"></asp:PlaceHolder>
