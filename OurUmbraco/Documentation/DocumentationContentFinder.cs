@@ -153,7 +153,9 @@ namespace OurUmbraco.Documentation
                 var originalUrl = HttpContext.Current.Items["umbOriginalUrl"].ToString();
 
                 //Ensure beginning part of url is right case for GitHub URL
-                originalUrl = originalUrl.Replace("/documentation/", "/");
+                if (originalUrl.StartsWith("/documentation/", StringComparison.InvariantCultureIgnoreCase))
+                    // don't strip off the leading "/"
+                    originalUrl = originalUrl.Substring("/documentation/".Length - 1);
 
                 //If ends with / then it's an index.md file in a folder
                 if (originalUrl.EndsWith("/"))
