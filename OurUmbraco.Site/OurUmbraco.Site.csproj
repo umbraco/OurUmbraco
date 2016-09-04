@@ -1758,6 +1758,8 @@
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
     <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
+    <Content Include="Views\Layout.cshtml" />
+    <Content Include="Views\Community.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

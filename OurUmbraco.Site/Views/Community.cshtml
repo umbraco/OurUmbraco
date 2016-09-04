@@ -1,0 +1,27 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+
+@Umbraco.RenderMacro("CommunityHome")
+
+@section Search {
+    <script type="text/template" class="search-item-template">
+        <li>
+            <a href="{{ url }}">
+                <div class="type-icon">
+                    <i class="{{ icon }}"></i>
+                </div>
+
+                <div class="type-context">
+                    <div class="type-name">
+                        {{ name }}
+                    </div>
+                    <div class="type-description">
+                        {{ description }}
+                    </div>
+                </div>
+            </a>
+        </li>
+    </script>
+}
