@@ -1,0 +1,10 @@
+﻿@using OurUmbraco.Our.Models
+@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+<div class="plain">
+    <!-- search OVERVIEW START -->
+    @Html.Action("Render", "Search")
+    <!-- search OVERVIEW END -->
+</div>

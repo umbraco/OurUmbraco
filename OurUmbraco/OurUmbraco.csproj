@@ -415,6 +415,7 @@
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
     <Compile Include="Our\Controllers\ProjectController.cs" />
     <Compile Include="Our\Controllers\RegisterController.cs" />
+    <Compile Include="Our\Controllers\SearchController.cs" />
     <Compile Include="Our\Controllers\TermsAndConditionsController.cs" />
     <Compile Include="Our\CustomHandlers\CommentVote.cs" />
     <Compile Include="Our\CustomHandlers\ExternalVote.cs" />
@@ -425,7 +426,6 @@
     <Compile Include="Our\CustomHandlers\ProjectIndexer.cs" />
     <Compile Include="Our\CustomHandlers\ProjectsEnsureGuid.cs" />
     <Compile Include="Our\CustomHandlers\ProjectVote.cs" />
-    <Compile Include="Our\CustomHandlers\SearchPageRouteHandler.cs" />
     <Compile Include="Our\CustomHandlers\TopicVote.cs" />
     <Compile Include="Our\Data.cs" />
     <Compile Include="Our\DefaultMemberAvatarHandler.cs" />

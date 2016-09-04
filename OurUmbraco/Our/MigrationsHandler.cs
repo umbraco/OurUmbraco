@@ -33,6 +33,7 @@ namespace OurUmbraco.Our
             AddTermsAndConditionsPage();
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
+            AddSearchDocumentTypeAndPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -377,7 +378,7 @@ namespace OurUmbraco.Our
                 compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
 
                 var releaseLandingContentType = contentTypeService.GetContentType("ReleaseLanding");
-                
+
                 var allowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(compareContentType.Id, 0) };
                 releaseLandingContentType.AllowedContentTypes = allowedContentTypes;
                 contentTypeService.Save(releaseLandingContentType);
@@ -487,13 +488,13 @@ namespace OurUmbraco.Our
                 var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
                 if (File.Exists(path))
                     return;
-                
+
                 var macroService = UmbracoContext.Current.Application.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberSignup");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
                 macroService.Save(macro);
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -518,6 +519,60 @@ namespace OurUmbraco.Our
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+
+        private void AddSearchDocumentTypeAndPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var searchContentType = contentTypeService.GetContentType("search");
+                if (searchContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Search",
+                        Alias = "search",
+                        Icon = "icon-search"
+                    };
+                    contentTypeService.Save(contentType);
+                    
+                    searchContentType = contentTypeService.GetContentType("search");
+                    var templateCreateResult = UmbracoContext.Current.Application.Services.FileService.CreateTemplateForContentType("search", "Search");
+                    if (templateCreateResult.Success)
+                    {
+                        var template = UmbracoContext.Current.Application.Services.FileService.GetTemplate("search");
+                        var masterTemplate = UmbracoContext.Current.Application.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        UmbracoContext.Current.Application.Services.FileService.SaveTemplate(template);
+
+                        searchContentType.AllowedTemplates = new List<ITemplate> { template };
+                        searchContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(searchContentType);
+
+                        var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var searchPage = rootContent.Children().FirstOrDefault(x => x.Name == "Search");
+                            contentService.Delete(searchPage);
+                            searchPage = contentService.CreateContent("Search", rootContent.Id, "search");
+                            var saveResult = contentService.SaveAndPublishWithStatus(searchPage);
+                        }
+                    }
+                }
             }
             catch (Exception ex)
             {

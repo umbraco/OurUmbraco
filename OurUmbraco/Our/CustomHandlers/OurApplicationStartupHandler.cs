@@ -7,7 +7,6 @@ using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using OurUmbraco.Our.Examine;
 using Umbraco.Core;
 using Umbraco.Web;
-using Umbraco.Web.Routing;
 
 namespace OurUmbraco.Our.CustomHandlers
 {
@@ -19,20 +18,10 @@ namespace OurUmbraco.Our.CustomHandlers
 
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
-            CreateRoutes();
             BindExamineEvents();
             ZipDownloader.OnFinish += ZipDownloader_OnFinish;
         }
-
-        private void CreateRoutes()
-        {
-            RouteTable.Routes.MapUmbracoRoute("Search", "search/{term}",
-                //NOTE: Even though we aren't routing to a 'controller', this syntax is required for the route to be registered in the table
-                new { Controller = "Search", Action = "Search", Term = UrlParameter.Optional },
-                //NOTE: This virtual page will be routed as if it were the root 'community' page
-                new SearchPageRouteHandler(1052));
-        }
-
+        
         private void BindExamineEvents()
         {
             var projectIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
@@ -44,7 +33,6 @@ namespace OurUmbraco.Our.CustomHandlers
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["ForumIndexer"].IndexingError += ExamineHelper.LogErrors;
         }
-
 
         /// <summary>
         /// Whenever the github zip downloader completes and docs index is rebuilt

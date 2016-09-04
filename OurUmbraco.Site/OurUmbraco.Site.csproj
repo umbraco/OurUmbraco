@@ -344,13 +344,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\Search\Search.aspx.cs">
-      <DependentUpon>Search.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\Search\Search.aspx.designer.cs">
-      <DependentUpon>Search.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\Form.browser" />
@@ -678,6 +671,7 @@
     <Content Include="config\feedProxy.config" />
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
+    <Content Include="masterpages\Search.master" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
@@ -1763,7 +1757,6 @@
     <Content Include="Views\Forum.cshtml" />
     <None Include="Views\DocumentationSubpage.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
-    <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4417,6 +4410,8 @@
     <Content Include="Views\Projects.cshtml" />
     <Content Include="Views\Project.cshtml" />
     <Content Include="Views\DocumentationMainpage.cshtml" />
+    <Content Include="Views\Search.cshtml" />
+    <Content Include="Views\Partials\SearchResults.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
