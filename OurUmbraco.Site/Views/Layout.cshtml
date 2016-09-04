@@ -1,4 +1,5 @@
-﻿@using Umbraco.Core.Configuration
+﻿@using ClientDependency.Core.Mvc
+@using Umbraco.Core.Configuration
 @using Umbraco.Web.Security
 @inherits UmbracoTemplatePage
 @{
@@ -13,6 +14,28 @@
     var member = ms.GetCurrentMember();
     var memberIsBlocked = false;
     if (member != null) { memberIsBlocked = member.GetPropertyValue<bool>("blocked"); }
+
+
+    Html.RequiresCss("~/assets/css/style.min.css", 0);
+    Html.RequiresCss("https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic", 0);
+    Html.RequiresCss("https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css", 0);
+
+    
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js");
+    Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js");
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js");
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js");
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js");
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js");
+    Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js");
+
+    Html.RequiresJs("~/assets/js/jquery.ajaxfileupload.js");
+
+    Html.RequiresJs("~/assets/js/jquery.scrolly.js");
+    Html.RequiresJs("~/assets/js/lodash.min.js");
+    Html.RequiresJs("~/assets/js/community.js");
+    Html.RequiresJs("~/assets/js/app.min.js");
+    Html.RequiresJs("~/assets/js/editor.min.js");
 
 }<!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
@@ -54,12 +77,6 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <link rel="stylesheet" type="text/css" href="/assets/css/style.min.css" />
-    <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css" />
-
-    @RenderSection("CssPlaceHolder", false)
-
     <!--[if lt IE 9]>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
     <![endif]-->
@@ -67,7 +84,7 @@
 
     @Umbraco.RenderMacro("MembersJsValues")
 
-    @RenderSection("Head", false)
+    @Html.RenderCssHere()
 
     <script>
         var _prum = [['id', '529dbcf6abe53d055a000000'],
@@ -96,7 +113,7 @@
 
 <body class="@bodyCss" style="background-color: yellow;">
     @Umbraco.RenderMacro("MembersQuickMenu")
-    
+
     <div class="wrapper">
         <header>
             <div class="navigation">
@@ -158,24 +175,8 @@
 
     </div>
     <!--.wrapper-->
-
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js"></script>
-    <script type="text/javascript" src="https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js"> </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Editor.js"> </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Sanitizer.js"> </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.8.1/mustache.min.js"> </script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.js"></script>
-
-    <script type="text/javascript" src="/assets/js/jquery.ajaxfileupload.js"></script>
-
-    <script type="text/javascript" src="/assets/js/jquery.scrolly.js"></script>
-    <script type="text/javascript" src="/assets/js/lodash.min.js"></script>
-    <script type="text/javascript" src="/assets/js/community.js"></script>
-    <script type="text/javascript" src="/assets/js/app.min.js"></script>
-    <script type="text/javascript" src="/assets/js/editor.min.js"></script>
-
-    @RenderSection("JavaScriptPlaceHolder", false)
+    
+    @Html.RenderJsHere()
 
     <script type="text/javascript">
         classOnScroll('header', 'sticky', 10);
