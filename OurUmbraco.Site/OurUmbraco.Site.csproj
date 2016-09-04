@@ -1687,6 +1687,7 @@
     <Content Include="usercontrols\umbracoContour\EditForm.ascx" />
     <Content Include="usercontrols\umbracoContour\Installer.ascx" />
     <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
+    <None Include="Views\Download.cshtml" />
     <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
     <Content Include="Views\MacroPartials\Members\QuickMenu.cshtml" />
@@ -4412,6 +4413,9 @@
     <Content Include="Views\DocumentationMainpage.cshtml" />
     <Content Include="Views\Search.cshtml" />
     <Content Include="Views\Partials\SearchResults.cshtml" />
+    <Content Include="Views\ReleaseLanding.cshtml" />
+    <Content Include="Views\ReleaseProgress.cshtml" />
+    <Content Include="Views\Release.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
