@@ -64,33 +64,7 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
             rp_packagefiles.Visible = (files.Count() > 0);
             rp_packagefiles.DataBind();
         }
-
-
-        protected void DeleteFile(object sender, CommandEventArgs e)
-        {
-            var mediaProvider = new MediaProvider();
-            var f = mediaProvider.GetFileById(int.Parse(e.CommandArgument.ToString()));
-
-            var mem = Member.GetCurrentMember();
-
-            if (f.CreatedBy == mem.Id || Utils.IsProjectContributor(mem.Id, (int)ProjectId))
-
-            //if the file is the default file we need to clear it out of the system to stop it showing as the default download
-            if (f.Id.ToString() == _defaultFile)
-            {
-                _defaultFile = string.Empty;
-                var nodeListingProvider = new NodeListingProvider();
-                var project = nodeListingProvider.GetListing((int)ProjectId);
-                project.CurrentReleaseFile = _defaultFile;
-                nodeListingProvider.SaveOrUpdate(project);
-
-            }
-
-            mediaProvider.Remove(f);
-
-            RebindFiles();
-        }
-
+        
         protected void ArchiveFile(object sender, CommandEventArgs e)
         {
             var mediaProvider = new MediaProvider();
@@ -116,7 +90,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
                 WikiFile f = (WikiFile)e.Item.DataItem;
                 Literal _name = (Literal)e.Item.FindControl("lt_name");
                 Literal _date = (Literal)e.Item.FindControl("lt_date");
-                Button _delete = (Button)e.Item.FindControl("bt_delete");
                 Literal _type = (Literal)e.Item.FindControl("lt_type");
                 Literal _version = (Literal)e.Item.FindControl("lt_version");
                 Literal _dotNetVersion = (Literal)e.Item.FindControl("lt_dotNetVersion");
@@ -176,8 +149,6 @@ namespace OurUmbraco.Project.usercontrols.Deli.Package.Steps
 
                 _name.Text = "<a href='" + f.Path + "'>" + f.Name + "</a>";
                 _date.Text = f.CreateDate.ToShortDateString() + " - " + f.CreateDate.ToShortTimeString();
-                _delete.CommandArgument = f.Id.ToString();
-
             }
         }
 

@@ -115,9 +115,6 @@
 <td class="center">
    <asp:Button ID="bt_archive" runat="server"  OnCommand="ArchiveFile" class="actionButton"/>  
 </td>
-<td class="center">
-  <asp:Button ID="bt_delete" runat="server" OnClientClick="return confirm('Are you sure you want to delete this file?')" OnCommand="DeleteFile" Text="Delete" class="actionButton"/>
-</td>
 </tr>
 </ItemTemplate>
 
@@ -135,7 +132,6 @@
   <th>Uploaded</th>
   <th class="center">Default Release</th>
   <th class="center">Archive</th>
-  <th class="center">Delete</th>
 </tr>
 </thead>
 <tbody>
