@@ -51,7 +51,9 @@ namespace OurUmbraco.Our.Examine
                 //a filter can return a true lucene query, if there is one use it, otherwise parse it's string format
                 var luceneQueryObj = filter.GetLuceneQuery();
                 bQuery.Add(luceneQueryObj ?? queryParser.Parse(filter.ToString()), BooleanClause.Occur.MUST_NOT);                
-            }            
+            }
+
+            luceneSearchCriteria.LuceneQuery(bQuery);
         }
     }
 }
