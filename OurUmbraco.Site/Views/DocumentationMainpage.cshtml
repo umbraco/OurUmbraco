@@ -1,0 +1,22 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+<div class="has-sidebar">
+    <div class="documentation">
+        <div id="wiki" class="subpage">
+            <div id="body">
+                <div style="margin-top: 25px;">
+                    @Umbraco.RenderMacro("DocsBreadcrumb")
+                </div>
+
+                <div id="markdown-docs" class="markdown-syntax">
+                    @Umbraco.RenderMacro("DocsDisplayMarkdown")
+                </div>
+
+                <br style="clear: both" />
+                <div class="divider"></div>
+            </div>
+        </div>
+    </div>
+</div>

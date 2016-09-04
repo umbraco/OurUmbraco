@@ -1761,6 +1761,7 @@
     <Content Include="Views\Layout.cshtml" />
     <Content Include="Views\Community.cshtml" />
     <Content Include="Views\Forum.cshtml" />
+    <None Include="Views\DocumentationSubpage.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
@@ -4415,6 +4416,7 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Projects.cshtml" />
     <Content Include="Views\Project.cshtml" />
+    <Content Include="Views\DocumentationMainpage.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
