@@ -4418,6 +4418,7 @@
     <Content Include="Views\ReleaseProgress.cshtml" />
     <Content Include="Views\Release.cshtml" />
     <Content Include="Views\Textpage.cshtml" />
+    <Content Include="Views\RoadMap.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
