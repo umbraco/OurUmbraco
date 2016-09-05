@@ -1,0 +1,12 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Umbraco.RenderMacro("Breadcrumb")
+    </div>
+    <h1>@Model.Content.Name</h1>
+    @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+</div>
