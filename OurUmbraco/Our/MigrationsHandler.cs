@@ -547,6 +547,12 @@ namespace OurUmbraco.Our
                         Alias = "search",
                         Icon = "icon-search"
                     };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
                     contentTypeService.Save(contentType);
                     
                     searchContentType = contentTypeService.GetContentType("search");
