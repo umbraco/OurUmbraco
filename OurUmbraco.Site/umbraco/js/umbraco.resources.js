@@ -3660,7 +3660,7 @@ function packageResource($q, $http, umbDataFormatter, umbRequestHelper) {
                   umbRequestHelper.getApiUrl(
                       "packageInstallApiBaseUrl",
                       "Import"), package),
-              'Failed to create package manifest for zip file ');
+              'Failed to install package. Error during the step "Import" ');
         }, 
 
         installFiles: function (package) {
@@ -3669,7 +3669,7 @@ function packageResource($q, $http, umbDataFormatter, umbRequestHelper) {
                   umbRequestHelper.getApiUrl(
                       "packageInstallApiBaseUrl",
                       "InstallFiles"), package),
-              'Failed to create package manifest for zip file ');
+              'Failed to install package. Error during the step "InstallFiles" ');
         }, 
 
         installData: function (package) {
@@ -3679,7 +3679,7 @@ function packageResource($q, $http, umbDataFormatter, umbRequestHelper) {
                   umbRequestHelper.getApiUrl(
                       "packageInstallApiBaseUrl",
                       "InstallData"), package),
-              'Failed to create package manifest for zip file ');
+              'Failed to install package. Error during the step "InstallData" ');
         }, 
 
         cleanUp: function (package) {
@@ -3689,7 +3689,7 @@ function packageResource($q, $http, umbDataFormatter, umbRequestHelper) {
                   umbRequestHelper.getApiUrl(
                       "packageInstallApiBaseUrl",
                       "CleanUp"), package),
-              'Failed to create package manifest for zip file ');
+              'Failed to install package. Error during the step "CleanUp" ');
         }
     };
 }
@@ -3739,13 +3739,13 @@ angular.module('umbraco.resources').factory('packageResource', packageResource);
                 'Failed to retrieve data for searching redirect urls');
         }
 
-        function isEnabled() {
+        function getEnableState() {
 
             return umbRequestHelper.resourcePromise(
                 $http.get(
                     umbRequestHelper.getApiUrl(
                         "redirectUrlManagementApiBaseUrl",
-                        "IsEnabled")),
+                        "GetEnableState")),
                 'Failed to retrieve data to check if the 301 redirect is enabled');
         }
 
@@ -3805,7 +3805,7 @@ angular.module('umbraco.resources').factory('packageResource', packageResource);
             searchRedirectUrls: searchRedirectUrls,
             deleteRedirectUrl: deleteRedirectUrl,
             toggleUrlTracker: toggleUrlTracker,
-            isEnabled: isEnabled
+            getEnableState: getEnableState
         };
 
         return resource;
