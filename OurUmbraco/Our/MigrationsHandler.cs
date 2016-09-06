@@ -34,6 +34,7 @@ namespace OurUmbraco.Our
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
             AddSearchDocumentTypeAndPage();
+            UseNewLoginForm();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -579,6 +580,31 @@ namespace OurUmbraco.Our
                         }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewLoginForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberLogin");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/Login.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
             }
             catch (Exception ex)
             {

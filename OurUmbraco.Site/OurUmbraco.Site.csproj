@@ -1758,6 +1758,7 @@
     <Content Include="Views\Community.cshtml" />
     <Content Include="Views\Forum.cshtml" />
     <None Include="Views\DocumentationSubpage.cshtml" />
+    <Content Include="Views\MacroPartials\Members\Login.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4419,6 +4420,7 @@
     <Content Include="Views\Release.cshtml" />
     <Content Include="Views\Textpage.cshtml" />
     <Content Include="Views\RoadMap.cshtml" />
+    <Content Include="Views\Partials\Members\Login.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
