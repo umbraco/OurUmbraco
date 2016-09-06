@@ -439,6 +439,7 @@
     <Compile Include="Our\Examine\RangeSearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilters.cs" />
+    <Compile Include="Our\Extensions\StringExtensions.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoAuthTokenServerExtensions.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoCustomOwinStartup.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoGoogleAuthExtensions.cs" />
