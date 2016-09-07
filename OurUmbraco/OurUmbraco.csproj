@@ -461,19 +461,19 @@
     <Compile Include="Our\Scheduling\Scheduler.cs" />
     <Compile Include="Our\Scheduling\YouTrackSync.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
-    <Compile Include="Our\usercontrols\acceptTos.ascx.cs">
-      <DependentUpon>acceptTos.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__acceptTos.ascx.cs">
+      <DependentUpon>__acceptTos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\acceptTos.ascx.designer.cs">
-      <DependentUpon>acceptTos.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__acceptTos.ascx.designer.cs">
+      <DependentUpon>__acceptTos.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\EventEditor.ascx.cs">
-      <DependentUpon>EventEditor.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__EventEditor.ascx.cs">
+      <DependentUpon>__EventEditor.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\EventEditor.ascx.designer.cs">
-      <DependentUpon>EventEditor.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__EventEditor.ascx.designer.cs">
+      <DependentUpon>__EventEditor.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.cs">
       <DependentUpon>FileDownloadProxy.ascx</DependentUpon>
@@ -489,12 +489,12 @@
     <Compile Include="Our\usercontrols\__Forgotpassword.ascx.designer.cs">
       <DependentUpon>__Forgotpassword.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\InsertImage.ascx.cs">
-      <DependentUpon>InsertImage.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__InsertImage.ascx.cs">
+      <DependentUpon>__InsertImage.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\InsertImage.ascx.designer.cs">
-      <DependentUpon>InsertImage.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__InsertImage.ascx.designer.cs">
+      <DependentUpon>__InsertImage.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\usercontrols\__Login.ascx.cs">
       <DependentUpon>__Login.ascx</DependentUpon>
@@ -686,17 +686,19 @@
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
-    <Content Include="Our\usercontrols\acceptTos.ascx">
+    <Content Include="Our\usercontrols\__acceptTos.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\EventEditor.ascx">
+    <Content Include="Our\usercontrols\__EventEditor.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\FileDownloadProxy.ascx" />
+    <Content Include="Our\usercontrols\FileDownloadProxy.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Our\usercontrols\__Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\InsertImage.ascx">
+    <Content Include="Our\usercontrols\__InsertImage.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\__Login.ascx">
