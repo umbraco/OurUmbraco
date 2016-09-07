@@ -482,12 +482,12 @@
     <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.designer.cs">
       <DependentUpon>FileDownloadProxy.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\Forgotpassword.ascx.cs">
-      <DependentUpon>Forgotpassword.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__Forgotpassword.ascx.cs">
+      <DependentUpon>__Forgotpassword.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\Forgotpassword.ascx.designer.cs">
-      <DependentUpon>Forgotpassword.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__Forgotpassword.ascx.designer.cs">
+      <DependentUpon>__Forgotpassword.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\usercontrols\InsertImage.ascx.cs">
       <DependentUpon>InsertImage.ascx</DependentUpon>
@@ -496,12 +496,12 @@
     <Compile Include="Our\usercontrols\InsertImage.ascx.designer.cs">
       <DependentUpon>InsertImage.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\Login.ascx.cs">
-      <DependentUpon>Login.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__Login.ascx.cs">
+      <DependentUpon>__Login.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\Login.ascx.designer.cs">
-      <DependentUpon>Login.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__Login.ascx.designer.cs">
+      <DependentUpon>__Login.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
       <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>
@@ -538,19 +538,19 @@
     <Compile Include="Our\usercontrols\ProjectForums.ascx.designer.cs">
       <DependentUpon>ProjectForums.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\Signup.ascx.cs">
-      <DependentUpon>Signup.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__Signup.ascx.cs">
+      <DependentUpon>__Signup.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\Signup.ascx.designer.cs">
-      <DependentUpon>Signup.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__Signup.ascx.designer.cs">
+      <DependentUpon>__Signup.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\SignupSimple.ascx.cs">
-      <DependentUpon>SignupSimple.ascx</DependentUpon>
+    <Compile Include="Our\usercontrols\__SignupSimple.ascx.cs">
+      <DependentUpon>__SignupSimple.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Our\usercontrols\SignupSimple.ascx.designer.cs">
-      <DependentUpon>SignupSimple.ascx.cs</DependentUpon>
+    <Compile Include="Our\usercontrols\__SignupSimple.ascx.designer.cs">
+      <DependentUpon>__SignupSimple.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Our\Utils.cs" />
     <Compile Include="OutgoingDateTimeFormatAttribute.cs" />
@@ -693,13 +693,13 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\FileDownloadProxy.ascx" />
-    <Content Include="Our\usercontrols\Forgotpassword.ascx">
+    <Content Include="Our\usercontrols\__Forgotpassword.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\InsertImage.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\Login.ascx">
+    <Content Include="Our\usercontrols\__Login.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\ProjectCollabRequest.ascx" />
@@ -715,10 +715,12 @@
     <Content Include="Our\usercontrols\ProjectForums.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\Signup.ascx">
+    <Content Include="Our\usercontrols\__Signup.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Our\usercontrols\SignupSimple.ascx" />
+    <Content Include="Our\usercontrols\__SignupSimple.ascx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="Powers\uPowers.config" />
   </ItemGroup>
   <ItemGroup>
