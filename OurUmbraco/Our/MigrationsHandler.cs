@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -36,6 +35,7 @@ namespace OurUmbraco.Our
             AddSearchDocumentTypeAndPage();
             UseNewLoginForm();
             UseNewForgotPasswordForm();
+            UseNewMyProjectsOverview();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -627,6 +627,33 @@ namespace OurUmbraco.Our
                 var macro = macroService.GetByAlias("MemberPasswordReminder");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewMyProjectsOverview()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var allMacros = macroService.GetAll();
+                //For some reason GetByAlias does not work
+                var macro = allMacros.FirstOrDefault(x => x.Alias == "DeliMyProjects");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Projects/MyProjects.cshtml";
                 macroService.Save(macro);
 
                 string[] lines = { "" };

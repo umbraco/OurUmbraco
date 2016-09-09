@@ -523,7 +523,7 @@
     <Content Include="masterpages\PayPalRedirect.master" />
     <Content Include="masterpages\People.master" />
     <Content Include="masterpages\popular.master" />
-    <Content Include="masterpages\Profilepage.master" />
+    <Content Include="masterpages\__Profilepage.master" />
     <Content Include="masterpages\__Project.master" />
     <Content Include="masterpages\ProjectGroup.master" />
     <Content Include="masterpages\__Projects.master" />
@@ -1760,6 +1760,10 @@
     <None Include="Views\DocumentationSubpage.cshtml" />
     <Content Include="Views\MacroPartials\Members\Login.cshtml" />
     <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\Partials\Projects\MyProjects.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\MyProjects.cshtml" />
+    <Content Include="Views\Partials\Projects\EditProject.cshtml" />
+    <Content Include="Views\EditProject.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4105,7 +4109,7 @@
     <Content Include="usercontrols\Deli\Payout\VendorPayout.ascx" />
     <Content Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx" />
     <Content Include="usercontrols\Deli\Profile\MemberDataLookup.ascx" />
-    <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
+    <Content Include="usercontrols\Deli\Profile\__MyProjects.ascx" />
     <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
     <Content Include="usercontrols\Deli\ProjectView.ascx" />
     <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
@@ -4423,6 +4427,7 @@
     <Content Include="Views\RoadMap.cshtml" />
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\Profilepage.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

@@ -1,0 +1,9 @@
+﻿@model OurUmbraco.Our.Models.EditProjectModel
+@if (Model.HasAccess)
+{
+    @Model.Content.Name
+}
+else
+{
+    <p>Computer says no.</p>
+}

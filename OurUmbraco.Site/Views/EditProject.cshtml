@@ -1,0 +1,23 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "/Views/Layout.cshtml";
+}
+<div class="page-content">
+    <div class="sidebar-area">
+        <div class="sidebar-content">
+            <div class="content-wrapper">
+                @Umbraco.RenderMacro("MemberProfileNavigation", new { source = "1057" })
+            </div><!-- .content-wrapper -->
+        </div><!-- .sidebar-content -->
+    </div><!-- .sidebar-area -->
+
+    <div class="main-area">
+        <div class="main-content">
+            <div class="content-wrapper">
+                @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+                @Html.Action("Render", "EditProject", new { model = Model })
+            </div><!-- .content-wrapper -->
+        </div><!-- .main-content -->
+    </div><!-- .main-area -->
+
+</div><!-- .page-content -->
