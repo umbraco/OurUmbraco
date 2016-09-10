@@ -9,7 +9,7 @@
     int topicId;
     // For some reason the Request.Url will show that this URL looks like: /rss/forum/?id=?id=103196
     // This means that Request.QueryString["id"] results in ",1929". Removing the comma helps...
-    if (int.TryParse(Model.MacroParameters["topicId"].ToString().Replace(",", string.Empty), out topicId) == false)
+    if (int.TryParse(Request.QueryString["id"].Replace(",", string.Empty), out topicId) == false)
     {
         return;
     }

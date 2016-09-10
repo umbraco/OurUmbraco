@@ -493,7 +493,7 @@
     <Content Include="macroScripts\testWikiFile.cshtml" />
     <Content Include="masterpages\AttachFile.master" />
     <Content Include="masterpages\Authentication.master" />
-    <Content Include="masterpages\blank.master" />
+    <Content Include="masterpages\__blank.master" />
     <Content Include="masterpages\__Community.master" />
     <Content Include="masterpages\ConfigureProjectLicenses.master" />
     <Content Include="masterpages\__ContentLanding.master" />
@@ -1688,6 +1688,7 @@
     <Content Include="usercontrols\umbracoContour\Installer.ascx" />
     <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
     <Content Include="Views\ContentLanding.cshtml" />
+    <Content Include="Views\Blank.cshtml" />
     <None Include="Views\Download.cshtml" />
     <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
@@ -1762,7 +1763,6 @@
     <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Partials\Projects\MyProjects.cshtml" />
     <Content Include="Views\MacroPartials\Projects\MyProjects.cshtml" />
-    <Content Include="Views\Partials\Projects\EditProject.cshtml" />
     <Content Include="Views\EditProject.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Web.config" />
