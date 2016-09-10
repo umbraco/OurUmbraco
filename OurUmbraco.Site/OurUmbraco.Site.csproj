@@ -505,7 +505,7 @@
     <Content Include="masterpages\DisplayTopic.master" />
     <Content Include="masterpages\__DocumentationMainpage.master" />
     <Content Include="masterpages\__DocumentationSubpage.master" />
-    <Content Include="masterpages\EditProject.master" />
+    <Content Include="masterpages\__EditProject.master" />
     <Content Include="masterpages\Event.master" />
     <Content Include="masterpages\Eventnews.master" />
     <Content Include="masterpages\Events.master" />
@@ -554,12 +554,12 @@
     <Content Include="masterpages\termsofservice.master" />
     <Content Include="masterpages\__Textpage.master" />
     <Content Include="masterpages\UmbracoMVP2011.master" />
-    <Content Include="masterpages\Wiki.master" />
-    <Content Include="masterpages\WikiMoveDialog.master" />
-    <Content Include="masterpages\WikiPage.master" />
-    <Content Include="masterpages\WikiPageAttachments.master" />
-    <Content Include="masterpages\WikiPageHistory.master" />
-    <Content Include="masterpages\WikipagewithTOC.master" />
+    <Content Include="masterpages\__Wiki.master" />
+    <Content Include="masterpages\__WikiMoveDialog.master" />
+    <Content Include="masterpages\__WikiPage.master" />
+    <Content Include="masterpages\__WikiPageAttachments.master" />
+    <Content Include="masterpages\__WikiPageHistory.master" />
+    <Content Include="masterpages\__WikipagewithTOC.master" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkFlowButton.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\Workflownode.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkflowOverview.png" />
