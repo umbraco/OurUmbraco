@@ -410,10 +410,8 @@
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
     <Compile Include="Our\Controllers\AvatarController.cs" />
-    <Compile Include="Our\Controllers\EditProjectController.cs" />
     <Compile Include="Our\Models\EditProjectModel.cs" />
     <Compile Include="Our\Controllers\LoginController.cs" />
-    <Compile Include="Our\Controllers\TextpageController.cs" />
     <Compile Include="Our\Models\MyProjectsModel.cs" />
     <Compile Include="Our\Controllers\ProfileController.cs" />
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />

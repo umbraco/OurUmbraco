@@ -32,7 +32,7 @@ namespace OurUmbraco.Our.Controllers
             }
 
             var model = new ProjectDetails();
-            var currentPage = Umbraco.TypedContent(UmbracoContext.PageId.Value);
+            var currentPage = Umbraco.TypedContent(UmbracoContext.Current.PageId);
             var rootNode = currentPage.AncestorOrSelf(1);
             var projects = rootNode.Children(x => x.ContentType.Alias == "Projects").First();
             var categories = projects.Children(x => x.ContentType.Alias == "ProjectGroup" && x.GetPropertyValue<bool>("hqOnly") == false);

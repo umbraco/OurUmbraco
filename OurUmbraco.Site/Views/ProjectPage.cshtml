@@ -1,11 +1,6 @@
-﻿@using ClientDependency.Core.Mvc
-@inherits UmbracoTemplatePage
+﻿@inherits UmbracoTemplatePage
 @{
-    Layout = "/Views/Layout.cshtml";
-    Html.RequiresJs("~/scripts/projects/jquery.tagger.js", 100);
-    Html.RequiresJs("~/scripts/projects/jquery.autocomplete.js", 100);
-    Html.RequiresJs("~/scripts/swfUpload/callbacks.js", 105);
-    Html.RequiresJs("~/scripts/swfUpload/SWFUpload.js", 110);
+    Layout = "~/Views/Layout.cshtml";
 }
 <div class="page-content">
     <div class="sidebar-area">
@@ -19,7 +14,7 @@
         <div class="main-content">
             <div class="content-wrapper">
                 @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
-                @Umbraco.RenderMacro("Deli-CreateProject")
+                @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
             </div><!-- .content-wrapper -->
         </div><!-- .main-content -->
     </div><!-- .main-area -->

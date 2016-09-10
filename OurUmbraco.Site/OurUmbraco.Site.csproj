@@ -4428,6 +4428,8 @@
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Profilepage.cshtml" />
+    <Content Include="Views\ProjectPage.cshtml" />
+    <Content Include="Views\ReleaseDownload.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
