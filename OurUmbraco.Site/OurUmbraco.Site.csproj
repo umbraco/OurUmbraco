@@ -662,7 +662,7 @@
     <Content Include="scripts\forum\select2\select2-new.js" />
     <Content Include="scripts\forum\tags.js" />
     <Content Include="config\IISRewriteMaps.config" />
-    <Content Include="masterpages\ReleaseCompare.master" />
+    <Content Include="masterpages\__ReleaseCompare.master" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
     <Content Include="config\tinyMceConfig.config" />
     <Content Include="config\scripting.config" />
