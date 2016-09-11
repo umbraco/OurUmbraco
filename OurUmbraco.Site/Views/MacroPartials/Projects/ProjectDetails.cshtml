@@ -281,7 +281,7 @@
                             @if (currentMember != null && (currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                             {
                                 <br/><br/>
-                                <a href="/member/profile/projects/edit?id=@project.Id">Edit project</a>
+                                <a href="/member/profile/projects/details?projectId=@project.Id">Edit project</a>
                             }
                         </div>
                     </div>

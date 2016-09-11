@@ -12,7 +12,6 @@ using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Project.Helpers;
 using OurUmbraco.Wiki.BusinessLogic;
-using umbraco.editorControls.SettingControls;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -163,6 +162,7 @@ namespace OurUmbraco.Our.Controllers
             var project = GetProjectForAuthorizedMember(model.Id);
             project.Live = model.ProjectLive;
             nodeListingProvider.SaveOrUpdate(project);
+
             return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }
 
