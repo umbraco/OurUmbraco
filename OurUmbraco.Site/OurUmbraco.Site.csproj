@@ -514,7 +514,7 @@
     <Content Include="masterpages\HelpPage.master" />
     <Content Include="masterpages\InsertImage.master" />
     <Content Include="masterpages\Locatorpage.master" />
-    <Content Include="masterpages\Master.master" />
+    <Content Include="masterpages\__Master.master" />
     <Content Include="masterpages\Mobile.master" />
     <Content Include="masterpages\MobileTextPage.master" />
     <Content Include="masterpages\newest.master" />
