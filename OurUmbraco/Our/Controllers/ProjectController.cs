@@ -108,13 +108,62 @@ namespace OurUmbraco.Our.Controllers
 
             var mediaProvider = new MediaProvider();
 
-            var model = mediaProvider.GetMediaFilesByProjectId(id)
-                .Where(x => x.FileType != FileType.screenshot.FileTypeAsString());
+            var availableFiles = mediaProvider.GetMediaFilesByProjectId(id)
+                .Where(x => x.FileType != FileType.screenshot.FileTypeAsString()).ToList();
 
-            foreach (var wikiFile in model)
+            foreach (var wikiFile in availableFiles)
                 wikiFile.Current = project.CurrentReleaseFile == wikiFile.Id.ToString();
 
+            var model = new EditFileModel
+            {
+                AvailableFiles = availableFiles,
+                UploadFile = new WikiFileModel
+                {
+                    AvailableVersions = new List<SelectListItem>(WikiFileModel.GetUmbracoVersions())
+                }
+            };
+
             return PartialView("~/Views/Partials/Project/EditFiles.cshtml", model);
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderScreenshots(int id)
+        {
+            // Getting this despite not using it to verify that the member owns this file
+            var project = GetProjectForAuthorizedMember(id);
+
+            var mediaProvider = new MediaProvider();
+
+            var availableFiles = mediaProvider.GetMediaFilesByProjectId(id)
+                .Where(x => x.FileType == FileType.screenshot.FileTypeAsString()).ToList();
+
+            foreach (var wikiFile in availableFiles)
+                wikiFile.Current = project.CurrentReleaseFile == wikiFile.Id.ToString();
+
+            var model = new EditScreenshotModel
+            {
+                AvailableFiles = availableFiles,
+                UploadFile = new ScreenshotModel()
+            };
+
+            return PartialView("~/Views/Partials/Project/EditScreenshots.cshtml", model);
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderComplete(int id)
+        {
+            var project = GetProjectForAuthorizedMember(id);
+            var model = new ProjectCompleteModel { Id = id, Name = project.Name, ProjectLive = project.Live };
+            return PartialView("~/Views/Partials/Project/Complete.cshtml", model);
+        }
+
+        public ActionResult UpdateProjectLive(ProjectCompleteModel model)
+        {
+            var nodeListingProvider = new NodeListingProvider();
+            var project = GetProjectForAuthorizedMember(model.Id);
+            project.Live = model.ProjectLive;
+            nodeListingProvider.SaveOrUpdate(project);
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }
 
         public ActionResult MarkFileAsCurrent(int id, int releaseFileId)
@@ -122,7 +171,28 @@ namespace OurUmbraco.Our.Controllers
             var nodeListingProvider = new NodeListingProvider();
             var project = GetProjectForAuthorizedMember(id);
             project.CurrentReleaseFile = releaseFileId.ToString();
+            var file = new WikiFile(releaseFileId);
+            if (file.FileType == "screenshot")
+                project.DefaultScreenshot = file.Path;
             nodeListingProvider.SaveOrUpdate(project);
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
+        }
+
+        public ActionResult DeleteScreenshot(int id, int releaseFileId)
+        {
+            var nodeListingProvider = new NodeListingProvider();
+            var project = GetProjectForAuthorizedMember(id);
+
+            var file = new WikiFile(releaseFileId);
+            if (file.Path == project.DefaultScreenshot)
+            {
+                project.DefaultScreenshot = string.Empty;
+                nodeListingProvider.SaveOrUpdate(project);
+            }
+
+            var mediaProvider = new MediaProvider();
+            mediaProvider.Remove(file);
+
             return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }
 
@@ -139,23 +209,28 @@ namespace OurUmbraco.Our.Controllers
             return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }
 
-        public ActionResult AddFile(WikiFileModel model)
+        public ActionResult AddFile(EditFileModel model)
         {
+            if (ModelState.IsValid == false)
+            {
+                return CurrentUmbracoPage();
+            }
+
             // Getting this despite not using it to verify that the member owns this file
-            var project = GetProjectForAuthorizedMember(model.ProjectId);
+            var project = GetProjectForAuthorizedMember(model.UploadFile.ProjectId);
             var member = Members.GetCurrentMember();
 
             HttpPostedFile file;
             using (var target = new MemoryStream())
             {
-                model.File.InputStream.CopyTo(target);
+                model.UploadFile.File.InputStream.CopyTo(target);
                 byte[] data = target.ToArray();
-                file = ConstructHttpPostedFile(data, model.File.FileName, model.File.ContentType);
+                file = ConstructHttpPostedFile(data, model.UploadFile.File.FileName, model.UploadFile.File.ContentType);
             }
-            
+
             var umbracoVersions = new List<UmbracoVersion>();
             var allUmbracoVersions = UmbracoVersion.AvailableVersions().Values;
-            foreach (var item in model.SelectedVersions)
+            foreach (var item in model.UploadFile.SelectedVersions)
             {
                 var version = allUmbracoVersions.Single(x => x.Version == item);
                 umbracoVersions.Add(version);
@@ -163,15 +238,49 @@ namespace OurUmbraco.Our.Controllers
 
             var contentService = Services.ContentService;
             var projectContent = contentService.GetById(project.Id);
-            
+
             var wikiFile = WikiFile.Create(
-                model.File.FileName,
+                model.UploadFile.File.FileName,
                 projectContent.PublishedVersionGuid,
                 member.GetKey(),
-                file, 
-                model.FileType,
+                file,
+                model.UploadFile.FileType,
                 umbracoVersions,
-                model.DotNetVersion
+                model.UploadFile.DotNetVersion
+            );
+
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
+        }
+
+        public ActionResult AddScreenshot(EditScreenshotModel model)
+        {
+            if (ModelState.IsValid == false)
+            {
+                return CurrentUmbracoPage();
+            }
+
+            // Getting this despite not using it to verify that the member owns this file
+            var project = GetProjectForAuthorizedMember(model.UploadFile.ProjectId);
+            var member = Members.GetCurrentMember();
+
+            HttpPostedFile file;
+            using (var target = new MemoryStream())
+            {
+                model.UploadFile.File.InputStream.CopyTo(target);
+                byte[] data = target.ToArray();
+                file = ConstructHttpPostedFile(data, model.UploadFile.File.FileName, model.UploadFile.File.ContentType);
+            }
+
+            var contentService = Services.ContentService;
+            var projectContent = contentService.GetById(project.Id);
+
+            var wikiFile = WikiFile.Create(
+                model.UploadFile.File.FileName,
+                projectContent.PublishedVersionGuid,
+                member.GetKey(),
+                file,
+                "screenshot",
+                new List<UmbracoVersion> { UmbracoVersion.DefaultVersion() }
             );
 
             return RedirectToCurrentUmbracoPage(Request.Url.Query);

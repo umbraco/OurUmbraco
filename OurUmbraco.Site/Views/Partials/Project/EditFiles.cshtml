@@ -1,10 +1,8 @@
 ﻿@using OurUmbraco.Our.Controllers
-@using OurUmbraco.Our.Models
-@using OurUmbraco.Wiki.BusinessLogic
-@model IEnumerable<WikiFile>
+@model OurUmbraco.Our.Models.EditFileModel
 <div class="package-create">
 
-    @Html.Partial("~/Views/Partials/Project/PackageEditNavigation.cshtml")
+    @Html.Partial("~/Views/Partials/Project/PackageEditNavigation.cshtml", "files")
 
     <div class="form simpleForm" id="registrationForm">
         <fieldset>
@@ -23,7 +21,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var wikiFile in Model)
+                        @foreach (var wikiFile in Model.AvailableFiles)
                         {
                             var versionsList = new List<string>();
                             foreach (var version in wikiFile.Versions)
@@ -71,9 +69,72 @@
         <fieldset>
             <legend>Upload file</legend>
             <div id="">
-                @Html.Partial("~/Views/Partials/Project/UploadFile.cshtml", new WikiFileModel { AvailableVersions = WikiFileModel.GetUmbracoVersions() })
+                @using (Html.BeginUmbracoForm<ProjectController>("AddFile"))
+                {
+                    <span style="color: red;">
+                        @Html.ValidationSummary()
+                    </span>
+
+                    <div id="">
+                        <p>
+                            <label class="inputLabel">Pick file (10 MB max):</label>
+                        </p>
+                        <div>
+                            <div>
+                                <input type="file" class="title" name="UploadFile.File">
+                            </div>
+                        </div>
+                        <p></p>
+                        <p>
+                            <label class="inputLabel">Choose filetype</label>
+
+                            @Html.DropDownListFor(model => model.UploadFile.FileType, new List<SelectListItem>
+                            {
+                                new SelectListItem { Text = "Package", Value = "package" },
+                                new SelectListItem { Text = "Hot Fix", Value = "hotfix"},
+                                new SelectListItem { Text = "Documentation", Value = "docs"},
+                                new SelectListItem { Text = "Source Code", Value = "source"}
+                            })
+                        </p>
+                        <div class="pickversionWrapper">
+                            <p id="pickVersion">
+                                <label class="inputLabel">Choose umbraco version</label>
+                            </p>
+                            <div class="pickVersion" style="float: left; margin-bottom: 10px;">
+                                @foreach (var item in Model.UploadFile.AvailableVersions)
+                                {
+                                    var versionsSelected = Model.UploadFile.SelectedVersions;
+                                    <input type="checkbox" name="UploadFile.SelectedVersions" value="@item.Value" id="@item.Value" @if (versionsSelected != null && versionsSelected.Contains(item.Value)) { <text> checked="checked" </text> } /> <label for="@item.Value" style="display: inline; padding: 0;">@item.Text</label><br />
+                                }
+
+                            </div>
+                            <p style="clear: both; margin-bottom: 10px;">If your package manifest references a specific version of Umbraco, then that will be used instead.</p>
+                        </div>
+                        <p id="pickNetVersion">
+                            <label class="inputLabel">Choose supported .NET runtime</label>
+
+                            <select name="UploadFile.DotNetVersion" class="title">
+                                <option value=""></option>
+                                <option value="2.0">2.0</option>
+                                <option value="3.5">3.5</option>
+                                <option value="4.0">4.0</option>
+                                <option value="4.5">4.5</option>
+                                <option value="4.5.1">4.5.1</option>
+                                <option value="4.5.2">4.5.2</option>
+                                <option value="4.6.0">4.6.0</option>
+                                <option value="4.6.1">4.6.1</option>
+                            </select><br>
+                        </p>
+
+                        <p>
+                            <input type="hidden" name="UploadFile.ProjectId" value="@Request.QueryString["id"]" />
+                            <input type="submit" value="Save file" class="submitButton button blue tiny">
+                        </p>
+
+                    </div>
+                }
                 <div class="buttons">
-                    <input type="submit" value="Next" class="submitButton button green tiny">
+                    <a href="/member/profile/projects/edit/?editorStep=screenshots&id=@Request.QueryString["id"]" class="submitButton button green tiny" style="color: white;">Next</a>
                 </div>
             </div>
 

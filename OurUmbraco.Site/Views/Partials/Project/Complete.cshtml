@@ -1,0 +1,20 @@
+﻿@using OurUmbraco.Our.Controllers
+@model OurUmbraco.Our.Models.ProjectCompleteModel
+<div class="package-create">
+    @Html.Partial("~/Views/Partials/Project/PackageEditNavigation.cshtml", "complete")
+
+    @using(Html.BeginUmbracoForm<ProjectController>("UpdateProjectLive"))
+    {
+        <fieldset>
+            <legend>Make "@Model.Name" public</legend>
+            <p>By checking the following box your project will become public as long as you have met all of the terms &amp; conditions of listing.</p>
+            <p>
+                @Html.CheckBoxFor(m => m.ProjectLive) @Html.LabelFor(m => m.ProjectLive)
+            </p>
+        </fieldset>
+
+        <div class="buttons">
+            <input type="submit" value="Save" class="submitButton button tiny green">
+        </div>
+    }
+</div>

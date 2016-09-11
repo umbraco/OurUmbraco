@@ -1769,7 +1769,8 @@
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Partials\Project\EditFiles.cshtml" />
     <Content Include="Views\Partials\Project\PackageEditNavigation.cshtml" />
-    <Content Include="Views\Partials\Project\UploadFile.cshtml" />
+    <Content Include="Views\Partials\Project\EditScreenshots.cshtml" />
+    <Content Include="Views\Partials\Project\Complete.cshtml" />
     <None Include="Views\RepositoryMaster.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">

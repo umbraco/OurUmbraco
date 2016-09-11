@@ -1,6 +1,7 @@
-﻿<ul class="stepNavigation">
-    <li class=""><a href="?editorStep=details&amp;id=@Request["id"]">Package Details</a></li>
-    <li class="current"><a href="?editorStep=files&amp;id=@Request["id"]">Package Files</a></li>
-    <li class=""><a href="?editorStep=screenshots&amp;id=@Request["id"]">Screenshots</a></li>
-    <li class=""><a href="?editorStep=complete&amp;id=@Request["id"]">Creation Complete</a></li>
+﻿@model string
+<ul class="stepNavigation">
+    <li class="@(Model == "details" ? "current" : null)"><a href="/member/profile/projects/details?projectId=@Request["id"]">Package Details</a></li>
+    <li class="@(Model == "files" ? "current" : null)"><a href="?editorStep=files&id=@Request["id"]">Package Files</a></li>
+    <li class="@(Model == "screenshots" ? "current" : null)"><a href="?editorStep=screenshots&id=@Request["id"]">Screenshots</a></li>
+    <li class="@(Model == "complete" ? "current" : null)"><a href="?editorStep=complete&id=@Request["id"]">Creation Complete</a></li>
 </ul>
