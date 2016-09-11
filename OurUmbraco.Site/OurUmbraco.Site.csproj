@@ -1756,7 +1756,7 @@
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
     <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
-    <Content Include="Views\Layout.cshtml" />
+    <Content Include="Views\Master.cshtml" />
     <Content Include="Views\Community.cshtml" />
     <Content Include="Views\Forum.cshtml" />
     <None Include="Views\DocumentationSubpage.cshtml" />

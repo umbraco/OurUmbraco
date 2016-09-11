@@ -2,7 +2,7 @@
 @using ClientDependency.Core.Mvc
 @using OurUmbraco.Release
 @{
-    Layout = "~/Views/Layout.cshtml";
+    Layout = "~/Views/Master.cshtml";
     Html.RequiresCss("~/css/releases.css");
     var latestRelease = Download.GetCurrentReleaseFromFile();
 }

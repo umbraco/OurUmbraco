@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Release
 @inherits UmbracoTemplatePage
 @{
-    Layout = "~/Views/Layout.cshtml";
+    Layout = "~/Views/Master.cshtml";
     if (Request.Url != null && (Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap/" || Request.Url.AbsolutePath.ToLowerInvariant() == "/roadmap"))
     {
         var newUrl = Request.Url.AbsoluteUri.Replace("/roadmap", "/contribute/roadmap");

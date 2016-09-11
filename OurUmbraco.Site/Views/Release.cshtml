@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Release
 @inherits UmbracoTemplatePage
 @{
-    Layout = "~/Views/Layout.cshtml";
+    Layout = "~/Views/Master.cshtml";
 
     var downloads = Model.Content.Children().Where(x => x.ContentType.Alias == "ReleaseDownload").ToArray();
     if (Request.Params["fromdownload"] != null)
