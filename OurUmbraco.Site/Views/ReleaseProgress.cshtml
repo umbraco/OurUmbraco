@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Release
 @inherits UmbracoTemplatePage
 @{
-    Layout = "/Views/Layout.cshtml";
+    Layout = "~/Views/Master.cshtml";
     var allReleases = Release.GetAllReleaseFromFile();
     var inProgress = allReleases.Where(x => x.inProgressRelease).ToList();
 
