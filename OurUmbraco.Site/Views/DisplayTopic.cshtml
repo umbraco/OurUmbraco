@@ -1,0 +1,22 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+<!-- FORUM OVERVIEW START -->
+<section class="forum-overview">
+    <div class="forum-single-thread">
+        <!-- FORUM HEADER START -->
+        <div class="utilities">
+            <!-- FORUM BREADCRUMB START -->
+            @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+            <!-- FORUM BREADCRUMB END -->
+            <!-- THREAD ACTIONS START -->
+            @Umbraco.RenderMacro("ForumTopicActions")
+            <!-- THREAD ACTIONS END -->
+            <div class="clear"></div>
+        </div>
+        <!-- FORUM HEADER END -->
+        @Umbraco.RenderMacro("ForumThread")
+    </div>
+</section>
+@Umbraco.RenderMacro("ForumForm")

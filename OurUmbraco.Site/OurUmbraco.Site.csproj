@@ -502,7 +502,7 @@
     <Content Include="masterpages\DeliCart.master" />
     <Content Include="masterpages\DeliCartDetails.master" />
     <Content Include="masterpages\Dialogs.master" />
-    <Content Include="masterpages\DisplayTopic.master" />
+    <Content Include="masterpages\__DisplayTopic.master" />
     <Content Include="masterpages\__DocumentationMainpage.master" />
     <Content Include="masterpages\__DocumentationSubpage.master" />
     <Content Include="masterpages\__EditProject.master" />
@@ -1689,6 +1689,7 @@
     <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
+    <Content Include="Views\DisplayTopic.cshtml" />
     <None Include="Views\Download.cshtml" />
     <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
