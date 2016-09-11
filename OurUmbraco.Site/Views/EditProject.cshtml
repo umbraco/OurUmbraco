@@ -19,7 +19,8 @@
         <div class="main-content">
             <div class="content-wrapper">
                 @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
-                @Umbraco.RenderMacro("Deli-CreateProject")
+                @Html.Action("RenderFiles", "Project")
+                
             </div><!-- .content-wrapper -->
         </div><!-- .main-content -->
     </div><!-- .main-area -->

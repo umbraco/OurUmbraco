@@ -1,0 +1,62 @@
+﻿@using OurUmbraco.Our.Controllers
+@model OurUmbraco.Our.Models.WikiFileModel
+@using (Html.BeginUmbracoForm<ProjectController>("AddFile"))
+{
+    <div id="">
+        <p>
+            <label class="inputLabel">Pick file (10 MB max):</label>
+        </p>
+        <div>
+            <div>
+                <input type="file" class="title" name="File">
+            </div>
+        </div>
+        <p></p>
+        <p>
+            <label class="inputLabel">Choose filetype</label>
+
+            @Html.DropDownListFor(model => model.FileType, new List<SelectListItem>
+            {
+                new SelectListItem { Text = "Package", Value = "package"},
+                new SelectListItem { Text = "Hot Fix", Value = "hotfix"},
+                new SelectListItem { Text = "Documentation", Value = "docs"},
+                new SelectListItem { Text = "Source Code", Value = "source"}
+            })
+
+        </p>
+        <div class="pickversionWrapper">
+            <p id="pickVersion">
+                <label class="inputLabel">Choose umbraco version</label>
+            </p>
+            <div class="pickVersion" style="float: left; margin-bottom: 10px;">
+                @foreach (var item in Model.AvailableVersions)
+                {
+                    <input type="checkbox" name="SelectedVersions" value="@item.Value" id="@item.Value" /> <label for="@item.Value" style="display: inline; padding: 0;">@item.Text</label><br />
+                }
+
+            </div>
+            <p style="clear: both; margin-bottom: 10px;">If your package manifest references a specific version of Umbraco, then that will be used instead.</p>
+        </div>
+        <p id="pickNetVersion">
+            <label class="inputLabel">Choose supported .NET runtime</label>
+
+            <select name="DotNetVersion" class="title">
+                <option value=""></option>
+                <option value="2.0">2.0</option>
+                <option value="3.5">3.5</option>
+                <option value="4.0">4.0</option>
+                <option value="4.5">4.5</option>
+                <option value="4.5.1">4.5.1</option>
+                <option value="4.5.2">4.5.2</option>
+                <option value="4.6.0">4.6.0</option>
+                <option value="4.6.1">4.6.1</option>
+            </select><br>
+        </p>
+
+        <p>
+            <input type="hidden" name="ProjectId" value="@Request.QueryString["id"]"/>
+            <input type="submit" value="Save file" class="submitButton button blue tiny">
+        </p>
+
+    </div>
+}

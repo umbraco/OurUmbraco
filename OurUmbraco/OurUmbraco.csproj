@@ -459,6 +459,7 @@
     <Compile Include="Our\Models\SearchResultContentModel.cs" />
     <Compile Include="Our\Models\SearchResultModel.cs" />
     <Compile Include="Our\Models\TermsAndConditionsModel.cs" />
+    <Compile Include="Our\Models\WikiFileModel.cs" />
     <Compile Include="Our\ProjectFileUploadHandler.cs" />
     <Compile Include="Our\Rest.cs" />
     <Compile Include="Our\Scheduling\Scheduler.cs" />

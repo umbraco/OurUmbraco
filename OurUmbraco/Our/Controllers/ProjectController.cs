@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Web;
 using System.Web.Mvc;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.ListingItem;
 using OurUmbraco.MarketPlace.NodeListing;
+using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Project.Helpers;
+using OurUmbraco.Wiki.BusinessLogic;
+using umbraco.editorControls.SettingControls;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -16,20 +23,7 @@ namespace OurUmbraco.Our.Controllers
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
         {
-            //TODO: What if this is not found??! 
-            var project = new PublishedContentListingItem();
-            if (projectId != 0)
-            {
-                var nodeListingProvider = new NodeListingProvider();
-                project = (PublishedContentListingItem) nodeListingProvider.GetListing(projectId);
-
-                var memberId = Members.GetCurrentMemberId();
-                if ((project.VendorId == memberId) == false && Utils.IsProjectContributor(memberId, projectId) == false)
-                {
-                    //TODO: Ummm... this is a child action/partial view - you cannot redirect from here
-                    Response.Redirect("/member/profile/projects/", true);
-                }
-            }
+            var project = GetProjectForAuthorizedMember(projectId);
 
             var model = new ProjectDetails();
             var currentPage = Umbraco.TypedContent(UmbracoContext.Current.PageId);
@@ -53,6 +47,25 @@ namespace OurUmbraco.Our.Controllers
             model.Id = projectId;
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
+        }
+
+        private PublishedContentListingItem GetProjectForAuthorizedMember(int projectId)
+        {
+            //TODO: What if this is not found??! 
+            var project = new PublishedContentListingItem();
+            if (projectId != 0)
+            {
+                var nodeListingProvider = new NodeListingProvider();
+                project = (PublishedContentListingItem)nodeListingProvider.GetListing(projectId);
+
+                var memberId = Members.GetCurrentMemberId();
+                if ((project.VendorId == memberId) == false && Utils.IsProjectContributor(memberId, projectId) == false)
+                {
+                    //TODO: Ummm... this is a child action/partial view - you cannot redirect from here
+                    Response.Redirect("/member/profile/projects/", true);
+                }
+            }
+            return project;
         }
 
         [ValidateInput(false)]
@@ -86,6 +99,123 @@ namespace OurUmbraco.Our.Controllers
             nodeListingProvider.SaveOrUpdate(project);
 
             return Redirect("/member/profile/projects/edit?editorStep=files&id=" + project.Id);
+        }
+
+        [ChildActionOnly]
+        public ActionResult RenderFiles(int id)
+        {
+            var project = GetProjectForAuthorizedMember(id);
+
+            var mediaProvider = new MediaProvider();
+
+            var model = mediaProvider.GetMediaFilesByProjectId(id)
+                .Where(x => x.FileType != FileType.screenshot.FileTypeAsString());
+
+            foreach (var wikiFile in model)
+                wikiFile.Current = project.CurrentReleaseFile == wikiFile.Id.ToString();
+
+            return PartialView("~/Views/Partials/Project/EditFiles.cshtml", model);
+        }
+
+        public ActionResult MarkFileAsCurrent(int id, int releaseFileId)
+        {
+            var nodeListingProvider = new NodeListingProvider();
+            var project = GetProjectForAuthorizedMember(id);
+            project.CurrentReleaseFile = releaseFileId.ToString();
+            nodeListingProvider.SaveOrUpdate(project);
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
+        }
+
+        public ActionResult ArchiveFile(int id, int releaseFileId)
+        {
+            // Getting this despite not using it to verify that the member owns this file
+            var project = GetProjectForAuthorizedMember(id);
+
+            var mediaProvider = new MediaProvider();
+            var releaseFile = mediaProvider.GetFileById(releaseFileId);
+            releaseFile.Archived = !releaseFile.Archived;
+            mediaProvider.SaveOrUpdate(releaseFile);
+
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
+        }
+
+        public ActionResult AddFile(WikiFileModel model)
+        {
+            // Getting this despite not using it to verify that the member owns this file
+            var project = GetProjectForAuthorizedMember(model.ProjectId);
+            var member = Members.GetCurrentMember();
+
+            HttpPostedFile file;
+            using (var target = new MemoryStream())
+            {
+                model.File.InputStream.CopyTo(target);
+                byte[] data = target.ToArray();
+                file = ConstructHttpPostedFile(data, model.File.FileName, model.File.ContentType);
+            }
+            
+            var umbracoVersions = new List<UmbracoVersion>();
+            var allUmbracoVersions = UmbracoVersion.AvailableVersions().Values;
+            foreach (var item in model.SelectedVersions)
+            {
+                var version = allUmbracoVersions.Single(x => x.Version == item);
+                umbracoVersions.Add(version);
+            }
+
+            var contentService = Services.ContentService;
+            var projectContent = contentService.GetById(project.Id);
+            
+            var wikiFile = WikiFile.Create(
+                model.File.FileName,
+                projectContent.PublishedVersionGuid,
+                member.GetKey(),
+                file, 
+                model.FileType,
+                umbracoVersions,
+                model.DotNetVersion
+            );
+
+            return RedirectToCurrentUmbracoPage(Request.Url.Query);
+        }
+
+        public HttpPostedFile ConstructHttpPostedFile(byte[] data, string filename, string contentType)
+        {
+            // Get the System.Web assembly reference
+            Assembly systemWebAssembly = typeof(HttpPostedFileBase).Assembly;
+            // Get the types of the two internal types we need
+            Type typeHttpRawUploadedContent = systemWebAssembly.GetType("System.Web.HttpRawUploadedContent");
+            Type typeHttpInputStream = systemWebAssembly.GetType("System.Web.HttpInputStream");
+
+            // Prepare the signatures of the constructors we want.
+            Type[] uploadedParams = { typeof(int), typeof(int) };
+            Type[] streamParams = { typeHttpRawUploadedContent, typeof(int), typeof(int) };
+            Type[] parameters = { typeof(string), typeof(string), typeHttpInputStream };
+
+            // Create an HttpRawUploadedContent instance
+            object uploadedContent = typeHttpRawUploadedContent
+              .GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, uploadedParams, null)
+              .Invoke(new object[] { data.Length, data.Length });
+
+            // Call the AddBytes method
+            typeHttpRawUploadedContent
+              .GetMethod("AddBytes", BindingFlags.NonPublic | BindingFlags.Instance)
+              .Invoke(uploadedContent, new object[] { data, 0, data.Length });
+
+            // This is necessary if you will be using the returned content (ie to Save)
+            typeHttpRawUploadedContent
+              .GetMethod("DoneAddingBytes", BindingFlags.NonPublic | BindingFlags.Instance)
+              .Invoke(uploadedContent, null);
+
+            // Create an HttpInputStream instance
+            object stream = (Stream)typeHttpInputStream
+              .GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, streamParams, null)
+              .Invoke(new object[] { uploadedContent, 0, data.Length });
+
+            // Create an HttpPostedFile instance
+            HttpPostedFile postedFile = (HttpPostedFile)typeof(HttpPostedFile)
+              .GetConstructor(BindingFlags.NonPublic | BindingFlags.Instance, null, parameters, null)
+              .Invoke(new object[] { filename, contentType, stream });
+
+            return postedFile;
         }
     }
 }

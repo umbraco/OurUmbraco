@@ -1,0 +1,82 @@
+﻿@using OurUmbraco.Our.Controllers
+@using OurUmbraco.Our.Models
+@using OurUmbraco.Wiki.BusinessLogic
+@model IEnumerable<WikiFile>
+<div class="package-create">
+
+    @Html.Partial("~/Views/Partials/Project/PackageEditNavigation.cshtml")
+
+    <div class="form simpleForm" id="registrationForm">
+        <fieldset>
+            <legend>Current project files</legend>
+            <p>
+                <table class="dataTable">
+                    <thead>
+                        <tr>
+                            <th>File</th>
+                            <th>Type</th>
+                            <th>Compatible Version</th>
+                            <th>.NET Version</th>
+                            <th>Uploaded</th>
+                            <th class="center">Default Release</th>
+                            <th class="center">Archive</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var wikiFile in Model)
+                        {
+                            var versionsList = new List<string>();
+                            foreach (var version in wikiFile.Versions)
+                            {
+                                versionsList.Add(version.Version);
+                            }
+                            var versions = string.Join(",", versionsList);
+
+                            <tr>
+                                <td>@wikiFile.Name</td>
+                                <td>@wikiFile.FileType</td>
+                                <td>@versions</td>
+                                <td>@wikiFile.DotNetVersion</td>
+                                <td>@wikiFile.CreateDate</td>
+                                <td class="center">
+                                    @if (wikiFile.Current == false)
+                                    {
+                                        using (Html.BeginUmbracoForm<ProjectController>("MarkFileAsCurrent"))
+                                        {
+                                            <input type="hidden" name="id" value="@Request.QueryString["id"]" />
+                                            <input type="hidden" name="releaseFileId" value="@wikiFile.Id" />
+                                            <input type="submit" value="Make current" class="actionButton" />
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <text>Current</text>
+                                    }
+                                </td>
+                                <td class="center">
+                                    @using (Html.BeginUmbracoForm<ProjectController>("ArchiveFile"))
+                                    {
+                                        var buttonText = wikiFile.Archived ? "Unarchive" : "Archive";
+
+                                        <input type="hidden" name="id" value="@Request.QueryString["id"]" />
+                                        <input type="hidden" name="releaseFileId" value="@wikiFile.Id" />
+                                        <input type="submit" value="@buttonText" class="actionButton" />
+                                    }
+                                </td>
+                            </tr>
+                        }
+                </table>
+            </p>
+        </fieldset>
+        <fieldset>
+            <legend>Upload file</legend>
+            <div id="">
+                @Html.Partial("~/Views/Partials/Project/UploadFile.cshtml", new WikiFileModel { AvailableVersions = WikiFileModel.GetUmbracoVersions() })
+                <div class="buttons">
+                    <input type="submit" value="Next" class="submitButton button green tiny">
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+</div>
