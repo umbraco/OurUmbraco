@@ -1,0 +1,30 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Layout.cshtml";
+}
+<div class="has-sidebar">
+    <div class="page-content">
+        <div id="overlay" class="overlay"></div>
+        <div class="sidebar-area">
+            <div class="sidebar-content">
+                <div class="content-wrapper">
+                    <nav>
+                        <ul class="level-1">
+                            <li class="">
+                                <h3>Profile</h3>
+                            </li>
+                        </ul>
+                    </nav>
+                </div><!-- .content-wrapper -->
+            </div><!-- .sidebar-content -->
+        </div><!-- .sidebar-area -->
+        <div class="main-area">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+                    @Umbraco.RenderMacro("MembersPublicProfile")
+                </div><!-- .content-wrapper -->
+            </div><!-- .main-content -->
+        </div><!-- .main-area -->
+    </div><!-- .page-content -->
+</div>

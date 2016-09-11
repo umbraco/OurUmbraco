@@ -4431,6 +4431,7 @@
     <Content Include="Views\Profilepage.cshtml" />
     <Content Include="Views\ProjectPage.cshtml" />
     <Content Include="Views\ReleaseDownload.cshtml" />
+    <Content Include="Views\PublicMemberProfile.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
