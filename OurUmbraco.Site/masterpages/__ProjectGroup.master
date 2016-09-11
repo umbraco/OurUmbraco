@@ -1,0 +1,5 @@
+﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
+
+<asp:Content ContentPlaceHolderId="Main" runat="server">
+<umbraco:Macro Alias="RedirectProjectCategory" runat="server"></umbraco:Macro>
+</asp:Content>
