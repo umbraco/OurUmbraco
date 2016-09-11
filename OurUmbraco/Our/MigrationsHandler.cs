@@ -36,6 +36,7 @@ namespace OurUmbraco.Our
             UseNewLoginForm();
             UseNewForgotPasswordForm();
             UseNewMyProjectsOverview();
+            UseNewRssFeedsOverview();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -655,6 +656,91 @@ namespace OurUmbraco.Our
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Projects/MyProjects.cshtml";
                 macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewRssFeedsOverview()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var rootContent = contentService.GetRootContent().FirstOrDefault();
+                if (rootContent != null)
+                {
+                    var rssPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "Rss", StringComparison.InvariantCultureIgnoreCase));
+                    foreach (var page in rssPage.Children())
+                    {
+                        if (string.Equals(page.Name, "Wiki", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "CommunityBlogs", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "Help", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+
+                        if (string.Equals(page.Name, "Forum", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSForum");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "ActiveTopics", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RssLatestTopics");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "Projects", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSPackages");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "Karma", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "YourTopics", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSParticipated");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "ProjectsUpdate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RssPackages");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+                    }
+                    
+                    var htmlPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "html", StringComparison.InvariantCultureIgnoreCase));
+                    foreach (var page in htmlPage.Children())
+                    {
+                        if (string.Equals(page.Name, "GithubPullTrigger", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "Documentation-GithubSync");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+                        else
+                        {
+                            contentService.UnPublish(page);
+                        }
+                    }
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
