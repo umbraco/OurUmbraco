@@ -532,10 +532,10 @@
     <Content Include="masterpages\__Release.master" />
     <Content Include="masterpages\ReleaseLanding-bak.master" />
     <Content Include="masterpages\__ReleaseLanding.master" />
-    <Content Include="masterpages\Repository.master" />
-    <Content Include="masterpages\RepositoryFrontpage.master" />
-    <Content Include="masterpages\RepositoryMaster.master" />
-    <Content Include="masterpages\repositoryPage.master" />
+    <Content Include="masterpages\__Repository.master" />
+    <Content Include="masterpages\__RepositoryFrontpage.master" />
+    <Content Include="masterpages\__RepositoryMaster.master" />
+    <Content Include="masterpages\__repositoryPage.master" />
     <Content Include="masterpages\Repository\blank.master" />
     <Content Include="masterpages\Repository\Community.master" />
     <Content Include="masterpages\Repository\Deli.master" />
@@ -1767,6 +1767,7 @@
     <Content Include="Views\EditProject.cshtml" />
     <Content Include="Views\FileDownload.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
+    <None Include="Views\RepositoryMaster.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4433,6 +4434,10 @@
     <Content Include="Views\ProjectPage.cshtml" />
     <Content Include="Views\ReleaseDownload.cshtml" />
     <Content Include="Views\PublicMemberProfile.cshtml" />
+    <Content Include="Views\ReleaseCompare.cshtml" />
+    <Content Include="Views\Repository.cshtml" />
+    <Content Include="Views\RepositoryFrontpage.cshtml" />
+    <Content Include="Views\RepositoryPage.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

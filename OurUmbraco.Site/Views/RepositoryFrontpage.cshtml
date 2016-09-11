@@ -1,0 +1,9 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/RepositoryMaster.cshtml";
+}
+@Umbraco.RenderMacro("Repository-PopularPackages")
+<div id="repoForm">
+    <h3>Log in using your our.umbraco.org credentials</h3>
+    @Umbraco.RenderMacro("MemberLogin", new { NextPage = "30186", ErrorMessage = "Unknown Login" })
+</div>

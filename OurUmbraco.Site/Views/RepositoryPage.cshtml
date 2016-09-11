@@ -1,0 +1,18 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/RepositoryMaster.cshtml";
+}
+@section head
+{
+    <link rel="stylesheet" type="text/css" href="/css/shadowbox.css" />
+    <script type="text/javascript" src="/scripts/shadowbox/shadowbox.js"></script>
+
+    <script type="text/javascript">
+        Shadowbox.init({ overlayColor: '#000000', overlayOpacity: '0.7', onFinish: addClickClose });
+
+        function addClickClose() {
+            $('#sb-content').unbind('click').click(function () { Shadowbox.close(); });
+        }
+    </script>
+}
+@Umbraco.Field("bodyText")
