@@ -17,10 +17,14 @@ IF NOT EXIST %nodeExtractFolder% (
 FOR /f "delims=" %%A in ('dir %nodeExtractFolder%\node* /b') DO SET "nodePath=%nodeExtractFolder%\%%A"
 
 SET nuGetFolder=%CD%\..\packages\
-ECHO Configured packages folder: %nuGetFolder%
-ECHO Installing Npm NuGet Package
-%CD%\..\.nuget\NuGet.exe install Npm.js -OutputDirectory %nuGetFolder%  -Verbosity quiet
 FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') DO SET "npmPath=%nuGetFolder%%%A\tools\"
+IF %npmPath% == [] (
+	ECHO Downloading npm
+	ECHO Configured packages folder: %nuGetFolder%	
+	ECHO Installing Npm NuGet Package
+	%CD%\..\.nuget\NuGet.exe install Npm.js -OutputDirectory %nuGetFolder%  -Verbosity quiet
+	FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') DO SET "npmPath=%nuGetFolder%%%A\tools\"
+)
 
 REM Ensures that we look for the just downloaded NPM, not whatever the user has installed on their machine
 PATH=%npmPath%;%nodePath%
