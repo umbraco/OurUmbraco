@@ -725,6 +725,12 @@ namespace OurUmbraco.Our
                             page.SetValue("macro", "RssPackages");
                             contentService.SaveAndPublishWithStatus(page);
                         }
+
+                        if (string.Equals(page.Name, "Topic", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSTopic");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
                     }
                     
                     var htmlPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "html", StringComparison.InvariantCultureIgnoreCase));
