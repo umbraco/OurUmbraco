@@ -1693,7 +1693,6 @@
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
-    <None Include="Views\Download.cshtml" />
     <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
     <Content Include="Views\MacroPartials\Members\QuickMenu.cshtml" />
@@ -1762,19 +1761,19 @@
     <Content Include="Views\Master.cshtml" />
     <Content Include="Views\Community.cshtml" />
     <Content Include="Views\Forum.cshtml" />
-    <None Include="Views\DocumentationSubpage.cshtml" />
     <Content Include="Views\MacroPartials\Members\Login.cshtml" />
     <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Partials\Projects\MyProjects.cshtml" />
     <Content Include="Views\MacroPartials\Projects\MyProjects.cshtml" />
     <Content Include="Views\EditProject.cshtml" />
     <Content Include="Views\FileDownload.cshtml" />
+    <Content Include="Views\DocumentationSubpage.cshtml" />
+    <Content Include="Views\Download.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Partials\Project\EditFiles.cshtml" />
     <Content Include="Views\Partials\Project\PackageEditNavigation.cshtml" />
     <Content Include="Views\Partials\Project\EditScreenshots.cshtml" />
     <Content Include="Views\Partials\Project\Complete.cshtml" />
-    <None Include="Views\RepositoryMaster.cshtml" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4445,6 +4444,7 @@
     <Content Include="Views\Repository.cshtml" />
     <Content Include="Views\RepositoryFrontpage.cshtml" />
     <Content Include="Views\RepositoryPage.cshtml" />
+    <Content Include="Views\RepositoryMaster.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
