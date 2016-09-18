@@ -18,28 +18,32 @@ FOR /f "delims=" %%A in ('dir %nodeExtractFolder%\node* /b') DO SET "nodePath=%n
 
 SET nuGetFolder=%CD%\..\packages\
 FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') DO SET "npmPath=%nuGetFolder%%%A\tools\"
-IF %npmPath% == [] (
+IF [%npmPath%] == [] GOTO :installnpm 
+IF NOT [%npmPath%] == [] GOTO :build
+
+:installnpm
 	ECHO Downloading npm
 	ECHO Configured packages folder: %nuGetFolder%	
 	ECHO Installing Npm NuGet Package
 	%CD%\..\.nuget\NuGet.exe install Npm.js -OutputDirectory %nuGetFolder%  -Verbosity quiet
+	REM Ensures that we look for the just downloaded NPM, not whatever the user has installed on their machine
 	FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') DO SET "npmPath=%nuGetFolder%%%A\tools\"
-)
+	GOTO :build
 
-REM Ensures that we look for the just downloaded NPM, not whatever the user has installed on their machine
-PATH=%npmPath%;%nodePath%
+:build
+	PATH=%npmPath%;%nodePath%
+	SET buildFolder=%CD%
 
-SET buildFolder=%CD%
+	ECHO Change directory to %CD%\..\OurUmbraco.Client\
+	CD %CD%\..\OurUmbraco.Client\
 
-ECHO Change directory to %CD%\..\OurUmbraco.Client\
-CD %CD%\..\OurUmbraco.Client\
+	ECHO Do npm install and the gulp build
+	SET npm="%nodePath%\node.exe" "%npmPath%node_modules\npm\bin\npm-cli.js" %*
+	%npm% cache clean
+	%npm% install
+	%npm% install -g install gulp -g
+	gulp
 
-ECHO Do npm install and the gulp build
-SET npm="%nodePath%\node.exe" "%npmPath%node_modules\npm\bin\npm-cli.js" %*
-%npm% cache clean
-%npm% install
-%npm% install -g install gulp -g --quiet
-gulp
-
-ECHO Move back to the build folder
-CD %buildFolder% 
+	ECHO Move back to the build folder
+	CD %buildFolder% 
+	GOTO :EOF
