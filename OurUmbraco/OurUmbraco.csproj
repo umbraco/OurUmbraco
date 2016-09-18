@@ -622,12 +622,12 @@
     <Compile Include="Project\usercontrols\Deli\Package\Steps\Screenshots.ascx.designer.cs">
       <DependentUpon>Screenshots.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Project\usercontrols\Deli\Profile\MyProjects.ascx.cs">
-      <DependentUpon>MyProjects.ascx</DependentUpon>
+    <Compile Include="Project\usercontrols\Deli\Profile\__MyProjects.ascx.cs">
+      <DependentUpon>__MyProjects.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Project\usercontrols\Deli\Profile\MyProjects.ascx.designer.cs">
-      <DependentUpon>MyProjects.ascx.cs</DependentUpon>
+    <Compile Include="Project\usercontrols\Deli\Profile\__MyProjects.ascx.designer.cs">
+      <DependentUpon>__MyProjects.ascx.cs</DependentUpon>
     </Compile>
     <Compile Include="Project\uVersion\UVersionConfig.cs" />
     <Compile Include="Project\uVersion\uVersion.cs" />
@@ -749,7 +749,7 @@
     <Content Include="Project\usercontrols\Deli\Package\Steps\Screenshots.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
-    <Content Include="Project\usercontrols\Deli\Profile\MyProjects.ascx">
+    <Content Include="Project\usercontrols\Deli\Profile\__MyProjects.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Repository\webservices\repository.asmx" />
