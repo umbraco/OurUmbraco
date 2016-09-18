@@ -1,0 +1,6 @@
+{
+	"$schema": "/App_Plugins/manifestSchema.json",
+	"javascript": [
+		"/App_Plugins/OurManagement/ourmanagement.controller.js"
+	]
+}

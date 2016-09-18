@@ -352,6 +352,8 @@
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
+    <Content Include="App_Plugins\OurManagement\ourmanagement.controller.js" />
+    <Content Include="App_Plugins\OurManagement\ourmanagement.html" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
     <Content Include="Assets\css\style.min.css" />
     <Content Include="Assets\images\app-icons\acme-tile-large.png" />
@@ -672,6 +674,7 @@
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="masterpages\__Search.master" />
+    <None Include="App_Plugins\OurManagement\package.manifest" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.4.1-vsdoc.js" />
     <Content Include="scripts\jquery-1.4.1.js" />
