@@ -1,9 +1,0 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
-
-<asp:content ContentPlaceHolderId="Main" runat="server">
-    <div class="has-sidebar">
-        <div class="documentation">
-		    <asp:contentplaceholder id="main" runat="server" />
-	    </div>
-    </div>	
-</asp:content>

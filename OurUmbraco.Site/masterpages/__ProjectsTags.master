@@ -1,5 +1,0 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Deli.master" AutoEventWireup="true" %>
-  
-<asp:Content ContentPlaceHolderId="TitleArea" runat="server">
-    
-</asp:Content>

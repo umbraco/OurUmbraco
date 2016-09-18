@@ -1,8 +1,0 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/WikiPage.master" AutoEventWireup="true" %>
-  
-  
-
-<asp:Content ContentPlaceHolderId="Content" runat="server">
-<umbraco:Macro Alias="Wiki-RelatedContent" keywords="[#keywords]" runat="server"></umbraco:Macro>  
-</asp:Content>
-  
