@@ -1,7 +1,11 @@
 button.button, .button, a.button {
 	background: $color-blue;
-	padding: 14px 40px;
-	display: inline-block;
+	padding: 0 40px;
+	height: 44px;
+
+	display: inline-flex;
+	align-items: center;
+
 	text-decoration: none;
 	border: none;
 	border-radius: 36px;
@@ -11,8 +15,7 @@ button.button, .button, a.button {
 
 	color: #fff;
 	text-align: center;
-	font-size: 1rem;
-	line-height: 1;
+	font-size: 14px;
 
 	margin: 0;
 
@@ -103,7 +106,7 @@ button.button, .button, a.button {
 
 
 	&.large {
-		font-size: 1.2rem;
+		font-size: 1.175rem;
 	}
 
 
