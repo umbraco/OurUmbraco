@@ -1,39 +1,29 @@
-.download {
+.download.latest .dot {
+	margin-top: 2rem;
+}
 
-
-	.dot.progress {
+.download .dot.progress {
 	text-indent: .3rem;
 	text-align: center;
 	line-height: 2.8rem;
-
-
-		.counter {
-			font-size: 1.1rem;;
-		}
-	}
-
-
-	&.latest {
-
-
-		.dot {
-			margin-top: 2rem;
-		}
-	}
 }
 
+.download .dot.progress .counter {
+	font-size: 1.1rem;
+}
 
 
 .explain {
+	flex-direction: column;
 
-
-	.changes {
-		small {
-			line-height: .5rem;
-		}
+	@media (min-width: 768px) {
+		flex-direction: row;
 	}
 }
 
+.explain .changes small {
+	line-height: .5rem;
+}
 
 
 .chart {
@@ -41,119 +31,111 @@
 	top: -4px;
 	left: -8px;
 	z-index: 1;
-
-
-	.percentage {
-		display: inline-block;
-		position: absolute;
-		top: 9px;
-		left: 16px;
-		font-size: 1.1rem;
-        color: darken($color-our, 30%);
-	}
-
-
-	canvas {
-		top: 1px;
-		position: absolute;
-		left: 5px;
-	}
-
 }
 
+.chart .percentage {
+	display: inline-block;
+	position: absolute;
+	top: 9px;
+	left: 16px;
+	font-size: 1.1rem;
+	color: darken($color-our, 30%);
+}
 
+.chart canvas {
+	top: 1px;
+	position: absolute;
+	left: 5px;
+}
 
-.get-release {
-
-
-	i {
-		font-size: 2.5rem;
-		line-height: 5rem;
-	}
+.chart {
+	position: absolute;
+	top: -4px;
+	left: -8px;
+	z-index: 1;
 }
 
 
 
 .get-release {
 	line-height: 1.5;
-	padding: 2.5rem 0;
-	margin: 2.5rem 0;
+	padding: 2rem 0;
+	margin: 0 0 2.5rem ;
 	border-bottom: 1px solid darken(whitesmoke, 5%);
-	border-top: 1px solid darken(whitesmoke, 5%);
+}
 
+.get-release i {
+	font-size: 2.5rem;
+	line-height: 5rem;
+}
 
-	h3 {
-		font-size: 1.1rem;
-		margin-bottom: .3rem;
-		color: $color-headline;
+.get-release h3 {
+	font-size: 1.1rem;
+	margin-bottom: .3rem;
+	color: $color-headline;
+}
 
+.get-release h3 a {
+	text-decoration: none;
 
-		a {
-			text-decoration: none;
-
-
-			&:hover {
-				color: $color-our;
-			}
-		}
-	}
-
-
-	p {
-		color: $color-headline;
-		font-size: .95rem;
-		line-height: 1.3;
-		margin-bottom: .5rem;
-	}
-
-
-	small {
-		font-size: .7rem;
-		color: $color-text;
+	&:hover {
+		color: $color-our;
 	}
 }
 
+.get-release p {
+	color: $color-headline;
+	font-size: .95rem;
+	line-height: 1.3;
+	margin-bottom: .5rem;
+}
+
+
+.get-release small {
+	font-size: .8rem;
+	color: rgba($color-text, .6);
+}
 
 
 .release {
 	min-height: 160px;
-	
+
 
 	&.zip {
-	
+
 
 		i {
 			color: $color-headline;
 		}
 	}
 
-	
+
 	&.bin {
-	
+
 
 		i {
 			color: rgba(#000, .4);
 			font-size: 1.6rem;
 		}
 
-	
+
 		h4 {
 			font-size: .9rem;
 			margin-bottom: .3rem;
 			color: $color-headline;
 
-	
+
 			a {
 				text-decoration: none;
 
-	
+
 				&:hover {
 					color: $color-our;
 				}
 			}
 		}
-	
-	
+
+
 		&.col-sm-5 {
 			padding-top: 18px;
 		}
@@ -177,7 +159,7 @@
 
 
 	.explain {
-		
+
 
 		h4 {
 			font-size: 2.5rem;
@@ -199,11 +181,9 @@
 
 
 // Single release page
-.release{
-
+.release {
 
 	.markdown-syntax {
-
 
 		p, li, ul, a {
 			color: $color-headline;
@@ -216,7 +196,7 @@
 		}
 
 
-		a {		
+		a {
 			text-decoration: underline;
 			font-family: $font-family;
 		}
@@ -253,11 +233,11 @@
 		}
 	}
 }
+
+
 .releaseTable {
 
-
 	.col-xs-3 {
-
 
 		&:first-child {
 			.progress {
@@ -281,6 +261,7 @@
 		}
 	}
 }
+
 
 // Progress page
 .inprogress {
@@ -324,11 +305,12 @@
 	}
 }
 
+
 // Roadmap page
 .plannedreleases {
 	.dot.big {
 		text-indent: 0;
-		line-height: 3rem;	
+		line-height: 3rem;
 	}
 	.chart {
 		top: 0px;
@@ -341,4 +323,193 @@
 			position: initial;
 		}
 	}
+}
+
+
+.release-page .explain h2 {
+	margin: 0;
+	font-size: 2em;
+	color: rgba(0,0,0,.8);
+}
+
+.release-page .explain small {
+	margin-bottom: 0;
+}
+
+.release-page .dot {
+	border: none;
+}
+
+.release-page .dot.big {
+	position: relative;
+	text-indent: 0;
+	margin: 0;
+}
+
+.release-page .chart {
+	height: 60px;
+	width: 60px;
+	top: initial;
+	left: initial;
+	text-align: center;
+}
+
+.release-page .chart p {
+	vertical-align: middle;
+	line-height: 3.7rem;
+	display: inline-block;
+}
+
+.release-page .chart canvas {
+	top: 0px;
+	left: 0px;
+}
+
+.statuses ul {
+	list-style-type: none;
+}
+.statuses ul li  {
+	position: relative;
+	margin-bottom: 10px;
+	padding-left: 10px;
+}
+.statuses li:before {
+	position: absolute;
+	top: -4px;
+	left: -25px;
+	font-size: 1.5em;
+}
+
+
+
+
+.release-progress-indicator {
+	flex: 1 1 auto;
+}
+
+.release-progress-action {
+	flex: 1 1 auto;
+
+	margin-top: 30px;
+}
+
+.release-progress-version {
+	margin-left: 15px;
+}
+
+
+
+.release-header {
+	flex: 0 0 100%;
+	padding-bottom: 5px;
+	margin-bottom: 2.5rem;
+
+	border-bottom: 1px solid darken(whitesmoke, 5%);
+}
+
+.release-header h2 {
+	font-size: 1.6rem;
+	font-weight: 700;
+}
+
+
+
+.release-section-group {
+	flex: 1 1 100%;
+	padding: 0;
+
+	@media (min-width: 768px) {
+		flex: 1 1 47%;
+	    padding: 0 3% 0 0;
+	}
+}
+
+.release-section-group:nth-child(even) {
+	flex: 1 1 100%;
+	padding: 0;
+
+	@media (min-width: 768px) {
+		flex: 1 1 47%;
+	    padding: 0 0 0 3%;
+	}
+}
+
+.release-section-action {
+	height: 80px;
+
+	display: flex;
+	justify-content: flex-start;
+	align-items: center;
+
+	box-sizing: border-box;
+}
+
+.release-other-files .release {
+	min-height: auto;
+	margin-bottom: 30px;
+}
+
+.release-other-files .release a {
+	display: inline-block;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.release-other-files .release p {
+	margin-top: 0;
+}
+
+
+.release-section code {
+	overflow: auto;
+
+	background-color: #333;
+	background-clip: padding-box;
+
+	color: #fff;
+	font-size: 12px;
+	line-height: 1.4em;
+	text-align: center;
+	text-decoration: none;
+
+
+	padding: 8px 10px 8px 10px;
+
+	width: auto;
+	border-radius: 5px;
+    border: none;
+}
+
+
+.release-section + .release-section {
+	margin-top: 30px;
+}
+
+.release-section-group + .release-section-group {
+	margin-top: 30px;
+
+	@media (min-width: 768px) {
+		margin-top: 0;
+	}
+}
+
+.release-section h3 {
+	font-size: 1.1rem;
+	font-weight: bold;
+	margin-bottom: 0;
+}
+
+
+.release-other-files {
+	margin-top: 3rem;
+}
+
+.release-other-files h3 {
+	font-size: 1.1rem;
+	margin-bottom: 5px;
+}
+
+.release-other-files small {
+	font-size: .8rem;
+	color: rgba($color-text, .5);
 }
