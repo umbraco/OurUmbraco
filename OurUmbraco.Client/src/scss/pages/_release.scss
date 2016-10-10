@@ -13,6 +13,7 @@
 }
 
 
+
 .explain {
 	flex-direction: column;
 
@@ -24,6 +25,7 @@
 .explain .changes small {
 	line-height: .5rem;
 }
+
 
 
 .chart {
@@ -97,86 +99,25 @@
 }
 
 
-.release {
-	min-height: 160px;
-
-
-	&.zip {
-
-
-		i {
-			color: $color-headline;
-		}
-	}
-
-
-	&.bin {
-
-
-		i {
-			color: rgba(#000, .4);
-			font-size: 1.6rem;
-		}
-
-
-		h4 {
-			font-size: .9rem;
-			margin-bottom: .3rem;
-			color: $color-headline;
-
-
-			a {
-				text-decoration: none;
-
-
-				&:hover {
-					color: $color-our;
-				}
-			}
-		}
-
-
-		&.col-sm-5 {
-			padding-top: 18px;
-		}
-	}
-
-
-	&.col-sm-1 {
-		text-align: center;
-	}
+.latest .dot.big {
+	margin-bottom: 30px;
 }
 
 
-
-
-.latest {
-
-
-	.dot.big {
-		margin-bottom: 30px;
-	}
-
-
-	.explain {
-
-
-		h4 {
-			font-size: 2.5rem;
-		}
-
-
-		p {
-			font-size: 1.1rem;
-			color: $color-text
-;
-		}
-
-		.col-xs-12 {
-			min-height: 0;
-		}
-	}
+.latest .explain h4 {
+	font-size: 2.5rem;
 }
+
+
+.latest .explain p {
+	font-size: 1.1rem;
+	color: $color-text;
+}
+
+.latest .explain .col-xs-12 {
+	min-height: 0;
+}
+
 
 
 
@@ -185,7 +126,7 @@
 
 	.markdown-syntax {
 
-		p, li, ul, a {
+		p, li, ul {
 			color: $color-headline;
 			font-size: .95rem;
 		}
@@ -412,8 +353,6 @@
 	font-weight: 700;
 }
 
-
-
 .release-section-group {
 	flex: 1 1 100%;
 	padding: 0;
@@ -442,21 +381,6 @@
 	align-items: center;
 
 	box-sizing: border-box;
-}
-
-.release-other-files .release {
-	min-height: auto;
-	margin-bottom: 30px;
-}
-
-.release-other-files .release a {
-	display: inline-block;
-	margin-bottom: 10px;
-	margin-top: 10px;
-}
-
-.release-other-files .release p {
-	margin-top: 0;
 }
 
 
@@ -500,6 +424,8 @@
 }
 
 
+
+// Other files
 .release-other-files {
 	margin-top: 3rem;
 }
@@ -512,4 +438,20 @@
 .release-other-files small {
 	font-size: .8rem;
 	color: rgba($color-text, .5);
+}
+
+
+.release-other-files .release {
+	min-height: auto;
+	margin-bottom: 30px;
+}
+
+.release-other-files .release a {
+	display: inline-block;
+	margin-bottom: 10px;
+	margin-top: 10px;
+}
+
+.release-other-files .release p {
+	margin-top: 0;
 }
