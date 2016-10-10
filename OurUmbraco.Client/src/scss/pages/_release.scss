@@ -61,8 +61,8 @@
 
 .get-release {
 	line-height: 1.5;
-	padding: 2rem 0;
-	margin: 0 0 2.5rem ;
+	padding: 3rem 0;
+	margin: 0 0 3.5rem ;
 	border-bottom: 1px solid darken(whitesmoke, 5%);
 }
 
@@ -339,20 +339,6 @@
 }
 
 
-
-.release-header {
-	flex: 0 0 100%;
-	padding-bottom: 5px;
-	margin-bottom: 2.5rem;
-
-	border-bottom: 1px solid darken(whitesmoke, 5%);
-}
-
-.release-header h2 {
-	font-size: 1.6rem;
-	font-weight: 700;
-}
-
 .release-section-group {
 	flex: 1 1 100%;
 	padding: 0;
@@ -417,7 +403,13 @@
 	}
 }
 
-.release-section h3 {
+.release-page h2 {
+	font-size: 1.4rem;
+	font-weight: bold;
+	margin-bottom: 0;
+}
+
+.release-page h3 {
 	font-size: 1.1rem;
 	font-weight: bold;
 	margin-bottom: 0;

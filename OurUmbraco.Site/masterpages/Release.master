@@ -147,10 +147,6 @@
 			                    {
 				                    <div class="get-release">
 
-                                        <div class="release-header">
-                                             <h2>Get it now</h2>
-                                        </div>
-
                                         <div class="release-section flex flex-row flex-wrap">
 
                                             <!-- Download button -->
@@ -166,7 +162,7 @@
                                                             <div class="release-section-action">
                                                                 <a class="button green" href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">Download Umbraco @Model.Name</a>
                                                             </div>
-                                                            <p>This is probably what you're going to need to get started. If you need documentation, please proceed to <strong>"Getting Started"</strong>.</p>
+                                                            <p>This is the main Umbraco download, generally you won't need anything else. You can find documentation under <strong>"Getting Started"</strong>.</p>
     						                                <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
                                                         }
     					                            }
