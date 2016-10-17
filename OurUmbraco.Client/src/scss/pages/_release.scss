@@ -383,13 +383,15 @@
 	text-decoration: none;
 
 
-	padding: 8px 10px 8px 10px;
+	padding: 14px 16px 14px 16px;
 
 	width: auto;
 	border-radius: 5px;
     border: none;
 }
-
+.release-section code a {
+	text-decoration: none;
+}
 
 .release-section + .release-section {
 	margin-top: 30px;

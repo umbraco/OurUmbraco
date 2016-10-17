@@ -162,7 +162,7 @@
                                                             <div class="release-section-action">
                                                                 <a class="button green" href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">Download Umbraco @Model.Name</a>
                                                             </div>
-                                                            <p>This is the main Umbraco download, generally you won't need anything else. You can find documentation under <strong>"Getting Started"</strong>.</p>
+                                                            <p>This is the main Umbraco download, generally you won't need anything else. You can find installation instructions under <strong>"<a href="/documentation/Getting-Started/Setup/Install/install-umbraco-manually">Getting Started</a>"</strong>.</p>
     						                                <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
                                                         }
     					                            }
@@ -171,14 +171,13 @@
                                             <!-- NuGet installation -->
                                             @if(Model.HasNuGet) {
                                                 <div class="release-section-group">
-                                                   <h3>Install by NuGet</h3>
+                                                   <h3>Install using NuGet</h3>
 
                                                    <div class="release-section-action">
-                                                        <code>PM&gt; Install-Package UmbracoCms -Version @Model.Name</code>
+                                                        <code><a href="https://nuget.org/packages/UmbracoCms/@Model.Name">PM&gt; Install-Package UmbracoCms -Version @Model.Name</a></code>
 
                                                    </div>
-                                                   <p>Installs Umbraco Cms in your Visual Studio ASP.NET project. To install Umbraco Cms, run the following command in the Package Manager Console. <a target="_blank" href="https://nuget.org/packages/UmbracoCms/@Model.Name">Read more on nuget.com</a>
-                                                   </p>
+                                                   <p>Installs Umbraco Cms in your Visual Studio ASP.NET project. To install Umbraco Cms, run the above command in the Package Manager Console. <a target="_blank" href="/documentation/Getting-Started/Setup/Install/install-umbraco-with-nuget">Read more on in the documentation</a>.</p>
                                                </div>
                                             }
 
