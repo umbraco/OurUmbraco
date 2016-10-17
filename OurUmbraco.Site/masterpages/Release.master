@@ -160,7 +160,7 @@
     						                                int.TryParse(item.NumberOfDownloads, out numberOfDownloads);
                                                             numberOfDownloads = numberOfDownloads + OurUmbraco.Our.Utils.GetReleaseDownloadCount(item.Id);
                                                             <div class="release-section-action">
-                                                                <a class="button green" href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">Download Umbraco @Model.Name</a>
+                                                                <a class="button green" href="/ReleaseDownload?id=@item.Id" onclick="ga('send', 'event', 'Release', 'Download', '@item.Name');">Download Umbraco @Model.Name</a>
                                                             </div>
                                                             <p>This is the main Umbraco download, generally you won't need anything else. You can find installation instructions under <strong>"<a href="/documentation/Getting-Started/Setup/Install/install-umbraco-manually">Getting Started</a>"</strong>.</p>
     						                                <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
@@ -174,10 +174,10 @@
                                                    <h3>Install using NuGet</h3>
 
                                                    <div class="release-section-action">
-                                                        <code><a href="https://nuget.org/packages/UmbracoCms/@Model.Name">PM&gt; Install-Package UmbracoCms -Version @Model.Name</a></code>
+                                                        <code><a href="https://nuget.org/packages/UmbracoCms/@Model.Name" onclick="ga('send', 'event', 'Release', 'NuGetClick', '@Model.Name');">PM&gt; Install-Package UmbracoCms -Version @Model.Name</a></code>
 
                                                    </div>
-                                                   <p>Installs Umbraco Cms in your Visual Studio ASP.NET project. To install Umbraco Cms, run the above command in the Package Manager Console. <a target="_blank" href="/documentation/Getting-Started/Setup/Install/install-umbraco-with-nuget">Read more on in the documentation</a>.</p>
+                                                   <p>Installs Umbraco Cms in your Visual Studio ASP.NET project. To install Umbraco Cms, run the above command in the Package Manager Console. <a target="_blank" href="/documentation/Getting-Started/Setup/Install/install-umbraco-with-nuget">Read more in the documentation</a>.</p>
                                                </div>
                                             }
 
@@ -325,7 +325,7 @@
     							                if(item.Name.Contains("WebPI") == false)
                                                 {
     					                            <div class="release @(item.IsFirst() == false ? "bin" : "zip")">
-    						                            <div><strong><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></strong></div>
+    						                            <div><strong><a href="/ReleaseDownload?id=@item.Id" onclick="ga('send', 'event', 'Release', 'Download', '@item.Name');">@item.Name</a></strong></div>
                                                         @if(item.IsFirst())
     						                            {
     							                            <p>This is the main Umbraco download, generally you won't need anything else.</p>
@@ -333,7 +333,7 @@
     						                            <small>Downloaded @numberOfDownloads times - uploaded @item.UploadDate.ToString("D")</small>
     					                            </div>
                                                 } else {
-                                                    <div style="display: none;"><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></div>
+                                                    <div style="display: none;"><a href="/ReleaseDownload?id=@item.Id" onclick="ga('send', 'event', 'Release', 'Download', '@item.Name');">@item.Name</a></div>
                                                 }
     					                    }
                                         </div>
