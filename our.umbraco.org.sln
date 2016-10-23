@@ -19,6 +19,27 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{F3A30E
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco", "OurUmbraco\OurUmbraco.csproj", "{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}"
 EndProject
+Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OurUmbraco.Client", "OurUmbraco.Client\", "{1B63C7B3-6FCF-4961-9933-53A591CD16E4}"
+	ProjectSection(WebsiteProperties) = preProject
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		Debug.AspNetCompiler.VirtualPath = "/localhost_59200"
+		Debug.AspNetCompiler.PhysicalPath = "OurUmbraco.Client\"
+		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59200\"
+		Debug.AspNetCompiler.Updateable = "true"
+		Debug.AspNetCompiler.ForceOverwrite = "true"
+		Debug.AspNetCompiler.FixedNames = "false"
+		Debug.AspNetCompiler.Debug = "True"
+		Release.AspNetCompiler.VirtualPath = "/localhost_59200"
+		Release.AspNetCompiler.PhysicalPath = "OurUmbraco.Client\"
+		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59200\"
+		Release.AspNetCompiler.Updateable = "true"
+		Release.AspNetCompiler.ForceOverwrite = "true"
+		Release.AspNetCompiler.FixedNames = "false"
+		Release.AspNetCompiler.Debug = "False"
+		VWDPort = "59200"
+		SlnRelativePath = "OurUmbraco.Client\"
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +72,16 @@ Global
 		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|x86.ActiveCfg = Release|Any CPU
 		{A8E5C936-ECAB-45B3-BFDA-D12F680EB2A6}.Release|x86.Build.0 = Release|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Debug|x86.Build.0 = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|x86.ActiveCfg = Debug|Any CPU
+		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|x86.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

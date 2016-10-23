@@ -24,6 +24,10 @@ SET buildFolder=%CD%
 ECHO Change directory to %CD%\..\OurUmbraco.Client\
 CD %CD%\..\OurUmbraco.Client\
 
+ECHO.
+ECHO Setting node_modules folder to hidden to prevent VS13 from crashing on it while loading the websites project
+attrib +h node_modules
+
 ECHO Do npm install and the gulp build
 call npm cache clean
 call npm install
