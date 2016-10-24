@@ -260,12 +260,12 @@
 			.topic {
 				flex: 0 0 100%;
 
-				margin-bottom: .2rem;
-				word-break: break-all;
+				margin-bottom: 15px;
 
 				@media (min-width: $md) {
-					flex: 0 0 70%;
-					padding-right: 3px;
+					flex: 1 1 70%;
+					padding-right: 10px;
+					margin-bottom: 0;
 				}
 			}
 
@@ -276,7 +276,8 @@
 				flex: 0 0 100%;
 
 				@media (min-width: $md) {
-					flex: 0 0 30%;
+					flex: 1 1 30%;
+					margin-left: auto;
 					flex-direction: column;
 				}
 
@@ -287,7 +288,7 @@
 				margin: 0 .5rem 0 0;
 
 				@media (min-width: $md) {
-					margin: 0 0 .5rem 0;
+					margin: 0 0 .5rem auto;
 				}
 			}
 		}
