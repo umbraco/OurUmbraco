@@ -1,10 +1,10 @@
 button.button, .button, a.button {
 	background: $color-blue;
-	padding: 0 40px;
-	height: 44px;
+	padding: 12px 40px;
 
 	display: inline-flex;
 	align-items: center;
+	justify-content: center;
 
 	text-decoration: none;
 	border: none;
