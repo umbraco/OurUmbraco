@@ -66,11 +66,11 @@
         <div class="versions">
             @if (Model.WorksOnUaaS)
             {
-                <span class="smiley joyous">Works on Umbraco as a Service</span>
+                <span class="smiley joyous">Works on Umbraco Cloud</span>
             }
             else
             {
-                <span class="smiley untested">Untested or doesn't work on Umbraco as a Service</span>
+                <span class="smiley untested">Untested or doesn't work on Umbraco Cloud</span>
             }
             @foreach (var ver in Model.VersionCompatibilities)
             {

@@ -263,7 +263,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "umbracoforms":
                             return 0;
 
-                        //Umbraco as a Service
+                        //Umbraco Cloud
                         case "getting-started":
                             return 0;
                         case "set-up":

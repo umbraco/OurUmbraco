@@ -234,7 +234,7 @@ namespace OurUmbraco.Our
                 if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
                 {
                     var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
-                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Works on Umbraco as a Service?" };
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Works on Umbraco Cloud?" };
                     projectContentType.AddPropertyType(checkboxPropertyType, "Project");
                     contentTypeService.Save(projectContentType);
                 }
