@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Net.Mail;
-using System.Web;
 using System.Web.Hosting;
 using System.Xml;
 using OurUmbraco.Forum.Services;
@@ -25,11 +24,14 @@ namespace OurUmbraco.NotificationsCore.Notifications
             {
                 var notifications = new XmlDocument();
                 notifications.Load(Config.ConfigurationFile);
-                
+
+                var settings = notifications.SelectSingleNode("//global");
+
                 var node = notifications.SelectSingleNode(string.Format("//instant//notification [@name = '{0}']", notificationName));
 
                 var details = new XmlDocument();
                 var cont = details.CreateElement("details");
+                cont.AppendChild(details.ImportNode(settings, true));
                 cont.AppendChild(details.ImportNode(node, true));
 
                 _details = details.AppendChild(cont);
@@ -52,16 +54,16 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 {
                     var memberShipHelper = new MembershipHelper(UmbracoContext.Current);
                     var member = memberShipHelper.GetById(memberId);
-
+                    
                     using (var smtpClient = new SmtpClient())
                     {
                         var fromEmail = _details.SelectSingleNode("//from/email").InnerText;
                         var fromName = _details.SelectSingleNode("//from/name").InnerText;
                         var fromMailAddress = new MailAddress(fromEmail, fromName);
-
+                        
                         var subject = string.Format("{0} - '{1}'", _details.SelectSingleNode("//subject").InnerText, topic.Title);
-                        var body = _details.SelectSingleNode("//body").InnerText;
                         var domain = _details.SelectSingleNode("//domain").InnerText;
+                        var body = _details.SelectSingleNode("//body").InnerText;
                         body = string.Format(body, topic.Title, "https://" + domain + topic.GetUrl());
 
                         if (member.GetPropertyValue<bool>("bugMeNot") == false)
