@@ -34,6 +34,7 @@ namespace OurUmbraco.Our
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
             RenameUaaStoUCloud();
+            AddMarkAsSolutionReminderSent();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -563,5 +564,26 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void AddMarkAsSolutionReminderSent()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                db.Execute("ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0))");
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }

@@ -1,5 +1,8 @@
 using System.Web.Configuration;
+using Hangfire;
+using Hangfire.SqlServer;
 using Microsoft.Owin;
+using OurUmbraco.NotificationsCore.Notifications;
 using OurUmbraco.Our.GoogleOAuth;
 using Owin;
 using Umbraco.Web;
@@ -22,7 +25,19 @@ namespace OurUmbraco.Our.GoogleOAuth
 
             var clientId = WebConfigurationManager.AppSettings["GoogleOAuthClientID"];
             var secret = WebConfigurationManager.AppSettings["GoogleOAuthSecret"];
-            UmbracoGoogleAuthExtensions.ConfigureBackOfficeGoogleAuth(app, clientId, secret);
+            app.ConfigureBackOfficeGoogleAuth(clientId, secret);
+
+            // Configure hangfire
+            var options = new SqlServerStorageOptions { PrepareSchemaIfNecessary = true };
+            var connectionString = Umbraco.Core.ApplicationContext.Current.DatabaseContext.ConnectionString;
+            GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString, options);
+            var dashboardOptions = new DashboardOptions { Authorization = new[] { new UmbracoAuthorizationFilter() } };
+            app.UseHangfireDashboard("/hangfire", dashboardOptions);
+            app.UseHangfireServer();
+
+            // Schedule jobs
+            var scheduler = new ScheduleHangfireJobs();
+            scheduler.MarkAsSolvedReminder();
         }
     }
 }
