@@ -74,21 +74,17 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
                             File.AppendAllText(string.Format("{0}/{1}.txt", HostingEnvironment.MapPath(notificationTestFolder), topic.Id), 
                                 string.Format("To: {0}{3}Subject: {1}{3}Body: {3}{2}", member.GetPropertyValue<string>("Email"), subject, body, Environment.NewLine));
-                            
-                            // No email are sent in testing period! Just create logs for the first few days
 
+                            using (var mailMessage = new MailMessage())
+                            {
+                                mailMessage.Subject = subject;
+                                mailMessage.Body = body;
 
+                                mailMessage.To.Add(member.GetPropertyValue<string>("Email"));
+                                mailMessage.From = fromMailAddress;
 
-                            //using (var mailMessage = new MailMessage())
-                            //{
-                            //    mailMessage.Subject = subject;
-                            //    mailMessage.Body = body;
-
-                            //    mailMessage.To.Add(member.GetPropertyValue<string>("Email"));
-                            //    mailMessage.From = fromMailAddress;
-
-                            //    smtpClient.Send(mailMessage);
-                            //}
+                                smtpClient.Send(mailMessage);
+                            }
                         }
                     }
                 }
