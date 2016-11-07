@@ -34,8 +34,8 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 
                 var notificationMail = new NotificationMail
                 {
-                    FromMail = detailsChild.SelectSingleNode("//from/email").InnerText,
-                    FromName = detailsChild.SelectSingleNode("//from/name").InnerText,
+                    FromMail = detailsChild.SelectSingleNode("//email").InnerText,
+                    FromName = detailsChild.SelectSingleNode("//name").InnerText,
                     Subject = detailsChild.SelectSingleNode("//subject").InnerText,
                     Domain = detailsChild.SelectSingleNode("//domain").InnerText,
                     Body = detailsChild.SelectSingleNode("//body").InnerText
