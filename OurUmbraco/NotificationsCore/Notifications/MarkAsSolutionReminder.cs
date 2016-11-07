@@ -27,7 +27,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
                     
                     using (var smtpClient = new SmtpClient())
                     {
-                        var fromMailAddress = notificationMail.FromMailAddress;
+                        var fromMailAddress = new MailAddress(notificationMail.FromMail, notificationMail.FromName);
                         
                         var subject = string.Format("{0} - '{1}'", notificationMail.Subject, topic.Title);
                         var domain = notificationMail.Domain;

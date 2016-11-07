@@ -8,7 +8,8 @@ namespace OurUmbraco.NotificationsCore.Notifications
 {
     public class NotificationMail
     {
-        public MailAddress FromMailAddress;
+        public string FromName;
+        public string FromMail;
         public string Subject;
         public string Domain;
         public string Body;
@@ -30,12 +31,11 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 cont.AppendChild(details.ImportNode(node, true));
 
                 var detailsChild = details.AppendChild(cont);
-
-                var fromMail = detailsChild.SelectSingleNode("//from/email").InnerText;
-                var fromName = detailsChild.SelectSingleNode("//from/name").InnerText;
+                
                 var notificationMail = new NotificationMail
                 {
-                    FromMailAddress = new MailAddress(fromMail, fromName),
+                    FromMail = detailsChild.SelectSingleNode("//from/email").InnerText,
+                    FromName = detailsChild.SelectSingleNode("//from/name").InnerText,
                     Subject = detailsChild.SelectSingleNode("//subject").InnerText,
                     Domain = detailsChild.SelectSingleNode("//domain").InnerText,
                     Body = detailsChild.SelectSingleNode("//body").InnerText
