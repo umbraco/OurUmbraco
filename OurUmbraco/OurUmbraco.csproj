@@ -403,6 +403,7 @@
     <Compile Include="NotificationsCore\Notifications\AccountApproved.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumComment.cs" />
+    <Compile Include="NotificationsCore\Notifications\NotificationMail.cs" />
     <Compile Include="NotificationsCore\Notifications\ScheduleHangfireJobs.cs" />
     <Compile Include="NotificationsCore\Notifications\MarkAsSolutionReminder.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />
