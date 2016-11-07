@@ -45,6 +45,7 @@ section.forum {
 	.forum-thread {
 		flex: 0 0 100%;
 		display: flex;
+		overflow: hidden;
 
 		@media (min-width: $md) {
 			flex: 1 0 49%;
@@ -77,6 +78,8 @@ section.forum {
 			flex-direction: column;
 			flex: 1 0 75%;
 
+			overflow: hidden;
+
 			padding: 0 10px 0 0;
 
 			@media (min-width: $md) {
@@ -89,6 +92,7 @@ section.forum {
 
 		.category {
 			margin: .5rem 0 0;
+			max-width: 95%;
 
 			span {
 				font-size: .75rem;
@@ -132,14 +136,14 @@ section.forum {
 	padding: 25px;
 	margin-bottom: 30px;
 	border: 1px solid darken(#f6f6f6, 5%);
-	transition: box-shadow .2s;
+	transition: box-shadow .2s ease, border-color .2s ease;
 	text-decoration: none;
 
 	display: flex;
 	align-items: center;
 
 	&:hover {
-		border-color: transparent;
+		border-color: white;
 		@include box_shadow(2);
 	}
 
@@ -182,7 +186,6 @@ section.forum {
 		color: #000;
 		line-height: 1.3;
 		font-size: 1rem;
-		word-break: break-all;
 
 		@media (min-width: $md) {
 			font-size: 1.1rem;

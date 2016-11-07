@@ -37,6 +37,10 @@ namespace OurUmbraco.Our
             UseNewForgotPasswordForm();
             UseNewMyProjectsOverview();
             UseNewRssFeedsOverview();
+            RenameUaaStoUCloud();
+            AddMarkAsSolutionReminderSent();
+            RenameUaaStoUCloud();
+            AddMarkAsSolutionReminderSent();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -747,6 +751,64 @@ namespace OurUmbraco.Our
                         }
                     }
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+        private void RenameUaaStoUCloud()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var rootContent = contentService.GetRootContent().FirstOrDefault();
+                if (rootContent != null)
+                {
+                    var forumContent = rootContent.Children().FirstOrDefault(x => x.Name == "Forum");
+                    if (forumContent != null)
+                    {
+                        var uaasForumContent = forumContent.Children().FirstOrDefault(x => x.Name.ToLowerInvariant() == "Umbraco as a Service".ToLowerInvariant());
+                        if (uaasForumContent != null)
+                        {
+                            uaasForumContent.Name = "Umbraco Cloud";
+                            uaasForumContent.SetValue("forumDescription", "Discussions about Umbraco Cloud.");
+                            var status = contentService.SaveAndPublishWithStatus(uaasForumContent);
+                            status = contentService.SaveAndPublishWithStatus(uaasForumContent);
+                        }
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddMarkAsSolutionReminderSent()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                db.Execute("ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0))");
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);

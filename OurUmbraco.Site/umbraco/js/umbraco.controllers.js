@@ -5322,7 +5322,40 @@ function startUpVideosDashboardController($scope, xmlhelper, $log, $http) {
         });
     };
 }
+
 angular.module("umbraco").controller("Umbraco.Dashboard.StartupVideosController", startUpVideosDashboardController);
+
+
+function startUpDynamicContentController(dashboardResource, assetsService) {
+    var vm = this;
+    vm.loading = true;
+    vm.showDefault = false;
+    
+    //proxy remote css through the local server
+    assetsService.loadCss( dashboardResource.getRemoteDashboardCssUrl("content") );
+    dashboardResource.getRemoteDashboardContent("content").then(
+        function (data) {
+
+            vm.loading = false;
+
+            //test if we have received valid data
+            //we capture it like this, so we avoid UI errors - which automatically triggers ui based on http response code
+            if (data && data.sections) {
+                vm.dashboard = data;
+            } else{
+                vm.showDefault = true;
+            }
+
+        },
+
+        function (exception) {
+            console.error(exception);
+            vm.loading = false;
+            vm.showDefault = true;
+        });
+}
+
+angular.module("umbraco").controller("Umbraco.Dashboard.StartUpDynamicContentController", startUpDynamicContentController);
 
 
 function FormsController($scope, $route, $cookieStore, packageResource, localizationService) {
@@ -5500,27 +5533,43 @@ function startupLatestEditsController($scope) {
 }
 angular.module("umbraco").controller("Umbraco.Dashboard.StartupLatestEditsController", startupLatestEditsController);
 
-function MediaFolderBrowserDashboardController($rootScope, $scope, contentTypeResource) {
+function MediaFolderBrowserDashboardController($rootScope, $scope, $location, contentTypeResource, userService) {
 
-    //get the system media listview
-    contentTypeResource.getPropertyTypeScaffold(-96)
-        .then(function(dt) {
+    var currentUser = {};
 
-            $scope.fakeProperty = {
-                alias: "contents",
-                config: dt.config,
-                description: "",
-                editor: dt.editor,
-                hideLabel: true,
-                id: 1,
-                label: "Contents:",
-                validation: {
-                    mandatory: false,
-                    pattern: null
-                },
-                value: "",
-                view: dt.view
-            };
+    userService.getCurrentUser().then(function (user) {
+
+        currentUser = user;
+
+        // check if the user start node is the dashboard
+        if(currentUser.startMediaId === -1) {
+
+            //get the system media listview
+            contentTypeResource.getPropertyTypeScaffold(-96)
+                .then(function(dt) {
+
+                    $scope.fakeProperty = {
+                        alias: "contents",
+                        config: dt.config,
+                        description: "",
+                        editor: dt.editor,
+                        hideLabel: true,
+                        id: 1,
+                        label: "Contents:",
+                        validation: {
+                            mandatory: false,
+                            pattern: null
+                        },
+                        value: "",
+                        view: dt.view
+                    };
+
+            });
+
+        } else {
+            // redirect to start node
+            $location.path("/media/media/edit/" + currentUser.startMediaId);
+        }
 
     });
 
@@ -11112,7 +11161,7 @@ angular.module("umbraco")
     		};
 
     		$scope.scaleDown = function(section){
-    		   var remove = (section.grid > 1) ? 1 : section.grid;
+    		   var remove = (section.grid > 1) ? 1 : 0;
     		   section.grid = section.grid-remove;
     		};
 
@@ -11145,9 +11194,12 @@ angular.module("umbraco")
     		    $scope.currentSection = section;
     		};
 
-
-    		$scope.deleteSection = function(index){
-    		    $scope.currentTemplate.sections.splice(index, 1);
+    		$scope.deleteSection = function(section, template) {
+    			if ($scope.currentSection === section) {
+    				$scope.currentSection = undefined;
+    			}
+    			var index = template.sections.indexOf(section)
+    			template.sections.splice(index, 1);
     		};
     		
     		$scope.closeSection = function(){
@@ -11182,7 +11234,7 @@ function RowConfigController($scope) {
     };
 
     $scope.scaleDown = function(section) {
-        var remove = (section.grid > 1) ? 1 : section.grid;
+        var remove = (section.grid > 1) ? 1 : 0;
         section.grid = section.grid - remove;
     };
 
@@ -11226,9 +11278,14 @@ function RowConfigController($scope) {
         }
     };
 
-    $scope.deleteArea = function(index) {
-        $scope.currentRow.areas.splice(index, 1);
+    $scope.deleteArea = function (cell, row) {
+    	if ($scope.currentCell === cell) {
+    		$scope.currentCell = undefined;
+    	}
+    	var index = row.areas.indexOf(cell)
+    	row.areas.splice(index, 1);
     };
+
     $scope.closeArea = function() {
         $scope.currentCell = undefined;
     };
@@ -11852,6 +11909,37 @@ angular.module("umbraco")
             }
         };
 
+        var shouldApply = function(item, itemType, gridItem) {
+            if (item.applyTo === undefined || item.applyTo === null || item.applyTo === "") {
+                return true;
+            }
+
+            if (typeof (item.applyTo) === "string") {
+                return item.applyTo === itemType;
+            }
+
+            if (itemType === "row") {
+                if (item.applyTo.row === undefined) {
+                    return false;
+                }
+                if (item.applyTo.row === null || item.applyTo.row === "") {
+                    return true;
+                }
+                var rows = item.applyTo.row.split(',');
+                return _.indexOf(rows, gridItem.name) !== -1;
+            } else if (itemType === "cell") {
+                if (item.applyTo.cell === undefined) {
+                    return false;
+                }
+                if (item.applyTo.cell === null || item.applyTo.cell === "") {
+                    return true;
+                }
+                var cells = item.applyTo.cell.split(',');
+                var cellSize = gridItem.grid.toString();
+                return _.indexOf(cells, cellSize) !== -1;
+            }
+        }
+
         $scope.editGridItemSettings = function (gridItem, itemType) {
 
             placeHolder = "{0}";
@@ -11861,8 +11949,8 @@ angular.module("umbraco")
                 styles = null;
                 config = angular.copy(gridItem.editor.config.settings);
             } else {
-                styles = _.filter(angular.copy($scope.model.config.items.styles), function (item) { return (item.applyTo === undefined || item.applyTo === itemType); });
-                config = _.filter(angular.copy($scope.model.config.items.config), function (item) { return (item.applyTo === undefined || item.applyTo === itemType); });
+                styles = _.filter(angular.copy($scope.model.config.items.styles), function (item) { return shouldApply(item, itemType, gridItem); });
+                config = _.filter(angular.copy($scope.model.config.items.config), function (item) { return shouldApply(item, itemType, gridItem); });
             }
 
             if(angular.isObject(gridItem.config)){
@@ -12437,6 +12525,7 @@ angular.module("umbraco")
 
             layouts:[
                 {
+                    label: "Headline",
                     name: "Headline",
                     areas: [
                         {
@@ -12446,6 +12535,7 @@ angular.module("umbraco")
                     ]
                 },
                 {
+                    label: "Article",
                     name: "Article",
                     areas: [
                         {
@@ -12809,7 +12899,7 @@ angular.module('umbraco')
             //NOTE: The 'entity' can be either a normal media entity or an "entity" returned from the entityResource
             // they contain different data structures so if we need to query against it we need to be aware of this.
             mediaHelper.registerFileResolver("Umbraco.ImageCropper", function (property, entity, thumbnail) {
-                if (property.value.src) {
+                if (property.value && property.value.src) {
 
                     if (thumbnail === true) {
                         return property.value.src + "?width=500&mode=max&animationprocessmode=first";

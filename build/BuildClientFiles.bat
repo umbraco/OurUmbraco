@@ -37,6 +37,11 @@ IF NOT [%npmPath%] == [] GOTO :build
 	ECHO Change directory to %CD%\..\OurUmbraco.Client\
 	CD %CD%\..\OurUmbraco.Client\
 
+
+	ECHO.
+	ECHO Setting node_modules folder to hidden to prevent VS13 from crashing on it while loading the websites project
+	attrib +h node_modules
+
 	ECHO Do npm install and the gulp build
 	SET npm="%nodePath%\node.exe" "%npmPath%node_modules\npm\bin\npm-cli.js" %*
 	%npm% cache clean

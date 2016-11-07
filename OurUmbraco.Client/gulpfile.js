@@ -1,4 +1,4 @@
-var gulp         = require('gulp'), 
+var gulp         = require('gulp'),
     gutil        = require('gulp-util'),
     sass         = require('gulp-sass'),
     jshint       = require('gulp-jshint'),
@@ -57,7 +57,7 @@ gulp.task('css', function () {
         .pipe(sass())
 		.on('error', gutil.log)
 		.pipe(autoprefixer('last 1 version', 'ie 9', 'ios 7'))
-		.pipe(cmq({log: true}))
+		// .pipe(cmq({log: true}))
 		.pipe(rename({suffix: '.min'}))
 		.pipe(minifyCss())
         .pipe(gulp.dest(settings.build + '/assets/css'))

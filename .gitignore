@@ -63,4 +63,5 @@ OurUmbraco.Site/[Aa]ssets/js/app.min.js
 OurUmbraco.Site/App_Data/migrations/*.txt
 OurUmbraco.Site/apidocs/
 OurUmbraco.Site/App_Data/Documentation/
+OurUmbraco.Site/App_Data/NotificationTest/
 build/tools/node*
