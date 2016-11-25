@@ -11,6 +11,7 @@ using MarkdownSharp;
 using OurUmbraco.Forum.AntiSpam;
 using OurUmbraco.Forum.Library;
 using OurUmbraco.Forum.Models;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -143,14 +144,14 @@ namespace OurUmbraco.Forum.Extensions
 
         public static bool DetectSpam(this Comment comment)
         {
-            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(comment.MemberId);
+            var member = ApplicationContext.Current.Services.MemberService.GetById(comment.MemberId);
             comment.IsSpam = SpamChecker.IsSpam(member, comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
-            var member = UmbracoContext.Current.Application.Services.MemberService.GetById(topic.MemberId);
+            var member = ApplicationContext.Current.Services.MemberService.GetById(topic.MemberId);
             topic.IsSpam = SpamChecker.IsSpam(member, string.Format("{0} {1}", topic.Title, topic.Body));
             return topic.IsSpam;
         }

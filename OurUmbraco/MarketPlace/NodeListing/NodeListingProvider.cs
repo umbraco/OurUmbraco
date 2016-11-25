@@ -9,6 +9,7 @@ using OurUmbraco.Our;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -134,7 +135,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <param name="listingItem"></param>
         public void SaveOrUpdate(IListingItem listingItem)
         {
-            var contentService = UmbracoContext.Current.Application.Services.ContentService;
+            var contentService = ApplicationContext.Current.Services.ContentService;
             //check if this is a new listing or an existing one.
             var isUpdate = listingItem.Id != 0;
             var content = (isUpdate)
@@ -261,7 +262,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var contribProjects = new List<IPublishedContent>();
             const string sql = @"SELECT * FROM projectContributors WHERE memberId=@memberId";
-            var contribPackageIds = UmbracoContext.Current.Application.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
+            var contribPackageIds = ApplicationContext.Current.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
 
             foreach (var contribPackageId in contribPackageIds)
             {

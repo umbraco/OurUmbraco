@@ -32,7 +32,7 @@ namespace OurUmbraco.NotificationsWeb.EventHandlers
 
         void ForumService_Created(object sender, ForumEventArgs e)
         {
-            var content = Umbraco.Web.UmbracoContext.Current.Application.Services.ContentService.GetById(e.Forum.ParentId);
+            var content = ApplicationContext.Current.Services.ContentService.GetById(e.Forum.ParentId);
             if (content.ContentType.Alias == "Project")
             {
                 var owner = content.GetValue<int>("owner");

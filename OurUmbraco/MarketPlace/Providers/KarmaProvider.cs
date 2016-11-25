@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using OurUmbraco.MarketPlace.Interfaces;
 using umbraco.BusinessLogic;
-using Umbraco.Web;
+using Umbraco.Core;
 
 namespace OurUmbraco.MarketPlace.Providers
 {
@@ -10,7 +10,7 @@ namespace OurUmbraco.MarketPlace.Providers
     {
         public int GetProjectKarma(int projectId)
         {
-            var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+            var db = ApplicationContext.Current.DatabaseContext.Database;
             var result =  db.ExecuteScalar<int>("SELECT SUM(points) karma FROM powersProject WHERE id = @projectId", new { projectId = projectId });
             return result;
         }

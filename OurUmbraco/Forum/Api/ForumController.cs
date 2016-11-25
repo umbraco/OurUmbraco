@@ -483,7 +483,7 @@ namespace OurUmbraco.Forum.Api
 
             if (memberId != 0)
             {
-                var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
+                var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
 
                 if (member != null)
                 {
@@ -502,7 +502,7 @@ namespace OurUmbraco.Forum.Api
 
             if (memberId != 0)
             {
-                var member = global::Umbraco.Web.UmbracoContext.Current.Application.Services.MemberService.GetById(memberId);
+                var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
 
                 if (member != null)
                 {

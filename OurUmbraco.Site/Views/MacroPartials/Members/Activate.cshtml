@@ -4,7 +4,7 @@
 
     if (string.IsNullOrWhiteSpace(memberGuid) == false)
     {
-        var memberService = UmbracoContext.Current.Application.Services.MemberService;
+        var memberService = ApplicationContext.Current.Services.MemberService;
         var member = memberService.GetByKey(new Guid(memberGuid));
 
         if (member == null)

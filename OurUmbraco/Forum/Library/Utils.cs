@@ -11,6 +11,7 @@ using System.Web.Security;
 using RestSharp;
 using RestSharp.Deserializers;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -183,7 +184,7 @@ namespace OurUmbraco.Forum.Library
 
                 if (spammer != null && spammer.TotalScore > PotentialSpammerThreshold)
                 {
-                    var memberService = UmbracoContext.Current.Application.Services.MemberService;
+                    var memberService = ApplicationContext.Current.Services.MemberService;
                     memberService.AssignRole(member.Id, SpamMemberGroupName);
 
                     spammer.MemberId = member.Id;
