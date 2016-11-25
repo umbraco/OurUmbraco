@@ -447,13 +447,15 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             using (var sqlHelper = Application.SqlHelper)
             {
-                var reader = sqlHelper.ExecuteReader("Select downloads, nodeId from wikiFiles where id = @id;",
-                    sqlHelper.CreateParameter("@id", fileId));
-                if (reader.Read())
+                using (var reader = sqlHelper.ExecuteReader("Select downloads, nodeId from wikiFiles where id = @id;", sqlHelper.CreateParameter("@id", fileId)))
                 {
-                    downloads = reader.GetInt("downloads");
-                    projectId = reader.GetInt("nodeId");
+                    if (reader.Read())
+                    {
+                        downloads = reader.GetInt("downloads");
+                        projectId = reader.GetInt("nodeId");
+                    }
                 }
+
                 downloads = downloads + 1;
 
                 sqlHelper.ExecuteNonQuery(
