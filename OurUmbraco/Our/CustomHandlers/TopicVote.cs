@@ -4,6 +4,7 @@ using System.Web.Security;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Powers.BusinessLogic;
 using OurUmbraco.Powers.Library;
+using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
 
@@ -61,17 +62,21 @@ namespace OurUmbraco.Our.CustomHandlers
 
         void TopicScoring(object sender, ActionEventArgs e)
         {
-            if (!e.Cancel)
+            if (e.Cancel)
+                return;
+
+            var action = (Action)sender;
+            
+            if (action.Alias != "LikeTopic" && action.Alias != "DisLikeTopic")
+                return;
+
+            var topicScore = Xslt.Score(e.ItemId, action.DataBaseTable);
+            using (var sqlHelper = Application.SqlHelper)
             {
-                Action a = (Action)sender;
-
-                if (a.Alias == "LikeTopic" || a.Alias == "DisLikeTopic")
-                {
-                    int topicScore = Xslt.Score(e.ItemId, a.DataBaseTable);
-
-                    //this uses a non-standard coloumn in the forum schema, so this is added manually..
-                    Data.SqlHelper.ExecuteNonQuery("UPDATE forumTopics SET score = @score WHERE id = @id", Data.SqlHelper.CreateParameter("@id", e.ItemId), Data.SqlHelper.CreateParameter("@score", topicScore));
-                }
+                //this uses a non-standard coloumn in the forum schema, so this is added manually..
+                sqlHelper.ExecuteNonQuery("UPDATE forumTopics SET score = @score WHERE id = @id",
+                    sqlHelper.CreateParameter("@id", e.ItemId),
+                    sqlHelper.CreateParameter("@score", topicScore));
             }
         }
 

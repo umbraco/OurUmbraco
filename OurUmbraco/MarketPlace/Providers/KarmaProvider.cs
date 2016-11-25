@@ -1,7 +1,7 @@
-﻿using System;using System.Collections.Generic;
-using System.Linq;
+﻿using System;
+using System.Collections.Generic;
 using OurUmbraco.MarketPlace.Interfaces;
-using OurUmbraco.Our;
+using umbraco.BusinessLogic;
 using Umbraco.Web;
 
 namespace OurUmbraco.MarketPlace.Providers
@@ -19,7 +19,7 @@ namespace OurUmbraco.MarketPlace.Providers
         {
             var karmaList = new List<IKarma>();
 
-            using (var reader = Data.SqlHelper.ExecuteReader("SELECT id as ProjectId, SUM(points) Points FROM powersProject GROUP BY id ORDER BY SUM(points) DESC"))
+            using (var reader = Application.SqlHelper.ExecuteReader("SELECT id as ProjectId, SUM(points) Points FROM powersProject GROUP BY id ORDER BY SUM(points) DESC"))
             {
                 while (reader.Read())
                 {
@@ -28,6 +28,7 @@ namespace OurUmbraco.MarketPlace.Providers
                         ProjectId = reader.GetInt("ProjectId"),
                         Points = reader.GetInt("Points")
                     };
+
                     karmaList.Add(karma);
                 }
             }

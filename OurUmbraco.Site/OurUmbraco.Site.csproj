@@ -1707,7 +1707,6 @@
     <Content Include="Views\MacroPartials\Navigation\TopNavigation.cshtml" />
     <Content Include="masterpages\ForumMaster.master" />
     <Content Include="masterpages\DocumentationMaster.master" />
-    <Content Include="masterpages\AddMarkdownProp.master" />
     <Content Include="masterpages\ComRepositoryFrontpage.master" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.eot" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
@@ -4282,7 +4281,6 @@
     <Content Include="masterpages\ManageSpam.master" />
     <Content Include="macroScripts\ManageSpam.cshtml" />
     <Content Include="masterpages\ProjectsVersioned.master" />
-    <Content Include="macroScripts\ProjectsVersioned.cshtml" />
     <Content Include="macroScripts\ProjectsVersionList.cshtml" />
     <Content Include="masterpages\ProjectCompatibility.master" />
     <Content Include="macroScripts\EditProjectCompatibility.cshtml" />

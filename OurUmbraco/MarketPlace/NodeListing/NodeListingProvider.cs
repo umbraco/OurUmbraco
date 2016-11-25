@@ -77,7 +77,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             //TODO: could easily cache this for a short period of time
 
             var listingItem = new ListingItem.PublishedContentListingItem(content);
-            
+
             //this section was created to speed up loading operations and cut down on the number of database interactions
             // TODO: N+1+1+1+1, etc...
             if (optimized == false)
@@ -99,8 +99,10 @@ namespace OurUmbraco.MarketPlace.NodeListing
         {
             try
             {
-                return Application.SqlHelper.ExecuteScalar<int>(" select count(*) from projectDownload where projectId = @id;",
-                    Application.SqlHelper.CreateParameter("@id", projectId));
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    return sqlHelper.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @id;", sqlHelper.CreateParameter("@id", projectId));
+                }
             }
             catch
             {
@@ -110,13 +112,12 @@ namespace OurUmbraco.MarketPlace.NodeListing
 
         public int GetProjectKarma(int projectId)
         {
-
-            using (var reader = Application.SqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId",
-                    Application.SqlHelper.CreateParameter("@projectId", projectId)))
+            using (var sqlHelper = Application.SqlHelper)
+            using (var reader = sqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId", sqlHelper.CreateParameter("@projectId", projectId)))
+            {
                 if (reader.Read())
-                {
                     return reader.GetInt("Karma");
-                }
+            }
 
             return 0;
         }

@@ -438,7 +438,6 @@
     <Compile Include="Our\CustomHandlers\ProjectVote.cs" />
     <Compile Include="Our\CustomHandlers\SearchPageRouteHandler.cs" />
     <Compile Include="Our\CustomHandlers\TopicVote.cs" />
-    <Compile Include="Our\Data.cs" />
     <Compile Include="Our\DefaultMemberAvatarHandler.cs" />
     <Compile Include="Our\Examine\DocumentationIndexConfig.cs" />
     <Compile Include="Our\Examine\DocumentationIndexDataService.cs" />

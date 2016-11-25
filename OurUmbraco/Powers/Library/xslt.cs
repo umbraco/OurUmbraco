@@ -1,6 +1,7 @@
 ﻿using System.Xml;
 using System.Xml.XPath;
 using OurUmbraco.Powers.BusinessLogic;
+using umbraco.BusinessLogic;
 
 namespace OurUmbraco.Powers.Library {
     [Umbraco.Core.Macros.XsltExtension("uPowers")]
@@ -46,28 +47,28 @@ namespace OurUmbraco.Powers.Library {
         }
 
         public static int Score(int id, string dataBaseTable) {
-            return BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT SUM(points) AS count FROM " + dataBaseTable + " WHERE (id = @id)",
-                BusinessLogic.Data.SqlHelper.CreateParameter("@id", id)); 
+            return Application.SqlHelper.ExecuteScalar<int>("SELECT SUM(points) AS count FROM " + dataBaseTable + " WHERE (id = @id)",
+                Application.SqlHelper.CreateParameter("@id", id)); 
         }
 
         public static bool HasVoted(int memberId, int id, string dataBaseTable) {
-            return (BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
-                BusinessLogic.Data.SqlHelper.CreateParameter("@id", id), BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
+            return (Application.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
+                Application.SqlHelper.CreateParameter("@id", id), Application.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
         }
         
         public static int YourVote(int memberId, int id, string dataBaseTable) {
-            return BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT sum(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
-                BusinessLogic.Data.SqlHelper.CreateParameter("@id", id), BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId));
+            return Application.SqlHelper.ExecuteScalar<int>("SELECT sum(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
+                Application.SqlHelper.CreateParameter("@id", id), Application.SqlHelper.CreateParameter("@memberId", memberId));
         }
 
 		public static int GetExternalUrlData(int memberId, string url)
 		{
 			// get the Item Id of the Url
-			var id = BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT id FROM externalUrls WHERE (@url = url)", BusinessLogic.Data.SqlHelper.CreateParameter("@url", url));
+			var id = Application.SqlHelper.ExecuteScalar<int>("SELECT id FROM externalUrls WHERE (@url = url)", Application.SqlHelper.CreateParameter("@url", url));
 
 			// doesn't exist ... then create a new entry
 			if (id == 0)
-				id = BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("INSERT INTO externalUrls (memberId, url) VALUES (@memberId, @url); SELECT SCOPE_IDENTITY()", BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId), BusinessLogic.Data.SqlHelper.CreateParameter("@url", url));
+				id = Application.SqlHelper.ExecuteScalar<int>("INSERT INTO externalUrls (memberId, url) VALUES (@memberId, @url); SELECT SCOPE_IDENTITY()", Application.SqlHelper.CreateParameter("@memberId", memberId), Application.SqlHelper.CreateParameter("@url", url));
 
 			return id;
 		}
@@ -82,7 +83,7 @@ namespace OurUmbraco.Powers.Library {
 				return true;
 
 			// check if member has already voted for the Url
-			return (BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM powersExternal WHERE (id = @id) AND (memberId = @memberId)", BusinessLogic.Data.SqlHelper.CreateParameter("@id", itemId), BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
+			return (Application.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM powersExternal WHERE (id = @id) AND (memberId = @memberId)", Application.SqlHelper.CreateParameter("@id", itemId), Application.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
 		}
     }
 }

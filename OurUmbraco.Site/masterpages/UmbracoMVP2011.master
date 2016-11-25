@@ -149,32 +149,32 @@ The five people with most votes from 15 March until 15 April 2011 will become 20
        <p><strong>You need to <a href="http://our.umbraco.org/member/login?redirectUrl=http://our.umbraco.org/UmbracoMVP2011">log in</a> before casting your vote.</strong></p>
        
     <%}else{
-       
 
-       // Umbraco.Forms.Data.Storage.RecordStorage s = new Umbraco.Forms.Data.Storage.RecordStorage();
-       //var all = s.GetAllRecords(new Guid("12c58e28-ca9e-4e05-9849-8ae8ed555109"));
 
-       //var voted = all.Find(r => r.MemberKey.ToString() == umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id.ToString());
-         
-          System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
-           System.Data.SqlClient.SqlCommand comm = new System.Data.SqlClient.SqlCommand(
-               "SELECT 1 FROM UFRecords where form = '12C58E28-CA9E-4E05-9849-8AE8ED555109' and memberkey = @memberkey",
-               conn);
+            // Umbraco.Forms.Data.Storage.RecordStorage s = new Umbraco.Forms.Data.Storage.RecordStorage();
+            //var all = s.GetAllRecords(new Guid("12c58e28-ca9e-4e05-9849-8ae8ed555109"));
+
+            //var voted = all.Find(r => r.MemberKey.ToString() == umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id.ToString());
+
+            System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(System.Configuration.ConfigurationManager.AppSettings["umbracoDbDSN"]);
+            System.Data.SqlClient.SqlCommand comm = new System.Data.SqlClient.SqlCommand(
+                "SELECT 1 FROM UFRecords where form = '12C58E28-CA9E-4E05-9849-8AE8ED555109' and memberkey = @memberkey",
+                conn);
             comm.Parameters.AddWithValue("@memberkey",umbraco.cms.businesslogic.member.Member.GetCurrentMember().Id);
 
             conn.Open();
             bool membervoted = false;
-            System.Data.SqlClient.SqlDataReader rdr = comm.ExecuteReader();
-
-            while (rdr.Read())
+            using (var reader = comm.ExecuteReader())
             {
-                membervoted = true;
+                while (reader.Read())
+                {
+                    membervoted = true;
+                }
+                conn.Close();
             }
-            conn.Close();
-  
-         
-         if (membervoted == false)
-         {
+
+            if (membervoted == false)
+            {
       %> 
       
          
