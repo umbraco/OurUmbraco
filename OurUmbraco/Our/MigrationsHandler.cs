@@ -544,7 +544,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var searchContentType = contentTypeService.GetContentType("search");
                 if (searchContentType == null)
                 {
@@ -563,19 +563,19 @@ namespace OurUmbraco.Our
                     contentTypeService.Save(contentType);
                     
                     searchContentType = contentTypeService.GetContentType("search");
-                    var templateCreateResult = UmbracoContext.Current.Application.Services.FileService.CreateTemplateForContentType("search", "Search");
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("search", "Search");
                     if (templateCreateResult.Success)
                     {
-                        var template = UmbracoContext.Current.Application.Services.FileService.GetTemplate("search");
-                        var masterTemplate = UmbracoContext.Current.Application.Services.FileService.GetTemplate("master");
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate("search");
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
                         template.SetMasterTemplate(masterTemplate);
-                        UmbracoContext.Current.Application.Services.FileService.SaveTemplate(template);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
 
                         searchContentType.AllowedTemplates = new List<ITemplate> { template };
                         searchContentType.SetDefaultTemplate(template);
                         contentTypeService.Save(searchContentType);
 
-                        var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                        var contentService = ApplicationContext.Current.Services.ContentService;
                         var rootContent = contentService.GetRootContent().FirstOrDefault();
                         if (rootContent != null)
                         {
@@ -603,7 +603,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberLogin");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Login.cshtml";
@@ -628,7 +628,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberPasswordReminder");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
@@ -653,7 +653,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var allMacros = macroService.GetAll();
                 //For some reason GetByAlias does not work
                 var macro = allMacros.FirstOrDefault(x => x.Alias == "DeliMyProjects");
@@ -680,7 +680,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootContent = contentService.GetRootContent().FirstOrDefault();
                 if (rootContent != null)
                 {
