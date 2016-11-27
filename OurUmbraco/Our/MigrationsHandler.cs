@@ -60,7 +60,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macroAlias = "MembersActivate";
                 if (macroService.GetByAlias(macroAlias) == null)
                 {
@@ -76,7 +76,7 @@ namespace OurUmbraco.Our
                     macro.Save();
                 }
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
 
                 var memberNode = rootNode.Children().FirstOrDefault(x => x.Name == "Member");
@@ -116,7 +116,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macroAlias = "AntiSpam";
                 if (macroService.GetByAlias(macroAlias) == null)
                 {
@@ -132,7 +132,7 @@ namespace OurUmbraco.Our
                     macro.Save();
                 }
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
 
                 var antiSpamPageName = "AntiSpam";
@@ -162,7 +162,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macroAlias = "CommunityHome";
                 if (macroService.GetByAlias(macroAlias) == null)
                 {
@@ -197,7 +197,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var releaseContentType = contentTypeService.GetContentType("Release");
                 var propertyTypeAlias = "overrideYouTrackDescription";
                 if (releaseContentType.PropertyTypeExists(propertyTypeAlias) == false)
@@ -236,7 +236,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var projectContentType = contentTypeService.GetContentType("Project");
                 var propertyTypeAlias = "worksOnUaaS";
                 if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
@@ -266,7 +266,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var projectContentType = contentTypeService.GetContentType("Forum");
                 var propertyTypeAlias = "archived";
                 if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
@@ -296,7 +296,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var communityContentType = contentTypeService.GetContentType("Community");
                 var propertyTypeAlias = "homeOnlyBanner";
                 if (communityContentType.PropertyTypeExists(propertyTypeAlias) == false)
@@ -327,7 +327,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var userService = UmbracoContext.Current.Application.Services.UserService;
+                var userService = ApplicationContext.Current.Services.UserService;
                 var rootUser = userService.GetUserById(0);
                 if (rootUser == null)
                     return;
@@ -336,7 +336,7 @@ namespace OurUmbraco.Our
                 if (rootUser.Email == "pph@umrbaco.org")
                     return;
 
-                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                var db = ApplicationContext.Current.DatabaseContext.Database;
                 db.Execute("DELETE FROM [umbracoUser] WHERE id != 0");
                 db.Execute("DELETE FROM [umbracoUser2app] WHERE [user] != 0");
                 db.Execute("DBCC CHECKIDENT ('dbo.umbracoUser');");
@@ -369,7 +369,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentTypeService = UmbracoContext.Current.Application.Services.ContentTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var releaseCompareAlias = "ReleaseCompare";
                 var compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
                 if (compareContentType == null)
@@ -399,7 +399,7 @@ namespace OurUmbraco.Our
                     Content = templateContent
                 };
 
-                var fileService = UmbracoContext.Current.Application.Services.FileService;
+                var fileService = ApplicationContext.Current.Services.FileService;
 
                 var masterTemplate = fileService.GetTemplate("Master");
                 releaseCompareTemplate.SetMasterTemplate(masterTemplate);
@@ -412,7 +412,7 @@ namespace OurUmbraco.Our
 
                 contentTypeService.Save(compareContentType);
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
                 if (rootNode == null)
                     return;
@@ -430,7 +430,7 @@ namespace OurUmbraco.Our
                 compareContent.Template = releaseCompareTemplate;
                 contentService.SaveAndPublishWithStatus(compareContent);
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 const string macroAlias = "ReleasesDropdown";
                 if (macroService.GetByAlias(macroAlias) == null)
                 {
@@ -464,7 +464,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootContent = contentService.GetRootContent().FirstOrDefault();
                 if (rootContent != null)
                 {
@@ -496,7 +496,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var macroService = UmbracoContext.Current.Application.Services.MacroService;
+                var macroService = ApplicationContext.Current.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberSignup");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
@@ -521,7 +521,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                var db = ApplicationContext.Current.DatabaseContext.Database;
                 db.Execute("ALTER TABLE [wikiFiles] ADD [minimumVersionStrict] VARCHAR(50)");
 
                 string[] lines = { "" };
@@ -770,7 +770,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var contentService = UmbracoContext.Current.Application.Services.ContentService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootContent = contentService.GetRootContent().FirstOrDefault();
                 if (rootContent != null)
                 {
@@ -807,7 +807,7 @@ namespace OurUmbraco.Our
                 if (File.Exists(path))
                     return;
 
-                var db = UmbracoContext.Current.Application.DatabaseContext.Database;
+                var db = ApplicationContext.Current.DatabaseContext.Database;
                 db.Execute("ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0))");
 
                 string[] lines = { "" };

@@ -9,6 +9,7 @@ using OurUmbraco.Our;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -77,7 +78,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             //TODO: could easily cache this for a short period of time
 
             var listingItem = new ListingItem.PublishedContentListingItem(content);
-            
+
             //this section was created to speed up loading operations and cut down on the number of database interactions
             // TODO: N+1+1+1+1, etc...
             if (optimized == false)
@@ -99,8 +100,10 @@ namespace OurUmbraco.MarketPlace.NodeListing
         {
             try
             {
-                return Application.SqlHelper.ExecuteScalar<int>(" select count(*) from projectDownload where projectId = @id;",
-                    Application.SqlHelper.CreateParameter("@id", projectId));
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    return sqlHelper.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @id;", sqlHelper.CreateParameter("@id", projectId));
+                }
             }
             catch
             {
@@ -110,13 +113,12 @@ namespace OurUmbraco.MarketPlace.NodeListing
 
         public int GetProjectKarma(int projectId)
         {
-
-            using (var reader = Application.SqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId",
-                    Application.SqlHelper.CreateParameter("@projectId", projectId)))
+            using (var sqlHelper = Application.SqlHelper)
+            using (var reader = sqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId", sqlHelper.CreateParameter("@projectId", projectId)))
+            {
                 if (reader.Read())
-                {
                     return reader.GetInt("Karma");
-                }
+            }
 
             return 0;
         }
@@ -133,7 +135,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <param name="listingItem"></param>
         public void SaveOrUpdate(IListingItem listingItem)
         {
-            var contentService = UmbracoContext.Current.Application.Services.ContentService;
+            var contentService = ApplicationContext.Current.Services.ContentService;
             //check if this is a new listing or an existing one.
             var isUpdate = listingItem.Id != 0;
             var content = (isUpdate)
@@ -260,7 +262,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var contribProjects = new List<IPublishedContent>();
             const string sql = @"SELECT * FROM projectContributors WHERE memberId=@memberId";
-            var contribPackageIds = UmbracoContext.Current.Application.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
+            var contribPackageIds = ApplicationContext.Current.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
 
             foreach (var contribPackageId in contribPackageIds)
             {

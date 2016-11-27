@@ -11,7 +11,7 @@ namespace OurUmbraco.Events.Library
     {
         public static bool isSignedUp(int eventId, int memberId)
         {
-            return umbraco.cms.businesslogic.relation.Relation.IsRelated(eventId, memberId); 
+            return umbraco.cms.businesslogic.relation.Relation.IsRelated(eventId, memberId);
         }
 
         public static bool isFull(int eventId)
@@ -25,7 +25,7 @@ namespace OurUmbraco.Events.Library
             Event e = new Event(eventId);
             e.SignUp(memberId, "no comment");
         }
-        
+
         public static void Cancel(int memberId, int eventId)
         {
             Event e = new Event(eventId);
@@ -34,36 +34,35 @@ namespace OurUmbraco.Events.Library
 
         public static XPathNodeIterator UpcomingEvents()
         {
-            int contentType = DocumentType.GetByAlias("Event").Id;
-            string property = "start";
-            
-            string sql = string.Format(@"SELECT distinct contentNodeId from cmsPropertyData
+            var contentType = DocumentType.GetByAlias("Event").Id;
+            var property = "start";
+
+            var sql = string.Format(@"SELECT distinct contentNodeId from cmsPropertyData
             inner join cmsPropertyType ON 
             cmspropertytype.contenttypeid = {0} and
             cmspropertytype.Alias = '{1}' and
             cmspropertytype.id = cmspropertydata.propertytypeid
             where dataDate > GETDATE()", contentType, property);
 
-            ISqlHelper sqlhelper = umbraco.BusinessLogic.Application.SqlHelper;
-            IRecordsReader rr = sqlhelper.ExecuteReader(sql);
-
-            XmlDocument doc = new XmlDocument();
-            XmlNode root = umbraco.xmlHelper.addTextNode(doc, "events", "");
-
-            while (rr.Read()) 
+            using (var sqlhelper = umbraco.BusinessLogic.Application.SqlHelper)
+            using (var reader = sqlhelper.ExecuteReader(sql))
             {
-                XmlNode x = (XmlNode)umbraco.content.Instance.XmlContent.GetElementById( rr.GetInt("contentNodeId").ToString() );
+                var xmlDocument = new XmlDocument();
+                var root = umbraco.xmlHelper.addTextNode(xmlDocument, "events", "");
 
-                if (x != null)
+                while (reader.Read())
                 {
-                    x = doc.ImportNode(x, true);
-                    root.AppendChild(x);
-                }    
+                    var contentNodeId = reader.GetInt("contentNodeId").ToString();
+                    var xmlNode = (XmlNode)umbraco.content.Instance.XmlContent.GetElementById(contentNodeId);
+
+                    if (xmlNode == null) continue;
+
+                    xmlNode = xmlDocument.ImportNode(xmlNode, true);
+                    root.AppendChild(xmlNode);
+                }
+
+                return root.CreateNavigator().Select(".");
             }
-            rr.Close();
-            rr.Dispose();
-            
-            return root.CreateNavigator().Select(".");
         }
     }
 }

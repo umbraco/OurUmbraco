@@ -29,7 +29,7 @@ namespace OurUmbraco.Forum.EventHandlers
                 && member.Properties.Contains(Constants.Conventions.Member.IsApproved) 
                 && member.IsApproved == false);
 
-            var memberService = UmbracoContext.Current.Application.Services.MemberService;
+            var memberService = ApplicationContext.Current.Services.MemberService;
             foreach (var member in nonApprovedMembers)
             {
                 // Adds test for member having an Id, if they don't then it's a NEW member, 

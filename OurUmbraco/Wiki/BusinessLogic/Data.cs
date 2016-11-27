@@ -4,27 +4,13 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Xml;
 using System.Xml.XPath;
-using umbraco.DataLayer;
 
 namespace OurUmbraco.Wiki.BusinessLogic {
    public class Data {
-
-        private static string _ConnString = umbraco.GlobalSettings.DbDSN;
-        private static ISqlHelper _sqlHelper;
-
-       /// <summary>
-       /// Gets the SQL helper.
-       /// </summary>
-       /// <value>The SQL helper.</value>
-       public static ISqlHelper SqlHelper
-       {
-           get { return _sqlHelper ?? (_sqlHelper = DataLayerHelper.CreateSqlHelper(_ConnString)); }
-       }
-
-
+        
        public static XmlNode GetDataSetAsNode(string sql, string elementName) {
             try {
-                DataSet ds = getDataSetFromSql(_ConnString, sql, elementName);
+                DataSet ds = getDataSetFromSql(umbraco.GlobalSettings.DbDSN, sql, elementName);
                 XmlDataDocument dataDoc = new XmlDataDocument(ds);
                 return (XmlNode)dataDoc;
             } catch (Exception e) {
@@ -55,6 +41,7 @@ namespace OurUmbraco.Wiki.BusinessLogic {
                 adapter.Fill(ds, tableName);
             } finally {
                 con.Close();
+                con.Dispose();
             }
             return ds;
         }

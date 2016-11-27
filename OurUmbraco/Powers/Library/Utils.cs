@@ -1,4 +1,5 @@
-﻿using umbraco.cms.businesslogic.member;
+﻿using umbraco.BusinessLogic;
+using umbraco.cms.businesslogic.member;
 
 namespace OurUmbraco.Powers.Library
 {
@@ -26,8 +27,14 @@ namespace OurUmbraco.Powers.Library
 
         public static bool HasVoted(int memberId, int id, string dataBaseTable)
         {
-            return (BusinessLogic.Data.SqlHelper.ExecuteScalar<int>("SELECT count(points) FROM " + dataBaseTable + " WHERE (id = @id) AND (memberId = @memberId)",
-                BusinessLogic.Data.SqlHelper.CreateParameter("@id", id), BusinessLogic.Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0);
+            using (var sqlHelper = Application.SqlHelper)
+            {
+                return sqlHelper.ExecuteScalar<int>(
+                           "SELECT count(points) FROM " + dataBaseTable +
+                           " WHERE (id = @id) AND (memberId = @memberId)",
+                           sqlHelper.CreateParameter("@id", id),
+                           sqlHelper.CreateParameter("@memberId", memberId)) > 0;
+            }
         }
     }
 }

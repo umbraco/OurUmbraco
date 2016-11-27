@@ -24,10 +24,12 @@
                 currentMember = member.Id;
             }
 
-            Application.SqlHelper.ExecuteNonQuery(
-                @"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
-                Application.SqlHelper.CreateParameter("@id", docId),
-                Application.SqlHelper.CreateParameter("@memberId", currentMember));
+	        using (var sqlHelper = Application.SqlHelper)
+	        {
+                sqlHelper.ExecuteNonQuery(@"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
+                sqlHelper.CreateParameter("@id", docId),
+                sqlHelper.CreateParameter("@memberId", currentMember));
+            }
 
             Response.Redirect(link, false);
         }

@@ -22,7 +22,7 @@ namespace OurUmbraco.Our.CustomHandlers {
         {
             if (e.Comment != null && e.Comment.MemberId > 0)
             {
-                var ms = UmbracoContext.Current.Application.Services.MemberService;
+                var ms = ApplicationContext.Current.Services.MemberService;
                 var member = ms.GetById(e.Comment.MemberId);
                 member.IncreaseForumPostCount();
                 ms.Save(member);
@@ -36,7 +36,7 @@ namespace OurUmbraco.Our.CustomHandlers {
         {
             if (e.Topic != null && e.Topic.MemberId > 0)
             {
-                var ms = UmbracoContext.Current.Application.Services.MemberService;
+                var ms = ApplicationContext.Current.Services.MemberService;
                 var member = ms.GetById(e.Topic.MemberId);
                 member.IncreaseForumPostCount();
                 ms.Save(member);

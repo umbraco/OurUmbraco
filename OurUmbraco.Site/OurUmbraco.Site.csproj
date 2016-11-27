@@ -4141,7 +4141,6 @@
     <Content Include="macroScripts\TwitterSearch.cshtml" />
     <Content Include="macroScripts\SwitchForumEditor.cshtml" />
     <Content Include="macroScripts\ManageSpam.cshtml" />
-    <Content Include="macroScripts\ProjectsVersioned.cshtml" />
     <Content Include="macroScripts\ProjectsVersionList.cshtml" />
     <Content Include="macroScripts\EditProjectCompatibility.cshtml" />
     <Content Include="macroScripts\EventsOverview.cshtml" />

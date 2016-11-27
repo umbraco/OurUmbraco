@@ -134,40 +134,41 @@ namespace OurUmbraco.Our.Api
             int tagId = 0;
 
             //first clear out all items associated with this ID...
-            Application.SqlHelper.ExecuteNonQuery("DELETE FROM cmsTagRelationship WHERE (nodeId = @nodeId) AND EXISTS (SELECT id FROM cmsTags WHERE (cmsTagRelationship.tagId = id) AND ([group] = @group));",
-                Application.SqlHelper.CreateParameter("@nodeId", nodeId),
-                Application.SqlHelper.CreateParameter("@group", group));
-
-            //and now we add them again...
-            foreach (string tag in tags.Split(','))
+            using (var sqlHelper = Application.SqlHelper)
             {
-                string cleanedtag = tag.Replace("<", "");
-                cleanedtag = cleanedtag.Replace("'", "");
-                cleanedtag = cleanedtag.Replace("\"", "");
-                cleanedtag = cleanedtag.Replace(">", "");
+                sqlHelper.ExecuteNonQuery(
+                    "DELETE FROM cmsTagRelationship WHERE (nodeId = @nodeId) AND EXISTS (SELECT id FROM cmsTags WHERE (cmsTagRelationship.tagId = id) AND ([group] = @group));",
+                    sqlHelper.CreateParameter("@nodeId", nodeId),
+                    sqlHelper.CreateParameter("@group", group));
 
-                if (cleanedtag.Length > 0)
+                //and now we add them again...
+                foreach (var tag in tags.Split(','))
                 {
+                    var cleanedtag = tag.Replace("<", "");
+                    cleanedtag = cleanedtag.Replace("'", "");
+                    cleanedtag = cleanedtag.Replace("\"", "");
+                    cleanedtag = cleanedtag.Replace(">", "");
+
+                    if (cleanedtag.Length <= 0)
+                        continue;
+
                     try
                     {
-                        tagId = umbraco.editorControls.tags.library.AddTag(cleanedtag, group);
-
+                        tagId = umbraco.editorControls.tags.library.AddTag(cleanedtag, @group);
 
                         if (tagId > 0)
                         {
-
-                            Application.SqlHelper.ExecuteNonQuery("INSERT INTO cmsTagRelationShip(nodeId,tagId) VALUES (@nodeId, @tagId)",
-                                Application.SqlHelper.CreateParameter("@nodeId", nodeId),
-                                 Application.SqlHelper.CreateParameter("@tagId", tagId)
+                            sqlHelper.ExecuteNonQuery(
+                                "INSERT INTO cmsTagRelationShip(nodeId,tagId) VALUES (@nodeId, @tagId)",
+                                sqlHelper.CreateParameter("@nodeId", nodeId),
+                                sqlHelper.CreateParameter("@tagId", tagId)
                             );
 
                             tagId = 0;
-
                         }
                     }
                     catch { }
                 }
-
             }
         }
 

@@ -6,6 +6,7 @@ using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
+using umbraco.BusinessLogic;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -194,24 +195,26 @@ namespace OurUmbraco.Our
 
         public static List<int> GetProjectContributors(int projectId)
         {
-
-
-            List<int> projects = new List<int>();
-
-            umbraco.DataLayer.IRecordsReader dr = Data.SqlHelper.ExecuteReader("SELECT * FROM projectContributors WHERE projectId = " + projectId);
-
-            while (dr.Read())
+            var projects = new List<int>();
+            using (var sqlHelper = Application.SqlHelper)
+            using (var recordsReader = sqlHelper.ExecuteReader("SELECT * FROM projectContributors WHERE projectId = @projectId ", sqlHelper.CreateParameter("@projectId", projectId)))
             {
-                projects.Add(dr.GetInt("memberId"));
+                while (recordsReader.Read())
+                    projects.Add(recordsReader.GetInt("memberId"));
+
+                return projects;
             }
-            return projects;
         }
 
         public static bool IsProjectContributor(int memberId, int projectId)
         {
-            return ((Data.SqlHelper.ExecuteScalar<int>("SELECT 1 FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
-                Data.SqlHelper.CreateParameter("@projectId", projectId),
-                Data.SqlHelper.CreateParameter("@memberId", memberId)) > 0));
+            using (var sqlHelper = Application.SqlHelper)
+            {
+                return sqlHelper.ExecuteScalar<int>(
+                           "SELECT 1 FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
+                           sqlHelper.CreateParameter("@projectId", projectId),
+                           sqlHelper.CreateParameter("@memberId", memberId)) > 0;
+            }
         }
 
         public static string GetMemberAvatar(IPublishedContent member, int avatarSize, bool getRawUrl = false)
@@ -254,7 +257,7 @@ namespace OurUmbraco.Our
         {
             if (HttpContext.Current.IsDebuggingEnabled == false)
                 return screenshot;
-            
+
             //NOTE: I guess the below is all to do with testing - even the random images i guess
 
             try

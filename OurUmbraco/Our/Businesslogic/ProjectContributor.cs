@@ -1,4 +1,7 @@
-﻿namespace OurUmbraco.Our.Businesslogic
+﻿using System.Net.Mime;
+using umbraco.BusinessLogic;
+
+namespace OurUmbraco.Our.Businesslogic
 {
     public class ProjectContributor
     {
@@ -13,23 +16,31 @@
 
         public void Add()
         {
-            if (!(Data.SqlHelper.ExecuteScalar<int>("SELECT 1 FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
-                Data.SqlHelper.CreateParameter("@projectId", ProjectId),
-                Data.SqlHelper.CreateParameter("@memberId", MemberId)) > 0))
+            using (var sqlHelper = Application.SqlHelper)
             {
-                Data.SqlHelper.ExecuteNonQuery(
-                   "INSERT INTO projectContributors(projectId,memberId) values(@projectId,@memberId);",
-                   Data.SqlHelper.CreateParameter("@projectId", ProjectId),
-                   Data.SqlHelper.CreateParameter("@memberId", MemberId));
+                var exists = sqlHelper.ExecuteScalar<int>(
+                              "SELECT 1 FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
+                              sqlHelper.CreateParameter("@projectId", ProjectId),
+                              sqlHelper.CreateParameter("@memberId", MemberId)) > 0;
 
+                if (exists == false)
+                {
+                    sqlHelper.ExecuteNonQuery(
+                        "INSERT INTO projectContributors(projectId,memberId) values(@projectId,@memberId);",
+                        sqlHelper.CreateParameter("@projectId", ProjectId),
+                        sqlHelper.CreateParameter("@memberId", MemberId));
+                }
             }
         }
         public void Delete()
         {
-            Data.SqlHelper.ExecuteNonQuery(
-                "DELETE FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
-                Data.SqlHelper.CreateParameter("@projectId", ProjectId),
-                Data.SqlHelper.CreateParameter("@memberId", MemberId));
+            using (var sqlHelper = Application.SqlHelper)
+            {
+                sqlHelper.ExecuteNonQuery(
+                    "DELETE FROM projectContributors WHERE projectId = @projectId and memberId = @memberId;",
+                    sqlHelper.CreateParameter("@projectId", ProjectId),
+                    sqlHelper.CreateParameter("@memberId", MemberId));
+            }
         }
     }
 }

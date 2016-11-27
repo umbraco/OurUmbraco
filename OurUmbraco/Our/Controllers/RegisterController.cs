@@ -106,7 +106,7 @@ namespace OurUmbraco.Our.Controllers
             memberService.AssignRole(member.Id, "newaccount");
 
             var redirectPage = "/";
-            var contentService = UmbracoContext.Current.Application.Services.ContentService;
+            var contentService = ApplicationContext.Current.Services.ContentService;
             var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
 
             var memberNode = rootNode.Children().FirstOrDefault(x => x.Name == "Member");

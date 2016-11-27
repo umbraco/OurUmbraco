@@ -15,7 +15,6 @@ using OurUmbraco.Forum.Services;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Models;
-using Umbraco.Web;
 
 namespace OurUmbraco.Forum.AntiSpam
 {
@@ -39,7 +38,7 @@ namespace OurUmbraco.Forum.AntiSpam
                 var reputationCurrent = member.GetValue<int>("reputationCurrent");
                 member.SetValue("reputationCurrent", reputationCurrent >= 0 ? reputationCurrent - 1 : 0);
 
-                var memberService = UmbracoContext.Current.Application.Services.MemberService;
+                var memberService = ApplicationContext.Current.Services.MemberService;
                 memberService.Save(member);
                 memberService.AssignRole(member.Id, "potentialspam");
             }

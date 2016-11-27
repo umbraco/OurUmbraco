@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Xml;
-using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.Wiki.Extensions;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic;
@@ -44,7 +43,11 @@ namespace OurUmbraco.Wiki.BusinessLogic
             if (File.Exists(HttpContext.Current.Server.MapPath(Path)))
                 File.Delete(HttpContext.Current.Server.MapPath(Path));
 
-            Application.SqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id", Application.SqlHelper.CreateParameter("@id", Id));
+            using (var sqlHelper = Application.SqlHelper)
+            {
+                sqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id",
+                    sqlHelper.CreateParameter("@id", Id));
+            }
         }
 
         /// <summary>
@@ -107,15 +110,18 @@ namespace OurUmbraco.Wiki.BusinessLogic
         {
             var wikiFiles = new List<WikiFile>();
 
-            using (var reader = Application.SqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", Application.SqlHelper.CreateParameter("@nodeId", nodeId)))
+            using (var sqlHelper = Application.SqlHelper)
+            using (var reader = sqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", sqlHelper.CreateParameter("@nodeId", nodeId)))
             {
-                while (reader.Read())
-                    wikiFiles.Add(new WikiFile(reader.GetInt("id")));
+                {
+                    while (reader.Read())
+                        wikiFiles.Add(new WikiFile(reader.GetInt("id")));
 
-                return wikiFiles;
+                    return wikiFiles;
+                }
             }
         }
-        
+
         private readonly Events _events = new Events();
 
         private WikiFile() { }
@@ -150,7 +156,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
                         Verified = false,
                         DotNetVersion = dotNetVersion
                     };
-                    
+
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
@@ -201,18 +207,18 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 if (content != null)
                 {
                     var wikiFile = new WikiFile
-                                   {
-                                       Name = fileName,
-                                       NodeId = content.Id,
-                                       NodeVersion = content.Version,
-                                       FileType = filetype,
-                                       CreatedBy = member.Id,
-                                       Downloads = 0,
-                                       Archived = false,
-                                       Versions = versions,
-                                       Version = versions[0],
-                                       Verified = false
-                                   };
+                    {
+                        Name = fileName,
+                        NodeId = content.Id,
+                        NodeVersion = content.Version,
+                        FileType = filetype,
+                        CreatedBy = member.Id,
+                        Downloads = 0,
+                        Archived = false,
+                        Versions = versions,
+                        Version = versions[0],
+                        Verified = false
+                    };
 
                     wikiFile.SetMinimumUmbracoVersion();
                     var path = string.Format("/media/wiki/{0}", content.Id);
@@ -249,26 +255,32 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 if (e.Cancel)
                     return;
 
-                Application.SqlHelper.ExecuteNonQuery(
-                    "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
-                    Application.SqlHelper.CreateParameter("@path", Path),
-                    Application.SqlHelper.CreateParameter("@name", Name),
-                    Application.SqlHelper.CreateParameter("@createdBy", CreatedBy),
-                    Application.SqlHelper.CreateParameter("@nodeId", NodeId),
-                    Application.SqlHelper.CreateParameter("@type", FileType),
-                    Application.SqlHelper.CreateParameter("@nodeVersion", NodeVersion),
-                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Application.SqlHelper.CreateParameter("@archived", Archived),
-                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
-                    Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    sqlHelper.ExecuteNonQuery(
+                        "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
+                        sqlHelper.CreateParameter("@path", Path),
+                        sqlHelper.CreateParameter("@name", Name),
+                        sqlHelper.CreateParameter("@createdBy", CreatedBy),
+                        sqlHelper.CreateParameter("@nodeId", NodeId),
+                        sqlHelper.CreateParameter("@type", FileType),
+                        sqlHelper.CreateParameter("@nodeVersion", NodeVersion),
+                        sqlHelper.CreateParameter("@downloads", Downloads),
+                        sqlHelper.CreateParameter("@archived", Archived),
+                        sqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                        sqlHelper.CreateParameter("@verified", Verified),
+                        sqlHelper.CreateParameter("@dotNetVersion",
+                            string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
+                        sqlHelper.CreateParameter("@minimumVersionStrict",
+                            string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
 
-                CreateDate = DateTime.Now;
+                    CreateDate = DateTime.Now;
 
-                Id = Application.SqlHelper.ExecuteScalar<int>("SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy", Application.SqlHelper.CreateParameter("@createdBy", CreatedBy));
-
+                    Id = sqlHelper.ExecuteScalar<int>(
+                            "SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy",
+                            sqlHelper.CreateParameter("@createdBy", CreatedBy));
+                }
                 FireAfterCreate(e);
             }
             else
@@ -279,23 +291,27 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 if (e.Cancel)
                     return;
 
-                Application.SqlHelper.ExecuteNonQuery(
-                    "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified, dotNetVersion = @dotNetVersion, minimumVersionStrict = @minimumVersionStrict WHERE id = @id",
-                    Application.SqlHelper.CreateParameter("@path", Path),
-                    Application.SqlHelper.CreateParameter("@name", Name),
-                    Application.SqlHelper.CreateParameter("@type", FileType),
-                    Application.SqlHelper.CreateParameter("@current", Current),
-                    Application.SqlHelper.CreateParameter("@removedBy", RemovedBy),
-                    Application.SqlHelper.CreateParameter("@version", NodeVersion),
-                    Application.SqlHelper.CreateParameter("@id", Id),
-                    Application.SqlHelper.CreateParameter("@downloads", Downloads),
-                    Application.SqlHelper.CreateParameter("@archived", Archived),
-                    Application.SqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
-                    Application.SqlHelper.CreateParameter("@verified", Verified),
-                    Application.SqlHelper.CreateParameter("@dotNetVersion", string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
-                    Application.SqlHelper.CreateParameter("@minimumVersionStrict", string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    sqlHelper.ExecuteNonQuery(
+                        "UPDATE wikiFiles SET path = @path, name = @name, type = @type, [current] = @current, removedBy = @removedBy, version = @version, downloads = @downloads, archived = @archived, umbracoVersion = @umbracoVersion, verified = @verified, dotNetVersion = @dotNetVersion, minimumVersionStrict = @minimumVersionStrict WHERE id = @id",
+                        sqlHelper.CreateParameter("@path", Path),
+                        sqlHelper.CreateParameter("@name", Name),
+                        sqlHelper.CreateParameter("@type", FileType),
+                        sqlHelper.CreateParameter("@current", Current),
+                        sqlHelper.CreateParameter("@removedBy", RemovedBy),
+                        sqlHelper.CreateParameter("@version", NodeVersion),
+                        sqlHelper.CreateParameter("@id", Id),
+                        sqlHelper.CreateParameter("@downloads", Downloads),
+                        sqlHelper.CreateParameter("@archived", Archived),
+                        sqlHelper.CreateParameter("@umbracoVersion", ToVersionString(Versions)),
+                        sqlHelper.CreateParameter("@verified", Verified),
+                        sqlHelper.CreateParameter("@dotNetVersion",
+                            string.IsNullOrWhiteSpace(DotNetVersion) ? "" : DotNetVersion),
+                        sqlHelper.CreateParameter("@minimumVersionStrict",
+                            string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
-
+                }
                 FireAfterUpdate(e);
             }
         }
@@ -317,26 +333,29 @@ namespace OurUmbraco.Wiki.BusinessLogic
         {
             try
             {
-                //try find one based on the specific version first
-                var id = Application.SqlHelper.ExecuteScalar<int>(
-                    "Select TOP 1 id from wikiFiles where nodeId = @nodeid and type = @packageType and (umbracoVersion like @umbracoVersion) ORDER BY createDate DESC",
-                    Application.SqlHelper.CreateParameter("@nodeid", nodeid),
-                    Application.SqlHelper.CreateParameter("@packageType", fileType),
-                    Application.SqlHelper.CreateParameter("@umbracoVersion", "%" + umbracoVersion + "%")
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    //try find one based on the specific version first
+                    var id = sqlHelper.ExecuteScalar<int>(
+                        "Select TOP 1 id from wikiFiles where nodeId = @nodeid and type = @packageType and (umbracoVersion like @umbracoVersion) ORDER BY createDate DESC",
+                        sqlHelper.CreateParameter("@nodeid", nodeid),
+                        sqlHelper.CreateParameter("@packageType", fileType),
+                        sqlHelper.CreateParameter("@umbracoVersion", "%" + umbracoVersion + "%")
                     );
 
-                if (id > 0)
-                    return new WikiFile(id);
+                    if (id > 0)
+                        return new WikiFile(id);
 
-                //if a version specific file wasnt found try and find one based on nan
-                id = Application.SqlHelper.ExecuteScalar<int>(
-                    "Select TOP 1 id from wikiFiles where nodeId = @nodeid and type = @packageType and (umbracoVersion like '%nan%') ORDER BY createDate DESC",
-                    Application.SqlHelper.CreateParameter("@nodeid", nodeid),
-                    Application.SqlHelper.CreateParameter("@packageType", fileType)
+                    //if a version specific file wasnt found try and find one based on nan
+                    id = sqlHelper.ExecuteScalar<int>(
+                        "Select TOP 1 id from wikiFiles where nodeId = @nodeid and type = @packageType and (umbracoVersion like '%nan%') ORDER BY createDate DESC",
+                        sqlHelper.CreateParameter("@nodeid", nodeid),
+                        sqlHelper.CreateParameter("@packageType", fileType)
                     );
 
-                if (id > 0)
-                    return new WikiFile(id);
+                    if (id > 0)
+                        return new WikiFile(id);
+                }
             }
             catch
             {
@@ -348,34 +367,36 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
         public WikiFile(int id)
         {
-            using (var reader = Application.SqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId",
-                    Application.SqlHelper.CreateParameter("@fileId", id)))
+            using (var sqlHelper = Application.SqlHelper)
+            using (var reader = sqlHelper.ExecuteReader("SELECT * FROM wikiFiles WHERE id = @fileId", sqlHelper.CreateParameter("@fileId", id)))
             {
-                if (reader.Read())
                 {
-                    Id = reader.GetInt("id");
-                    Path = reader.GetString("path");
-                    Name = reader.GetString("name");
-                    FileType = reader.GetString("type");
-                    RemovedBy = reader.GetInt("removedBy");
-                    CreatedBy = reader.GetInt("createdBy");
-                    NodeVersion = reader.GetGuid("version");
-                    NodeId = reader.GetInt("nodeId");
-                    CreateDate = reader.GetDateTime("createDate");
-                    Current = reader.GetBoolean("current");
-                    Downloads = reader.GetInt("downloads");
-                    Archived = reader.GetBoolean("archived");
-                    Verified = reader.GetBoolean("verified");
-                    DotNetVersion = reader.GetString("dotNetVersion");
-                    Versions = GetVersionsFromString(reader.GetString("umbracoVersion"));
-                    Version = Versions.Any()
-                        ? GetVersionsFromString(reader.GetString("umbracoVersion"))[0]
-                        : UmbracoVersion.DefaultVersion();
-                    MinimumVersionStrict = reader.GetString("minimumVersionStrict");
-                }
-                else
-                {
-                    throw new ArgumentException(string.Format("No node exists with id '{0}'", Id));
+                    if (reader.Read())
+                    {
+                        Id = reader.GetInt("id");
+                        Path = reader.GetString("path");
+                        Name = reader.GetString("name");
+                        FileType = reader.GetString("type");
+                        RemovedBy = reader.GetInt("removedBy");
+                        CreatedBy = reader.GetInt("createdBy");
+                        NodeVersion = reader.GetGuid("version");
+                        NodeId = reader.GetInt("nodeId");
+                        CreateDate = reader.GetDateTime("createDate");
+                        Current = reader.GetBoolean("current");
+                        Downloads = reader.GetInt("downloads");
+                        Archived = reader.GetBoolean("archived");
+                        Verified = reader.GetBoolean("verified");
+                        DotNetVersion = reader.GetString("dotNetVersion");
+                        Versions = GetVersionsFromString(reader.GetString("umbracoVersion"));
+                        Version = Versions.Any()
+                            ? GetVersionsFromString(reader.GetString("umbracoVersion"))[0]
+                            : UmbracoVersion.DefaultVersion();
+                        MinimumVersionStrict = reader.GetString("minimumVersionStrict");
+                    }
+                    else
+                    {
+                        throw new ArgumentException(string.Format("No node exists with id '{0}'", Id));
+                    }
                 }
             }
         }
@@ -424,37 +445,46 @@ namespace OurUmbraco.Wiki.BusinessLogic
             var downloads = 0;
             var projectId = 0;
 
-            var reader = Application.SqlHelper.ExecuteReader("Select downloads, nodeId from wikiFiles where id = @id;", Application.SqlHelper.CreateParameter("@id", fileId));
-            if (reader.Read())
+            using (var sqlHelper = Application.SqlHelper)
             {
-                downloads = reader.GetInt("downloads");
-                projectId = reader.GetInt("nodeId");
-            }
-            downloads = downloads + 1;
+                using (var reader = sqlHelper.ExecuteReader("Select downloads, nodeId from wikiFiles where id = @id;", sqlHelper.CreateParameter("@id", fileId)))
+                {
+                    if (reader.Read())
+                    {
+                        downloads = reader.GetInt("downloads");
+                        projectId = reader.GetInt("nodeId");
+                    }
+                }
 
-            Application.SqlHelper.ExecuteNonQuery(
-                "update wikiFiles set downloads = @downloads where id = @id;",
-                Application.SqlHelper.CreateParameter("@id", fileId),
-                Application.SqlHelper.CreateParameter("@downloads", downloads));
+                downloads = downloads + 1;
 
-            var totalDownloads = Application.SqlHelper.ExecuteScalar<int>("Select SUM(downloads) from wikiFiles where nodeId = @projectId;", Application.SqlHelper.CreateParameter("@projectId", projectId));
-            
-            if (isPackage)
-            {
-                var memberHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-                var memberId = memberHelper.GetCurrentMemberId();
-                var currentMemberId = memberId == -1 ? 0 : memberId;
+                sqlHelper.ExecuteNonQuery(
+                    "update wikiFiles set downloads = @downloads where id = @id;",
+                    sqlHelper.CreateParameter("@id", fileId),
+                    sqlHelper.CreateParameter("@downloads", downloads));
 
-                //update download count update
-                Application.SqlHelper.ExecuteNonQuery(
-                    @"insert into projectDownload(projectId,memberId,timestamp) 
+                var totalDownloads =
+                    sqlHelper.ExecuteScalar<int>(
+                        "Select SUM(downloads) from wikiFiles where nodeId = @projectId;",
+                        sqlHelper.CreateParameter("@projectId", projectId));
+
+                if (isPackage)
+                {
+                    var memberHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+                    var memberId = memberHelper.GetCurrentMemberId();
+                    var currentMemberId = memberId == -1 ? 0 : memberId;
+
+                    //update download count update
+                    sqlHelper.ExecuteNonQuery(
+                        @"insert into projectDownload(projectId,memberId,timestamp) 
                         values((select nodeId from wikiFiles where id = @id) ,@memberId, getdate())",
-                    Application.SqlHelper.CreateParameter("@id", fileId),
-                    Application.SqlHelper.CreateParameter("@memberId", currentMemberId));
-            }
+                        sqlHelper.CreateParameter("@id", fileId),
+                        sqlHelper.CreateParameter("@memberId", currentMemberId));
+                }
 
-            var e = new FileDownloadUpdateEventArgs { ProjectId = projectId, Downloads = totalDownloads };
-            FireAfterDownloadUpdate(e);
+                var e = new FileDownloadUpdateEventArgs { ProjectId = projectId, Downloads = totalDownloads };
+                FireAfterDownloadUpdate(e);
+            }
 
             cookie = new HttpCookie("ProjectFileDownload" + fileId) { Expires = DateTime.Now.AddHours(1) };
             HttpContext.Current.Response.Cookies.Add(cookie);

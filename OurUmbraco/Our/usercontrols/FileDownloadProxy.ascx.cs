@@ -8,21 +8,23 @@ namespace OurUmbraco.Our.usercontrols
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            if (Request["id"] != null)
+            if (Request["id"] == null)
+                return;
+
+            var fileId = int.Parse(Request["id"]);
+
+            var wikiFile = new WikiFile(fileId);
+
+            wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
+            using (var sqlHelper = BL.Application.SqlHelper)
             {
-                var fileId = int.Parse(Request["id"]);
+                var path = sqlHelper.ExecuteScalar<string>(
+                    "Select path from wikiFiles where id = @id;",
+                    sqlHelper.CreateParameter("@id", fileId));
 
-                var wikiFile = new WikiFile(fileId);
-
-                wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
-
-                var path = BL.Application.SqlHelper.ExecuteScalar<string>(
-                        "Select path from wikiFiles where id = @id;",
-                        BL.Application.SqlHelper.CreateParameter("@id", fileId));
-
-                var file = BL.Application.SqlHelper.ExecuteScalar<string>(
-                   "Select name from wikiFiles where id = @id;",
-                   BL.Application.SqlHelper.CreateParameter("@id", fileId));
+                var file = sqlHelper.ExecuteScalar<string>(
+                    "Select name from wikiFiles where id = @id;",
+                    sqlHelper.CreateParameter("@id", fileId));
 
                 var fileinfo = new System.IO.FileInfo(Server.MapPath(path));
 
@@ -65,11 +67,11 @@ namespace OurUmbraco.Our.usercontrols
                 }
 
                 Response.Clear();
-               
+
                 Response.AddHeader("Content-Disposition", "attachment; filename= " + MakeSafeFileName(file));
                 Response.AddHeader("Content-Length", fileinfo.Length.ToString());
                 Response.ContentType = type;
-                Response.WriteFile(path); 
+                Response.WriteFile(path);
             }
         }
 

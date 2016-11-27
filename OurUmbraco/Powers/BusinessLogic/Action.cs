@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Xml;
+using umbraco.BusinessLogic;
 
-namespace OurUmbraco.Powers.BusinessLogic {
-    public class Action {
+namespace OurUmbraco.Powers.BusinessLogic
+{
+    public class Action
+    {
         public string Alias { get; set; }
         public string TypeAlias { get; set; }
-        
+
         public int PerformerReward { get; set; }
         public int ReceiverReward { get; set; }
 
@@ -16,74 +19,88 @@ namespace OurUmbraco.Powers.BusinessLogic {
 
         public int MinimumReputation { get; set; }
         public bool Exists { get; private set; }
-        
+
         private static int _minCommentLenght = 50;
 
         public string[] AllowedGroups { get; set; }
 
 
-        public string DataBaseTable { 
-            get{
-                return "powers" + TypeAlias;   
+        public string DataBaseTable
+        {
+            get
+            {
+                return "powers" + TypeAlias;
             }
         }
 
         private Events _e = new Events();
 
-        public bool Perform(int performer, int itemId, string comment) {
+        public bool Perform(int performer, int itemId, string comment)
+        {
             return Perform(performer, itemId, 0, comment);
         }
 
-        public void ClearVotes(int performer, int itemId) {
-
-            Data.SqlHelper.ExecuteNonQuery("Delete FROM " + DataBaseTable + " WHERE memberId = @memberId AND id = @id",
-                Data.SqlHelper.CreateParameter("@memberId", performer),
-                Data.SqlHelper.CreateParameter("@id", itemId));
-
+        public void ClearVotes(int performer, int itemId)
+        {
+            using (var sqlHelper = Application.SqlHelper)
+            {
+                sqlHelper.ExecuteNonQuery(
+                    "Delete FROM " + DataBaseTable + " WHERE memberId = @memberId AND id = @id",
+                    sqlHelper.CreateParameter("@memberId", performer),
+                    sqlHelper.CreateParameter("@id", itemId));
+            }
         }
 
-        public bool Perform(int performer, int itemId, int receiver, string comment) {
-            
-                ActionEventArgs e = new ActionEventArgs();
-                e.PerformerId = performer;
-                e.ItemId = itemId;
-                e.ReceiverId = receiver;
-                e.ActionType = TypeAlias;
+        public bool Perform(int performer, int itemId, int receiver, string comment)
+        {
 
-                FireBeforePerform(e);
-                
-                
+            ActionEventArgs e = new ActionEventArgs();
+            e.PerformerId = performer;
+            e.ItemId = itemId;
+            e.ReceiverId = receiver;
+            e.ActionType = TypeAlias;
 
-                if (!e.Cancel) {
+            FireBeforePerform(e);
 
-                    bool allowed = Allowed(performer, itemId, receiver, comment);
 
-                    if (allowed)
+
+            if (!e.Cancel)
+            {
+
+                bool allowed = Allowed(performer, itemId, receiver, comment);
+
+                if (allowed)
+                {
+                    using (var sqlHelper = Application.SqlHelper)
                     {
-                    
-                    Data.SqlHelper.ExecuteNonQuery("INSERT INTO " + DataBaseTable + "(id, memberId, points, receiverId, receiverPoints, performerPoints, comment) VALUES(@id, @memberId, @points, @receiverId, @receiverPoints, @performerPoints, @comment)",
-                        Data.SqlHelper.CreateParameter("@id", e.ItemId),
-                        Data.SqlHelper.CreateParameter("@table", DataBaseTable),
-                        Data.SqlHelper.CreateParameter("@memberId", e.PerformerId),
-                        Data.SqlHelper.CreateParameter("@points", Weight),
-                        Data.SqlHelper.CreateParameter("@receiverid", e.ReceiverId),
-                        Data.SqlHelper.CreateParameter("@receiverPoints", ReceiverReward),
-                        Data.SqlHelper.CreateParameter("@performerPoints", PerformerReward),
-                        Data.SqlHelper.CreateParameter("@comment", comment + " ")
-                    );
-                    
+                        sqlHelper.ExecuteNonQuery(
+                            "INSERT INTO " + DataBaseTable +
+                            "(id, memberId, points, receiverId, receiverPoints, performerPoints, comment) VALUES(@id, @memberId, @points, @receiverId, @receiverPoints, @performerPoints, @comment)",
+                            sqlHelper.CreateParameter("@id", e.ItemId),
+                            sqlHelper.CreateParameter("@table", DataBaseTable),
+                            sqlHelper.CreateParameter("@memberId", e.PerformerId),
+                            sqlHelper.CreateParameter("@points", Weight),
+                            sqlHelper.CreateParameter("@receiverid", e.ReceiverId),
+                            sqlHelper.CreateParameter("@receiverPoints", ReceiverReward),
+                            sqlHelper.CreateParameter("@performerPoints", PerformerReward),
+                            sqlHelper.CreateParameter("@comment", comment + " ")
+                        );
+                    }
+
                     //the performer gets his share
-                    if(PerformerReward != 0){
+                    if (PerformerReward != 0)
+                    {
                         Reputation r = new Reputation(e.PerformerId);
-                        r.Current = (r.Current + (PerformerReward) );
-                        r.Total = (r.Total + (PerformerReward) );
+                        r.Current = (r.Current + (PerformerReward));
+                        r.Total = (r.Total + (PerformerReward));
                         r.Save();
                     }
 
                     //And maybe the author of the item gets a cut as well.. 
-                    if (e.ReceiverId > 0 && ReceiverReward != 0) {
+                    if (e.ReceiverId > 0 && ReceiverReward != 0)
+                    {
                         Reputation pr = new Reputation(e.ReceiverId);
-                        pr.Current = (pr.Current + (ReceiverReward) );
+                        pr.Current = (pr.Current + (ReceiverReward));
                         pr.Total = (pr.Total + (ReceiverReward));
                         pr.Save();
                     }
@@ -95,17 +112,23 @@ namespace OurUmbraco.Powers.BusinessLogic {
                         {
                             if (allowed)
                             {
-                                //make sure the extra receivers also get inserted (but no points for item and performer)
-                                Data.SqlHelper.ExecuteNonQuery("INSERT INTO " + DataBaseTable + "(id, memberId, points, receiverId, receiverPoints, performerPoints, comment) VALUES(@id, @memberId, @points, @receiverId, @receiverPoints, @performerPoints, @comment)",
-                                    Data.SqlHelper.CreateParameter("@id", e.ItemId),
-                                    Data.SqlHelper.CreateParameter("@table", DataBaseTable),
-                                    Data.SqlHelper.CreateParameter("@memberId", e.PerformerId),
-                                    Data.SqlHelper.CreateParameter("@points", 0),
-                                    Data.SqlHelper.CreateParameter("@receiverid", r),
-                                    Data.SqlHelper.CreateParameter("@receiverPoints", ReceiverReward),
-                                    Data.SqlHelper.CreateParameter("@performerPoints", 0),
-                                    Data.SqlHelper.CreateParameter("@comment", comment + " "));
+                                using (var sqlHelper = Application.SqlHelper)
+                                {
+                                    //make sure the extra receivers also get inserted (but no points for item and performer)
+                                    sqlHelper.ExecuteNonQuery(
+                                        "INSERT INTO " + DataBaseTable +
+                                        "(id, memberId, points, receiverId, receiverPoints, performerPoints, comment) VALUES(@id, @memberId, @points, @receiverId, @receiverPoints, @performerPoints, @comment)",
+                                        sqlHelper.CreateParameter("@id", e.ItemId),
+                                        sqlHelper.CreateParameter("@table", DataBaseTable),
+                                        sqlHelper.CreateParameter("@memberId", e.PerformerId),
+                                        sqlHelper.CreateParameter("@points", 0),
+                                        sqlHelper.CreateParameter("@receiverid", r),
+                                        sqlHelper.CreateParameter("@receiverPoints", ReceiverReward),
+                                        sqlHelper.CreateParameter("@performerPoints", 0),
+                                        sqlHelper.CreateParameter("@comment", comment + " "));
+                                }
                             }
+
                             Reputation pr = new Reputation(r);
                             pr.Current = (pr.Current + (ReceiverReward));
                             pr.Total = (pr.Total + (ReceiverReward));
@@ -122,47 +145,54 @@ namespace OurUmbraco.Powers.BusinessLogic {
             return false;
         }
 
-        public bool Allowed(int performer, int id, int receiver, string comment) {
-            if (performer > 0 && (!MandatoryComment || (MandatoryComment && comment.Length >= _minCommentLenght) )) {
-
-
+        public bool Allowed(int performer, int id, int receiver, string comment)
+        {
+            if (performer > 0 && (!MandatoryComment || (MandatoryComment && comment.Length >= _minCommentLenght)))
+            {
                 if (AllowedGroups != null && AllowedGroups.Length > 0)
                 {
-                    bool allowed = false;
-                    foreach(string group in AllowedGroups)
-                        if(Library.Utils.IsMemberInGroup(group, performer)){
+                    var allowed = false;
+                    foreach (var group in AllowedGroups)
+                        if (Library.Utils.IsMemberInGroup(group, performer))
+                        {
                             allowed = true;
                             break;
                         }
 
-                    if(!allowed)
+                    if (!allowed)
                         return false;
                 }
 
+                var reputation = new Reputation(performer);
+                using (var sqlHelper = Application.SqlHelper)
+                {
+                    var doneBefore = sqlHelper.ExecuteScalar<int>(
+                                          "SELECT count(id) from " + DataBaseTable +
+                                          " WHERE id = @id and memberId = @memberId",
+                                          sqlHelper.CreateParameter("@id", id),
+                                          sqlHelper.CreateParameter("@memberId", performer)
+                                      ) > 0;
 
-                Reputation r = new Reputation(performer);
-                
-                bool doneBefore = Data.SqlHelper.ExecuteScalar<int>("SELECT count(id) from " + DataBaseTable + " WHERE id = @id and memberId = @memberId",
-                    Data.SqlHelper.CreateParameter("@id", id), 
-                    Data.SqlHelper.CreateParameter("@memberId", performer)
-                    ) > 0;
+                    return MinimumReputation <= reputation.Current && !doneBefore && performer != receiver;
+                }
+            }
 
-                return ( (MinimumReputation <= r.Current) && !doneBefore && performer != receiver);
-            } else
-                return false;
+            return false;
         }
 
-        public Action(string alias) {
+        public Action(string alias)
+        {
             XmlNode x = config.GetKeyAsNode("/configuration/actions/action [@alias = '" + alias + "']");
-            if (x != null) {
-                Weight = int.Parse( x.Attributes.GetNamedItem("weight" ).Value);
+            if (x != null)
+            {
+                Weight = int.Parse(x.Attributes.GetNamedItem("weight").Value);
                 ReceiverReward = int.Parse(x.Attributes.GetNamedItem("receiverReward").Value);
                 PerformerReward = int.Parse(x.Attributes.GetNamedItem("performerReward").Value);
 
                 MinimumReputation = int.Parse(x.Attributes.GetNamedItem("minReputation").Value);
                 Alias = x.Attributes.GetNamedItem("alias").Value;
                 TypeAlias = x.Attributes.GetNamedItem("type").Value;
-                
+
 
                 bool _mandatoryComment = false;
                 if (x.Attributes.GetNamedItem("mandatoryComment") != null)
@@ -174,16 +204,19 @@ namespace OurUmbraco.Powers.BusinessLogic {
 
                 MandatoryComment = _mandatoryComment;
                 Exists = true;
-            } else
-                Exists = false;
+            }
+
+            Exists = false;
         }
 
-        public static List<Action> GetAllActions() {
+        public static List<Action> GetAllActions()
+        {
             XmlNode x = config.GetKeyAsNode("/configuration/actions");
-            List<Action> l = new List<Action>();            
-            foreach (XmlNode cx in x.ChildNodes) {
+            List<Action> l = new List<Action>();
+            foreach (XmlNode cx in x.ChildNodes)
+            {
                 if (cx.Attributes.GetNamedItem("alias") != null)
-                    l.Add( new Action( cx.Attributes.GetNamedItem("alias").Value ));
+                    l.Add(new Action(cx.Attributes.GetNamedItem("alias").Value));
             }
 
             return l;
@@ -191,11 +224,13 @@ namespace OurUmbraco.Powers.BusinessLogic {
 
         /* EVENTS */
         public static event EventHandler<ActionEventArgs> BeforePerform;
-        protected virtual void FireBeforePerform(ActionEventArgs e) {
+        protected virtual void FireBeforePerform(ActionEventArgs e)
+        {
             _e.FireCancelableEvent(BeforePerform, this, e);
         }
         public static event EventHandler<ActionEventArgs> AfterPerform;
-        protected virtual void FireAfterPerform(ActionEventArgs e) {
+        protected virtual void FireAfterPerform(ActionEventArgs e)
+        {
             if (AfterPerform != null)
                 AfterPerform(this, e);
         }

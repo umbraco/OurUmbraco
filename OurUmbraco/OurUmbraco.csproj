@@ -403,6 +403,7 @@
     <Compile Include="NotificationsCore\Notifications\AccountApproved.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumComment.cs" />
+    <Compile Include="NotificationsCore\Notifications\NotificationMail.cs" />
     <Compile Include="NotificationsCore\Notifications\ScheduleHangfireJobs.cs" />
     <Compile Include="NotificationsCore\Notifications\MarkAsSolutionReminder.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />
@@ -443,7 +444,6 @@
     <Compile Include="Our\CustomHandlers\ProjectsEnsureGuid.cs" />
     <Compile Include="Our\CustomHandlers\ProjectVote.cs" />
     <Compile Include="Our\CustomHandlers\TopicVote.cs" />
-    <Compile Include="Our\Data.cs" />
     <Compile Include="Our\DefaultMemberAvatarHandler.cs" />
     <Compile Include="Our\Examine\DocumentationIndexConfig.cs" />
     <Compile Include="Our\Examine\DocumentationIndexDataService.cs" />
