@@ -64,19 +64,18 @@ namespace OurUmbraco.Our.Controllers
 
             // these values are enforced in MemberDto which is internal ;-(
             // we should really have ways to query for Core meta-data!
-            const int maxEmailLength = 900; // 1000*.9 for safety
-            const int maxLoginNameLength = 900; // 1000*.9 for safety
-            const int maxPasswordLength = 900; // 1000*.9 for safety
-            const int maxPropertyLength = 900; // keep it safe too
+            const int maxEmailLength = 400;
+            const int maxLoginNameLength = 200;
+            const int maxPasswordLength = 400; 
+            const int maxPropertyLength = 400;
 
-            if (model.Email.Length > maxEmailLength
-                || model.Name.Length > maxLoginNameLength
-                || model.Password.Length > maxPasswordLength
-                || model.Location.Length > maxPropertyLength
-                || model.Longitude.Length > maxPropertyLength
-                || model.Latitude.Length > maxPropertyLength
-                || model.Company.Length > maxPropertyLength
-                || model.TwitterAlias.Length > maxPropertyLength
+            if (model.Email != null && model.Email.Length > maxEmailLength
+                || model.Name != null && model.Name.Length > maxLoginNameLength
+                || model.Password != null && model.Password.Length > maxPasswordLength
+                || model.Location != null && model.Location.Length > maxPropertyLength
+                || model.Longitude != null && model.Longitude.Length > maxPropertyLength
+                || model.Latitude != null && model.Latitude.Length > maxPropertyLength
+                || model.TwitterAlias != null && model.TwitterAlias.Length > maxPropertyLength
                 )
             {
                 // has to be a rogue registration
