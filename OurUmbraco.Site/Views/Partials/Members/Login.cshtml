@@ -1,0 +1,50 @@
+﻿@using OurUmbraco.Our.Controllers
+@using reCAPTCHA.MVC
+@inherits UmbracoViewPage<Umbraco.Web.Models.LoginModel>
+@{
+    Html.EnableClientValidation(true);
+    Html.EnableUnobtrusiveJavaScript(true);
+}
+
+<div class="form simpleForm" id="registrationForm">
+    @using (Html.BeginUmbracoForm<LoginController>("Login"))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <fieldset>
+            <p>
+                @Html.LabelFor(m => m.Username, new { @class = "inputLabel" })<br />
+                @Html.ValidationMessageFor(m => m.Username)
+
+                @Html.TextBoxFor(m => m.Username, new { @class = "email title" })
+            </p>
+        </fieldset>
+
+        <fieldset>
+            <p>
+                @Html.LabelFor(m => m.Password, new { @class = "inputLabel" })<br />
+                @Html.ValidationMessageFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "password title" })
+            </p>
+        </fieldset>
+        <fieldset>
+            <p>
+                @Html.Recaptcha()
+                @Html.ValidationMessage("ReCaptcha")
+            </p>
+        </fieldset>
+
+        <input class="button green" type="submit" value="Log in">
+    }
+</div>
+
+<style type="text/css">
+    .field-validation-error, .validation-summary-errors {
+        color: red;
+    }
+
+    .input-validation-error {
+        border-color: red !important;
+    }
+</style>

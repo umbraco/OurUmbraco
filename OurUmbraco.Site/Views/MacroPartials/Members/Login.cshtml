@@ -1,0 +1,17 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+
+@{
+    if (Members.IsLoggedIn())
+    {
+        if (Model.MacroParameters["NextPage"] != null && string.IsNullOrWhiteSpace(Model.MacroParameters["NextPage"].ToString()) == false)
+        {
+            // It's being called from the old package repository, don't redirect
+        }
+        else
+        {
+            Response.Redirect("/member/profile");
+        }
+    }
+}
+
+@Html.Action("RenderLogin", "Login") 

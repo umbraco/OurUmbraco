@@ -1761,6 +1761,8 @@
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
     <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
+    <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\MacroPartials\Members\Login.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
@@ -4414,6 +4416,8 @@
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\Partials\Members\Login.cshtml" />
+    <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

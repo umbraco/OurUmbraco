@@ -35,6 +35,8 @@ namespace OurUmbraco.Our
             AddStrictMinimumVersionForPackages();
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
+            UseNewLoginForm();
+            UseNewForgotPasswordForm();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -379,7 +381,7 @@ namespace OurUmbraco.Our
                 compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
 
                 var releaseLandingContentType = contentTypeService.GetContentType("ReleaseLanding");
-                
+
                 var allowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(compareContentType.Id, 0) };
                 releaseLandingContentType.AllowedContentTypes = allowedContentTypes;
                 contentTypeService.Save(releaseLandingContentType);
@@ -489,13 +491,13 @@ namespace OurUmbraco.Our
                 var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
                 if (File.Exists(path))
                     return;
-                
+
                 var macroService = ApplicationContext.Current.Services.MacroService;
                 var macro = macroService.GetByAlias("MemberSignup");
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/Register.cshtml";
                 macroService.Save(macro);
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -526,7 +528,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-        
+
         private void RenameUaaStoUCloud()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -576,6 +578,56 @@ namespace OurUmbraco.Our
 
                 var db = ApplicationContext.Current.DatabaseContext.Database;
                 db.Execute("ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0))");
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewLoginForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberLogin");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/Login.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewForgotPasswordForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberPasswordReminder");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
+                macroService.Save(macro);
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
