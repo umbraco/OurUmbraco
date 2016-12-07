@@ -16,31 +16,28 @@
             foreach (var section in Model.sections) {
                 <div class="grid-section">
                     @foreach (var row in section.rows) {
-                        @renderRow(row, true);
+                        @renderRow(row);
                     }
                 </div>
             }   
         }else { 
-            <div class="container">
-                <div class="row clearfix">
-                    @foreach (var s in Model.sections) {
-                        <div class="grid-section">
-                            <div class="col-md-@s.grid column">
-                                @foreach (var row in s.rows) {
-                                    @renderRow(row, false);
-                                }
-                            </div>
+            <div class="row clearfix">
+                @foreach (var s in Model.sections) {
+                    <div class="grid-section">
+                        <div class="col-md-@s.grid column">
+                            @foreach (var row in s.rows) {
+                                @renderRow(row);
+                            }
                         </div>
-                    }
-                </div>
-            </div>   
+                    </div>
+                }
+            </div>
         }
     </div>
 }
 
-@helper renderRow(dynamic row, bool singleColumn){
+@helper renderRow(dynamic row){
     <div @RenderElementAttributes(row)>
-        @Umbraco.If(singleColumn, "<div class='container'>")
         <div class="row clearfix">
             @foreach ( var area in row.areas ) {
             <div class="col-md-@area.grid column">
@@ -53,7 +50,6 @@
                 </div>
             </div>}
         </div>
-        @Umbraco.If(singleColumn, "</div>")
     </div>
 }
 
@@ -84,7 +80,7 @@
             }
 
             if (cssVals.Any())
-                attrs.Add("style=\"" + string.Join(" ", cssVals) + "\"");
+                attrs.Add("style='" + string.Join(" ", cssVals) + "'");
         }
 
         return new MvcHtmlString(string.Join(" ", attrs));

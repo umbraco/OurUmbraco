@@ -21,11 +21,11 @@
                 </div>
             }   
         }else { 
-            <div class="container">
-                <div class="row clearfix">
+            <div class="container-fluid">
+                <div class="row-fluid clearfix">
                     @foreach (var s in Model.sections) {
                         <div class="grid-section">
-                            <div class="col-md-@s.grid column">
+                            <div class="@("span" + s.grid) column">
                                 @foreach (var row in s.rows) {
                                     @renderRow(row, false);
                                 }
@@ -40,10 +40,10 @@
 
 @helper renderRow(dynamic row, bool singleColumn){
     <div @RenderElementAttributes(row)>
-        @Umbraco.If(singleColumn, "<div class='container'>")
-        <div class="row clearfix">
+        @Umbraco.If(singleColumn, "<div class='container-fluid'>")
+        <div class="row-fluid clearfix">
             @foreach ( var area in row.areas ) {
-            <div class="col-md-@area.grid column">
+            <div class="@("span" + area.grid) column">
                 <div @RenderElementAttributes(area)>
                     @foreach (var control in area.controls) {
                         if (control !=null && control.editor != null && control.editor.view != null ) {
@@ -84,7 +84,7 @@
             }
 
             if (cssVals.Any())
-                attrs.Add("style=\"" + string.Join(" ", cssVals) + "\"");
+                attrs.Add("style='" + string.Join(" ", cssVals) + "'");
         }
 
         return new MvcHtmlString(string.Join(" ", attrs));
