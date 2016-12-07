@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.usercontrols;
+using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -26,6 +27,7 @@ namespace OurUmbraco.Our.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CaptchaValidator]
         public ActionResult HandleSubmit(RegisterModel model)
         {
             var locationInvalid = string.IsNullOrEmpty(model.Latitude) || string.IsNullOrEmpty(model.Longitude);
