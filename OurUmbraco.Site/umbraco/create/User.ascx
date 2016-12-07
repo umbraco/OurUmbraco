@@ -22,7 +22,7 @@
         ControlToValidate="Email" ValidateEmptyText="false" OnServerValidate="EmailExistsCheck"></asp:CustomValidator>
     <asp:CustomValidator runat="server" ID="EmailValidator" OnServerValidate="EmailValidator_OnServerValidate"
         ControlToValidate="Email"
-        ErrorMessage='<%#ui.Text("errorHandling", "errorRegExpWithoutTab", "E-mail", CurrentUser) %>'
+        ErrorMessage="Invalid email address"
         Display="None" />
     <br />
     <asp:TextBox ID="Email" runat="server" Width="350px" CssClass="bigInput"></asp:TextBox>

@@ -3,10 +3,8 @@
 	<div class="umb-pane">
 
 		<p class="abstract" ng-hide="success">
-            <localize key="actions_chooseWhereToMove">Choose where to move</localize>
-            <strong>{{currentNode.name}}</strong>
-            <localize key="actions_toInTheTreeStructureBelow">to in the tree structure below</localize>
-        </p>
+			Choose where to move <strong>{{currentNode.name}}</strong> to in the tree structure below
+		</p>
 
 		<div class="alert alert-error" ng-show="error" ng-cloak>
 			<h4>{{error.errorMsg}}</h4>
