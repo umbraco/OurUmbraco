@@ -41,7 +41,7 @@ namespace OurUmbraco.Our.Controllers
             }
 
             var memberService = Services.MemberService;
-           
+
             if (memberService.GetByEmail(model.Email) != null)
             {
                 ModelState.AddModelError("Email", "A member with that email address already exists");
@@ -57,6 +57,28 @@ namespace OurUmbraco.Our.Controllers
             {
                 //These fields are hidden, only a bot will know to fill them in
                 //This honeypot catches them
+                return Redirect("/");
+            }
+
+            // these values are enforced in MemberDto which is internal ;-(
+            // we should really have ways to query for Core meta-data!
+            const int maxEmailLength = 900; // 1000*.9 for safety
+            const int maxLoginNameLength = 900; // 1000*.9 for safety
+            const int maxPasswordLength = 900; // 1000*.9 for safety
+            const int maxPropertyLength = 900; // keep it safe too
+
+            if (model.Email.Length > maxEmailLength
+                || model.Name.Length > maxLoginNameLength
+                || model.Password.Length > maxPasswordLength
+                || model.Location.Length > maxPropertyLength
+                || model.Longitude.Length > maxPropertyLength
+                || model.Latitude.Length > maxPropertyLength
+                || model.Company.Length > maxPropertyLength
+                || model.TwitterAlias.Length > maxPropertyLength
+                )
+            {
+                // has to be a rogue registration
+                // go away!
                 return Redirect("/");
             }
 
@@ -86,7 +108,7 @@ namespace OurUmbraco.Our.Controllers
 
             memberService.AssignRole(member.Username, "standard");
 
-            memberService.SavePassword(member, model.Password);         
+            memberService.SavePassword(member, model.Password);
 
             Members.Login(model.Email, model.Password);
 
