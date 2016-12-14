@@ -3,6 +3,7 @@
 @using Umbraco.Core
 
 @{
+	System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
 
     var id = int.Parse(Request.QueryString["category_id"]);
     var categoryProvider = new OurUmbraco.MarketPlace.Providers.UmbracoCategoryProvider();

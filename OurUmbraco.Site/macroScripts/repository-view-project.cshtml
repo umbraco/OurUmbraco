@@ -1,6 +1,8 @@
 ﻿@using OurUmbraco.Project
 @using Umbraco.Web
 @{
+	System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
+
     var ProjectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
     var projectId = int.Parse(Request.QueryString["project_id"]);
 
