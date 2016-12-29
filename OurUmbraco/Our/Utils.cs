@@ -238,6 +238,9 @@ namespace OurUmbraco.Our
                 if (hasAvatar)
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
+                    if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
+                        return avatarPath;
+
                     var path = HostingEnvironment.MapPath(avatarPath);
                     if (System.IO.File.Exists(path))
                         return path;
