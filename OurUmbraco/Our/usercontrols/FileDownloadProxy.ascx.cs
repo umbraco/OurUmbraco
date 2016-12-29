@@ -11,7 +11,9 @@ namespace OurUmbraco.Our.usercontrols
             if (Request["id"] == null)
                 return;
 
-            var fileId = int.Parse(Request["id"]);
+            int fileId;
+            if (int.TryParse(Request["id"], out fileId) == false)
+                return;
 
             var wikiFile = new WikiFile(fileId);
 
