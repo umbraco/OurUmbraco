@@ -68,7 +68,7 @@
             {
                 @Html.Partial("forum/question", topic)
             }
-            catch (HttpUnhandledException ex)
+            catch (Exception ex)
             {
                 LogHelper.Error<string>(string.Format("~/Views/MacroPartials/Forum/Thread.cshtml - error rendering topic with id {0}", topic.Id), ex);
             }
