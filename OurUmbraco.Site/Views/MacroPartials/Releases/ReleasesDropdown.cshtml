@@ -73,7 +73,7 @@
                                 <optgroup label="@majorVersion.Key">
                                     @foreach (var version in versions)
                                     {
-                                        if (version.Key.ToString() == fromVersion.ToString())
+                                        if (fromVersion != null && version.Key.ToString() == fromVersion.ToString())
                                         {
                                             <option name="@version.Key" selected="selected" value="@version.Key">@version.Key</option>
                                         }
