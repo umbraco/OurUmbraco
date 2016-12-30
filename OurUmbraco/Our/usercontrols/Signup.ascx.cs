@@ -180,7 +180,7 @@ namespace OurUmbraco.Our.usercontrols
 
         private static string GetAvatarPath(IMember member)
         {
-            var url = "http://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
+            var url = "https://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
 
             try
             {
