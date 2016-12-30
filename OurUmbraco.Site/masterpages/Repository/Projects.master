@@ -29,7 +29,7 @@
     <div class="deliPromoBox popular clearfix">
         <h2>Popular Packages</h2>
         <a href="<%= Request.Url + "popular/" %>" class="viewAll">All popular</a>
-        <%--<umbraco:Macro ID="Macro2" MaxPageSize="8" paged="0" Alias="Deli-PopularProjects" runat="server"></umbraco:Macro>--%>
+        <umbraco:Macro ID="Macro2" MaxPageSize="8" paged="0" Alias="Deli-PopularProjects" runat="server"></umbraco:Macro>
     </div>
     <div class="deliPromoBox new clearfix">
         <h2>New Packages</h2>
