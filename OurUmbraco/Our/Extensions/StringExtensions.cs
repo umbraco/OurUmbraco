@@ -13,7 +13,7 @@ namespace OurUmbraco.Our.Extensions
         {
             if (query == null) return string.Empty;
             var regex = new Regex(@"[^\w\s-]");
-            return regex.Replace(query, " ");
+            return regex.Replace(query, " ").ToLowerInvariant();
         }
     }
 }
