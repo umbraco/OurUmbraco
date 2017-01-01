@@ -6,6 +6,7 @@ using Examine.LuceneEngine.Providers;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.EntityBase;
 using Umbraco.Core.Services;
@@ -64,11 +65,14 @@ namespace OurUmbraco.Our.CustomHandlers
 
             var projectVotes = Utils.GetProjectTotalVotes(content.Id);
             var files = WikiFile.CurrentFiles(content.Id).ToArray();
-            var compatVersions = Utils.GetProjectCompatibleVersions(content.Id);
-            
+            var compatVersions = Utils.GetProjectCompatibleVersions(content.Id) ?? new List<string>();
+
             var simpleDataIndexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             simpleDataSet = ((ProjectNodeIndexDataService)simpleDataIndexer.DataService)
                 .MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", projectVotes, files, downloads, compatVersions);
+
+            if (simpleDataSet.NodeDefinition.Type == null)
+                simpleDataSet.NodeDefinition.Type = "project";
 
             var xml = simpleDataSet.RowData.ToExamineXml(simpleDataSet.NodeDefinition.NodeId, simpleDataSet.NodeDefinition.Type);
             simpleDataIndexer.ReIndexNode(xml, "project");
