@@ -145,9 +145,15 @@
                 <h2>Screenshots</h2>
                 @foreach (var image in Project.ScreenShots)
                 {
-                    <a href="@image.Path" class="projectscreenshot" rel="shadowbox[gallery]">
-                        <img src="@image.Path?bgcolor=fff&width=100&height=100&format=png" style="border:0;" />
-                    </a>
+                    if (image.Path.EndsWith("gif") ||
+                        image.Path.EndsWith("png") ||
+                        image.Path.EndsWith("jpg") ||
+                        image.Path.EndsWith("jpeg"))
+                    {
+                        <a href="@image.Path" class="projectscreenshot" rel="shadowbox[gallery]">
+                            <img src="@image.Path?bgcolor=fff&width=100&height=100&format=png" style="border: 0;"/>
+                        </a>
+                    }
                 }
             </div>
 
