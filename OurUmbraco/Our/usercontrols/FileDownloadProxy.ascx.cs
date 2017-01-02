@@ -15,6 +15,9 @@ namespace OurUmbraco.Our.usercontrols
             if (int.TryParse(Request["id"], out fileId) == false)
                 return;
 
+            if (fileId == 0)
+                return;
+
             var wikiFile = new WikiFile(fileId);
 
             wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
