@@ -9,6 +9,7 @@
 
 @{
     ITweet[] tweets = {};
+    ITweet[] filteredTweets = {};
     try
     {
         tweets = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<ITweet[]>("UmbracoSearchedTweets",
@@ -23,6 +24,14 @@
                 var searchParameter = new SearchTweetsParameters("umbraco") {SearchType = SearchResultType.Recent};
                 return Search.SearchTweets(searchParameter).ToArray();
             }, TimeSpan.FromMinutes(1));
+        
+        // TODO: make configurable in Umbraco
+        var usernameFilter = "Technologx,Technologx4Real,SOAzure,AdamSmith1,UriSamuels,coding_jobfeeds,TechSparkUk,ItProjectBoard,liveedutv,AdeboyejoAde,VivacitySocial".ToLowerInvariant().Split(',');
+        var wordFilter = "exegesis,#Job Alert:".ToLowerInvariant().Split(',');
+
+        filteredTweets = tweets.Where(
+            x => x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
+            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false).ToArray();
     }
     catch (Exception ex)
     {
@@ -30,7 +39,7 @@
     }
 }
 
-@if (tweets.Any())
+@if (filteredTweets.Any())
 {
     <section class="forum">
         <div class="container">
@@ -47,7 +56,7 @@
                 </div>
 
                 <div class="col-md-12 flex">
-                    @Column(tweets)
+                    @Column(filteredTweets)
                 </div>
 
                 <div class="col-md-12 goto-forum">
@@ -61,15 +70,7 @@
 
 @helper Column(ITweet[] tweets)
 {
-    // TODO: make configurable in Umbraco
-    var usernameFilter = "Technologx,Technologx4Real,SOAzure,AdamSmith1,UriSamuels,coding_jobfeeds,TechSparkUk,ItProjectBoard,liveedutv,AdeboyejoAde,VivacitySocial".ToLowerInvariant().Split(',');
-    var wordFilter = "exegesis,#Job Alert:".ToLowerInvariant().Split(',');
-
-    var filteredTweets = tweets.Where(
-        x => x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false 
-        && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false);
-
-    foreach (var tweet in filteredTweets.Take(10))
+    foreach (var tweet in tweets.Take(6))
     {
         <a href="@tweet.Url" class="forum-thread">
 
