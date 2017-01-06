@@ -289,6 +289,9 @@ namespace OurUmbraco.Our
             {
                 try
                 {
+                    if (memberAvatarPath.StartsWith("http://") || memberAvatarPath.StartsWith("https://"))
+                        return null;
+
                     return Image.FromFile(memberAvatarPath);
                 }
                 catch (Exception ex)
