@@ -37,8 +37,9 @@ namespace OurUmbraco.Our
             AddMarkAsSolutionReminderSent();
             UseNewLoginForm();
             UseNewForgotPasswordForm();
+            TwitterSearchMacro();
         }
-
+        
         private void EnsureMigrationsMarkerPathExists()
         {
             var path = HostingEnvironment.MapPath(MigrationMarkersPath);
@@ -628,6 +629,41 @@ namespace OurUmbraco.Our
                 macro.ControlType = "";
                 macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
                 macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void TwitterSearchMacro()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macroAlias = "TwitterSearchUmbraco";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = macroAlias,
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Community/TwitterSearchUmbraco.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);

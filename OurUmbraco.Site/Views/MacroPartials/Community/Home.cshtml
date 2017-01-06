@@ -58,10 +58,12 @@
 @if (Members.IsLoggedIn())
 {
     @Html.Partial("home/forumactivity")
+    @Html.Partial("home/twittersearchumbraco")
     @Html.Partial("home/documentation")
 }
 else
 {
     @Html.Partial("home/documentation")
     @Html.Partial("home/forumactivity")
+    @Html.Partial("home/twittersearchumbraco")
 }
