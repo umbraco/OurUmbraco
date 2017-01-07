@@ -1,10 +1,14 @@
 ﻿@using OurUmbraco.Project
 @using Umbraco.Web
 @{
-	System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
+    System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
 
     var ProjectsProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
-    var projectId = int.Parse(Request.QueryString["project_id"]);
+    int projectId;
+    if (int.TryParse(Request.QueryString["project_id"], out projectId) == false)
+    {
+        return;
+    }
 
     var qs = Request.RawUrl.Substring(Request.RawUrl.IndexOf('?') + 1).Replace("&project_id=" + projectId, "");
     var callback = Request.QueryString["callback"];
@@ -21,7 +25,10 @@
     string ProjectCompatitbleWithDotNet = "4.0";
     string ProjectCompatitbleWithMediumTrust = "No";
 
-    if (Project.Description.Length > 2000) { descCssClass = "wrap"; }
+    if (Project.Description.Length > 2000)
+    {
+        descCssClass = "wrap";
+    }
 
     int currentReleaseFile = 0;
     if (int.TryParse(Project.CurrentReleaseFile, out currentReleaseFile))
