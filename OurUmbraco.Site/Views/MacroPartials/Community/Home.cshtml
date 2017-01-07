@@ -57,24 +57,89 @@
 
 @if (Members.IsLoggedIn())
 {
-    @Html.Partial("home/forumactivity")
-    <div id="twitter-search"></div>
+    @ForumActivity()
+    @TwitterSearch()
     @Html.Partial("home/documentation")
 }
 else
 {
     @Html.Partial("home/documentation")
-    @Html.Partial("home/forumactivity")
-    <div id="twitter-search"></div>
+    @ForumActivity()
+    @TwitterSearch()
+}
+
+@helper ForumActivity()
+{
+    <section class="forum">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">Forum Activity</h1>
+                    <p>
+                        Recent activity in the forums, where people are helping each other with current problems.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Recent posts</small>
+                </div>
+
+                <div class="col-md-12 flex" id="forum-activity">
+                    <h2>Loading latest forum activity...</h2>
+                </div>
+
+                <div class="col-md-12 goto-forum">
+                    <a class="button green" href="/forum">Go to Forum &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}
+
+@helper TwitterSearch()
+{
+    <section class="forum">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">Twitter Activity</h1>
+                    <p>
+                        Recent activity on twitter, where people are talking about Umbraco.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Recent tweets</small>
+                </div>
+
+                <div class="col-md-12 flex" id="twitter-search">
+                    <h2>Loading twitter search results...</h2>
+                </div>
+
+                <div class="col-md-12 goto-forum">
+                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
         try {
-            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch")");
+            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new { numberOfResults = 6 })");
         }
-        catch (err) {
-            console.log("Couldn't load Twitter feed", err.message);
+        catch (errTwitter) {
+            console.log("Couldn't load Twitter feed", errTwitter.message);
+        }
+
+        try {
+            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new { numberOfTopics = 6 })");
+        }
+        catch (errForum) {
+            console.log("Couldn't load latest forum activity", errForum.message);
         }
     });
 </script>

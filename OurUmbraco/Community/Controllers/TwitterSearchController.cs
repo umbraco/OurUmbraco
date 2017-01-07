@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Mvc;
 using Tweetinvi;
 using Tweetinvi.Models;
@@ -11,14 +8,18 @@ using Tweetinvi.Parameters;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
+using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Community.Controllers
 {
     public class TwitterSearchController : SurfaceController
     {
-        public ActionResult TwitterSearchResult(string searchWord = "umbraco")
+        public ActionResult TwitterSearchResult(int numberOfResults = 6)
         {
+            if (numberOfResults > 30)
+                numberOfResults = 6;
+            
             ITweet[] filteredTweets = { };
             try
             {
@@ -31,18 +32,25 @@ namespace OurUmbraco.Community.Controllers
                             ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
                         Tweetinvi.User.GetAuthenticatedUser();
 
-                        var searchParameter = new SearchTweetsParameters(searchWord) { SearchType = SearchResultType.Recent };
+                        var searchParameter = new SearchTweetsParameters("umbraco") { SearchType = SearchResultType.Recent };
                         return Search.SearchTweets(searchParameter).ToArray();
 
                     }, TimeSpan.FromMinutes(2));
 
-                var usernameFilter = "Technologx,Technologx4Real,SOAzure,AdamSmith1,AdamSmitht1,UriSamuels,coding_jobfeeds,TechSparkUk,ItProjectBoard,liveedutv,AdeboyejoAde,VivacitySocial,CHHCInc,DevOpsBlogs,ItCrowdSource,EquiKey".ToLowerInvariant().Split(',');
-                var wordFilter = "exegesis,#Job Alert:,#pigefodboldbsf".ToLowerInvariant().Split(',');
+                var settingsNode = Umbraco.TypedContentAtRoot().FirstOrDefault();
+                if (settingsNode != null)
+                {
+                    var usernameFilter = settingsNode.GetPropertyValue<string>("twitterFilterAccounts")
+                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
+                    var wordFilter = settingsNode.GetPropertyValue<string>("twitterFilterWords")
+                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
 
-                filteredTweets = tweets.Where(
-                    x => x.Urls.Any(u => u.ExpandedURL.Contains("umbraco-proxy.com")) == false
-                    && x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
-                    && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false).ToArray();
+                    filteredTweets = tweets.Where(x => 
+                            x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
+                            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false)
+                        .Take(numberOfResults)
+                        .ToArray();
+                }
             }
             catch (Exception ex)
             {
