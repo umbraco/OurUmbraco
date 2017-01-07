@@ -293,6 +293,10 @@
       <HintPath>..\packages\UmbracoCms.Core.7.5.6\lib\TidyNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Tweetinvi, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7247f14397bf67b9, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetinviAPI.1.2.0\lib\net45\Tweetinvi.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="umbraco, Version=1.0.6185.24089, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.5.6\lib\umbraco.dll</HintPath>
       <Private>True</Private>
@@ -340,6 +344,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />

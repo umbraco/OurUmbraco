@@ -1792,7 +1792,6 @@
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
     <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\MacroPartials\Members\Login.cshtml" />
-    <Content Include="Views\MacroPartials\Community\TwitterSearchUmbraco.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />

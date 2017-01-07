@@ -58,12 +58,23 @@
 @if (Members.IsLoggedIn())
 {
     @Html.Partial("home/forumactivity")
-    @Html.Partial("home/twittersearchumbraco")
+    <div id="twitter-search"></div>
     @Html.Partial("home/documentation")
 }
 else
 {
     @Html.Partial("home/documentation")
     @Html.Partial("home/forumactivity")
-    @Html.Partial("home/twittersearchumbraco")
+    <div id="twitter-search"></div>
 }
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        try {
+            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch")");
+        }
+        catch (err) {
+            console.log("Couldn't load Twitter feed", err.message);
+        }
+    });
+</script>

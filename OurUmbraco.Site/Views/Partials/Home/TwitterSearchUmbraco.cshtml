@@ -1,2 +1,52 @@
-﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
-@Umbraco.RenderMacro("TwitterSearchUmbraco")
+﻿@using OurUmbraco.Forum.Extensions
+@using Tweetinvi.Models
+@model ITweet[]
+
+@if (Model.Any())
+{
+    <section class="forum">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">Twitter Activity</h1>
+                    <p>
+                        Recent activity on twitter, where people are talking about Umbraco.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Recent tweets</small>
+                </div>
+
+                <div class="col-md-12 flex">
+                    @Column(Model)
+                </div>
+
+                <div class="col-md-12 goto-forum">
+                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}
+
+@helper Column(ITweet[] tweets)
+{
+    foreach (var tweet in tweets.Take(6))
+    {
+        <a href="@tweet.Url" class="forum-thread">
+
+            <div class="avatar">
+                <img src="@tweet.CreatedBy.ProfileImageUrl400x400" />
+            </div>
+
+            <div class="meta">
+                <div class="forum-thread-text">
+                    <h3>@tweet.Text</h3>
+                    <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
+                </div>
+            </div>
+        </a>
+    }
+}
