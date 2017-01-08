@@ -1,28 +1,32 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 
-<asp:Content ContentPlaceHolderId="Main" runat="server">
+<asp:Content ContentPlaceHolderID="Main" runat="server">
     <umbraco:Macro Alias="CommunityHome" runat="server"></umbraco:Macro>
 </asp:Content>
 
-<asp:Content ContentPlaceHolderID="Search" runat="server" >
+<asp:Content ContentPlaceHolderID="Search" runat="server">
 
     <script type="text/template" class="search-item-template">
         <li>
-			<a href="{{ url }}">
-				<div class="type-icon">
-					<i class="{{ icon }}"></i>
-				</div>
+            <a href="{{ url }}">
+                <div class="type-icon">
+                    <i class="{{ icon }}"></i>
+                </div>
 
-				<div class="type-context">
-					<div class="type-name">
-						{{ name }}
-					</div>
-					<div class="type-description">
-						{{ description }}
-					</div>
-				</div>
-			</a>
-		</li>
+                <div class="type-context">
+                    <div class="type-name">
+                        {{ name }}
+                    </div>
+                    <div class="type-description">
+                        {{ description }}
+                    </div>
+                </div>
+            </a>
+        </li>
     </script>
 
+</asp:Content>
+
+<asp:Content ID="Content3" ContentPlaceHolderID="EndScripts" runat="server">
+    <umbraco:Macro Alias="CommunityHomeScripts" runat="server"></umbraco:Macro>
 </asp:Content>

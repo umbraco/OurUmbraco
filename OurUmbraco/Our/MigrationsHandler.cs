@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -8,7 +7,6 @@ using System.Web.Hosting;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Web;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -38,6 +36,7 @@ namespace OurUmbraco.Our
             UseNewLoginForm();
             UseNewForgotPasswordForm();
             AddTwitterFilters();
+            AddHomeScriptsMacro();
         }
         
         private void EnsureMigrationsMarkerPathExists()
@@ -682,5 +681,42 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+
+        private void AddHomeScriptsMacro()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macroAlias = "CommunityHomeScripts";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "[Community] Home Scripts",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Community/Scripts.cshtml",
+                        UseInEditor = false
+                    };
+                    macro.Save();
+                }
+                
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
     }
 }
