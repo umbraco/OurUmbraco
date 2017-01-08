@@ -18,6 +18,12 @@ namespace OurUmbraco.Site.Views.Search
 
             if (!IsPostBack)
             {
+                // A particular SQL injection attack uses this query which takes very long to process, turning it into and easy DOS attack
+                // /search?q=999999.9' /**/uNiOn/**/aLl /**/sElEcT 0x393133353134353632312e39,0x393133353134353632322e39,0x393133353134353632332e39,0x393133353134353632342e39,0x393133353134353632352e39,0x393133353134353632362e39,0x393133353134353632372e39,0x393133353134353632382e39,0x393133353134353632392e39,0x39313335313435363231302e39,0x39313335313435363231312e39,0x39313335313435363231322e39,0x39313335313435363231332e39,0x39313335313435363231342e39,0x39313335313435363231352e39 and '0'='0-- 
+                var searchQuery = Request.QueryString["q"];
+                if(searchQuery.Contains("0x393133353134353632392e39"))
+                    Response.Redirect("/search?q=");
+
                 var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
                 var nodeTypeAlias = Request.QueryString["cat"];
@@ -67,7 +73,7 @@ namespace OurUmbraco.Site.Views.Search
                     orderBy = Request.QueryString["order"];
                 }
 
-                var ourSearcher = new OurSearcher(Request.QueryString["q"],
+                var ourSearcher = new OurSearcher(searchQuery,
                     //TODO: Depending on what order by this is, we need to pass in a data
                     // type here, for example, if its an INT or a Date!
                     orderBy: orderBy,
