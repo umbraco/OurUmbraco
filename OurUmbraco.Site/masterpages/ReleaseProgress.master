@@ -1,6 +1,5 @@
 ﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Master.master" AutoEventWireup="true" %>
 <%@ Import Namespace="OurUmbraco.Release" %>
-<%@ Import Namespace="InfoCaster.Umbraco.UrlTracker.Helpers" %>
 <%@ Import Namespace="Umbraco.Web" %>
 <%@ Import Namespace="Umbraco.Core.Models" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="Head" runat="server">
