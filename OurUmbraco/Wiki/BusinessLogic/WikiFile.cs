@@ -395,7 +395,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
                     }
                     else
                     {
-                        throw new ArgumentException(string.Format("No node exists with id '{0}'", Id));
+                        HttpContext.Current.Response.StatusCode = 404;
+                        HttpContext.Current.Response.End();
                     }
                 }
             }
