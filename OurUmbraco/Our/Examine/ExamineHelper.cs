@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Our.Examine
@@ -45,7 +46,7 @@ namespace OurUmbraco.Our.Examine
             lines.AddRange(File.ReadAllLines(file.FullName));
 
             var body = lines.Any()
-                ? umbraco.library.StripHtml(RemoveSpecialCharacters(string.Join("", lines)))
+                ? RemoveSpecialCharacters(string.Join("", lines)).StripHtml()
                 : string.Empty;
 
             var firstHeadline = lines.FirstOrDefault(x => x.StartsWith("#"));

@@ -216,7 +216,7 @@ namespace OurUmbraco.Our.Examine
                 //remove the current version field from the lucene doc
                 e.Document.RemoveField("body");
                 //add a 'body' field with stripped html
-                e.Document.Add(new Field("body", library.StripHtml(e.Fields["body"]), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
+                e.Document.Add(new Field("body", e.Fields["body"].StripHtml(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES));
             }
 
             //If there is a versions field, we'll split it and index the same field on each version

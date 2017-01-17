@@ -68,7 +68,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
                         var domain = _details.SelectSingleNode("//domain").InnerText;
                         var body = _details.SelectSingleNode("//body").InnerText;
                         body = string.Format(body, topic.Title, "https://" + domain + url + "#comment-" + comment.Id, memberName,
-                            HttpUtility.HtmlDecode(umbraco.library.StripHtml(comment.Body)));
+                            HttpUtility.HtmlDecode(comment.Body.StripHtml()));
 
                         var mailMessage = new MailMessage
                         {
