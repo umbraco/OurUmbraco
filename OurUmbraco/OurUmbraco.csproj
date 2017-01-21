@@ -584,13 +584,6 @@
     <Compile Include="Our\usercontrols\__EventEditor.ascx.designer.cs">
       <DependentUpon>__EventEditor.ascx.cs</DependentUpon>
     </Compile>
-    <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.cs">
-      <DependentUpon>FileDownloadProxy.ascx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Our\usercontrols\FileDownloadProxy.ascx.designer.cs">
-      <DependentUpon>FileDownloadProxy.ascx.cs</DependentUpon>
-    </Compile>
     <Compile Include="Our\usercontrols\__Forgotpassword.ascx.cs">
       <DependentUpon>__Forgotpassword.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -800,9 +793,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\__EventEditor.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
-    <Content Include="Our\usercontrols\FileDownloadProxy.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Our\usercontrols\__Forgotpassword.ascx">
