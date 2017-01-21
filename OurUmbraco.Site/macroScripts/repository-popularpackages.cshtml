@@ -11,6 +11,8 @@
 @using Umbraco.Web
 
 @{
+	System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
+
     var take = 30;
 
     var filters = new List<SearchFilters>();

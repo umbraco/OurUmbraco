@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using System.Web.Mvc;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.usercontrols;
+using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -26,6 +27,7 @@ namespace OurUmbraco.Our.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [CaptchaValidator]
         public ActionResult HandleSubmit(RegisterModel model)
         {
             var locationInvalid = string.IsNullOrEmpty(model.Latitude) || string.IsNullOrEmpty(model.Longitude);
@@ -41,7 +43,7 @@ namespace OurUmbraco.Our.Controllers
             }
 
             var memberService = Services.MemberService;
-           
+
             if (memberService.GetByEmail(model.Email) != null)
             {
                 ModelState.AddModelError("Email", "A member with that email address already exists");
@@ -57,6 +59,27 @@ namespace OurUmbraco.Our.Controllers
             {
                 //These fields are hidden, only a bot will know to fill them in
                 //This honeypot catches them
+                return Redirect("/");
+            }
+
+            // these values are enforced in MemberDto which is internal ;-(
+            // we should really have ways to query for Core meta-data!
+            const int maxEmailLength = 400;
+            const int maxLoginNameLength = 200;
+            const int maxPasswordLength = 400; 
+            const int maxPropertyLength = 400;
+
+            if (model.Email != null && model.Email.Length > maxEmailLength
+                || model.Name != null && model.Name.Length > maxLoginNameLength
+                || model.Password != null && model.Password.Length > maxPasswordLength
+                || model.Location != null && model.Location.Length > maxPropertyLength
+                || model.Longitude != null && model.Longitude.Length > maxPropertyLength
+                || model.Latitude != null && model.Latitude.Length > maxPropertyLength
+                || model.TwitterAlias != null && model.TwitterAlias.Length > maxPropertyLength
+                )
+            {
+                // has to be a rogue registration
+                // go away!
                 return Redirect("/");
             }
 
@@ -86,7 +109,7 @@ namespace OurUmbraco.Our.Controllers
 
             memberService.AssignRole(member.Username, "standard");
 
-            memberService.SavePassword(member, model.Password);         
+            memberService.SavePassword(member, model.Password);
 
             Members.Login(model.Email, model.Password);
 
@@ -127,7 +150,7 @@ namespace OurUmbraco.Our.Controllers
 
         private static string GetAvatarPath(IMembershipUser member)
         {
-            var url = "http://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
+            var url = "https://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
 
             try
             {

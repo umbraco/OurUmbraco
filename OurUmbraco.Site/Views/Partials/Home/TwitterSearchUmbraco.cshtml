@@ -1,0 +1,25 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using Tweetinvi.Models
+@model ITweet[]
+
+@foreach (var tweet in Model)
+{
+    <a href="@tweet.Url" class="forum-thread">
+
+        <div class="avatar">
+            <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
+        </div>
+
+        <div class="meta">
+            <div class="forum-thread-text">
+                <h3>@tweet.Text</h3>
+                <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
+            </div>
+        </div>
+    </a>
+}
+
+@if (Model.Any() == false)
+{
+    <h2>Could not load recent tweets.</h2>
+}

@@ -37,7 +37,7 @@ namespace OurUmbraco.Our.Api
                     }
                     break;
                 case "gravatar":
-                    var gravatarUrl = "http://www.gravatar.com/avatar/" + umbraco.library.md5(member.Email) + "?s=48&d=monsterid";
+                    var gravatarUrl = "https://www.gravatar.com/avatar/" + umbraco.library.md5(member.Email) + "?s=48&d=monsterid";
                     return SaveUrlAsBuddyIcon(gravatarUrl, member);
             }
 

@@ -20,6 +20,7 @@ namespace OurUmbraco.Our.CustomHandlers
         {
             BindExamineEvents();
             ZipDownloader.OnFinish += ZipDownloader_OnFinish;
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
         
         private void BindExamineEvents()

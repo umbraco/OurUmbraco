@@ -16,5 +16,11 @@ namespace OurUmbraco.Forum.Models
 
         [ResultColumn("LastReplyAuthorName")]
         public string LastReplyAuthorName { get; set; }
+
+        [ResultColumn("LastReplyAuthorAvatar")]
+        public string LastReplyAuthorAvatar { get; set; }
+
+        [ResultColumn("CategoryName")]
+        public string CategoryName { get; set; }
     }
 }

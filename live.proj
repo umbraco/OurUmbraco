@@ -1,4 +1,4 @@
-<Project DefaultTargets="TransformWebConfig" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project DefaultTargets="TransformConfigs" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <ProjectPath>.\</ProjectPath>
     <SourceDirectory>.\OurUmbraco.Site\</SourceDirectory>
@@ -10,20 +10,28 @@
 
   <UsingTask TaskName="TransformXml" AssemblyFile="$(DeployHelperDirectory)Microsoft.Web.Publishing.Tasks.dll"/>
 
-  <Target Name="TransformWebConfig">
+  <Target Name="TransformConfigs">
     <PropertyGroup>
       <WebConfigTransformInputFile>$(SourceDirectory)web.config</WebConfigTransformInputFile>
       <WebConfigTransformFile>$(DeployHelperDirectory)\$(ProjectName)\ConfigTransforms\Web.$(Environment).config</WebConfigTransformFile>
-      <WebConfigTransformOutputFolder>$(DeployHelperDirectory)\$(ProjectName)\$(Environment)\</WebConfigTransformOutputFolder>
 
+      <ApplicationInsightsConfigTransformInputFile>$(SourceDirectory)ApplicationInsights.config</ApplicationInsightsConfigTransformInputFile>
+	  <ApplicationInsightsConfigTransformFile>$(DeployHelperDirectory)\$(ProjectName)\ConfigTransforms\ApplicationInsights.$(Environment).config</ApplicationInsightsConfigTransformFile>
+      <ConfigTransformOutputFolder>$(DeployHelperDirectory)\$(ProjectName)\$(Environment)\</ConfigTransformOutputFolder>
+	  
       <StackTraceEnabled>False</StackTraceEnabled>
     </PropertyGroup>
 
-    <MakeDir Directories="$(WebConfigTransformOutputFolder)"/>
+    <MakeDir Directories="$(ConfigTransformOutputFolder)"/>
 
     <TransformXml Source="$(WebConfigTransformInputFile)"
                   Transform="$(WebConfigTransformFile)"
-                  Destination="$(WebConfigTransformOutputFolder)\Web.config"
+                  Destination="$(ConfigTransformOutputFolder)\Web.config"
+                  StackTrace="$(StackTraceEnabled)" />
+
+    <TransformXml Source="$(ApplicationInsightsConfigTransformInputFile)"
+                  Transform="$(ApplicationInsightsConfigTransformFile)"
+                  Destination="$(ConfigTransformOutputFolder)\ApplicationInsights.config"
                   StackTrace="$(StackTraceEnabled)" />
   </Target>
 </Project>

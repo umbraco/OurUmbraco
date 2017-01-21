@@ -1,0 +1,40 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Models
+@model ReadOnlyTopic[]
+
+@foreach (var topic in Model)
+{
+    <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer > 0 ? "solved": null)">
+
+        <div class="avatar">
+            @Html.Raw(topic.LastReplyAuthorAvatar)
+        </div>
+
+        <div class="meta">
+            <div class="forum-thread-text">
+                <h3>@topic.Title</h3>
+                <p>
+                    @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                    {
+                        <text>last updated by @topic.LastReplyAuthorName</text>
+                    }
+                    else
+                    {
+                        <text>created by @topic.AuthorName</text>
+                    }
+
+                    @topic.Updated.ConvertToRelativeTime()
+                </p>
+            </div>
+
+            <div class="category">
+                <span class="cat">@topic.CategoryName</span>
+            </div>
+        </div>
+    </a>
+}
+
+@if (Model.Any() == false)
+{
+    <h2>Could not load recent forum activity.</h2>
+}

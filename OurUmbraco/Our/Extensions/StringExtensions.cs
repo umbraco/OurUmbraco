@@ -12,8 +12,8 @@ namespace OurUmbraco.Our.Extensions
         public static string MakeSearchQuerySafe(this string query)
         {
             if (query == null) return string.Empty;
-            var regex = new Regex(@"[^\w\s-]");
-            return regex.Replace(query, " ");
+            var regex = new Regex(@"[^\w\s]");
+            return regex.Replace(query, " ").ToLowerInvariant();
         }
     }
 }

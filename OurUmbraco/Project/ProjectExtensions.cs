@@ -99,7 +99,7 @@ namespace OurUmbraco.Project
 
         public static string StripHtmlAndLimit(this String str, int chars)
         {
-            str = umbraco.library.StripHtml(str);
+            str = str.StripHtml();
 
             if (str.Length > chars)
                 str = str.Substring(0, chars);

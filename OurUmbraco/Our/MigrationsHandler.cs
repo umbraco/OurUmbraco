@@ -7,7 +7,6 @@ using System.Web.Hosting;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Web;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -33,16 +32,18 @@ namespace OurUmbraco.Our
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
             AddSearchDocumentTypeAndPage();
-            UseNewLoginForm();
-            UseNewForgotPasswordForm();
             UseNewMyProjectsOverview();
             UseNewRssFeedsOverview();
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
+            UseNewLoginForm();
+            UseNewForgotPasswordForm();
+            AddTwitterFilters();
+            AddHomeScriptsMacro();
         }
-
+        
         private void EnsureMigrationsMarkerPathExists()
         {
             var path = HostingEnvironment.MapPath(MigrationMarkersPath);
@@ -593,56 +594,6 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void UseNewLoginForm()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                var macroService = ApplicationContext.Current.Services.MacroService;
-                var macro = macroService.GetByAlias("MemberLogin");
-                macro.ControlType = "";
-                macro.ScriptPath = "~/Views/MacroPartials/Members/Login.cshtml";
-                macroService.Save(macro);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
-        private void UseNewForgotPasswordForm()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                var macroService = ApplicationContext.Current.Services.MacroService;
-                var macro = macroService.GetByAlias("MemberPasswordReminder");
-                macro.ControlType = "";
-                macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
-                macroService.Save(macro);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
         private void UseNewMyProjectsOverview()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -818,5 +769,135 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+        private void UseNewLoginForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberLogin");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/Login.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewForgotPasswordForm()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macro = macroService.GetByAlias("MemberPasswordReminder");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Members/ForgotPassword.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddTwitterFilters()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityContentType = contentTypeService.GetContentType("Community");
+                var propertyTypeAlias = "twitterFilterAccounts";
+                var textboxMultiple = new DataTypeDefinition("Umbraco.TextboxMultiple");
+
+                var tabName = "Settings";
+                if (communityContentType.PropertyGroups.Contains(tabName) == false)
+                    communityContentType.AddPropertyGroup(tabName);
+
+                if (communityContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textboxAccountsFilter = new PropertyType(textboxMultiple, propertyTypeAlias) { Name = "CSV of Twitter accounts to filter" };
+                    communityContentType.AddPropertyType(textboxAccountsFilter, tabName);   
+                }
+
+                propertyTypeAlias = "twitterFilterWords";
+                if (communityContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textboxWordFilter = new PropertyType(textboxMultiple, propertyTypeAlias) { Name = "CSV of words filter tweets out" };
+                    communityContentType.AddPropertyType(textboxWordFilter, tabName);
+                }
+                
+                contentTypeService.Save(communityContentType);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+
+        private void AddHomeScriptsMacro()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var macroAlias = "CommunityHomeScripts";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "[Community] Home Scripts",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Community/Scripts.cshtml",
+                        UseInEditor = false
+                    };
+                    macro.Save();
+                }
+                
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
     }
 }

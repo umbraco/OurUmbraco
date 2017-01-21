@@ -6,13 +6,14 @@ using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
 using OurUmbraco.Our.usercontrols;
+using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Web.Models;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.Controllers
 {
-    public class LoginController: SurfaceController
+    public class LoginController : SurfaceController
     {
         [ChildActionOnly]
         public ActionResult RenderLogin()
@@ -28,6 +29,7 @@ namespace OurUmbraco.Our.Controllers
             return PartialView("~/Views/Partials/Members/ForgotPassword.cshtml", loginModel);
         }
 
+        [CaptchaValidator]
         public ActionResult Login(LoginModel model)
         {
             if (ModelState.IsValid == false)
@@ -83,6 +85,7 @@ namespace OurUmbraco.Our.Controllers
             return CurrentUmbracoPage();
         }
 
+        [CaptchaValidator]
         public ActionResult ForgotPassword(LoginModel model)
         {
             if(string.IsNullOrWhiteSpace(model.Username))
@@ -119,8 +122,7 @@ namespace OurUmbraco.Our.Controllers
             if (m == null)
             {
                 // Don't add an error and reveal that someone with this email address exists on this site
-                TempData["Success"] = true;
-                return RedirectToCurrentUmbracoPage();
+                return Redirect(CurrentPage.Url + "?success=true");
             }
 
             // Automatically approve all members, as we don't have an approval process now
@@ -153,8 +155,7 @@ namespace OurUmbraco.Our.Controllers
                     smtpClient.Send(mailMessage);
             }
 
-            TempData["Success"] = true;
-            return RedirectToCurrentUmbracoPage();
+            return Redirect(CurrentPage.Url + "?success=true");
         }
 
         private string RandomString(int size, bool lowerCase)
