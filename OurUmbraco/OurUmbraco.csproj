@@ -527,6 +527,7 @@
     <Compile Include="Our\CustomHandlers\SearchPageRouteHandler.cs" />
     <Compile Include="Our\CustomHandlers\TopicVote.cs" />
     <Compile Include="Our\DefaultMemberAvatarHandler.cs" />
+    <Compile Include="Our\ErrorHandler\AiHandleErrorAttribute.cs" />
     <Compile Include="Our\Examine\DocumentationIndexConfig.cs" />
     <Compile Include="Our\Examine\DocumentationIndexDataService.cs" />
     <Compile Include="Our\Examine\ExamineHelper.cs" />
@@ -538,6 +539,7 @@
     <Compile Include="Our\Examine\SearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilters.cs" />
     <Compile Include="Our\Extensions\StringExtensions.cs" />
+    <Compile Include="Our\FilterConfig.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoAuthTokenServerExtensions.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoCustomOwinStartup.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoGoogleAuthExtensions.cs" />

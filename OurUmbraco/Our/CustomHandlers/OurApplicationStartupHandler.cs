@@ -7,7 +7,6 @@ using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using OurUmbraco.Our.Examine;
 using Umbraco.Core;
 using Umbraco.Web;
-using Umbraco.Web.Routing;
 
 namespace OurUmbraco.Our.CustomHandlers
 {
@@ -22,6 +21,7 @@ namespace OurUmbraco.Our.CustomHandlers
             CreateRoutes();
             BindExamineEvents();
             ZipDownloader.OnFinish += ZipDownloader_OnFinish;
+            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
 
         private void CreateRoutes()

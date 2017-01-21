@@ -1,11 +1,13 @@
 using System.Web.Mvc;
+using OurUmbraco.Our.ErrorHandler;
 
-namespace OurUmbraco.Site{
+namespace OurUmbraco.Our
+{
     public class FilterConfig
     {
         public static void RegisterGlobalFilters(GlobalFilterCollection filters)
         {
-            filters.Add(new ErrorHandler.AiHandleErrorAttribute());
+            filters.Add(new AiHandleErrorAttribute());
         }
     }
 }
