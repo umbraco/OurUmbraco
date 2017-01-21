@@ -820,6 +820,7 @@ namespace OurUmbraco.Our
             }
         }
 
+
         private void AddTwitterFilters()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
