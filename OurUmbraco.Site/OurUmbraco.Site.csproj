@@ -1716,7 +1716,6 @@
     <Content Include="Views\MacroPartials\Releases\AllReleases.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ProjectDetails.cshtml" />
     <Content Include="Views\MacroPartials\Members\Register.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\LatestActivity.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
     <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
@@ -1758,7 +1757,7 @@
     <Content Include="Views\Partials\Project\Complete.cshtml" />
     <Content Include="Views\Partials\Home\LatestForumActivity.cshtml" />
     <Content Include="Views\MacroPartials\Community\Scripts.cshtml" />
-    <Content Include="Service References\Application Insights\ConnectedService.json" />    
+    <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4337,7 +4336,7 @@
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Partials\Home\TwitterSearchUmbraco.cshtml" />
-    <Content Include="Views\Partials\Home\ForumActivity.cshtml" />    
+    <Content Include="Views\Partials\Home\ForumActivity.cshtml" />
     <Content Include="Views\Projects.cshtml" />
     <Content Include="Views\Project.cshtml" />
     <Content Include="Views\DocumentationMainpage.cshtml" />
