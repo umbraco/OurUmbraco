@@ -4336,7 +4336,6 @@
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Partials\Home\TwitterSearchUmbraco.cshtml" />
-    <Content Include="Views\Partials\Home\ForumActivity.cshtml" />
     <Content Include="Views\Projects.cshtml" />
     <Content Include="Views\Project.cshtml" />
     <Content Include="Views\DocumentationMainpage.cshtml" />
