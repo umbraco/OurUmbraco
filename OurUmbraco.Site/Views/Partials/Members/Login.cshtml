@@ -1,11 +1,12 @@
 @using OurUmbraco.Our.Controllers
+@using reCAPTCHA.MVC
 @inherits UmbracoViewPage<Umbraco.Web.Models.LoginModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
 }
 
-<fi class="form simpleForm" id="registrationForm">
+<div class="form simpleForm" id="registrationForm">
     @using (Html.BeginUmbracoForm<LoginController>("Login"))
     {
         @Html.ValidationSummary(true)
@@ -13,7 +14,7 @@
 
         <fieldset>
             <p>
-                @Html.LabelFor(m => m.Username, new { @cless = "inputLabel" })<br />
+                @Html.LabelFor(m => m.Username, new { @class = "inputLabel" })<br />
                 @Html.ValidationMessageFor(m => m.Username)
 
                 @Html.TextBoxFor(m => m.Username, new { @class = "email title" })
@@ -22,9 +23,15 @@
 
         <fieldset>
             <p>
-                @Html.LabelFor(m => m.Password, new { @cless = "inputLabel" })<br />
+                @Html.LabelFor(m => m.Password, new { @class = "inputLabel" })<br />
                 @Html.ValidationMessageFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password, new { @cless = "password title" })
+                @Html.PasswordFor(m => m.Password, new { @class = "password title" })
+            </p>
+        </fieldset>
+        <fieldset>
+            <p>
+                @Html.Recaptcha()
+                @Html.ValidationMessage("ReCaptcha")
             </p>
         </fieldset>
 
