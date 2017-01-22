@@ -1,0 +1,16 @@
+@using OurUmbraco.Forum.Services
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+@{
+    var topicService = new TopicService(ApplicationContext.Current.DatabaseContext);
+    var topics = topicService.GetLatestTopics();
+}
+
+<ul>
+    @foreach (var topic in topics)
+    {
+        <li>
+            @topic.Title
+        </li>
+    }
+</ul>
