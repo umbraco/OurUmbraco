@@ -411,8 +411,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <None Include="Views\Partials\Forum\Forum.cshtml" />
-    <None Include="Views\Partials\Forum\ForumActions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\Form.browser" />
@@ -1740,6 +1738,7 @@
     <Content Include="Views\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Members\Login.cshtml" />
     <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\Partials\Forum\Forum.cshtml" />
     <Content Include="Views\Partials\Projects\MyProjects.cshtml" />
     <Content Include="Views\MacroPartials\Projects\MyProjects.cshtml" />
     <Content Include="Views\EditProject.cshtml" />
@@ -1749,7 +1748,8 @@
     <Content Include="Views\Partials\Community\Scripts.cshtml" />
     <Content Include="Views\Partials\Community\Home.cshtml" />
     <Content Include="Views\Partials\Community\JsValues.cshtml" />
-    <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
+    <Content Include="Views\Partials\Forum\ForumActions.cshtml" />
+    <Content Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Partials\Project\EditFiles.cshtml" />
     <Content Include="Views\Partials\Project\PackageEditNavigation.cshtml" />
     <Content Include="Views\Partials\Project\EditScreenshots.cshtml" />
