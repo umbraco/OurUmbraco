@@ -79,6 +79,53 @@
 
 	}
 
+    .pre {
+		overflow: auto;
+		display: block;
+		font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+		background-color: #333;
+		color: #fff;
+		font-size: 0.8rem;
+		line-height: 1.4em;
+		background-clip: padding-box;
+		padding: 8px 15px 8px 15px;
+		border-radius: 5px;
+		width: 100%;
+		min-width: 300px;
+		text-align: left;
+		border: none;
+		margin: 0 auto;
+
+		&:hover {
+			background: lighten(#333, 5%);
+			cursor: pointer;
+		}
+	}
+
+    .pm-nuget {
+		position: relative;
+		display: block;
+		margin: 10px auto 25px auto;
+		height: 100%;
+		width: auto;
+		color: #fff;
+
+		&:before {
+			content:"PM>";
+			display: block;
+			position: absolute;
+			top: 50%;
+			left: 0;
+			font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+			font-size: 0.8rem;
+			transform: translate(15px, -46%);
+			opacity: .9;
+		}
+        .pre {
+            padding-left: 45px;
+        }
+	}
+
 
 	h2, h3, strong, span {
 		color: $color-headline;

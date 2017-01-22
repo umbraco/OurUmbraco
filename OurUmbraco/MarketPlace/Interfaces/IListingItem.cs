@@ -46,12 +46,13 @@ namespace OurUmbraco.MarketPlace.Interfaces
         bool OpenForCollab { get; set; }
         bool Live { get; set; }
         bool Disabled { get; set; }
-        String SourceCodeUrl { get; set; }
+        string SourceCodeUrl { get; set; }
+        string NuGetPackageUrl { get; set; }
         int Downloads { get; }
         int Karma { get; }
         string ProjectUrl { get; set; }
         Guid Version { get; }
-        String LicenseKey { get; set; }
+        string LicenseKey { get; set; }
         int ProjectViews { get; }
     }
 }

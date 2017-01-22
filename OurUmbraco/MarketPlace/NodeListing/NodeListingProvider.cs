@@ -162,6 +162,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("licenseUrl", listingItem.LicenseUrl);
             content.SetValue("supportUrl", listingItem.SupportUrl);
             content.SetValue("sourceUrl", listingItem.SourceCodeUrl);
+            content.SetValue("nuGetPackageUrl", listingItem.NuGetPackageUrl);
             content.SetValue("demoUrl", listingItem.DemonstrationUrl);
             content.SetValue("openForCollab", listingItem.OpenForCollab);
             content.SetValue("notAPackage", listingItem.NotAPackage);
