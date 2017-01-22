@@ -1,9 +1,9 @@
-@using OurUmbraco.Forum.Extensions
+﻿@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.NotificationsWeb.Library
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <div class="utility-actions">
-    @if (Members.IsLoggedIn())
+    @if (MemberData != null)
     {
         if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
@@ -12,13 +12,7 @@
             </a>
         }
 
-        var mem = Members.GetCurrentMember();
-        var subscribed = false;
-        if (mem != null)
-        {
-            subscribed = Utils.IsSubscribedToForum(CurrentPage.Id, mem.Id);
-        }
-
+        var subscribed = Utils.IsSubscribedToForum(CurrentPage.Id, MemberData.Member.Id);
         if (subscribed)
         {
             <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">

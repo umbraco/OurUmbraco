@@ -1,7 +1,6 @@
 ﻿@using ClientDependency.Core.Mvc
 @using Umbraco.Core.Configuration
-@using Umbraco.Web.Security
-@inherits UmbracoTemplatePage
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = null;
     var model = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
@@ -9,11 +8,8 @@
         model.Level > 2 && model.AncestorOrSelf(3).Id == 1057
             ? "profile has-sidebar"
             : model.DocumentTypeAlias.ToLower().Replace(" ", "-") + "-page";
-
-    var ms = new MembershipHelper(UmbracoContext.Current);
-    var member = ms.GetCurrentMember();
-    var memberIsBlocked = false;
-    if (member != null) { memberIsBlocked = member.GetPropertyValue<bool>("blocked"); }
+    
+    var memberIsBlocked = MemberData != null && MemberData.IsBlocked;
 
 
     Html.RequiresCss("~/assets/css/style.min.css", 0);
@@ -74,10 +70,10 @@
     <title>
         @{
             var title = string.Empty;
-            var topicTitle = HttpContext.Current.Items["topicTitle"];
-            if (topicTitle != null)
+            var navigationTitle = HttpContext.Current.Items["topicTitle"];
+            if (navigationTitle != null)
             {
-                title = topicTitle.ToString();
+                title = navigationTitle.ToString();
             }
 
             if (string.IsNullOrWhiteSpace(title) == false)

@@ -4,9 +4,10 @@ using Examine;
 using Examine.LuceneEngine.Providers;
 using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
+using OurUmbraco.Our.Controllers;
 using OurUmbraco.Our.Examine;
 using Umbraco.Core;
-using Umbraco.Web;
+using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.CustomHandlers
 {
@@ -22,7 +23,12 @@ namespace OurUmbraco.Our.CustomHandlers
             ZipDownloader.OnFinish += ZipDownloader_OnFinish;
             FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
-        
+
+        protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
+        {
+            DefaultRenderMvcControllerResolver.Current.SetDefaultControllerType(typeof(OurUmbracoController));
+        }
+
         private void BindExamineEvents()
         {
             var projectIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];

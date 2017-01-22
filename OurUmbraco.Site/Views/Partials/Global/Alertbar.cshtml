@@ -1,28 +1,21 @@
-﻿@using System.Drawing
-@using OurUmbraco.Our
-@inherits UmbracoViewPage<IPublishedContent>
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var home = Umbraco.TypedContentAtRoot().First();
     var notificationText = home.GetPropertyValue<string>("mainNotification");
     var showNotification = string.IsNullOrWhiteSpace(notificationText) == false;
-    Image avatarImage = null;
-    if (Members.IsLoggedIn())
-    {
-        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
-    }
 }
 
-@Html.Action("RenderTerms", "TermsAndConditions")
+@Html.Action("RenderTerms", "TermsAndConditions", new { showBanner = MemberData != null && MemberData.NewTosAccepted == false })
 
 @* We'll show it differently on the homepage *@
-@if (showNotification && Model.Id != home.Id)
+@if (showNotification && Model.Content.Id != home.Id)
 {
     <div class="alertbar__yellow">
         @Html.Raw(notificationText)
     </div>
 }
 
-@if (Request.Cookies["dismissAvatar"] == null && Model.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+@if (Request.Cookies["dismissAvatar"] == null && Model.Content.Id != home.Id && MemberData != null && MemberData.AvatarImageTooSmall)
 {
     <div class="notification__blue avatarTooSmall">
         <div class="message text-center">

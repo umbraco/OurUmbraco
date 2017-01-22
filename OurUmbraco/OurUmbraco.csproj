@@ -510,10 +510,12 @@
     <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
     <Compile Include="Our\Controllers\AvatarController.cs" />
+    <Compile Include="Our\Controllers\OurUmbracoController.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
     <Compile Include="Our\Models\EditFileModel.cs" />
     <Compile Include="Our\Models\EditProjectModel.cs" />
     <Compile Include="Our\Controllers\LoginController.cs" />
+    <Compile Include="Our\Models\MemberData.cs" />
     <Compile Include="Our\Models\MyProjectsModel.cs" />
     <Compile Include="Our\Controllers\ProfileController.cs" />
     <Compile Include="Our\Controllers\ProfileNotificationController.cs" />
@@ -555,6 +557,7 @@
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Our\MigrationsHandler.cs" />
+    <Compile Include="Our\Models\OurUmbracoTemplatePage.cs" />
     <Compile Include="Our\Models\ProfileModel.cs" />
     <Compile Include="Our\Models\ProfileNotificationModel.cs" />
     <Compile Include="Our\Models\ProjectCompleteModel.cs" />

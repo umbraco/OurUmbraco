@@ -1,8 +1,9 @@
-﻿@inherits UmbracoViewPage<IPublishedContent>
+﻿@using OurUmbraco.Our.Models
+@inherits OurUmbracoTemplatePage	
 @{
-    var homeNotificationText = Model.GetPropertyValue<string>("homeOnlyBanner");
+    var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
-    var globalNotificationText = Model.GetPropertyValue<string>("mainNotification");
+    var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
 }
 <!-- Search start -->
@@ -20,7 +21,7 @@
         <ul></ul>
     </div>
 
-    @if (!Members.IsLoggedIn())
+    @if (MemberData == null)
     {
         <div class="search-text">
             <div class="container">

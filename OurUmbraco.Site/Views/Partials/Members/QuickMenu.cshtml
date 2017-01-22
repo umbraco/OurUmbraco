@@ -1,66 +1,7 @@
-﻿@inherits UmbracoViewPage<IPublishedContent>
-@using System.Drawing
+﻿@inherits OurUmbracoTemplatePage
 @using OurUmbraco.Forum.Extensions
-@using OurUmbraco.Forum.Models
-@using OurUmbraco.Forum.Services
-@using OurUmbraco.Our
-@using Umbraco.Core.Cache
-@{
-    MemberData profile = null;
-    if (Members.IsLoggedIn())
-    {
-        var userName = Members.CurrentUserName;
-
-        profile = ApplicationContext.ApplicationCache.RuntimeCache
-            .GetCacheItem<MemberData>("MemberData" + userName,
-                GetMemberData, TimeSpan.FromMinutes(5));
-    }
-}
-
-@functions
-{
-    public class MemberData
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string TwitterHandle { get; set; }
-        public int Karma { get; set; }
-        public bool IsAdmin { get; set; }
-        public IEnumerable<string> Roles { get; set; }
-        public IEnumerable<ReadOnlyTopic> LatestTopics { get; set; }
-        public int NumberOfForumPosts { get; set; }
-        public string Avatar { get; set; }
-        public Image AvatarImage { get; set; }
-    }
-
-    public MemberData GetMemberData()
-    {
-        var member = Members.GetCurrentMember();
-        var avatarImage = Utils.GetMemberAvatarImage(member);
-
-        var roles = member.GetRoles();
-
-        var topicService = new TopicService(ApplicationContext.DatabaseContext);
-        var latestTopics = topicService.GetLatestTopicsForMember(member.Id, maxCount: 100);
-
-        var memberData = new MemberData
-        {
-            Id = member.Id,
-            Name = member.Name,
-            AvatarImage = avatarImage,
-            Roles = roles,
-            LatestTopics = latestTopics,
-            Avatar = Utils.GetMemberAvatar(member, 100),
-            NumberOfForumPosts = member.ForumPosts(),
-            Karma = member.Karma(),
-            TwitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty),
-            IsAdmin = member.IsAdmin()
-        };
-
-        return memberData;
-    }
-}
-
+@using OurUmbraco.Our.Models
+@{ var profile = MemberData; }
 <div class="quick-menu">
     <div class="container">
         <div class="row">
@@ -75,11 +16,11 @@
                     </div>
 
                     <div class="user-image">
-                        @Html.Raw(profile.Avatar)
+                        @Html.Raw(profile.AvatarHtml)
                     </div>
 
                     <div class="user-profile">
-                        <h2>@profile.Name</h2>
+                        <h2>@profile.Member.Name</h2>
                         <div class="posts">
 
                             @profile.NumberOfForumPosts
@@ -112,7 +53,7 @@
                             </span>
                         }
                         <div class="public-profile">
-                            <a href="/member/@profile.Id">View my public profile</a>
+                            <a href="/member/@profile.Member.Id">View my public profile</a>
                         </div>
                         @if (profile.IsAdmin)
                         {
@@ -125,7 +66,7 @@
                         </div>
                     </div>
 
-                    if (profile.AvatarImage != null && (profile.AvatarImage.Width < 400 || profile.AvatarImage.Height < 400))
+                    if (profile.AvatarImageTooSmall)
                     {
                         <div class="user-notifications">
                             <small>

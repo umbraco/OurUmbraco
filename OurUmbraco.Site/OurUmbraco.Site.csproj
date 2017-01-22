@@ -411,6 +411,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <None Include="Views\Partials\Forum\Forum.cshtml" />
+    <None Include="Views\Partials\Forum\ForumActions.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\Form.browser" />
@@ -1698,7 +1700,6 @@
     <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
     <Content Include="Views\MacroPartials\Forum\TopicActions.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\ForumActions.cshtml" />
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
@@ -4321,7 +4322,6 @@
     <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco\xslt\Web.config" />
     <Content Include="Views\MacroPartials\Forum\Latest.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />

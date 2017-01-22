@@ -1,37 +1,11 @@
-﻿@using OurUmbraco.Forum.Extensions
-@using Umbraco.Core.Cache
-@inherits UmbracoViewPage<IPublishedContent>
-@{
-    MemberJsValues memberJsValues = null;
-    if (Members.IsLoggedIn())
-    {
-        var userName = Members.CurrentUserName;
-        if (userName != null)
-        {
-            memberJsValues = ApplicationContext.ApplicationCache.RuntimeCache
-                .GetCacheItem<MemberJsValues>("MemberJsValues" + userName,
-                    () =>
-                    {
-                        var profile = Members.GetCurrentMemberProfileModel();
-                        var member = Members.GetCurrentMember();
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
-                        return new MemberJsValues
-                        {
-                            Name = member.Name,
-                            Email = profile.Email,
-                            Icon = member.Avatar()
-                        };
-                    }, TimeSpan.FromMinutes(30), true);
-        }
-    }
-}
-
-@if (memberJsValues != null)
+@if (MemberData != null)
 {
     <script type="text/javascript">
-        var umb_member_name = '@memberJsValues.Name';
-        var umb_member_email = '@memberJsValues.Email';
-        var umb_member_icon = '@memberJsValues.Icon';
+        var umb_member_name = '@MemberData.Member.Name';
+        var umb_member_email = '@MemberData.Email';
+        var umb_member_icon = '@MemberData.AvatarPath';
     </script>
 }
 
