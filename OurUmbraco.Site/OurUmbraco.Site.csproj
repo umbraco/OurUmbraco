@@ -1700,16 +1700,13 @@
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
     <Content Include="Views\Partials\Documentation\Navigation.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
-    <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
+    <Content Include="Views\Partials\Projects\ListCategories.cshtml" />
+    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
+    <Content Include="Views\Partials\Members\ProfileNavigation.cshtml" />
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
-    <Content Include="Views\MacroPartials\Releases\AllReleases.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ProjectDetails.cshtml" />
     <Content Include="Views\MacroPartials\Members\Register.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
-    <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Rss\LatestTopics.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Packages.cshtml" />
@@ -1727,7 +1724,6 @@
     <Content Include="Views\MacroPartials\RedirectProjectCategory.cshtml" />
     <Content Include="Views\MacroPartials\Project\Edit.cshtml" />
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
-    <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
     <Content Include="Views\Master.cshtml" />
     <Content Include="Views\Community.cshtml" />
@@ -4366,6 +4362,10 @@
     <Content Include="Views\Partials\Forum\Thread.cshtml" />
     <Content Include="Views\Partials\Documentation\Breadcrumb.cshtml" />
     <Content Include="Views\Partials\Documentation\DisplayMarkdown.cshtml" />
+    <Content Include="Views\Partials\Members\PublicProfile.cshtml" />
+    <Content Include="Views\Partials\Projects\ProjectDetails.cshtml" />
+    <Content Include="Views\Partials\Releases\ReleasesDropdown.cshtml" />
+    <Content Include="Views\Partials\Releases\AllReleases.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

@@ -1,0 +1,14 @@
+@using Umbraco.Web
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+<ul class="level-2">
+    @foreach (var childPage in Model.Content.Children().Where(
+        x => x.DocumentTypeAlias == "ProjectGroup" 
+        && x.GetPropertyValue<bool>("umbracoNaviHide") == false))
+    {
+        <li>
+            <h4><a href="?category=@childPage.Name">@childPage.Name</a></h4>
+        </li>
+    }
+    <li><h4><a href="?category=uaas">Umbraco Cloud</a></h4></li>
+</ul>

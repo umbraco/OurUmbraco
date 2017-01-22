@@ -1,4 +1,4 @@
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @using System.Configuration
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
@@ -17,7 +17,7 @@
     }
     else
     {
-        var ts = new TopicService(UmbracoContext.Application.DatabaseContext);
+        var ts = new TopicService(ApplicationContext.DatabaseContext);
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
 
@@ -30,14 +30,14 @@
         {
             projects = content.Descendants().Where(c => c.DocumentTypeAlias == "Project").Where(m => m.GetPropertyValue<int>("owner") == member.Id).Where(p => p.GetPropertyValue<bool>("projectLive"));
             const string sql = @"SELECT * FROM projectContributors WHERE memberId=@memberId";
-            var contribPackageIds = UmbracoContext.Application.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
+            var contribPackageIds = ApplicationContext.DatabaseContext.Database.Fetch<int>(sql, new { memberId });
             foreach (var contribPackageId in contribPackageIds)
             {
                 contribProjects.Add(Umbraco.TypedContent(contribPackageId));
             }
         }
         
-        var currentMember = Members.GetCurrentMember();
+        var currentMember = MemberData.Member;
         var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
         var nodeListingProvider = new NodeListingProvider();
@@ -239,7 +239,7 @@
             </div>
         </div>
         <!-- .public-member -->
-        if (currentMember.IsAdmin())
+        if (MemberData.IsAdmin)
         {
             var allTopics = ts.GetLatestTopicsForMember(member.Id, false, 1000);
 

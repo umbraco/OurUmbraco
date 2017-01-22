@@ -9,7 +9,7 @@
             @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
             <div class="clear"></div>
         </div>
-        @Umbraco.RenderMacro("ProjectsProjectDetail")
+        @Html.Partial("~/Views/Partials/Projects/ProjectDetails.cshtml")
     </div>
 </section>
 

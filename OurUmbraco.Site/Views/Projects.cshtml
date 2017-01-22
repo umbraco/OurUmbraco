@@ -26,7 +26,7 @@
                         </li>
                         <li class="filter-category">
                             <h3>By Category</h3>
-                            @Umbraco.RenderMacro("ProjectsListCategories")
+                            @Html.Partial("~/Views/Partials/Projects/ListCategories.cshtml")
                         </li>
                     </ul>
                 </nav>
@@ -42,7 +42,7 @@
                     @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                 </div>
                 <div class="packages-content">
-                    @Umbraco.RenderMacro("ProjectsListProjects")
+                    @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml")
                 </div>
 
             </div><!-- .content-wrapper -->

@@ -22,7 +22,7 @@
             <div class="main-content">
                 <div class="content-wrapper">
                     @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
-                    @Umbraco.RenderMacro("MembersPublicProfile")
+                    @Html.Partial("~/Views/Partials/Members/PublicProfile.cshtml")
                 </div><!-- .content-wrapper -->
             </div><!-- .main-content -->
         </div><!-- .main-area -->
