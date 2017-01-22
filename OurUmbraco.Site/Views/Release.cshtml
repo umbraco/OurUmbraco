@@ -90,9 +90,9 @@
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
-                    <div>
-                        @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
-                    </div>
+                <div>
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                </div>
                     <style>
                         .release-page .explain h2 {
                             margin-top: 12px;

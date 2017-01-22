@@ -6,7 +6,7 @@
 <div id="contribute" class="subpage">
     <div id="body" class="markdown-syntax">
         <div>
-            @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "0" })
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
         </div>
         <h1>Contribute to the Umbraco Project</h1>
         <div>

@@ -39,7 +39,7 @@
         <div class="main-content">
             <div class="content-wrapper">
                 <div>
-                    @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                 </div>
                 <div class="packages-content">
                     @Umbraco.RenderMacro("ProjectsListProjects")

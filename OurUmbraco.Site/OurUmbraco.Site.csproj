@@ -4365,6 +4365,7 @@
     <Content Include="Views\Partials\Members\QuickMenu.cshtml" />
     <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
     <Content Include="Views\Partials\Global\Alertbar.cshtml" />
+    <Content Include="Views\Partials\Global\Breadcrumb.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

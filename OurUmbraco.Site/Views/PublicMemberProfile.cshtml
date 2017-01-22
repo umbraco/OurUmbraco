@@ -21,7 +21,7 @@
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
-                    @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                     @Umbraco.RenderMacro("MembersPublicProfile")
                 </div><!-- .content-wrapper -->
             </div><!-- .main-content -->

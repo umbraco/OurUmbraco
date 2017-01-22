@@ -8,7 +8,7 @@
         <!-- FORUM HEADER START -->
         <div class="utilities">
             <!-- FORUM BREADCRUMB START -->
-            @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "1" })
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
             <!-- FORUM BREADCRUMB END -->
             <!-- THREAD ACTIONS START -->
             @Umbraco.RenderMacro("ForumTopicActions")

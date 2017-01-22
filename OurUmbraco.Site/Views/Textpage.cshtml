@@ -5,7 +5,7 @@
 
 <div id="body" class="page markdown-syntax">
     <div>
-        @Umbraco.RenderMacro("Breadcrumb")
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
     <h1>@Model.Content.Name</h1>
     @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))

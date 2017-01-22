@@ -27,7 +27,7 @@
 </style>
 <div class="subpage wrapper">
     <div>
-        @Umbraco.RenderMacro("Breadcrumb")
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
     <div class="markdown-syntax">
         <h1>@title</h1>

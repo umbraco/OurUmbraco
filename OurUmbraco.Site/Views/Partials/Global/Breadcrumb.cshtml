@@ -1,0 +1,10 @@
+﻿@model List<IPublishedContent>
+<ul id="breadcrumb">
+    <li>
+        <a href="/">Our</a>
+    </li>
+    @foreach (var page in Model)
+    {
+        <li><a href="@page.Url">@page.Name</a></li>
+    }
+</ul>

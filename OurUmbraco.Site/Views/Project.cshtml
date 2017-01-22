@@ -6,7 +6,7 @@
     <div>
         <!-- FORUM HEADER START -->
         <div class="utilities">
-            @Umbraco.RenderMacro("Breadcrumb", new { linkToCurrent = "0" })
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
             <div class="clear"></div>
         </div>
         @Umbraco.RenderMacro("ProjectsProjectDetail")
