@@ -1697,7 +1697,6 @@
     <Content Include="Assets\css\fonts\icomoon\icomoon.eot" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
-    <Content Include="Views\MacroPartials\Forum\TopicActions.cshtml" />
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
@@ -4366,6 +4365,7 @@
     <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
     <Content Include="Views\Partials\Global\Alertbar.cshtml" />
     <Content Include="Views\Partials\Global\Breadcrumb.cshtml" />
+    <Content Include="Views\Partials\Forum\TopicActions.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

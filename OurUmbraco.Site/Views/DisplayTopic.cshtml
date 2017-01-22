@@ -11,7 +11,7 @@
             @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
             <!-- FORUM BREADCRUMB END -->
             <!-- THREAD ACTIONS START -->
-            @Umbraco.RenderMacro("ForumTopicActions")
+            @Html.Partial("~/Views/Partials/Forum/TopicActions.cshtml")
             <!-- THREAD ACTIONS END -->
             <div class="clear"></div>
         </div>
