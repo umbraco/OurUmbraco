@@ -1,6 +1,5 @@
 @using OurUmbraco.Documentation.Busineslogic.GithubSourcePull
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
-
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var zipper = new ZipDownloader();
     dynamic sitemap = zipper.DocumentationSiteMap();

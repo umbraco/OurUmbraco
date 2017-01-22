@@ -7,11 +7,11 @@
         <div id="wiki" class="subpage">
             <div id="body">
                 <div style="margin-top: 25px;">
-                    @Umbraco.RenderMacro("DocsBreadcrumb")
+                    @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                 </div>
 
                 <div id="markdown-docs" class="markdown-syntax">
-                    @Umbraco.RenderMacro("DocsDisplayMarkdown")
+                    @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml")
                 </div>
 
                 <br style="clear: both" />

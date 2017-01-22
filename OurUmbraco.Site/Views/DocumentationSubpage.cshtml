@@ -8,7 +8,7 @@
             <div class="sidebar-area">
                 <div class="sidebar-content">
                     <div class="content-wrapper">
-                        @Umbraco.RenderMacro("DocsNavigation")
+                        @Html.Partial("~/Views/Partials/Documentation/Navigation.cshtml")
                     </div><!-- .content-wrapper -->
                 </div><!-- .sidebar-content -->
             </div><!-- .sidebar-area-->
@@ -17,7 +17,7 @@
                 <div class="main-content">
                     <div class="content-wrapper">
                         <div>
-                            @Umbraco.RenderMacro("DocsBreadcrumb")
+                            @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                         </div>
 
                         <div class="search-big">
@@ -28,7 +28,7 @@
                         <ul class="search-all-results docs-search-listing"></ul>
 
                         <div id="markdown-docs" class="docs-default-listing markdown-syntax">
-                            @Umbraco.RenderMacro("DocsDisplayMarkdown")
+                            @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml")
                         </div>
                     </div><!-- .content-wrapper -->
                 </div><!-- .main-content -->

@@ -1,6 +1,6 @@
-@using OurUmbraco.Documentation
+﻿@using OurUmbraco.Documentation
 @using OurUmbraco.Documentation.Busineslogic
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 @{
     string baseurl = "/";
@@ -9,7 +9,7 @@
 
     directoryName = directoryName.Substring(1);
     string[] strDirs = directoryName.Split('\\');
-    
+
     var linkToGithub = string.Empty;
     if (absolutePath.StartsWith("/project") == false)
     {
