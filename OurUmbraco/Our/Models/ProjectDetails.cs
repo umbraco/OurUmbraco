@@ -43,6 +43,9 @@ namespace OurUmbraco.Our.Models
         [Display(Name = "Source code URL")]
         public string SourceCodeUrl { get; set; }
 
+        [Display(Name = "NuGet package URL")]
+        public string NuGetPackageUrl { get; set; }
+
         [Display(Name = "Bug tracking URL")]
         public string BugTrackingUrl { get; set; }
 

@@ -4,6 +4,7 @@
 @using OurUmbraco.Project
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
+@using System.Text.RegularExpressions;
 
 @{
     var project = Model.Content;
@@ -38,6 +39,7 @@
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
     var contributors = cs.GetContributors(project.Id).ToList();
 
+    var nuGetPackageUrl = project.GetPropertyValue<string>("nuGetPackageUrl");
     var sourceUrl = project.GetPropertyValue<string>("sourceUrl");
     var websiteUrl = project.GetPropertyValue<string>("websiteUrl");
     var demoUrl = project.GetPropertyValue<string>("demoUrl");
@@ -255,14 +257,42 @@
 <div class="col-md-4 col-md-offset-1">
     <div class="package-detail-sidebar">
 
-        @if (currentRelease != null)
-        {
-            <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
-        }
-        else
-        {
-            <div class="button green">No current release</div>
-        }
+        <div class="package-download">
+            @if (currentRelease != null)
+            {
+                <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
+            }
+            else
+            {
+                <div class="button green">No current release</div>
+            }
+        
+            @if (!string.IsNullOrEmpty(nuGetPackageUrl))
+            {
+                Regex regex = new Regex(@"^(http|https)://", RegexOptions.IgnoreCase);
+
+                if (!regex.Match(nuGetPackageUrl).Success)
+                {
+                    nuGetPackageUrl = "http://" + nuGetPackageUrl;
+                }
+
+                var nuGetPackageUri = new Uri(nuGetPackageUrl);
+                string nuGetPackageCmd = string.Empty;
+
+                if (nuGetPackageUri.Segments.Length >= 2)
+                {
+                    nuGetPackageCmd = nuGetPackageUri.Segments[2].Trim("/");
+                }
+
+                if (!string.IsNullOrEmpty(nuGetPackageCmd))
+                {
+                    <p class="small">or, install via nuget</p>
+                    <span class="pm-nuget">
+                        <input class="pre nuget" value="Install-Package @nuGetPackageCmd" readonly>
+                    </span>
+                }
+            }
+        </div>
 
         <div class="package-creator">
             <h3>Project owner</h3>

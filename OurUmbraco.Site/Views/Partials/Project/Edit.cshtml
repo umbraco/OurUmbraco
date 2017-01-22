@@ -120,6 +120,12 @@
                     <small>url to where the source code is stored, (ie: codeplex.com, github.com etc)</small>
                 </p>
                 <p>
+                    @Html.LabelFor(m => m.NuGetPackageUrl)
+                    @Html.TextBoxFor(m => m.NuGetPackageUrl)
+                    @Html.ValidationMessageFor(m => m.NuGetPackageUrl)
+                    <small>url to the NuGet package if any available</small>
+                </p>
+                <p>
                     @Html.LabelFor(m => m.BugTrackingUrl)
                     @Html.TextBoxFor(m => m.BugTrackingUrl)
                     @Html.ValidationMessageFor(m => m.BugTrackingUrl)

@@ -40,6 +40,7 @@ namespace OurUmbraco.MarketPlace.ListingItem
             ProjectUrl = content.GetPropertyValue<string>("websiteUrl", "");
             SupportUrl = content.GetPropertyValue<string>("supportUrl", "");
             SourceCodeUrl = content.GetPropertyValue<string>("sourceUrl", "");
+            NuGetPackageUrl = content.GetPropertyValue<string>("nuGetPackageUrl", "");
             DemonstrationUrl = content.GetPropertyValue<string>("demoUrl", "");
             OpenForCollab = content.GetPropertyValue<bool>("openForCollab", false);
             NotAPackage = content.GetPropertyValue<bool>("notAPackage", false);
@@ -110,6 +111,7 @@ namespace OurUmbraco.MarketPlace.ListingItem
         public bool NotAPackage { get; set; }
         public bool OpenForCollab { get; set; }
         public string SourceCodeUrl { get; set; }
+        public string NuGetPackageUrl { get; set; }
         public bool Live { get; set; }
         public bool Stable { get; set; }
         public bool Approved { get; set; }

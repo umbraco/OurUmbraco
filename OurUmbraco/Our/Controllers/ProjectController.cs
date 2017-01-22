@@ -47,6 +47,7 @@ namespace OurUmbraco.Our.Controllers
             model.Description = project.Description;
             model.Version = project.CurrentVersion;
             model.SourceCodeUrl = project.SourceCodeUrl;
+            model.NuGetPackageUrl = project.NuGetPackageUrl;
             model.DemonstrationUrl = project.DemonstrationUrl;
             model.OpenForCollaboration = project.OpenForCollab;
             model.GoogleAnalyticsCode = project.GACode;
@@ -71,6 +72,7 @@ namespace OurUmbraco.Our.Controllers
             project.LicenseUrl = model.LicenseUrl;
             project.ProjectUrl = model.ProjectUrl;
             project.SourceCodeUrl = model.SourceCodeUrl;
+            project.NuGetPackageUrl = model.NuGetPackageUrl;
             project.DemonstrationUrl = model.DemonstrationUrl;
             project.CategoryId = int.Parse(model.Category);
             project.OpenForCollab = model.OpenForCollaboration;
