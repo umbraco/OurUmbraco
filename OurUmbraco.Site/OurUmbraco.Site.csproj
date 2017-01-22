@@ -1699,9 +1699,7 @@
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
+    <Content Include="Views\Partials\Documentation\Navigation.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
     <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
@@ -4319,7 +4317,7 @@
     <Content Include="umbraco\Views\Default.cshtml" />
     <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco\xslt\Web.config" />
-    <Content Include="Views\MacroPartials\Forum\Latest.cshtml" />
+    <Content Include="Views\Partials\Forum\Latest.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
@@ -4366,6 +4364,8 @@
     <Content Include="Views\Partials\Forum\TopicActions.cshtml" />
     <Content Include="Views\Partials\Forum\TopicForm.cshtml" />
     <Content Include="Views\Partials\Forum\Thread.cshtml" />
+    <Content Include="Views\Partials\Documentation\Breadcrumb.cshtml" />
+    <Content Include="Views\Partials\Documentation\DisplayMarkdown.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
