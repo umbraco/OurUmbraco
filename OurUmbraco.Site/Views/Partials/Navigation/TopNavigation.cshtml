@@ -1,0 +1,26 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+<ul>
+    @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where("Visible"))
+    {
+        <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
+            <a href="@page.Url">@page.Name</a>
+        </li>
+    }
+
+    <li>
+        @if (MemberData != null)
+        {
+            <div class="user">
+                @Html.Raw(MemberData.AvatarHtml)
+                @if (MemberData.AvatarImageTooSmall)
+                {
+                    <span class="notificationCount">1</span>
+                }
+            </div>
+        }
+        else
+        {
+            <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsolutePath))">Sign in</a><strong> / </strong><a href="/member/Signup">Register</a>
+        }
+    </li>
+</ul>

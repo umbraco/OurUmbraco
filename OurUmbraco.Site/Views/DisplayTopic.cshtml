@@ -1,0 +1,22 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+<!-- FORUM OVERVIEW START -->
+<section class="forum-overview">
+    <div class="forum-single-thread">
+        <!-- FORUM HEADER START -->
+        <div class="utilities">
+            <!-- FORUM BREADCRUMB START -->
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+            <!-- FORUM BREADCRUMB END -->
+            <!-- THREAD ACTIONS START -->
+            @Html.Partial("~/Views/Partials/Forum/TopicActions.cshtml")
+            <!-- THREAD ACTIONS END -->
+            <div class="clear"></div>
+        </div>
+        <!-- FORUM HEADER END -->
+        @Html.Partial("~/Views/Partials/Forum/Thread.cshtml")
+    </div>
+</section>
+@Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")

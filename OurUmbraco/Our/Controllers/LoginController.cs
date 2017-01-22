@@ -88,7 +88,7 @@ namespace OurUmbraco.Our.Controllers
         [CaptchaValidator]
         public ActionResult ForgotPassword(LoginModel model)
         {
-            if (string.IsNullOrWhiteSpace(model.Username))
+            if(string.IsNullOrWhiteSpace(model.Username))
                 return CurrentUmbracoPage();
 
             var memberService = Services.MemberService;

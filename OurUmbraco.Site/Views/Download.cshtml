@@ -1,0 +1,77 @@
+﻿@inherits UmbracoTemplatePage
+@using ClientDependency.Core.Mvc
+@using OurUmbraco.Release
+@{
+    Layout = "~/Views/Master.cshtml";
+    Html.RequiresCss("~/css/releases.css");
+    var latestRelease = Download.GetCurrentReleaseFromFile();
+}
+
+<section id="download" class="download-umbraco">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dl-content">
+                    <h1>Download Umbraco</h1>
+                    <p>If you're new to Umbraco you might want to start your install with the versions on the <a href="/documentation/getting-started/installation/">Web Platform Installer or WebMatrix</a>. These tools will automatically download and install any dependencies to give you a flying start.</p>
+                    <a id="downloadButton" class="button white" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">
+                        <i class="icon-Download-alt"></i>
+                        <span>Download Umbraco v@(latestRelease.version)</span>
+                    </a>
+                    <p class="small">or, install via nuget</p>
+                    <span class="pm-nuget">
+                        <input class="pre nuget" value="Install-Package UmbracoCms" readonly="">
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="archive">
+        <a href="/contribute/releases/">See releases</a>
+    </div>
+
+</section>
+
+<section id="install" class="download-umbraco" style="display: none">
+    <div class="mac-notice">
+        You're running MacOS, follow <a href="">this guide.</a>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="dl-content steps">
+                    <h2>Almost there</h2>
+                    <div class="guide">
+                        <div class="step step-one">
+                            <span>1</span>
+                            <div>Unzip</div>
+                        </div>
+                        <div class="step step-two">
+                            <span>2</span>
+                            <div>Run with WebMatrix</div>
+                        </div>
+                        <div class="step step-three">
+                            <span>3</span>
+                            <div>Follow the installer</div>
+                        </div>
+                        <div class="clearfix"></div>
+                    </div>
+                    <!-- insert gif here -->
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="archive">
+        See detailed instructions in the <a href="/documentation/Getting-Started/Setup/Install/">documentation</a>
+    </div>
+</section>
+
+<script type="text/javascript">
+    (function () {
+        $('.dl-content').on('click', '#downloadButton', function (e) {
+            $('section#download').fadeOut();
+            $('section#install').fadeIn();
+        });
+    })();
+</script>
+

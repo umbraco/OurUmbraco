@@ -1,0 +1,61 @@
+﻿@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.Project
+@model OurUmbraco.Our.Models.MyProjectsModel
+
+<div class="profile-settings">
+    <strong>My Packages</strong>
+    <div class="profile-settings-packages packages-content">
+        <a href="/member/profile/projects/details?projectId=" class="button green"><i class="icon-Add"></i>Add package</a>
+
+        @foreach (var project in Model.Projects)
+        {
+            @RenderProject(project)
+        }
+        
+        <strong>Package Contributions</strong>
+        @foreach (var project in Model.ContribProjects)
+        {
+            @RenderProject(project)
+        }
+        
+    </div>
+</div>
+
+@helper RenderProject(IListingItem project)
+{
+    <div class="box liked">
+        <div class="row">
+            <div class="col-xs-2 col-md-1">
+                <img src="@(string.IsNullOrEmpty(project.DefaultScreenshot) ? "/css/img/package2.png" : project.DefaultScreenshot)?width=65&height=65" alt="">
+            </div>
+            <div class="col-xs-10 col-md-6">
+                <div class="forum-thread-text">
+                    <h3><a href="@project.NiceUrl">@project.Name</a></h3>
+                    <p>
+                        @project.Description.StripHtmlAndLimit(45) ...
+                        <br />
+                        <a href="details?projectId=@project.Id">Edit</a>
+                        <a href="manage-project-forums/?id=@project.Id">Forums</a>
+                        <a href="manage-team/?id=@project.Id">Team</a>
+                    </p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-5">
+                <div class="other">
+                    <div class="package-badge">
+                        <span class="package-name">version</span>
+                        <span class="package-number">@project.CurrentVersion</span>
+                    </div>
+                    <span class="stats">
+                        <span class="downloads">
+                            @project.Downloads<span><i class="icon-Download-alt"></i></span>
+                        </span>
+                        <span class="karma">
+                            @project.Karma<span><i class="icon-Hearts"></i></span>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+}

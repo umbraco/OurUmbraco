@@ -1,0 +1,192 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Library
+@using OurUmbraco.Forum.Models
+@using OurUmbraco.Forum.Services
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+@{
+    const int pagesToShowLeft = 4;
+    int page;
+    if (!int.TryParse(Request["page"], out page))
+    {
+        page = 1;
+    }
+    bool unsolved;
+    bool.TryParse(Request["unsolved"], out unsolved);
+    bool noreplies;
+    bool.TryParse(Request["noreplies"], out noreplies);
+
+    var cat = -1;
+    if (CurrentPage.Level > 2)
+    {
+        cat = CurrentPage.Id;
+    }
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+
+    IEnumerable<ReadOnlyTopic> topics;
+
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    // only cache the first page of each category
+    var pageSize = 50;
+    if (page > 1)
+    {
+        topics = topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies);
+    }
+    else
+    {
+        var key = "OurForumForum[" + cat + unsolved + noreplies + "]";
+        topics = (IEnumerable<ReadOnlyTopic>)cache.GetCacheItem(key,
+            () => topicService.GetLatestTopicsFiltered(pageSize, page, true, cat, unsolved, noreplies).ToArray(),
+            TimeSpan.FromSeconds(4));
+    }
+
+    var totalCountKey = "OurForumForumThreadCount[" + cat + "]";
+    var totalTopics = (int)cache.GetCacheItem(totalCountKey,
+        () => topicService.GetAllTopicsCount(cat),
+        TimeSpan.FromMinutes(1));
+
+    var pages = (totalTopics / pageSize) + 1;
+
+    var categories = Model.Content.AncestorOrSelf(2);
+}
+@if (Model.Content.NewTopicsAllowed() == false || Model.Content.AncestorOrSelfIsArchived())
+{
+    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    if (string.IsNullOrWhiteSpace(notification))
+    {
+        notification = "This forum is in read only mode, you can no longer create new topics";
+    }
+
+    <div class="alertbar__yellow">
+        @Html.Raw(notification)
+    </div>
+}
+<!-- FORUM HEADER START -->
+<div class="utilities">
+    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+    @Html.Partial("~/Views/Partials/Forum/ForumActions.cshtml")
+</div>
+
+<div class="forum-settings">
+    <div class="search-big">
+        <input type="search" class="forum-search-input" required placeholder="Search for threads">
+        <label for="search">Search for threads</label>
+    </div>
+
+    <div class="or">or</div>
+    <div class="sorting">
+        <select id="selectCategory" data-placeholder="Choose&hellip;">
+            <option class="category" selected disabled>Filter by category</option>
+            @if (categories.ContentType.Alias == "Projects")
+            {
+                foreach (var tag in CurrentPage.Parent.Children)
+                {
+                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
+                }
+            }
+            else
+            {
+                <option class="all" value="@categories.Id">All categories</option>
+                foreach (var tag in categories.Children)
+                {
+                    if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
+                    {
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
+                    }
+                }
+            }
+        </select>
+    </div>
+
+    <div id="search-options" class="search-options">
+        <label>Filter by</label>
+        <div class="options">
+
+            <label class="checkbox">
+                <input type="checkbox" name="unsolved" />
+                <span></span>
+                <small>show only unsolved topics</small>
+            </label>
+
+
+            <label class="checkbox">
+                <input type="checkbox" name="noreplies" />
+                <span></span>
+                <small>show only topics with no replies</small>
+            </label>
+
+        </div>
+    </div>
+</div>
+
+<!-- FORUM HEADER END -->
+<!-- FORUM TOPICS -->
+<div id="overlay" class="overlay"></div>
+<!-- FORUM LIST START -->
+<section class="forum">
+    <!-- FORUM LIST HEADER START -->
+    <div class="forum-head">
+
+        <div class="topic">Topic</div>
+        <div class="category">Category</div>
+        <div class="posts">Replies</div>
+
+    </div>
+    <!-- FORUM LIST HEADER END -->
+    <!-- FORUM LIST OF THREADS START -->
+    <div class="forum-content">
+
+        <!-- FORUM THREAD START -->
+        @foreach (var topic in topics)
+        {
+            var forum = Umbraco.TypedContent(topic.ParentId);
+            if (forum != null)
+            {
+                <div class="topic-row @Umbraco.If(topic.Answer > 0, " solved")">
+
+                    <div class="topic">
+                        <a href="@topic.GetUrl()">
+                            <h3>@topic.Title</h3>
+                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">last edited by <strong>@topic.LastReplyAuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                            else
+                            {
+                                <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
+                            }
+                        </a>
+                    </div>
+                    <div class="category frontend">
+                        <a href="@forum.Url">@(Utils.GetForumName(forum))</a>
+                    </div>
+                    <div class="posts"><small>@topic.Replies</small> <span>replies</span></div>
+                </div>
+            }
+        }
+
+        <nav class="pagination" role="navigation">
+            @if (page > 1)
+            {
+                <a class="prev" href="?page=@(page - 1)">Prev</a>
+                <span>&hellip;</span>
+            }
+
+            @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
+            {
+                <a class="@Umbraco.If(i == page, "active")" href="?page=@i">@i</a>
+            }
+
+            @if (page < (pages - 3))
+            {
+                <span>&hellip;</span>
+                <a class="next" href="?page=@(page + 1)">Next</a>
+            }
+        </nav>
+
+    </div>
+
+
+    <div class="forum-conten"></div>
+    <!-- FORUM LIST OF THREADS START -->
+</section>

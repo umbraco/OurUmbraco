@@ -1,0 +1,33 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+<div class="page-content">
+    <div class="sidebar-area">
+        <div class="sidebar-content">
+            <div class="content-wrapper">
+                @Html.Partial("~/Views/Partials/Members/ProfileNavigation.cshtml")
+            </div><!-- .content-wrapper -->
+        </div><!-- .sidebar-content -->
+    </div><!-- .sidebar-area -->
+    <div class="main-area">
+        <div class="main-content">
+            <div class="content-wrapper">
+                @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+
+                @if (Request.QueryString["editorStep"] == "files")
+                {
+                    @Html.Action("RenderFiles", "Project")
+                }
+                @if (Request.QueryString["editorStep"] == "screenshots")
+                {
+                    @Html.Action("RenderScreenshots", "Project")
+                }
+                @if (Request.QueryString["editorStep"] == "complete")
+                {
+                    @Html.Action("RenderComplete", "Project")
+                }
+            </div><!-- .content-wrapper -->
+        </div><!-- .main-content -->
+    </div><!-- .main-area -->
+</div><!-- .page-content -->

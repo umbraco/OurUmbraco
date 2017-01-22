@@ -411,13 +411,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Views\Search\Search.aspx.cs">
-      <DependentUpon>Search.aspx</DependentUpon>
-      <SubType>ASPXCodeBehind</SubType>
-    </Compile>
-    <Compile Include="Views\Search\Search.aspx.designer.cs">
-      <DependentUpon>Search.aspx</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Browsers\Form.browser" />
@@ -426,6 +419,8 @@
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
+    <Content Include="App_Plugins\OurManagement\ourmanagement.controller.js" />
+    <Content Include="App_Plugins\OurManagement\ourmanagement.html" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
     <Content Include="Assets\css\style.min.css" />
     <Content Include="Assets\images\app-icons\acme-tile-large.png" />
@@ -565,75 +560,6 @@
     <Content Include="macroScripts\Releases-GetAllReleases.cshtml" />
     <Content Include="macroScripts\Releases-ReleaseList.cshtml" />
     <Content Include="macroScripts\testWikiFile.cshtml" />
-    <Content Include="masterpages\AttachFile.master" />
-    <Content Include="masterpages\Authentication.master" />
-    <Content Include="masterpages\blank.master" />
-    <Content Include="masterpages\Community.master" />
-    <Content Include="masterpages\ConfigureProjectLicenses.master" />
-    <Content Include="masterpages\ContentLanding.master" />
-    <Content Include="masterpages\CreateWikiPage.master" />
-    <Content Include="masterpages\Deli.master" />
-    <Content Include="masterpages\DeliCart.master" />
-    <Content Include="masterpages\DeliCartDetails.master" />
-    <Content Include="masterpages\Dialogs.master" />
-    <Content Include="masterpages\DisplayTopic.master" />
-    <Content Include="masterpages\DocumentationMainpage.master" />
-    <Content Include="masterpages\DocumentationSubpage.master" />
-    <Content Include="masterpages\EditProject.master" />
-    <Content Include="masterpages\Event.master" />
-    <Content Include="masterpages\Eventnews.master" />
-    <Content Include="masterpages\Events.master" />
-    <Content Include="masterpages\FileDownload.master" />
-    <Content Include="masterpages\Forum.master" />
-    <Content Include="masterpages\HelpPage.master" />
-    <Content Include="masterpages\InsertImage.master" />
-    <Content Include="masterpages\Locatorpage.master" />
-    <Content Include="masterpages\Master.master" />
-    <Content Include="masterpages\Mobile.master" />
-    <Content Include="masterpages\MobileTextPage.master" />
-    <Content Include="masterpages\newest.master" />
-    <Content Include="masterpages\Nothing.master" />
-    <Content Include="masterpages\Notifications.master" />
-    <Content Include="masterpages\PayPalRedirect.master" />
-    <Content Include="masterpages\People.master" />
-    <Content Include="masterpages\popular.master" />
-    <Content Include="masterpages\Profilepage.master" />
-    <Content Include="masterpages\Project.master" />
-    <Content Include="masterpages\ProjectGroup.master" />
-    <Content Include="masterpages\Projects.master" />
-    <Content Include="masterpages\ProjectsTags.master" />
-    <Content Include="masterpages\PublicMemberProfile.master" />
-    <Content Include="masterpages\Release.master" />
-    <Content Include="masterpages\ReleaseLanding-bak.master" />
-    <Content Include="masterpages\ReleaseLanding.master" />
-    <Content Include="masterpages\Repository.master" />
-    <Content Include="masterpages\RepositoryFrontpage.master" />
-    <Content Include="masterpages\RepositoryMaster.master" />
-    <Content Include="masterpages\repositoryPage.master" />
-    <Content Include="masterpages\Repository\blank.master" />
-    <Content Include="masterpages\Repository\Community.master" />
-    <Content Include="masterpages\Repository\Deli.master" />
-    <Content Include="masterpages\Repository\DeliRepoNET.master" />
-    <Content Include="masterpages\Repository\FileDownload.master" />
-    <Content Include="masterpages\Repository\Master.master" />
-    <Content Include="masterpages\Repository\Nothing.master" />
-    <Content Include="masterpages\Repository\Project.master" />
-    <Content Include="masterpages\Repository\ProjectGroup.master" />
-    <Content Include="masterpages\Repository\Projects.master" />
-    <Content Include="masterpages\Repository\ProjectsTags.master" />
-    <Content Include="masterpages\Repository\Repository.master" />
-    <Content Include="masterpages\Repository\Textpage.master" />
-    <Content Include="masterpages\RoadMap.master" />
-    <Content Include="masterpages\simplr.master" />
-    <Content Include="masterpages\termsofservice.master" />
-    <Content Include="masterpages\Textpage.master" />
-    <Content Include="masterpages\UmbracoMVP2011.master" />
-    <Content Include="masterpages\Wiki.master" />
-    <Content Include="masterpages\WikiMoveDialog.master" />
-    <Content Include="masterpages\WikiPage.master" />
-    <Content Include="masterpages\WikiPageAttachments.master" />
-    <Content Include="masterpages\WikiPageHistory.master" />
-    <Content Include="masterpages\WikipagewithTOC.master" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkFlowButton.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\Workflownode.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Editor\Attaching-Workflows\WorkflowOverview.png" />
@@ -736,8 +662,8 @@
     <Content Include="scripts\forum\select2\select2-new.js" />
     <Content Include="scripts\forum\tags.js" />
     <Content Include="config\IISRewriteMaps.config" />
-    <Content Include="masterpages\ReleaseCompare.master" />
     <Content Include="App_Plugins\ModelsBuilder\package.manifest" />
+    <None Include="App_Plugins\OurManagement\package.manifest" />
     <Content Include="config\imageprocessor\security.config" />
     <Content Include="config\imageprocessor\processing.config" />
     <Content Include="config\imageprocessor\cache.config" />
@@ -1756,20 +1682,10 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
-    <Content Include="usercontrols\dashboard\ForceYouTrackDownload.ascx" />
-    <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
-    <Content Include="usercontrols\IndexStatus.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ForumSpamCleaner.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ForumSpamListComments.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ForumSpamListTopics.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\SignupSimple.ascx" />
-    <Content Include="usercontrols\umbracoContour\EditForm.ascx" />
-    <Content Include="usercontrols\umbracoContour\Installer.ascx" />
-    <Content Include="usercontrols\umbracoContour\RenderForm.ascx" />
-    <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
+    <Content Include="Views\ContentLanding.cshtml" />
+    <Content Include="Views\Blank.cshtml" />
+    <Content Include="Views\DisplayTopic.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
-    <Content Include="Views\MacroPartials\Members\QuickMenu.cshtml" />
-    <Content Include="Views\MacroPartials\Members\JsValues.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.svg" />
@@ -1777,37 +1693,20 @@
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.woff" />
     <Content Include="Assets\images\logo.svg" />
     <Content Include="Assets\images\magnifier.svg" />
-    <Content Include="Views\MacroPartials\Navigation\TopNavigation.cshtml" />
-    <Content Include="masterpages\ForumMaster.master" />
-    <Content Include="masterpages\DocumentationMaster.master" />
-    <Content Include="masterpages\ComRepositoryFrontpage.master" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.eot" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
-    <Content Include="Views\MacroPartials\Forum\TopicActions.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\ForumActions.cshtml" />
     <Content Include="Assets\js\jquery.scrolly.js" />
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Breadcrumb.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\DisplayMarkdown.cshtml" />
-    <Content Include="Views\MacroPartials\Documenation\Navigation.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ListCategories.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ListProjects.cshtml" />
-    <Content Include="Views\MacroPartials\Members\ProfileNavigation.cshtml" />
+    <Content Include="Views\Partials\Documentation\Navigation.cshtml" />
+    <Content Include="Views\Partials\Projects\ListCategories.cshtml" />
+    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
+    <Content Include="Views\Partials\Members\ProfileNavigation.cshtml" />
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
-    <Content Include="masterpages\Download.master" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
-    <Content Include="Views\MacroPartials\Releases\AllReleases.cshtml" />
-    <Content Include="Views\MacroPartials\Projects\ProjectDetails.cshtml" />
     <Content Include="Views\MacroPartials\Members\Register.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
-    <Content Include="masterpages\ReleaseProgress.master" />
-    <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
-    <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
-    <Content Include="masterpages\ProfileLogin.master" />
-    <Content Include="masterpages\ProfileRegister.master" />
-    <Content Include="masterpages\Sidebar.master" />
     <Content Include="Views\MacroPartials\Rss\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Rss\LatestTopics.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Packages.cshtml" />
@@ -1823,19 +1722,32 @@
     <Content Include="umbraco\lib\font-awesome\fonts\FontAwesome.otf" />
     <Content Include="macroScripts\repository-popularpackages.cshtml" />
     <Content Include="Views\MacroPartials\RedirectProjectCategory.cshtml" />
-    <Content Include="Views\MacroPartials\Community\Home.cshtml" />
     <Content Include="Views\MacroPartials\Project\Edit.cshtml" />
-    <Content Include="masterpages\ProjectPage.master" />
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
-    <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Community\TermsAndConditions.cshtml" />
-    <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\Master.cshtml" />
+    <Content Include="Views\Community.cshtml" />
+    <Content Include="Views\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Members\Login.cshtml" />
+    <Content Include="Views\MacroPartials\Members\ForgotPassword.cshtml" />
+    <Content Include="Views\Partials\Forum\Forum.cshtml" />
+    <Content Include="Views\Partials\Projects\MyProjects.cshtml" />
+    <Content Include="Views\MacroPartials\Projects\MyProjects.cshtml" />
+    <Content Include="Views\EditProject.cshtml" />
+    <Content Include="Views\FileDownload.cshtml" />
+    <Content Include="Views\DocumentationSubpage.cshtml" />
+    <Content Include="Views\Download.cshtml" />
+    <Content Include="Views\Partials\Community\Scripts.cshtml" />
+    <Content Include="Views\Partials\Community\Home.cshtml" />
+    <Content Include="Views\Partials\Community\JsValues.cshtml" />
+    <Content Include="Views\Partials\Forum\ForumActions.cshtml" />
+    <Content Include="Views\Partials\Forum\MemberBadge.cshtml" />
+    <Content Include="Views\Partials\Project\EditFiles.cshtml" />
+    <Content Include="Views\Partials\Project\PackageEditNavigation.cshtml" />
+    <Content Include="Views\Partials\Project\EditScreenshots.cshtml" />
+    <Content Include="Views\Partials\Project\Complete.cshtml" />
     <Content Include="Views\Partials\Home\LatestForumActivity.cshtml" />
-    <Content Include="Views\MacroPartials\Community\Scripts.cshtml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
-    <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
-    <Content Include="Views\Search\Search.aspx" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
       <SubType>Designer</SubType>
@@ -4157,65 +4069,6 @@
     <Content Include="umbraco_client\ui\ui-lightness\images\ui-icons_ffd27a_256x240.png" />
     <Content Include="umbraco_client\ui\ui-lightness\images\ui-icons_ffffff_256x240.png" />
     <Content Include="umbraco_client\ui\ui-lightness\jquery-ui.custom.css" />
-    <Content Include="usercontrols\dashboard\getMembersFromGroup.ascx" />
-    <Content Include="usercontrols\dashboard\memberSearch.ascx" />
-    <Content Include="usercontrols\Deli\Cart\Cart.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartDetails.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartProgress.ascx" />
-    <Content Include="usercontrols\Deli\Cart\CartReview.ascx" />
-    <Content Include="usercontrols\Deli\Cart\MicroCart.ascx" />
-    <Content Include="usercontrols\Deli\Customers\VendorCustomers.ascx" />
-    <Content Include="usercontrols\Deli\Dashboard\VendorBIOverview.ascx" />
-    <Content Include="usercontrols\Deli\Dashboard\VendorProjectBI.ascx" />
-    <Content Include="usercontrols\Deli\EditPackage.ascx" />
-    <Content Include="usercontrols\Deli\HQStaffPickProjects.ascx" />
-    <Content Include="usercontrols\Deli\License\Member\MyLicenses.ascx" />
-    <Content Include="usercontrols\Deli\License\Vendor\ProjectLicenses.ascx" />
-    <Content Include="usercontrols\Deli\ListPagination.ascx" />
-    <Content Include="usercontrols\Deli\Package\Editor.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Complete.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Details.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Files.ascx" />
-    <Content Include="usercontrols\Deli\Package\Steps\Screenshots.ascx" />
-    <Content Include="usercontrols\Deli\Payout\VendorPayout.ascx" />
-    <Content Include="usercontrols\Deli\Payout\VendorPayoutHistory.ascx" />
-    <Content Include="usercontrols\Deli\Profile\MemberDataLookup.ascx" />
-    <Content Include="usercontrols\Deli\Profile\MyProjects.ascx" />
-    <Content Include="usercontrols\Deli\Profile\Signup.ascx" />
-    <Content Include="usercontrols\Deli\ProjectView.ascx" />
-    <Content Include="usercontrols\Deli\Purchase\PayPalConfirm.ascx" />
-    <Content Include="usercontrols\Deli\Purchase\PayPalPayment.ascx" />
-    <Content Include="usercontrols\Deli\Repository\RepoProjectView.ascx" />
-    <Content Include="usercontrols\Deli\Support\Member\RefundRequest.ascx" />
-    <Content Include="usercontrols\Deli\Support\VendorSupportRequest.ascx" />
-    <Content Include="usercontrols\Deli\Support\Vendor\VendorSupportRequest.ascx" />
-    <Content Include="usercontrols\Deli\TopPaidProjectsList.ascx" />
-    <Content Include="usercontrols\FergusonMoriyama\FeedCache\PostInstall.ascx" />
-    <Content Include="usercontrols\ImageGenInstaller.ascx" />
-    <Content Include="usercontrols\MemberLocator.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\acceptTos.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\EventEditor.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\EventMailer.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\FileDownloadProxy.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\Forgotpassword.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\HeaderLogin.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\InsertImage.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\Login.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\Login_novalidationscript.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ProjectCollabRequest.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ProjectContributors.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ProjectEditor.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ProjectFileUpload.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\ProjectForums.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\Signup.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\testoptimize.ascx" />
-    <Content Include="usercontrols\our.umbraco.org\YAF_MemberImport.ascx" />
-    <Content Include="usercontrols\poll\Poll.ascx" />
-    <Content Include="usercontrols\umbracoMemberControls\umbLogin.ascx" />
-    <Content Include="usercontrols\umbracoMemberControls\umbPasswordForgot.ascx" />
-    <Content Include="usercontrols\umbracoMemberControls\umbRegister.ascx" />
-    <Content Include="usercontrols\Umbraco\ExamineIndexAdmin.ascx" />
-    <Content Include="usercontrols\uWiki\FileUpload.ascx" />
     <Content Include="w3c\p3p.xml" />
     <Content Include="webservices\Licensing.asmx" />
     <Content Include="webservices\MarketPlace.asmx" />
@@ -4317,8 +4170,6 @@
     <Content Include="packages.config" />
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
-    <Content Include="masterpages\ArchivedRelease.master" />
-    <Content Include="masterpages\ReleaseDownload.master" />
     <Content Include="macroScripts\Releases-ListDownloads.cshtml">
       <SubType>Code</SubType>
     </Content>
@@ -4353,13 +4204,9 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\readme.md" />
     <Content Include="macroScripts\Rss-CommunityBlogs.cshtml" />
     <Content Include="macroScripts\TwitterSearch.cshtml" />
-    <Content Include="masterpages\SwitchForumEditor.master" />
     <Content Include="macroScripts\SwitchForumEditor.cshtml" />
-    <Content Include="masterpages\ManageSpam.master" />
     <Content Include="macroScripts\ManageSpam.cshtml" />
-    <Content Include="masterpages\ProjectsVersioned.master" />
     <Content Include="macroScripts\ProjectsVersionList.cshtml" />
-    <Content Include="masterpages\ProjectCompatibility.master" />
     <Content Include="macroScripts\EditProjectCompatibility.cshtml" />
     <Content Include="macroScripts\EventsOverview.cshtml" />
     <Content Include="umbraco\assets\fonts\helveticons\helveticons.eot" />
@@ -4466,9 +4313,7 @@
     <Content Include="umbraco\Views\Default.cshtml" />
     <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco\xslt\Web.config" />
-    <Content Include="Views\MacroPartials\Forum\Latest.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\Forum.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
+    <Content Include="Views\Partials\Forum\Latest.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
@@ -4479,6 +4324,25 @@
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Partials\Home\TwitterSearchUmbraco.cshtml" />
+    <Content Include="Views\Projects.cshtml" />
+    <Content Include="Views\Project.cshtml" />
+    <Content Include="Views\DocumentationMainpage.cshtml" />
+    <Content Include="Views\Search.cshtml" />
+    <Content Include="Views\Partials\SearchResults.cshtml" />
+    <Content Include="Views\ReleaseLanding.cshtml" />
+    <Content Include="Views\ReleaseProgress.cshtml" />
+    <Content Include="Views\Release.cshtml" />
+    <Content Include="Views\Textpage.cshtml" />
+    <Content Include="Views\RoadMap.cshtml" />
+    <Content Include="Views\Profilepage.cshtml" />
+    <Content Include="Views\ProjectPage.cshtml" />
+    <Content Include="Views\ReleaseDownload.cshtml" />
+    <Content Include="Views\PublicMemberProfile.cshtml" />
+    <Content Include="Views\ReleaseCompare.cshtml" />
+    <Content Include="Views\Repository.cshtml" />
+    <Content Include="Views\RepositoryFrontpage.cshtml" />
+    <Content Include="Views\RepositoryPage.cshtml" />
+    <Content Include="Views\RepositoryMaster.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
@@ -4489,6 +4353,20 @@
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\Partials\Members\QuickMenu.cshtml" />
+    <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
+    <Content Include="Views\Partials\Global\Alertbar.cshtml" />
+    <Content Include="Views\Partials\Global\Breadcrumb.cshtml" />
+    <Content Include="Views\Partials\Forum\TopicActions.cshtml" />
+    <Content Include="Views\Partials\Forum\TopicForm.cshtml" />
+    <Content Include="Views\Partials\Forum\Thread.cshtml" />
+    <Content Include="Views\Partials\Documentation\Breadcrumb.cshtml" />
+    <Content Include="Views\Partials\Documentation\DisplayMarkdown.cshtml" />
+    <Content Include="Views\Partials\Members\PublicProfile.cshtml" />
+    <Content Include="Views\Partials\Projects\ProjectDetails.cshtml" />
+    <Content Include="Views\Partials\Releases\ReleasesDropdown.cshtml" />
+    <Content Include="Views\Partials\Releases\AllReleases.cshtml" />
+    <Content Include="Views\Error.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -4508,7 +4386,6 @@
     <Folder Include="css\img\Cached\" />
     <Folder Include="umbraco\lib\datetimepicker\langs\" />
     <Folder Include="umbraco\Views\directives\" />
-    <Folder Include="usercontrols\Deli\Admin\" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
@@ -4573,7 +4450,6 @@
     <Error Condition="!Exists('..\packages\UmbracoCms.7.5.7\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.7\build\UmbracoCms.props'))" />
     <Error Condition="!Exists('..\packages\UmbracoCms.7.5.7\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.5.7\build\UmbracoCms.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets" Condition="Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" />
   <Import Project="..\packages\UmbracoCms.7.5.7\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.5.7\build\UmbracoCms.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

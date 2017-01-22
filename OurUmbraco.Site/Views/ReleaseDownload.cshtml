@@ -1,0 +1,43 @@
+﻿@using umbraco.BusinessLogic
+@{
+    int docId;
+    if (int.TryParse(Request["id"], out docId))
+    {
+        if (docId == 92350)
+        {
+            docId = 111983;
+        }
+
+        var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+        var content = umbracoHelper.TypedContent(docId);
+
+        if (content != null)
+        {
+            var link = content.GetProperty("downloadLink").Value.ToString().Trim();
+
+            var currentMember = 0;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var member = memberShipHelper.GetCurrentMember();
+
+            if (member != null)
+            {
+                currentMember = member.Id;
+            }
+
+	        using (var sqlHelper = Application.SqlHelper)
+	        {
+                sqlHelper.ExecuteNonQuery(@"insert into projectDownload(projectId,memberId,timestamp) values(@id, @memberId, getdate())",
+                sqlHelper.CreateParameter("@id", docId),
+                sqlHelper.CreateParameter("@memberId", currentMember));
+            }
+
+            Response.Redirect(link, false);
+        }
+        else
+        {
+            Response.StatusCode = 404;
+            Response.End();
+            return;
+        }
+    }
+}

@@ -1,0 +1,19 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+
+<div id="contribute" class="subpage">
+    <div id="body" class="markdown-syntax">
+        <div>
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+        </div>
+        <h1>Contribute to the Umbraco Project</h1>
+        <div>
+            @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+        </div>
+        <div class="options">
+            @Umbraco.RenderMacro("ContentLanding-Summary")
+        </div>
+    </div>
+</div>

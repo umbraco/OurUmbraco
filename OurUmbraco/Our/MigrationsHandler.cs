@@ -31,6 +31,11 @@ namespace OurUmbraco.Our
             AddTermsAndConditionsPage();
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
+            AddSearchDocumentTypeAndPage();
+            UseNewMyProjectsOverview();
+            UseNewRssFeedsOverview();
+            RenameUaaStoUCloud();
+            AddMarkAsSolutionReminderSent();
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
             UseNewLoginForm();
@@ -238,7 +243,7 @@ namespace OurUmbraco.Our
                 if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
                 {
                     var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
-                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Works on Umbraco Cloud?" };
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias) { Name = "Works on Umbraco as a Service?" };
                     projectContentType.AddPropertyType(checkboxPropertyType, "Project");
                     contentTypeService.Save(projectContentType);
                 }
@@ -529,6 +534,183 @@ namespace OurUmbraco.Our
             }
         }
 
+
+        private void AddSearchDocumentTypeAndPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var searchContentType = contentTypeService.GetContentType("search");
+                if (searchContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Search",
+                        Alias = "search",
+                        Icon = "icon-search"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
+                    contentTypeService.Save(contentType);
+                    
+                    searchContentType = contentTypeService.GetContentType("search");
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("search", "Search");
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate("search");
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        searchContentType.AllowedTemplates = new List<ITemplate> { template };
+                        searchContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(searchContentType);
+
+                        var contentService = ApplicationContext.Current.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var searchPage = rootContent.Children().FirstOrDefault(x => x.Name == "Search");
+                            contentService.Delete(searchPage);
+                            searchPage = contentService.CreateContent("Search", rootContent.Id, "search");
+                            var saveResult = contentService.SaveAndPublishWithStatus(searchPage);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewMyProjectsOverview()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                var allMacros = macroService.GetAll();
+                //For some reason GetByAlias does not work
+                var macro = allMacros.FirstOrDefault(x => x.Alias == "DeliMyProjects");
+                macro.ControlType = "";
+                macro.ScriptPath = "~/Views/MacroPartials/Projects/MyProjects.cshtml";
+                macroService.Save(macro);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void UseNewRssFeedsOverview()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var rootContent = contentService.GetRootContent().FirstOrDefault();
+                if (rootContent != null)
+                {
+                    var rssPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "Rss", StringComparison.InvariantCultureIgnoreCase));
+                    foreach (var page in rssPage.Children())
+                    {
+                        if (string.Equals(page.Name, "Wiki", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "CommunityBlogs", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "Help", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+
+                        if (string.Equals(page.Name, "Forum", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSForum");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "ActiveTopics", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RssLatestTopics");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "Projects", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSPackages");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "Karma", StringComparison.InvariantCultureIgnoreCase))
+                            contentService.UnPublish(page);
+
+                        if (string.Equals(page.Name, "YourTopics", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSParticipated");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "ProjectsUpdate", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RssPackages");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+
+                        if (string.Equals(page.Name, "Topic", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "RSSTopic");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+                    }
+                    
+                    var htmlPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "html", StringComparison.InvariantCultureIgnoreCase));
+                    foreach (var page in htmlPage.Children())
+                    {
+                        if (string.Equals(page.Name, "GithubPullTrigger", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            page.SetValue("macro", "Documentation-GithubSync");
+                            contentService.SaveAndPublishWithStatus(page);
+                        }
+                        else
+                        {
+                            contentService.UnPublish(page);
+                        }
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
         private void RenameUaaStoUCloud()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;

@@ -1,0 +1,16 @@
+﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    var m = Members.GetCurrentMember();
+    var reputation = m.GetPropertyValue<string>("reputationTotal");
+
+    int reputationTotal;
+    var enoughReputation = int.TryParse(reputation, out reputationTotal) && reputationTotal > 30;
+}
+@if (enoughReputation)
+{
+    @Html.Action("RenderMyProjects", "Projects")
+}
+else
+{
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+}

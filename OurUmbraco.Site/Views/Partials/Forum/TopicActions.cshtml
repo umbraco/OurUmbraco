@@ -1,0 +1,39 @@
+﻿@using OurUmbraco.Forum.Services
+@using OurUmbraco.NotificationsWeb.Library
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache);
+}
+
+<div class="utility-actions">
+    @if (topic != null)
+    {
+        if (MemberData != null)
+        {
+            var subscribed = false;
+            if (MemberData != null)
+            {
+                subscribed = Utils.IsSubscribedToForumTopic(topic.Id, MemberData.Member.Id);
+            }
+
+            if (MemberData.IsAdmin)
+            {
+                <a href="#" class="delete-thread button" data-id="@topic.Id">
+                    <i class="icon-Delete-key"></i><span>Delete thread</span>
+                </a>
+            }
+            
+            <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@topic.Id" data-controller="topic">
+                <i class="icon-Bookmark"></i><span>@(subscribed ? "Following" : "Follow")</span>
+            </a>
+        }
+
+        if (topic.Answer > 0)
+        {
+            <a href="#comment-@topic.Answer.ToString()" class="go-to-solution button transparent">
+                <i class="icon-Check"></i><span>Go to solution</span>
+            </a>
+        }
+    }
+</div>

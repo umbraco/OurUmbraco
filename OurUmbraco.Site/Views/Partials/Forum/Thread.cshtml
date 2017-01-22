@@ -1,0 +1,161 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@using System.Web.Mvc.Html
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
+@using OurUmbraco.NotificationsWeb.Library
+@using Umbraco.Core.Logging
+
+@{
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache);
+
+    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    if (string.IsNullOrWhiteSpace(notification))
+    {
+        notification = "This forum is in read only mode, you can no longer reply";
+    }
+}
+
+<!-- COPY LINK -->
+
+<div id="overlay" class="overlay"></div>
+
+<div id="copy-link-wrapper" class="copy-link-wrapper">
+    <i class="icon-Link"></i>
+    <textarea class="getLink" readonly type="text"></textarea>
+    <p>Press Ctrl / CMD + C to copy this to your clipboard.</p>
+</div>
+
+<div id="thankyou">
+    Copied to clipboard
+</div>
+
+<!-- COPY LINK END -->
+<!-- DELETE THREAD/COMMENT START -->
+@if (MemberData != null)
+{
+    <div id="confirm-wrapper" class="confirm-wrapper">
+        <h4>Are you sure?</h4>
+        <p>This <span class="type-of"></span> will be gone forever and ever</p>
+        <br />
+        <button type="button" class="button green tiny">Yes</button>
+        <button type="button" class="button red tiny">No</button>
+    </div>
+}
+
+<!-- DELETE THREAD END -->
+<!-- FLAG SPAM START -->
+<div id="confirm-wrapper-flag" class="confirm-wrapper-flag">
+    <h4>Flag this post as spam?</h4>
+    <p>This post will be reported to the moderators as potential spam to be looked at</p>
+    <br />
+    <button type="button" class="button green tiny">Yes</button>
+    <button type="button" class="button red tiny">No</button>
+</div>
+<!-- FLAG SPAM END -->
+@if (topic != null)
+{
+    if (Model.Content.NewTopicsAllowed() == false)
+    {
+        <div class="alertbar__yellow" style="margin-bottom: 10px;">
+            @Html.Raw(notification)
+        </div>
+    }
+
+    <ul class="comments">
+
+        @{
+            try
+            {
+                @Html.Partial("forum/question", topic)
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<string>(string.Format("~/Views/MacroPartials/Forum/Thread.cshtml - error rendering topic with id {0}", topic.Id), ex);
+            }
+        }
+
+        @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
+        {
+            var comm = comment;
+
+            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
+
+            if (comm.HasChildren)
+            {
+                var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
+
+                foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
+                {
+                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
+                }
+            }
+        }
+    </ul>
+
+            if (MemberData != null)
+            {
+                if (Model.Content.NewTopicsAllowed())
+                {
+                    <div class="replybutton">
+                        <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
+                    </div>
+
+                    <div class="utilities">
+                        <div class="utility-actions thread-bottom">
+                            @{
+                                var subscribed = false;
+                                if (MemberData.Member != null)
+                                {
+                                    subscribed = Utils.IsSubscribedToForumTopic(topic.Id, MemberData.Member.Id);
+                                }
+
+                                if (MemberData.IsAdmin)
+                                {
+                                    <a href="#" class="delete-thread button" data-id="@topic.Id">
+                                        <i class="icon-Delete-key"></i><span>Delete thread</span>
+                                    </a>
+                                }
+                                
+                                <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@topic.Id" data-controller="topic">
+                                    <i class="icon-Bookmark"></i><span>@(subscribed ? "Following" : "Follow")</span>
+                                </a>
+
+                                if (topic.Answer > 0)
+                                {
+                                    <a href="#comment-@topic.Answer.ToString()" class="go-to-solution button transparent">
+                                        <i class="icon-Check"></i><span>Go to solution</span>
+                                    </a>
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="alertbar__yellow">
+                        @Html.Raw(notification)
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="replybutton notloggedin">
+                    Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
+                </div>
+                }
+            }
+            else
+            {
+                <p>This topic no longer exists.</p>
+            }
+
+<link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
+<script type="text/javascript" src="/scripts/jquery.tooltipster.min.js"></script>
+<script type="text/javascript">
+    $('.highfive-count').tooltipster({
+        contentAsHTML: true,
+        interactive: true,
+		multiple: true
+    });
+</script>

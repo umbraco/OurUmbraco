@@ -1,9 +1,0 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Deli.master" AutoEventWireup="true" %>
-
-<asp:Content ContentPlaceHolderID="TitleArea" runat="server">
-</asp:Content>
-
-<asp:Content ContentPlaceHolderID="DeliRight" runat="server">
-    <umbraco:Macro linkToCurrent="1" Alias="Breadcrumb" runat="server"></umbraco:Macro>
-    <umbraco:Macro runat="server" Version="[@v]" Cache="600" FileLocation="~/macroScripts/ProjectsVersioned.cshtml" />
-</asp:Content>

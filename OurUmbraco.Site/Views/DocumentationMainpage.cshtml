@@ -1,0 +1,22 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+<div class="has-sidebar">
+    <div class="documentation">
+        <div id="wiki" class="subpage">
+            <div id="body">
+                <div style="margin-top: 25px;">
+                    @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
+                </div>
+
+                <div id="markdown-docs" class="markdown-syntax">
+                    @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml")
+                </div>
+
+                <br style="clear: both" />
+                <div class="divider"></div>
+            </div>
+        </div>
+    </div>
+</div>

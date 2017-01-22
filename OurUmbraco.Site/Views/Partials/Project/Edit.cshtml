@@ -31,17 +31,7 @@
 </style>
 <div class="package-create">
     
-    <ul class="stepNavigation">
-        <li class="current"><a href="/member/profile/projects/details/?projectId=@Model.Id">Package Details</a></li>
-        @if (Model.Id > 0)
-        {
-            <li class=""><a href="/member/profile/projects/edit?editorStep=files&id=@Model.Id">Package Files</a></li>
-
-            <li class=""><a href="/member/profile/projects/edit?editorStep=screenshots&id=@Model.Id">Screenshots</a></li>
-
-            <li class=""><a href="/member/profile/projects/edit?editorStep=complete&id=@Model.Id">Creation Complete</a></li>
-        }
-    </ul>
+    @Html.Partial("~/Views/Partials/Project/PackageEditNavigation.cshtml", "details")
 
     <div class="form simpleForm" id="registrationForm">
         @using (Html.BeginUmbracoForm<ProjectController>("SaveDetails"))

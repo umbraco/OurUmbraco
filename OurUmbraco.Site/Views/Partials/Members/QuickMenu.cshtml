@@ -1,0 +1,122 @@
+﻿@inherits OurUmbracoTemplatePage
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Models
+@{ var profile = MemberData; }
+<div class="quick-menu">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                @if (profile != null)
+                {
+                    <div class="close">
+                        <i class="icon-Delete"></i>Close
+                    </div>
+                    <div class="settings">
+                        <a href="/member/profile"><i class="icon-Settings"></i>Edit profile</a>
+                    </div>
+
+                    <div class="user-image">
+                        @Html.Raw(profile.AvatarHtml)
+                    </div>
+
+                    <div class="user-profile">
+                        <h2>@profile.Member.Name</h2>
+                        <div class="posts">
+
+                            @profile.NumberOfForumPosts
+
+                            @if (profile.NumberOfForumPosts == 0 || profile.NumberOfForumPosts > 1)
+                            {
+                                <text>Posts</text>
+                            }
+                            else
+                            {
+                                <text>Post</text>
+                            }
+                        </div>
+                        <div class="karma">
+                            @profile.Karma
+                        </div>
+                        @if (string.IsNullOrWhiteSpace(profile.TwitterHandle) == false)
+                        {
+                            <div class="user-twitter">
+                                <a href="https://twitter.com/@profile.TwitterHandle">&commat;<span>@profile.TwitterHandle</span></a>
+                            </div>
+                        }
+                        @if (profile.Roles.Any())
+                        {
+                            <span class="roles">
+                                @foreach (var role in profile.Roles)
+                                {
+                                    <span class="@role">@role</span>
+                                }
+                            </span>
+                        }
+                        <div class="public-profile">
+                            <a href="/member/@profile.Member.Id">View my public profile</a>
+                        </div>
+                        @if (profile.IsAdmin)
+                        {
+                            <div class="public-profile">
+                                <a href="/antispam">Check the spam queue</a>
+                            </div>
+                        }
+                        <div class="log-out">
+                            <a href="/umbraco/Surface/Login/Logout">Log out</a>
+                        </div>
+                    </div>
+
+                    if (profile.AvatarImageTooSmall)
+                    {
+                        <div class="user-notifications">
+                            <small>
+                                Your Notifications
+                            </small>
+                            <a href="/member/profile" class="user-notification__green">
+                                <div class="user-notification-text">
+                                    <p>Your profile picture is a little on the small side, It would look <strong>much nicer</strong> if you could update it to be larger image.</p>
+                                </div>
+                            </a>
+                        </div>
+                    }
+
+                    <div class="user-latest-posts">
+                        <small>
+                            Activity in threads you participated in
+                        </small>
+                        @foreach (var topic in profile.LatestTopics)
+                        {
+                            var forum = Umbraco.TypedContent(topic.ParentId);
+                            // if forum == null then it's been hidden/unpublished (example: v5 forum)
+                            // if this is the case: don't show forum post in list
+                            if (forum != null)
+                            {
+                                <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
+                                    <div class="forum-thread-text">
+                                        <h3>@topic.Title</h3>
+                                        <p>
+                                            @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
+                                            {
+                                                <text>last edited by @topic.LastReplyAuthorName</text>
+                                            }
+                                            else
+                                            {
+                                                <text>created by @topic.AuthorName</text>
+                                            }
+                                            @topic.Updated.ConvertToRelativeTime()
+                                        </p>
+                                    </div>
+                                    <div class="category frontend"><span class="cat">@forum.Name</span></div>
+                                </a>
+                            }
+                        }
+                    </div>
+                }
+                else
+                {
+                    <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>

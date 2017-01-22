@@ -1,0 +1,33 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+
+@Html.Partial("~/Views/Partials/Community/Home.cshtml")
+
+@section Search 
+{
+    <script type="text/template" class="search-item-template">
+        <li>
+            <a href="{{ url }}">
+                <div class="type-icon">
+                    <i class="{{ icon }}"></i>
+                </div>
+
+                <div class="type-context">
+                    <div class="type-name">
+                        {{ name }}
+                    </div>
+                    <div class="type-description">
+                        {{ description }}
+                    </div>
+                </div>
+            </a>
+        </li>
+    </script>
+}
+
+@section EndScripts
+{
+    @Html.Partial("~/Views/Partials/Community/Scripts.cshtml")
+}

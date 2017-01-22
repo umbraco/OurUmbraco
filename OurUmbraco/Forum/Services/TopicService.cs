@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Models;
+using OurUmbraco.Our.Models;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Persistence;

@@ -1,0 +1,21 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+<div class="page-content">
+    <div class="sidebar-area">
+        <div class="sidebar-content">
+            <div class="content-wrapper">
+                @Html.Partial("~/Views/Partials/Members/ProfileNavigation.cshtml")
+            </div><!-- .content-wrapper -->
+        </div><!-- .sidebar-content -->
+    </div><!-- .sidebar-area -->
+    <div class="main-area">
+        <div class="main-content">
+            <div class="content-wrapper">
+                @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+            </div><!-- .content-wrapper -->
+        </div><!-- .main-content -->
+    </div><!-- .main-area -->
+</div><!-- .page-content -->

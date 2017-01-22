@@ -1,0 +1,14 @@
+﻿@model string
+@{
+    var projectId = Request["projectId"];
+    if (string.IsNullOrWhiteSpace(projectId))
+    {
+        projectId = Request["id"];
+    }
+}
+<ul class="stepNavigation">
+    <li class="@(Model == "details" ? "current" : null)" style="text-decoration: underline;"><a href="/member/profile/projects/details?projectId=@projectId">Package Details</a></li>
+    <li class="@(Model == "files" ? "current" : null)" style="text-decoration: underline;"><a href="/member/profile/projects/edit?editorStep=files&id=@projectId">Package Files</a></li>
+    <li class="@(Model == "screenshots" ? "current" : null)" style="text-decoration: underline;"><a href="/member/profile/projects/edit?editorStep=screenshots&id=@projectId">Screenshots</a></li>
+    <li class="@(Model == "complete" ? "current" : null)" style="text-decoration: underline;"><a href="/member/profile/projects/edit?editorStep=complete&id=@projectId">Creation Complete</a></li>
+</ul>

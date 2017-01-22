@@ -1,0 +1,20 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+@if (MemberData != null)
+{
+    <script type="text/javascript">
+        var umb_member_name = '@MemberData.Member.Name';
+        var umb_member_email = '@MemberData.Email';
+        var umb_member_icon = '@MemberData.AvatarPath';
+    </script>
+}
+
+@functions
+{
+    public class MemberJsValues
+    {
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Icon { get; set; }
+    }
+}

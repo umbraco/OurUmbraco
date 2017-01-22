@@ -1,4 +1,0 @@
-﻿<%@ Master Language="C#" MasterPageFile="~/masterpages/Mobile.master" AutoEventWireup="true" %>
-<asp:Content ContentPlaceHolderId="body" runat="server">
-  <umbraco:Item field="bodyText" runat="server"></umbraco:Item>
-</asp:Content>

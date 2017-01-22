@@ -1,0 +1,18 @@
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var source = Umbraco.TypedContent(1057);
+}
+
+<nav>
+    <ul class="level-1">
+
+        <li><a href="@source.Url"><h3>@source.Name</h3></a></li>
+
+        @foreach(var p in source.Children.Where("Visible"))
+        {
+            <li><a href="@p.Url"><h3>@p.Name</h3></a></li>
+        }
+       
+
+    </ul>
+</nav>

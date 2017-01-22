@@ -32,16 +32,16 @@ namespace OurUmbraco.Our.Controllers
 
             var ms = Services.MemberService;
             var mem = ms.GetById(Members.GetCurrentMemberId());
-
+            
             if (mem.Email != model.Email && ms.GetByEmail(model.Email) != null)
             {
                 ModelState.AddModelError("Email", "A Member with that email already exists");
                 return CurrentUmbracoPage();
-
-            
             }
 
-            if(model.Password != model.RepeatPassword)
+            var memberPreviousUserName = mem.Username;
+
+            if (model.Password != model.RepeatPassword)
             {
                 ModelState.AddModelError("Password", "Passwords need to match");
                 ModelState.AddModelError("RepeatPassword", "Passwords need to match");
@@ -66,9 +66,11 @@ namespace OurUmbraco.Our.Controllers
             }
 
             if(!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)
-                ms.SavePassword(mem, model.Password);       
-
+                ms.SavePassword(mem, model.Password);
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + memberPreviousUserName);
+                
             TempData["success"] = true;
+
 
             return RedirectToCurrentUmbracoPage();
         }

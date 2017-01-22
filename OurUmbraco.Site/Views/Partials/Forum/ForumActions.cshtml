@@ -1,0 +1,36 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.NotificationsWeb.Library
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+<div class="utility-actions">
+    @if (MemberData != null)
+    {
+        if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
+        {
+            <a href="#" class="button create-new-thread" data-controller="topic">
+                <i class="icon-Add"></i><span>Create new</span>
+            </a>
+        }
+
+        var subscribed = Utils.IsSubscribedToForum(CurrentPage.Id, MemberData.Member.Id);
+        if (subscribed)
+        {
+            <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Following</span>
+            </a>
+        }
+        else
+        {
+            <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="">
+                <i class="icon-Bookmark"></i><span>Follow</span>
+            </a>
+        }
+    }
+    else
+    {
+        <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
+            <i class="icon-Add"></i><span>Sign in to create a topic</span>
+        </a>
+    }
+
+</div>

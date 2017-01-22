@@ -1,0 +1,84 @@
+﻿@inherits UmbracoTemplatePage
+@inherits UmbracoTemplatePage
+@{
+    HttpContext.Current.Response.AddHeader("p3p", "CP=\"IDC DSP COR ADM DEVi TAIi PSA PSD IVAi IVDi CONi HIS OUR IND CNT\"");
+}<!DOCTYPE html>
+<html>
+<head>
+    <title>Umbraco Package Repository</title>
+    <link href="/css/repo-styles.css" type="text/css" rel="stylesheet" />
+    <link href="/css/qtip2.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript">
+        var _callback = '@(Request.QueryString["callback"])';
+        var _qs = '@(Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ))';
+    </script>
+    <script type="text/javascript" src="/scripts/libs/jquery-1.6.1.min.js"></script>
+    <script type="text/javascript" src="https://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+    <script type="text/javascript" src="/scripts/repo/typewatch.js"></script>
+    <script type="text/javascript" src="/scripts/libs/qtip2.js"></script>
+    <!-- packagetips -->
+    <script type="text/javascript" src="/scripts/repo/packageTips.js"></script>
+    <script type="text/javascript" src="/scripts/repo/repoSearch.js"></script>
+    <script id="search-result" type="text/x-jquery-tmpl">
+        <li class="clearfix">
+            <div class="deliPackage">
+                <div class="brief">
+                    {{if  Fields.image == null}}
+                    <a href="/repo_viewproject?@(Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ))&project_id={{= Id}}" class="packageIcon" style="background: url(/css/img/package2.png?bgcolor=fff&amp;width=50&amp;height=50&amp;format=png;) no-repeat top left;">
+                        Package
+                    </a>
+                    {{/if}}
+                    {{if  Fields.image != null}}
+                    <a href="/repo_viewproject?@(Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ))&project_id={{= Id}}" class="packageIcon" style="background: url({{= Fields.image}}?bgcolor=fff&amp;width=50&amp;height=50&amp;format=png;) no-repeat top left;">
+                        Package
+                    </a>
+                    {{/if}}
+                    <h3>
+                        <a href="/repo_viewproject?@(Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ))&project_id={{= Id}}">{{= Fields.nodeName}}</a>
+                    </h3>
+                    <div class="category">
+                        {{= Fields.category}}
+                    </div>
+                    <div class="commercialIndicator free">
+                        {{= Fields.listingType}}
+                    </div>
+                </div>
+                <div class="hiLite">
+                    <p>
+                        <a href="/repo_viewproject?@(Request.RawUrl.Substring( Request.RawUrl.IndexOf('?')+1 ))&project_id={{= Id}}" title="{{= Fields.nodeName}}" rel="{{= Fields.uniqueId}}">{{= Fields.body}}</a>
+                    </p>
+                </div>
+                <div class="popularity">
+                    <div class="karma">
+                        {{= Fields.karma}} <small>Karma</small>
+                    </div>
+                    <div class="downloads">
+                        {{= Fields.downloads}} <small>Downloads</small>
+                    </div>
+                </div>
+            </div>
+        </li>
+    </script>
+    @RenderSection("head", false)
+</head>
+<body>
+    <form runat="server">
+        <div id="TheForm">
+            <div id="search">
+                <div><input type="text" id="search-field" value="Search..." /><!-- <em>or</em> <a href="#">browse</a>--></div>
+            </div>
+            <div id="body">
+                <ul class="projects" id="search-result-holder" style="display: none;"></ul>
+                <div id="search-no-results">
+                    <h3>No luck!</h3>
+                    <p>There's no project that matches <strong><span id="search-query"></span></strong>.</p>
+                    <p>Maybe it doesn't exist, maybe it hasn't been approved yet. After all, it does take community kudos from at least 15 people to make it inside this repository</p>
+                </div>
+                <div id="repo-content">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </form>
+</body>
+</html>
