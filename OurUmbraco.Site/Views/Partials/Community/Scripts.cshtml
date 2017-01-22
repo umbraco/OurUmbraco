@@ -1,5 +1,4 @@
-﻿@inherits Umbraco.Web.Macros.PartialViewMacroPage
-<script type="text/javascript">
+﻿<script type="text/javascript">
         $(document).ready(function () {
             try {
                 $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new { numberOfResults = 6 })");
@@ -15,4 +14,4 @@
                 console.log("Couldn't load latest forum activity", errForum.message);
             }
         });
-</script>
+</script> 

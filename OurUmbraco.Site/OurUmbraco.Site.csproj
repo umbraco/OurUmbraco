@@ -1687,8 +1687,6 @@
     <Content Include="Views\DisplayTopic.cshtml" />
     <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
-    <Content Include="Views\MacroPartials\Members\QuickMenu.cshtml" />
-    <Content Include="Views\MacroPartials\Members\JsValues.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.svg" />
@@ -1696,7 +1694,6 @@
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.woff" />
     <Content Include="Assets\images\logo.svg" />
     <Content Include="Assets\images\magnifier.svg" />
-    <Content Include="Views\MacroPartials\Navigation\TopNavigation.cshtml" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.eot" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.ttf" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.woff" />
@@ -1717,7 +1714,6 @@
     <Content Include="Views\MacroPartials\Projects\ProjectDetails.cshtml" />
     <Content Include="Views\MacroPartials\Members\Register.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectForums.cshtml" />
-    <Content Include="Views\MacroPartials\Global\AlertBar.cshtml" />
     <Content Include="Views\MacroPartials\Members\PublicProfile.cshtml" />
     <Content Include="Views\MacroPartials\Rss\Forum.cshtml" />
     <Content Include="Views\MacroPartials\Rss\LatestTopics.cshtml" />
@@ -1734,7 +1730,6 @@
     <Content Include="umbraco\lib\font-awesome\fonts\FontAwesome.otf" />
     <Content Include="macroScripts\repository-popularpackages.cshtml" />
     <Content Include="Views\MacroPartials\RedirectProjectCategory.cshtml" />
-    <Content Include="Views\MacroPartials\Community\Home.cshtml" />
     <Content Include="Views\MacroPartials\Project\Edit.cshtml" />
     <Content Include="umbraco\lib\bootstrap-tabdrop\README.md" />
     <Content Include="Views\MacroPartials\Releases\ReleasesDropdown.cshtml" />
@@ -1750,13 +1745,15 @@
     <Content Include="Views\FileDownload.cshtml" />
     <Content Include="Views\DocumentationSubpage.cshtml" />
     <Content Include="Views\Download.cshtml" />
+    <Content Include="Views\Partials\Community\Scripts.cshtml" />
+    <Content Include="Views\Partials\Community\Home.cshtml" />
+    <Content Include="Views\Partials\Community\JsValues.cshtml" />
     <None Include="Views\Partials\Forum\MemberBadge.cshtml" />
     <Content Include="Views\Partials\Project\EditFiles.cshtml" />
     <Content Include="Views\Partials\Project\PackageEditNavigation.cshtml" />
     <Content Include="Views\Partials\Project\EditScreenshots.cshtml" />
     <Content Include="Views\Partials\Project\Complete.cshtml" />
     <Content Include="Views\Partials\Home\LatestForumActivity.cshtml" />
-    <Content Include="Views\MacroPartials\Community\Scripts.cshtml" />
     <Content Include="Service References\Application Insights\ConnectedService.json" />
     <Content Include="Views\Web.config" />
     <Content Include="web.config">
@@ -4346,8 +4343,6 @@
     <Content Include="Views\Release.cshtml" />
     <Content Include="Views\Textpage.cshtml" />
     <Content Include="Views\RoadMap.cshtml" />
-    <Content Include="Views\Partials\Members\Login.cshtml" />
-    <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
     <Content Include="Views\Profilepage.cshtml" />
     <Content Include="Views\ProjectPage.cshtml" />
     <Content Include="Views\ReleaseDownload.cshtml" />
@@ -4367,6 +4362,9 @@
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\Partials\Members\QuickMenu.cshtml" />
+    <Content Include="Views\Partials\Navigation\TopNavigation.cshtml" />
+    <Content Include="Views\Partials\Global\Alertbar.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

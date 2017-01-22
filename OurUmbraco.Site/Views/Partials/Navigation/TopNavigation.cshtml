@@ -1,22 +1,21 @@
-@using System.Collections.Specialized
-@using System.Drawing
+﻿@using System.Drawing
 @using OurUmbraco.Our
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits UmbracoViewPage<IPublishedContent>
 
 @{
     @* Get the root of the website *@
-    var root = CurrentPage.AncestorOrSelf(1);
-    Image avatarImage = null;
-    if (Members.IsLoggedIn())
-    {
-        avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
-    }
+var root = Model.AncestorOrSelf(1);
+Image avatarImage = null;
+if (Members.IsLoggedIn())
+{
+    avatarImage = Utils.GetMemberAvatarImage(Members.GetCurrentMember());
+}
 }
 
 <ul>
     @foreach (var page in root.Children.Where("Visible"))
     {
-        <li class="@(page.IsAncestorOrSelf(CurrentPage) ? "current" : null)">
+        <li class="@(page.IsAncestorOrSelf(Model) ? "current" : null)">
             <a href="@page.Url">@page.Name</a>
         </li>
     }

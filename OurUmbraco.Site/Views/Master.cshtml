@@ -20,7 +20,7 @@
     Html.RequiresCss("https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic", 0);
     Html.RequiresCss("https://cdnjs.cloudflare.com/ajax/libs/fancybox/2.1.5/jquery.fancybox.min.css", 0);
 
-    
+
     Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.13.1/jquery.validate.min.js");
     Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/mvc/4.0/jquery.validate.unobtrusive.min.js");
     Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/pagedown/1.0/Markdown.Converter.js");
@@ -72,7 +72,21 @@
     <link rel="icon" type="image/png" href="/assets/images/app-icons/favicon.png">
 
     <title>
-        @Umbraco.RenderMacro("Title")
+        @{
+            var title = string.Empty;
+            var topicTitle = HttpContext.Current.Items["topicTitle"];
+            if (topicTitle != null)
+            {
+                title = topicTitle.ToString();
+            }
+
+            if (string.IsNullOrWhiteSpace(title) == false)
+            {
+                <text>@title - </text>
+            }
+        }
+
+        @Model.Content.Name - our.umbraco.org
     </title>
     <meta name="description" content="">
     <meta name="author" content="">
@@ -82,7 +96,7 @@
     <![endif]-->
     <script type="text/javascript" src="https://code.jquery.com/jquery-1.7.2.min.js"></script>
 
-    @Umbraco.RenderMacro("MembersJsValues")
+    @Html.Partial("~/Views/Partials/Community/JsValues.cshtml")
 
     @Html.RenderCssHere()
 
@@ -112,7 +126,7 @@
 </head>
 
 <body class="@bodyCss">
-    @Umbraco.RenderMacro("MembersQuickMenu")
+    @Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
     <div class="wrapper">
         <header>
@@ -126,7 +140,7 @@
                             <a href="#" class="toggle cross"><span></span></a>
                         </div>
                         <nav class="col-md-9">
-                            @Umbraco.RenderMacro("NavigationTopNavigation")
+                            @Html.Partial("~/Views/Partials/Navigation/TopNavigation.cshtml")
                         </nav>
                     </div>
                 </div>
@@ -136,7 +150,7 @@
         @{
             if (memberIsBlocked == false)
             {
-                @Umbraco.RenderMacro("GlobalAlertBar")
+                @Html.Partial("~/Views/Partials/Global/AlertBar.cshtml")
                 @RenderSection("Search", false)
                 @RenderBody()
             }
@@ -175,7 +189,7 @@
 
     </div>
     <!--.wrapper-->
-    
+
     @Html.RenderJsHere()
 
     <script type="text/javascript">

@@ -1,6 +1,6 @@
-@using System.Drawing
+﻿@using System.Drawing
 @using OurUmbraco.Our
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits UmbracoViewPage<IPublishedContent>
 @{
     var home = Umbraco.TypedContentAtRoot().First();
     var notificationText = home.GetPropertyValue<string>("mainNotification");
@@ -14,15 +14,15 @@
 
 @Html.Action("RenderTerms", "TermsAndConditions")
 
-@* We'll show it differently on the homepage *@ 
-@if (showNotification && Model.Content.Id != home.Id)
+@* We'll show it differently on the homepage *@
+@if (showNotification && Model.Id != home.Id)
 {
     <div class="alertbar__yellow">
         @Html.Raw(notificationText)
     </div>
 }
-    
-@if (Request.Cookies["dismissAvatar"] == null && CurrentPage.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
+
+@if (Request.Cookies["dismissAvatar"] == null && Model.Id != home.Id && avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
 {
     <div class="notification__blue avatarTooSmall">
         <div class="message text-center">

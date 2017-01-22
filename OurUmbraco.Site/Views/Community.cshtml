@@ -3,9 +3,10 @@
     Layout = "~/Views/Master.cshtml";
 }
 
-@Umbraco.RenderMacro("CommunityHome")
+@Html.Partial("~/Views/Partials/Community/Home.cshtml")
 
-@section Search {
+@section Search 
+{
     <script type="text/template" class="search-item-template">
         <li>
             <a href="{{ url }}">
@@ -26,4 +27,7 @@
     </script>
 }
 
-@Umbraco.RenderMacro("CommunityHomeScripts")
+@section EndScripts
+{
+    @Html.Partial("~/Views/Partials/Community/Scripts.cshtml")
+}
