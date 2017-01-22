@@ -37,7 +37,6 @@
             }
         }
         
-        var currentMember = MemberData.Member;
         var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
         var nodeListingProvider = new NodeListingProvider();
@@ -239,7 +238,7 @@
             </div>
         </div>
         <!-- .public-member -->
-        if (MemberData.IsAdmin)
+        if (MemberData != null && MemberData.IsAdmin)
         {
             var allTopics = ts.GetLatestTopicsForMember(member.Id, false, 1000);
 
@@ -270,7 +269,8 @@
             </div>
         }
         <br /><br />
-        if (currentMember.IsHq())
+        var currentMember = MemberData != null ? MemberData.Member : null; 
+        if (currentMember != null && currentMember.IsHq())
         {
             <div style="border: 1px solid red; padding: 4px;">
                 <p>HQ Tools (also known as "with great power comes great responsibility"):</p><br />

@@ -1,0 +1,7 @@
+﻿@using Umbraco.Core.Logging
+@{
+    var absoluteReferrer = string.Empty;
+    var referrer = HttpContext.Current.Request.UrlReferrer;
+    if(referrer != null) { absoluteReferrer = referrer.AbsoluteUri; }
+    LogHelper.Info<string>(string.Format("Error view requested on page {0} - referrer {1}", HttpContext.Current.Request.Url.AbsoluteUri, absoluteReferrer));
+}

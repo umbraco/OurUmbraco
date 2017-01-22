@@ -4366,6 +4366,7 @@
     <Content Include="Views\Partials\Projects\ProjectDetails.cshtml" />
     <Content Include="Views\Partials\Releases\ReleasesDropdown.cshtml" />
     <Content Include="Views\Partials\Releases\AllReleases.cshtml" />
+    <Content Include="Views\Error.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
