@@ -42,6 +42,7 @@ namespace OurUmbraco.Our
             UseNewForgotPasswordForm();
             AddTwitterFilters();
             AddHomeScriptsMacro();
+            AddNuGetUrlForPackages();
         }
         
         private void EnsureMigrationsMarkerPathExists()
@@ -900,5 +901,41 @@ namespace OurUmbraco.Our
             }
         }
 
+
+        private void AddNuGetUrlForPackages()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var projectContentType = contentTypeService.GetContentType("Project");
+                var propertyTypeAlias = "nuGetPackageUrl";
+                var textbox = new DataTypeDefinition("Umbraco.Textbox");
+
+                var tabName = "Project";
+                if (projectContentType.PropertyGroups.Contains(tabName) == false)
+                    projectContentType.AddPropertyGroup(tabName);
+
+                if (projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textboxNuGetPackage = new PropertyType(textbox, propertyTypeAlias);
+                    projectContentType.AddPropertyType(textboxNuGetPackage, tabName);
+                }
+                
+                contentTypeService.Save(projectContentType);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }
