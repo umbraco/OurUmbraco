@@ -16,7 +16,7 @@
             <div class="clear"></div>
         </div>
         <!-- FORUM HEADER END -->
-        @Umbraco.RenderMacro("ForumThread")
+        @Html.Partial("~/Views/Partials/Forum/Thread.cshtml")
     </div>
 </section>
-@Umbraco.RenderMacro("ForumForm")
+@Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")

@@ -1,5 +1,5 @@
 ﻿@using OurUmbraco.Forum.Extensions
-@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <div class="markdown-spacer"></div>
 <div id="markdown-editor" class="markdown-editor">
@@ -101,11 +101,9 @@
 
 </div>
 
-
-
 <!-- Mustache template-->
 <script id="comment-template" type="x-tmpl-mustache">
-    <li class="comment  {{cssClass}}"  data-parent="{{id}}" id="comment-{{id}}">
+    <li class="comment  {{cssClass}}" data-parent="{{id}}" id="comment-{{id}}">
         <div class="meta">
             <div class="profile">
                 <a href="/member/{{authorId}}">{{authorName}}</a> has in total {{authorKarma}} karma points
@@ -123,14 +121,11 @@
         </div>
 
         <div class="comment-inner">
-
             <a href="/member/{{authorId}}" class="photo">
                 {{{avatar}}}
             </a>
 
-
             <div class="highfive">
-
                 <div class="highfive-count">
                     0
                 </div>
@@ -146,7 +141,6 @@
                 </div>
                 {{/isSpam}}
                 {{{body}}}
-
             </div>
         </div>
 

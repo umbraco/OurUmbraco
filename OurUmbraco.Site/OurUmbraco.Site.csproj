@@ -1685,7 +1685,6 @@
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\TopicForm.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
@@ -4321,7 +4320,6 @@
     <Content Include="umbraco\webservices\UltimatePickerAutoCompleteHandler.ashx" />
     <Content Include="umbraco\xslt\Web.config" />
     <Content Include="Views\MacroPartials\Forum\Latest.cshtml" />
-    <Content Include="Views\MacroPartials\Forum\Thread.cshtml" />
     <Content Include="Views\Partials\Forum\Question.cshtml" />
     <Content Include="Views\Partials\Members\Profile.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNotification.cshtml" />
@@ -4366,6 +4364,8 @@
     <Content Include="Views\Partials\Global\Alertbar.cshtml" />
     <Content Include="Views\Partials\Global\Breadcrumb.cshtml" />
     <Content Include="Views\Partials\Forum\TopicActions.cshtml" />
+    <Content Include="Views\Partials\Forum\TopicForm.cshtml" />
+    <Content Include="Views\Partials\Forum\Thread.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
