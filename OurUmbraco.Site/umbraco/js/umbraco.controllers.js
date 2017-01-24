@@ -3395,7 +3395,7 @@ angular.module("umbraco").controller("Umbraco.Overlays.MacroPickerController", M
 //used for the media picker dialog
 angular.module("umbraco")
     .controller("Umbraco.Overlays.MediaPickerController",
-        function($scope, mediaResource, umbRequestHelper, entityResource, $log, mediaHelper, mediaTypeHelper, eventsService, treeService, $element, $timeout, $cookies, $cookieStore, localizationService) {
+        function ($scope, mediaResource, umbRequestHelper, entityResource, $log, mediaHelper, mediaTypeHelper, eventsService, treeService, $element, $timeout, $cookies, localStorageService, localizationService) {
 
             if (!$scope.model.title) {
                 $scope.model.title = localizationService.localize("defaultdialogs_selectMedia");
@@ -3409,7 +3409,7 @@ angular.module("umbraco")
             $scope.multiPicker = (dialogOptions.multiPicker && dialogOptions.multiPicker !== "0") ? true : false;
             $scope.startNodeId = dialogOptions.startNodeId ? dialogOptions.startNodeId : -1;
             $scope.cropSize = dialogOptions.cropSize;
-            $scope.lastOpenedNode = $cookieStore.get("umbLastOpenedMediaNodeId");
+            $scope.lastOpenedNode = localStorageService.get("umbLastOpenedMediaNodeId");
             if ($scope.onlyImages) {
                 $scope.acceptedFileTypes = mediaHelper
                     .formatFileTypes(Umbraco.Sys.ServerVariables.umbracoSettings.imageFileTypes);
@@ -3527,8 +3527,7 @@ angular.module("umbraco")
                     });
                 $scope.currentFolder = folder;
 
-                // for some reason i cannot set cookies with cookieStore
-                document.cookie = "umbLastOpenedMediaNodeId=" + folder.id;
+                localStorageService.set("umbLastOpenedMediaNodeId", folder.id);
 
             };
 
@@ -9084,18 +9083,24 @@ angular.module("umbraco").controller("Umbraco.Editors.Packages.DeleteController"
                 fields: {},
                 file: file
             }).progress(function (evt) {
+                
+                // hack: in some browsers the progress event is called after success
+                // this prevents the UI from going back to a uploading state
+                if(vm.zipFile.uploadStatus !== "done" && vm.zipFile.uploadStatus !== "error") {
 
-                // set view state to uploading
-                vm.state = 'uploading';
+                    // set view state to uploading
+                    vm.state = 'uploading';
 
-                // calculate progress in percentage
-                var progressPercentage = parseInt(100.0 * evt.loaded / evt.total, 10);
+                    // calculate progress in percentage
+                    var progressPercentage = parseInt(100.0 * evt.loaded / evt.total, 10);
 
-                // set percentage property on file
-                vm.zipFile.uploadProgress = progressPercentage;
+                    // set percentage property on file
+                    vm.zipFile.uploadProgress = progressPercentage;
 
-                // set uploading status on file
-                vm.zipFile.uploadStatus = "uploading";
+                    // set uploading status on file
+                    vm.zipFile.uploadStatus = "uploading";
+
+                }
 
             }).success(function (data, status, headers, config) {
 
@@ -11064,7 +11069,7 @@ angular.module("umbraco")
 .controller("Umbraco.PropertyEditors.GoogleMapsController",
     function ($element, $rootScope, $scope, notificationsService, dialogService, assetsService, $log, $timeout) {
 
-        assetsService.loadJs('http://www.google.com/jsapi')
+        assetsService.loadJs('https://www.google.com/jsapi')
             .then(function () {
                 google.load("maps", "3",
                             {
