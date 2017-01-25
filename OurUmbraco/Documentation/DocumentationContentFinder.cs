@@ -5,6 +5,8 @@ using System.Web;
 using OurUmbraco.Documentation.Busineslogic;
 using Umbraco.Core;
 using Umbraco.Web.Routing;
+using System.Collections.Generic;
+using System.Globalization;
 
 namespace OurUmbraco.Documentation
 {
@@ -29,7 +31,7 @@ namespace OurUmbraco.Documentation
                 return false;
 
             // kill those old urls
-            foreach (var s in new []{ "master", "v480" })
+            foreach (var s in new[] { "master", "v480" })
                 if (url.StartsWith(mdRoot + "/" + s))
                 {
                     url = url.Replace(mdRoot + "/" + s, mdRoot);
@@ -39,7 +41,7 @@ namespace OurUmbraco.Documentation
 
             // find the md file
             var mdFilepath = FindMarkdownFile(url);
-            
+
             //return the broken link doc page
             var is404 = false;
             if (mdFilepath == null)
@@ -48,13 +50,13 @@ namespace OurUmbraco.Documentation
                 is404 = true;
             }
             if (mdFilepath == null)
-            {                
+            {
                 // clear the published content (that was set by FindContent) to cause a 404, and in
                 // both case return 'true' because there's no point other finders try to handle the request
                 contentRequest.PublishedContent = null;
                 return true;
             }
- 
+
             if (is404) contentRequest.SetIs404();
 
             // set the context vars
@@ -70,7 +72,7 @@ namespace OurUmbraco.Documentation
             var templateIsSet = contentRequest.TrySetTemplate(altTemplate);
             //httpContext.Trace.Write("Markdown Files Handler",
             //    string.Format("Template changed to: '{0}' is {1}", altTemplate, templateIsSet));
-            
+
             // be happy
             return true;
         }
@@ -113,7 +115,7 @@ namespace OurUmbraco.Documentation
                 fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
                 if (File.Exists(fpath))
                     return fpath;
-                
+
                 fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\readme.md");
                 if (File.Exists(fpath))
                     return fpath;
@@ -145,37 +147,94 @@ namespace OurUmbraco.Documentation
             string baseUrl = "https://github.com/umbraco/UmbracoDocs/blob/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
-
-            if (System.IO.File.Exists(docUrl))
+            
+            //Need to get NEW key as needs to be the original MD filename 
+            //from Github including .md & correct casing of file
+            //var originalUrl = HttpContext.Current.Items["umbOriginalUrl"].ToString();
+            string originalUrl;
+            if (!TryGetExactPath(docUrl, out originalUrl))
             {
-                //Need to get NEW key as needs to be the original MD filename 
-                //from Github including .md & correct casing of file
-                var originalUrl = HttpContext.Current.Items["umbOriginalUrl"].ToString();
-
-                //Ensure beginning part of url is right case for GitHub URL
-                if (originalUrl.StartsWith("/documentation/", StringComparison.InvariantCultureIgnoreCase))
-                    // don't strip off the leading "/"
-                    originalUrl = originalUrl.Substring("/documentation/".Length - 1);
-
-                //If ends with / then it's an index.md file in a folder
-                if (originalUrl.EndsWith("/"))
-                {
-                    //Add the word  after the /, so it's /index
-                    originalUrl += "index";
-
-                }
-
-                //Append the .md file extension
-                docUrl = baseUrl + string.Format("{0}{1}", originalUrl, ".md");
-
+                // MD file does not exist on disk - hide edit button
+                return null;
             }
-            else
+
+            // Ensure beginning part of url is right case for GitHub URL
+            var docFolderPosition = originalUrl.IndexOf(@"\documentation\", StringComparison.InvariantCultureIgnoreCase);
+            if (docFolderPosition > -1)
             {
-                //MD file does not exist on disk - hide edit button
-                docUrl = null;
+                // don't strip off the leading "/"
+                originalUrl = originalUrl
+                    .Substring(docFolderPosition + @"\documentation\".Length - 1)
+                    .Replace('\\', '/');
             }
+
+            // If ends with / then it's an index.md file in a folder
+            if (originalUrl.EndsWith("/"))
+            {
+                // Add the word  after the /, so it's /index
+                originalUrl += "index.md";
+            }
+
+            // Append the base and file url together
+            docUrl = baseUrl + originalUrl;
+
+
 
             return docUrl;
+        }
+
+        /// <summary>
+        /// Gets the exact case used on the file system for an existing file or directory.
+        /// </summary>
+        /// <param name="path">A relative or absolute path.</param>
+        /// <param name="exactPath">The full path using the correct case if the path exists.  Otherwise, null.</param>
+        /// <returns>True if the exact path was found.  False otherwise.</returns>
+        /// <remarks>
+        /// This supports drive-lettered paths and UNC paths, but a UNC root
+        /// will be returned in title case (e.g., \\Server\Share).
+        /// Original from http://stackoverflow.com/a/29578292/97615
+        /// </remarks>
+        public static bool TryGetExactPath(string path, out string exactPath)
+        {
+            bool result = false;
+            exactPath = null;
+
+            // DirectoryInfo accepts either a file path or a directory path, and most of its properties work for either.
+            // However, its Exists property only works for a directory path.
+            DirectoryInfo directory = new DirectoryInfo(path);
+            if (File.Exists(path) || directory.Exists)
+            {
+                var parts = new List<string>();
+
+                DirectoryInfo parentDirectory = directory.Parent;
+                while (parentDirectory != null)
+                {
+                    FileSystemInfo entry = parentDirectory.EnumerateFileSystemInfos(directory.Name).First();
+                    parts.Add(entry.Name);
+
+                    directory = parentDirectory;
+                    parentDirectory = directory.Parent;
+                }
+
+                // Handle the root part (i.e., drive letter or UNC \\server\share).
+                string root = directory.FullName;
+                if (root.Contains(':'))
+                {
+                    root = root.ToUpper();
+                }
+                else
+                {
+                    string[] rootParts = root.Split('\\');
+                    root = string.Join("\\", rootParts.Select(part => CultureInfo.CurrentCulture.TextInfo.ToTitleCase(part)));
+                }
+
+                parts.Add(root);
+                parts.Reverse();
+                exactPath = Path.Combine(parts.ToArray());
+                result = true;
+            }
+
+            return result;
         }
     }
 }
