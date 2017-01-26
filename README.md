@@ -29,7 +29,7 @@ To log in, try `root` / `Not_A_Real_Password` for the backoffice and `member423@
 If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
 
 ##Documentation area
-If the documentation area seems empty then that's because you need to download the documentation, look for the the `Github Documentation` tab in the dashboards in the Developer section of Umbraco and use the `Get Docs!!` button.
+If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index.  This will automatically download the latest documentation from github.
 
 ##Syncing your fork with the original repository
 To sync your fork with this original one, you'll have to add the upstream url once:
