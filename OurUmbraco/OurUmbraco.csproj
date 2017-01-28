@@ -392,6 +392,7 @@
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
+    <Compile Include="Community\Models\TweetsModel.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
