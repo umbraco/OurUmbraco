@@ -14,11 +14,7 @@
     <PropertyGroup>
       <WebConfigTransformInputFile>$(SourceDirectory)web.config</WebConfigTransformInputFile>
       <WebConfigTransformFile>$(DeployHelperDirectory)\$(ProjectName)\ConfigTransforms\Web.$(Environment).config</WebConfigTransformFile>
-
-      <ApplicationInsightsConfigTransformInputFile>$(SourceDirectory)ApplicationInsights.config</ApplicationInsightsConfigTransformInputFile>
-	  <ApplicationInsightsConfigTransformFile>$(DeployHelperDirectory)\$(ProjectName)\ConfigTransforms\ApplicationInsights.$(Environment).config</ApplicationInsightsConfigTransformFile>
       <ConfigTransformOutputFolder>$(DeployHelperDirectory)\$(ProjectName)\$(Environment)\</ConfigTransformOutputFolder>
-	  
       <StackTraceEnabled>False</StackTraceEnabled>
     </PropertyGroup>
 
@@ -27,11 +23,6 @@
     <TransformXml Source="$(WebConfigTransformInputFile)"
                   Transform="$(WebConfigTransformFile)"
                   Destination="$(ConfigTransformOutputFolder)\Web.config"
-                  StackTrace="$(StackTraceEnabled)" />
-
-    <TransformXml Source="$(ApplicationInsightsConfigTransformInputFile)"
-                  Transform="$(ApplicationInsightsConfigTransformFile)"
-                  Destination="$(ConfigTransformOutputFolder)\ApplicationInsights.config"
                   StackTrace="$(StackTraceEnabled)" />
   </Target>
 </Project>

@@ -1,6 +1,4 @@
-﻿using System.Web.Mvc;
-using System.Web.Routing;
-using Examine;
+﻿using Examine;
 using Examine.LuceneEngine.Providers;
 using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
@@ -21,7 +19,6 @@ namespace OurUmbraco.Our.CustomHandlers
         {
             BindExamineEvents();
             ZipDownloader.OnFinish += ZipDownloader_OnFinish;
-            FilterConfig.RegisterGlobalFilters(GlobalFilters.Filters);
         }
 
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)

@@ -129,10 +129,6 @@
       <HintPath>..\packages\UmbracoCms.Core.7.5.8\lib\Microsoft.ApplicationBlocks.Data.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.2.0\lib\net45\Microsoft.ApplicationInsights.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
       <Private>True</Private>
@@ -536,7 +532,6 @@
     <Compile Include="Our\CustomHandlers\ProjectVote.cs" />
     <Compile Include="Our\CustomHandlers\TopicVote.cs" />
     <Compile Include="Our\DefaultMemberAvatarHandler.cs" />
-    <Compile Include="Our\ErrorHandler\AiHandleErrorAttribute.cs" />
     <Compile Include="Our\Examine\DocumentationIndexConfig.cs" />
     <Compile Include="Our\Examine\DocumentationIndexDataService.cs" />
     <Compile Include="Our\Examine\ExamineHelper.cs" />
@@ -548,7 +543,6 @@
     <Compile Include="Our\Examine\SearchFilter.cs" />
     <Compile Include="Our\Examine\SearchFilters.cs" />
     <Compile Include="Our\Extensions\StringExtensions.cs" />
-    <Compile Include="Our\FilterConfig.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoAuthTokenServerExtensions.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoCustomOwinStartup.cs" />
     <Compile Include="Our\GoogleOAuth\UmbracoGoogleAuthExtensions.cs" />
