@@ -18,10 +18,16 @@
     var topicAuthor = currentMember != null && topic.MemberId == currentMember.Id ? currentMember : Members.GetById(topic.MemberId);
     var topicMembers = new List<IPublishedContent> { topicAuthor };
 
-    var memberRoles = currentMember != null && topic.MemberId == currentMember.Id 
-        ? new Dictionary<int, List<string>> { { topicAuthor.Id, MemberData.Roles.ToList() } }
-        : new Dictionary<int, List<string>> { { topicAuthor.Id, topicAuthor.GetRoles() } };
-
+    var memberRoles = new Dictionary<int, List<string>>();
+    if (currentMember != null && currentMember.Id == topic.MemberId)
+    {
+        memberRoles.Add(topic.MemberId, MemberData.Roles.ToList());
+    }
+    else
+    {
+        memberRoles.Add(topic.MemberId, topicAuthor.GetRoles());
+    }
+    
     foreach (var comment in topic.Comments)
     {
         if (topicMembers.Any(x => x.Id == comment.MemberId) == false)
