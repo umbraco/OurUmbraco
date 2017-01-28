@@ -1,10 +1,9 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Forum.Models.ReadOnlyComment>
+﻿@inherits UmbracoViewPage<OurUmbraco.Forum.Models.ReadOnlyComment>
 @using OurUmbraco.Forum.Extensions
-@using OurUmbraco.Forum.Services
 @using OurUmbraco.Powers.Library
 
 @{
-    var currentMember = Members.GetCurrentMember();
+    var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var answer = (int)ViewData["answer"];
     var roles = new List<string>();
 
@@ -14,14 +13,14 @@
     {
         roles = commentAuthor.GetRoles();
     }
-    var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(this.Context, ApplicationContext.ApplicationCache.RequestCache);
-    var forum = Umbraco.TypedContent(topic.ParentId);
+
+    var topicParentId = (int)ViewData["topicParentId"];
+    var forum = Umbraco.TypedContent(topicParentId);
     var forumReadOnly = forum.NewTopicsAllowed() == false;
 
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
-@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Members.IsAdmin()))
+@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
 {
     <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
@@ -68,7 +67,7 @@
                 <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                     @Model.Score
                 </div>
-                @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
+                @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
                 {
                     if (currentMember.Id != Model.MemberId)
                     {
@@ -82,7 +81,7 @@
                 @if (Model.IsSpam)
                 {
                     <div class="alert">
-                        @if (Members.IsAdmin())
+                        @if (Model.MemberData.IsAdmin)
                         {
                             <span>You can see this comment because you're a moderator of the forum.</span><br/><br/>
                         }
@@ -97,13 +96,13 @@
             </div>
         </div>
         <div class="actions">
-            @if (Members.IsLoggedIn())
+            @if (Model.MemberData != null)
             {
                 <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id">
                     <i class="icon-Flag"></i><span>Flag as spam</span>
                 </a>
 
-                if (answer == 0 && (Members.IsAdmin() || currentMember.Id == Model.TopicAuthorId))
+                if (answer == 0 && (Model.MemberData.IsAdmin || currentMember.Id == Model.TopicAuthorId))
                 {
                     <a href="#" class="solved" data-id="@Model.Id">
                         <i class="icon-Check"></i><span>Mark as solution</span>
@@ -124,7 +123,7 @@
                     </a>
                 }
                 
-                if (Members.IsAdmin() || currentMember.Id == Model.MemberId)
+                if (Model.MemberData.IsAdmin || currentMember.Id == Model.MemberId)
                 {
                     <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
                         <i class="icon-Edit"></i><span>Edit</span>
@@ -134,7 +133,7 @@
                         <i class="icon-Delete-key"></i><span>Delete</span>
                     </a>
 
-                    if (Members.IsAdmin())
+                    if (Model.MemberData.IsAdmin)
                     {
                         if (Model.IsSpam)
                         {

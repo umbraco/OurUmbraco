@@ -338,23 +338,27 @@ WHERE forumTopics.id=@id
         /// </summary>
         /// <param name="context"></param>
         /// <param name="cache"></param>
+        /// <param name="memberData"></param>
         /// <returns></returns>
         /// <remarks>
         /// So that we don't have to look this up multiple times in a single request, this will use the given ICacheProvider to cache it
         /// </remarks>
-        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache)
+        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache, MemberData memberData)
         {
-            return (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
-           {
-               var contextId = context.Items["topicID"] as string;
-               if (contextId != null)
-               {
-                   int topicId;
-                   if (int.TryParse(contextId, out topicId))
-                       return QueryById(topicId);
-               }
-               return null;
-           });
+            var topic = (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
+            {
+                var contextId = context.Items["topicID"] as string;
+                if (contextId != null)
+                {
+                    int topicId;
+                    if (int.TryParse(contextId, out topicId))
+                        return QueryById(topicId);
+                }
+                return null;
+            });
+
+            topic.MemberData = memberData;
+            return topic;
         }
 
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using OurUmbraco.Our.Models;
 using umbraco;
 using Umbraco.Core.Persistence;
 
@@ -57,6 +58,8 @@ namespace OurUmbraco.Forum.Models
 
         [Column("version")]
         public int Version { get; set; }
+
+        public MemberData MemberData { get; set; }
 
         public List<SimpleMember> Votes { get; set; }
 

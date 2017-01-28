@@ -7,7 +7,7 @@
 
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache);
+    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache, MemberData);
 
     var notification = Model.Content.GetPropertyValue<string>("mainNotification");
     if (string.IsNullOrWhiteSpace(notification))
@@ -78,8 +78,9 @@
         @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
         {
             var comm = comment;
+            comm.MemberData = MemberData;
 
-            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer } });
+            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId } });
 
             if (comm.HasChildren)
             {
@@ -87,7 +88,7 @@
 
                 foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
                 {
-                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer } });
+                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId } });
                 }
             }
         }

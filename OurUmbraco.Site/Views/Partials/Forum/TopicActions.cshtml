@@ -3,7 +3,7 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache);
+    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache, MemberData);
 }
 
 <div class="utility-actions">

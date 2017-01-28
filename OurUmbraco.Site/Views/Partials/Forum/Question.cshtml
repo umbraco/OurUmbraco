@@ -1,13 +1,13 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Forum.Models.Topic>
+﻿@inherits UmbracoViewPage<OurUmbraco.Forum.Models.Topic>
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Powers.Library
 
 @{
-    var currentMember = Members.GetCurrentMember();
+    var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var topicAuthor = Members.GetById(Model.MemberId);
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
-    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Id) || Members.IsAdmin()))
+    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
     {
         var forum = Umbraco.TypedContent(Model.ParentId);
         var roles = topicAuthor.GetRoles();
@@ -50,7 +50,7 @@
                     <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                         @Model.Score
                     </div>
-                    @if (Members.IsLoggedIn() && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                    @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                     {
                         if (currentMember.Id != Model.MemberId)
                         {
@@ -82,7 +82,7 @@
                     @if (Model.IsSpam)
                     {
                         <div class="alert">
-                            @if (Members.IsAdmin())
+                            @if (Model.MemberData != null && Model.MemberData.IsAdmin)
                             {
                                 <span>You can see this topic because you're a moderator of the forum.</span><br/><br/>
                             }
@@ -98,7 +98,7 @@
             </div>
 
             <div class="actions">
-                @if (Members.IsLoggedIn())
+                @if (Model.MemberData != null)
                 {
                     <a href="#" class="flag-thread" data-id="@Model.Id" data-member="@currentMember.Id">
                         <i class="icon-Flag"></i><span>Flag as spam</span>
@@ -111,7 +111,7 @@
                         </a>
                     }
 
-                    if (Members.IsAdmin() || Members.GetCurrentMember().Id == topicAuthor.Id)
+                    if (Model.MemberData.IsAdmin || Model.MemberData.Member.Id == topicAuthor.Id)
                     {
                         <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
                             <i class="icon-Edit"></i><span>Edit</span>
@@ -122,7 +122,7 @@
                         </a>
                     }
 
-                    if (Members.IsAdmin())
+                    if (Model.MemberData.IsAdmin)
                     {
                         if (Model.IsSpam)
                         {
