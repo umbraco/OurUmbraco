@@ -4,14 +4,13 @@
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    var topicAuthor = Members.GetById(Model.MemberId);
+    var topicAuthor = (IPublishedContent) ViewData["topicAuthor"];
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
     if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
     {
         var forum = Umbraco.TypedContent(Model.ParentId);
-        var roles = topicAuthor.GetRoles();
-
+        var roles = (List<string>)ViewData["roles"];
 
         <li class="comment question" id="comment-@Model.Id" data-deeplink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
             <!-- Start of question -->

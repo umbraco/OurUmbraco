@@ -1,19 +1,20 @@
-﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@model ReadOnlyTopic
 @using System.Web.Mvc.Html
 @using OurUmbraco.Forum.Extensions
-@using OurUmbraco.Forum.Services
-@using OurUmbraco.NotificationsWeb.Library
+@using OurUmbraco.Forum.Models
 @using Umbraco.Core.Logging
 
 @{
-    var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache, MemberData);
-
-    var notification = Model.Content.GetPropertyValue<string>("mainNotification");
+    var topic = Model;
+    var content = (IPublishedContent)ViewData["content"];
+    var subscribed = (bool)ViewData["subscribed"];
+    var memberRoles = (Dictionary<int, List<string>>)ViewData["memberRoles"];
+    var notification = content.GetPropertyValue<string>("mainNotification");
     if (string.IsNullOrWhiteSpace(notification))
     {
         notification = "This forum is in read only mode, you can no longer reply";
     }
+    var topicMembers = (List<IPublishedContent>)ViewData["topicMembers"];
 }
 
 <!-- COPY LINK -->
@@ -32,7 +33,7 @@
 
 <!-- COPY LINK END -->
 <!-- DELETE THREAD/COMMENT START -->
-@if (MemberData != null)
+@if (Model.MemberData != null)
 {
     <div id="confirm-wrapper" class="confirm-wrapper">
         <h4>Are you sure?</h4>
@@ -55,7 +56,7 @@
 <!-- FLAG SPAM END -->
 @if (topic != null)
 {
-    if (Model.Content.NewTopicsAllowed() == false)
+    if (content.NewTopicsAllowed() == false)
     {
         <div class="alertbar__yellow" style="margin-bottom: 10px;">
             @Html.Raw(notification)
@@ -67,7 +68,11 @@
         @{
             try
             {
-                @Html.Partial("forum/question", topic)
+                var topicAuthor = topicMembers.SingleOrDefault(m => m.Id == topic.MemberId);
+                var roles = new List<string>();
+                memberRoles.TryGetValue(topic.MemberId, out roles);
+                
+                @Html.Partial("forum/question", topic, new ViewDataDictionary { { "topicAuthor", topicAuthor }, { "roles", roles } })
             }
             catch (Exception ex)
             {
@@ -78,9 +83,12 @@
         @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
         {
             var comm = comment;
-            comm.MemberData = MemberData;
+            comm.MemberData = Model.MemberData;
+            var commentAuthor = topicMembers.SingleOrDefault(m => m.Id == comm.MemberId);
+            var roles = new List<string>();
+            memberRoles.TryGetValue(comm.MemberId, out roles);
 
-            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId } });
+            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId }, { "commentAuthor", commentAuthor }, { "roles", roles } });
 
             if (comm.HasChildren)
             {
@@ -88,15 +96,21 @@
 
                 foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
                 {
-                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId } });
+                    var commChild = child;
+                    child.MemberData = Model.MemberData;
+                    var commentChildAuthor = topicMembers.SingleOrDefault(m => m.Id == commChild.MemberId);
+                    var childRoles = new List<string>();
+                    memberRoles.TryGetValue(commChild.MemberId, out childRoles);
+
+                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId }, { "commentAuthor", commentChildAuthor }, { "roles", childRoles } });
                 }
             }
         }
     </ul>
 
-            if (MemberData != null)
+            if (Model.MemberData != null)
             {
-                if (Model.Content.NewTopicsAllowed())
+                if (content.NewTopicsAllowed())
                 {
                     <div class="replybutton">
                         <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
@@ -105,13 +119,7 @@
                     <div class="utilities">
                         <div class="utility-actions thread-bottom">
                             @{
-                                var subscribed = false;
-                                if (MemberData.Member != null)
-                                {
-                                    subscribed = Utils.IsSubscribedToForumTopic(topic.Id, MemberData.Member.Id);
-                                }
-
-                                if (MemberData.IsAdmin)
+                                if (Model.MemberData.IsAdmin)
                                 {
                                     <a href="#" class="delete-thread button" data-id="@topic.Id">
                                         <i class="icon-Delete-key"></i><span>Delete thread</span>

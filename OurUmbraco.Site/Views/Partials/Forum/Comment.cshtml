@@ -5,19 +5,12 @@
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var answer = (int)ViewData["answer"];
-    var roles = new List<string>();
-
-    var commentAuthor = Members.GetById(Model.MemberId);
-    // author could have been deleted (spammer) so make sure to check if they exist
-    if (commentAuthor != null)
-    {
-        roles = commentAuthor.GetRoles();
-    }
+    var commentAuthor = (IPublishedContent)ViewData["commentAuthor"];
+    var roles = (List<string>)ViewData["roles"];
 
     var topicParentId = (int)ViewData["topicParentId"];
     var forum = Umbraco.TypedContent(topicParentId);
     var forumReadOnly = forum.NewTopicsAllowed() == false;
-
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))

@@ -158,7 +158,9 @@ namespace OurUmbraco.Forum.Extensions
 
         public static List<string> GetRoles(this IPublishedContent member)
         {
-            var roles = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+            const string sql = @"SELECT [umbracoNode].[text] FROM [cmsMember2MemberGroup] LEFT JOIN [umbracoNode] ON [cmsMember2MemberGroup].[MemberGroup] = [umbracoNode].[id] WHERE [cmsMember2MemberGroup].[Member] = @memberId";
+            var roles = ApplicationContext.Current.DatabaseContext.Database.Fetch<string>(sql, new { memberId = member.Id });
+
             var memberRoles = new List<string>();
 
             foreach (var role in roles)

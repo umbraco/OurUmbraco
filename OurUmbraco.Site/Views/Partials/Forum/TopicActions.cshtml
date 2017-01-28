@@ -1,37 +1,29 @@
-﻿@using OurUmbraco.Forum.Services
-@using OurUmbraco.NotificationsWeb.Library
-@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@using OurUmbraco.Forum.Models
+@model ReadOnlyTopic
 @{
-    var topicService = new TopicService(ApplicationContext.DatabaseContext);
-    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache, MemberData);
+    var subscribed = (bool)ViewData["subscribed"];
 }
 
 <div class="utility-actions">
-    @if (topic != null)
+    @if (Model != null)
     {
-        if (MemberData != null)
+        if (Model.MemberData != null)
         {
-            var subscribed = false;
-            if (MemberData != null)
+            if (Model.MemberData.IsAdmin)
             {
-                subscribed = Utils.IsSubscribedToForumTopic(topic.Id, MemberData.Member.Id);
-            }
-
-            if (MemberData.IsAdmin)
-            {
-                <a href="#" class="delete-thread button" data-id="@topic.Id">
+                <a href="#" class="delete-thread button" data-id="@Model.Id">
                     <i class="icon-Delete-key"></i><span>Delete thread</span>
                 </a>
             }
             
-            <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@topic.Id" data-controller="topic">
+            <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
                 <i class="icon-Bookmark"></i><span>@(subscribed ? "Following" : "Follow")</span>
             </a>
         }
 
-        if (topic.Answer > 0)
+        if (Model.Answer > 0)
         {
-            <a href="#comment-@topic.Answer.ToString()" class="go-to-solution button transparent">
+            <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
                 <i class="icon-Check"></i><span>Go to solution</span>
             </a>
         }

@@ -1,6 +1,54 @@
-﻿@inherits UmbracoTemplatePage
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Services
+@using OurUmbraco.NotificationsWeb.Library
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
+
+    var topicService = new TopicService(ApplicationContext.DatabaseContext);
+    var topic = topicService.CurrentTopic(Context, ApplicationContext.ApplicationCache.RequestCache, MemberData);
+    var subscribed = false;
+    if (MemberData != null && MemberData.Member != null)
+    {
+        subscribed = Utils.IsSubscribedToForumTopic(topic.Id, MemberData.Member.Id);
+    }
+
+    var currentMember = MemberData != null && MemberData.Member != null ? MemberData.Member : null;
+
+    var topicAuthor = currentMember != null && topic.MemberId == currentMember.Id ? currentMember : Members.GetById(topic.MemberId);
+    var topicMembers = new List<IPublishedContent> { topicAuthor };
+
+    var memberRoles = currentMember != null && topic.MemberId == currentMember.Id 
+        ? new Dictionary<int, List<string>> { { topicAuthor.Id, MemberData.Roles.ToList() } }
+        : new Dictionary<int, List<string>> { { topicAuthor.Id, topicAuthor.GetRoles() } };
+
+    foreach (var comment in topic.Comments)
+    {
+        if (topicMembers.Any(x => x.Id == comment.MemberId) == false)
+        {
+            IPublishedContent commentAuthor;
+            if (MemberData != null && MemberData.Member != null && MemberData.Member.Id == comment.MemberId)
+            {
+                commentAuthor = currentMember;
+                if (memberRoles.ContainsKey(comment.MemberId) == false)
+                {
+                    var roles = MemberData.Roles.ToList();
+                    memberRoles.Add(comment.MemberId, roles);
+                }
+            }
+            else
+            {
+                commentAuthor = Members.GetById(comment.MemberId);
+                if (memberRoles.ContainsKey(comment.MemberId) == false)
+                {
+                    var roles = commentAuthor.GetRoles();
+                    memberRoles.Add(comment.MemberId, roles);
+                }
+
+            }
+            topicMembers.Add(commentAuthor);
+        }
+    }
 }
 <!-- FORUM OVERVIEW START -->
 <section class="forum-overview">
@@ -8,15 +56,21 @@
         <!-- FORUM HEADER START -->
         <div class="utilities">
             <!-- FORUM BREADCRUMB START -->
-            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+            @Html.Action("Render", "Breadcrumb", new {linkToCurrent = true})
             <!-- FORUM BREADCRUMB END -->
             <!-- THREAD ACTIONS START -->
-            @Html.Partial("~/Views/Partials/Forum/TopicActions.cshtml")
+            @Html.Partial("~/Views/Partials/Forum/TopicActions.cshtml", topic, new ViewDataDictionary { { "subscribed", subscribed }, { "topicMembers", topicMembers } })
             <!-- THREAD ACTIONS END -->
             <div class="clear"></div>
         </div>
         <!-- FORUM HEADER END -->
-        @Html.Partial("~/Views/Partials/Forum/Thread.cshtml")
+        @Html.Partial("~/Views/Partials/Forum/Thread.cshtml", topic, new ViewDataDictionary
+        {
+            { "subscribed", subscribed },
+            { "content", Model.Content },
+            { "topicMembers", topicMembers },
+            { "memberRoles", memberRoles }
+        })
     </div>
 </section>
 @Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")
