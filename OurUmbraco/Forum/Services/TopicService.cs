@@ -231,26 +231,34 @@ WHERE forumTopics.id=@id
                 new TopicCommentRelator().Map,
                 sql, new { id = id }).FirstOrDefault();
 
-            if (results != null)
-            {
-                const string topicVoteQuery = @"SELECT memberId, umbracoNode.text AS memberName FROM powersTopic LEFT JOIN umbracoNode ON (powersTopic.memberId = umbracoNode.Id) WHERE powersTopic.id = @id AND receiverId != 0";
-                var topicVotes = _databaseContext.Database.Fetch<SimpleMember>(topicVoteQuery, new { id = id });
+            if (results == null)
+                return null;
+
+            const string topicVoteQuery = @"SELECT memberId, umbracoNode.text AS memberName FROM powersTopic LEFT JOIN umbracoNode ON (powersTopic.memberId = umbracoNode.Id) WHERE powersTopic.id = @id AND receiverId != 0";
+            var topicVotes = _databaseContext.Database.Fetch<SimpleMember>(topicVoteQuery, new { id = id });
+            results.Votes = new List<SimpleMember>();
+            if(topicVotes != null)
                 results.Votes = topicVotes;
 
-                if (results.Comments.Any())
-                {
-                    const string commentsVotesQuery = @"SELECT powersComment.id, powersComment.memberId, umbracoNode.text AS memberName FROM powersComment LEFT JOIN umbracoNode ON (powersComment.memberId = umbracoNode.id) WHERE powersComment.id in (SELECT id FROM forumComments WHERE topicId = @id) AND receiverId != 0";
-                    var commentsVotes = _databaseContext.Database.Fetch<SimpleMember>(commentsVotesQuery, new { id = id });
+            if (results.Comments.Any() == false)
+                return results;
 
-                    foreach (var readOnlyComment in results.Comments)
-                    {
-                        var votes = commentsVotes.Where(x => x.CommentId == readOnlyComment.Id);
-                        readOnlyComment.Votes = new List<SimpleMember>();
-                        foreach (var simpleMember in votes)
-                        {
-                            readOnlyComment.Votes.Add(simpleMember);
-                        }
-                    }
+            const string commentsVotesQuery = @"SELECT powersComment.id, powersComment.memberId, umbracoNode.text AS memberName FROM powersComment LEFT JOIN umbracoNode ON (powersComment.memberId = umbracoNode.id) WHERE powersComment.id in (SELECT id FROM forumComments WHERE topicId = @id) AND receiverId != 0";
+            var commentsVotes = _databaseContext.Database.Fetch<SimpleMember>(commentsVotesQuery, new { id = id });
+
+            foreach (var readOnlyComment in results.Comments)
+            {
+                if (commentsVotes == null)
+                    continue;
+
+                var votes = commentsVotes.Where(x => x.CommentId == readOnlyComment.Id).ToList();
+                if (votes.Any() == false)
+                    continue;
+
+                readOnlyComment.Votes = new List<SimpleMember>();
+                foreach (var simpleMember in votes)
+                {
+                    readOnlyComment.Votes.Add(simpleMember);
                 }
             }
 
