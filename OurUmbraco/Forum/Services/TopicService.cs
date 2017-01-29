@@ -415,8 +415,11 @@ WHERE forumTopics.id=@id
                 else
                 {
                     var commentMember = umbracoHelper.TypedMember(comment.MemberId);
+                    if (commentMember == null)
+                        continue;
+
                     var commenterRoles = commentMember.GetRoles();
-                    var commentAuthor = new TopicMember { Member = commentMember, Roles = commenterRoles };
+                    var commentAuthor = new TopicMember {Member = commentMember, Roles = commenterRoles};
                     topic.TopicMembers.Add(commentAuthor);
                 }
             }
