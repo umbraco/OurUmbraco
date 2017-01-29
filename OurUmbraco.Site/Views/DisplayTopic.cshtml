@@ -41,7 +41,7 @@
         {
             memberRoles.Add(topic.MemberId, topicAuthor.GetRoles());
         }
-        
+
         foreach (var comment in topic.Comments)
         {
             if (topicMembers.Any(x => x.Id == comment.MemberId) == false)
@@ -59,14 +59,17 @@
                 else
                 {
                     commentAuthor = Members.GetById(comment.MemberId);
-                    if (memberRoles.ContainsKey(comment.MemberId) == false)
+                    if (commentAuthor != null && memberRoles.ContainsKey(comment.MemberId) == false)
                     {
                         var roles = commentAuthor.GetRoles();
                         memberRoles.Add(comment.MemberId, roles);
                     }
-
                 }
-                topicMembers.Add(commentAuthor);
+
+                if (commentAuthor != null)
+                {
+                    topicMembers.Add(commentAuthor);
+                }
             }
         }
     }
