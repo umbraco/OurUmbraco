@@ -156,7 +156,7 @@ namespace OurUmbraco.Forum.Extensions
             return topic.IsSpam;
         }
 
-        public static List<string> GetRoles(this IPublishedContent member)
+        public static IEnumerable<string> GetRoles(this IPublishedContent member)
         {
             var memberRoles = new List<string>();
             if (member == null)

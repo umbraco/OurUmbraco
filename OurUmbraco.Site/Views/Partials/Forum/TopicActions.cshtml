@@ -1,31 +1,25 @@
 ﻿@using OurUmbraco.Forum.Models
 @model ReadOnlyTopic
-@{
-    var subscribed = (bool)ViewData["subscribed"];
-}
 
 <div class="utility-actions">
-    @if (Model != null)
+    @if (Model.MemberData != null)
     {
-        if (Model.MemberData != null)
+        if (Model.MemberData.IsAdmin)
         {
-            if (Model.MemberData.IsAdmin)
-            {
-                <a href="#" class="delete-thread button" data-id="@Model.Id">
-                    <i class="icon-Delete-key"></i><span>Delete thread</span>
-                </a>
-            }
+            <a href="#" class="delete-thread button" data-id="@Model.Id">
+                <i class="icon-Delete-key"></i><span>Delete thread</span>
+            </a>
+        }
             
-            <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
-                <i class="icon-Bookmark"></i><span>@(subscribed ? "Following" : "Follow")</span>
-            </a>
-        }
+        <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
+            <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
+        </a>
+    }
 
-        if (Model.Answer > 0)
-        {
-            <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
-                <i class="icon-Check"></i><span>Go to solution</span>
-            </a>
-        }
+    @if (Model.Answer > 0)
+    {
+        <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
+            <i class="icon-Check"></i><span>Go to solution</span>
+        </a>
     }
 </div>

@@ -4,27 +4,22 @@
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    var answer = (int)ViewData["answer"];
-    var commentAuthor = (IPublishedContent)ViewData["commentAuthor"];
-    var roles = (List<string>)ViewData["roles"];
-
-    var topicParentId = (int)ViewData["topicParentId"];
-    var forum = Umbraco.TypedContent(topicParentId);
-    var forumReadOnly = forum.NewTopicsAllowed() == false;
+    var commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
+    var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
-@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
+@if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
 {
-    <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.Id == answer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
+    <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.IsAnswer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
-                <a href="/member/@commentAuthor.Id">@commentAuthor.Name</a> <span>@if (commentAuthor.ForumPosts() == 0 || commentAuthor.ForumPosts() > 1){@commentAuthor.ForumPosts() <text>posts</text>}else{@commentAuthor.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Karma() karma points</span>
+                <a href="/member/@commentAuthor.Member.Id">@commentAuthor.Member.Name</a> <span>@if (commentAuthor.Member.ForumPosts() == 0 || commentAuthor.Member.ForumPosts() > 1){@commentAuthor.Member.ForumPosts() <text>posts</text>}else{@commentAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Member.Karma() karma points</span>
                 
 
-                @if (roles.Any())
+                @if (commentAuthor.Roles.Any())
                 {
                     <span class="roles">
-                        @foreach (var role in roles)
+                        @foreach (var role in (commentAuthor.Roles))
                         {
                             <span class="@role">@role</span>
                         }
@@ -38,14 +33,14 @@
         </div>
 
         <div class="comment-inner">
-            <a href="/member/@commentAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor, 75))</a>
+            <a href="/member/@commentAuthor.Member.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor.Member, 75))</a>
 
             <div class="highfive highfive-comment">
                 @{
                     var html = "High fives from:<br />";
                     foreach (var vote in Model.Votes)
                     {
-                        if (Model.Id == answer && vote.MemberId == Model.TopicAuthorId)
+                        if (Model.IsAnswer && vote.MemberId == Model.TopicAuthorId)
                         {
                             html = string.Format("{0}<a href=\"/member/{1}\">{2}</a> (marked as the answer)<br />", html, vote.MemberId, vote.MemberName);
                         }
@@ -95,7 +90,7 @@
                     <i class="icon-Flag"></i><span>Flag as spam</span>
                 </a>
 
-                if (answer == 0 && (Model.MemberData.IsAdmin || currentMember.Id == Model.TopicAuthorId))
+                if (Model.IsAnswer == false && (Model.MemberData.IsAdmin || currentMember.Id == Model.TopicAuthorId))
                 {
                     <a href="#" class="solved" data-id="@Model.Id">
                         <i class="icon-Check"></i><span>Mark as solution</span>
@@ -104,14 +99,14 @@
 
                 if (Model.ParentCommentId <= 0 && forumReadOnly == false)
                 {
-                    <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
+                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }
 
                 if (Model.ParentCommentId > 0 && forumReadOnly == false)
                 {
-                    <a href="#" data-author="@commentAuthor.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
+                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }

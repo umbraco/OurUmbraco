@@ -45,6 +45,12 @@ namespace OurUmbraco.Forum.Models
 
         public MemberData MemberData { get; set; }
 
+        public bool IsAnswer { get; set; }
+
+        public IEnumerable<TopicMember> TopicMembers { get; set; }
+
+        public bool ForumNewTopicsAllowed { get; set; }
+
         public List<SimpleMember> Votes { get; set; }
     }
 }

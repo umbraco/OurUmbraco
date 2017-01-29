@@ -439,6 +439,7 @@
     <Compile Include="Forum\Models\SimpleMember.cs" />
     <Compile Include="Forum\Models\Topic.cs" />
     <Compile Include="Forum\Models\TopicCommentRelator.cs" />
+    <Compile Include="Forum\Models\TopicMember.cs" />
     <Compile Include="Forum\Models\TopicSaveModel.cs" />
     <Compile Include="Forum\Services\CommentService.cs" />
     <Compile Include="Forum\Services\ForumService.cs" />

@@ -4,10 +4,14 @@ using System.Linq;
 using System.Web;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Models;
+using OurUmbraco.NotificationsWeb.Library;
 using OurUmbraco.Our.Models;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
+using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
+using Umbraco.Web;
 
 namespace OurUmbraco.Forum.Services
 {
@@ -339,11 +343,12 @@ WHERE forumTopics.id=@id
         /// <param name="context"></param>
         /// <param name="cache"></param>
         /// <param name="memberData"></param>
+        /// <param name="content"></param>
         /// <returns></returns>
         /// <remarks>
         /// So that we don't have to look this up multiple times in a single request, this will use the given ICacheProvider to cache it
         /// </remarks>
-        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache, MemberData memberData)
+        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache, MemberData memberData, IPublishedContent content)
         {
             var topic = (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
             {
@@ -357,8 +362,74 @@ WHERE forumTopics.id=@id
                 return null;
             });
 
-            if(topic != null)
-                topic.MemberData = memberData;
+            if (topic == null)
+                return null;
+
+            topic.MemberData = memberData;
+            if (content != null)
+            {
+                topic.ForumNewTopicsAllowed = content.NewTopicsAllowed();
+                topic.MainNotification = content.GetPropertyValue<string>("mainNotification");
+                if (string.IsNullOrWhiteSpace(topic.MainNotification))
+                    topic.MainNotification = "This forum is in read only mode, you can no longer reply";
+                topic.ForumName = content.Name;
+                topic.ForumUrl = content.Url;
+            }
+
+            if (memberData != null && memberData.Member != null)
+                topic.Subscribed = Utils.IsSubscribedToForumTopic(topic.Id, memberData.Member.Id);
+
+            var currentMember = memberData != null && memberData.Member != null
+                ? memberData.Member
+                : null;
+
+            var topicAuthorIsCurrentMember = currentMember != null && topic.MemberId == currentMember.Id;
+
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            topic.TopicAuthor = topicAuthorIsCurrentMember
+                ? currentMember
+                : umbracoHelper.TypedMember(topic.MemberId);
+
+            if (topic.TopicAuthor == null)
+                return topic;
+
+            topic.TopicMembers = new List<TopicMember>();
+            var author = new TopicMember
+            {
+                Member = topic.TopicAuthor,
+                Roles = topicAuthorIsCurrentMember ? memberData.Roles : topic.TopicAuthor.GetRoles()
+            };
+            topic.TopicMembers.Add(author);
+
+            foreach (var comment in topic.Comments)
+            {
+                if (topic.TopicMembers.Any(x => x.Member.Id == comment.MemberId))
+                    continue;
+
+                var commentAuthorIsCurrentMember = currentMember != null && comment.MemberId == currentMember.Id;
+                if (commentAuthorIsCurrentMember)
+                {
+                    var commentAuthor = new TopicMember { Member = currentMember, Roles = memberData.Roles };
+                    topic.TopicMembers.Add(commentAuthor);
+                }
+                else
+                {
+                    var commentMember = umbracoHelper.TypedMember(comment.MemberId);
+                    var commenterRoles = commentMember.GetRoles();
+                    var commentAuthor = new TopicMember { Member = commentMember, Roles = commenterRoles };
+                    topic.TopicMembers.Add(commentAuthor);
+                }
+            }
+
+            foreach (var comment in topic.Comments)
+            {
+                comment.TopicMembers = topic.TopicMembers;
+                comment.MemberData = memberData;
+                if (topic.Answer == comment.Id)
+                    comment.IsAnswer = true;
+                var forumContent = umbracoHelper.TypedContent(topic.ParentId);
+                comment.ForumNewTopicsAllowed = forumContent.NewTopicsAllowed();
+            }
 
             return topic;
         }

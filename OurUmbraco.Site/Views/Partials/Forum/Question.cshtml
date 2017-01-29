@@ -4,24 +4,21 @@
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    var topicAuthor = (IPublishedContent) ViewData["topicAuthor"];
+    var topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.TopicAuthor.Id);
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
-    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
+    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
     {
-        var forum = Umbraco.TypedContent(Model.ParentId);
-        var roles = (List<string>)ViewData["roles"];
-
         <li class="comment question" id="comment-@Model.Id" data-deeplink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
             <!-- Start of question -->
             <div class="meta">
                 <div class="profile">
-                    <a href="/member/@topicAuthor.Id">@topicAuthor.Name</a> <span>@if (topicAuthor.ForumPosts() == 0 || topicAuthor.ForumPosts() > 1){@topicAuthor.ForumPosts() <text>posts</text>}else{@topicAuthor.ForumPosts() <text>post</text>}</span> <span>@topicAuthor.Karma() karma points</span>
+                    <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a> <span>@if (topicAuthor.Member.ForumPosts() == 0 || topicAuthor.Member.ForumPosts() > 1){@topicAuthor.Member.ForumPosts() <text>posts</text>}else{@topicAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@topicAuthor.Member.Karma() karma points</span>
 
-                    @if (roles.Any())
+                    @if (topicAuthor.Roles.Any())
                     {
                         <span class="roles">
-                            @foreach (var role in roles)
+                            @foreach (var role in topicAuthor.Roles)
                             {
                                 <span class="@role">@role</span>
                             }
@@ -36,7 +33,7 @@
             </div>
 
             <div class="comment-inner">
-                <a href="/member/@topicAuthor.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(topicAuthor, 75))</a>
+                <a href="/member/@topicAuthor.Member.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(topicAuthor.Member, 75))</a>
                 <div class="highfive highfive-question">
                     @{
                         var html = "High fives from:<br />";
@@ -64,7 +61,7 @@
                     </div>
                     <div class="categories">
                         <div class="category core">
-                            <a href="@forum.Url">@forum.Name</a>
+                            <a href="@Model.ForumUrl">@Model.ForumName</a>
                         </div>
 
                         @if (Model.Version > 0)
@@ -103,14 +100,14 @@
                         <i class="icon-Flag"></i><span>Flag as spam</span>
                     </a>
 
-                    if (forum.NewTopicsAllowed())
+                    if (Model.ForumNewTopicsAllowed)
                     {
-                        <a href="#" data-author="@topicAuthor.Name" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
+                        <a href="#" data-author="@topicAuthor.Member.Name" data-topic="@Model.Id" data-controller="comment" class="reply forum-reply">
                             <i class="icon-Reply-arrow"></i><span>Reply</span>
                         </a>
                     }
 
-                    if (Model.MemberData.IsAdmin || Model.MemberData.Member.Id == topicAuthor.Id)
+                    if (Model.MemberData.IsAdmin || Model.MemberData.Member.Id == topicAuthor.Member.Id)
                     {
                         <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
                             <i class="icon-Edit"></i><span>Edit</span>

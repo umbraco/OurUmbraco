@@ -1,24 +1,9 @@
 ﻿@model ReadOnlyTopic
 @using System.Web.Mvc.Html
-@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
 @using Umbraco.Core.Logging
 
-@{
-    var topic = Model;
-    var content = (IPublishedContent)ViewData["content"];
-    var subscribed = (bool)ViewData["subscribed"];
-    var memberRoles = (Dictionary<int, List<string>>)ViewData["memberRoles"];
-    var notification = content.GetPropertyValue<string>("mainNotification");
-    if (string.IsNullOrWhiteSpace(notification))
-    {
-        notification = "This forum is in read only mode, you can no longer reply";
-    }
-    var topicMembers = (List<IPublishedContent>)ViewData["topicMembers"];
-}
-
 <!-- COPY LINK -->
-
 <div id="overlay" class="overlay"></div>
 
 <div id="copy-link-wrapper" class="copy-link-wrapper">
@@ -30,10 +15,9 @@
 <div id="thankyou">
     Copied to clipboard
 </div>
-
 <!-- COPY LINK END -->
 <!-- DELETE THREAD/COMMENT START -->
-@if (Model != null && Model.MemberData != null)
+@if (Model.MemberData != null)
 {
     <div id="confirm-wrapper" class="confirm-wrapper">
         <h4>Are you sure?</h4>
@@ -54,117 +38,80 @@
     <button type="button" class="button red tiny">No</button>
 </div>
 <!-- FLAG SPAM END -->
-@if (topic != null)
+
+@if (Model.ForumNewTopicsAllowed == false)
 {
-    if (content.NewTopicsAllowed() == false)
-    {
-        <div class="alertbar__yellow" style="margin-bottom: 10px;">
-            @Html.Raw(notification)
-        </div>
+    <div class="alertbar__yellow" style="margin-bottom: 10px;">
+        @Html.Raw(Model.MainNotification)
+    </div>
+}
+
+<ul class="comments">
+    @{
+        try
+        {
+            @Html.Partial("forum/question", Model)
+        }
+        catch (Exception ex)
+        {
+            LogHelper.Error<string>(string.Format("~/Views/MacroPartials/Forum/Thread.cshtml - error rendering topic with id {0}", Model.Id), ex);
+        }
     }
 
-    <ul class="comments">
+    @foreach (var comment in Model.Comments.Where(x => x.ParentCommentId == 0))
+    {
+        Html.RenderPartial("forum/comment", comment);
 
-        @{
-            try
-            {
-                var topicAuthor = topicMembers.SingleOrDefault(m => m.Id == topic.MemberId);
-                var roles = new List<string>();
-                memberRoles.TryGetValue(topic.MemberId, out roles);
-                
-                @Html.Partial("forum/question", topic, new ViewDataDictionary { { "topicAuthor", topicAuthor }, { "roles", roles } })
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<string>(string.Format("~/Views/MacroPartials/Forum/Thread.cshtml - error rendering topic with id {0}", topic.Id), ex);
-            }
-        }
-
-        @foreach (var comment in topic.Comments.Where(x => x.ParentCommentId == 0))
+        if (comment.HasChildren)
         {
-            var comm = comment;
-            comm.MemberData = Model.MemberData;
-            var commentAuthor = topicMembers.SingleOrDefault(m => m.Id == comm.MemberId);
-            var roles = new List<string>();
-            memberRoles.TryGetValue(comm.MemberId, out roles);
-
-            Html.RenderPartial("forum/comment", comm, new ViewDataDictionary { { "level", 1 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId }, { "commentAuthor", commentAuthor }, { "roles", roles } });
-
-            if (comm.HasChildren)
+            foreach (var child in Model.Comments.Where(c => c.ParentCommentId == comment.Id))
             {
-                var children = topic.Comments.Where(x => x.ParentCommentId == comm.Id);
-
-                foreach (var child in children.Where(c => c.ParentCommentId == comm.Id))
-                {
-                    var commChild = child;
-                    child.MemberData = Model.MemberData;
-                    var commentChildAuthor = topicMembers.SingleOrDefault(m => m.Id == commChild.MemberId);
-                    var childRoles = new List<string>();
-                    memberRoles.TryGetValue(commChild.MemberId, out childRoles);
-
-                    Html.RenderPartial("forum/comment", child, new ViewDataDictionary { { "level", 2 }, { "answer", topic.Answer }, { "topicParentId", topic.ParentId }, { "commentAuthor", commentChildAuthor }, { "roles", childRoles } });
-                }
+                Html.RenderPartial("forum/comment", child);
             }
         }
-    </ul>
+    }
+</ul>
 
-            if (Model.MemberData != null)
-            {
-                if (content.NewTopicsAllowed())
+@if (Model.MemberData != null)
+{
+    if (Model.ForumNewTopicsAllowed)
+    {
+        <div class="replybutton">
+            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
+        </div>
+
+        <div class="utilities">
+            <div class="utility-actions thread-bottom">
+                @if (Model.MemberData.IsAdmin)
                 {
-                    <div class="replybutton">
-                        <a href="#" class="button green large reply forum-reply" data-author="@topic.AuthorName" data-topic="@topic.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
-                    </div>
-
-                    <div class="utilities">
-                        <div class="utility-actions thread-bottom">
-                            @{
-                                if (Model.MemberData.IsAdmin)
-                                {
-                                    <a href="#" class="delete-thread button" data-id="@topic.Id">
-                                        <i class="icon-Delete-key"></i><span>Delete thread</span>
-                                    </a>
-                                }
-                                
-                                <a href="#" class="follow button @(subscribed ? "following" : "transparent")" data-id="@topic.Id" data-controller="topic">
-                                    <i class="icon-Bookmark"></i><span>@(subscribed ? "Following" : "Follow")</span>
-                                </a>
-
-                                if (topic.Answer > 0)
-                                {
-                                    <a href="#comment-@topic.Answer.ToString()" class="go-to-solution button transparent">
-                                        <i class="icon-Check"></i><span>Go to solution</span>
-                                    </a>
-                                }
-                            }
-                        </div>
-                    </div>
+                    <a href="#" class="delete-thread button" data-id="@Model.Id">
+                        <i class="icon-Delete-key"></i><span>Delete thread</span>
+                    </a>
                 }
-                else
+
+                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
+                    <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
+                </a>
+
+                @if (Model.Answer > 0)
                 {
-                    <div class="alertbar__yellow">
-                        @Html.Raw(notification)
-                    </div>
+                    <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
+                        <i class="icon-Check"></i><span>Go to solution</span>
+                    </a>
                 }
-            }
-            else
-            {
-                <div class="replybutton notloggedin">
-                    Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
-                </div>
-                }
-            }
-            else
-            {
-                <p>This topic no longer exists.</p>
-            }
-
-<link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
-<script type="text/javascript" src="/scripts/jquery.tooltipster.min.js"></script>
-<script type="text/javascript">
-    $('.highfive-count').tooltipster({
-        contentAsHTML: true,
-        interactive: true,
-		multiple: true
-    });
-</script>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alertbar__yellow">
+            @Html.Raw(Model.MainNotification)
+        </div>
+    }
+}
+else
+{
+    <div class="replybutton notloggedin">
+        Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
+    </div>
+}
