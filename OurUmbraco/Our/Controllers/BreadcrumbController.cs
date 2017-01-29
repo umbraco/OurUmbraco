@@ -12,7 +12,7 @@ namespace OurUmbraco.Our.Controllers
         {
             var model = CurrentPage.Ancestors()
                 .Where(a => a.Level > 1 && a.GetPropertyValue<bool>("umbracoNaviHide") == false)
-                .OrderByDescending(a => a.Level)
+                .OrderBy(a => a.Level)
                 .ToList();
 
             if(linkToCurrent) 
