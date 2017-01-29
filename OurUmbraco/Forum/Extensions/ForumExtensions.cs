@@ -158,10 +158,12 @@ namespace OurUmbraco.Forum.Extensions
 
         public static List<string> GetRoles(this IPublishedContent member)
         {
+            var memberRoles = new List<string>();
+            if (member == null)
+                return memberRoles;
+
             const string sql = @"SELECT [umbracoNode].[text] FROM [cmsMember2MemberGroup] LEFT JOIN [umbracoNode] ON [cmsMember2MemberGroup].[MemberGroup] = [umbracoNode].[id] WHERE [cmsMember2MemberGroup].[Member] = @memberId";
             var roles = ApplicationContext.Current.DatabaseContext.Database.Fetch<string>(sql, new { memberId = member.Id });
-
-            var memberRoles = new List<string>();
 
             if (roles == null)
                 return memberRoles;
