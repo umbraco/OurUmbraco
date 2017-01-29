@@ -36,8 +36,10 @@
 
 @Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")
 
-@section EndScripts {
+@section HeadCssScripts {
     <link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
+}
+@section EndScripts {
     <script type="text/javascript" src="/scripts/jquery.tooltipster.min.js"></script>
     <script type="text/javascript">
         $('.highfive-count').tooltipster({
