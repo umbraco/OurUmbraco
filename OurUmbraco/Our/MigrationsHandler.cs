@@ -43,6 +43,7 @@ namespace OurUmbraco.Our
             AddTwitterFilters();
             AddHomeScriptsMacro();
             AddNuGetUrlForPackages();
+            AddPeopleKarmaPage();
         }
         
         private void EnsureMigrationsMarkerPathExists()
@@ -900,8 +901,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-
-
+        
         private void AddNuGetUrlForPackages()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -928,6 +928,43 @@ namespace OurUmbraco.Our
                 }
                 
                 contentTypeService.Save(projectContentType);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddPeopleKarmaPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+
+                var templatePathRelative = "~/Views/PeopleKarma.cshtml";
+                var templatePath = HostingEnvironment.MapPath(templatePathRelative);
+                var templateContent = File.ReadAllText(templatePath);
+                var releaseCompareTemplate = new Template("PeopleKarma", "PeopleKarma")
+                {
+                    MasterTemplateAlias = "Master",
+                    Content = templateContent
+                };
+
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var masterTemplate = fileService.GetTemplate("Master");
+                releaseCompareTemplate.SetMasterTemplate(masterTemplate);
+
+                fileService.SaveTemplate(releaseCompareTemplate);
+                
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
