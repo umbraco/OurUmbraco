@@ -90,7 +90,9 @@
                         <div class="row explain">
                             <div class="col-xs-12">
                                 <h4 class="text-right"><a href="/contribute/releases/@(release.version.Replace(".",""))">v@(release.version)</a></h4>
-                                <small><span>@release.releaseDescription</span></small>
+                                @if (release.releaseDescription != string.Empty) {
+                                    <small><span>@Html.Raw(release.releaseDescription)</span></small>
+                                }
                             </div>
                             <div class="col-xs-6">
                                 <div class="changes">
