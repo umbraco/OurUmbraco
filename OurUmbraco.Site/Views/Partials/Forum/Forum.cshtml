@@ -43,9 +43,9 @@
             TimeSpan.FromSeconds(4));
     }
 
-    var totalCountKey = "OurForumForumThreadCount[" + cat + "]";
+    var totalCountKey = "OurForumForumThreadCount[" + cat + unsolved + noreplies + "]";
     var totalTopics = (int)cache.GetCacheItem(totalCountKey,
-        () => topicService.GetAllTopicsCount(cat),
+        () => topicService.GetAllTopicsCount(cat, unsolved, noreplies),
         TimeSpan.FromMinutes(1));
 
     var pages = (totalTopics / pageSize) + 1;
