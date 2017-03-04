@@ -182,7 +182,7 @@
                 <a class="@Umbraco.If(i == page, "active")" href="?@queryString">@i</a>
             }
 
-            @if (page < (pages - 3))
+            @if (page < pages)
             {
                 queryString["page"] = (page + 1).ToString();
                 <span>&hellip;</span>
