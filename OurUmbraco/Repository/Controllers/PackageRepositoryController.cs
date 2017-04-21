@@ -9,6 +9,7 @@ using Umbraco.Core.Cache;
 using Umbraco.Web.WebApi;
 using System.Net.Http;
 using System.Net;
+using Umbraco.Core;
 
 namespace OurUmbraco.Repository.Controllers
 {
@@ -87,13 +88,26 @@ namespace OurUmbraco.Repository.Controllers
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
         }
 
-        public Models.PackageDetails GetDetails(Guid id)
+        /// <summary>
+        /// Returns the package details for the package Id passed in and ensures that 
+        /// the resulting ZipUrl is the compatible package for the version passed in.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
+        /// <returns></returns>
+        public PackageDetails GetDetails(Guid id, string version = null)
         {
+            System.Version parsed = null;
+            if (version.IsNullOrWhiteSpace() == false)
+            {
+                System.Version.TryParse(version, out parsed);
+            }
+
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetDetails.{0}", id);
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, parsed == null ? string.Empty : parsed.ToString(3));
             var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
                 (key,
-                    () => Service.GetDetails(id),
+                    () => Service.GetDetails(id, parsed),
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
             
             if (package == null)
@@ -103,5 +117,7 @@ namespace OurUmbraco.Repository.Controllers
 
             return package;
         }
+
+
     }
 }

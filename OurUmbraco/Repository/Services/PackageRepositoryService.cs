@@ -145,7 +145,14 @@ namespace OurUmbraco.Repository.Services
             };
         }
 
-        public PackageDetails GetDetails(Guid id)
+        /// <summary>
+        /// Returns the package details for the package Id passed in and ensures that 
+        /// the resulting ZipUrl is the compatible package for the version passed in.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
+        /// <returns></returns>
+        public PackageDetails GetDetails(Guid id, System.Version version)
         {
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
@@ -156,16 +163,14 @@ namespace OurUmbraco.Repository.Services
             if (item == null)
                 return null;
 
-            return MapContentToPackageDetails(item);
+            return MapContentToPackageDetails(item, version);
         }
 
         private Models.Package MapContentToPackage(IPublishedContent content)
         {
             if (content == null)
                 return null;
-
-            var wikiFiles = WikiFile.CurrentFiles(content.Id);
-
+            
             return new Models.Package
             {
                 Category = content.Parent.Name,
@@ -177,29 +182,76 @@ namespace OurUmbraco.Repository.Services
                 Name = content.Name,
                 Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"), 154, 281),
                 LatestVersion = content.GetPropertyValue<string>("version"),
-                MinimumVersion = GetMinimumVersion(content.GetPropertyValue<int>("file"), wikiFiles.Where(x => x.FileType.InvariantEquals("package"))),
                 OwnerInfo = GetPackageOwnerInfo(content.GetPropertyValue<int>("owner"), content.GetPropertyValue<bool>("openForCollab", false), content.Id),
                 Url = string.Concat(BASE_URL, content.Url)
             };
         }
         
-        private PackageDetails MapContentToPackageDetails(IPublishedContent content)
+        private PackageDetails MapContentToPackageDetails(IPublishedContent content, System.Version currentUmbracoVersion)
         {
             if (content == null)
                 return null;
-
+            
             var package = MapContentToPackage(content);
-            var packageDetails = new PackageDetails(package);
+
             var wikiFiles = WikiFile.CurrentFiles(content.Id);
 
-            packageDetails.Compatibility = GetPackageCompatibility(content);
-            packageDetails.NetVersion = content.GetPropertyValue<string>("dotNetVersion");
-            packageDetails.LicenseName = content.GetPropertyValue<string>("licenseName");
-            packageDetails.LicenseUrl = content.GetPropertyValue<string>("licenseUrl");
-            packageDetails.Description = content.GetPropertyValue<string>("description").CleanHtmlAttributes();
-            packageDetails.Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281);
-            packageDetails.ExternalSources = GetExternalSources(content);
-            packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", content.GetPropertyValue<string>("file"));
+            //TODO: SD: I dunno where these come from or if we care about it?
+            //var deliCompatVersions = Utils.GetProjectCompatibleVersions(content.Id) ?? new List<string>();
+
+            var allPackageFiles = wikiFiles.Where(x => x.FileType.InvariantEquals("package")).ToArray();
+
+            var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();
+
+            var packageDetails = new PackageDetails(package)
+            {
+                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(3)).ToList(),
+                Compatibility = GetPackageCompatibility(content),
+                NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
+                LicenseName = content.GetPropertyValue<string>("licenseName"),
+                LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
+                Description = content.GetPropertyValue<string>("description").CleanHtmlAttributes(),
+                Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281),
+                ExternalSources = GetExternalSources(content)
+            };
+
+            //if no version or not strict version dependencies, return the current release file
+            if (currentUmbracoVersion == null || strictPackageFileVersions.Length == 0)
+            {
+                var currentReleaseFile = content.GetPropertyValue<int>("file");
+                packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
+            }
+            else
+            {
+                //order from latest package version and lastest min umb version and start from the top, we want to return the most recent 
+                //available package version for the current Umbraco version
+                var packageVersions = strictPackageFileVersions
+                    .OrderByDescending(x => x.Item2)
+                    .ThenByDescending(x => x.Item3);
+
+                int found = -1;
+                foreach (var pckVersion in packageVersions)
+                {
+                    //if this version will work with the umbraco version, then use it
+                    if (pckVersion.Item3 >= currentUmbracoVersion)
+                    {
+                        found = pckVersion.Item1;
+                        break;
+                    }
+                }
+
+                if (found != -1)
+                {
+                    //got one! so use it's id for the file download
+                    packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", found);
+                }
+                else
+                {
+                    //not compatible!
+                    return null;
+                }
+            }
+            
             packageDetails.Created = content.CreateDate;
 
             return packageDetails;
@@ -222,29 +274,71 @@ namespace OurUmbraco.Repository.Services
                 .ToList();
         }
 
-        private string GetMinimumVersion(int filePropertyValue, IEnumerable<WikiFile> packages)
+        /// <summary>
+        /// Based on all of the files that this package go retrieve all targeted Umbraco versions
+        /// </summary>
+        /// <param name="packages"></param>
+        /// <returns></returns>
+        private IEnumerable<System.Version> GetAllFilePackageVersions(IEnumerable<WikiFile> packages)
         {
-            var currentVersion = filePropertyValue;
-            var latest = packages.FirstOrDefault(x => x.Id == currentVersion);
+            var allVersions = packages
+                .Select(x => ConvertToVersion(x.Version.Version))
+                .WhereNotNull()
+                .Distinct()
+                .OrderBy(x => x)
+                .ToArray();
 
-            if (latest == null || string.IsNullOrWhiteSpace(latest.Version.Version) || latest.Version.Version.InvariantEquals("nan"))
-                return null;
+            return allVersions;
+        }
 
-            if (latest.Version.Version.InvariantStartsWith("v"))
+        /// <summary>
+        /// Based on all of the files that this package go retrieve all targeted Umbraco versions
+        /// </summary>
+        /// <param name="packages"></param>
+        /// <returns>
+        /// A tuple: the file Id, the package version, the min umbraco version
+        /// </returns>
+        private IEnumerable<Tuple<int, System.Version, System.Version>> GetAllStrictSupportedPackageVersions(IEnumerable<WikiFile> packages)
+        {
+            var allVersions = packages
+                .Where(x => x.MinimumVersionStrict.IsNullOrWhiteSpace() == false)
+                .Select(x => Tuple.Create(x.Id, ConvertToVersion(x.Version.Version), ConvertToVersion(x.MinimumVersionStrict)))
+                .Where(x => x.Item2 != null && x.Item3 != null)
+                .ToArray();
+            return allVersions;
+        }
+
+        /// <summary>
+        /// Try to convert the string to a real version based on legacy version formats
+        /// </summary>
+        /// <param name="ver"></param>
+        /// <returns></returns>
+        private System.Version ConvertToVersion(string ver)
+        {
+            string normalized = ver;
+            if (ver.InvariantStartsWith("v"))
             {
-                var legacyFormat = latest.Version.Version;
-
-                if (legacyFormat.InvariantStartsWith("v4"))
+                if (ver.InvariantStartsWith("v4"))
                 {
-                    return string.Concat(legacyFormat.Replace("v4", "4."), ".0");
+                    normalized = string.Concat(ver.Replace("v4", "4."), ".0");
                 }
                 else
                 {
-                    return string.Join(".", legacyFormat.ToCharArray().Skip(1));
+                    normalized = string.Join(".", ver.ToCharArray().Skip(1));
                 }
             }
 
-            return latest.Version.Version;
+            if (normalized.EndsWith(".x"))
+            {
+                normalized = normalized.TrimEnd(".x").EnsureEndsWith(".0");
+            }
+
+            System.Version result;
+            if (System.Version.TryParse(normalized, out result))
+            {
+                return result;
+            }
+            return null;
         }
 
         private PackageOwnerInfo GetPackageOwnerInfo(int ownerId, bool openForCollab, int contentId)

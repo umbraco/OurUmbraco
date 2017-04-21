@@ -24,7 +24,6 @@ namespace OurUmbraco.Repository.Models
                 this.Name = package.Name;
                 this.Icon = package.Icon;
                 this.LatestVersion = package.LatestVersion;
-                this.MinimumVersion = package.MinimumVersion;
                 this.OwnerInfo = package.OwnerInfo;
             }
         }
@@ -34,6 +33,11 @@ namespace OurUmbraco.Repository.Models
         public List<PackageImage> Images { get; set; }
 
         public List<PackageCompatibility> Compatibility { get; set; }
+
+        /// <summary>
+        /// A list of all supported/targeted Umbraco versions for all files for this package
+        /// </summary>
+        public List<string> TargetedUmbracoVersions { get; set; }
 
         public List<ExternalSource> ExternalSources { get; set; }
 
