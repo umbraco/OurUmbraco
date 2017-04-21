@@ -37,7 +37,7 @@ namespace OurUmbraco.Repository.Models
         /// <summary>
         /// A list of all supported/targeted Umbraco versions for all files for this package
         /// </summary>
-        public List<string> TargetedUmbracoVersions { get; set; }
+        public string[] TargetedUmbracoVersions { get; set; }
 
         public List<ExternalSource> ExternalSources { get; set; }
 

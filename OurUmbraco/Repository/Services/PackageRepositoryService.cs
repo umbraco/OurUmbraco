@@ -205,7 +205,7 @@ namespace OurUmbraco.Repository.Services
 
             var packageDetails = new PackageDetails(package)
             {
-                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(3)).ToList(),
+                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(3)).ToArray(),
                 Compatibility = GetPackageCompatibility(content),
                 NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
                 LicenseName = content.GetPropertyValue<string>("licenseName"),
@@ -218,6 +218,12 @@ namespace OurUmbraco.Repository.Services
             //if no version or not strict version dependencies, return the current release file
             if (currentUmbracoVersion == null || strictPackageFileVersions.Length == 0)
             {
+                //TODO: Now we have to do the opposite of below and filter out any package file versions that have strict
+                // umbraco dependencies applied. Anything that has 7.5 (which would be the very minimum strict dependency) we can check for
+                // and then we must also consider that version 7.5.x will never send up a `currentUmbracoVersion` string, however, 
+                // we will know if it is 7.5.x if it comes from PackageRepositoryController.GetDetails since that was the minimum umbraco version
+                // that used this endpoint!
+
                 var currentReleaseFile = content.GetPropertyValue<int>("file");
                 packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
             }
