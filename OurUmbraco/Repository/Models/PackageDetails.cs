@@ -48,5 +48,7 @@ namespace OurUmbraco.Repository.Models
         public string NetVersion { get; set; }
 
         public string ZipUrl { get; set; }
+
+        public int ZipFileId { get; set; }
     }
 }

@@ -102,9 +102,21 @@ namespace OurUmbraco.Repository.Controllers
             {
                 System.Version.TryParse(version, out parsed);
             }
+            else
+            {
+                //if the version is null then the current umbraco version must be 7.5.x because this endpoint was only ever used by 7.5.x and 7.6.x and above will always 
+                // suppy the version, therefore we can assume that this is 7.5.x, let's make it 7.5.13 which is the latest 7.5 we have right now
+                parsed = new System.Version(7, 5, 13);
+            }
+
+            //this should never be null, if it is return not found
+            if (parsed == null)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            }
 
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, parsed == null ? string.Empty : parsed.ToString(3));
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, parsed.ToString(3));
             var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
                 (key,
                     () => Service.GetDetails(id, parsed),

@@ -1,4 +1,6 @@
 ﻿@using OurUmbraco.Project
+@using OurUmbraco.Repository.Services
+@using Umbraco.Core
 @using Umbraco.Web
 @{
     System.Web.Helpers.AntiForgeryConfig.SuppressXFrameOptionsHeader = true;
@@ -7,6 +9,7 @@
     int projectId;
     if (int.TryParse(Request.QueryString["project_id"], out projectId) == false)
     {
+        //TODO: Exception probably !
         return;
     }
 
@@ -14,6 +17,11 @@
     var callback = Request.QueryString["callback"];
 
     var Project = ProjectsProvider.GetListing(projectId, false);
+    if (Project == null)
+    {
+        throw new InvalidOperationException("No project found with id " + projectId);
+    }
+
     var node = new umbraco.NodeFactory.Node(projectId);
     var parentId = node.Parent.Id;
     var categoryName = node.Parent.Name;
@@ -30,10 +38,21 @@
         descCssClass = "wrap";
     }
 
+    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+    var packageRepoService = new PackageRepositoryService(umbracoHelper, umbracoHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
+    //This doesn't matter what we set it to so long as it's below 7.5 since that is the version we introduce strict dependencies
+    var currUmbracoVersion = new Version(4, 0, 0);
+    var packageDetails = packageRepoService.GetDetails(Project.ProjectGuid, currUmbracoVersion);
+
+    if (packageDetails == null)
+    {
+        throw new InvalidOperationException("No package found with id " + Project.ProjectGuid);
+    }
+
     int currentReleaseFile = 0;
     if (int.TryParse(Project.CurrentReleaseFile, out currentReleaseFile))
     {
-        var file = Project.PackageFile.Where(x => x.Id == currentReleaseFile).FirstOrDefault();
+        var file = Project.PackageFile.FirstOrDefault(x => x.Id == currentReleaseFile);
         if (file != null)
         {
             var ct = "This project is compaitible with ";
@@ -66,27 +85,33 @@
     }
 }
 <script type="text/javascript">
-    jQuery("#projectDescriptionText a").click(function(event){event.preventDefault(); });
+    jQuery("#projectDescriptionText a").click(function (event) { event.preventDefault(); });
 </script>
 
 <ul id="breadcrumb">
     <li><a href="/repo?@qs">Repository</a> &rarr;</li>
-  <li><a href="/repo_category?@qs&category_id=@parentId">@categoryName</a> &rarr;</li>
+    <li><a href="/repo_category?@qs&category_id=@parentId">@categoryName</a> &rarr;</li>
     <li>@Project.Name</li>
 </ul>
 
 <div id="project">
-    @if (currentReleaseFile != 0)
+    @if (string.IsNullOrWhiteSpace(packageDetails.ZipUrl) == false)
     {
         <h1 class="projectName">
             <span>@Project.Name</span>
             <a href="#" title="@Project.Name" rel="@Project.ProjectGuid" class="btn">Install package</a>
         </h1>
     }
+    else if (currentReleaseFile != 0)
+    {
+        <span style="color: red;">Unfortunately, this package is not compatible with the version of Umbraco you are running.</span><br />
+        <a href="https://our.umbraco.org/@node.NiceUrl" target="_blank">Go to the package page to learn more</a>
+    }
     else
     {
         <span style="color: red;">Unfortunately, this package has no current release file to install at the moment.</span><br />
-            <a href="https://our.umbraco.org/@node.NiceUrl" target="_blank">Go to the package page to learn more</a>}
+        <a href="https://our.umbraco.org/@node.NiceUrl" target="_blank">Go to the package page to learn more</a>
+    }
     <div class="meta">
 
         <div class="box">
@@ -94,10 +119,10 @@
             <dl class="projetProps summary">
                 <dt>Project owner:</dt>
                 @{
-                    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+
                     var ownerName = umbracoHelper.MembershipHelper.GetById(Project.VendorId).Name;
                 }
-            <dd>@ownerName</dd>
+                <dd>@ownerName</dd>
 
                 <dt>Package downloads</dt>
                 <dd>@Project.Downloads</dd>
@@ -119,9 +144,9 @@
                 @if (Project.Stable)
                 {
                     <dt>Is Stable:</dt>
-                                <dd>
-                                    <span class="green">Project is stable</span>
-                                </dd>
+                    <dd>
+                        <span class="green">Project is stable</span>
+                    </dd>
                 }
                 <dt>Current version</dt>
                 <dd>
@@ -130,9 +155,9 @@
                 @if (!string.IsNullOrEmpty(Project.LicenseName))
                 {
                     <dt>License</dt>
-                                <dd>
-                                    <a target="_blank" href="@Project.LicenseUrl">@Project.LicenseName</a>
-                                </dd>
+                    <dd>
+                        <a target="_blank" href="@Project.LicenseUrl">@Project.LicenseName</a>
+                    </dd>
                 }
             </dl>
         </div>
@@ -158,7 +183,7 @@
                         image.Path.EndsWith("jpeg"))
                     {
                         <a href="@image.Path" class="projectscreenshot" rel="shadowbox[gallery]">
-                            <img src="@image.Path?bgcolor=fff&width=100&height=100&format=png" style="border: 0;"/>
+                            <img src="@image.Path?bgcolor=fff&width=100&height=100&format=png" style="border: 0;" />
                         </a>
                     }
                 }
