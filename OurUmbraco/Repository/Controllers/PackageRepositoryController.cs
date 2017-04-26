@@ -131,7 +131,7 @@ namespace OurUmbraco.Repository.Controllers
         private HttpResponseMessage GetDetails(Guid id, System.Version currUmbracoVersion, bool includeHidden)
         {
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, currUmbracoVersion.ToString(3));
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}.{2}", id, currUmbracoVersion.ToString(3), includeHidden);
             try
             {
                 var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
