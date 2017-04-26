@@ -2,7 +2,7 @@
 
 namespace OurUmbraco.Repository.Models
 {
-    public class PackageVersionSupport : IEquatable<PackageVersionSupport>
+    internal class PackageVersionSupport : IEquatable<PackageVersionSupport>
     {
         private readonly int _fileId;
 

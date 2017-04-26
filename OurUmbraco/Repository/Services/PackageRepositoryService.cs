@@ -232,7 +232,7 @@ namespace OurUmbraco.Repository.Services
             {
                 TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(3)).ToArray(),
                 Compatibility = GetPackageCompatibility(content),
-                StrictFileVersions = strictPackageFileVersions.ToList(),
+                StrictFileVersions = strictPackageFileVersions.Select(x => new PackageFileVersion {PackageVersion = x.PackageVersion.ToString(3), MinUmbracoVersion = x.MinUmbracoVersion.ToString(3), FileId = x.FileId}).ToList(),
                 NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
                 LicenseName = content.GetPropertyValue<string>("licenseName"),
                 LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
