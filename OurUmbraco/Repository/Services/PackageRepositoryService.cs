@@ -151,7 +151,9 @@ namespace OurUmbraco.Repository.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
-        /// <returns></returns>
+        /// <returns>
+        /// If the current umbraco version is not compatible with any package files, the ZipUrl and ZipFileId will be empty
+        /// </returns>
         public PackageDetails GetDetails(Guid id, System.Version version)
         {
             if (version == null) throw new ArgumentNullException(nameof(version));
@@ -188,7 +190,15 @@ namespace OurUmbraco.Repository.Services
                 Url = string.Concat(BASE_URL, content.Url)
             };
         }
-        
+
+        /// <summary>
+        /// Returns a PackageDetails instance
+        /// </summary>
+        /// <param name="content"></param>
+        /// <param name="currentUmbracoVersion"></param>
+        /// <returns>
+        /// If the current umbraco version is not compatible with any package files, the ZipUrl and ZipFileId will be empty
+        /// </returns>
         private PackageDetails MapContentToPackageDetails(IPublishedContent content, System.Version currentUmbracoVersion)
         {            
             if (currentUmbracoVersion == null) throw new ArgumentNullException(nameof(currentUmbracoVersion));
@@ -240,27 +250,24 @@ namespace OurUmbraco.Repository.Services
                 //these are ordered by package version desc
                 var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(wikiFiles).ToArray();
 
-                if (nonStrictPackageFiles.Length == 0)
+                if (nonStrictPackageFiles.Length != 0)
                 {
-                    //Looks like there's nothing compatible 
-                    return null;
-                }
-
-                //there might be a case where the 'current release file' is not the latest version found, so let's check if
-                //the latest release file is included in the non-strict packages and if so we'll use that, otherwise we'll use the latest
-                var found = nonStrictPackageFiles.FirstOrDefault(x => x.PackageId == currentReleaseFile);
-                if (found != null)
-                {
-                    //it's included in the non strict packages so use it
-                    packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
-                    packageDetails.ZipFileId = currentReleaseFile;
-                }
-                else
-                {
-                    //use the latest available package version
-                    packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].PackageId);
-                    packageDetails.ZipFileId = nonStrictPackageFiles[0].PackageId;
-                }
+                    //there might be a case where the 'current release file' is not the latest version found, so let's check if
+                    //the latest release file is included in the non-strict packages and if so we'll use that, otherwise we'll use the latest
+                    var found = nonStrictPackageFiles.FirstOrDefault(x => x.PackageId == currentReleaseFile);
+                    if (found != null)
+                    {
+                        //it's included in the non strict packages so use it
+                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
+                        packageDetails.ZipFileId = currentReleaseFile;
+                    }
+                    else
+                    {
+                        //use the latest available package version
+                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].PackageId);
+                        packageDetails.ZipFileId = nonStrictPackageFiles[0].PackageId;
+                    }
+                }                               
             }
             else
             {
@@ -284,12 +291,7 @@ namespace OurUmbraco.Repository.Services
                     //got one! so use it's id for the file download
                     packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", found);
                     packageDetails.ZipFileId = found;
-                }
-                else
-                {
-                    //not compatible!
-                    return null;
-                }
+                }               
             }
             
             packageDetails.Created = content.CreateDate;

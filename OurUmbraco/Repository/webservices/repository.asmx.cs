@@ -103,6 +103,9 @@ namespace OurUmbraco.Repository.webservices
             if (details == null)
                 throw new InvalidOperationException("No package found with id " + packageGuid);
 
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + umbracoVersion);
+
             var wf = new WikiFile(details.ZipFileId);
             if (wf == null)
                 throw new InvalidOperationException("Could not find wiki file by id " + details.ZipFileId);
@@ -129,6 +132,9 @@ namespace OurUmbraco.Repository.webservices
             var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
             if (details == null)
                 throw new InvalidOperationException("No package found with id " + packageGuid);
+
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with your Umbraco version");
 
             var wf = new WikiFile(details.ZipFileId);
             if (wf == null)
@@ -192,6 +198,9 @@ namespace OurUmbraco.Repository.webservices
             var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
             if (details == null)
                 return new byte[0];
+
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + currUmbracoVersion);
 
             var wf = new WikiFile(details.ZipFileId);
             

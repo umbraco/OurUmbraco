@@ -122,7 +122,15 @@ namespace OurUmbraco.Repository.Controllers
             var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, v.ToString(3));
             var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
                 (key,
-                    () => Service.GetDetails(id, v),
+                    () =>
+                    {
+                        var details = Service.GetDetails(id, v);
+
+                        if (details.ZipUrl.IsNullOrWhiteSpace())
+                            throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, "This package is not compatible with the Umbraco version " + version));
+
+                        return details;
+                    },
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
             
             if (package == null)

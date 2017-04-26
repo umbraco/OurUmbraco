@@ -46,7 +46,12 @@
 
     if (packageDetails == null)
     {
-        throw new InvalidOperationException("No package found with id " + Project.ProjectGuid + " or the project is not compatible with your Umbraco version");
+        throw new InvalidOperationException("No package found with id " + Project.ProjectGuid);
+    }
+
+    if (packageDetails.ZipUrl.IsNullOrWhiteSpace())
+    {
+        throw new InvalidOperationException("This package is not compatible with the Umbraco version " + currUmbracoVersion);
     }
 
     int currentReleaseFile = 0;
