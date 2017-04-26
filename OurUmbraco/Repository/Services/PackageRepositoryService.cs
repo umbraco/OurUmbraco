@@ -266,7 +266,7 @@ namespace OurUmbraco.Repository.Services
                 {
                     //there might be a case where the 'current release file' is not the latest version found, so let's check if
                     //the latest release file is included in the non-strict packages and if so we'll use that, otherwise we'll use the latest
-                    var found = nonStrictPackageFiles.FirstOrDefault(x => x.PackageId == currentReleaseFile);
+                    var found = nonStrictPackageFiles.FirstOrDefault(x => x.FileId == currentReleaseFile);
                     if (found != null)
                     {
                         //it's included in the non strict packages so use it
@@ -276,8 +276,8 @@ namespace OurUmbraco.Repository.Services
                     else
                     {
                         //use the latest available package version
-                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].PackageId);
-                        packageDetails.ZipFileId = nonStrictPackageFiles[0].PackageId;
+                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].FileId);
+                        packageDetails.ZipFileId = nonStrictPackageFiles[0].FileId;
                     }
                 }                               
             }
@@ -293,7 +293,7 @@ namespace OurUmbraco.Repository.Services
                     //if this version will work with the umbraco version, then use it
                     if (currentUmbracoVersion >= pckVersion.MinUmbracoVersion)
                     {
-                        found = pckVersion.PackageId;
+                        found = pckVersion.FileId;
                         break;
                     }
                 }
@@ -384,51 +384,7 @@ namespace OurUmbraco.Repository.Services
             return allVersions;
         }
 
-        private class PackageVersionSupport : IEquatable<PackageVersionSupport>
-        {
-            private readonly int _packageId;
-
-            public PackageVersionSupport(int packageId, System.Version packageVersion, System.Version minUmbracoVersion)
-            {
-                _packageId = packageId;
-                MinUmbracoVersion = minUmbracoVersion;
-                PackageVersion = packageVersion;
-            }
-
-            public int PackageId
-            {
-                get { return _packageId; }
-            }
-
-            public System.Version MinUmbracoVersion { get; private set; }
-            public System.Version PackageVersion { get; private set; }
-
-            public bool Equals(PackageVersionSupport other)
-            {
-                return _packageId == other._packageId;
-            }
-
-            public override bool Equals(object obj)
-            {
-                if (ReferenceEquals(null, obj)) return false;
-                return obj is PackageVersionSupport && Equals((PackageVersionSupport) obj);
-            }
-
-            public override int GetHashCode()
-            {
-                return _packageId;
-            }
-
-            public static bool operator ==(PackageVersionSupport left, PackageVersionSupport right)
-            {
-                return left.Equals(right);
-            }
-
-            public static bool operator !=(PackageVersionSupport left, PackageVersionSupport right)
-            {
-                return !left.Equals(right);
-            }
-        }
+        
 
         /// <summary>
         /// Try to convert the string to a real version based on legacy version formats

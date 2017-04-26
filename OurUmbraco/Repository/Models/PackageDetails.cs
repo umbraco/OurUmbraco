@@ -9,6 +9,7 @@ namespace OurUmbraco.Repository.Models
             Images = new List<PackageImage>();
             Compatibility = new List<PackageCompatibility>();
             ExternalSources = new List<ExternalSource>();
+            StrictFileVersion = new List<PackageVersionSupport>();
         }
 
         public PackageDetails(Package package)
@@ -33,6 +34,11 @@ namespace OurUmbraco.Repository.Models
         public List<PackageImage> Images { get; set; }
 
         public List<PackageCompatibility> Compatibility { get; set; }
+
+        /// <summary>
+        /// Lists all files that have strict versions
+        /// </summary>
+        public List<PackageVersionSupport> StrictFileVersion { get; set; }
 
         /// <summary>
         /// A list of all supported/targeted Umbraco versions for all files for this package

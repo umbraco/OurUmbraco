@@ -749,6 +749,7 @@
     <Compile Include="Repository\Models\PackageCompatibility.cs" />
     <Compile Include="Repository\Models\PackageImage.cs" />
     <Compile Include="Repository\Models\PackageOwnerInfo.cs" />
+    <Compile Include="Repository\Models\PackageVersionSupport.cs" />
     <Compile Include="Repository\Models\PagedPackages.cs" />
     <Compile Include="Repository\Services\PackageRepositoryService.cs" />
     <Compile Include="Repository\Project.cs" />
