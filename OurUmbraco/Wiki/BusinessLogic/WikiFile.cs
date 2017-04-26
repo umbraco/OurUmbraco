@@ -497,6 +497,9 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             byte[] packageByteArray;
 
+            if(File.Exists(path) == false)
+                throw new InvalidOperationException("The file " + path + " does not exist on the server");
+
             using (var fileStream = File.Open(path, FileMode.Open, FileAccess.Read))
             {
                 packageByteArray = new byte[fileStream.Length];
