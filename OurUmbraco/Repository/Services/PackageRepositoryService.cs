@@ -205,6 +205,8 @@ namespace OurUmbraco.Repository.Services
             if (content == null) return null;
 
             var package = MapContentToPackage(content);
+            if (package == null)
+                return null;
 
             var wikiFiles = WikiFile.CurrentFiles(content.Id);
 
