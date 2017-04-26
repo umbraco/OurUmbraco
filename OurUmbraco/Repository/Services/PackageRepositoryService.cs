@@ -272,7 +272,7 @@ namespace OurUmbraco.Repository.Services
                 foreach (var pckVersion in strictPackageFileVersions)
                 {
                     //if this version will work with the umbraco version, then use it
-                    if (pckVersion.MinUmbracoVersion >= currentUmbracoVersion)
+                    if (currentUmbracoVersion >= pckVersion.MinUmbracoVersion)
                     {
                         found = pckVersion.PackageId;
                         break;
