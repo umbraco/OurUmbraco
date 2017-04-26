@@ -156,7 +156,7 @@ namespace OurUmbraco.Repository.Services
         /// </returns>
         public PackageDetails GetDetails(Guid id, System.Version version)
         {
-            if (version == null) throw new ArgumentNullException(nameof(version));
+            if (version == null) throw new ArgumentNullException("version");
 
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
@@ -201,7 +201,7 @@ namespace OurUmbraco.Repository.Services
         /// </returns>
         private PackageDetails MapContentToPackageDetails(IPublishedContent content, System.Version currentUmbracoVersion)
         {            
-            if (currentUmbracoVersion == null) throw new ArgumentNullException(nameof(currentUmbracoVersion));
+            if (currentUmbracoVersion == null) throw new ArgumentNullException("currentUmbracoVersion");
             if (content == null) return null;
 
             var package = MapContentToPackage(content);
