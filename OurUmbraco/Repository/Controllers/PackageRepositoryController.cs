@@ -131,25 +131,36 @@ namespace OurUmbraco.Repository.Controllers
         {
             //return the results, but cache for 1 minute
             var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, currUmbracoVersion.ToString(3));
-            var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
-            (key,
-                () =>
-                {
-                    var details = Service.GetDetails(id, currUmbracoVersion);
-
-                    if (details.ZipUrl.IsNullOrWhiteSpace())
-                        throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, "This package is not compatible with the Umbraco version " + currUmbracoVersion));
-
-                    return details;
-                },
-                TimeSpan.FromMinutes(1)); //cache for 1 min    
-
-            if (package == null)
+            try
             {
-                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
-            }
+                var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
+                    (key,
+                        () =>
+                        {
+                            var details = Service.GetDetails(id, currUmbracoVersion);
 
-            return Request.CreateResponse(HttpStatusCode.OK, package);
+                            if (details == null)
+                                throw new InvalidOperationException("No package found with id " + id);
+
+                            if (details.ZipUrl.IsNullOrWhiteSpace())
+                                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + currUmbracoVersion);
+
+                            return details;
+                        },
+                        TimeSpan.FromMinutes(1)); //cache for 1 min    
+
+                if (package == null)
+                {
+                    return Request.CreateResponse(HttpStatusCode.NotFound);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK, package);
+            }
+            catch (InvalidOperationException ex)
+            {
+                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ex.Message);
+            }
+            
         }
 
         private HttpResponseMessage GetPackageFile(Guid packageId, System.Version currUmbracoVersion)
