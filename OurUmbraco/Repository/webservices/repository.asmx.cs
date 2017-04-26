@@ -4,8 +4,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Web.Services;
 using System.Xml.XPath;
+using OurUmbraco.Repository.Services;
 using OurUmbraco.Wiki.BusinessLogic;
 using umbraco.cms.businesslogic.web;
+using Umbraco.Core;
+using Umbraco.Web;
 
 namespace OurUmbraco.Repository.webservices
 {
@@ -76,12 +79,82 @@ namespace OurUmbraco.Repository.webservices
             }
         }
 
+        /// <summary>
+        /// This will return the byte array for the package file for the package id specified
+        /// </summary>
+        /// <param name="packageGuid"></param>
+        /// <param name="umbracoVersion">The Version of the umbraco install requesting the package file, this is in the normaly version format such as 7.6.0</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// This endpoint is new and is only referenced from 7.5.14 and above
+        /// </remarks>
+        [WebMethod]
+        public byte[] GetPackageFile(string packageGuid, string umbracoVersion)
+        {
+            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+            var pckRepoService = new PackageRepositoryService(umbHelper, umbHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
+
+            System.Version currUmbracoVersion;
+            if (!System.Version.TryParse(umbracoVersion, out currUmbracoVersion))
+                throw new InvalidOperationException("Could not parse the version specified " + umbracoVersion);
+
+            var guid = new Guid(packageGuid);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            if (details == null)
+                throw new InvalidOperationException("No package found with id " + packageGuid);
+
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + umbracoVersion);
+
+            var wf = new WikiFile(details.ZipFileId);
+            if (wf == null)
+                throw new InvalidOperationException("Could not find wiki file by id " + details.ZipFileId);
+            wf.UpdateDownloadCounter(true, true);
+
+            return wf.ToByteArray();
+        }
+
+        /// <summary>
+        /// This will return the byte array for the package file for the package id specified - since this endpoint is ONLY used 
+        /// for Umbraco installs that are less than 7.6.0 and only when legacy XML schema is enabled, we know that this is only used for old umbraco versions
+        /// </summary>
+        /// <param name="packageGuid"></param>
+        /// <returns></returns>
         [WebMethod]
         public byte[] fetchPackage(string packageGuid)
         {
-            return OurUmbraco.Repository.Packages.PackageFileByGuid(new Guid(packageGuid)).ToByteArray();
+            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+            var pckRepoService = new PackageRepositoryService(umbHelper, umbHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
+
+            //This doesn't matter what we set it to so long as it's below 7.5 since that is the version we introduce strict dependencies
+            var currUmbracoVersion = new System.Version(4, 0, 0);
+            var guid = new Guid(packageGuid);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            if (details == null)
+                throw new InvalidOperationException("No package found with id " + packageGuid);
+
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with your Umbraco version");
+
+            var wf = new WikiFile(details.ZipFileId);
+            if (wf == null)
+                throw new InvalidOperationException("Could not find wiki file by id " + details.ZipFileId);
+            wf.UpdateDownloadCounter(true, true);
+
+            return wf.ToByteArray();            
         }
 
+        /// <summary>
+        /// This will return the byte array for the package file for the package id specified - since this endpoint is ONLY used 
+        /// for Umbraco installs that are less than 7.6.0 and only when legacy XML schema is enabled, we know that this is only used for old umbraco versions
+        /// </summary>
+        /// <param name="packageGuid"></param>
+        /// <param name="repoVersion">
+        /// This is a strange Umbraco version parameter - but it's not really an umbraco version, it's a special/odd version format like Version41
+        /// 
+        /// The repoVersion will never be null for for 7.5.x and this method will never be used by 7.6+
+        /// </param>
+        /// <returns></returns>
         [WebMethod]
         public byte[] fetchPackageByVersion(string packageGuid, string repoVersion)
         {
@@ -112,51 +185,59 @@ namespace OurUmbraco.Repository.webservices
                     break;
             }
 
-            WikiFile wf = OurUmbraco.Repository.Packages.PackageFileByGuid(new Guid(packageGuid));
+            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+            var pckRepoService = new PackageRepositoryService(umbHelper, umbHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
 
+            //This doesn't matter what we set it to so long as it's below 7.5 since that is the version we introduce strict dependencies
+            //Side note: Umbraco 7.5.0 uses this endpoint but since 7.5.0 is already out there's nothing we can do about this, if we pass in 7.5.x then
+            // the logic will use strict file versions which we cannot do because this endpoint is also used for < 7.5! 
+            // The worst that can happen in this case is that a strict package dependency has been made on 7.5 and then an umbraco 7.5 package 
+            // requests the file, well it won't get it because this will only return non strict packages.
+            var currUmbracoVersion = new System.Version(4, 0, 0);
+            var guid = new Guid(packageGuid);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            if (details == null)
+                return new byte[0];
 
-            if (wf != null)
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + currUmbracoVersion);
+
+            var wf = new WikiFile(details.ZipFileId);
+            
+            //WikiFile wf = OurUmbraco.Repository.Packages.PackageFileByGuid(new Guid(packageGuid));
+
+            //if the package doesn't care about the umbraco version needed... 
+            if (wf.Version.Version == "nan")
+                return wf.ToByteArray();
+
+            //if v45
+            if (version == "v45")
             {
+                int v = 0;
+                if (int.TryParse(wf.Version.Version.Replace("v", ""), out v))
+                    if (v >= 45)
+                        return wf.ToByteArray();
 
 
-                //if the package doesn't care about the umbraco version needed... 
-                if (wf.Version.Version == "nan")
+                if (wf.Version.Version == "v47" || wf.Version.Version == "v45")
                     return wf.ToByteArray();
 
-
-                //if v45
-                if (version == "v45")
+                if (wf.Version.Version != version && wf.Version.Version != "nan")
                 {
-                    int v = 0;
-                    if (int.TryParse(wf.Version.Version.Replace("v", ""), out v))
-                        if (v >= 45)
-                            return wf.ToByteArray();
-
-
-                    if (wf.Version.Version == "v47" || wf.Version.Version == "v45")
-                        return wf.ToByteArray();
-                    else if (wf.Version.Version != version && wf.Version.Version != "nan")
-                    {
-                        wf = WikiFile.FindPackageForUmbracoVersion(wf.NodeId, version);
-                        return wf.ToByteArray();
-                    }
+                    wf = WikiFile.FindPackageForUmbracoVersion(wf.NodeId, version);
+                    return wf.ToByteArray();
                 }
             }
 
-            return new byte[0];
-
-            /*
-            if (wf.Version.Version != version && wf.Version.Version != "nan")
-                    wf = uWiki.Businesslogic.WikiFile.FindPackageForUmbracoVersion(wf.NodeId, version);
-            
-            
-            if(wf != null)
-                return wf.ToByteArray();
-            else
-                return new byte[0];*/
+            return new byte[0];            
         }
 
-
+        /// <summary>
+        /// SD: Pretty sure this is no longer used/needed it should probably be removed - maybe really old versions might try to use this?
+        /// </summary>
+        /// <param name="packageGuid"></param>
+        /// <param name="memberKey"></param>
+        /// <returns></returns>
         [WebMethod]
         public byte[] fetchProtectedPackage(string packageGuid, string memberKey)
         {
@@ -219,24 +300,6 @@ namespace OurUmbraco.Repository.webservices
             if (xpn.MoveNext())
             {
                 int id = int.Parse(xpn.Current.GetAttribute("id", "")); ;
-                item = new umbraco.cms.businesslogic.contentitem.ContentItem(id);
-            }
-
-            return item;
-        }
-
-        private static umbraco.cms.businesslogic.contentitem.ContentItem repositoryContentItem(string guid)
-        {
-
-            umbraco.cms.businesslogic.contentitem.ContentItem item = new umbraco.cms.businesslogic.contentitem.ContentItem(1052);
-
-            XPathNodeIterator xpn = umbraco.library.GetXmlNodeByXPath("descendant::node[data [@alias = 'repositoryGuid'] = '" + guid + "']");
-
-            if (xpn.MoveNext())
-            {
-
-                int id = int.Parse(xpn.Current.GetAttribute("id", "")); ;
-
                 item = new umbraco.cms.businesslogic.contentitem.ContentItem(id);
             }
 

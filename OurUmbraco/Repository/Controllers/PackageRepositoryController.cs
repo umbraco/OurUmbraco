@@ -9,6 +9,11 @@ using Umbraco.Core.Cache;
 using Umbraco.Web.WebApi;
 using System.Net.Http;
 using System.Net;
+using System.Net.Http.Headers;
+using OurUmbraco.Wiki.BusinessLogic;
+using Semver;
+using Umbraco.Core;
+using Umbraco.Web;
 
 namespace OurUmbraco.Repository.Controllers
 {
@@ -87,21 +92,90 @@ namespace OurUmbraco.Repository.Controllers
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
         }
 
-        public Models.PackageDetails GetDetails(Guid id)
+        /// <summary>
+        /// Returns the package details for the package Id passed in and ensures that 
+        /// the resulting ZipUrl is the compatible package for the version passed in.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
+        /// <param name="asFile">pass in true to get the package file otherwise leave blank or set to false to retreive the package details</param>
+        /// <returns></returns>
+        public HttpResponseMessage Get(Guid id, string version = null, bool? asFile = false)
+        {
+            SemVersion parsed = null;
+            if (version.IsNullOrWhiteSpace() == false)
+            {
+                SemVersion.TryParse(version, out parsed);
+            }
+            else
+            {
+                //if the version is null then the current umbraco version must be 7.5.x because this endpoint was only ever used by 7.5.x and 7.6.x and above will always 
+                // suppy the version, therefore we can assume that this is 7.5.x, let's make it 7.5.13 which is the latest 7.5 we have right now
+                parsed = new SemVersion(7, 5, 13);
+            }
+
+            //this should never be null, if it is return not found
+            if (parsed == null)
+            {
+                throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
+            }
+
+            var v = new System.Version(parsed.Major, parsed.Minor, parsed.Patch);
+
+            return asFile.HasValue && asFile.Value
+                ? GetPackageFile(id, v)
+                : GetDetails(id, v);
+        }
+
+        private HttpResponseMessage GetDetails(Guid id, System.Version currUmbracoVersion)
         {
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetDetails.{0}", id);
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, currUmbracoVersion.ToString(3));
             var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
-                (key,
-                    () => Service.GetDetails(id),
-                    TimeSpan.FromMinutes(1)); //cache for 1 min    
-            
+            (key,
+                () =>
+                {
+                    var details = Service.GetDetails(id, currUmbracoVersion);
+
+                    if (details.ZipUrl.IsNullOrWhiteSpace())
+                        throw new HttpResponseException(Request.CreateErrorResponse(HttpStatusCode.BadRequest, "This package is not compatible with the Umbraco version " + currUmbracoVersion));
+
+                    return details;
+                },
+                TimeSpan.FromMinutes(1)); //cache for 1 min    
+
             if (package == null)
             {
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             }
 
-            return package;
+            return Request.CreateResponse(HttpStatusCode.OK, package);
+        }
+
+        private HttpResponseMessage GetPackageFile(Guid packageId, System.Version currUmbracoVersion)
+        {
+            var pckRepoService = new PackageRepositoryService(Umbraco, Members, DatabaseContext);            
+
+            var details = pckRepoService.GetDetails(packageId, currUmbracoVersion);
+            if (details == null)
+                throw new InvalidOperationException("No package found with id " + packageId);
+
+            if (details.ZipUrl.IsNullOrWhiteSpace())
+                throw new InvalidOperationException("This package is not compatible with the Umbraco version " + currUmbracoVersion);
+
+            var wf = new WikiFile(details.ZipFileId);
+            if (wf == null)
+                throw new InvalidOperationException("Could not find wiki file by id " + details.ZipFileId);
+            wf.UpdateDownloadCounter(true, true);
+
+            var result = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new ByteArrayContent(wf.ToByteArray())
+            };
+
+            result.Content.Headers.ContentType = new MediaTypeHeaderValue("application/octet-stream");
+
+            return result;
         }
     }
 }
