@@ -85,7 +85,7 @@ namespace OurUmbraco.Repository.Controllers
             PackageSortOrder order = PackageSortOrder.Latest)
         {
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetCategories.{0}.{1}.{2}.{3}.{4}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, order);
+            var key = string.Format("PackageRepositoryController.GetCategories.{0}.{1}.{2}.{3}.{4}.{5}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, version ?? string.Empty, order);
             return ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PagedPackages>
                 (key,
                     () => Service.GetPackages(pageIndex, pageSize, category, query, version, order),

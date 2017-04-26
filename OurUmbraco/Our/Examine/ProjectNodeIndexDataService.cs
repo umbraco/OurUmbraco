@@ -238,6 +238,12 @@ namespace OurUmbraco.Our.Examine
                 }
             }
 
+            //add the minimumVersionStrict as a version too
+            if (e.Fields.ContainsKey("minimumVersionStrict"))
+            {
+                AddNumericalVersionValue(e, "num_versions", new[] {e.Fields["minimumVersionStrict"]});
+            }
+
             //If there is a compatVersions field, we'll split it and index the same field on each version
             if (e.Fields.ContainsKey("compatVersions"))
             {
@@ -256,6 +262,8 @@ namespace OurUmbraco.Our.Examine
                     e.Document.Add(new Field("compatVersions", version, Field.Store.YES, Field.Index.NOT_ANALYZED_NO_NORMS, Field.TermVector.NO));
                 }
             }
+
+            
         }
 
         private static UmbracoContext EnsureUmbracoContext()
