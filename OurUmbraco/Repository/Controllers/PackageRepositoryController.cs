@@ -99,8 +99,9 @@ namespace OurUmbraco.Repository.Controllers
         /// <param name="id"></param>
         /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
         /// <param name="asFile">pass in true to get the package file otherwise leave blank or set to false to retreive the package details</param>
+        /// <param name="includeHidden">Some packages are hidden (i.e. projectLive), set to true to ignore this switch (i.e. for starter kits)</param>
         /// <returns></returns>
-        public HttpResponseMessage Get(Guid id, string version = null, bool? asFile = false)
+        public HttpResponseMessage Get(Guid id, string version = null, bool? asFile = false, bool? includeHidden = false)
         {
             SemVersion parsed = null;
             if (version.IsNullOrWhiteSpace() == false)
@@ -123,11 +124,11 @@ namespace OurUmbraco.Repository.Controllers
             var v = new System.Version(parsed.Major, parsed.Minor, parsed.Patch);
 
             return asFile.HasValue && asFile.Value
-                ? GetPackageFile(id, v)
-                : GetDetails(id, v);
+                ? GetPackageFile(id, v, includeHidden != null && includeHidden.Value)
+                : GetDetails(id, v, includeHidden != null && includeHidden.Value);
         }
 
-        private HttpResponseMessage GetDetails(Guid id, System.Version currUmbracoVersion)
+        private HttpResponseMessage GetDetails(Guid id, System.Version currUmbracoVersion, bool includeHidden)
         {
             //return the results, but cache for 1 minute
             var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, currUmbracoVersion.ToString(3));
@@ -137,7 +138,7 @@ namespace OurUmbraco.Repository.Controllers
                     (key,
                         () =>
                         {
-                            var details = Service.GetDetails(id, currUmbracoVersion);
+                            var details = Service.GetDetails(id, currUmbracoVersion, includeHidden);
 
                             if (details == null)
                                 throw new InvalidOperationException("No package found with id " + id);
@@ -163,11 +164,11 @@ namespace OurUmbraco.Repository.Controllers
             
         }
 
-        private HttpResponseMessage GetPackageFile(Guid packageId, System.Version currUmbracoVersion)
+        private HttpResponseMessage GetPackageFile(Guid packageId, System.Version currUmbracoVersion, bool includeHidden)
         {
             var pckRepoService = new PackageRepositoryService(Umbraco, Members, DatabaseContext);            
 
-            var details = pckRepoService.GetDetails(packageId, currUmbracoVersion);
+            var details = pckRepoService.GetDetails(packageId, currUmbracoVersion, includeHidden);
             if (details == null)
                 throw new InvalidOperationException("No package found with id " + packageId);
 

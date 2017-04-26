@@ -99,7 +99,7 @@ namespace OurUmbraco.Repository.webservices
                 throw new InvalidOperationException("Could not parse the version specified " + umbracoVersion);
 
             var guid = new Guid(packageGuid);
-            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion, true);
             if (details == null)
                 throw new InvalidOperationException("No package found with id " + packageGuid);
 
@@ -129,7 +129,7 @@ namespace OurUmbraco.Repository.webservices
             //This doesn't matter what we set it to so long as it's below 7.5 since that is the version we introduce strict dependencies
             var currUmbracoVersion = new System.Version(4, 0, 0);
             var guid = new Guid(packageGuid);
-            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion ,true);
             if (details == null)
                 throw new InvalidOperationException("No package found with id " + packageGuid);
 
@@ -195,7 +195,7 @@ namespace OurUmbraco.Repository.webservices
             // requests the file, well it won't get it because this will only return non strict packages.
             var currUmbracoVersion = new System.Version(4, 0, 0);
             var guid = new Guid(packageGuid);
-            var details = pckRepoService.GetDetails(guid, currUmbracoVersion);
+            var details = pckRepoService.GetDetails(guid, currUmbracoVersion, true);
             if (details == null)
                 return new byte[0];
 

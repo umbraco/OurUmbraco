@@ -69,6 +69,7 @@ namespace OurUmbraco.Repository.Services
         /// <param name="query"></param>
         /// <param name="version"></param>
         /// <param name="order"></param>
+        /// <param name="includeHidden">Some packages are hidden (i.e. projectLive), set to true to ignore this switch (i.e. for starter kits)</param>
         /// <returns></returns>
         /// <remarks>
         /// This caches each query for 2 minutes (non-sliding)
@@ -79,12 +80,18 @@ namespace OurUmbraco.Repository.Services
             string category = null,
             string query = null,
             string version = null,
-            PackageSortOrder order = PackageSortOrder.Default)
+            PackageSortOrder order = PackageSortOrder.Default,
+            bool? includeHidden = false)
         {
             var filters = new List<SearchFilters>();
             var searchFilters = new SearchFilters(BooleanOperation.And);
-            //MUST be live
-            searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+
+            if (includeHidden == false)
+            {
+                //MUST be live
+                searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+            }
+
             filters.Add(searchFilters);
             if (version.IsNullOrWhiteSpace() == false)
             {
@@ -151,17 +158,20 @@ namespace OurUmbraco.Repository.Services
         /// </summary>
         /// <param name="id"></param>
         /// <param name="version">The umbraco version requesting the details, if null than the ZipUrl will be the latest package zip</param>
+        /// <param name="includeHidden">Some packages are hidden (i.e. projectLive), set to true to ignore this switch (i.e. for starter kits)</param>
         /// <returns>
         /// If the current umbraco version is not compatible with any package files, the ZipUrl and ZipFileId will be empty
         /// </returns>
-        public PackageDetails GetDetails(Guid id, System.Version version)
+        public PackageDetails GetDetails(Guid id, System.Version version, bool includeHidden)
         {
             if (version == null) throw new ArgumentNullException("version");
 
             // [LK:2016-06-13@CGRT16] We're using XPath as we experienced issues with query Examine for GUIDs,
             // (it might worth but we were up against the clock).
             // The XPath 'translate' is being used to force the 'packageGuid' to be lowercase for comparison.
-            var xpath = string.Format("//Project[@isDoc and projectLive = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
+            var xpath = includeHidden
+                ? string.Format("//Project[@isDoc and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant())
+                : string.Format("//Project[@isDoc and projectLive = 1 and translate(packageGuid,'ABCDEFGHIJKLMNOPQRSTUVWXYZ','abcdefghijklmnopqrstuvwxyz') = '{0}']", id.ToString("D").ToLowerInvariant());
             var item = UmbracoHelper.TypedContentSingleAtXPath(xpath);
             
             if (item == null)
