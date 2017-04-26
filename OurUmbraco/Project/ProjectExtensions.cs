@@ -92,8 +92,8 @@ namespace OurUmbraco.Project
         {
             var asLong =
                 version.Major.ToString().PadLeft(3, '0')
-                + (version.Minor == -1 ? "0" : version.Minor.ToString()).PadRight(3, '0')
-                + (version.Build == -1 ? "0" : version.Build.ToString()).PadRight(3, '0');
+                + (version.Minor == -1 ? "0" : version.Minor.ToString()).PadLeft(3, '0')
+                + (version.Build == -1 ? "0" : version.Build.ToString()).PadLeft(3, '0');
             return long.Parse(asLong);
         }
 
