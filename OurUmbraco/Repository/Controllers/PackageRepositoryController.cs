@@ -9,6 +9,7 @@ using Umbraco.Core.Cache;
 using Umbraco.Web.WebApi;
 using System.Net.Http;
 using System.Net;
+using Semver;
 using Umbraco.Core;
 
 namespace OurUmbraco.Repository.Controllers
@@ -97,16 +98,16 @@ namespace OurUmbraco.Repository.Controllers
         /// <returns></returns>
         public PackageDetails GetDetails(Guid id, string version = null)
         {
-            System.Version parsed = null;
+            SemVersion parsed = null;
             if (version.IsNullOrWhiteSpace() == false)
             {
-                System.Version.TryParse(version, out parsed);
+                SemVersion.TryParse(version, out parsed);
             }
             else
             {
                 //if the version is null then the current umbraco version must be 7.5.x because this endpoint was only ever used by 7.5.x and 7.6.x and above will always 
                 // suppy the version, therefore we can assume that this is 7.5.x, let's make it 7.5.13 which is the latest 7.5 we have right now
-                parsed = new System.Version(7, 5, 13);
+                parsed = new SemVersion(7, 5, 13);
             }
 
             //this should never be null, if it is return not found
@@ -115,11 +116,13 @@ namespace OurUmbraco.Repository.Controllers
                 throw new HttpResponseException(Request.CreateResponse(HttpStatusCode.NotFound));
             }
 
+            var v = new System.Version(parsed.Major, parsed.Minor, parsed.Patch);
+
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, parsed.ToString(3));
+            var key = string.Format("PackageRepositoryController.GetDetails.{0}.{1}", id, v.ToString(3));
             var package = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PackageDetails>
                 (key,
-                    () => Service.GetDetails(id, parsed),
+                    () => Service.GetDetails(id, v),
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
             
             if (package == null)
