@@ -264,7 +264,7 @@ namespace OurUmbraco.Repository.Services
                 // umbraco dependencies applied. Anything that has 7.5 (which would be the very minimum strict dependency) we can check for
 
                 //these are ordered by package version desc
-                var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(wikiFiles).ToArray();
+                var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(allPackageFiles).ToArray();
 
                 if (nonStrictPackageFiles.Length != 0)
                 {
