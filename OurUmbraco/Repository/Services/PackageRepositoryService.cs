@@ -102,8 +102,8 @@ namespace OurUmbraco.Repository.Services
                     var numericalVersion = parsedVersion.GetNumericalValue();
                     var versionFilters = new SearchFilters(BooleanOperation.Or);
 
-                    //search for all versions from the current major to the version passed in
-                    var currMajor = new System.Version(parsedVersion.Major, 0, 0).GetNumericalValue();
+                    //search for all versions from the current minor to the version passed in
+                    var currMajor = new System.Version(parsedVersion.Major, parsedVersion.Minor, 0).GetNumericalValue();
 
                     versionFilters.Filters.Add(new RangeSearchFilter("num_version", currMajor, numericalVersion));
                     filters.Add(versionFilters);
