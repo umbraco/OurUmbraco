@@ -96,13 +96,16 @@ namespace OurUmbraco.Repository.Services
             if (version.IsNullOrWhiteSpace() == false)
             {
                 //need to clean up this string, it could be all sorts of things
-                var parsedVersion = version.GetFromUmbracoString();
+                var parsedVersion = version.GetFromUmbracoString(reduceToConfigured: false);
                 if (parsedVersion != null)
                 {
                     var numericalVersion = parsedVersion.GetNumericalValue();
                     var versionFilters = new SearchFilters(BooleanOperation.Or);
-                    versionFilters.Filters.Add(new RangeSearchFilter("num_version", 0, numericalVersion));
-                    versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", 0, numericalVersion));
+
+                    //search for all versions from the current major to the version passed in
+                    var currMajor = new System.Version(parsedVersion.Major, 0, 0).GetNumericalValue();
+
+                    versionFilters.Filters.Add(new RangeSearchFilter("num_version", currMajor, numericalVersion));
                     filters.Add(versionFilters);
                 }
             }
@@ -337,7 +340,7 @@ namespace OurUmbraco.Repository.Services
         private IEnumerable<System.Version> GetAllFilePackageVersions(IEnumerable<WikiFile> packages)
         {
             var allVersions = packages
-                .Select(x => ConvertToVersion(x.Version.Version))
+                .Select(x => x.Version.Version.GetFromUmbracoString(reduceToConfigured: false))
                 .WhereNotNull()
                 .Distinct()
                 .OrderBy(x => x)
@@ -354,11 +357,11 @@ namespace OurUmbraco.Repository.Services
         /// Order from latest package version and lastest min umb version and start from the top, we want to return the most recent 
         /// available package version for the current Umbraco version
         /// </returns>
-        private IEnumerable<PackageVersionSupport> GetAllStrictSupportedPackageVersions(IEnumerable<WikiFile> packages)
+        internal static IEnumerable<PackageVersionSupport> GetAllStrictSupportedPackageVersions(IEnumerable<WikiFile> packages)
         {
             var allVersions = packages
                 .Where(x => x.MinimumVersionStrict.IsNullOrWhiteSpace() == false)
-                .Select(x => new PackageVersionSupport(x.Id, ConvertToVersion(x.Version.Version), ConvertToVersion(x.MinimumVersionStrict)))
+                .Select(x => new PackageVersionSupport(x.Id, x.Version.Version.GetFromUmbracoString(reduceToConfigured: false), x.MinimumVersionStrict.GetFromUmbracoString(reduceToConfigured: false)))
                 .Where(x => x.PackageVersion != null && x.MinUmbracoVersion != null)
                 .OrderByDescending(x => x.PackageVersion)
                 .ThenByDescending(x => x.MinUmbracoVersion)
@@ -378,47 +381,12 @@ namespace OurUmbraco.Repository.Services
         {
             var allVersions = packages
                 .Where(x => x.MinimumVersionStrict.IsNullOrWhiteSpace())
-                .Select(x => new PackageVersionSupport(x.Id, ConvertToVersion(x.Version.Version), null))
+                .Select(x => new PackageVersionSupport(x.Id, x.Version.Version.GetFromUmbracoString(reduceToConfigured:false), null))
                 .Where(x => x.PackageVersion != null)
                 .OrderByDescending(x => x.PackageVersion)
                 .ToArray();
             return allVersions;
-        }
-
-        
-
-        /// <summary>
-        /// Try to convert the string to a real version based on legacy version formats
-        /// </summary>
-        /// <param name="ver"></param>
-        /// <returns></returns>
-        private System.Version ConvertToVersion(string ver)
-        {
-            string normalized = ver;
-            if (ver.InvariantStartsWith("v"))
-            {
-                if (ver.InvariantStartsWith("v4"))
-                {
-                    normalized = string.Concat(ver.Replace("v4", "4."), ".0");
-                }
-                else
-                {
-                    normalized = string.Join(".", ver.ToCharArray().Skip(1));
-                }
-            }
-
-            if (normalized.EndsWith(".x"))
-            {
-                normalized = normalized.TrimEnd(".x").EnsureEndsWith(".0");
-            }
-
-            System.Version result;
-            if (System.Version.TryParse(normalized, out result))
-            {
-                return result;
-            }
-            return null;
-        }
+        }     
 
         private PackageOwnerInfo GetPackageOwnerInfo(int ownerId, bool openForCollab, int contentId)
         {

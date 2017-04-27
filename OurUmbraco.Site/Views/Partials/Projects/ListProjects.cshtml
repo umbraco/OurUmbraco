@@ -55,7 +55,6 @@
             var toVersion = new Version(parsedVersion.Major, 999, 999).GetNumericalValue();
             var versionFilters = new SearchFilters(BooleanOperation.Or);
             versionFilters.Filters.Add(new RangeSearchFilter("num_version", fromVersion, toVersion));
-            versionFilters.Filters.Add(new RangeSearchFilter("num_compatVersions", fromVersion, toVersion));
             filters.Add(versionFilters);
         }
     }
