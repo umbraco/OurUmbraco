@@ -108,7 +108,148 @@
         ga('create', 'UA-120590-4', 'auto');
         ga('send', 'pageview');
     </script>
+    <!-- temp css for survery (will be removed during May 2017) -->
+    <style>
+            body {
+                height: 100%;
+                width: 100%;
+                position: relative;
+            }
 
+            .unicorn-going-rouge {
+                width: 300px;
+                position: fixed;
+                right: 0px;
+                bottom: 0px;
+                z-index: 100;
+                -webkit-animation-name: fadeIn;
+                animation-name: fadeIn;
+                -webkit-animation-duration: 1s;
+                animation-duration: 1s;
+                -webkit-animation-delay: 1s;
+                animation-delay: 1s;
+                -webkit-animation-fill-mode: both;
+                animation-fill-mode: both;
+            }
+
+            .rouge-unicorn {
+                margin: 0 auto;
+                display: -webkit-box;
+                display: -webkit-flex;
+                display: -ms-flexbox;
+                display: flex;
+                -webkit-box-pack: end;
+                -webkit-justify-content: flex-end;
+                -ms-flex-pack: end;
+                justify-content: flex-end;
+            }
+
+            .rouge-unicorn-famous-words {
+                background: white;
+                padding: 20px;
+                text-align: center;
+            }
+
+                .rouge-unicorn-famous-words h2 {
+                    font-size: 20px;
+                    margin-bottom: 10px;
+                    font-weight: bold;
+                }
+
+                .rouge-unicorn-famous-words p {
+                    line-height: 1.5;
+                }
+
+                .rouge-unicorn-famous-words a {
+                    color: #4ea7ff;
+                }
+
+            .speech-bubble {
+                min-width: 300px;
+                padding: 25px;
+                border: 2px solid whitesmoke;
+                position: absolute;
+                top: 0;
+                left: 0;
+-webkit-box-shadow: 4px 4px 10px 7px rgba(219,219,219,0.28);
+-moz-box-shadow: 4px 4px 10px 7px rgba(219,219,219,0.28);
+box-shadow: 4px 4px 10px 7px rgba(219,219,219,0.28)
+                -webkit-transform: translate(-100px, -75%);
+                transform: translate(-100px, -75%);
+            }
+
+                .speech-bubble:before, .speech-bubble:after {
+                    content: '';
+                    height: 12px;
+                    position: absolute;
+                    top: 100%;
+                }
+
+                .speech-bubble:before {
+                    width: 3px;
+                    background-color: whitesmoke;
+                    right: 10px;
+                    border-bottom-left-radius: 50px;
+                    border-bottom-right-radius: 100px;
+                    -webkit-transform: rotateY(-160deg);
+                    transform: rotateY(-160deg);
+                }
+
+                .speech-bubble:after {
+                    width: 4px;
+                    background-color: whitesmoke;
+                    right: 16px;
+                    border-bottom-left-radius: 100px;
+                    border-bottom-right-radius: 50px;
+                    -webkit-transform: skew(45deg, 0);
+                    transform: skew(45deg, 0);
+                }
+
+                .speech-bubble > :first-child:after, .speech-bubble > :first-child:before {
+                    content: '';
+                    position: absolute;
+                    background-color: white;
+                    top: 100%;
+                }
+
+                .speech-bubble > :first-child:before {
+                    width: 6px;
+                    height: 3px;
+                    right: 13px;
+                }
+
+                .speech-bubble > :first-child:after {
+                    width: 5px;
+                    height: 5px;
+                    right: 16px;
+                    -webkit-transform: skew(45deg, 0);
+                    transform: skew(45deg, 0);
+                }
+
+            @@-webkit-keyframes fadeIn {
+                from {
+                    -webkit-transform: translate3d(0, 200%, 0);
+                    transform: translate3d(0, 200%, 0);
+                }
+
+                to {
+                    -webkit-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+
+            @@keyframes fadeIn {
+                from {
+                    -webkit-transform: translate3d(0, 200%, 0);
+                    transform: translate3d(0, 200%, 0);
+                }
+
+                to {
+                    -webkit-transform: translate3d(0, 0, 0);
+                    transform: translate3d(0, 0, 0);
+                }
+            }
+    </style>
 </head>
 
 <body class="@bodyCss">
@@ -176,6 +317,18 @@
     </div>
     <!--.wrapper-->
 
+    <!-- temp survey markup - will be removed April 22nd 2016 -->
+    <div id="unicornSurvery" class="unicorn-going-rouge" style="display: none;">
+        <div class="rouge-unicorn">
+            <img src="/assets/images/crap-anim.gif" alt="" />
+        </div>
+
+        <div class="rouge-unicorn-famous-words speech-bubble">
+            <h2>Let's make Umbraco better!</h2>
+            <p>Ilham from the HQ is writing her Master’s thesis on Open Source Software and the dynamics within Our. It'll help us all, so please spend a max of ten minutes on this <a href="javascript:unicornClick();">survey</a> and I'll promise I'll disappear too.</p>
+        </div>
+    </div>
+
     @Html.RenderJsHere()
 
     <script type="text/javascript">
@@ -183,5 +336,22 @@
     </script>
 
     @RenderSection("EndScripts", false)
+    <!-- temp survey script - will be removed during May 2017 -->
+    <script type="text/javascript">
+                function unicornClick() {
+                    // set cookie
+                    document.cookie = 'contribSurveyTaken=true; expires=Wed, 1 Jan 2020 20:47:11 UTC; path=/';
+                    document.getElementById("unicornSurvery").style.display = 'none';
+                    var win = window.open('https://www.survey-xact.dk/LinkCollector?key=KRDR4J3C9136', '_blank');
+                    win.focus();
+                }
+
+                // test for cookie
+                $(document).ready(function () {
+                    if (document.cookie.indexOf("contribSurveyTaken") == -1) {
+                        document.getElementById("unicornSurvery").style.display = 'block';
+                    }
+                });
+    </script>
 </body>
 </html>
