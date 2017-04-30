@@ -42,7 +42,7 @@
     var packageRepoService = new PackageRepositoryService(umbracoHelper, umbracoHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
     //This doesn't matter what we set it to so long as it's below 7.5 since that is the version we introduce strict dependencies
     var currUmbracoVersion = new Version(4, 0, 0);
-    var packageDetails = packageRepoService.GetDetails(Project.ProjectGuid, currUmbracoVersion);
+    var packageDetails = packageRepoService.GetDetails(Project.ProjectGuid, currUmbracoVersion, false);
 
     if (packageDetails == null)
     {
