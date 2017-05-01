@@ -349,7 +349,12 @@ box-shadow: 4px 4px 10px 7px rgba(219,219,219,0.28)
                 // test for cookie
                 $(document).ready(function () {
                     if (document.cookie.indexOf("contribSurveyTaken") == -1) {
-                        document.getElementById("unicornSurvery").style.display = 'block';
+                        // don't show on mobile devices
+                        var ua = navigator.userAgent;
+                        if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)) {
+
+                            document.getElementById("unicornSurvery").style.display = 'block';
+                        }
                     }
                 });
     </script>
