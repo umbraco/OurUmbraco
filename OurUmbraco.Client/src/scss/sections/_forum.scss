@@ -157,6 +157,10 @@ section.forum {
 		max-width: 112px;
 		height: auto;
 
+        .package-forum-activity & {
+            border-radius: 0;
+        }
+
 		@media (min-width: $md) {
 			width: 58px;
 		}
