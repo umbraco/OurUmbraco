@@ -230,6 +230,8 @@ namespace OurUmbraco.Repository.Services
 
             //get the strict packages in the correct desc order
             var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();
+            //these are ordered by package version desc
+            var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(allPackageFiles).ToArray();
 
             var packageDetails = new PackageDetails(package)
             {
@@ -259,31 +261,7 @@ namespace OurUmbraco.Repository.Services
             else if (currentUmbracoVersion < version75)
             {
                 //if the umbraco version is < 7.5 it means that strict package formats are not supported
-
-                //TODO: Now we have to do the opposite of below and filter out any package file versions that have strict
-                // umbraco dependencies applied. Anything that has 7.5 (which would be the very minimum strict dependency) we can check for
-
-                //these are ordered by package version desc
-                var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(allPackageFiles).ToArray();
-
-                if (nonStrictPackageFiles.Length != 0)
-                {
-                    //there might be a case where the 'current release file' is not the latest version found, so let's check if
-                    //the latest release file is included in the non-strict packages and if so we'll use that, otherwise we'll use the latest
-                    var found = nonStrictPackageFiles.FirstOrDefault(x => x.FileId == currentReleaseFile);
-                    if (found != null)
-                    {
-                        //it's included in the non strict packages so use it
-                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
-                        packageDetails.ZipFileId = currentReleaseFile;
-                    }
-                    else
-                    {
-                        //use the latest available package version
-                        packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].FileId);
-                        packageDetails.ZipFileId = nonStrictPackageFiles[0].FileId;
-                    }
-                }                               
+                AssignLatestNonStrictPackageFile(nonStrictPackageFiles, currentReleaseFile, packageDetails);                
             }
             else
             {
@@ -307,12 +285,42 @@ namespace OurUmbraco.Repository.Services
                     //got one! so use it's id for the file download
                     packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", found);
                     packageDetails.ZipFileId = found;
-                }               
+                }
+                else if (nonStrictPackageFiles.Length > 0)
+                {
+                    //Here's the other case, if this package has both strict and non-strict package file versions and we didn't find one above, 
+                    //than we need to determine if the latest non-strict package file format should be used for the current version being passed in
+
+                    AssignLatestNonStrictPackageFile(nonStrictPackageFiles, currentReleaseFile, packageDetails);
+                }
+                
             }
             
             packageDetails.Created = content.CreateDate;
 
             return packageDetails;
+        }
+
+        private void AssignLatestNonStrictPackageFile(PackageVersionSupport[] nonStrictPackageFiles, int currentReleaseFile, PackageDetails packageDetails)
+        {
+            if (nonStrictPackageFiles.Length > 0)
+            {
+                //there might be a case where the 'current release file' is not the latest version found, so let's check if
+                //the latest release file is included in the non-strict packages and if so we'll use that, otherwise we'll use the latest
+                var found = nonStrictPackageFiles.FirstOrDefault(x => x.FileId == currentReleaseFile);
+                if (found != null)
+                {
+                    //it's included in the non strict packages so use it
+                    packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", currentReleaseFile);
+                    packageDetails.ZipFileId = currentReleaseFile;
+                }
+                else
+                {
+                    //use the latest available package version
+                    packageDetails.ZipUrl = string.Concat(BASE_URL, "/FileDownload?id=", nonStrictPackageFiles[0].FileId);
+                    packageDetails.ZipFileId = nonStrictPackageFiles[0].FileId;
+                }
+            }
         }
 
         private List<PackageCompatibility> GetPackageCompatibility(IPublishedContent content)
