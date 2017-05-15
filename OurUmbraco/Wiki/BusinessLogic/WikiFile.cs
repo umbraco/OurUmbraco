@@ -415,11 +415,12 @@ namespace OurUmbraco.Wiki.BusinessLogic
         public static List<UmbracoVersion> GetVersionsFromString(string p)
         {
             var umbracoVersions = new List<UmbracoVersion>();
+            var availableVersions = UmbracoVersion.AvailableVersions();
 
             foreach (var ver in p.Split(','))
             {
-                if (UmbracoVersion.AvailableVersions().ContainsKey(ver))
-                    umbracoVersions.Add(UmbracoVersion.AvailableVersions()[ver]);
+                if (availableVersions.ContainsKey(ver))
+                    umbracoVersions.Add(availableVersions[ver]);
             }
 
             return umbracoVersions;

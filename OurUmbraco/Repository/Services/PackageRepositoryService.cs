@@ -373,6 +373,8 @@ namespace OurUmbraco.Repository.Services
                 .Where(x => x.PackageVersion != null && x.MinUmbracoVersion != null)
                 .OrderByDescending(x => x.PackageVersion)
                 .ThenByDescending(x => x.MinUmbracoVersion)
+                //need to sort by latest file Id too since multiple files can target the same umbraco versions but we want to take the latest uploaded file
+                .ThenByDescending(x => x.FileId)
                 .ToArray();
             return allVersions;
         }
@@ -392,6 +394,8 @@ namespace OurUmbraco.Repository.Services
                 .Select(x => new PackageVersionSupport(x.Id, x.Version.Version.GetFromUmbracoString(reduceToConfigured:false), null))
                 .Where(x => x.PackageVersion != null)
                 .OrderByDescending(x => x.PackageVersion)
+                //need to sort by latest file Id too since multiple files can target the same umbraco versions but we want to take the latest uploaded file
+                .ThenByDescending(x => x.FileId)
                 .ToArray();
             return allVersions;
         }     
