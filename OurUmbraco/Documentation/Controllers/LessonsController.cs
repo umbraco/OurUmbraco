@@ -8,6 +8,8 @@ using OurUmbraco.Documentation.Models;
 using Umbraco.Core;
 using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
+using System.Web;
+using OurUmbraco.Documentation.Busineslogic;
 
 namespace OurUmbraco.Documentation.Controllers
 {
@@ -59,6 +61,27 @@ namespace OurUmbraco.Documentation.Controllers
             }
 
             return currentDirectory.directories.OrderBy(x=> x.sort).ToList();
+        }
+
+        public List<string> GetStepsForPath(string path)
+        {
+            var docs = new ZipDownloader();
+            var rootFolder = global::Umbraco.Core.IO.IOHelper.MapPath("/Documentation/" + path);
+            var mdFiles = System.IO.Directory.GetFiles(rootFolder, "*.md");
+
+            var result = new List<string>();
+            foreach(var fpath in mdFiles)
+            {
+                var content = System.IO.File.ReadAllText(fpath);
+                var name = System.IO.Path.GetFileName(path);
+                var md = new MarkdownLogic(fpath);
+                var html = md.DoTransformation();
+
+                result.Add(html);
+            }
+
+
+            return result;
         }
     }
 }
