@@ -58,7 +58,7 @@ namespace OurUmbraco.Documentation.Controllers
                 currentDirectory = currentDirectory.directories.First(x => x.path == pathPart);
             }
 
-            return currentDirectory.directories;
+            return currentDirectory.directories.OrderBy(x=> x.sort).ToList();
         }
     }
 }
