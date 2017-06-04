@@ -1,8 +1,9 @@
-﻿@using Skybrud.Essentials.Locations
+﻿@using OurUmbraco.Community.Models
+@using Skybrud.Essentials.Locations
 @using Skybrud.Essentials.Locations.Extensions
-@using Skybrud.Social.Meetup.Models.Events
+@using Skybrud.Essentials.Security
 
-@inherits UmbracoViewPage<OurUmbraco.Community.Models.MeetupEventsModel>
+@inherits UmbracoViewPage<MeetupEventsModel>
 
 @{
 
@@ -20,32 +21,46 @@
 
 }
 
-@foreach (MeetupEvent ev in Model.Events) {
+@foreach (MeetupItem item in Model.Items) {
 
     double distance = -1;
 
     if (memberLocation != null) {
-        if (ev.HasVenue) {
-            distance = memberLocation.GetDistance(ev.Venue);
+        if (item.Event.HasVenue) {
+            distance = memberLocation.GetDistance(item.Event.Venue);
+        } else {
+            distance = memberLocation.GetDistance(item.Group);
         }
     }
 
-    <a href="@ev.Link" class="forum-thread">
-        @*<div class="avatar">
-                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
-            </div>*@
+    <a href="@item.Event.Link" class="forum-thread">
+        @if (item.Group.GroupPhoto != null)
+        {
+            <div class="avatar">
+                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
+            </div>
+        }
+        else
+        {
+            string fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+            <div class="avatar">
+                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+            </div>
+            
+        }
         <div class="meta">
             <div class="forum-thread-text">
-                @if (distance >= 0) {
-                    <span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
+                @if (distance >= 0 && distance <= 50000) {
+                    //<span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
+                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @String.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
                 }
-                <h3>@ev.Name</h3>
-                <p>@ev.Time.DateTime.ToString("MMM d, yyyy") by @ev.Group.Name</p>
+                <h3>@item.Event.Name</h3>
+                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
             </div>
         </div>
     </a>
 }
 
-@if (Model.Events.Any() == false) {
-    <h2>Could not load recent meetups.</h2>
+@if (Model.Items.Any() == false) {
+    <h2>Could not load upcoming meetups.</h2>
 }

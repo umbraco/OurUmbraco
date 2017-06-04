@@ -250,7 +250,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta001\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
+      <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta002\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6261.14294, Culture=neutral, processorArchitecture=MSIL">
@@ -406,6 +406,7 @@
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
+    <Compile Include="Community\Models\MeetupItem.cs" />
     <Compile Include="Community\Models\TweetsModel.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />

@@ -9,7 +9,7 @@
 
         try {
             console.log("@Url.Action("GetEvents", "Meetups")");
-            $("#meetups").load("@Url.Action("GetEvents", "Meetups", new { numberOfResults = 6 })");
+            $("#meetups").load("@Url.Action("GetEvents", "Meetups")");
             console.log('yay');
         }
         catch (errTwitter) {
