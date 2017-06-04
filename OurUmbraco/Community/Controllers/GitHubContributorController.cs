@@ -30,7 +30,7 @@ namespace OurUmbraco.Community.Controllers
                             return response.Data;
                         }
                         throw new HttpResponseException(HttpStatusCode.BadRequest);
-                    }, TimeSpan.FromMinutes(2));
+                    }, TimeSpan.FromDays(1));
 
                 var filteredContributors = contributors;
                 //TODO: filter contributors
