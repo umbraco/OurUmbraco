@@ -391,7 +391,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="Community\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
+    <Compile Include="Community\Models\GitHubContributorModel.cs" />
+    <Compile Include="Community\Models\IGitHubContributorModel.cs" />
+    <Compile Include="Community\Models\GitHubContributorsModel.cs" />
+    <Compile Include="Community\Models\IGitHubContributorsModel.cs" />
     <Compile Include="Community\Models\TweetsModel.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
@@ -504,6 +509,7 @@
     <Compile Include="NotificationsWeb\Services\NotificationService.cs" />
     <Compile Include="NotificationsWeb\Singleton.cs" />
     <Compile Include="Our\Api\CommunityController.cs" />
+    <Compile Include="Our\Api\GitHubController.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />

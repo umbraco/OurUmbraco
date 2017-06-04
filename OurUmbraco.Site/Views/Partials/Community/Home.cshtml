@@ -59,6 +59,7 @@
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()
+    @GitHubContributors()
     @TwitterSearch()
     @Html.Partial("home/documentation")
 }
@@ -66,6 +67,7 @@ else
 {
     @Html.Partial("home/documentation")
     @ForumActivity()
+    @GitHubContributors()
     @TwitterSearch()
 }
 
@@ -116,6 +118,35 @@ else
 
                 <div class="col-md-12 flex" id="twitter-search">
                     <h2>Loading twitter search results...</h2>
+                </div>
+
+                <div class="col-md-12 goto-forum">
+                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}
+
+@helper  GitHubContributors()
+{
+    <section class="github-contributors">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">GitHub Contributors Activity</h1>
+                    <p>
+                        Recent activity on GitHub, where people are talking about Umbraco.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Recent tweets</small>
+                </div>
+
+                <div class="col-md-12 flex" id="github-contributors">
+                    <h2>Loading GitHub search results...</h2>
                 </div>
 
                 <div class="col-md-12 goto-forum">

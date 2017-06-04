@@ -1,0 +1,15 @@
+﻿@model OurUmbraco.Community.Models.GitHubContributorsModel
+
+@foreach (var contributor in Model.Contributors)
+{
+    <a href="@contributor.Url">
+        <div class="avatar">
+            <img alt="@contributor.Id" src="@contributor.AvatarUrl" />
+        </div>
+    </a>
+}
+
+@if (Model.Contributors.Any() == false)
+{
+    <h2>Could not load recent GitHub contributors.</h2>
+}

@@ -13,5 +13,12 @@
         catch (errForum) {
             console.log("Couldn't load latest forum activity", errForum.message);
         }
+
+        try {
+            $("#github-contributors").load("@Url.Action("GitHubGetContributorsResult", "GitHubContributor")");
+        }
+        catch (errForum) {
+            console.log("Couldn't load latest GitHub contributor activity", errForum.message);
+        }
     });
 </script> 
