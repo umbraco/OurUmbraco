@@ -4,7 +4,8 @@
     Layout = null;
 
     var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
-    var ml = new MarkdownLogic(path) { PrefixLinks = false, AppendAltLessonLink = false };
+    var ml = new MarkdownLogic(path) { PrefixLinks = false, AppendAltLessonLink = true };
+
     var markdown = ml.DoTransformation();
 }
 

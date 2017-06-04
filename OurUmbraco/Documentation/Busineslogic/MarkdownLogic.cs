@@ -82,7 +82,8 @@ namespace OurUmbraco.Documentation.Busineslogic
             else
                 mdUrlTag.TrimEnd('/');
 
-            if (AppendAltLessonLink)
+            //Need to ensure we dont append the image links as they 404 if we add altTemplate
+            if (AppendAltLessonLink && rawUrl.StartsWith("images/") == false)
             {
                 return mdUrlTag.Replace(rawUrl, $"{rawUrl.EnsureNoDotsInUrl()}?altTemplate=Lesson");
             }
