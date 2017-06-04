@@ -2,13 +2,31 @@
 
 @foreach (var contributor in Model.Contributors)
 {
-    <a href="@contributor.Url">
-        <div class="avatar">
-            <img alt="@contributor.Login" src="@contributor.AvatarUrl" title="@contributor.Login"/>
-            <span>@contributor.Contributions</span>
+    <a href="@contributor.Url" class="contributor">
+        <div class="avatar" style="position: relative;">
+            <img alt="@contributor.Login" src="@contributor.AvatarUrl" title="@contributor.Login" />
+            <span class="contrib-count" title="@(contributor.Contributions + " contributions")">@contributor.Contributions</span>
         </div>
     </a>
 }
+
+<style>
+    .contributor {
+        margin-bottom: 15px;
+    }
+
+    .contrib-count {
+        position: absolute;
+        left: 25px;
+        bottom: 0px;
+        text-align: center;
+        right: 25px;
+        color: #425a2e;
+        font-weight: bold;
+        background-color: #98d768;
+        border-radius: 15px;
+    }
+</style>
 
 @if (Model.Contributors.Any() == false)
 {
