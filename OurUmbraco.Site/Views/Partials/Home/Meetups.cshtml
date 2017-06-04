@@ -1,0 +1,51 @@
+﻿@using Skybrud.Essentials.Locations
+@using Skybrud.Essentials.Locations.Extensions
+@using Skybrud.Social.Meetup.Models.Events
+
+@inherits UmbracoViewPage<OurUmbraco.Community.Models.MeetupEventsModel>
+
+@{
+
+    // Get a reference to the current member
+    IPublishedContent member = Members.GetCurrentMember();
+
+    // Get the location of the current member (if logged in and a location is present)
+    EssentialsLocation memberLocation = null;
+    if (member != null && member.HasValue("latitude") && member.HasValue("longitude")) {
+        memberLocation = new EssentialsLocation(
+            member.GetPropertyValue<double>("latitude"),
+            member.GetPropertyValue<double>("longitude")
+        );
+    }
+
+}
+
+@foreach (MeetupEvent ev in Model.Events) {
+
+    double distance = -1;
+
+    if (memberLocation != null) {
+        if (ev.HasVenue) {
+            distance = memberLocation.GetDistance(ev.Venue);
+        }
+    }
+
+    <a href="@ev.Link" class="forum-thread">
+        @*<div class="avatar">
+                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
+            </div>*@
+        <div class="meta">
+            <div class="forum-thread-text">
+                @if (distance >= 0) {
+                    <span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
+                }
+                <h3>@ev.Name</h3>
+                <p>@ev.Time.DateTime.ToString("MMM d, yyyy") by @ev.Group.Name</p>
+            </div>
+        </div>
+    </a>
+}
+
+@if (Model.Events.Any() == false) {
+    <h2>Could not load recent meetups.</h2>
+}

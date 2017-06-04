@@ -8,6 +8,15 @@
         }
 
         try {
+            console.log("@Url.Action("GetEvents", "Meetups")");
+            $("#meetups").load("@Url.Action("GetEvents", "Meetups", new { numberOfResults = 6 })");
+            console.log('yay');
+        }
+        catch (errTwitter) {
+            console.log("Couldn't load meetups", errTwitter.message);
+        }
+
+        try {
             $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new { numberOfTopics = 6 })");
         }
         catch (errForum) {
