@@ -11,6 +11,7 @@ namespace OurUmbraco.Documentation.Busineslogic
         public MarkdownLogic(string filePath)
         {
             _filePath = filePath;
+            AppendAltLessonLink = false;
         }
 
         public const string VersionSession = "DocumentationVersion";
@@ -27,6 +28,8 @@ namespace OurUmbraco.Documentation.Busineslogic
         }
 
         public bool PrefixLinks { get; set; }
+
+        public bool AppendAltLessonLink { get; set; }
 
         public string DoTransformation()
         {
@@ -79,6 +82,10 @@ namespace OurUmbraco.Documentation.Busineslogic
             else
                 mdUrlTag.TrimEnd('/');
 
+            if (AppendAltLessonLink)
+            {
+                return mdUrlTag.Replace(rawUrl, $"{rawUrl.EnsureNoDotsInUrl()}?altTemplate=Lesson");
+            }
 
             return mdUrlTag.Replace(rawUrl, rawUrl.EnsureNoDotsInUrl());
         }

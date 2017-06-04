@@ -401,6 +401,7 @@
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\ZipDownloader.cs" />
     <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
     <Compile Include="Documentation\Controllers\AppVeyorAuthorizeFilterAttribute.cs" />
+    <Compile Include="Documentation\Controllers\LessonsController.cs" />
     <Compile Include="Documentation\Models\Artifact.cs" />
     <Compile Include="Documentation\Models\Compilationmessage.cs" />
     <Compile Include="Documentation\Models\DocFxUpdateModel.cs" />

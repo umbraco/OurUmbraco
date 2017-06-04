@@ -1,0 +1,12 @@
+﻿@using OurUmbraco.Documentation.Busineslogic
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = null;
+
+    var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+    var ml = new MarkdownLogic(path) { PrefixLinks = false, AppendAltLessonLink = false };
+    var markdown = ml.DoTransformation();
+}
+
+
+@Html.Raw(markdown)
