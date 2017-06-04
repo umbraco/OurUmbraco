@@ -66,3 +66,4 @@ OurUmbraco.Site/App_Data/Documentation/
 OurUmbraco.Site/App_Data/NotificationTest/
 build/tools/node*
 wwwcache/
+build/toolsnode.js.*/

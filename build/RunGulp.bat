@@ -1,11 +1,16 @@
 @ECHO OFF
 SETLOCAL
-	:: SETLOCAL is on, so changes to the path not persist to the actual user's path
-	
+
 SET release=%1
-SET toolsFolder=%CD%\tools\
+ECHO Installing Npm NuGet Package
+
+SET nuGetFolder=%CD%\..\packages\
+ECHO Configured packages folder: %nuGetFolder%
 ECHO Current folder: %CD%
 
+%CD%\tools\nuget.exe install Npm.js -OutputDirectory %nuGetFolder%  -Verbosity quiet
+
+SET toolsFolder=%CD%\tools
 SET nodeFileName=node-v4.5.0-win-x86.7z
 SET nodeExtractFolder=%toolsFolder%node.js.450
 IF NOT EXIST %nodeExtractFolder% (
@@ -16,10 +21,21 @@ IF NOT EXIST %nodeExtractFolder% (
 )
 FOR /f "delims=" %%A in ('dir %nodeExtractFolder%\node* /b') DO SET "nodePath=%nodeExtractFolder%\%%A"
 
+FOR /f "delims=" %%A in ('dir %nuGetFolder%node.js.* /b') do set "nodePath=%nuGetFolder%%%A\"
+FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') do set "npmPath=%nuGetFolder%%%A\tools\"
+
+ECHO Adding Npm and Node to path 
+REM SETLOCAL is on, so changes to the path not persist to the actual user's path
+PATH=%npmPath%;%nodePath%;%PATH%
+
+SET buildFolder=%CD%
+
+ECHO Change directory to %CD%\..\OurUmbraco.Client\
+CD %CD%\..\OurUmbraco.Client\
+
 SET nuGetFolder=%CD%\..\packages\
 FOR /f "delims=" %%A in ('dir %nuGetFolder%npm.js.* /b') DO SET "npmPath=%nuGetFolder%%%A\tools\"
 IF [%npmPath%] == [] GOTO :installnpm 
-IF NOT [%npmPath%] == [] GOTO :build
 
 :installnpm
 	ECHO Downloading npm
@@ -31,19 +47,16 @@ IF NOT [%npmPath%] == [] GOTO :build
 	GOTO :build
 
 :build
+	ECHO Gulp build the client side files
+	
 	PATH=%npmPath%;%nodePath%
-	SET buildFolder=%CD%
-
-	ECHO Change directory to %CD%\..\OurUmbraco.Client\
-	CD %CD%\..\OurUmbraco.Client\
-
-	ECHO Do npm install and the gulp build
 	SET npm="%nodePath%\node.exe" "%npmPath%node_modules\npm\bin\npm-cli.js" %*
-	%npm% cache clean
+	
 	%npm% install
+	%npm% install --save-dev jshint gulp-jshint
 	%npm% install -g install gulp -g
-	gulp
+	gulp build
+
 
 	ECHO Move back to the build folder
 	CD %buildFolder% 
-	GOTO :EOF
