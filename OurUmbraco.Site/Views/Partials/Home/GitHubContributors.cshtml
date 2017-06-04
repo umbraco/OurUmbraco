@@ -2,7 +2,7 @@
 
 @foreach (var contributor in Model.Contributors)
 {
-    <a href="@contributor.Url" class="contributor">
+    <a href="@contributor.HtmlUrl" class="contributor" target="_blank">
         <div class="avatar" style="position: relative;">
             <img alt="@contributor.Login" src="@contributor.AvatarUrl" title="@contributor.Login" />
             <span class="contrib-count" title="@(contributor.Contributions + " contributions")">@contributor.Contributions</span>
@@ -13,6 +13,10 @@
 <style>
     .contributor {
         margin-bottom: 15px;
+    }
+
+    .contributor img {
+        border: 3px solid #98d768;
     }
 
     .contrib-count {
