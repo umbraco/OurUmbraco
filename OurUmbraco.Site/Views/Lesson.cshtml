@@ -9,5 +9,31 @@
     var markdown = ml.DoTransformation();
 }
 
+<html>
+    <head>
+        <title></title>
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" type="text/css" rel="stylesheet"/>
+        
+        <style>
+            body {
+                font-family: Asap, sans-serif;
+            }
 
-@Html.Raw(markdown)
+            code {
+                background-color: #eeeeee;
+                display: block;
+                padding: 5px;
+            }
+
+            img {
+                max-width: 90%;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            @Html.Raw(markdown)
+        </div>
+    </body>
+</html>
+
