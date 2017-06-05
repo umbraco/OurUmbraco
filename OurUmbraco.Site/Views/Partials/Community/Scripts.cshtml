@@ -1,16 +1,20 @@
 ﻿<script type="text/javascript">
-    $(document).ready(function () {
+
+    function loadAllGitHubContributors() {
+        $('#github-contributors').addClass('all');
+
+    }
+
+    $(document).ready(function() {
         try {
-            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new { numberOfResults = 6 })");
-        }
-        catch (errTwitter) {
+            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
+        } catch (errTwitter) {
             console.log("Couldn't load Twitter feed", errTwitter.message);
         }
 
         try {
-            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new { numberOfTopics = 6 })");
-        }
-        catch (errForum) {
+            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new {numberOfTopics = 6})");
+        } catch (errForum) {
             console.log("Couldn't load latest forum activity", errForum.message);
         }
 
