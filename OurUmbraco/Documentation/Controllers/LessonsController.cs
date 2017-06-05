@@ -140,6 +140,13 @@ namespace OurUmbraco.Documentation.Controllers
                     },
                     new HelpDocument
                     {
+                        Name = "Rendering Media",
+                        Description = "Templates can access items in the Media library, to assist in displaying rich content like galleries.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Rendering-Media/"
+                    },
+                    new HelpDocument
+                    {
                         Name = "Basic Razor Syntax",
                         Description = "Shows how to perform common logical tasks in Razor like if/else, foreach loops, switch statements and using the @ character to separate code and markup.",
                         Type = HelpDocType.Doc,
@@ -151,6 +158,48 @@ namespace OurUmbraco.Documentation.Controllers
                         Description = "Lots of examples of using various techniques to render data in a view",
                         Type = HelpDocType.Doc,
                         Url = "https://our.umbraco.org/documentation/Reference/Templating/Mvc/examples"
+                    }
+                };
+            }
+
+            if (sectionAlias.ToLower() == "media")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Creating Media",
+                        Description = "Media in Umbraco is handled in much the same way as content. Instead of defining Document Types you define Media Types that act as the base for media items.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Creating-Media/"
+                    }
+                };
+            }
+
+            if (sectionAlias.ToLower() == "developer" && treeAlias.ToLower() == "datatypes")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Data-Types",
+                        Description = "A Data Type defines the type of input for a property. So when adding a property (on Document Types, Media Types and Members) when selecting the Type you are selecting a Data Type. There are a number of preconfigured Data Types available in Umbraco and more can be added in the Developer section.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Data-Types/"
+                    }
+                };
+            }
+
+            if (sectionAlias.ToLower() == "members")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Members",
+                        Description = "Members are used for registering and authenticating external users of an Umbraco installation (ie. forum members, intranet users and so forth). Unlike with Document Types and Media Types everything is done in the Members section both defining and creating, and editing members.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Members/"
                     }
                 };
             }
