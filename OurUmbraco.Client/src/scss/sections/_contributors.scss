@@ -1,8 +1,18 @@
 ﻿#github-contributors {
     &:not(.all) {
         .contributor {
-            @media (min-width: $md) {
-                &:nth-child(n+17) {
+            &:nth-child(n+17) {
+                display: none;
+            }
+
+            @media (max-width: $md) {
+                &:nth-child(n+13) {
+                    display: none;
+                }
+            }
+
+            @media (max-width: $xs) {
+                &:nth-child(n+10) {
                     display: none;
                 }
             }
@@ -17,6 +27,8 @@
 
     .loadmore {
         margin: 20px auto;
+        width: 100%;
+        text-align: center;
     }
 }
 
