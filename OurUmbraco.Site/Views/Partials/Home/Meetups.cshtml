@@ -61,6 +61,11 @@
     </a>
 }
 
+@if (Model.Items.Length % 2 == 1) {
+    // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
+    <div class="forum-thread" style="visibility: hidden;"></div>
+}
+
 @if (Model.Items.Any() == false) {
     <h2>Could not load upcoming meetups.</h2>
 }
