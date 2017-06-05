@@ -17,8 +17,12 @@ namespace OurUmbraco.Community.Controllers
     {
         private readonly string[] Repositories =
         {
-            "Umbraco-Cms",
-            "OurUmbraco"
+            "Umbraco-CMS",
+            "UmbracoDocs",
+            "OurUmbraco",
+            "Umbraco.Deploy.Contrib",
+            "Umbraco.Courier.Contrib",
+            "Umbraco.Deploy.ValueConnectors"
         };
 
         public ActionResult GitHubGetContributorsResult()
