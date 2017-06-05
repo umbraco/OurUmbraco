@@ -15,6 +15,12 @@ namespace OurUmbraco.Community.Controllers
 {
     public class GitHubContributorController : SurfaceController
     {
+        private readonly string[] Repositories =
+        {
+            "Umbraco-Cms",
+            "OurUmbraco"
+        };
+
         public ActionResult GitHubGetContributorsResult()
         {
             var model = new GitHubContributorsModel();
@@ -24,22 +30,34 @@ namespace OurUmbraco.Community.Controllers
                     () =>
                     {
                         var githubController = new GitHubController();
-                        var response = githubController.GetAllContributors();
-                        if (response.StatusCode == HttpStatusCode.OK && response.ResponseStatus == ResponseStatus.Completed)
+                        var gitHubContributors = new List<GitHubContributorModel>();
+                        foreach (var repo in Repositories)
                         {
-                            return response.Data;
+                            var response = githubController.GetAllRepoContributors(repo);
+                            if (response.StatusCode == HttpStatusCode.OK &&
+                                response.ResponseStatus == ResponseStatus.Completed)
+                            {
+                                gitHubContributors.AddRange(response.Data);
+                            }
+                            else
+                            {
+                                LogHelper.Warn<IGitHubContributorsModel>(string.Format("Invalid HTTP response for repository {0}", repo));
+                            }
                         }
-                        throw new HttpResponseException(HttpStatusCode.BadRequest);
+                        return gitHubContributors;
+                       
                     }, TimeSpan.FromDays(1));
 
-                var filteredContributors = contributors.OrderByDescending(c => c.Total);
+                var filteredContributors = contributors
+                    .OrderByDescending(c => c.Total)
+                    .GroupBy(g => g.Author.Id);
                 model.Contributors = filteredContributors;
             }
             catch (Exception ex)
             {
                 LogHelper.Error<IGitHubContributorsModel>("Could not get GitHub Contributors", ex);
             }
-            
+
             return PartialView("~/Views/Partials/Home/GitHubContributors.cshtml", model);
         }
     }
