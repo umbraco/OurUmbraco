@@ -1,5 +1,5 @@
 ﻿@using OurUmbraco.Our.Models
-@inherits OurUmbracoTemplatePage	
+@inherits OurUmbracoTemplatePage
 @{
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
@@ -39,7 +39,7 @@
 <!-- Search end -->
 
 <style>
-    .bannertext p{
+    .bannertext p {
         line-height: 1.4rem;
     }
 </style>
@@ -135,13 +135,21 @@ else
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    <h1 class="text-center">GitHub Contributors</h1>
+                    <h1 class="text-center">Community GitHub Contributions</h1>
                     <p>
                         Contributions to Umbraco GitHub repositories
+                        <small>
+                            <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>, 
+                            <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>, 
+                            <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>, 
+                            <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>, 
+                            <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a>, 
+                            <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a>
+                        </small>
                     </p>
                 </div>
                 <div class="col-md-12">
-                    <small>Top GitHub contributors</small>
+                    <small>GitHub contributors</small>
                 </div>
 
                 <div class="col-md-12 flex forum-thread" id="github-contributors">
