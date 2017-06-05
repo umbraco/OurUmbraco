@@ -1,9 +1,34 @@
-﻿using System.Runtime.Serialization;
+﻿using System.Collections.Generic;
+using System.Runtime.Serialization;
 
 namespace OurUmbraco.Community.Models
 {
     [DataContract]
     public class GitHubContributorModel : IGitHubContributorModel
+    {
+        public int Total { get; set; }
+        public List<Week> Weeks { get; set; }
+        public Author Author { get; set; }
+    }
+
+    [DataContract]
+    public class Week
+    {
+        [DataMember(Name = "w")]
+        public int Timestamp { get; set; }
+
+        [DataMember(Name = "a")]
+        public int Additions { get; set; }
+
+        [DataMember(Name = "d")]
+        public int Deletions { get; set; }
+
+        [DataMember(Name = "c")]
+        public int Commits { get; set; }
+    }
+
+    [DataContract]
+    public class Author
     {
         public string Login { get; set; }
 
@@ -51,7 +76,5 @@ namespace OurUmbraco.Community.Models
 
         [DataMember(Name = "site_admin")]
         public bool SiteAdmin { get; set; }
-
-        public int Contributions { get; set; }
     }
 }

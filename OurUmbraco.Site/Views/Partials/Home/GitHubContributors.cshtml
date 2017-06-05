@@ -1,16 +1,23 @@
 ﻿@model OurUmbraco.Community.Models.GitHubContributorsModel
 
-@foreach (var contributor in Model.Contributors)
+@if (Model.Contributors.Any())
 {
-    <a href="@contributor.HtmlUrl" class="contributor" target="_blank">
-        <div class="avatar">
-            <img alt="@contributor.Login" src="@contributor.AvatarUrl" title="@contributor.Login" />
-            <span class="contrib-count" title="@(contributor.Contributions + " contributions")">@contributor.Contributions</span>
-        </div>
-    </a>
+    foreach (var contributor in Model.Contributors)
+    {
+        var author = contributor.Author;
+        if (author != null)
+        {
+            <a href="@author.HtmlUrl" class="contributor" target="_blank">
+                <div class="avatar">
+                    <img alt="@author.Login" src="@author.AvatarUrl" title="@author.Login" />
+                    <span class="contrib-count" title="@(contributor.Total + " contributions")">@contributor.Total</span>
+                </div>
+            </a>
+        }
+    }
 }
 
-@if (Model.Contributors.Any() == false)
+else
 {
     <h2>Could not load recent GitHub contributors.</h2>
 }

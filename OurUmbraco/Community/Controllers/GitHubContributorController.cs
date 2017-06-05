@@ -22,7 +22,6 @@ namespace OurUmbraco.Community.Controllers
                 var contributors = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<List<GitHubContributorModel>>("UmbracoGitHubContributors",
                     () =>
                     {
-                        //TODO: GitHub keys if required
                         var githubController = new GitHubController();
                         var response = githubController.GetAllContributors();
                         if (response.StatusCode == HttpStatusCode.OK && response.ResponseStatus == ResponseStatus.Completed)
