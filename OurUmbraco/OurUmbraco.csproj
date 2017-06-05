@@ -403,6 +403,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
+    <Compile Include="Community\BlogPosts\BlogInfo.cs" />
+    <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssUtils.cs" />
     <Compile Include="Community\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\Controllers\GitHubGlobalContributorModel.cs" />
