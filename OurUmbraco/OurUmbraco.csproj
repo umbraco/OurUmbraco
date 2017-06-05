@@ -241,6 +241,18 @@
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Skybrud.Essentials, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Essentials.1.0.8\lib\net45\Skybrud.Essentials.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Skybrud.Social.Core">
+      <HintPath>..\packages\Skybrud.Social.Core.1.0.0-beta9\lib\net45\Skybrud.Social.Core.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta002\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6261.14294, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.5.10\lib\SQLCE4Umbraco.dll</HintPath>
       <Private>True</Private>
@@ -392,10 +404,13 @@
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\Controllers\GitHubContributorController.cs" />
+    <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\Controllers\GitHubGlobalContributorModel.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="Community\Models\GitHubContributorModel.cs" />
     <Compile Include="Community\Models\IGitHubContributorModel.cs" />
+    <Compile Include="Community\Models\MeetupEventsModel.cs" />
+    <Compile Include="Community\Models\MeetupItem.cs" />
     <Compile Include="Community\Models\GitHubContributorsModel.cs" />
     <Compile Include="Community\Models\IGitHubContributorsModel.cs" />
     <Compile Include="Community\Models\TweetsModel.cs" />
