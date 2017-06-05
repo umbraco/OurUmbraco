@@ -125,7 +125,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             RemoveExistingDocumentation(RootFolder);
             ZipFile.ExtractToDirectory(zip, RootFolder);
 
-            var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
+            var unzippedPath = RootFolder + "\\UmbracoDocs-StarterkitLessons\\";
             foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
                 Directory.Move(directory.FullName, RootFolder + "\\" + directory.Name);
             foreach (var file in new DirectoryInfo(unzippedPath).GetFiles())
@@ -156,7 +156,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             public int sort { get; set; }
             public bool hasChildren { get; set; }
             public List<SiteMapItem> directories { get; set; }
-            public string url => $"https://our.umbraco.org/documentation{this.path}/?altTemplate=Lesson";
+
+            public string url => $"http://localhost:24292/documentation{this.path}/?altTemplate=Lesson";
+            
+            //public string url => $"https://our.umbraco.org/documentation{this.path}/?altTemplate=Lesson";
         }
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)

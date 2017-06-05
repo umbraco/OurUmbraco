@@ -10,6 +10,7 @@ using Umbraco.Web.Mvc;
 using Umbraco.Web.WebApi;
 using System.Web;
 using OurUmbraco.Documentation.Busineslogic;
+using System.Runtime.Serialization;
 
 namespace OurUmbraco.Documentation.Controllers
 {
@@ -63,13 +64,13 @@ namespace OurUmbraco.Documentation.Controllers
             return currentDirectory.directories.OrderBy(x=> x.sort).ToList();
         }
 
-        public List<string> GetStepsForPath(string path)
+        public List<LessonStep> GetStepsForPath(string path)
         {
             var docs = new ZipDownloader();
             var rootFolder = global::Umbraco.Core.IO.IOHelper.MapPath("/Documentation/" + path);
             var mdFiles = System.IO.Directory.GetFiles(rootFolder, "*.md");
 
-            var result = new List<string>();
+            var result = new List<LessonStep>();
             foreach(var fpath in mdFiles)
             {
                 var content = System.IO.File.ReadAllText(fpath);
@@ -77,11 +78,21 @@ namespace OurUmbraco.Documentation.Controllers
                 var md = new MarkdownLogic(fpath);
                 var html = md.DoTransformation();
 
-                result.Add(html);
+                result.Add(new LessonStep() { Name = name, Content = html });
             }
 
 
             return result;
         }
+    }
+
+    [DataContract(Name = "lessonStep")]
+    public class LessonStep
+    {
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "content")]
+        public string Content { get; set; }
     }
 }

@@ -3,10 +3,10 @@
 @{
     Layout = null;
 
-    var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+   var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
     var ml = new MarkdownLogic(path) { PrefixLinks = false, AppendAltLessonLink = true };
 
-    var markdown = ml.DoTransformation();
+   var markdown = ml.DoTransformation();
 }
 
 <html>
@@ -14,33 +14,34 @@
         <title></title>
         <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" type="text/css" rel="stylesheet"/>
         
-        <style>
+       <style>
             body {
                 font-family: Asap, sans-serif;
             }
 
-            code {
-                background-color: #eeeeee;
+           code {
+                background-color: #eeeeee ;
                 padding: 5px;
             }
 
-            pre {
+           pre {
                 word-wrap: break-word;
                 white-space: pre-wrap;
             }
 
-            pre > code {
+           pre > code {
                 display: block;
             }
 
-            img {
+           img {
                 max-width: 90%;
             }
 
-            blockquote {
+           blockquote {
                 border-left: 4px solid #ddd;
-                padding: 0 15px;
+                padding: 1px 15px;
                 color: #777;
+                background: #efefef ;
                 margin: 0;
             }
         </style>
@@ -51,4 +52,3 @@
         </div>
     </body>
 </html>
-
