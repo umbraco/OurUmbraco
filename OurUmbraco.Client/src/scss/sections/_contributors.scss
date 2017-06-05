@@ -1,0 +1,94 @@
+﻿#github-contributors {
+    &:not(.all) {
+        .contributor {
+            &:nth-child(n+17) {
+                display: none;
+            }
+
+            @media (max-width: $md) {
+                &:nth-child(n+13) {
+                    display: none;
+                }
+            }
+
+            @media (max-width: $xs) {
+                &:nth-child(n+10) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &.all {
+        .button {
+            display: none;
+        }
+    }
+
+    .loadmore {
+        margin: 20px auto;
+        width: 100%;
+        text-align: center;
+    }
+}
+
+.github-contributors small.link-list {
+    font-style: italic;
+    font-weight: normal;
+    text-transform: none;
+}
+
+.contributor {
+    margin-bottom: 15px;
+
+    .avatar {
+        position: relative;
+        flex: 0 0 23%;
+        margin-right: 20px;
+
+        @media (min-width: $md) {
+            flex: 0 0 15%;
+        }
+
+        img {
+            border: 3px solid #98d768;
+            width: 100%;
+            max-width: 112px;
+            height: auto;
+        }
+    }
+
+    .counts {
+        position: absolute;
+        top: 2px;
+        left: 2px;
+        right: 2px;
+        text-align: center;
+        color: #fff;
+        font-size: 12px;
+        line-height: 12px;
+        background: rgba(0,0,0,0.25);
+        border-radius: 50%;
+        bottom: 6px;
+        padding-top: 23px;
+        opacity: 0;
+        transition: opacity 0.25s;
+    }
+
+    &:hover .counts {
+        opacity: 1;
+    }
+
+    .contrib-count {
+        position: absolute;
+        left: 25px;
+        bottom: 0px;
+        text-align: center;
+        right: 25px;
+        color: #425a2e;
+        font-weight: bold;
+        background: darken($color-our, 4%);
+        border-radius: 15px;
+        z-index: 5;
+    }
+}
