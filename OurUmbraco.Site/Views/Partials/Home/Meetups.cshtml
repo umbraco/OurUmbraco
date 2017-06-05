@@ -1,0 +1,71 @@
+﻿@using OurUmbraco.Community.Models
+@using Skybrud.Essentials.Locations
+@using Skybrud.Essentials.Locations.Extensions
+@using Skybrud.Essentials.Security
+
+@inherits UmbracoViewPage<MeetupEventsModel>
+
+@{
+
+    // Get a reference to the current member
+    IPublishedContent member = Members.GetCurrentMember();
+
+    // Get the location of the current member (if logged in and a location is present)
+    EssentialsLocation memberLocation = null;
+    if (member != null && member.HasValue("latitude") && member.HasValue("longitude")) {
+        memberLocation = new EssentialsLocation(
+            member.GetPropertyValue<double>("latitude"),
+            member.GetPropertyValue<double>("longitude")
+        );
+    }
+
+}
+
+@foreach (MeetupItem item in Model.Items) {
+
+    double distance = -1;
+
+    if (memberLocation != null) {
+        if (item.Event.HasVenue) {
+            distance = memberLocation.GetDistance(item.Event.Venue);
+        } else {
+            distance = memberLocation.GetDistance(item.Group);
+        }
+    }
+
+    <a href="@item.Event.Link" class="forum-thread">
+        @if (item.Group.GroupPhoto != null)
+        {
+            <div class="avatar">
+                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
+            </div>
+        }
+        else
+        {
+            string fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+            <div class="avatar">
+                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+            </div>
+            
+        }
+        <div class="meta">
+            <div class="forum-thread-text">
+                @if (distance >= 0 && distance <= 50000) {
+                    //<span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
+                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @String.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
+                }
+                <h3>@item.Event.Name</h3>
+                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
+            </div>
+        </div>
+    </a>
+}
+
+@if (Model.Items.Length % 2 == 1) {
+    // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
+    <div class="forum-thread" style="visibility: hidden;"></div>
+}
+
+@if (Model.Items.Any() == false) {
+    <h2>Could not load upcoming meetups.</h2>
+}
