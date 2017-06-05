@@ -7,9 +7,9 @@
         var author = contributor.Author;
         if (author != null)
         {
-            <a href="@author.HtmlUrl" class="contributor" target="_blank">
+            <a href="@author.HtmlUrl" class="contributor" target="_blank" title="@author.Login">
                 <div class="avatar">
-                    <img alt="@author.Login" src="@author.AvatarUrl&s=112" title="@author.Login" />
+                    <img alt="@author.Login" src="@author.AvatarUrl&s=112" />
                     <span class="contrib-count" title="@(contributor.TotalCommits + " contributions")">@contributor.TotalCommits</span>
                     <div class="counts">
                         Additions<br />
