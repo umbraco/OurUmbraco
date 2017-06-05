@@ -62,9 +62,9 @@ namespace OurUmbraco.Community.Controllers
                     }, TimeSpan.FromDays(1));
 
                 var filteredContributors = contributors
-                    .OrderByDescending(c => c.Total)
                     .Where(g => !login.Contains(g.Author.Login))
-                    .GroupBy(g => g.Author.Id);
+                    .GroupBy(g => g.Author.Id)
+                    .OrderByDescending(c => c.Sum(g => g.Total));
 
                 model.Contributors = filteredContributors;
             }

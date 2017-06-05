@@ -1,17 +1,25 @@
 ﻿#github-contributors {
     &:not(.all) {
-        .contributor:nth-child(n+17) {
+        .contributor {
+            @media (min-width: $md) {
+                &:nth-child(n+17) {
+                    display: none;
+                }
+            }
+        }
+    }
+
+    &.all {
+        .button {
             display: none;
         }
-   }
-    &.all {
-        .button { display: none; }
     }
-    .button {
+
+    .loadmore {
         margin: 20px auto;
-    }  
+    }
 }
-    
+
 .contributor {
     margin-bottom: 15px;
 
