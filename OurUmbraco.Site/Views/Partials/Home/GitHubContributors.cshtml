@@ -11,9 +11,12 @@
                 <div class="avatar">
                     <img alt="@author.Login" src="@author.AvatarUrl&s=112" title="@author.Login" />
                     <span class="contrib-count" title="@(contributor.TotalCommits + " contributions")">@contributor.TotalCommits</span>
-                    <div>
-                        Additions: @contributor.TotalAdditions
-                        <br />Deletions: @contributor.TotalDeletions
+                    <div class="counts">
+                        Additions<br />
+                        <strong>@contributor.TotalAdditions</strong><br />
+                        <br />
+                        Deletions<br />
+                        <strong>@contributor.TotalDeletions</strong>
                     </div>
                 </div>
             </a>
