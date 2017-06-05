@@ -392,6 +392,7 @@
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\Controllers\GitHubContributorController.cs" />
+    <Compile Include="Community\Controllers\GitHubGlobalContributorModel.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="Community\Models\GitHubContributorModel.cs" />
     <Compile Include="Community\Models\IGitHubContributorModel.cs" />
