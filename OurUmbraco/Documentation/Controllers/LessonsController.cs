@@ -11,6 +11,8 @@ using Umbraco.Web.WebApi;
 using System.Web;
 using OurUmbraco.Documentation.Busineslogic;
 using System.Runtime.Serialization;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace OurUmbraco.Documentation.Controllers
 {
@@ -64,6 +66,11 @@ namespace OurUmbraco.Documentation.Controllers
             return currentDirectory.directories.OrderBy(x=> x.sort).ToList();
         }
 
+        /// <summary>
+        /// Gets Steps (Children of a lesson as rendered HTML from the markdown file)
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public List<LessonStep> GetStepsForPath(string path)
         {
             var docs = new ZipDownloader();
@@ -84,6 +91,73 @@ namespace OurUmbraco.Documentation.Controllers
 
             return result;
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="sectionAlias"></param>
+        /// <param name="treeAlias"></param>
+        public List<HelpDocument> GetContextHelpDocs(string sectionAlias, string treeAlias)
+        {
+            if (sectionAlias.ToLower() == "settings" && treeAlias.ToLower() == "documenttypes")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Defining Content",
+                        Description = "Here you'll find an explanation of how content is defined and quick guide for your first go at it (based on an empty installation).",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Defining-content/"
+                    }
+                };
+            }
+
+            if (sectionAlias.ToLower() == "settings" && treeAlias.ToLower() == "templates")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Templates",
+                        Description = "Templating in Umbraco builds on the concept of Razor Views from asp.net MVC - if you already know this, then you are ready to create your first template - if not, this is a quick and handy guide.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/"
+                    },
+                    new HelpDocument
+                    {
+                        Name = "Basic Razor Syntax",
+                        Description = "Shows how to perform common logical tasks in Razor like if/else, foreach loops, switch statements and using the @ character to separate code and markup.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
+                    },
+                    new HelpDocument
+                    {
+                        Name = "Rendering Content",
+                        Description = "The primary task of any template in Umbraco is to render the values of the current page or the result of query against the content cache.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Rendering-Content/"
+                    },
+                    new HelpDocument
+                    {
+                        Name = "Basic Razor Syntax",
+                        Description = "Shows how to perform common logical tasks in Razor like if/else, foreach loops, switch statements and using the @ character to separate code and markup.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
+                    },
+                    new HelpDocument
+                    {
+                        Name = "View/Razor Examples",
+                        Description = "Lots of examples of using various techniques to render data in a view",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Reference/Templating/Mvc/examples"
+                    }
+                };
+            }
+
+            //Did not find anything for the combination
+            return null;
+        }
     }
 
     [DataContract(Name = "lessonStep")]
@@ -95,4 +169,23 @@ namespace OurUmbraco.Documentation.Controllers
         [DataMember(Name = "content")]
         public string Content { get; set; }
     }
+
+    [DataContract(Name = "helpDocument")]
+    public class HelpDocument
+    {
+        [DataMember(Name = "name")]
+        public string Name { get; set; }
+
+        [DataMember(Name = "url")]
+        public string Url { get; set; }
+
+        [DataMember(Name = "description")]
+        public string Description { get; set; }
+
+        [DataMember(Name = "type")]
+        [JsonConverter(typeof(StringEnumConverter))]
+        public HelpDocType Type { get; set; }
+    }
+
+    public enum HelpDocType { Doc, Video }
 }
