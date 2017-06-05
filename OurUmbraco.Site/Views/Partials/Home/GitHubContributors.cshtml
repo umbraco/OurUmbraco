@@ -14,10 +14,10 @@
                         @contributor.TotalCommits
                     </span>
                     <div class="counts">
-                        Additions<br />
+                        @(contributor.TotalAdditions == 1 ? "Addition" : "Additions")<br />
                         <strong>@contributor.TotalAdditions</strong><br />
                         <br />
-                        Deletions<br />
+                        @(contributor.TotalDeletions == 1 ? "Deletion" : "Deletions")<br />
                         <strong>@contributor.TotalDeletions</strong>
                     </div>
                 </div>
