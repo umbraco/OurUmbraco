@@ -32,7 +32,7 @@ namespace OurUmbraco.Community.Controllers {
                 }
 
                 // Get the alias (urlname) of each group from the config file
-                string[] aliases = System.IO.File.ReadAllLines(configPath);
+                string[] aliases = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
                 model.Items =
                     ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<MeetupItem[]>("UmbracoSearchedMeetups",
