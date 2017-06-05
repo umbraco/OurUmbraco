@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Web.Http;
 using System.Web.Mvc;
@@ -31,8 +32,7 @@ namespace OurUmbraco.Community.Controllers
                         throw new HttpResponseException(HttpStatusCode.BadRequest);
                     }, TimeSpan.FromDays(1));
 
-                var filteredContributors = contributors;
-                //TODO: filter contributors
+                var filteredContributors = contributors.OrderByDescending(c => c.Total);
                 model.Contributors = filteredContributors;
             }
             catch (Exception ex)
