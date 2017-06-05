@@ -464,6 +464,7 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="config\formHandlers.config" />
+    <Content Include="config\githubhq.txt" />
     <Content Include="config\githubpull.config" />
     <Content Include="config\grid.editors.config.js" />
     <Content Include="config\Lang\cs-CZ.user.xml" />

@@ -26,6 +26,15 @@ namespace OurUmbraco.Community.Controllers
             var model = new GitHubContributorsModel();
             try
             {
+                string configPath = Server.MapPath("~/config/githubhq.txt");
+                if (!System.IO.File.Exists(configPath))
+                {
+                    LogHelper.Debug<GitHubContributorController>("Config file was not found: " + configPath);
+                    return PartialView("~/Views/Partials/Home/GitHubContributors.cshtml", model);
+                }
+
+                // Get the GitHub ID of each HQ contributor
+                string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
                 var contributors = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<List<GitHubContributorModel>>("UmbracoGitHubContributors",
                     () =>
                     {
@@ -45,12 +54,14 @@ namespace OurUmbraco.Community.Controllers
                             }
                         }
                         return gitHubContributors;
-                       
+
                     }, TimeSpan.FromDays(1));
 
                 var filteredContributors = contributors
                     .OrderByDescending(c => c.Total)
+                    .Where(g => !login.Contains(g.Author.Login))
                     .GroupBy(g => g.Author.Id);
+
                 model.Contributors = filteredContributors;
             }
             catch (Exception ex)
