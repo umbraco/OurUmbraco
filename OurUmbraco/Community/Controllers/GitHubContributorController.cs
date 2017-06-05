@@ -15,6 +15,9 @@ namespace OurUmbraco.Community.Controllers
 {
     public class GitHubContributorController : SurfaceController
     {
+        /// <summary>
+        /// Repositories to include in the combination
+        /// </summary>
         private readonly string[] Repositories =
         {
             "Umbraco-CMS",
@@ -25,6 +28,11 @@ namespace OurUmbraco.Community.Controllers
             "Umbraco.Deploy.ValueConnectors"
         };
 
+        /// <summary>
+        /// Gets data for all GitHub contributors for all listed Umbraco repositories, 
+        /// excluding the GitHub IDs of the HQ contributors from the text file list
+        /// </summary>
+        /// <returns></returns>
         public ActionResult GitHubGetContributorsResult()
         {
             var model = new GitHubContributorsModel();
@@ -36,8 +44,7 @@ namespace OurUmbraco.Community.Controllers
                     LogHelper.Debug<GitHubContributorController>("Config file was not found: " + configPath);
                     return PartialView("~/Views/Partials/Home/GitHubContributors.cshtml", model);
                 }
-
-                // Get the GitHub ID of each HQ contributor
+                
                 string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
                 var contributors = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<List<GitHubContributorModel>>("UmbracoGitHubContributors",
                     () =>
