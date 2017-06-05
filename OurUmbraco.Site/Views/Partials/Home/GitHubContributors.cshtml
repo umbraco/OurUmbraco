@@ -10,7 +10,9 @@
             <a href="@author.HtmlUrl" class="contributor" target="_blank" title="@author.Login">
                 <div class="avatar">
                     <img alt="@author.Login" src="@author.AvatarUrl&s=112" />
-                    <span class="contrib-count" title="@(contributor.TotalCommits + " contributions")">@contributor.TotalCommits</span>
+                    <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "contribution" : "contributions"))">
+                        @contributor.TotalCommits
+                    </span>
                     <div class="counts">
                         Additions<br />
                         <strong>@contributor.TotalAdditions</strong><br />
