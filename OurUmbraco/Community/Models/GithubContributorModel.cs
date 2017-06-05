@@ -6,25 +6,62 @@ namespace OurUmbraco.Community.Models
     [DataContract]
     public class GitHubContributorModel : IGitHubContributorModel
     {
+
+        private List<Week> _weeks;
+
         public int Total { get; set; }
-        public List<Week> Weeks { get; set; }
+        public int TotalAdditions { get; set; }
+        public int TotalDeletions { get; set; }
+
+        [DataMember(Name = "weeks")]
+        public List<Week> Weeks
+        {
+            get { return _weeks; }
+
+            set
+            {
+                _weeks = value;
+
+
+                int totalAdditions = 0;
+                int totalDeletions = 0;
+                foreach (var week in _weeks)
+                {
+                    totalDeletions += week.D;
+                    totalAdditions += week.A;
+                }
+
+                TotalAdditions = totalAdditions;
+                TotalDeletions = totalDeletions;
+
+            }
+
+        }
         public Author Author { get; set; }
     }
 
     [DataContract]
     public class Week
     {
-        [DataMember(Name = "w")]
-        public int Timestamp { get; set; }
+        /// <summary>
+        /// Timestamp
+        /// </summary>
+        public int W { get; set; }
 
-        [DataMember(Name = "a")]
-        public int Additions { get; set; }
+        /// <summary>
+        /// Additions
+        /// </summary>
+        public int A { get; set; }
 
-        [DataMember(Name = "d")]
-        public int Deletions { get; set; }
+        /// <summary>
+        /// Deletions
+        /// </summary>
+        public int D { get; set; }
 
-        [DataMember(Name = "c")]
-        public int Commits { get; set; }
+        /// <summary>
+        /// Commits
+        /// </summary>
+        public int C { get; set; }
     }
 
     [DataContract]

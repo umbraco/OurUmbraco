@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
-using System.Web.Http;
 using System.Web.Mvc;
 using OurUmbraco.Community.Models;
 using OurUmbraco.Our.Api;
@@ -16,7 +15,7 @@ namespace OurUmbraco.Community.Controllers
     public class GitHubContributorController : SurfaceController
     {
         /// <summary>
-        /// Repositories to include in the combination
+        /// Repositories to include in the combination of contributions
         /// </summary>
         private readonly string[] Repositories =
         {
@@ -44,9 +43,9 @@ namespace OurUmbraco.Community.Controllers
                     LogHelper.Debug<GitHubContributorController>("Config file was not found: " + configPath);
                     return PartialView("~/Views/Partials/Home/GitHubContributors.cshtml", model);
                 }
-                
+
                 string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
-                var contributors = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<List<GitHubContributorModel>>("UmbracoGitHubContributors",
+                var contributors = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<List<GitHubGlobalContributorModel>>("UmbracoGitHubContributors",
                     () =>
                     {
                         var githubController = new GitHubController();
@@ -64,16 +63,25 @@ namespace OurUmbraco.Community.Controllers
                                 LogHelper.Warn<IGitHubContributorsModel>(string.Format("Invalid HTTP response for repository {0}", repo));
                             }
                         }
-                        return gitHubContributors;
+
+                        var filteredContributors = gitHubContributors
+                            .Where(g => !login.Contains(g.Author.Login))
+                            .GroupBy(g => g.Author.Id)
+                            .OrderByDescending(c => c.Sum(g => g.Total));
+
+                        List<GitHubGlobalContributorModel> temp = new List<GitHubGlobalContributorModel>();
+
+                        foreach (var group in filteredContributors)
+                        {
+                            temp.Add(new GitHubGlobalContributorModel(group));
+                        }
+
+                        return temp;
 
                     }, TimeSpan.FromDays(1));
 
-                var filteredContributors = contributors
-                    .Where(g => !login.Contains(g.Author.Login))
-                    .GroupBy(g => g.Author.Id)
-                    .OrderByDescending(c => c.Sum(g => g.Total));
 
-                model.Contributors = filteredContributors;
+                model.Contributors = contributors;
             }
             catch (Exception ex)
             {

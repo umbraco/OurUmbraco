@@ -4,13 +4,17 @@
 {
     foreach (var contributor in Model.Contributors)
     {
-        var author = contributor.First().Author;
+        var author = contributor.Author;
         if (author != null)
         {
             <a href="@author.HtmlUrl" class="contributor" target="_blank">
                 <div class="avatar">
                     <img alt="@author.Login" src="@author.AvatarUrl&s=112" title="@author.Login" />
-                    <span class="contrib-count" title="@(contributor.Sum(x=>x.Total) + " contributions")">@contributor.Sum(x => x.Total)</span>
+                    <span class="contrib-count" title="@(contributor.TotalCommits + " contributions")">@contributor.TotalCommits</span>
+                    <div>
+                        Additions: @contributor.TotalAdditions
+                        <br />Deletions: @contributor.TotalDeletions
+                    </div>
                 </div>
             </a>
         }

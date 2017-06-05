@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
+using OurUmbraco.Community.Controllers;
 
 namespace OurUmbraco.Community.Models
 {
     public class GitHubContributorsModel : IGitHubContributorsModel
     {
-        public IEnumerable<IGrouping<int, GitHubContributorModel>> Contributors { get; set; }
+        public List<GitHubGlobalContributorModel> Contributors { get; set; }
     }
 }
