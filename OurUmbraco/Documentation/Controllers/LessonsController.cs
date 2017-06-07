@@ -113,7 +113,7 @@ namespace OurUmbraco.Documentation.Controllers
                 };
             }
 
-            if (sectionAlias.ToLower() == "settings" && treeAlias.ToLower() == "templates")
+            if (sectionAlias.ToLower() == "settings"  && (treeAlias.ToLower() == "templates" || treeAlias.ToLower() == "partialviews") )
             {
                 return new List<HelpDocument>
                 {
@@ -186,11 +186,20 @@ namespace OurUmbraco.Documentation.Controllers
                         Description = "A Data Type defines the type of input for a property. So when adding a property (on Document Types, Media Types and Members) when selecting the Type you are selecting a Data Type. There are a number of preconfigured Data Types available in Umbraco and more can be added in the Developer section.",
                         Type = HelpDocType.Doc,
                         Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Data-Types/"
+                    },
+
+
+                    new HelpDocument
+                    {
+                        Name = "Property Editors",
+                        Description = "Extend Umbraco with your own property editors ",
+                        Url = "https://our.umbraco.org/documentation/Extending/Property-Editors/",
+                        Type = HelpDocType.Doc
                     }
                 };
             }
 
-            if (sectionAlias.ToLower() == "members")
+            if (sectionAlias.ToLower() == "member")
             {
                 return new List<HelpDocument>
                 {
@@ -200,6 +209,37 @@ namespace OurUmbraco.Documentation.Controllers
                         Description = "Members are used for registering and authenticating external users of an Umbraco installation (ie. forum members, intranet users and so forth). Unlike with Document Types and Media Types everything is done in the Members section both defining and creating, and editing members.",
                         Type = HelpDocType.Doc,
                         Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Members/"
+                    }
+                };
+            }
+
+            if (sectionAlias.ToLower() == "developer")
+            {
+                return new List<HelpDocument>
+                {
+                    new HelpDocument
+                    {
+                        Name = "Data-Types",
+                        Description = "A Data Type defines the type of input for a property. So when adding a property (on Document Types, Media Types and Members) when selecting the Type you are selecting a Data Type. There are a number of preconfigured Data Types available in Umbraco and more can be added in the Developer section.",
+                        Type = HelpDocType.Doc,
+                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Data-Types/"
+                    },
+
+
+                    new HelpDocument
+                    {
+                        Name = "Macros",
+                        Description = "A macro is a reusable piece of functionality that you can re-use throughout your site. Macros can be configured with parameters and be inserted into a Rich Text Editor.",
+                        Url = "https://our.umbraco.org/Documentation/Reference/Templating/Macros/",
+                        Type = HelpDocType.Doc
+                    },
+
+                     new HelpDocument
+                    {
+                        Name = "Xslt",
+                        Description = "XSLT will soon be removed from Umbraco - read how you can transition away from it",
+                        Url = "https://our.umbraco.org/Documentation/Reference/Templating/Macros/Xslt/",
+                        Type = HelpDocType.Doc
                     }
                 };
             }
