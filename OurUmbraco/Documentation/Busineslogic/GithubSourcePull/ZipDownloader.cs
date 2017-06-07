@@ -157,9 +157,15 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             public bool hasChildren { get; set; }
             public List<SiteMapItem> directories { get; set; }
 
-            public string url => $"http://localhost:24292/documentation{this.path}/?altTemplate=Lesson";
+            //public string url => $"http://localhost:24292/documentation{this.path}/?altTemplate=Lesson";
             
-            //public string url => $"https://our.umbraco.org/documentation{this.path}/?altTemplate=Lesson";
+            public string url
+            {
+                get
+                {
+                    return string.Format("https://our.umbraco.org/documentation{0}/?altTemplate=Lesson", this.path);
+                }
+            }
         }
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
