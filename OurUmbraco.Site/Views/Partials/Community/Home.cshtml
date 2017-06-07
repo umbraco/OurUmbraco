@@ -1,5 +1,6 @@
 ﻿@using OurUmbraco.Our.Models
-@inherits OurUmbracoTemplatePage	
+@using Skybrud.Social.Meetup.Models.Events
+@inherits OurUmbracoTemplatePage
 @{
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
@@ -39,7 +40,7 @@
 <!-- Search end -->
 
 <style>
-    .bannertext p{
+    .bannertext p {
         line-height: 1.4rem;
     }
 </style>
@@ -59,6 +60,8 @@
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()
+    @Meetups()
+    @GitHubContributors()
     @TwitterSearch()
     @Html.Partial("home/documentation")
 }
@@ -66,6 +69,8 @@ else
 {
     @Html.Partial("home/documentation")
     @ForumActivity()
+    @Meetups()
+    @GitHubContributors()  
     @TwitterSearch()
 }
 
@@ -122,6 +127,64 @@ else
                     <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
                 </div>
 
+            </div>
+        </div>
+    </section>
+}
+
+@helper  GitHubContributors()
+{
+    <section class="github-contributors forum">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center">GitHub Contributions</h1>
+                    <p>
+                        Contributions to Umbraco GitHub repositories
+                        <small class="link-list">
+                            Contributions to default branches for
+                            <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
+                            <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
+                            <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
+                            <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
+                            <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
+                            <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
+                        </small>
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>GitHub contributors</small>
+                </div>
+
+                <div class="col-md-12 flex forum-thread" id="github-contributors">
+                    <h2>Loading GitHub contributors...</h2>
+                </div>
+
+                <div class="col-md-12 goto-forum">
+                    <a class="button green" href="https://github.com/umbraco" target="_blank">Contribute to Umbraco on GitHub &rarr;</a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}
+
+@helper Meetups() {   
+    <section class="forum">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1 class="text-center">Meetups</h1>
+                    <p>
+                        Upcoming meetups organized by the Umbraco community.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Upcoming meetups</small>
+                </div>
+                <div class="col-md-12 flex" id="meetups">
+                    <h2>Loading meetups...</h2>
+                </div>
             </div>
         </div>
     </section>

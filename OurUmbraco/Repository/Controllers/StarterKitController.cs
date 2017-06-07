@@ -60,6 +60,16 @@ namespace OurUmbraco.Repository.Controllers
             var starterKits = new List<StarterKit>();
             var allConfiguredVersions = UWikiFileVersion.GetAllVersions();
 
+            // for 7.6.4+ we change behavior and only provide one starter kit
+            if (version >= new System.Version(7, 6, 4))
+            {
+                officialStarterKitGuidCollection = new List<string>
+                {
+                    ConfigurationManager.AppSettings["UmbracoStarterKitDefault"]
+                };
+            }
+
+
             foreach (var umbracoNode in umbracoNodes)
             {
                 // If it's not in the official list, move on to the next package

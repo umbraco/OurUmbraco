@@ -1,17 +1,37 @@
 ﻿<script type="text/javascript">
-    $(document).ready(function () {
+
+    function loadAllGitHubContributors() {
+        $('#github-contributors').addClass('all');
+
+    }
+
+    $(document).ready(function() {
         try {
-            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new { numberOfResults = 6 })");
-        }
-        catch (errTwitter) {
+            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
+        } catch (errTwitter) {
             console.log("Couldn't load Twitter feed", errTwitter.message);
         }
 
         try {
-            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new { numberOfTopics = 6 })");
+            console.log("@Url.Action("GetEvents", "Meetups")");
+            $("#meetups").load("@Url.Action("GetEvents", "Meetups")");
+            console.log('yay');
+        }
+        catch (errTwitter) {
+            console.log("Couldn't load meetups", errTwitter.message);
+        }
+
+        try {
+            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new {numberOfTopics = 6})");
+        } catch (errForum) {
+            console.log("Couldn't load latest forum activity", errForum.message);
+        }
+
+        try {
+            $("#github-contributors").load("@Url.Action("GitHubGetContributorsResult", "GitHubContributor")");
         }
         catch (errForum) {
-            console.log("Couldn't load latest forum activity", errForum.message);
+            console.log("Couldn't load latest GitHub contributor activity", errForum.message);
         }
     });
 </script> 
