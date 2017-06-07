@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using MarkdownDeep;
 
@@ -85,7 +86,7 @@ namespace OurUmbraco.Documentation.Busineslogic
             //Need to ensure we dont append the image links as they 404 if we add altTemplate
             if (AppendAltLessonLink && rawUrl.StartsWith("images/") == false)
             {
-                return mdUrlTag.Replace(rawUrl, $"{rawUrl.EnsureNoDotsInUrl()}?altTemplate=Lesson");
+                return mdUrlTag.Replace(rawUrl, string.Format("{0}?altTemplate=Lesson", rawUrl.EnsureNoDotsInUrl()));
             }
 
             return mdUrlTag.Replace(rawUrl, rawUrl.EnsureNoDotsInUrl());
