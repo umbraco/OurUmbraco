@@ -112,12 +112,11 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             FireOnFinish(finishEventArgs);
         }
 
-        public dynamic DocumentationSiteMap(string folder = "")
+        public SiteMapItem DocumentationSiteMap(string folder = "")
         {
             var path = Path.Combine(RootFolder, folder, "sitemap.js");
             var json = File.ReadAllText(path);
-            dynamic documentationSiteMap = JsonConvert.DeserializeObject<dynamic>(json);
-            return documentationSiteMap;
+            return JsonConvert.DeserializeObject<SiteMapItem>(json);
         }
 
         public void Process(string url, string foldername)
@@ -126,7 +125,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             RemoveExistingDocumentation(RootFolder);
             ZipFile.ExtractToDirectory(zip, RootFolder);
 
-            var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
+            var unzippedPath = RootFolder + "\\UmbracoDocs-StarterkitLessons\\";
             foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
                 Directory.Move(directory.FullName, RootFolder + "\\" + directory.Name);
             foreach (var file in new DirectoryInfo(unzippedPath).GetFiles())
@@ -143,13 +142,13 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         public void BuildSitemap(string foldername)
         {
             var folder = new DirectoryInfo(Path.Combine(RootFolder, foldername));
-            dynamic root = GetFolderStructure(folder, folder.FullName, 0);
+            var root = GetFolderStructure(folder, folder.FullName, 0);
 
             var serializedRoot = JsonConvert.SerializeObject(root, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(Path.Combine(folder.FullName, "sitemap.js"), serializedRoot);
         }
 
-        private class SiteMapItem
+        public class SiteMapItem
         {
             public string name { get; set; }
             public string path { get; set; }
@@ -157,28 +156,31 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             public int sort { get; set; }
             public bool hasChildren { get; set; }
             public List<SiteMapItem> directories { get; set; }
+
+            public string url => $"http://localhost:24292/documentation{this.path}/?altTemplate=Lesson";
+            
+            //public string url => $"https://our.umbraco.org/documentation{this.path}/?altTemplate=Lesson";
         }
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
         {
+            var list = new List<SiteMapItem>();
+
             var siteMapItem = new SiteMapItem
             {
                 name = dir.Name.Replace("-", " "),
                 path = dir.FullName.Substring(rootPath.Length).Replace('\\', '/'),
                 level = level,
-                sort = GetSort(dir.Name, level) ?? 100
+                sort = GetSort(dir.Name, level) ?? 100,
+                directories = list,
+                hasChildren = dir.GetDirectories().Any()
             };
-
-            if (dir.GetDirectories().Any() == false)
-                return siteMapItem;
-
-            var list = new List<SiteMapItem>();
+            
             foreach (var child in dir.GetDirectories().Where(x => x.Name != "images"))
             {
                 list.Add(GetFolderStructure(child, rootPath, level + 1));
             }
 
-            siteMapItem.hasChildren = true;
             siteMapItem.directories = list.OrderBy(x => x.sort).ToList();
 
             return siteMapItem;

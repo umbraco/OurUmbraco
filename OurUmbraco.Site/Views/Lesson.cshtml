@@ -1,0 +1,54 @@
+﻿@using OurUmbraco.Documentation.Busineslogic
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@{
+    Layout = null;
+
+   var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+    var ml = new MarkdownLogic(path) { PrefixLinks = false, AppendAltLessonLink = true };
+
+   var markdown = ml.DoTransformation();
+}
+
+<html>
+    <head>
+        <title></title>
+        <link href="https://fonts.googleapis.com/css?family=Asap:400,700,400italic,700italic" type="text/css" rel="stylesheet"/>
+        
+       <style>
+            body {
+                font-family: Asap, sans-serif;
+            }
+
+           code {
+                background-color: #eeeeee ;
+                padding: 5px;
+            }
+
+           pre {
+                word-wrap: break-word;
+                white-space: pre-wrap;
+            }
+
+           pre > code {
+                display: block;
+            }
+
+           img {
+                max-width: 90%;
+            }
+
+           blockquote {
+                border-left: 4px solid #ddd;
+                padding: 1px 15px;
+                color: #777;
+                background: #efefef ;
+                margin: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            @Html.Raw(markdown)
+        </div>
+    </body>
+</html>
