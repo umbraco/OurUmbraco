@@ -125,7 +125,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             RemoveExistingDocumentation(RootFolder);
             ZipFile.ExtractToDirectory(zip, RootFolder);
 
-            var unzippedPath = RootFolder + "\\UmbracoDocs-StarterkitLessons\\";
+            var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
             foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
                 Directory.Move(directory.FullName, RootFolder + "\\" + directory.Name);
             foreach (var file in new DirectoryInfo(unzippedPath).GetFiles())
