@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Net;
-using System.Web;
 using System.Web.Hosting;
 using System.Xml;
 using Examine;
-using ICSharpCode.SharpZipLib.Zip;
 using Newtonsoft.Json;
 using Umbraco.Core.Logging;
 using ZipFile = System.IO.Compression.ZipFile;
@@ -122,10 +119,36 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
         public void Process(string url, string foldername)
         {
             var zip = Download(url, foldername);
-            RemoveExistingDocumentation(RootFolder);
+            var unzippedPath = string.Empty;
+            var branchAllowed = false;
+
+            using (var zipFile = ZipFile.OpenRead(zip))
+            {
+                var directory = zipFile.Entries.FirstOrDefault();
+
+                if (directory != null)
+                {
+                    var branch = directory.FullName.Replace("/", string.Empty).Replace("UmbracoDocs-", string.Empty);
+                    branchAllowed = IsBranchWhiteListed(branch);
+
+                    if (branchAllowed)
+                    {
+                        unzippedPath = RootFolder + Path.DirectorySeparatorChar +
+                                       directory.FullName.Replace('/', Path.DirectorySeparatorChar);
+                        if (Directory.Exists(unzippedPath))
+                            //delete the directory we're trying to unzip to
+                            RemoveUnzippedFiles(unzippedPath);
+                    }
+                }
+            }
+
+            if (branchAllowed == false)
+                return;
+
             ZipFile.ExtractToDirectory(zip, RootFolder);
 
-            var unzippedPath = RootFolder + "\\UmbracoDocs-master\\";
+            RemoveUnzippedFiles(RootFolder, ignoreDirectories: new List<string> { unzippedPath });
+
             foreach (var directory in new DirectoryInfo(unzippedPath).GetDirectories())
                 Directory.Move(directory.FullName, RootFolder + "\\" + directory.Name);
             foreach (var file in new DirectoryInfo(unzippedPath).GetFiles())
@@ -137,6 +160,25 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             //YUCK, this is horrible but unfortunately the way that the doc indexes are setup are not with 
             // a consistent integer id per document. I'm sure we can make that happen but I don't have time right now.
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].RebuildIndex();
+        }
+
+        private bool IsBranchWhiteListed(string branch)
+        {
+            var xmlNodeList = Configuration.SelectNodes("//allowedBranches");
+            if (xmlNodeList == null || xmlNodeList.Count <= 0)
+                return false;
+
+            var node = xmlNodeList[0];
+            if (string.IsNullOrWhiteSpace(node.InnerText))
+                return false;
+
+            var allowedBranches = node.InnerText.Split(',');
+            var isBranchWhitelisted =  allowedBranches.Any(allowedBranch => allowedBranch.Equals(branch, StringComparison.InvariantCultureIgnoreCase));
+
+            if (isBranchWhitelisted == false)
+                LogHelper.Warn<ZipDownloader>(string.Format("The branch {0} is not allowed in githubpull.config, will not process documentation any further", branch));
+
+            return isBranchWhitelisted;
         }
 
         public void BuildSitemap(string foldername)
@@ -158,7 +200,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             public List<SiteMapItem> directories { get; set; }
 
             //public string url => $"http://localhost:24292/documentation{this.path}/?altTemplate=Lesson";
-            
+
             public string url
             {
                 get
@@ -181,7 +223,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                 directories = list,
                 hasChildren = dir.GetDirectories().Any()
             };
-            
+
             foreach (var child in dir.GetDirectories().Where(x => x.Name != "images"))
             {
                 list.Add(GetFolderStructure(child, rootPath, level + 1));
@@ -452,20 +494,34 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
 
             return path;
         }
-        
-        private static void RemoveExistingDocumentation(string folder)
+
+        private static void RemoveUnzippedFiles(string folder, List<string> ignoreDirectories = null)
         {
             if (Directory.Exists(folder))
             {
                 foreach (var directory in Directory.GetDirectories(folder))
-                    Retry.Do(() => Directory.Delete(directory, true), TimeSpan.FromSeconds(1), 5);
+                {
+                    if (ignoreDirectories == null || ignoreDirectories.Any() == false)
+                    {
+                        //there are no ignores, so proceed to delete it
+                        Retry.Do(() => Directory.Delete(directory, true), TimeSpan.FromSeconds(1), 5);
+                    }
+                    else
+                    {
+                        foreach (var ignoreDirectory in ignoreDirectories)
+                        {
+                            if (ignoreDirectory.TrimEnd('\\').Equals(directory.TrimEnd('\\'),
+                                    StringComparison.InvariantCultureIgnoreCase) == false)
+                            {
+                                //path is NOT in the ignore list, so proceed to delete it
+                                Retry.Do(() => Directory.Delete(directory, true), TimeSpan.FromSeconds(1), 5);
+                            }
+                        }
+                    }
+                }
 
                 foreach (var mdfile in Directory.GetFiles(folder, "*.md"))
                     Retry.Do(() => File.Delete(mdfile), TimeSpan.FromSeconds(1), 5);
-            }
-            else
-            {
-                Directory.CreateDirectory(folder);
             }
         }
 
