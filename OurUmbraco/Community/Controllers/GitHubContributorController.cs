@@ -9,6 +9,7 @@ using RestSharp;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Mvc;
+using Umbraco.Web.PropertyEditors;
 
 namespace OurUmbraco.Community.Controllers
 {
@@ -64,21 +65,40 @@ namespace OurUmbraco.Community.Controllers
                             }
                         }
 
+                        // filter to only include items from the last year
+                        var filteredRange = DateTime.UtcNow.AddYears(-1).Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                        foreach (var contrib in gitHubContributors)
+                        {
+                            int add = 0, del = 0, total = 0;
+                            foreach (var wk in contrib.Weeks.Where(x => x.W >= filteredRange))
+                            {
+                                add += wk.A;
+                                del += wk.D;
+                                total += wk.C;
+                            }
+                            contrib.Total = total;
+                            contrib.TotalAdditions = add;
+                            contrib.TotalDeletions = del;
+                        }
+
                         var filteredContributors = gitHubContributors
                             .Where(g => !login.Contains(g.Author.Login))
                             .GroupBy(g => g.Author.Id)
                             .OrderByDescending(c => c.Sum(g => g.Total));
 
+
                         List<GitHubGlobalContributorModel> temp = new List<GitHubGlobalContributorModel>();
 
                         foreach (var group in filteredContributors)
                         {
-                            temp.Add(new GitHubGlobalContributorModel(group));
+                            var contributor = new GitHubGlobalContributorModel(group);
+                            if (contributor.TotalCommits > 0)
+                                temp.Add(contributor);
                         }
 
                         return temp;
 
-                    }, TimeSpan.FromDays(1));
+                    }, TimeSpan.FromSeconds(1));
 
 
                 model.Contributors = contributors;
