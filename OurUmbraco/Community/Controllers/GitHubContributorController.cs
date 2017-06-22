@@ -98,7 +98,7 @@ namespace OurUmbraco.Community.Controllers
 
                         return temp;
 
-                    }, TimeSpan.FromSeconds(1));
+                    }, TimeSpan.FromDays(1));
 
 
                 model.Contributors = contributors;
