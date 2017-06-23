@@ -185,7 +185,9 @@
                                 defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
                             }
                         }
-                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=100&height=100&format=png" />
+                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=50&height=50&format=png"
+                             srcset="@Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=100&height=100&format=png 2x,
+             @Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=150&height=150&format=png 3x" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">
