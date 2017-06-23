@@ -60,7 +60,8 @@ namespace OurUmbraco.Community.Controllers
                             x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) ==
                             false
                             && x.UserMentions.Any(m => m.ScreenName.ContainsAny(usernameFilter)) == false
-                            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false)
+                            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false
+                            && x.Text.StartsWith("RT ") == false)
                         .Take(numberOfResults)
                         .ToArray();
                 }
