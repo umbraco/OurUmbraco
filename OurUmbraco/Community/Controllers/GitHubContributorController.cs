@@ -87,7 +87,8 @@ namespace OurUmbraco.Community.Controllers
                     System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
 
                     model.Contributors = contributors.ToList();
-                } catch (Exception ex)
+                }
+                catch (Exception ex)
                 {
                     // Log the error so we can debug it later
                     LogHelper.Error<GitHubContributorController>("Unable to load GitHub contributors from the GitHub API", ex);
@@ -96,7 +97,8 @@ namespace OurUmbraco.Community.Controllers
                     model.Contributors = GetCachedContributors();
                 }
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 // Log the error so we can debug it later
                 LogHelper.Error<GitHubContributorController>("Unable to load GitHub contributors from the GitHub API", ex);
@@ -159,7 +161,7 @@ namespace OurUmbraco.Community.Controllers
             }
 
             return temp;
-            
+
 
         }
 
