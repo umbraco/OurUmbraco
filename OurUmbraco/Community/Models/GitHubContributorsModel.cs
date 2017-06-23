@@ -5,6 +5,6 @@ namespace OurUmbraco.Community.Models
 {
     public class GitHubContributorsModel : IGitHubContributorsModel
     {
-        public List<GitHubGlobalContributorModel> Contributors { get; set; }
+        public List<GitHubCachedGlobalContributorModel> Contributors { get; set; }
     }
 }
