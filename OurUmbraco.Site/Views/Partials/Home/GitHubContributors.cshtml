@@ -4,13 +4,11 @@
 {
     foreach (var contributor in Model.Contributors)
     {
-        var author = contributor.Author;
-        if (author != null)
-        {
-            <a href="@author.HtmlUrl" class="contributor" target="_blank" title="@author.Login">
+            <a href="@contributor.AuthorUrl" class="contributor" target="_blank" title="@contributor.AuthorLogin">
                 <div class="avatar">
-                    <img alt="@author.Login" src="@author.AvatarUrl&s=112" />
-                    <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "commit" : "commits"))">
+                    <img alt="@contributor.AuthorLogin" src="@contributor.AuthorAvatarUrl&s=112"
+                         srcset="@contributor.AuthorAvatarUrl&s=224 2x, @contributor.AuthorAvatarUrl&s=336 3x" />
+                    <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "contribution" : "contributions"))">
                         @contributor.TotalCommits
                     </span>
                     <div class="counts">
@@ -22,7 +20,6 @@
                     </div>
                 </div>
             </a>
-        }
     }
     <div class="loadmore">
         <a class="button transparent" href="#" onclick="loadAllGitHubContributors(); return false;">Load more</a>
