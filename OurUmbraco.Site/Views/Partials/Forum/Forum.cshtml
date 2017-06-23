@@ -5,6 +5,9 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 @{
+    // Save query string for use in pagination links
+    var queryString = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+
     const int pagesToShowLeft = 4;
     int page;
     if (!int.TryParse(Request["page"], out page))
@@ -40,9 +43,9 @@
             TimeSpan.FromSeconds(4));
     }
 
-    var totalCountKey = "OurForumForumThreadCount[" + cat + "]";
+    var totalCountKey = "OurForumForumThreadCount[" + cat + unsolved + noreplies + "]";
     var totalTopics = (int)cache.GetCacheItem(totalCountKey,
-        () => topicService.GetAllTopicsCount(cat),
+        () => topicService.GetAllTopicsCount(cat, unsolved, noreplies),
         TimeSpan.FromMinutes(1));
 
     var pages = (totalTopics / pageSize) + 1;
@@ -168,19 +171,22 @@
         <nav class="pagination" role="navigation">
             @if (page > 1)
             {
-                <a class="prev" href="?page=@(page - 1)">Prev</a>
+                queryString["page"] = (page - 1).ToString();
+                <a class="prev" href="?@queryString">Prev</a>
                 <span>&hellip;</span>
             }
 
             @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
             {
-                <a class="@Umbraco.If(i == page, "active")" href="?page=@i">@i</a>
+                queryString["page"] = i.ToString();
+                <a class="@Umbraco.If(i == page, "active")" href="?@queryString">@i</a>
             }
 
-            @if (page < (pages - 3))
+            @if (page < pages)
             {
+                queryString["page"] = (page + 1).ToString();
                 <span>&hellip;</span>
-                <a class="next" href="?page=@(page + 1)">Next</a>
+                <a class="next" href="?@queryString">Next</a>
             }
         </nav>
 

@@ -123,7 +123,7 @@ FETCH NEXT @count ROWS ONLY";
         /// </summary>
         /// <param name="category"></param>
         /// <returns></returns>
-        public int GetAllTopicsCount(int category = -1)
+        public int GetAllTopicsCount(int category = -1, bool unsolved = false, bool noreplies = false)
         {
             const string sql1 = @"SELECT COUNT(*) as forumTopicCount
 FROM forumTopics
@@ -134,6 +134,18 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
             const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
 
             var sql = (category > 0 ? sqlic : sqlix);
+
+            if (unsolved)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND answer = 0";
+                else
+                    sql = sql + " WHERE answer = 0";
+
+            if (noreplies)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND replies = 0";
+                else
+                    sql = sql + " WHERE replies = 0";
 
             return _databaseContext.Database.ExecuteScalar<int>(sql, new { category = category });
         }

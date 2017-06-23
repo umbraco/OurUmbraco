@@ -365,7 +365,8 @@ $('#search-options input[type=checkbox]').click(function () {
 			newUri = updateQueryString("order", orderValue, window.location.href);
 		}
 	} else {
-		newUri = updateQueryString(this.name, this.checked, window.location.href);
+	    newUri = updateQueryString(this.name, this.checked, window.location.href);
+	    newUri = updateQueryString("page", 1, newUri);
 	}
 	console.log(newUri);
 	window.location = newUri;
