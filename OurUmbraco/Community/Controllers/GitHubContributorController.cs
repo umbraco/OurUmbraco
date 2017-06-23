@@ -65,7 +65,7 @@ namespace OurUmbraco.Community.Controllers
                             }
                         }
 
-                        // filter to only include items from the last year
+                        // filter to only include items from the last year (if we ran 4.6.1 we could have used ToUnixTimeSeconds())
                         var filteredRange = DateTime.UtcNow.AddYears(-1).Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
                        
                         foreach (var contrib in gitHubContributors)
@@ -73,7 +73,7 @@ namespace OurUmbraco.Community.Controllers
                             var contribWeeks = contrib.Weeks.Where(x => x.W >= filteredRange).ToList();
                             contrib.TotalAdditions = contribWeeks.Sum(x=>x.A);
                             contrib.TotalDeletions = contribWeeks.Sum(x=>x.D);
-                            contrib.Total = contrib.TotalAdditions + contrib.TotalDeletions;
+                            contrib.Total = contribWeeks.Sum(x => x.C);
                         }
 
                         var filteredContributors = gitHubContributors
