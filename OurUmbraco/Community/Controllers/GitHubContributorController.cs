@@ -157,7 +157,11 @@ namespace OurUmbraco.Community.Controllers
 
             foreach (var group in filteredContributors)
             {
-                temp.Add(new GitHubGlobalContributorModel(group));
+                var contributor = new GitHubGlobalContributorModel(group);
+                if (contributor.TotalCommits > 0)
+                {
+                    temp.Add(contributor);
+                }
             }
 
             return temp;
