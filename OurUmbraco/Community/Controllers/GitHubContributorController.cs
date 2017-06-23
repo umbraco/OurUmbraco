@@ -67,18 +67,13 @@ namespace OurUmbraco.Community.Controllers
 
                         // filter to only include items from the last year
                         var filteredRange = DateTime.UtcNow.AddYears(-1).Subtract(new DateTime(1970, 1, 1)).TotalSeconds;
+                       
                         foreach (var contrib in gitHubContributors)
                         {
-                            int add = 0, del = 0, total = 0;
-                            foreach (var wk in contrib.Weeks.Where(x => x.W >= filteredRange))
-                            {
-                                add += wk.A;
-                                del += wk.D;
-                                total += wk.C;
-                            }
-                            contrib.Total = total;
-                            contrib.TotalAdditions = add;
-                            contrib.TotalDeletions = del;
+                            var contribWeeks = contrib.Weeks.Where(x => x.W >= filteredRange).ToList();
+                            contrib.TotalAdditions = contribWeeks.Sum(x=>x.A);
+                            contrib.TotalDeletions = contribWeeks.Sum(x=>x.D);
+                            contrib.Total = contrib.TotalAdditions + contrib.TotalDeletions;
                         }
 
                         var filteredContributors = gitHubContributors
