@@ -62,7 +62,7 @@ function GetSearchFilters(cssClass) {
 	}
 	
 	var forumId = $('#selectCategory').val();
-	if(forumId !== undefined) {
+	if(forumId) {
 		forumId = forumId.replace(/([A-Za-z])\w+/g, "");
 	}
 	
