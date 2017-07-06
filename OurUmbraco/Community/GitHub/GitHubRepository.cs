@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.Models;
 using RestSharp;
 

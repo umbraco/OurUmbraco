@@ -1,8 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
-using OurUmbraco.Community.Models;
 
-namespace OurUmbraco.Community.Controllers
+namespace OurUmbraco.Community.GitHub.Models
 {
 
     public class GitHubCachedGlobalContributorModel

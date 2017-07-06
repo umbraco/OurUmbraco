@@ -2,19 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text;
 using System.Web.Mvc;
-using OurUmbraco.Community.GitHub;
-using OurUmbraco.Community.Models;
-using OurUmbraco.Our.Api;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OurUmbraco.Community.GitHub.Models;
 using RestSharp;
-using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Mvc;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Text;
 
-namespace OurUmbraco.Community.Controllers
+namespace OurUmbraco.Community.GitHub.Controllers
 {
     public class GitHubContributorController : SurfaceController
     {

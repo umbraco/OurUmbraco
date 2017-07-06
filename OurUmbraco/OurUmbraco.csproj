@@ -403,16 +403,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
-    <Compile Include="Community\Controllers\GitHubContributorController.cs" />
+    <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
-    <Compile Include="Community\Controllers\GitHubGlobalContributorModel.cs" />
+    <Compile Include="Community\GitHub\Models\GitHubGlobalContributorModel.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
-    <Compile Include="Community\Models\GitHubContributorModel.cs" />
-    <Compile Include="Community\Models\IGitHubContributorModel.cs" />
+    <Compile Include="Community\GitHub\Models\GitHubContributorModel.cs" />
+    <Compile Include="Community\GitHub\Models\IGitHubContributorModel.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
     <Compile Include="Community\Models\MeetupItem.cs" />
-    <Compile Include="Community\Models\GitHubContributorsModel.cs" />
-    <Compile Include="Community\Models\IGitHubContributorsModel.cs" />
+    <Compile Include="Community\GitHub\Models\GitHubContributorsModel.cs" />
+    <Compile Include="Community\GitHub\Models\IGitHubContributorsModel.cs" />
     <Compile Include="Community\Models\TweetsModel.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
