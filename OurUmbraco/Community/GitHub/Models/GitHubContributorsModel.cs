@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using OurUmbraco.Community.GitHub.Models.Cached;
 
 namespace OurUmbraco.Community.GitHub.Models
 {

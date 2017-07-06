@@ -405,6 +405,7 @@
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
+    <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\GitHubGlobalContributorModel.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorModel.cs" />

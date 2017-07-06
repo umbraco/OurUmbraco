@@ -7,6 +7,7 @@ using System.Web.Mvc;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
+using OurUmbraco.Community.GitHub.Models.Cached;
 using RestSharp;
 using Umbraco.Core.Logging;
 using Umbraco.Web.Mvc;
