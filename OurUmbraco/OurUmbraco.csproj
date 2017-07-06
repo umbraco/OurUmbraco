@@ -527,7 +527,7 @@
     <Compile Include="NotificationsWeb\Services\NotificationService.cs" />
     <Compile Include="NotificationsWeb\Singleton.cs" />
     <Compile Include="Our\Api\CommunityController.cs" />
-    <Compile Include="Community\GitHub\GitHubRepository.cs" />
+    <Compile Include="Community\GitHub\GitHubService.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />

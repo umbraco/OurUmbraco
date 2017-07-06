@@ -120,7 +120,7 @@ namespace OurUmbraco.Community.GitHub.Controllers
 
             string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
-            var githubController = new GitHubRepository();
+            var githubController = new GitHubService();
             var gitHubContributors = new List<GitHubContributorModel>();
             foreach (var repo in Repositories)
             {

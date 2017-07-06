@@ -5,7 +5,7 @@ using RestSharp;
 
 namespace OurUmbraco.Community.GitHub
 {
-    public class GitHubRepository
+    public class GitHubService
     {
         private const string RepositoryOwner = "Umbraco";
         private const string GitHubApiClient = "https://api.github.com";
