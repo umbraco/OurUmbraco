@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Web.Mvc;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.Models;
 using OurUmbraco.Our.Api;
 using RestSharp;
@@ -121,7 +122,7 @@ namespace OurUmbraco.Community.Controllers
 
             string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
-            var githubController = new GitHubController();
+            var githubController = new GitHubRepository();
             var gitHubContributors = new List<GitHubContributorModel>();
             foreach (var repo in Repositories)
             {
