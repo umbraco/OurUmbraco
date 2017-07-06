@@ -139,6 +139,15 @@
       <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.Core, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Core.2.2.2\lib\net45\Microsoft.AspNet.SignalR.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.SignalR.SystemWeb, Version=2.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.SystemWeb.2.2.2\lib\net45\Microsoft.AspNet.SignalR.SystemWeb.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CodeAnalysis, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.CodeAnalysis.Common.1.0.0\lib\net45\Microsoft.CodeAnalysis.dll</HintPath>
       <Private>True</Private>
@@ -655,11 +664,13 @@
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
-    <None Include="scripts\jquery-1.4.1-vsdoc.js" />
-    <Content Include="scripts\jquery-1.4.1.js" />
-    <Content Include="scripts\jquery-1.4.1.min.js" />
-    <None Include="scripts\jquery.validate-vsdoc.js" />
+    <None Include="scripts\jquery-1.6.4-vsdoc.js" />
+    <Content Include="scripts\jquery-1.6.4.js" />
+    <Content Include="scripts\jquery-1.6.4.min.js" />
+    <Content Include="scripts\jquery.signalR-2.2.2.js" />
+    <Content Include="scripts\jquery.signalR-2.2.2.min.js" />
     <Content Include="scripts\jquery.tooltipster.min.js" />
+    <None Include="scripts\jquery.validate-vsdoc.js" />
     <Content Include="scripts\jquery.validate.js" />
     <Content Include="scripts\jquery.validate.min.js" />
     <Content Include="scripts\jquery.validate.unobtrusive.js" />
@@ -4143,7 +4154,9 @@
     <Content Include="xslt\wiki-Subpages.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="packages.config" />
+    <Content Include="packages.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="App_Data\packages\installed\installedPackages.config" />
     <Content Include="config\FileIndexerConfig.config" />
     <Content Include="macroScripts\Releases-ListDownloads.cshtml">
@@ -4388,11 +4401,11 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>False</UseIIS>
+          <UseIIS>True</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:5555</IISUrl>
+          <IISUrl>http://localhost:24292/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

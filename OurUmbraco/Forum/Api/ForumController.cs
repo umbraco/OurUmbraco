@@ -25,6 +25,13 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Forum.Api
 {
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNet.SignalR;
+    using Microsoft.AspNet.SignalR.Client;
+
+    using OurUmbraco.SignalRHubs;
+
     [MemberAuthorize(AllowType = "member")]
     public class ForumController : ForumControllerBase
     {
@@ -59,8 +66,19 @@ namespace OurUmbraco.Forum.Api
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
             o.isSpam = c.IsSpam;
-
+            DoSomeSignalRStuff(o);
             return o;
+        }
+
+        private void DoSomeSignalRStuff(dynamic o)
+        {
+            var root = Url.Content("~/");
+            using (var hubConnection = new HubConnection(root + "/signalr"))
+            {
+                var conProxy = hubConnection.CreateHubProxy("forumPostHub");
+                hubConnection.Start().Wait();
+                conProxy.Invoke("SomeonePosted", o).Wait();
+            } 
         }
 
         [HttpPut]

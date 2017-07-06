@@ -115,3 +115,71 @@ else
         Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
     </div>
 }
+
+<script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js"></script>
+<script src="~/signalr/hubs"></script>
+<script>
+    $(function() {
+        var forum = $.connection.forumPostHub;
+
+        forum.client.someoneIsTypingResponse = function(id) {
+            if (id !== @Model.Id) {
+                return;
+            }
+            $('#writing-notification').html('Someone is Typing').fadeIn(100, function() {
+                $(this).delay(1000).fadeOut();
+            });;
+        };
+
+        forum.client.returnLatestComment = function (data) {
+            var avatarUrl = '/umbraco/api/Avatar/GetMemberAvatar/?memberId=' + data.authorId;
+            $.ajax({
+                url: avatarUrl,
+                type: "GET"
+            }).done(function (avatarData) {
+                data.avatar = avatarData;
+
+                //new comment we'll use mustache to insert it into the dom
+                data.lower = function () {
+                    return function (text, render) {
+                        return render(text).toLowerCase();
+                    }
+                };
+
+                data.canHaveChildren = data.parent == 0;
+                var template = $('#comment-template').html();
+                var rendered = Mustache.render(template, data);
+
+                if (data.parent == 0) {
+                    $(".comments").append(rendered);
+
+                    $("div.replybutton").insertAfter($("#comment-" + data.id));
+                }
+                else {
+                    var allComments = $("li[data-parent='" + data.parent + "']");
+                    if (allComments.length > 0) {
+                        var lastComment;
+                        for (var i = 0; i < allComments.length; i++) {
+                            lastComment = allComments[i];
+                        }
+                        $(rendered).insertAfter(lastComment);
+                    } else {
+                        $(rendered).insertAfter("#comment-" + data.parent);
+                    }
+                }
+                if ($("#comment-" + data.id).length) {
+                    $(document).scrollTop($("#comment-" + data.id).offset().top - 80);
+                    $("#comment-" + data.id).hide();
+                    $("#comment-" + data.id).fadeIn();
+                }
+            });
+        }
+       
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+            $('#wmd-input').keyup(function () {
+                forum.server.someoneIsTyping(@Model.Id);
+            });
+        });
+    });
+</script>
