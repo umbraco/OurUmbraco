@@ -61,7 +61,7 @@ namespace OurUmbraco.Repository.Controllers
             var allConfiguredVersions = UWikiFileVersion.GetAllVersions();
 
             // for 7.6.4+ we change behavior and only provide one starter kit
-            if (version >= new System.Version(7, 6, 4))
+            if (version >= new System.Version(7, 6, 5))
             {
                 officialStarterKitGuidCollection = new List<string>
                 {
