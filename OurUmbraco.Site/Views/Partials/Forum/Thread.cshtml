@@ -131,8 +131,10 @@ else
             if (id !== @Model.Id) {
                 return;
             }
-            $('#writing-notification').html('Someone is Typing').fadeIn(100, function() {
-                $(this).delay(1000).fadeOut();
+            var notify = new PNotify({
+                title: 'Someone starts to answer',
+                text: 'Be patient, solution is coming soon',
+                type: 'info'
             });
         };
 
@@ -142,11 +144,6 @@ else
             }  
             var containerId = "#comment-" + commentId;
             $(containerId).fadeOut(1000, function() { $(this).remove(); });
-            var notify = new PNotify({
-                title: 'Someone starts to answer',
-                text: 'Be patient, solution is coming soon',
-                type: 'info'
-            });
         };
 
         forum.client.returnLatestComment = function(data) {
@@ -167,7 +164,7 @@ else
                     }
                 };
 
-                data.canHaveChildren = data.parent == 0;
+                data.canHaveChildren = true;
                 var template = $('#comment-template').html();
                 var rendered = Mustache.render(template, data);
 
@@ -177,12 +174,13 @@ else
                     $("div.replybutton").insertAfter($("#comment-" + data.id));
                 } else {
                     var allComments = $("li[data-parent='" + data.parent + "']");
+                    debugger;
                     if (allComments.length > 0) {
                         var lastComment;
                         for (var i = 0; i < allComments.length; i++) {
                             lastComment = allComments[i];
                         }
-                        $(rendered).insertAfter(lastComment);
+                        $(lastComment).after(rendered);
                     } else {
                         $(rendered).insertAfter("#comment-" + data.parent);
                     }
