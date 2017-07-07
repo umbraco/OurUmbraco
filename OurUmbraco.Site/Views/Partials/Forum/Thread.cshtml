@@ -132,7 +132,15 @@ else
             }
             $('#writing-notification').html('Someone is Typing').fadeIn(100, function() {
                 $(this).delay(1000).fadeOut();
-            });;
+            });
+        };
+
+        forum.client.DeleteComment = function(threadId, commentId) {
+            if (threadId !== @Model.Id) {
+                return;
+            }  
+            var containerId = "#comment-" + commentId;
+            $(containerId).fadeOut(1000, function() { $(this).remove(); });
         };
 
         forum.client.returnLatestComment = function(data) {

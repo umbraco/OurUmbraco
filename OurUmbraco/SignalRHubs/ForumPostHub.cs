@@ -31,5 +31,11 @@ namespace OurUmbraco.SignalRHubs
         }
 
 
+        public void CommentDeleted(int threadId,int commentId)
+        {
+            Clients.Others.DeleteComment(threadId, commentId);
+        }
+
+
     }
 }
