@@ -148,17 +148,20 @@
         </div>
 
         <div class="actions">
-            {{#canHaveChildren}}
+            {{#isLoggedIn}}
             <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
                 <i class="icon-Reply-arrow"></i><span>Reply</span>
             </a>
-            {{/canHaveChildren}}
+            
             <a href="#" class="edit-post" data-id="{{id}}" data-topic="{{topicId}}" data-controller="comment">
                 <i class="icon-Edit"></i><span>Edit</span>
             </a>
+            {{/isLoggedIn}}
+            {{#isCommentOwner}}
             <a href="#" class="delete-reply" data-id="{{id}}">
                 <i class="icon-Delete-key"></i><span>Delete post</span>
             </a>
+            {{/isCommentOwner}}
             <a href="#" class="copy-link" data-id="#{{id}}">
                 <i class="icon-Link"></i><span>Copy Link</span>
             </a>

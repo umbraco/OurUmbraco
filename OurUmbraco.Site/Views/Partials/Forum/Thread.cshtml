@@ -124,6 +124,8 @@ else
 
 <script src="~/signalr/hubs"></script>
 <script>
+    var isLoggedIn = '@(Model.MemberData != null)' == "True" ? true : false;
+    var memberId = @(Model.MemberData != null ? Model.MemberData.Member.Id : 0);
     $(function() {
         var forum = $.connection.forumPostHub;
 
@@ -165,6 +167,8 @@ else
                 };
 
                 data.canHaveChildren = true;
+                data.isLoggedIn = isLoggedIn;
+                data.isCommentOwner = data.authorId == memberId;
                 var template = $('#comment-template').html();
                 var rendered = Mustache.render(template, data);
 
@@ -182,13 +186,13 @@ else
                         }
                         $(lastComment).after(rendered);
                     } else {
-                        $(rendered).insertAfter("#comment-" + data.parent);
+                        $("#comment-" + data.parent).after(rendered);
                     }
                 }
                 var notify = new PNotify({
                     title: 'New answer was added',
                     text: 'Jump to new answer',
-                    type: 'info'
+                    type: 'success'
                 });
                 $('#comment-' + data.id).css('background', 'rgba(14, 216, 61, 0.31)').fadeIn(200);
                 notify.get().css('cursor', 'pointer').click(function(e) {
