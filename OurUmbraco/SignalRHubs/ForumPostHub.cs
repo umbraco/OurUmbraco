@@ -16,7 +16,7 @@ namespace OurUmbraco.SignalRHubs
 
         public void SomeoneIsTyping(int messageId)
         {
-            Clients.Others.someoneIsTypingResponse(messageId);
+            this.Clients.Others.someoneIsTyping(messageId);
         }
 
 
@@ -24,6 +24,12 @@ namespace OurUmbraco.SignalRHubs
         {  
             Clients.Others.returnLatestComment(comment);
         }
-        
+
+        public void SomeoneEdited(dynamic comment)
+        {
+            Clients.Others.returnEditedComment(comment);
+        }
+
+
     }
 }

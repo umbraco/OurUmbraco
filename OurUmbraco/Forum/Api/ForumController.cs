@@ -66,11 +66,11 @@ namespace OurUmbraco.Forum.Api
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
             o.isSpam = c.IsSpam;
-            DoSomeSignalRStuff(o);
+            SignalRcommentSaved(o);
             return o;
         }
 
-        private void DoSomeSignalRStuff(dynamic o)
+        private void SignalRcommentSaved(dynamic o)
         {
             var root = Url.Content("~/");
             using (var hubConnection = new HubConnection(root + "/signalr"))
@@ -79,6 +79,17 @@ namespace OurUmbraco.Forum.Api
                 hubConnection.Start().Wait();
                 conProxy.Invoke("SomeonePosted", o).Wait();
             } 
+        }
+
+        private void SignalRcommentEdited(dynamic c)
+        {
+            var root = Url.Content("~/");
+            using (var hubConnection = new HubConnection(root + "/signalr"))
+            {
+                var conProxy = hubConnection.CreateHubProxy("forumPostHub");
+                hubConnection.Start().Wait();
+                conProxy.Invoke("SomeoneEdited", c).Wait();
+            }
         }
 
         [HttpPut]
@@ -94,6 +105,7 @@ namespace OurUmbraco.Forum.Api
 
             c.Body = model.Body;
             // This is an edit, don't update topic post count
+            SignalRcommentEdited(c);
             CommentService.Save(c, false);
         }
 
