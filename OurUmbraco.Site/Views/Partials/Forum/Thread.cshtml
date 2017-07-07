@@ -116,6 +116,7 @@ else
     </div>
 }
 
+<!-- SignalR Stuff Starts-->
 <script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.0/pnotify.js"></script>
 <link  href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.0/pnotify.css" rel="stylesheet" type="text/css" />
@@ -141,6 +142,11 @@ else
             }  
             var containerId = "#comment-" + commentId;
             $(containerId).fadeOut(1000, function() { $(this).remove(); });
+            var notify = new PNotify({
+                title: 'Someone starts to answer',
+                text: 'Be patient, solution is coming soon',
+                type: 'info'
+            });
         };
 
         forum.client.returnLatestComment = function(data) {
@@ -218,9 +224,10 @@ else
        
         // Start the connection.
         $.connection.hub.start().done(function () {
-            $('#wmd-input').keyup(function () {
+            $('.forum-reply').click(function () {
                 forum.server.someoneIsTyping(@Model.Id);
             });
         });
     });
 </script>
+<!-- End of SignalR-->
