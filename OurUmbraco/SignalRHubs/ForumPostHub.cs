@@ -11,27 +11,8 @@ using Microsoft.AspNet.SignalR;
 
 namespace OurUmbraco.SignalRHubs
 {
-    using System.IO;
-    using System.Web;
-    using System.Web.Mvc;
-    using System.Web.Routing;
-
-    using OurUmbraco.Forum.Api;
-    using OurUmbraco.Forum.Services;
-
-    using umbraco.NodeFactory;
-    using Umbraco.Core;
-    using Umbraco.Web;
-
-    using Task = System.Threading.Tasks.Task;
-
     public class ForumPostHub : Hub
     {
-        public void Send(string name, string message)
-        {
-            // Call the addNewMessageToPage method to update clients.
-            Clients.Others.addNewMessageToPage(name, message);
-        }
 
         public void SomeoneIsTyping(int messageId)
         {

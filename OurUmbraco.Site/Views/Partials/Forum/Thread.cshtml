@@ -132,6 +132,9 @@ else
         };
 
         forum.client.returnLatestComment = function (data) {
+            if (data.topicId !== @Model.Id) {
+                return;
+            }
             var avatarUrl = '/umbraco/api/Avatar/GetMemberAvatar/?memberId=' + data.authorId;
             $.ajax({
                 url: avatarUrl,
