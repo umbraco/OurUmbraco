@@ -131,9 +131,11 @@ else
             if (id !== @Model.Id) {
                 return;
             }
-            $('#writing-notification').html('Someone is Typing').fadeIn(100, function() {
-                $(this).delay(1000).fadeOut();
-            });;
+            var notify = new PNotify({
+                title: 'Someone starts to answer',
+                text: 'Be patient, solution is coming soon',
+                type: 'info'
+            });
         };
 
         forum.client.returnLatestComment = function(data) {
@@ -211,7 +213,7 @@ else
        
         // Start the connection.
         $.connection.hub.start().done(function () {
-            $('#wmd-input').keyup(function () {
+            $('.forum-reply').click(function () {
                 forum.server.someoneIsTyping(@Model.Id);
             });
         });
