@@ -6,9 +6,11 @@ using System.Text;
 using System.Threading;
 using System.Web.Hosting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using RestSharp;
+using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
 using Umbraco.Core.Logging;
 
@@ -21,10 +23,7 @@ namespace OurUmbraco.Community.GitHub
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
 
-        public string JsonPath
-        {
-            get { return HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json"); }
-        }
+        public readonly string JsonPath =  HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
 
         /// <summary>
         /// Gets a list of the repositories that should be included in the list of contributors.
@@ -241,6 +240,24 @@ namespace OurUmbraco.Community.GitHub
 
         }
 
+        /// <summary>
+        /// Attempts to load the JSON file at <see cref="JsonPath"/>. If successful, the global list of contributors
+        /// will be returned.
+        /// </summary>
+        /// <returns>A list of <see cref="GitHubCachedGlobalContributorModel"/>.</returns>
+        public List<GitHubCachedGlobalContributorModel> GetOverallContributorsFromDisk()
+        {
+            return (
+                from JObject item in JsonUtils.LoadJsonArray(JsonPath)
+                select item.ToObject<GitHubCachedGlobalContributorModel>()
+            ).ToList();
+        }
+
+        /// <summary>
+        /// Appends the specified <paramref name="str"/> to <paramref name="sb"/>. Mostly used for debugging purposes.
+        /// </summary>
+        /// <param name="sb">The <see cref="StringBuilder"/> representing the log.</param>
+        /// <param name="str">The string to be added to <paramref name="sb"/>.</param>
         private void Log(StringBuilder sb, string str)
         {
             sb.AppendLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + str);
