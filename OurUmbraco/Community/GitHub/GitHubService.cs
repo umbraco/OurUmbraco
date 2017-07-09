@@ -21,7 +21,7 @@ namespace OurUmbraco.Community.GitHub
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
 
-        protected string JsonPath
+        public string JsonPath
         {
             get { return HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json"); }
         }
