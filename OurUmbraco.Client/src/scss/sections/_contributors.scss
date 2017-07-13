@@ -1,21 +1,52 @@
 ﻿#github-contributors {
+
+    small.link-list {
+        font-style: italic;
+        font-weight: normal;
+        text-transform: none;
+    }
+}
+
+.github-contributor-list {
+    justify-content: center !important;
     &:not(.all) {
         .contributor {
-            &:nth-child(n+17) {
-                display: none;
+            
+            /* Hide element no. 9 and above (2 items per row) */
+            @media (max-width: 440px) {
+                &:nth-child(n+9) {
+                    display: none;
+                }
             }
 
-            @media (max-width: $md) {
+            /* Hide element no. 10 and above (3 items per row) */
+            @media (min-width: 440px) and (max-width: 580px) {
+                &:nth-child(n+10) {
+                    display: none;
+                }
+            }
+
+            /* Hide element no. 13 and above (4 items per row) */
+            @media (min-width: 580px) and (max-width: 680px) {
                 &:nth-child(n+13) {
                     display: none;
                 }
             }
 
-            @media (max-width: $xs) {
-                &:nth-child(n+10) {
+            /* Hide element no. 16 and above (5 items per row) */
+            @media (min-width: 580px) and (max-width: $md) {
+                &:nth-child(n+16) {
                     display: none;
                 }
             }
+
+            /* Hide element no. 17 and above (8 items per row) */
+            @media (min-width: $md) {
+                &:nth-child(n+17) {
+                    display: none;
+                }
+            }
+
         }
     }
 
@@ -32,22 +63,46 @@
     }
 }
 
-.github-contributors small.link-list {
-    font-style: italic;
-    font-weight: normal;
-    text-transform: none;
-}
-
 .contributor {
+    display: flex;
+    flex-wrap: wrap;
+    flex: 0 0 50%;
+    padding: 5px;
     margin-bottom: 15px;
 
+    /* 3 items per row */
+    @media (min-width: 440px) {
+        flex: 0 0 33.3333%;
+    }
+
+    /* 4 items per row */
+    @media (min-width: 580px) {
+        flex: 0 0 25%;
+    }
+
+    /* 5 items per row */
+    @media (min-width: 680px) {
+        flex: 0 0 20%;
+    }
+
+    /* 8 items per row */
+    @media (min-width: $md) {
+        flex: 0 0 12.5%;
+    }
+
+    > a {
+        display: inline-block;
+        margin: 0 auto;
+    }
+
     .avatar {
+        display: inline-block;
         position: relative;
-        flex: 0 0 23%;
-        margin-right: 20px;
+        flex: 0 0 auto !important;
+        margin: 0 auto !important;
 
         @media (min-width: $md) {
-            flex: 0 0 15%;
+            flex: 0 0 auto !important;
         }
 
         img {
@@ -59,6 +114,9 @@
     }
 
     .counts {
+        display: flex;
+        flex-flow: column wrap;
+        justify-content: center;
         position: absolute;
         top: 2px;
         left: 2px;
@@ -70,9 +128,13 @@
         background: rgba(0,0,0,0.25);
         border-radius: 50%;
         bottom: 6px;
-        padding-top: 23px;
+        padding: 0;
         opacity: 0;
         transition: opacity 0.25s;
+        > div {
+            margin-top: 5px;
+            margin-bottom: 5px;
+        }
     }
 
     &:hover .counts {

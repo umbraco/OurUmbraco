@@ -2,27 +2,33 @@
 
 @if (Model.Contributors.Any())
 {
-    foreach (var contributor in Model.Contributors)
-    {
-            <a href="@contributor.AuthorUrl" class="contributor" target="_blank" title="@contributor.AuthorLogin">
-                <div class="avatar">
-                    <img alt="@contributor.AuthorLogin" src="@contributor.AuthorAvatarUrl&s=112"
-                         srcset="@contributor.AuthorAvatarUrl&s=224 2x, @contributor.AuthorAvatarUrl&s=336 3x" />
-                    <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "contribution" : "contributions"))">
-                        @contributor.TotalCommits
-                    </span>
-                    <div class="counts">
-                        Additions<br />
-                        <strong>@contributor.TotalAdditions</strong><br />
-                        <br />
-                        Deletions<br />
-                        <strong>@contributor.TotalDeletions</strong>
+    <div class="flex flex-wrap github-contributor-list forum-thread">
+        @foreach (var contributor in Model.Contributors)
+        {
+            <div class="contributor">
+                <a href="@contributor.AuthorUrl" target="_blank" title="@contributor.AuthorLogin">
+                    <div class="avatar">
+                        <img alt="@contributor.AuthorLogin" width="112" height="112" src="@contributor.AuthorAvatarUrl&s=112"
+                             srcset="@contributor.AuthorAvatarUrl&s=224 2x, @contributor.AuthorAvatarUrl&s=336 3x" />
+                        <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "contribution" : "contributions"))">
+                            @contributor.TotalCommits
+                        </span>
+                        <div class="counts">
+                            <div>Additions<br />
+                                <strong>@contributor.TotalAdditions</strong>
+                            </div>
+                            <div>Deletions<br />
+                                <strong>@contributor.TotalDeletions</strong>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </a>
-    }
-    <div class="loadmore">
-        <a class="button transparent" href="#" onclick="loadAllGitHubContributors(); return false;">Load more</a>
+                </a>
+            </div>
+        }
+
+        <div class="loadmore">
+            <a class="button transparent" href="#" onclick="loadAllGitHubContributors(); return false;">Load more</a>
+        </div>
     </div>
 }
 
