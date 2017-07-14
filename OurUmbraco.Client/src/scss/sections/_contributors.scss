@@ -105,7 +105,7 @@
         }
 
         img {
-            border: 3px solid #98d768;
+            border: 3px solid $color-our;
             width: 100%;
             max-width: 112px;
             height: auto;
@@ -146,9 +146,9 @@
         bottom: 0px;
         text-align: center;
         right: 25px;
-        color: #425a2e;
+        color: darken($color-our, 40%);
         font-weight: bold;
-        background: darken($color-our, 4%);
+        background: $color-our;
         border-radius: 15px;
         z-index: 5;
     }
