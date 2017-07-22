@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
 using System.Web.Http;
 using OurUmbraco.Forum.Extensions;
 using Umbraco.Core.Models;
@@ -54,7 +55,14 @@ namespace OurUmbraco.Our.Api
 
         private bool AwardBadge(IMember member, string roleName, int karmaReward = 0)
         {
-            if (member != null)
+            if (member == null)
+            {
+                return false;
+            }
+
+            var currentRoles = MemberService.GetAllRoles(member.Id);
+
+            if (!currentRoles.Contains(roleName))
             {
                 MemberService.AssignRole(member.Id, roleName);
 
