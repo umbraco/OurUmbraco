@@ -44,6 +44,7 @@ namespace OurUmbraco.Our
             AddHomeScriptsMacro();
             AddNuGetUrlForPackages();
             AddPeopleKarmaPage();
+            AddMasterMemberGroup();
         }
         
         private void EnsureMigrationsMarkerPathExists()
@@ -965,6 +966,37 @@ namespace OurUmbraco.Our
 
                 fileService.SaveTemplate(releaseCompareTemplate);
                 
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddMasterMemberGroup()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var memberGroupService = ApplicationContext.Current.Services.MemberGroupService;
+
+                if (memberGroupService.GetByName("Master") == null)
+                {
+                    var memberGroup = new MemberGroup()
+                    {
+                        Name = "Master"
+                    };
+
+                    memberGroupService.Save(memberGroup);
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
