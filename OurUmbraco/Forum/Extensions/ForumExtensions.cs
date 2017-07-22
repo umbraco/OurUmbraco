@@ -183,6 +183,12 @@ namespace OurUmbraco.Forum.Extensions
                     continue;
                 }
 
+                if (role == "Master")
+                {
+                    memberRoles.Add("master");
+                    continue;
+                }
+
                 memberRoles.Add(role.ToLower());
             }
 
