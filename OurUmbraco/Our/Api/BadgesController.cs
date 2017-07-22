@@ -18,6 +18,7 @@ namespace OurUmbraco.Our.Api
         }
 
         [HttpPost]
+        [VerifyTokenHeader("BadgesApiToken")]
         public string AwardMasterBadge(string email)
         {
             var member = MemberService.GetByEmail(email);

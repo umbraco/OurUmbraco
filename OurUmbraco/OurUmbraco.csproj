@@ -787,6 +787,7 @@
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="UmbracoAuthorizationFilter.cs" />
+    <Compile Include="VerifyTokenHeaderAttribute.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVerison.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
