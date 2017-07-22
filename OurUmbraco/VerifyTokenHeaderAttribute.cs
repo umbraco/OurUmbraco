@@ -11,6 +11,10 @@ namespace OurUmbraco
     {
         private readonly string _tokenKey;
 
+        /// <summary>
+        /// Verifies the "token" HTTP header against an appSettings value
+        /// </summary>
+        /// <param name="tokenKey">The appSettings key to verify the value of the token against</param>
         public VerifyTokenHeaderAttribute(string tokenKey)
         {
             _tokenKey = tokenKey;
@@ -23,10 +27,12 @@ namespace OurUmbraco
             var tokenHeaders = Enumerable.Empty<string>();
             var tokenAppSetting = ConfigurationManager.AppSettings[_tokenKey];
 
+            // get the token header values
             request.Headers.TryGetValues("token", out tokenHeaders);
 
             if (tokenHeaders.Any() && !string.IsNullOrWhiteSpace(tokenAppSetting))
             {
+                // get the first token header in the list
                 var header = tokenHeaders.FirstOrDefault();
 
                 if (header.Equals(_tokenKey, StringComparison.InvariantCulture))
