@@ -31,6 +31,20 @@ namespace OurUmbraco.Our.Api
             return "Failed to assign master status";
         }
 
+        [HttpPost]
+        [VerifyTokenHeader("BadgesApiToken")]
+        public string AwardCoreContribBadge(string email)
+        {
+            var member = MemberService.GetByEmail(email);
+
+            if (AwardBadge(member, "CoreContrib", "CoreContribBadgeKarmaPoints"))
+            {
+                return "Member " + email + " now has c-trib status";
+            }
+
+            return "Failed to assign c-trib status";
+        }
+
         private bool AwardBadge(IMember member, string roleName, string karmaRewardAppSetting)
         {
             var karmaPoints = Convert.ToInt32(ConfigurationManager.AppSettings[karmaRewardAppSetting]);
