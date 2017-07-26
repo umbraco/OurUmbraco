@@ -134,13 +134,13 @@ else
 
 @helper  GitHubContributors()
 {
-    <section class="github-contributors forum">
+    <section class="forum github-contributions">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <h1 class="text-center">GitHub Contributions</h1>
                     <p>
-                        <small class="link-list">
+                        <small class="github-repo-list">
                             Contributions to default branches for
                             <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
                             <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
@@ -155,7 +155,7 @@ else
                     <small>Contributions the last 12 months (number indicating accepted commits)</small>
                 </div>
 
-                <div class="col-md-12 flex forum-thread" id="github-contributors">
+                <div class="col-md-12 flex" id="github-contributors">
                     <h2>Loading GitHub contributors...</h2>
                 </div>
 
@@ -168,7 +168,8 @@ else
     </section>
 }
 
-@helper Meetups() {   
+@helper Meetups()
+{   
     <section class="forum">
         <div class="container">
             <div class="row">
