@@ -1,5 +1,6 @@
 ﻿using System;
 using Hangfire;
+using OurUmbraco.Community.GitHub;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
 
@@ -28,6 +29,23 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 }
             }
         }
+
+        public void UpdateGitHubContributors()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateGitHubContributorsJsonFile(), Cron.Daily);
+        }
+
+        public void UpdateGitHubContributorsJsonFile()
+        {
+
+            // Initialize a new service
+            GitHubService service = new GitHubService();
+
+            // Determine the path to the JSON file
+            service.UpdateOverallContributors();
+
+        }
+    
     }
 
     public class ReminderTopic
