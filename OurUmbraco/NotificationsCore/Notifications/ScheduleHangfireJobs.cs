@@ -32,7 +32,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateGitHubContributors()
         {
-            RecurringJob.AddOrUpdate(() => UpdateGitHubContributorsJsonFile(), Cron.Daily);
+            RecurringJob.AddOrUpdate(() => UpdateGitHubContributorsJsonFile(), Cron.HourInterval(12));
         }
 
         public void UpdateGitHubContributorsJsonFile()
