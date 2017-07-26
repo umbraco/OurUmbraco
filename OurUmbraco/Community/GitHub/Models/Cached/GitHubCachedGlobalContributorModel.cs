@@ -1,9 +1,7 @@
 namespace OurUmbraco.Community.GitHub.Models.Cached
 {
-
     public class GitHubCachedGlobalContributorModel
     {
-
         public int AuthorId { get; set; }
 
         public string AuthorLogin { get; set; }
@@ -30,7 +28,5 @@ namespace OurUmbraco.Community.GitHub.Models.Cached
             TotalAdditions = contributor.TotalAdditions;
             TotalDeletions = contributor.TotalDeletions;
         }
-
     }
-
 }

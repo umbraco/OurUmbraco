@@ -36,6 +36,5 @@ namespace OurUmbraco.Community.GitHub.Models
         {
             Items = items.ToList();
         }
-
     }
 }

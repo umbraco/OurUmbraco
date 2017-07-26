@@ -37,15 +37,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateGitHubContributorsJsonFile()
         {
-
             // Initialize a new service
-            GitHubService service = new GitHubService();
+            var service = new GitHubService();
 
             // Determine the path to the JSON file
             service.UpdateOverallContributors();
-
         }
-    
     }
 
     public class ReminderTopic

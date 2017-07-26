@@ -22,9 +22,8 @@ namespace OurUmbraco.Community.GitHub.Models
             {
                 _weeks = value;
 
-
-                int totalAdditions = 0;
-                int totalDeletions = 0;
+                var totalAdditions = 0;
+                var totalDeletions = 0;
                 foreach (var week in _weeks)
                 {
                     totalDeletions += week.D;

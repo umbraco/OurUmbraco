@@ -6,7 +6,6 @@ using System.Text;
 using System.Threading;
 using System.Web.Hosting;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using RestSharp;
@@ -18,7 +17,6 @@ namespace OurUmbraco.Community.GitHub
 {
     public class GitHubService
     {
-        
         private const string RepositoryOwner = "Umbraco";
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
@@ -48,15 +46,13 @@ namespace OurUmbraco.Community.GitHub
         /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
         public IRestResponse<List<GitHubContributorModel>> GetRepositoryContributors(string repo)
         {
-
             // Initialize the request
-            RestClient client = new RestClient(GitHubApiClient);
-            RestRequest request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
+            var client = new RestClient(GitHubApiClient);
+            var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
             client.UserAgent = UserAgent;
 
             // Make the request to the GitHub API
             return client.Execute<List<GitHubContributorModel>>(request);
-
         }
 
         /// <summary>
@@ -75,39 +71,38 @@ namespace OurUmbraco.Community.GitHub
 
         public GitHubContributorsResult GetOverallContributors(int maxAttempts = 3)
         {
-
             // Initialize a new StringBuilder for logging/testing purposes
-            StringBuilder sb = new StringBuilder();
+            var stringBuilder = new StringBuilder();
 
             // Map the path to the file containg HQ members that should be excluded in the list
-            string configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
+            var configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
             if (!System.IO.File.Exists(configPath))
             {
-                LogHelper.Debug<GitHubService>("Config file was not found: " + configPath);
-                throw new Exception("Config file was not found: " + configPath);
+                var message = string.Format("Config file was not found: {0}", configPath);
+                LogHelper.Debug<GitHubService>(message);
+                throw new Exception(message);
             }
 
             // Parse the logins (usernames)
-            string[] login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
+            var login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
             // A dictionary for the response of each repository
-            Dictionary<string, IRestResponse<List<GitHubContributorModel>>> responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();
+            var responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();
 
             // Hashset for keeping track of missing responses
-            HashSet<string> missing = new HashSet<string>();
+            var missing = new HashSet<string>();
 
-            Log(sb, "Attempt 1");
+            Log(stringBuilder, "Attempt 1");
 
             // Iterate over the repositories
-            foreach (string repo in GetRepositories())
+            foreach (var repo in GetRepositories())
             {
-
-                Log(sb, "-> Making request to " + GitHubApiClient + string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo));
+                Log(stringBuilder, string.Format("-> Making request to {0}{1}", GitHubApiClient, string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo)));
 
                 // Make the request to the GitHub API
-                IRestResponse<List<GitHubContributorModel>> response = GetRepositoryContributors(repo);
+                var response = GetRepositoryContributors(repo);
 
-                Log(sb, "  -> " + ((int) response.StatusCode) + " -> " + response.StatusCode);
+                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int) response.StatusCode, response.StatusCode));
 
                 switch (response.StatusCode)
                 {
@@ -118,80 +113,65 @@ namespace OurUmbraco.Community.GitHub
                         missing.Add(repo);
                         break;
                     default:
-                        Log(sb, "Failed getting contributors for repository " + repo + ": " + response.StatusCode + "\r\n\r\n" + response.Content);
-                        throw new Exception("Failed getting contributors for repository " + repo + ": " + response.StatusCode);
+                        var message = string.Format("Failed getting contributors for repository {0}: {1}\r\n\r\n{2}", repo, response.StatusCode, response.Content);
+                        Log(stringBuilder, message);
+                        throw new Exception(message);
                 }
-
             }
 
-
-            for (int i = 2; i <= maxAttempts; i++)
+            for (var i = 2; i <= maxAttempts; i++)
             {
-
                 // Break the loop if there are no missing repositories
                 if (missing.Count == 0)
-                {
                     break;
-                }
 
                 // Wait for a few seconds so the GitHub cache hopefully has been populated
                 Thread.Sleep(5000);
 
-                Log(sb, "Attempt " + i);
+                Log(stringBuilder, string.Format("Attempt {0}", i));
 
-                foreach (string repo in GetRepositories())
+                foreach (var repo in GetRepositories())
                 {
-
                     // Make the request to the GitHub API
-                    IRestResponse<List<GitHubContributorModel>> response = GetRepositoryContributors(repo);
+                    var response = GetRepositoryContributors(repo);
 
                     // Error checking
-                    switch (response.StatusCode) {
-
+                    switch (response.StatusCode)
+                    {
                         case HttpStatusCode.OK:
-                            
                             // Set the response in the dictionary
                             responses[repo] = response;
-
                             // Remove the repository from queue
                             missing.Remove(repo);
-
                             break;
-
                         case HttpStatusCode.Accepted:
-                            // zZzZz
                             break;
-
                         default:
-                            Log(sb, "Failed getting contributors for repository " + repo + ": " + response.StatusCode + "\r\n\r\n" + response.Content);
-                            throw new Exception("Failed getting contributors for repository " + repo + ": " + response.StatusCode + "\r\n\r\n" + response.Content);
-                    
+                            var message = string.Format("Failed getting contributors for repository {0}: {1}\r\n\r\n{2}", repo, response.StatusCode, response.Content);
+                            Log(stringBuilder, message);
+                            throw new Exception(message);
                     }
 
                 }
-
             }
 
-            // (╯°□°)╯︵ ┻━┻
             if (missing.Count > 0)
             {
-                Log(sb, "Unable to get contributors for one or more repositories:\r\n" + String.Join("\r\n", missing));
-                throw new Exception("Unable to get contributors for one or more repositories");
+                var message = string.Format("Unable to get contributors for one or more repositories:\r\n{0}", string.Join("\r\n", missing));
+                Log(stringBuilder, message);
+                throw new Exception(message);
             }
 
             // filter to only include items from the last year (if we ran 4.6.1 we could have used ToUnixTimeSeconds())
-            int filteredRange = TimeUtils.GetUnixTimeFromDateTime(DateTime.UtcNow.AddYears(-1));
-
-            List<GitHubContributorModel> contributors = new List<GitHubContributorModel>();
+            var filteredRange = TimeUtils.GetUnixTimeFromDateTime(DateTime.UtcNow.AddYears(-1));
+            var contributors = new List<GitHubContributorModel>();
 
             // Iterate over the responses (we don't care about the keys at this point)
-            foreach (IRestResponse<List<GitHubContributorModel>> response in responses.Values)
+            foreach (var response in responses.Values)
             {
-
                 // Iterate over the contributors of the individual response
-                foreach (GitHubContributorModel contrib in response.Data)
+                foreach (var contrib in response.Data)
                 {
-
                     // Make sure we only get weeks from the past year
                     var contribWeeks = contrib.Weeks.Where(x => x.W >= filteredRange).ToList();
 
@@ -202,14 +182,12 @@ namespace OurUmbraco.Community.GitHub
 
                     // Append the contributor to the aggregated list
                     contributors.Add(contrib);
-
                 }
-
             }
 
             // Group and sort the contributors from each repository
-            List<GitHubGlobalContributorModel> globalContributors = contributors
-                .Where(g => g.Total > 0 && !login.Contains(g.Author.Login))
+            var globalContributors = contributors
+                .Where(g => g.Total > 0 && login.Contains(g.Author.Login) == false)
                 .GroupBy(g => g.Author.Id)
                 .Select(g => new GitHubGlobalContributorModel(g))
                 .OrderByDescending(c => c.TotalCommits)
@@ -217,27 +195,24 @@ namespace OurUmbraco.Community.GitHub
                 .ThenByDescending(c => c.TotalDeletions)
                 .ToList();
 
-            return new GitHubContributorsResult(globalContributors, sb + "");
-
+            return new GitHubContributorsResult(globalContributors, string.Format("{0}{1}", stringBuilder, string.Empty));
         }
 
         public GitHubContributorsResult UpdateOverallContributors(int maxAttempts = 3)
         {
-
             // Load the contributors via the GitHub API
-            GitHubContributorsResult result = GetOverallContributors(maxAttempts);
+            var result = GetOverallContributors(maxAttempts);
 
             // Map the contributors to the cached model
-            IEnumerable<GitHubCachedGlobalContributorModel> contributors = result.Contributors.Select(x => new GitHubCachedGlobalContributorModel(x));
+            var contributors = result.Contributors.Select(x => new GitHubCachedGlobalContributorModel(x));
 
             // Serialize the contributors to raw JSON
-            string rawJson = JsonConvert.SerializeObject(contributors, Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(contributors, Formatting.Indented);
 
             // Save the JSON to disk
             System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
 
             return result;
-
         }
 
         /// <summary>
@@ -247,10 +222,7 @@ namespace OurUmbraco.Community.GitHub
         /// <returns>A list of <see cref="GitHubCachedGlobalContributorModel"/>.</returns>
         public List<GitHubCachedGlobalContributorModel> GetOverallContributorsFromDisk()
         {
-            return (
-                from JObject item in JsonUtils.LoadJsonArray(JsonPath)
-                select item.ToObject<GitHubCachedGlobalContributorModel>()
-            ).ToList();
+            return JsonUtils.LoadJsonArray(JsonPath).Select(item => item.ToObject<GitHubCachedGlobalContributorModel>()).ToList();
         }
 
         /// <summary>
@@ -260,9 +232,7 @@ namespace OurUmbraco.Community.GitHub
         /// <param name="str">The string to be added to <paramref name="sb"/>.</param>
         private void Log(StringBuilder sb, string str)
         {
-            sb.AppendLine(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss") + " " + str);
+            sb.AppendLine(string.Format("{0:yyyy-MM-dd HH:mm:ss} {1}", DateTime.Now, str));
         }
-
     }
-
 }
