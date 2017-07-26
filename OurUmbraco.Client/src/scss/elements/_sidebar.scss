@@ -143,7 +143,8 @@ html {
             margin-left: 5px;
             padding-left: 10px;
             transition: max-height 300ms ease-in-out;
-            li.active > a *{
+            li.active > a *,
+            li.active > h3 {
                 color: darken($color-our, 20%);
             }
             li.open > ul {
