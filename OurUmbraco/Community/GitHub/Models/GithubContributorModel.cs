@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Runtime.Serialization;
 
-namespace OurUmbraco.Community.Models
+namespace OurUmbraco.Community.GitHub.Models
 {
     [DataContract]
     public class GitHubContributorModel : IGitHubContributorModel
@@ -22,9 +22,8 @@ namespace OurUmbraco.Community.Models
             {
                 _weeks = value;
 
-
-                int totalAdditions = 0;
-                int totalDeletions = 0;
+                var totalAdditions = 0;
+                var totalDeletions = 0;
                 foreach (var week in _weeks)
                 {
                     totalDeletions += week.D;

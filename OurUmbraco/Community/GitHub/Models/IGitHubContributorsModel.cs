@@ -1,4 +1,4 @@
-﻿namespace OurUmbraco.Community.Models
+﻿namespace OurUmbraco.Community.GitHub.Models
 {
     public interface IGitHubContributorsModel
     {

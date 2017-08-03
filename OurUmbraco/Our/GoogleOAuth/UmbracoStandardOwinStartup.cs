@@ -31,19 +31,23 @@ namespace OurUmbraco.Our.GoogleOAuth
 
             if (string.Equals(ConfigurationManager.AppSettings["HangFireEnabled"], "true", StringComparison.InvariantCultureIgnoreCase) == false)
                 return;
-            
+
             // Configure hangfire
-            var options = new SqlServerStorageOptions {PrepareSchemaIfNecessary = true};
+            var options = new SqlServerStorageOptions { PrepareSchemaIfNecessary = true };
             var connectionString = Umbraco.Core.ApplicationContext.Current.DatabaseContext.ConnectionString;
             GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString, options);
-            var dashboardOptions = new DashboardOptions {Authorization = new[] {new UmbracoAuthorizationFilter()}};
+            var dashboardOptions = new DashboardOptions { Authorization = new[] { new UmbracoAuthorizationFilter() } };
             app.UseHangfireDashboard("/hangfire", dashboardOptions);
             app.UseHangfireServer();
 
             // Schedule jobs
             var scheduler = new ScheduleHangfireJobs();
             scheduler.MarkAsSolvedReminder();
+
             app.MapSignalR();
+
+            scheduler.UpdateGitHubContributors();
+
         }
     }
 }

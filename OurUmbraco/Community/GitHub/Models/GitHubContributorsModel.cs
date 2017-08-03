@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
-using OurUmbraco.Community.Controllers;
+using OurUmbraco.Community.GitHub.Models.Cached;
 
-namespace OurUmbraco.Community.Models
+namespace OurUmbraco.Community.GitHub.Models
 {
     public class GitHubContributorsModel : IGitHubContributorsModel
     {
