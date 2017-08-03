@@ -14,9 +14,9 @@ namespace OurUmbraco.SignalRHubs
     public class ForumPostHub : Hub
     {
 
-        public void SomeoneIsTyping(int messageId)
+        public void SomeoneIsTyping(int messageId, int memberId, string name)
         {
-            this.Clients.Others.someoneIsTyping(messageId);
+            this.Clients.Others.someoneIsTyping(messageId, memberId, name);
         }
 
 
