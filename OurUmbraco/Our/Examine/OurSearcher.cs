@@ -153,8 +153,7 @@ namespace OurUmbraco.Our.Examine
             }
             
             watch.Stop();
-
-            
+          
             return new SearchResultModel(result, watch.ElapsedMilliseconds, Term, string.IsNullOrEmpty(OrderBy) ? "score" : OrderBy)
             {
                 //NOTE: used for debugging
