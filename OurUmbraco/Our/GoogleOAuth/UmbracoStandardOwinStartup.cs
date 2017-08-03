@@ -43,7 +43,11 @@ namespace OurUmbraco.Our.GoogleOAuth
             // Schedule jobs
             var scheduler = new ScheduleHangfireJobs();
             scheduler.MarkAsSolvedReminder();
+
+            app.MapSignalR();
+
             scheduler.UpdateGitHubContributors();
+
         }
     }
 }

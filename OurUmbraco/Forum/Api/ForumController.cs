@@ -25,6 +25,13 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Forum.Api
 {
+    using System.Threading.Tasks;
+
+    using Microsoft.AspNet.SignalR;
+    using Microsoft.AspNet.SignalR.Client;
+
+    using OurUmbraco.SignalRHubs;
+
     [MemberAuthorize(AllowType = "member")]
     public class ForumController : ForumControllerBase
     {
@@ -59,8 +66,45 @@ namespace OurUmbraco.Forum.Api
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
             o.isSpam = c.IsSpam;
-
+            if (!c.IsSpam)
+            {
+                SignalRcommentSaved(o);
+            }
             return o;
+        }
+
+        private void SignalRcommentSaved(dynamic o)
+        {
+            var root = Url.Content("~/");
+            using (var hubConnection = new HubConnection(root + "/signalr"))
+            {
+                var conProxy = hubConnection.CreateHubProxy("forumPostHub");
+                hubConnection.Start().Wait();
+                conProxy.Invoke("SomeonePosted", o).Wait();
+            }
+        }
+
+        private void SignalRCommentDeleted(int threadId, int commentId)
+        {
+            var root = Url.Content("~/");
+            using (var hubConnection = new HubConnection(root + "/signalr"))
+            {
+                var conProxy = hubConnection.CreateHubProxy("forumPostHub");
+                hubConnection.Start().Wait();
+                conProxy.Invoke("CommentDeleted", threadId, commentId).Wait();
+            }
+        }
+
+
+        private void SignalRcommentEdited(dynamic c)
+        {
+            var root = Url.Content("~/");
+            using (var hubConnection = new HubConnection(root + "/signalr"))
+            {
+                var conProxy = hubConnection.CreateHubProxy("forumPostHub");
+                hubConnection.Start().Wait();
+                conProxy.Invoke("SomeoneEdited", c).Wait();
+            }
         }
 
         [HttpPut]
@@ -76,6 +120,7 @@ namespace OurUmbraco.Forum.Api
 
             c.Body = model.Body;
             // This is an edit, don't update topic post count
+            SignalRcommentEdited(c);
             CommentService.Save(c, false);
         }
 
@@ -91,7 +136,7 @@ namespace OurUmbraco.Forum.Api
                 throw new Exception("You cannot delete this comment");
 
             CommentService.Delete(c);
-
+            SignalRCommentDeleted(c.TopicId, id);
             if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
                 SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
         }
@@ -103,7 +148,7 @@ namespace OurUmbraco.Forum.Api
 
             if (c == null)
                 throw new Exception("Comment not found");
-            
+
             return c.Body.SanitizeEdit();
         }
 
@@ -373,12 +418,12 @@ namespace OurUmbraco.Forum.Api
             {
                 commentService.Delete(comment);
             }
-            
+
             var topics = topicService.GetLatestTopicsForMember(member.Id, false, 100);
             foreach (var topic in topics)
             {
                 // Only delete if this member started the topic
-                if(topic.MemberId == member.Id)
+                if (topic.MemberId == member.Id)
                     topicService.Delete(topic);
             }
 
@@ -404,11 +449,11 @@ namespace OurUmbraco.Forum.Api
                 member.SetValue("reputationTotal", minimumKarma);
                 memberService.Save(member);
             }
-            
+
             var rolesForUser = Roles.GetRolesForUser(member.Username);
-            if(rolesForUser.Contains("potentialspam"))
+            if (rolesForUser.Contains("potentialspam"))
                 memberService.DissociateRole(member.Id, "potentialspam");
-            if(rolesForUser.Contains("newaccount"))
+            if (rolesForUser.Contains("newaccount"))
                 memberService.DissociateRole(member.Id, "newaccount");
 
             var topicService = new TopicService(ApplicationContext.Current.DatabaseContext);
@@ -443,7 +488,7 @@ namespace OurUmbraco.Forum.Api
             newForumTopicNotification.SendNotification(member.Email);
 
             SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
-			
+
             return minimumKarma;
         }
 

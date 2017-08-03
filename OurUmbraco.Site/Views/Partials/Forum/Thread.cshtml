@@ -115,3 +115,121 @@ else
         Please <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">Sign in</a> or <a href="/member/signup">register</a> to post replies
     </div>
 }
+
+<!-- SignalR Stuff Starts-->
+<script src="http://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.0/pnotify.js"></script>
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.0/pnotify.css" rel="stylesheet" type="text/css" />
+<link  href="https://cdnjs.cloudflare.com/ajax/libs/pnotify/3.2.0/pnotify.brighttheme.css" rel="stylesheet" type="text/css" />
+
+<script src="~/signalr/hubs"></script>
+<script>
+    var isLoggedIn = '@(Model.MemberData != null)' == "True" ? true : false;
+    var memberId = @(Model.MemberData != null ? Model.MemberData.Member.Id : 0);
+    $(function() {
+        var forum = $.connection.forumPostHub;
+
+        forum.client.someoneIsTyping = function(id) {
+            if (id !== @Model.Id) {
+                return;
+            }
+            var notify = new PNotify({
+                title: 'Someone starts to answer',
+                text: 'Be patient, solution is coming soon',
+                type: 'info'
+            });
+        };
+
+        forum.client.DeleteComment = function(threadId, commentId) {
+            if (threadId !== @Model.Id) {
+                return;
+            }  
+            var containerId = "#comment-" + commentId;
+            $(containerId).fadeOut(1000, function() { $(this).remove(); });
+        };
+
+        forum.client.returnLatestComment = function(data) {
+            if (data.topicId !== @Model.Id) {
+                return;
+            }
+            var avatarUrl = '/umbraco/api/Avatar/GetMemberAvatar/?memberId=' + data.authorId;
+            $.ajax({
+                url: avatarUrl,
+                type: "GET"
+            }).done(function(avatarData) {
+                data.avatar = avatarData;
+
+                //new comment we'll use mustache to insert it into the dom
+                data.lower = function() {
+                    return function(text, render) {
+                        return render(text).toLowerCase();
+                    }
+                };
+
+                data.canHaveChildren = true;
+                data.isLoggedIn = isLoggedIn;
+                data.isCommentOwner = data.authorId == memberId;
+                var template = $('#comment-template').html();
+                var rendered = Mustache.render(template, data);
+
+                if (data.parent == 0) {
+                    $(".comments").append(rendered);
+
+                    $("div.replybutton").insertAfter($("#comment-" + data.id));
+                } else {
+                    var allComments = $("li[data-parent='" + data.parent + "']");
+                    debugger;
+                    if (allComments.length > 0) {
+                        var lastComment;
+                        for (var i = 0; i < allComments.length; i++) {
+                            lastComment = allComments[i];
+                        }
+                        $(lastComment).after(rendered);
+                    } else {
+                        $("#comment-" + data.parent).after(rendered);
+                    }
+                }
+                var notify = new PNotify({
+                    title: 'New answer was added',
+                    text: 'Jump to new answer',
+                    type: 'success'
+                });
+                $('#comment-' + data.id).css('background', 'rgba(14, 216, 61, 0.31)').fadeIn(200);
+                notify.get().css('cursor', 'pointer').click(function(e) {
+                    $(document).scrollTop($("#comment-" + data.id).offset().top - 80);
+                    $("#comment-" + data.id).hide();
+                    $("#comment-" + data.id).fadeIn();
+                    
+                });
+            });
+        };
+
+        forum.client.returnEditedComment = function(data) {
+            if (data.topicId !== @Model.Id) {
+                return;
+            }
+            var container = $('#comment-' + data.id + ' .body');
+            container.html(data.body);
+            var notify = new PNotify({
+                title: 'Post was edited',
+                text: 'Jump to modified answer',
+            });
+            $('#comment-' + data.id).css('background', 'rgba(216, 209, 14, 0.31)').fadeIn(200);
+            notify.get().css('cursor', 'pointer').click(function(e) {
+                $(document).scrollTop($("#comment-" + data.id).offset().top - 80);
+                $("#comment-" + data.id).hide();
+                $("#comment-" + data.id).fadeIn();
+                
+            });
+
+        }
+       
+        // Start the connection.
+        $.connection.hub.start().done(function () {
+            $('.forum-reply').click(function () {
+                forum.server.someoneIsTyping(@Model.Id);
+            });
+        });
+    });
+</script>
+<!-- End of SignalR-->
