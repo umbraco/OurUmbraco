@@ -99,5 +99,15 @@
 				padding: inherit;
 			}
 		}
+
+		&.master {
+			border-color: $color-roles-indigo;
+			color: $color-roles-indigo;
+			text-transform: capitalize;
+
+			// &:hover {
+			// 	background-color: rgba($color-roles-indigo, .1);
+			// }
+		}
 	}
 }

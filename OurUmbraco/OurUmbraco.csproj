@@ -539,6 +539,7 @@
     <Compile Include="Our\Api\CommunityController.cs" />
     <Compile Include="Community\GitHub\GitHubService.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
+    <Compile Include="Our\Api\BadgesController.cs" />
     <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\GoogleAnalytics.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
@@ -799,6 +800,7 @@
     </Compile>
     <Compile Include="SignalRHubs\ForumPostHub.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
+    <Compile Include="VerifyTokenHeaderAttribute.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVerison.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
