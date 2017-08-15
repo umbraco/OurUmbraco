@@ -4,11 +4,12 @@
 @{
     Layout = null;
     var model = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
+    var siteArea = model.Level > 2 ? model.Ancestor(2).Name : model.Name;
     var bodyCss =
         model.Level > 2 && model.AncestorOrSelf(3).Id == 1057
             ? "profile has-sidebar"
             : model.DocumentTypeAlias.ToLower().Replace(" ", "-") + "-page";
-    
+
     var memberIsBlocked = MemberData != null && MemberData.IsBlocked;
 
 
@@ -179,6 +180,37 @@
 
     <script type="text/javascript">
         classOnScroll('header', 'sticky', 10);
+
+        $(document).ready(function () {
+            var area = "@siteArea";
+            $.ajax("/Umbraco/Api/AnnouncementApi/GetAnnouncement?area=" + area).done(function (data) {
+                var announcement = data;
+
+                if (announcement) {
+                    var closeAnnouncement = "";
+                    if (!announcement.Permanent) {
+                        closeAnnouncement =
+                            "<a href=\"javascript:announcementRead(\'" + announcement.Id + "\')\" style=\"float:right;text-decoration:none\">✖</a>";
+                    }
+                    var announcementElement =
+                        $("<div id='announcement-element-" + announcement.Id + "' style='display:none' class='alertbar__" + announcement.CssClass + "'/>",
+                            {
+                            }).append(closeAnnouncement + "<h2>" + announcement.Header + "</h2>").append(announcement.Content);
+
+                    if (announcement.AnnouncementType == "topbanner") {
+                        $("header").after(announcementElement);
+                        announcementElement.fadeIn();
+                    }
+                }
+            });
+        });
+
+        function announcementRead(key) {
+            $.ajax("/Umbraco/Api/AnnouncementApi/MarkAnnouncementAsRead?key=" + key).done(function () {
+                // hide the element
+                $("#announcement-element-" + key).fadeOut();
+            });
+        }
     </script>
 
     @RenderSection("EndScripts", false)

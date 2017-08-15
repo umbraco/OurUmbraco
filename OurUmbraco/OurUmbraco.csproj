@@ -411,6 +411,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Announcements\AnnouncementApiController.cs" />
+    <Compile Include="Announcements\Models\AnnouncementDisplayModel.cs" />
+    <Compile Include="Announcements\Models\LocationDisplayModel.cs" />
+    <Compile Include="Announcements\Models\LocationModel.cs" />
+    <Compile Include="Announcements\Services\AnnouncementsService.cs" />
+    <Compile Include="Announcements\Services\EcomApiService.cs" />
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
