@@ -539,6 +539,7 @@
     <Compile Include="Our\Api\CommunityController.cs" />
     <Compile Include="Community\GitHub\GitHubService.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
+    <Compile Include="Our\Api\StatisticsController.cs" />
     <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\GoogleAnalytics.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />

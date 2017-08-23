@@ -91,5 +91,12 @@ namespace OurUmbraco.Project.Services
             return compatList;
 
         }
+
+        public int GetAllCompatibilityReportsCount()
+        {
+            var allProjectCompatibilities = _databaseContext.Database.Query<int>("SELECT COUNT(*) FROM DeliVersionCompatibility");
+            var count = allProjectCompatibilities.First();
+            return count;
+        }
     }
 }
