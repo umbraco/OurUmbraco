@@ -145,6 +145,17 @@ namespace OurUmbraco.Our
         }
 
         /// <summary>
+        /// Returns a dictionary of project id => total downloads but only for package files
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, int> GetProjectTotalPackageDownload()
+        {
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>(
+                "select nodeId as projectId, SUM(downloads) as total from wikiFiles WHERE [type] = 'package' GROUP BY nodeId")
+                .ToDictionary(x => (int)x.projectId, x => (int)x.total);
+        }
+
+        /// <summary>
         /// Returns a dictionary of project id => any version that has been flagged as being compatible
         /// </summary>
         /// <returns></returns>

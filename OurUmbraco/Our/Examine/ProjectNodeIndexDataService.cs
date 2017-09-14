@@ -23,6 +23,122 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
+    /// <summary>
+    /// Used to calculate popularity
+    /// </summary>
+    /// <remarks>
+    /// This is a struct because it's a tiny object that we don't want hanging around in memory and is created for every project.
+    /// </remarks>
+    public struct ProjectPopularityPoints
+    {
+        public ProjectPopularityPoints(DateTime createDate, DateTime updateDate, bool worksOnCloud, bool hasForum, bool hasSourceCodeLink, bool openForCollab, int downloads, int votes)
+        {
+            _createDate = createDate;
+            _updateDate = updateDate;
+            _worksOnCloud = worksOnCloud;
+            _hasForum = hasForum;
+            _hasSourceCodeLink = hasSourceCodeLink;
+            _openForCollab = openForCollab;
+            _downloads = downloads;
+            _votes = votes;
+        }
+
+        private readonly DateTime _createDate;
+        private readonly DateTime _updateDate;
+        private readonly bool _worksOnCloud;
+        private readonly bool _hasForum;
+        private readonly bool _hasSourceCodeLink;
+        private readonly bool _openForCollab;
+        private readonly int _downloads;
+        private readonly int _votes;
+
+        public DateTime CreateDate
+        {
+            get { return _createDate; }
+        }
+
+        public DateTime UpdateDate
+        {
+            get { return _updateDate; }
+        }
+
+        public bool WorksOnCloud
+        {
+            get { return _worksOnCloud; }
+        }
+
+        public bool HasForum
+        {
+            get { return _hasForum; }
+        }
+
+        public bool HasSourceCodeLink
+        {
+            get { return _hasSourceCodeLink; }
+        }
+
+        public bool OpenForCollab
+        {
+            get { return _openForCollab; }
+        }
+
+        public int Downloads
+        {
+            get { return _downloads; }
+        }
+
+        public int Votes
+        {
+            get { return _votes; }
+        }
+
+        private int GetUpdateDateScore()
+        {
+            //sort of an exponential calculation on recent update date
+            var now = DateTime.Now;
+            var days = (now - UpdateDate).TotalDays;
+            if (days <= 30) return 5;
+            if (days <= 60) return 4;
+            if (days <= 120) return 3;
+            if (days <= 355) return 2;
+            if (days <= 700) return 1;
+            return 0;
+        }
+
+        public int Calculate()
+        {
+            //Each factor is rated (on various scales), then we can boost each factor accordingly
+            //the boost factor is the first value
+            var ranking = new List<KeyValuePair<int, int>>
+            {
+                //package downloads
+                new KeyValuePair<int, int>(1, Downloads),
+                //votes
+                new KeyValuePair<int, int>(100, Votes),
+                // - recently updated            
+                new KeyValuePair<int, int>(100, GetUpdateDateScore()),
+                // - works on Cloud
+                new KeyValuePair<int, int>(500, WorksOnCloud ? 1 : 0),
+                // - has a forum
+                new KeyValuePair<int, int>(500, HasForum ? 1 : 0),
+                // - has source code link
+                new KeyValuePair<int, int>(500, HasSourceCodeLink ? 1 : 0),
+                // - open for collab / has collaborators
+                new KeyValuePair<int, int>(500, OpenForCollab ? 1 : 0),
+            };
+
+            //TODO:
+            // - works on latest umbraco versions
+            // - download count in a recent timeframe - since old downloads should count for less
+
+            var pop = 0;
+            foreach (var val in ranking)
+            {
+                pop += val.Key * val.Value;
+            }
+            return pop;
+        }
+    }
 
     /// <summary>
     /// Data service used for projects
@@ -48,7 +164,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url);
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
-            simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));            
+            simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))
@@ -76,18 +192,15 @@ namespace OurUmbraco.Our.Examine
             var cleanedCompatVersions = compatVersions
                 .Select(x => x.GetFromUmbracoString(reduceToConfigured: false))
                 .Where(x => x != null);
+            
+            var hasForum = project.Children.Any(x => x.IsVisible());
 
-            //popularity for sorting number = downloads + karma * 100;
-            //TODO: Change score so that we take into account:
-            // - recently updated
-            // - works on latest umbraco versions
-            // - works on uaas
-            // - has a forum
-            // - has source code link
-            // - open for collab / has collaborators
-            // - download count in a recent timeframe - since old downloads should count for less
-
-            var pop = downloads + (projectVotes * 100);
+            var points = new ProjectPopularityPoints(project.CreateDate, project.UpdateDate,
+                project.GetPropertyValue<bool>("worksOnUaaS"), hasForum,
+                project.GetPropertyValue<string>("sourceUrl").IsNullOrWhiteSpace() == false,
+                project.GetPropertyValue<bool>("openForCollab"),
+                downloads, projectVotes);
+            var pop = points.Calculate();
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
             simpleDataSet.RowData.Add("karma", projectVotes.ToString());
@@ -120,7 +233,7 @@ namespace OurUmbraco.Our.Examine
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
-            var allProjectDownloads = Utils.GetProjectTotalDownload();
+            var allProjectDownloads = Utils.GetProjectTotalPackageDownload();
             var allCompatVersions = Utils.GetProjectCompatibleVersions();
 
             foreach (var project in projects)
