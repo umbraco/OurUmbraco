@@ -1,17 +1,18 @@
-﻿using Lucene.Net.Search;
-using Lucene.Net.Search.Payloads;
+﻿using System;
+using Lucene.Net.Documents;
+using Lucene.Net.Search;
 
 namespace OurUmbraco.Our.Examine
 {
-    public class RangeSearchFilter : SearchFilter
+    public class DateRangeSearchFilter : SearchFilter
     {
         private readonly float? _boost;
-        public long To { get; private set; }
+        public DateTime To { get; private set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="T:System.Object"/> class.
         /// </summary>
-        public RangeSearchFilter(string fieldName, long from, long to, float? boost = null) : base(fieldName, from)
+        public DateRangeSearchFilter(string fieldName, DateTime from, DateTime to, float? boost = null) : base(fieldName, from)
         {
             _boost = boost;
             To = to;
@@ -33,7 +34,7 @@ namespace OurUmbraco.Our.Examine
         /// <returns></returns>
         public override Query GetLuceneQuery()
         {
-            var query =  NumericRangeQuery.NewLongRange(FieldName, (long)Value, To, true, true);
+            var query = new TermRangeQuery(FieldName, DateTools.DateToString((DateTime)Value, DateTools.Resolution.MILLISECOND), DateTools.DateToString(To, DateTools.Resolution.MILLISECOND), true, true);
             if (_boost.HasValue)
             {
                 query.SetBoost(_boost.Value);

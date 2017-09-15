@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine;
 using Examine.SearchCriteria;
+using Lucene.Net.Documents;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
@@ -109,6 +110,17 @@ namespace OurUmbraco.Repository.Services
                     filters.Add(versionFilters);
                 }
             }
+
+            //if (order == PackageSortOrder.Popular)
+            //{
+            //    //boost on more recently modified projects
+            //    searchFilters.Filters.Add(new DateRangeSearchFilter(
+            //        "updateDate",
+            //        //from one year ago to now
+            //        DateTime.Now - TimeSpan.FromDays(365),
+            //        DateTime.Now,
+            //        boost: 1000));
+            //}
 
             query = string.IsNullOrWhiteSpace(query) ? string.Empty : query;
 

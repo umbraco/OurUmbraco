@@ -546,6 +546,8 @@
     <Compile Include="Our\Controllers\AvatarController.cs" />
     <Compile Include="Our\Controllers\BreadcrumbController.cs" />
     <Compile Include="Our\Controllers\OurUmbracoController.cs" />
+    <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
+    <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
     <Compile Include="Our\Models\EditFileModel.cs" />
     <Compile Include="Our\Models\EditProjectModel.cs" />
@@ -813,6 +815,7 @@
     <Compile Include="Wiki\iNotFoundHandler.cs" />
     <Compile Include="Wiki\Library\Utils.cs" />
     <Compile Include="Wiki\Library\xslt.cs" />
+    <Compile Include="Wiki\Models\MonthlyProjectDownloads.cs" />
     <Compile Include="Wiki\usercontrols\FileUpload.ascx.cs">
       <DependentUpon>FileUpload.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

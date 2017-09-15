@@ -334,6 +334,7 @@ namespace OurUmbraco.Our
                 ? string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />", imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName)
                 : url;
         }
+        
     }
 
     public struct ReplacePoint
