@@ -145,6 +145,17 @@ namespace OurUmbraco.Our
         }
 
         /// <summary>
+        /// Returns a dictionary of project id => total downloads but only for package files
+        /// </summary>
+        /// <returns></returns>
+        public static Dictionary<int, int> GetProjectTotalPackageDownload()
+        {
+            return Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.Fetch<dynamic>(
+                "select nodeId as projectId, SUM(downloads) as total from wikiFiles WHERE [type] = 'package' GROUP BY nodeId")
+                .ToDictionary(x => (int)x.projectId, x => (int)x.total);
+        }
+
+        /// <summary>
         /// Returns a dictionary of project id => any version that has been flagged as being compatible
         /// </summary>
         /// <returns></returns>
@@ -323,6 +334,7 @@ namespace OurUmbraco.Our
                 ? string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />", imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName)
                 : url;
         }
+        
     }
 
     public struct ReplacePoint

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using Examine;
 using Examine.LuceneEngine;
@@ -66,10 +67,13 @@ namespace OurUmbraco.Our.CustomHandlers
             var projectVotes = Utils.GetProjectTotalVotes(content.Id);
             var files = WikiFile.CurrentFiles(content.Id).ToArray();
             var compatVersions = Utils.GetProjectCompatibleVersions(content.Id) ?? new List<string>();
+            var downloadStats = WikiFile.GetMonthlyDownloadStatsByProject(
+                content.Id,
+                DateTime.Now.Subtract(TimeSpan.FromDays(365)));
 
             var simpleDataIndexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             simpleDataSet = ((ProjectNodeIndexDataService)simpleDataIndexer.DataService)
-                .MapProjectToSimpleDataIndexItem(content, simpleDataSet, "project", projectVotes, files, downloads, compatVersions);
+                .MapProjectToSimpleDataIndexItem(downloadStats, DateTime.Now, content, simpleDataSet, "project", projectVotes, files, downloads, compatVersions);
 
             if (simpleDataSet.NodeDefinition.Type == null)
                 simpleDataSet.NodeDefinition.Type = "project";

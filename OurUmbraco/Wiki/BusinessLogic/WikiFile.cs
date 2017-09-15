@@ -5,6 +5,7 @@ using System.Linq;
 using System.Web;
 using System.Xml;
 using OurUmbraco.Wiki.Extensions;
+using OurUmbraco.Wiki.Models;
 using umbraco.BusinessLogic;
 using umbraco.cms.businesslogic;
 using umbraco.cms.businesslogic.member;
@@ -48,6 +49,51 @@ namespace OurUmbraco.Wiki.BusinessLogic
                 sqlHelper.ExecuteNonQuery("DELETE FROM wikiFiles where ID = @id",
                     sqlHelper.CreateParameter("@id", Id));
             }
+        }
+
+        public static IDictionary<int, MonthlyProjectDownloads> GetMonthlyDownloadStatsByProject(int projectId, DateTime from)
+        {
+            var sql = @"SELECT COUNT(*) count, DATEPART(m,[timestamp]) mon, YEAR([timestamp]) yr, projectId
+FROM [projectDownload]
+WHERE timestamp > @from";
+            if (projectId > 0)
+            {
+                sql += " AND projectId = @projectId";
+            }
+            sql += @" GROUP BY DATEPART(m,[timestamp]), YEAR([timestamp]), projectId ORDER BY projectId, yr, mon";
+
+            var result = new Dictionary<int, MonthlyProjectDownloads>();
+            //Query is a forward read cursor so we won't allocate this all to memory twice
+            var query = ApplicationContext.Current.DatabaseContext.Database.Query<dynamic>(
+                sql, 
+                projectId > 0 ? (object)new { from = from, projectId = projectId } : new { from = from });
+
+            foreach (var q in query)
+            {
+                MonthlyProjectDownloads stats;
+                if (result.TryGetValue(q.projectId, out stats) == false)
+                {
+                    stats = new MonthlyProjectDownloads();
+                    result[q.projectId] = stats;
+                }
+                stats.AddMonthlyStats(q.yr, q.mon, q.count);
+            }
+
+            return result;
+        }
+
+        public static IDictionary<int, MonthlyProjectDownloads> GetMonthlyDownloadStatsByProject(DateTime from)
+        {
+            return GetMonthlyDownloadStatsByProject(0, from);
+        }
+
+        /// <summary>
+        /// This is used to determine the 'now' of project indexing which is mostly used for testing to ensure that date values are not skewed by testing against old data
+        /// </summary>
+        /// <returns></returns>
+        public static DateTime GetMostRecentDownloadDate()
+        {
+            return ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<DateTime>("SELECT MAX([timestamp]) FROM projectDownload");
         }
 
         /// <summary>

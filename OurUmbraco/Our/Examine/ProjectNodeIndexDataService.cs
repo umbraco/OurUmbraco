@@ -11,6 +11,7 @@ using Lucene.Net.Documents;
 using OurUmbraco.Project;
 using OurUmbraco.Repository.Services;
 using OurUmbraco.Wiki.BusinessLogic;
+using OurUmbraco.Wiki.Models;
 using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
@@ -23,13 +24,17 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
-
     /// <summary>
     /// Data service used for projects
     /// </summary>
     public class ProjectNodeIndexDataService : ISimpleDataService
     {
-        public SimpleDataSet MapProjectToSimpleDataIndexItem(IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
+        
+
+        public SimpleDataSet MapProjectToSimpleDataIndexItem(
+            IDictionary<int, MonthlyProjectDownloads> projectDownloadStats,
+            DateTime mostRecentUpdateDate,
+            IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
             int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
         {
             var isLive = project.GetPropertyValue<bool>("projectLive");
@@ -48,7 +53,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("nodeTypeAlias", "project");
             simpleDataSet.RowData.Add("url", project.Url);
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
-            simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));            
+            simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))
@@ -76,18 +81,23 @@ namespace OurUmbraco.Our.Examine
             var cleanedCompatVersions = compatVersions
                 .Select(x => x.GetFromUmbracoString(reduceToConfigured: false))
                 .Where(x => x != null);
+            
+            var hasForum = project.Children.Any(x => x.IsVisible());
 
-            //popularity for sorting number = downloads + karma * 100;
-            //TODO: Change score so that we take into account:
-            // - recently updated
-            // - works on latest umbraco versions
-            // - works on uaas
-            // - has a forum
-            // - has source code link
-            // - open for collab / has collaborators
-            // - download count in a recent timeframe - since old downloads should count for less
+            MonthlyProjectDownloads projStats = null;
+            projectDownloadStats.TryGetValue(project.Id, out projStats);
 
-            var pop = downloads + (projectVotes * 100);
+            var points = new ProjectPopularityPoints(                
+                mostRecentUpdateDate,
+                projStats,
+                project.CreateDate, 
+                project.UpdateDate,
+                project.GetPropertyValue<bool>("worksOnUaaS"), hasForum,
+                project.GetPropertyValue<string>("sourceUrl").IsNullOrWhiteSpace() == false,
+                project.GetPropertyValue<bool>("openForCollab"),
+                downloads, 
+                projectVotes);
+            var pop = points.Calculate();
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
             simpleDataSet.RowData.Add("karma", projectVotes.ToString());
@@ -120,8 +130,10 @@ namespace OurUmbraco.Our.Examine
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
-            var allProjectDownloads = Utils.GetProjectTotalDownload();
+            var allProjectDownloads = Utils.GetProjectTotalPackageDownload();
             var allCompatVersions = Utils.GetProjectCompatibleVersions();
+            var mostRecentDownloadDate = WikiFile.GetMostRecentDownloadDate();
+            var downloadStats = WikiFile.GetMonthlyDownloadStatsByProject(mostRecentDownloadDate.Subtract(TimeSpan.FromDays(365)));            
 
             foreach (var project in projects)
             {
@@ -134,7 +146,10 @@ namespace OurUmbraco.Our.Examine
                 var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] { };
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
-                yield return MapProjectToSimpleDataIndexItem(project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
+                yield return MapProjectToSimpleDataIndexItem(
+                    downloadStats,
+                    mostRecentDownloadDate,                    
+                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
             }
         }
 
@@ -270,5 +285,7 @@ namespace OurUmbraco.Our.Examine
             }
 
         }
+
+        
     }
 }

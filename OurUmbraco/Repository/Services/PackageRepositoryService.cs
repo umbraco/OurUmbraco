@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine;
 using Examine.SearchCriteria;
+using Lucene.Net.Documents;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;

@@ -24,7 +24,10 @@ namespace OurUmbraco.Our.Examine
         public int MaxResults { get; set; }
         public IEnumerable<SearchFilters> Filters { get; set; }
         
-        public OurSearcher(string term, string nodeTypeAlias = null, string orderBy = null, int maxResults = 20, IEnumerable<SearchFilters> filters = null)
+        public OurSearcher(string term, string nodeTypeAlias = null, 
+            string orderBy = null, 
+            int maxResults = 20, 
+            IEnumerable<SearchFilters> filters = null)
         {
             Term = term.MakeSearchQuerySafe();
             NodeTypeAlias = nodeTypeAlias;
