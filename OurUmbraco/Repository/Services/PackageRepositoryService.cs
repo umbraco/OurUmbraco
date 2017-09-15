@@ -111,17 +111,6 @@ namespace OurUmbraco.Repository.Services
                 }
             }
 
-            //if (order == PackageSortOrder.Popular)
-            //{
-            //    //boost on more recently modified projects
-            //    searchFilters.Filters.Add(new DateRangeSearchFilter(
-            //        "updateDate",
-            //        //from one year ago to now
-            //        DateTime.Now - TimeSpan.FromDays(365),
-            //        DateTime.Now,
-            //        boost: 1000));
-            //}
-
             query = string.IsNullOrWhiteSpace(query) ? string.Empty : query;
 
             var orderBy = string.Empty;
