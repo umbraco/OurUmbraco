@@ -4,9 +4,11 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
+using RestSharp.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Models.Membership;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -348,8 +350,11 @@ namespace OurUmbraco.Our
 
                 for (var i = 0; i < 17; i++)
                 {
-                    var userType = userService.GetUserTypeByAlias("admin");
-                    userService.CreateUserWithIdentity(string.Format("user{0}", i), string.Format("user{0}@test.com", i), userType);
+                    var user = userService.CreateUserWithIdentity(string.Format("user{0}", i), string.Format("user{0}@test.com", i));
+
+                    var userGroup = ToReadOnlyGroup(userService.GetUserGroupByAlias("admin"));
+                    user.AddGroup(userGroup);
+                    userService.Save(user);
                 }
 
                 string[] lines = { "" };
@@ -359,6 +364,16 @@ namespace OurUmbraco.Our
             {
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
+        }
+
+        public static IReadOnlyUserGroup ToReadOnlyGroup(IUserGroup group)
+        {
+            //this will generally always be the case
+            var readonlyGroup = group as IReadOnlyUserGroup;
+            if (readonlyGroup != null) return readonlyGroup;
+
+            //otherwise create one
+            return new ReadOnlyUserGroup(group.Id, group.Name, group.Icon, group.StartContentId, group.StartMediaId, group.Alias, group.AllowedSections, group.Permissions);
         }
 
 

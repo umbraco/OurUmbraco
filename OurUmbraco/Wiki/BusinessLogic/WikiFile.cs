@@ -155,17 +155,28 @@ WHERE timestamp > @from";
         public static List<WikiFile> CurrentFiles(int nodeId)
         {
             var wikiFiles = new List<WikiFile>();
-
+            var wikiFileIds = new List<int>();
             using (var sqlHelper = Application.SqlHelper)
             using (var reader = sqlHelper.ExecuteReader("SELECT id FROM wikiFiles WHERE nodeId = @nodeid", sqlHelper.CreateParameter("@nodeId", nodeId)))
             {
                 {
                     while (reader.Read())
-                        wikiFiles.Add(new WikiFile(reader.GetInt("id")));
-
-                    return wikiFiles;
+                    {
+                        var wikiFileId = reader.GetInt("id");
+                        if(wikiFileIds.Contains(wikiFileId) == false)
+                            wikiFileIds.Add(wikiFileId);
+                    }
                 }
             }
+
+            foreach (var wikiFileId in wikiFileIds)
+            {
+                var wikiFile = new WikiFile(wikiFileId);
+                if (wikiFiles.Contains(wikiFile) == false)
+                    wikiFiles.Add(wikiFile);
+            }
+
+            return wikiFiles;
         }
 
         private readonly Events _events = new Events();

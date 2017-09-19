@@ -32,6 +32,10 @@ namespace OurUmbraco.Our.Controllers
         [CaptchaValidator]
         public ActionResult Login(LoginModel model)
         {
+            var recaptcha = ModelState["ReCaptcha"];
+            if (recaptcha != null && HttpContext.Request.IsLocal)
+                recaptcha.Errors.Clear();
+
             if (ModelState.IsValid == false)
                 return CurrentUmbracoPage();
 
@@ -88,7 +92,7 @@ namespace OurUmbraco.Our.Controllers
         [CaptchaValidator]
         public ActionResult ForgotPassword(LoginModel model)
         {
-            if(string.IsNullOrWhiteSpace(model.Username))
+            if (string.IsNullOrWhiteSpace(model.Username))
                 return CurrentUmbracoPage();
 
             var memberService = Services.MemberService;
