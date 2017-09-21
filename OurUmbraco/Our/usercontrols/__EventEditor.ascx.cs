@@ -8,6 +8,7 @@ using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Member = umbraco.cms.businesslogic.member.Member;
+using UserControl = System.Web.UI.UserControl;
 
 namespace OurUmbraco.Our.usercontrols
 {
