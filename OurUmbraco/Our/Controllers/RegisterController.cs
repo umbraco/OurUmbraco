@@ -30,6 +30,10 @@ namespace OurUmbraco.Our.Controllers
         [CaptchaValidator]
         public ActionResult HandleSubmit(RegisterModel model)
         {
+            var recaptcha = ModelState["ReCaptcha"];
+            if (recaptcha != null && HttpContext.Request.IsLocal)
+                recaptcha.Errors.Clear();
+
             var locationInvalid = string.IsNullOrEmpty(model.Latitude) || string.IsNullOrEmpty(model.Longitude);
             if (!ModelState.IsValid || locationInvalid || model.AgreeTerms == false)
             {
