@@ -5,6 +5,14 @@
     </li>
     @foreach (var page in Model)
     {
-        <li><a href="@page.Url">@page.Name</a></li>
+        if (page.ContentType.Alias == "ProjectGroup")
+        {
+            
+            <li><a href="@page.Parent.Url?category=@HttpUtility.UrlPathEncode(page.Name)">@page.Name</a></li>
+        }
+        else
+        {
+            <li><a href="@page.Url">@page.Name</a></li>
+        }
     }
 </ul>
