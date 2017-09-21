@@ -1,28 +1,23 @@
-﻿using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.member;
+﻿using System.Linq;
+using OurUmbraco.Forum.Extensions;
+using umbraco.BusinessLogic;
+using Umbraco.Core.Models;
 
 namespace OurUmbraco.Powers.Library
 {
     public class Utils
     {
-        public static Member GetMember(int id)
+        public static IPublishedContent GetMember(int id)
         {
-            Member m = Member.GetMemberFromCache(id);
-            if (m == null)
-                m = new Member(id);
-
-            return m;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
+            var member = memberShipHelper.GetById(id);
+            return member;
         }
 
-        public static bool IsMemberInGroup(string GroupName, int memberid)
+        public static bool IsMemberInGroup(string groupName, int memberid)
         {
-            Member m = Utils.GetMember(memberid);
-            foreach (MemberGroup mg in m.Groups.Values)
-            {
-                if (mg.Text == GroupName)
-                    return true;
-            }
-            return false;
+            var member = GetMember(memberid);
+            return member != null && member.GetRoles().Any(memberGroup => memberGroup == groupName);
         }
 
         public static bool HasVoted(int memberId, int id, string dataBaseTable)

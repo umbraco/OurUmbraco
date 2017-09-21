@@ -6,39 +6,41 @@ using System.IO;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
-using System.Xml;
 using Newtonsoft.Json;
 using OurUmbraco.Our.Businesslogic;
 using umbraco.BusinessLogic;
-using umbraco.cms.businesslogic.member;
-using umbraco.cms.businesslogic.web;
+using Umbraco.Core;
+using Umbraco.Web;
 using Umbraco.Web.WebApi;
+using File = System.IO.File;
 
 namespace OurUmbraco.Our.Api
 {
     [Authorize]
     public class CommunityController : UmbracoApiController
     {
-        public static string SetAvatar(int mId, string service)
+        public static string SetAvatar(int memberId, string service)
         {
-            var member = new Member(mId);
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var member = memberShipHelper.GetById(memberId);
 
             switch (service)
             {
                 case "twitter":
-                    if (member.getProperty("twitter") != null && member.getProperty("twitter").Value.ToString() != "")
+                    if (string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("twitter")) == false)
                     {
-                        var twitData = Twitter.Profile(member.getProperty("twitter").Value.ToString());
+                        var twitData = Twitter.Profile(member.GetPropertyValue<string>("twitter"));
                         if (twitData.MoveNext())
                         {
                             var imgUrl = twitData.Current.SelectSingleNode("//profile_image_url").Value;
-                            return SaveUrlAsBuddyIcon(imgUrl, member);
+                            return SaveUrlAsBuddyIcon(imgUrl, member.Id);
                         }
                     }
                     break;
                 case "gravatar":
-                    var gravatarUrl = "https://www.gravatar.com/avatar/" + umbraco.library.md5(member.Email) + "?s=48&d=monsterid";
-                    return SaveUrlAsBuddyIcon(gravatarUrl, member);
+                    var gravatarUrl = string.Format("https://www.gravatar.com/avatar/{0}?s=48&d=monsterid",
+                        umbraco.library.md5(member.GetPropertyValue<string>("email")));
+                    return SaveUrlAsBuddyIcon(gravatarUrl, member.Id);
             }
 
             return string.Empty;
@@ -47,14 +49,16 @@ namespace OurUmbraco.Our.Api
         [HttpGet]
         public string SetServiceAsBuddyIcon(string service)
         {
-            var id = Member.GetCurrentMember().Id;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var id = memberShipHelper.GetCurrentMemberId();
             return SetAvatar(id, service);
         }
 
-        private static string SaveUrlAsBuddyIcon(string url, Member m)
+        private static string SaveUrlAsBuddyIcon(string url, int memberId)
         {
-            var file = m.Id.ToString(CultureInfo.InvariantCulture);
-            var path = HttpContext.Current.Server.MapPath("/media/avatar/" + file + ".jpg");
+            var file = memberId.ToString(CultureInfo.InvariantCulture);
+            var avatar = string.Format("/media/avatar/{0}.jpg", file);
+            var path = HttpContext.Current.Server.MapPath(avatar);
 
             if (File.Exists(path))
                 File.Delete(path);
@@ -62,14 +66,12 @@ namespace OurUmbraco.Our.Api
             var webClient = new System.Net.WebClient();
             webClient.DownloadFile(url, path);
 
-            m.getProperty("avatar").Value = "/media/avatar/" + file + ".jpg";
-            m.XmlGenerate(new XmlDocument());
-            m.Save();
+            var memberService = ApplicationContext.Current.Services.MemberService;
+            var member = memberService.GetById(memberId);
 
-            Member.RemoveMemberFromCache(m);
-            Member.AddMemberToCache(m);
+            member.SetValue("avatar", avatar);
 
-            return "/media/avatar/" + file + ".jpg";
+            return avatar;
         }
 
         [HttpGet]
@@ -79,36 +81,33 @@ namespace OurUmbraco.Our.Api
             if (string.IsNullOrEmpty(url) == false)
                 return "true";
 
-            Member m = Member.GetCurrentMember();
-            if (m != null)
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var member = memberShipHelper.GetCurrentMember();
+            if (member == null)
+                return "error";
+
+            var imageBytes = HttpContext.Current.Request.BinaryRead(HttpContext.Current.Request.ContentLength);
+            var file = member.Id.ToString(CultureInfo.InvariantCulture);
+            var avatar = string.Format("/media/avatar/{0}.jpg", file);
+            var path = HttpContext.Current.Server.MapPath(avatar);
+
+            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
             {
-                var imageBytes = HttpContext.Current.Request.BinaryRead(HttpContext.Current.Request.ContentLength);
-                var file = m.Id.ToString(CultureInfo.InvariantCulture);
-                var path = HttpContext.Current.Server.MapPath("/media/avatar/" + file + ".jpg");
+                ms.Write(imageBytes, 0, imageBytes.Length);
 
-                using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-                {
-                    ms.Write(imageBytes, 0, imageBytes.Length);
+                var newImage = Image.FromStream(ms, true).GetThumbnailImage(64, 48, ThumbnailCallback, new IntPtr());
 
-                    var newImage = Image.FromStream(ms, true).GetThumbnailImage(64, 48, ThumbnailCallback, new IntPtr());
+                if (File.Exists(path))
+                    File.Delete(path);
 
-                    if (File.Exists(path))
-                        File.Delete(path);
-
-                    newImage.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
-                }
-
-                m.getProperty("avatar").Value = string.Format("/media/avatar/{0}.jpg", file);
-                m.XmlGenerate(new XmlDocument());
-                m.Save();
-
-                Member.RemoveMemberFromCache(m);
-                Member.AddMemberToCache(m);
-
-                return string.Format("/media/avatar/{0}.jpg", file);
+                newImage.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
             }
 
-            return "error";
+            var memberService = ApplicationContext.Current.Services.MemberService;
+            var m = memberService.GetById(member.Id);
+            m.SetValue("avatar", avatar);
+
+            return avatar;
         }
 
         private bool ThumbnailCallback()
@@ -167,7 +166,9 @@ namespace OurUmbraco.Our.Api
                             tagId = 0;
                         }
                     }
-                    catch { }
+                    catch
+                    {
+                    }
                 }
             }
         }
@@ -175,48 +176,42 @@ namespace OurUmbraco.Our.Api
         [HttpGet]
         public string ChangeCollabStatus(int projectId, bool status)
         {
-            int _currentMember = Member.GetCurrentMember().Id;
-            if (_currentMember > 0)
-            {
-                Document p = new Document(projectId);
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var currentMember = memberShipHelper.GetCurrentMemberId();
 
-                if ((int)p.getProperty("owner").Value == _currentMember)
-                {
-                    p.getProperty("openForCollab").Value = status;
-
-                    p.Publish(new User(0));
-                    umbraco.library.UpdateDocumentCache(p.Id);
-
-                    return "true";
-                }
-                
+            if (currentMember <= 0)
                 return "false";
-            }
 
-            return "false";
+            var contentService = ApplicationContext.Services.ContentService;
+            var content = contentService.GetById(projectId);
+
+            if (content.GetValue<int>("owner") != currentMember)
+                return "false";
+
+            content.SetValue("openForCollab", status);
+            var result = contentService.PublishWithStatus(content);
+            return result.Success.ToString();
         }
 
         [HttpGet]
         public string RemoveContributor(int projectId, int memberId)
         {
-            int _currentMember = Member.GetCurrentMember().Id;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var currentMember = memberShipHelper.GetCurrentMemberId();
 
-            if (_currentMember > 0)
-            {
-                umbraco.presentation.nodeFactory.Node p = new umbraco.presentation.nodeFactory.Node(projectId);
-
-                if (p.GetProperty("owner").Value == _currentMember.ToString())
-                {
-
-                    ProjectContributor pc = new ProjectContributor(projectId, memberId);
-                    pc.Delete();
-                    return "true";
-                }
-                
+            if (currentMember <= 0)
                 return "false";
-            }
 
-            return "false";
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var content = umbracoHelper.Content(projectId);
+
+            if (content.GetPropertyValue<int>("owner") != currentMember)
+                return "false";
+
+            var projectContributor = new ProjectContributor(projectId, memberId);
+            projectContributor.Delete();
+
+            return "true";
         }
 
 
@@ -225,31 +220,30 @@ namespace OurUmbraco.Our.Api
         public HttpResponseMessage ImageUpload()
         {
             dynamic result = new ExpandoObject();
-            var httpRequest = System.Web.HttpContext.Current.Request;
+            var httpRequest = HttpContext.Current.Request;
             if (httpRequest.Files.Count > 0)
             {
-                string filename = string.Empty;
+                var filename = string.Empty;
 
-                Guid g = Guid.NewGuid();
+                var guid = Guid.NewGuid();
 
                 foreach (string file in httpRequest.Files)
                 {
 
-                    DirectoryInfo updir = new DirectoryInfo(System.Web.HttpContext.Current.Server.MapPath("/media/upload/" + g));
+                    var updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + guid));
 
                     if (!updir.Exists)
                         updir.Create();
 
                     var postedFile = httpRequest.Files[file];
 
-                    var filePath = updir.FullName + "/" + postedFile.FileName;
+                    var filePath = string.Format("{0}/{1}", updir.FullName, postedFile.FileName);
                     postedFile.SaveAs(filePath);
                     filename = postedFile.FileName;
-
                 }
 
                 result.success = true;
-                result.imagePath = "/media/upload/" + g + "/" + filename;
+                result.imagePath = string.Format("/media/upload/{0}/{1}", guid, filename);
             }
             else
             {
@@ -258,13 +252,9 @@ namespace OurUmbraco.Our.Api
             }
 
             //jquery ajax file uploader expects html, it parses to json client side
-            var response = new HttpResponseMessage();
-            response.Content = new StringContent(JsonConvert.SerializeObject(result));
+            var response = new HttpResponseMessage { Content = new StringContent(JsonConvert.SerializeObject(result)) };
             response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("text/html");
             return response;
         }
     }
-
-   
-
 }

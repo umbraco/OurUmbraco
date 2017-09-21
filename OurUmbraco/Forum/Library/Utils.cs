@@ -8,6 +8,7 @@ using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
+using OurUmbraco.Forum.Extensions;
 using RestSharp;
 using RestSharp.Deserializers;
 using umbraco.BusinessLogic;
@@ -15,8 +16,6 @@ using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
-using Member = umbraco.cms.businesslogic.member.Member;
-using MemberGroup = umbraco.cms.businesslogic.member.MemberGroup;
 
 namespace OurUmbraco.Forum.Library
 {
@@ -69,84 +68,47 @@ namespace OurUmbraco.Forum.Library
             return Regex.Replace(text, re, "");
         }
 
-        public static Member GetMember(int id)
+        public static IPublishedContent GetMember(int id)
         {
-            try
-            {
-                return Member.GetMemberFromCache(id) ?? new Member(id);
-            }
-            catch (Exception exception)
-            {
-                Log.Add(LogTypes.Error, 0, string.Format("Could not get member {0} from the cache nor from the database - Exception: {1} {2} {3}", id, exception.Message, exception.StackTrace, exception.InnerException));
-            }
-
-            return null;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var currentMember = memberShipHelper.GetCurrentMember();
+            return currentMember;
         }
 
         public static bool IsModerator()
         {
-            var isModerator = false;
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var currentMember = memberShipHelper.GetCurrentMember();
 
-            var currentMemberId = HttpContext.Current.User.Identity.IsAuthenticated ? (int)Membership.GetUser().ProviderUserKey : 0;
-
-            if (currentMemberId != 0)
-            {
-                var moderatorRoles = new[] { "admin", "HQ", "Core", "MVP" };
-
-                isModerator = moderatorRoles.Any(moderatorRole => IsMemberInGroup(moderatorRole, currentMemberId));
-            }
-
-            return isModerator;
-        }
-
-        public static bool IsMemberInGroup(string GroupName, int memberid)
-        {
-            Member m;
-            try
-            {
-                m = Utils.GetMember(memberid);
-            }
-            catch (Exception ex)
-            {
-                Log.Add(LogTypes.Error, new User(0), -1, string.Format("Utills.GetMember({0}) failed - {1} {2} {3}", memberid, ex.Message, ex.StackTrace, ex.InnerException));
+            if (currentMember.Id == 0)
                 return false;
-            }
 
-            foreach (MemberGroup mg in m.Groups.Values)
-            {
-                if (mg.Text == GroupName)
-                    return true;
-            }
-            return false;
+            var moderatorRoles = new[] { "admin", "HQ", "Core", "MVP" };
+            return moderatorRoles.Any(moderatorRole => IsMemberInGroup(moderatorRole, currentMember));
         }
 
-        public static bool IsInGroup(string GroupName)
+        public static bool IsMemberInGroup(string groupName, IPublishedContent member)
         {
-
-            if (umbraco.library.IsLoggedOn())
-                return IsMemberInGroup(GroupName, Member.CurrentMemberId());
-            else
-                return false;
+            return member.GetRoles().Any(memberGroup => memberGroup == groupName);
         }
 
-        public static void AddMemberToPotentialSpamGroup(Member member)
+        public static bool IsInGroup(string groupName)
         {
-            var memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-            if (memberGroup == null)
-                MemberGroup.MakeNew(SpamMemberGroupName, new User(0));
-
-            memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-            member.AddGroup(memberGroup.Id);
+            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+            var currentMember = memberShipHelper.GetCurrentMember();
+            return currentMember != null && IsMemberInGroup(groupName, currentMember);
         }
 
-        public static void RemoveMemberFromPotentialSpamGroup(Member member)
+        public static void AddMemberToPotentialSpamGroup(int memberId)
         {
-            var memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-            if (memberGroup == null)
-                MemberGroup.MakeNew(SpamMemberGroupName, new User(0));
+            var memberService = ApplicationContext.Current.Services.MemberService;
+            memberService.AssignRole(memberId, SpamMemberGroupName);
+        }
 
-            memberGroup = MemberGroup.GetByName(SpamMemberGroupName);
-            member.RemoveGroup(memberGroup.Id);
+        public static void RemoveMemberFromPotentialSpamGroup(int memberId)
+        {
+            var memberService = ApplicationContext.Current.Services.MemberService;
+            memberService.DissociateRole(memberId, SpamMemberGroupName);
         }
 
         public static SpamResult CheckForSpam(IMember member)
