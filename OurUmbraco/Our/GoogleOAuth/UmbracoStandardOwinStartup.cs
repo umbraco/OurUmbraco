@@ -29,6 +29,8 @@ namespace OurUmbraco.Our.GoogleOAuth
             var secret = WebConfigurationManager.AppSettings["GoogleOAuthSecret"];
             app.ConfigureBackOfficeGoogleAuth(clientId, secret);
 
+            app.MapSignalR();
+
             if (string.Equals(ConfigurationManager.AppSettings["HangFireEnabled"], "true", StringComparison.InvariantCultureIgnoreCase) == false)
                 return;
 
@@ -43,11 +45,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             // Schedule jobs
             var scheduler = new ScheduleHangfireJobs();
             scheduler.MarkAsSolvedReminder();
-
-            app.MapSignalR();
-
             scheduler.UpdateGitHubContributors();
-
         }
     }
 }
