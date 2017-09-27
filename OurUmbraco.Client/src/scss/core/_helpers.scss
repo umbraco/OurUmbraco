@@ -35,10 +35,8 @@
 	$color-markdown-bg:  #333;
 
 	// Font-family
-	$font-family:		'Asap', sans-serif;
-
-
-
+	$font-family:		'Lato', sans-serif;
+    
 	// Font-sizes
 	$font-size-header:	1.6rem;
 	$font-size-big:		2rem;
@@ -116,8 +114,13 @@
 		text-align: center;
 	}
 
-
-
+@font-face {
+    font-family: 'Lato';
+    src: url('fonts/lato/LatoLatin-Regular.eot'); /* IE9 Compat Modes */
+    src: url('fonts/lato/LatoLatin-Regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+    url('fonts/lato/LatoLatin-Regular.woff') format('woff'), /* Modern Browsers */
+    url('fonts/lato/LatoLatin-Regular.ttf') format('truetype');
+}
 
 
 // // // //

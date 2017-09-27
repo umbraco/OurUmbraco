@@ -640,6 +640,10 @@
     <Content Include="config\feedProxy.config" />
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
+    <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.eot" />
+    <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.ttf" />
+    <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.woff" />
+    <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.woff2" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="scripts\jquery-1.6.4.js" />
