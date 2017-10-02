@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco.Site", "OurUmbraco.Site\OurUmbraco.Site.csproj", "{911907FB-3B9D-4E5F-9A45-16700A451A54}"
 EndProject
@@ -38,6 +38,12 @@ Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OurUmbraco.Client", "OurUmb
 		Release.AspNetCompiler.Debug = "False"
 		VWDPort = "59200"
 		SlnRelativePath = "OurUmbraco.Client\"
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7347182D-A715-432C-B467-A9C01D87CB77}"
+	ProjectSection(SolutionItems) = preProject
+		build\BuildClientFiles.bat = build\BuildClientFiles.bat
+		commands.json = commands.json
 	EndProjectSection
 EndProject
 Global
@@ -85,5 +91,8 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4033B213-C78D-45CB-97A7-B68536E1DE53}
 	EndGlobalSection
 EndGlobal
