@@ -30,8 +30,8 @@ namespace OurUmbraco.Our.Api
                 AllSolvedTopics = allSolvedTopics,
                 AllUnsolvedTopics = allUnsolvedTopics,
                 AllTopicsDateRange = limitedSolvedTopics + limitedUnsolvedTopics,
-                AllSolvedTopicsDateRange = allSolvedTopics,
-                AllUnsolvedTopicsDateRange = allUnsolvedTopics
+                AllSolvedTopicsDateRange = limitedSolvedTopics,
+                AllUnsolvedTopicsDateRange = limitedUnsolvedTopics
             };
 
             return topicData;
