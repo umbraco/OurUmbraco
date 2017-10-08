@@ -98,5 +98,15 @@ namespace OurUmbraco.Project.Services
             var count = allProjectCompatibilities.First();
             return count;
         }
+
+        public int GetAllCompatibilityReportsCountByDateRange(DateTime fromDate, DateTime toDate)
+        {
+            var allProjectCompatibilities = _databaseContext.Database.Query<int>(
+                "SELECT COUNT(*) FROM DeliVersionCompatibility WHERE (dateStamp BETWEEN '" + 
+                fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')");
+
+            var count = allProjectCompatibilities.First();
+            return count;
+        }
     }
 }

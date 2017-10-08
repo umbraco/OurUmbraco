@@ -151,6 +151,43 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
         }
 
         /// <summary>
+        /// Returns a count of all topics
+        /// </summary>
+        /// <param name="category"></param>
+        /// <returns></returns>
+        public int GetAllTopicsCountByDateRange(DateTime fromDate, DateTime toDate, int category = -1, bool unsolved = false, bool noreplies = false)
+        {
+            const string sql1 = @"SELECT COUNT(*) as forumTopicCount
+FROM forumTopics
+LEFT OUTER JOIN umbracoNode u1 ON (forumTopics.latestReplyAuthor = u1.id AND u1.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjectType = '39EB0F98-B348-42A1-8662-E7EB18487560')
+";
+            const string sqlix = sql1 + "WHERE isSpam=0";
+            const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
+            
+            var sql = (category > 0 ? sqlic : sqlix);
+
+            if (unsolved)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND answer = 0";
+                else
+                    sql = sql + " WHERE answer = 0";
+
+            if (noreplies)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND replies = 0";
+                else
+                    sql = sql + " WHERE replies = 0";
+            
+            if (sql.Contains("WHERE"))
+                sql = sql + " AND (forumTopics.Created BETWEEN '" + fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')";
+            else
+                sql = sql + " WHERE (forumTopics.Created BETWEEN '" + fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')";
+
+            return _databaseContext.Database.ExecuteScalar<int>(sql, new { category = category });
+        }
+
+        /// <summary>
         /// Returns an in-memory collection of topics that a given member has participated in
         /// </summary>
         /// <param name="memberId"></param>

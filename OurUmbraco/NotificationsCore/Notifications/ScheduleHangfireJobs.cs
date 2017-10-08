@@ -35,13 +35,21 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => UpdateGitHubContributorsJsonFile(), Cron.HourInterval(12));
         }
 
+        public void UpdateMeetupStats()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.MinuteInterval(15));
+        }
+
         public void UpdateGitHubContributorsJsonFile()
         {
-            // Initialize a new service
             var service = new GitHubService();
-
-            // Determine the path to the JSON file
             service.UpdateOverallContributors();
+        }
+
+        public void UpdateMeetupStatsJsonFile()
+        {
+            var service = new Community.Meetup.MeetupService();
+            service.UpdateMeetupStats();
         }
     }
 

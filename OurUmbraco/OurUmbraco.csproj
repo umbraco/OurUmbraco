@@ -390,6 +390,8 @@
     <Compile Include="Community\GitHub\Models\GitHubContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\IGitHubContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorsResult.cs" />
+    <Compile Include="Community\Meetup\MeetupService.cs" />
+    <Compile Include="Community\Meetup\Models\MeetupCacheItem.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
     <Compile Include="Community\Models\MeetupItem.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorsModel.cs" />
