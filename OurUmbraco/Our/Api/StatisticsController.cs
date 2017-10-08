@@ -2,23 +2,13 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Text;
 using System.Web;
 using Examine.SearchCriteria;
 using Newtonsoft.Json;
-using OurUmbraco.Community.GitHub.Models.Cached;
 using OurUmbraco.Community.Meetup.Models;
-using OurUmbraco.Community.Models;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Project.Services;
-using Skybrud.Essentials.Json;
-using Skybrud.Social.Http;
-using Skybrud.Social.Meetup;
-using Skybrud.Social.Meetup.Models.Events;
-using Skybrud.Social.Meetup.Responses.Events;
-using Umbraco.Core;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api

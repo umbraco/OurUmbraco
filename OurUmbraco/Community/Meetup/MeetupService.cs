@@ -26,7 +26,7 @@ namespace OurUmbraco.Community.Meetup
                 int.TryParse(savedCounter, out counter);
             }
 
-            var newCounter = aliases.Length < counter ? 0 : counter + 1;
+            var newCounter = aliases.Length <= counter ? 0 : counter + 1;
             File.WriteAllText(counterPath, newCounter.ToString(), Encoding.UTF8);
 
             var client = new MeetupClient();
