@@ -12,6 +12,7 @@ using OurUmbraco.Community.People.Models;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Project.Services;
+using Skybrud.Essentials.Time.Extensions;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -148,7 +149,7 @@ namespace OurUmbraco.Our.Api
         // Adapted from: https://stackoverflow.com/a/25248044/5018
         public List<YearAndWeekNumbers> GetYearAndWeekNumbers(DateTime fromDate, DateTime toDate)
         {
-            var currentCulture = CultureInfo.GetCultureInfo("dk-DK");
+            var currentCulture = CultureInfo.GetCultureInfo("da-DK");
             var yearAndWeekNumbers = new List<YearAndWeekNumbers>();
 
             for (var dateTime = fromDate; dateTime < toDate; dateTime = dateTime.AddDays(1))
@@ -158,7 +159,7 @@ namespace OurUmbraco.Our.Api
                     currentCulture.DateTimeFormat.CalendarWeekRule,
                     currentCulture.DateTimeFormat.FirstDayOfWeek);
 
-                var yearAndWeekNumber = new YearAndWeekNumbers { WeekNumber = weeekNumber, Year = dateTime.Year };
+                var yearAndWeekNumber = new YearAndWeekNumbers { WeekNumber = weeekNumber, Year = dateTime.GetFirstDayOfWeek(DayOfWeek.Monday).Year };
                 if (yearAndWeekNumbers.Any(x => x.Year == yearAndWeekNumber.Year && x.WeekNumber == yearAndWeekNumber.WeekNumber) == false)
                     yearAndWeekNumbers.Add(yearAndWeekNumber);
             }
@@ -173,7 +174,7 @@ namespace OurUmbraco.Our.Api
             var daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
 
             var firstThursday = jan1.AddDays(daysOffset);
-            var cal = CultureInfo.GetCultureInfo("dk-DK").Calendar;
+            var cal = CultureInfo.GetCultureInfo("da-DK").Calendar;
             var firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
 
             var weekNum = weekOfYear;
