@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Web;
 using Examine.SearchCriteria;
 using Newtonsoft.Json;
 using OurUmbraco.Community.Meetup.Models;
+using OurUmbraco.Community.People;
+using OurUmbraco.Community.People.Models;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Project.Services;
@@ -115,6 +118,71 @@ namespace OurUmbraco.Our.Api
 
             return meetupData;
         }
+
+        [System.Web.Http.HttpGet]
+        public PeopleData GetPeopleData(DateTime fromDate, DateTime toDate)
+        {
+            var peopleData = new PeopleData {  MostActiveDateRange =  new List<PeopleDataByWeek>() };
+            var yearAndWeekNumbers = GetYearAndWeekNumbers(fromDate, toDate);
+            
+            foreach (var yearAndWeekNumber in yearAndWeekNumbers)
+            {
+                var weekStartDate = GetDateRangeFromWeekNumber(yearAndWeekNumber.Year, yearAndWeekNumber.WeekNumber);
+                var weekEndDate = weekStartDate.AddDays(7);
+
+                var peopleService = new PeopleService();
+                var topPeople = peopleService.GetMostActiveDateRange(weekStartDate, weekEndDate);
+
+                var peopleDataByWeek = new PeopleDataByWeek
+                {
+                    WeekNumber = yearAndWeekNumber.WeekNumber,
+                    Year = yearAndWeekNumber.Year,
+                    MostActive = topPeople
+                };
+                
+                peopleData.MostActiveDateRange.Add(peopleDataByWeek);
+            }
+            return peopleData;
+        }
+
+        // Adapted from: https://stackoverflow.com/a/25248044/5018
+        public List<YearAndWeekNumbers> GetYearAndWeekNumbers(DateTime fromDate, DateTime toDate)
+        {
+            var currentCulture = CultureInfo.GetCultureInfo("dk-DK");
+            var yearAndWeekNumbers = new List<YearAndWeekNumbers>();
+
+            for (var dateTime = fromDate; dateTime < toDate; dateTime = dateTime.AddDays(1))
+            {
+                var weeekNumber = currentCulture.Calendar.GetWeekOfYear(
+                    dateTime,
+                    currentCulture.DateTimeFormat.CalendarWeekRule,
+                    currentCulture.DateTimeFormat.FirstDayOfWeek);
+
+                var yearAndWeekNumber = new YearAndWeekNumbers { WeekNumber = weeekNumber, Year = dateTime.Year };
+                if (yearAndWeekNumbers.Any(x => x.Year == yearAndWeekNumber.Year && x.WeekNumber == yearAndWeekNumber.WeekNumber) == false)
+                    yearAndWeekNumbers.Add(yearAndWeekNumber);
+            }
+
+            return yearAndWeekNumbers;
+        }
+
+        // Adapted from: https://stackoverflow.com/a/9064954/5018
+        public static DateTime GetDateRangeFromWeekNumber(int year, int weekOfYear)
+        {
+            var jan1 = new DateTime(year, 1, 1);
+            var daysOffset = DayOfWeek.Thursday - jan1.DayOfWeek;
+
+            var firstThursday = jan1.AddDays(daysOffset);
+            var cal = CultureInfo.GetCultureInfo("dk-DK").Calendar;
+            var firstWeek = cal.GetWeekOfYear(firstThursday, CalendarWeekRule.FirstFourDayWeek, DayOfWeek.Monday);
+
+            var weekNum = weekOfYear;
+            if (firstWeek <= 1)
+                weekNum -= 1;
+
+            var result = firstThursday.AddDays(weekNum * 7);
+            return result.AddDays(-3);
+        }
     }
 
     public class TopicData
@@ -141,5 +209,23 @@ namespace OurUmbraco.Our.Api
     {
         public int AllMeetupGroups { get; set; }
         public int MeetupEventsDateRange { get; set; }
+    }
+
+    public class PeopleData
+    {
+        public List<PeopleDataByWeek> MostActiveDateRange { get; set; }
+    }
+
+    public class PeopleDataByWeek
+    {
+        public int WeekNumber { get; set; }
+        public int Year { get; set; }
+        public List<PeopleKarmaResult> MostActive { get; set; }
+    }
+
+    public class YearAndWeekNumbers
+    {
+        public int Year { get; set; }
+        public int WeekNumber { get; set; }
     }
 }
