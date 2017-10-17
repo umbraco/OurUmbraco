@@ -1,4 +1,4 @@
-﻿umbracodk
+umbracodk
 Dutch-Umbraco-User-Group
 Australian-Umbraco-Meetups
 Kent-Umbraco-Meetup
@@ -35,3 +35,4 @@ Oslo-Umbraco-Meetup
 Orange-County-Umbraco-Web-Technologies
 umbLeeds
 Barcelona-Umbraco-Meetup
+Umbraco-Meetup-RheinMain
