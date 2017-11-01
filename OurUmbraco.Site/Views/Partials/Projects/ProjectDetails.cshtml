@@ -380,7 +380,7 @@
             </ul>
         </div>
 
-        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl))
+        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl) || !string.IsNullOrEmpty(demoUrl))
         {
             <div class="package-compatibility-information">
                 <h3>External resources</h3>
@@ -402,6 +402,12 @@
                     {
                         <li>
                             <a href="@supportUrl">Issue tracker</a>
+                        </li>
+                    }
+                    @if (!string.IsNullOrEmpty(demoUrl))
+                    {
+                        <li>
+                            <a href="@demoUrl">Demonstration</a>
                         </li>
                     }
                 </ul>
