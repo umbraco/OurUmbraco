@@ -490,8 +490,6 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
 
                         //Add ons - UmbracoCourier
-                        case "developer":
-                            return 0;
                         case "architechture":
                             return 1;
 
