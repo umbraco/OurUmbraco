@@ -246,15 +246,15 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "implementation":
                             return 1;
                         case "extending":
-                            return 3;
+                            return 2;
                         case "reference":
-                            return 4;
+                            return 3;
                         case "tutorials":
-                            return 5;
+                            return 4;
                         case "add-ons":
-                            return 6;
+                            return 5;
                         case "umbraco-cloud":
-                            return 7;
+                            return 6;
                     }
                     break;
 
@@ -267,13 +267,23 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "backoffice":
                             return 1;
                         case "data":
-                            return 3;
+                            return 2;
                         case "design":
+                            return 3;
+                        case "code":
                             return 4;
 
                         //Implementation
                         case "default-routing":
                             return 0;
+                        case "custom-routing":
+                            return 1;
+                        case "controllers":
+                            return 2;
+                        case "data-persistence":
+                            return 3;
+                        case "rest-api":
+                            return 4;
 
                         //Extending
                         case "dashboards":
@@ -284,6 +294,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
                         case "macro-parameter-editors":
                             return 3;
+                        case "healthcheck":
+                            return 4;
+                        case "language-files":
+                            return 5;
 
                         //Reference
                         case "config":
@@ -304,14 +318,30 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 7;
                         case "cache":
                             return 8;
+                        case "packaging":
+                            return 9;
+                        case "security":
+                            return 10;
+                        case "common-pitfalls":
+                            return 11;
 
                         //Tutorials
                         case "creating-basic-site":
                             return 0;
+                        case "creating-a-custom-dashboard":
+                            return 1;
+                        case "creating-a-property-editor":
+                            return 2;
+                        case "multilanguage-setup":
+                            return 3;
+                        case "starter-kit":
+                            return 4;
 
                         //Add ons
                         case "umbracoforms":
                             return 0;
+                        case "umbracocourier":
+                            return 1;
 
                         //Umbraco Cloud
                         case "getting-started":
@@ -350,6 +380,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 0;
                         case "property-editors":
                             return 1;
+                        case "login":
+                            return 2;
 
                         //Getting Started - Data
                         case "defining-content":
@@ -360,6 +392,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
                         case "data-types":
                             return 3;
+                        case "scheduled-publishing":
+                            return 4;
 
                         //Getting Started - Design
                         case "templates":
@@ -392,7 +426,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 0;
                         case "404handlers":
                             return 1;
-                        case "appalications":
+                        case "applications":
                             return 2;
                         case "embeddedmedia":
                             return 3;
@@ -410,6 +444,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 9;
                         case "umbracosettings":
                             return 10;
+                        case "dashboard":
+                            return 11;
+                        case "healthchecks":
+                            return 12;
 
                         //Reference - Templating
                         case "mvc":
@@ -418,6 +456,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "macros":
                             return 2;
+                        case "modelsbuilder":
+                            return 3;
 
                         //Reference - Querying
                         case "ipublishedcontent":
@@ -436,6 +476,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "webapi":
                             return 2;
+                        case "iisrewriterules":
+                            return 3;
+                        case "url-tracking":
+                            return 4;
 
                         //Add Ons - UmbracoForms
                         case "installation":
@@ -445,9 +489,11 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "developer":
                             return 2;
 
-                        //Add ons - UmbracoCourrier
+                        //Add ons - UmbracoCourier
+                        case "developer":
+                            return 0;
                         case "architechture":
-                            return 3;
+                            return 1;
 
                         //Umbraco Cloud - Getting Started
                         case "baselines":
