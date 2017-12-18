@@ -253,7 +253,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 5;
                         case "add-ons":
                             return 6;
-                        case "umbraco-as-a-service":
+                        case "umbraco-cloud":
                             return 7;
                     }
                     break;
@@ -320,8 +320,15 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "deployment":
                             return 2;
-                        case "troubleshooting":
+                        case "databases":
                             return 3;
+                        case "upgrades":
+                            return 4;
+                        case "troubleshooting":
+                            return 5;
+                        case "frequently-asked-questions":
+                            return 6;
+                        
                     }
                     break;
 
@@ -442,21 +449,59 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "architechture":
                             return 3;
 
-                        //UaaS - Getting Started
+                        //Umbraco Cloud - Getting Started
                         case "baselines":
                             return 0;
-                        case "baseline-merge-conflicts":
+                        case "migrate-existing-site":
                             return 1;
 
-                        //UaaS - Set Up
+                        //Umbraco Cloud - Set Up
                         case "working-locally":
                             return 0;
-                        case "team-members":
-                            return 1;
                         case "visual-studio":
+                            return 1;
+                        case "working-with-visual-studio":
                             return 2;
-                        case "media":
+                        case "working-with-uaas-cli":
                             return 3;
+                        case "team-members":
+                            return 4;
+                        case "media":
+                            return 5;
+                        case "smtp-settings":
+                            return 6;
+                        case "config-transforms":
+                            return 7;
+                        case "power-tools":
+                            return 8;
+
+                        //Umbraco Cloud - Deployment
+                        case "local-to-cloud":
+                            return 0;
+                        case "cloud-to-cloud":
+                            return 1;
+                        case "content-transfer":
+                            return 2;
+                        case "restoring-content":
+                            return 3;
+                        case "deployment-webhook":
+                            return 4;
+
+                        //Umbraco Cloud - Troubleshooting
+                        case "content-deploy-schema":
+                            return 0;
+                        case "content-deploy-error":
+                            return 1;
+                        case "structure-error":
+                            return 2;
+                        case "duplicate-dictionary-items":
+                            return 3;
+                        case "moving-from-courier-to-deploy":
+                            return 4;
+                        case "minor-upgrades":
+                            return 5;
+                        case "plugins-known-issues":
+                            return 6;
 
                     }
                     break;
