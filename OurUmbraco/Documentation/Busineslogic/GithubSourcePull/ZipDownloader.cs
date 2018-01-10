@@ -494,10 +494,16 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
 
                         //Umbraco Cloud - Getting Started
-                        case "baselines":
+                        case "project-overview":
                             return 0;
-                        case "migrate-existing-site":
+                        case "environments":
                             return 1;
+                        case "the-umbraco-cloud-portal":
+                            return 2;
+                        case "baselines":
+                            return 3;
+                        case "migrate-existing-site":
+                            return 4;
 
                         //Umbraco Cloud - Set Up
                         case "working-locally":
@@ -508,16 +514,20 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
                         case "working-with-uaas-cli":
                             return 3;
-                        case "team-members":
+                        case "project-settings":
                             return 4;
-                        case "media":
+                        case "team-members":
                             return 5;
-                        case "smtp-settings":
+                        case "media":
                             return 6;
-                        case "config-transforms":
+                        case "smtp-settings":
                             return 7;
-                        case "power-tools":
+                        case "manage-domains":
                             return 8;
+                        case "config-transforms":
+                            return 9;
+                        case "power-tools":
+                            return 10;
 
                         //Umbraco Cloud - Deployment
                         case "local-to-cloud":
