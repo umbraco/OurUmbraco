@@ -1,0 +1,39 @@
+﻿@using Newtonsoft.Json
+@model OurUmbraco.Forum.Controllers.GroupedTopicData
+
+<div style="width: 100%; display: block; background-color: white;">
+    <canvas id="canvas"></canvas>
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        var ctx = document.getElementById("canvas");
+        var barChartData = @Html.Raw(JsonConvert.SerializeObject(Model));
+
+        var myChart = new Chart(ctx, {
+            type: "line",
+            responsive: true,
+            data: barChartData,
+            options: {
+                scales: {
+                    yAxes: [{
+                        ticks: {
+                            beginAtZero:true
+                        }
+                    }],
+                    xAxes: [{
+                        gridLines: false
+                    }]
+                },
+                layout: {
+                    padding: {
+                        left: 20,
+                        right: 20,
+                        top: 20,
+                        bottom: 20
+                    }
+                }
+            }
+        });
+    });
+</script>

@@ -4343,6 +4343,9 @@
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\Partials\Home\ForumStatistics.cshtml" />
+    <Content Include="Views\CommunityHub.cshtml" />
+    <Content Include="Views\Partials\Community\Hub.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
