@@ -7,7 +7,7 @@ using Newtonsoft.Json;
 using OurUmbraco.Forum.Services;
 using Umbraco.Web.Mvc;
 
-namespace OurUmbraco.Forum.Controllers
+namespace OurUmbraco.Community.Controllers
 {
     public class StatisticsController : SurfaceController
     {

@@ -429,7 +429,7 @@
     <Compile Include="Forum\Api\ForumControllerBase.cs" />
     <Compile Include="Forum\Api\PublicForumController.cs" />
     <Compile Include="Forum\Api\TopicController.cs" />
-    <Compile Include="Forum\Controllers\StatisticsController.cs" />
+    <Compile Include="Community\Controllers\StatisticsController.cs" />
     <Compile Include="Forum\Controllers\LatestActivityController.cs" />
     <Compile Include="Forum\EventHandlers\MemberApprovedEventhandler.cs" />
     <Compile Include="Forum\EventHandlers\NewForumHandler.cs" />
