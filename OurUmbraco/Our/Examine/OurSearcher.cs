@@ -85,7 +85,13 @@ namespace OurUmbraco.Our.Examine
 
                 //do an exact phrase match with boost
                 sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
-                
+
+                if (deduped.Count > 20)
+                {
+                    //truncate, we don't want to search on all of these individually
+                    deduped = deduped.Take(20).ToList();
+                }
+
                 if (deduped.Count > 0)
                 {
                     //do standard match with boost on each term
