@@ -163,15 +163,17 @@ namespace OurUmbraco.Our.Controllers
             var project = GetProjectForAuthorizedMember(id);
             var nodeListingProvider = new NodeListingProvider();
             var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
-            
+
             var errorMessage = string.Empty;
             var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+
             if (currentPackage == null)
-            {
                 errorMessage = "None of the package files are marked as the current package, please make one current.";
-            }
-            else if(ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)) == false)
+
+            if (currentPackage != null && ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)) == false)
             {
+                LogHelper.Info<ProjectController>($"Checking if {currentPackage.Path} has a package.xml zipped up in there.");
+
                 var contentService = Services.ContentService;
                 var content = contentService.GetById(project.Id);
                 var projectIsLive = content.GetValue<bool>("projectLive");
@@ -183,7 +185,7 @@ namespace OurUmbraco.Our.Controllers
                 }
                 errorMessage = $"The current package file {currentPackage.Name} is not a valid Umbraco Package, please upload a package";
             }
-            
+
             var model = new ProjectCompleteModel { Id = project.Id, Name = project.Name, ProjectLive = project.Live, ErrorMessage = errorMessage };
 
             return PartialView("~/Views/Partials/Project/Complete.cshtml", model);
@@ -212,7 +214,6 @@ namespace OurUmbraco.Our.Controllers
         {
             var nodeListingProvider = new NodeListingProvider();
             var project = GetProjectForAuthorizedMember(model.Id);
-
 
             if (model.ProjectLive == false)
             {
