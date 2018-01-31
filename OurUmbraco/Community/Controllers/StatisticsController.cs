@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Web.Hosting;
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using OurUmbraco.Forum.Services;
@@ -11,19 +13,36 @@ namespace OurUmbraco.Community.Controllers
 {
     public class StatisticsController : SurfaceController
     {
+        public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/ForumStatisticsData.json");
+
         public ActionResult Statistics()
         {
-            var fromDate = DateTime.Now.AddYears(-1);
-            var toDate = DateTime.Now;
+            GroupedTopicData groupedTopicData;
+
+            if (System.IO.File.Exists(JsonPath))
+            {
+                var jsonData = System.IO.File.ReadAllText(JsonPath);
+                groupedTopicData = JsonConvert.DeserializeObject<GroupedTopicData>(jsonData);
+            }
+            else
+            {
+                groupedTopicData = GetGroupedTopicData();
+            }
+
+            return PartialView("~/Views/Partials/Home/ForumStatistics.cshtml", groupedTopicData);
+        }
+
+        private GroupedTopicData GetGroupedTopicData()
+        {
             var topicService = new TopicService(DatabaseContext);
 
             //var currentCulture = CultureInfo.CurrentCulture;
-            var topics = topicService.GetAllTopicsByDateRange(fromDate, toDate);
+            var topics = topicService.GetAllTopicsByDateRange(new DateTime(1990, 1, 1), DateTime.MaxValue);
             var allTopics = topics.GroupBy(d => new
             {
                 d.Created.Year,
                 //WeekNumber = currentCulture.Calendar.GetWeekOfYear(d.Created, 
-                    //currentCulture.DateTimeFormat.CalendarWeekRule, currentCulture.DateTimeFormat.FirstDayOfWeek)
+                //currentCulture.DateTimeFormat.CalendarWeekRule, currentCulture.DateTimeFormat.FirstDayOfWeek)
                 d.Created.Month
             }).ToList();
 
@@ -36,7 +55,7 @@ namespace OurUmbraco.Community.Controllers
             groupedTopicData.DataSets = new List<DataSet>();
             foreach (var topicGroup in allTopics)
             {
-                groupedTopicData.Labels.Add(string.Format("{0} {1}", 
+                groupedTopicData.Labels.Add(string.Format("{0} {1}",
                     CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(topicGroup.Key.Month), topicGroup.Key.Year));
             }
 
@@ -47,14 +66,15 @@ namespace OurUmbraco.Community.Controllers
                 Fill = false,
                 BackgroundColor = "rgb(0, 0, 255, 0.2)",
                 BorderColor = "rgb(0, 0, 255)",
-                BorderWidth = 1,
+                BorderWidth = 2,
                 Data = new List<int>()
             };
             foreach (var topicGroup in allTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
-                topicCountDataSet.Data.Add(topicsInGroup.Count);   
+                topicCountDataSet.Data.Add(topicsInGroup.Count);
             }
+
             groupedTopicData.DataSets.Add(topicCountDataSet);
             //
 
@@ -65,15 +85,16 @@ namespace OurUmbraco.Community.Controllers
                 Fill = false,
                 BackgroundColor = "rgb(0, 255, 0, 0.2)",
                 BorderColor = "rgb(0, 255, 0)",
-                BorderWidth = 1,
+                BorderWidth = 2,
                 Data = new List<int>()
             };
 
             foreach (var topicGroup in allTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
-                solvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer != 0));   
+                solvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer != 0));
             }
+
             groupedTopicData.DataSets.Add(solvedTopicCountDataSet);
             //
 
@@ -84,15 +105,16 @@ namespace OurUmbraco.Community.Controllers
                 Fill = false,
                 BackgroundColor = "rgb(255, 0, 128, 0.2)",
                 BorderColor = "rgb(255, 0, 128)",
-                BorderWidth = 1,
+                BorderWidth = 2,
                 Data = new List<int>()
             };
 
             foreach (var topicGroup in allTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
-                unsolvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer == 0));   
+                unsolvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer == 0));
             }
+
             groupedTopicData.DataSets.Add(unsolvedTopicCountDataSet);
             //
 
@@ -103,18 +125,19 @@ namespace OurUmbraco.Community.Controllers
                 Fill = false,
                 BackgroundColor = "rgb(0, 255, 255, 0.2)",
                 BorderColor = "rgb(0, 255, 255)",
-                BorderWidth = 1,
+                BorderWidth = 2,
                 Data = new List<int>()
             };
 
             foreach (var topicGroup in allTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
-                repliesCountDataSet.Data.Add(topicsInGroup.Sum(x => x.Replies));   
+                repliesCountDataSet.Data.Add(topicsInGroup.Sum(x => x.Replies));
             }
+
             groupedTopicData.DataSets.Add(repliesCountDataSet);
             //
-          
+
             //
             var topicsNoRepliesCountDataSet = new DataSet
             {
@@ -122,19 +145,25 @@ namespace OurUmbraco.Community.Controllers
                 Fill = false,
                 BackgroundColor = "rgb(255, 0, 0, 0.2)",
                 BorderColor = "rgb(255, 0, 0)",
-                BorderWidth = 1,
+                BorderWidth = 2,
                 Data = new List<int>()
             };
 
             foreach (var topicGroup in allTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
-                topicsNoRepliesCountDataSet.Data.Add(topicsInGroup.Count(x => x.Replies == 0));   
+                topicsNoRepliesCountDataSet.Data.Add(topicsInGroup.Count(x => x.Replies == 0));
             }
+
             groupedTopicData.DataSets.Add(topicsNoRepliesCountDataSet);
             //
-            
-            return PartialView("~/Views/Partials/Home/ForumStatistics.cshtml", groupedTopicData);
+
+            // Serialize the data to raw JSON
+            var rawJson = JsonConvert.SerializeObject(groupedTopicData, Formatting.Indented);
+
+            // Save the JSON to disk
+            System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
+            return groupedTopicData;
         }
     }
 
