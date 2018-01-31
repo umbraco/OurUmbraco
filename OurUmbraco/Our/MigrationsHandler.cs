@@ -40,7 +40,6 @@ namespace OurUmbraco.Our
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
             RenameUaaStoUCloud();
-            AddMarkAsSolutionReminderSent();
             UseNewLoginForm();
             UseNewForgotPasswordForm();
             AddTwitterFilters();

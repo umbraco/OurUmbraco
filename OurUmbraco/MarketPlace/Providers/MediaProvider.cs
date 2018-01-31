@@ -18,8 +18,8 @@ namespace OurUmbraco.MarketPlace.Providers
             var wikiFiles = WikiFile.CurrentFiles(projectId);
 
             var mediaFiles = new List<MediaFile>();
-
-            foreach (var wikiFile in wikiFiles)
+            var fileTypeName = GetFileTypeAsString(type);
+            foreach (var wikiFile in wikiFiles.Where(x => x.FileType == fileTypeName))
             {
                 var mediaFile = new MediaFile
                 {

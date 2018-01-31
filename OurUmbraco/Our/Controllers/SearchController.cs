@@ -25,11 +25,16 @@ namespace OurUmbraco.Our.Controllers
             var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
             var nodeTypeAlias = cat;
-
-            //TODO: If we are searching on projects, they need to be filtered to approved/live!
-
+            
             var forumName = string.Empty;
             var filters = new List<SearchFilters>();
+
+            if (nodeTypeAlias == "project")
+            {
+                var searchFilters = new SearchFilters(BooleanOperation.And);
+                searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                filters.Add(searchFilters);
+            }
 
             if (nodeTypeAlias == "forum" && fid > 0)
             {
@@ -56,7 +61,6 @@ namespace OurUmbraco.Our.Controllers
                 searchFilters.Filters.Add(new SearchFilter("replies", "0"));
                 filters.Add(searchFilters);
             }
-
             var ourSearcher = new OurSearcher(q,
                 //TODO: Depending on what order by this is, we need to pass in a data
                 // type here, for example, if its an INT or a Date!

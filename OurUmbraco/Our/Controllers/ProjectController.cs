@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -12,6 +13,9 @@ using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Project.Helpers;
 using OurUmbraco.Wiki.BusinessLogic;
+using Umbraco.Core.IO;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -157,16 +161,75 @@ namespace OurUmbraco.Our.Controllers
         public ActionResult RenderComplete(int id)
         {
             var project = GetProjectForAuthorizedMember(id);
-            var model = new ProjectCompleteModel { Id = id, Name = project.Name, ProjectLive = project.Live };
+            var nodeListingProvider = new NodeListingProvider();
+            var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
+            
+            var errorMessage = string.Empty;
+            var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+            if (currentPackage == null)
+            {
+                errorMessage = "None of the package files are marked as the current package, please make one current.";
+            }
+            else if(ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)) == false)
+            {
+                var contentService = Services.ContentService;
+                var content = contentService.GetById(project.Id);
+                var projectIsLive = content.GetValue<bool>("projectLive");
+
+                if (projectIsLive)
+                {
+                    content.SetValue("projectLive", false);
+                    contentService.SaveAndPublishWithStatus(content);
+                }
+                errorMessage = $"The current package file {currentPackage.Name} is not a valid Umbraco Package, please upload a package";
+            }
+            
+            var model = new ProjectCompleteModel { Id = project.Id, Name = project.Name, ProjectLive = project.Live, ErrorMessage = errorMessage };
+
             return PartialView("~/Views/Partials/Project/Complete.cshtml", model);
+        }
+
+        private bool ZipFileContainsPackageXml(string zipName)
+        {
+            try
+            {
+                using (var archive = ZipFile.OpenRead(zipName))
+                {
+                    var packageXmlFileExists = archive.Entries.Any(x => x.FullName.ToLowerInvariant().EndsWith("\\package.xml".ToLowerInvariant()));
+                    if (packageXmlFileExists)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProjectController>($"Error unzipping {zipName}", ex);
+            }
+
+            return false;
         }
 
         public ActionResult UpdateProjectLive(ProjectCompleteModel model)
         {
             var nodeListingProvider = new NodeListingProvider();
             var project = GetProjectForAuthorizedMember(model.Id);
-            project.Live = model.ProjectLive;
-            nodeListingProvider.SaveOrUpdate(project);
+
+
+            if (model.ProjectLive == false)
+            {
+                project.Live = false;
+                nodeListingProvider.SaveOrUpdate(project);
+            }
+            else
+            {
+                var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
+                var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+
+                if (currentPackage != null && ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)))
+                {
+                    project.Live = true;
+                    nodeListingProvider.SaveOrUpdate(project);
+                }
+            }
 
             return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }
