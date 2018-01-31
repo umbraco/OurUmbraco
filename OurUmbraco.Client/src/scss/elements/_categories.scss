@@ -10,7 +10,7 @@
 		text-decoration: none;
 		text-transform: capitalize;
 		font-size: .7rem;
-		line-height: 1;
+		line-height: 1.25em;
 
 		background: #4ea7ff;
 		color: #fff;
@@ -20,7 +20,7 @@
 
 		max-width: 100%;
 		word-wrap: break-word;
-		white-space: nowrap;
+		white-space: pre-wrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
