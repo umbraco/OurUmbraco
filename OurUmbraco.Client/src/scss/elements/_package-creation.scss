@@ -1,260 +1,270 @@
 .package-create {
-	position: relative;
-	top: 15px;
-	max-width: 100%;
+    position: relative;
+    top: 15px;
+    max-width: 100%;
 
-	h1, h2, h3, legend {
-		color: $color-headline;
-		font-weight: bold;
-	}
+    h1, h2, h3, legend {
+        color: $color-headline;
+        font-weight: bold;
+    }
 
-	h1 {
-		@extend .sidebarTitle;
-		margin-top: 0;
-	}
+    h1 {
+        @extend .sidebarTitle;
+        margin-top: 0;
+    }
 
-	h2 {
-		font-size: 1.6rem;
-		margin: 0 0 10px;
-	}
+    h2 {
+        font-size: 1.6rem;
+        margin: 0 0 10px;
+    }
 
-	h3, legend {
-		font-size: 1.2rem;
-		margin: 0 0 10px;
+    h3, legend {
+        font-size: 1.2rem;
+        margin: 0 0 10px;
+    }
 
-	}
+    p {
+        font-size: .95rem;
+        line-height: 1.5;
+        color: $color-text;
 
-	p {
-		font-size: .95rem;
-		line-height: 1.5;
-		color: $color-text;
+        + p {
+            margin-top: 20px;
+        }
+    }
 
-		+ p {
-			margin-top: 20px;
-		}
-	}
+    .stepNavigation {
+        list-style: none;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        margin-top: 1.5rem;
+        border-bottom: 1px solid rgba(#000, .18);
 
-	.stepNavigation {
-		list-style: none;
-		margin-bottom: 1rem;
-		padding-bottom: 1rem;
-		margin-top: 1.5rem;
-		border-bottom: 1px solid rgba(#000, .18);
+        li {
+            display: inline-block;
+            margin-right: .5rem;
+            color: $color-text;
+            font-size: .75rem;
 
-		li {
-			display: inline-block;
-			margin-right: .5rem;
-			color: $color-text;
-			font-size: .75rem;
+            @media (min-width: $md) {
+                font-size: .9rem;
+                margin-right: 1rem;
+            }
 
-			@media (min-width: $md) {
-				font-size: .9rem;
-				margin-right: 1rem;
-			}
+            &.current {
+                color: $color-headline;
+                font-weight: bold;
+            }
 
-			&.current {
-				color: $color-headline;
-				font-weight: bold;
-			}
+            &:last-child {
+                margin-right: 0;
+            }
 
-			&:last-child {
-				margin-right: 0;
-			}
+            a {
+                text-decoration: none;
 
-			a {
-				text-decoration: none;
+                &:hover {
+                    color: $color-text-hover;
+                }
+            }
+        }
+    }
 
-				&:hover {
-					color: $color-text-hover;
-				}
-			}
-		}
-	}
+    fieldset {
+        padding: 0 0 1.5rem 0;
+        margin: 1.5rem 0 0 0;
+        border: none;
+        border-bottom: 1px solid whitesmoke;
+        max-width: 100%;
 
-	fieldset {
-		padding: 0 0 1.5rem 0;
-		margin: 1.5rem 0 0 0;
-		border: none;
-		border-bottom: 1px solid whitesmoke;
-		max-width: 100%;
+        input {
+            @media (max-width: $md) {
+                max-width: 360px;
+            }
+        }
+    }
 
-		input {
-			@media (max-width: $md) {
-				max-width: 360px;
-			}
-		}
-	}
+    label {
+        color: rgba(#000, 1);
+        width: 10rem;
+        display: block;
+        padding: 1.5rem .5rem .2rem 0;
+        display: inline-block;
+        font-size: 1rem;
+        font-weight: bold;
 
-	label {
-		color: rgba(#000, 1);
-		width: 10rem;
-		display: block;
-		padding: 1.5rem .5rem .2rem 0;
-		display: inline-block;
-		font-size: 1rem;
-		font-weight: bold;
+        &.pickfile {
+            font-size: .9rem;
+            padding: 0;
+            color: $color-text;
+        }
 
-		&.pickfile {
-			font-size: .9rem;
-			padding: 0;
-			color: $color-text;
-		}
+        @media (min-width: $md) {
+            width: 15rem;
+        }
+    }
 
-		@media (min-width: $md) {
-			width: 15rem;
-		}
-	}
+    small {
+        font-size: .85rem;
+        color: $color-text;
+        margin: 5px 0 0;
+        max-width: 90%;
 
-	small {
-		font-size: .85rem;
-		color: $color-text;
-		margin: 5px 0 0;
-		max-width: 90%;
-
-		@media (min-width: 1142px) {
-			margin: 0;
-			max-width: 80%;
-			opacity: .6;
-		}
-	}
-
-	
-	input, textarea {
-		font-family: $font-family;
-
-		&.warning, &.error {
-			border-color: $color-red !important;
-		}
-	}
+        @media (min-width: 1142px) {
+            margin: 0;
+            max-width: 80%;
+            opacity: .6;
+        }
+    }
 
 
-	input[type="text"], textarea {
-		font-size: .95rem;
-		color: rgba(#000, 1);
-		border: 1px solid darken(whitesmoke, 5%);
+    input, textarea {
+        font-family: $font-family;
 
-		&:focus, &:active {
-			outline: none;
-			border-color: $color-our;
-		}
-	}
+        &.warning, &.error {
+            border-color: $color-red !important;
+        }
+    }
 
 
-	input[type="text"] {
-		padding: 12px 10px;
-		outline: none;
-		width: 30rem;
-	}
+    input[type="text"], textarea {
+        font-size: .95rem;
+        color: rgba(#000, 1);
+        border: 1px solid darken(whitesmoke, 5%);
+
+        &:focus, &:active {
+            outline: none;
+            border-color: $color-our;
+        }
+    }
 
 
-
-
-	input[type="checkbox"] + label {
-		font-size: .9rem;
-		color: $color-headline;
-		margin-left: .5rem;
-	}
-
-	input[type="checkbox"]:checked + label {
-		font-weight: bold;
-	}
-
-	input[type="checkbox"] + label + small {
-		top: -20px;
-	}
+    input[type="text"] {
+        padding: 12px 10px;
+        outline: none;
+        width: 30rem;
+    }
 
 
 
 
-	select + small {
-		top: -20px;
-	}
+    input[type="checkbox"] + label {
+        font-size: .9rem;
+        color: $color-headline;
+        margin-left: .5rem;
+    }
+
+    input[type="checkbox"]:checked + label {
+        font-weight: bold;
+    }
+
+    input[type="checkbox"] + label + small {
+        top: -20px;
+    }
+
+
+    #registrationForm {
+        input[type=submit].actionButton {
+            padding: 5px 15px !important;
+            font-size: .9em !important;
+        }
+
+        @media (min-width: $md) {
+            fieldset {
+                max-width: 100%;
+            }
+        }
+    }
+
+
+    select + small {
+        top: -20px;
+    }
 
 
 
-	textarea {
-		padding: 8px;
-	}
+    textarea {
+        padding: 8px;
+    }
 
 
 
-	::-webkit-input-placeholder {
-	   color: red;
-	}
+    ::-webkit-input-placeholder {
+        color: red;
+    }
 
 
-	#ContentPlaceHolderDefault_Main_Editor_5_ctl00_Collab {
-		& + label {
-			padding: 0;
-		}
-	}
+    #ContentPlaceHolderDefault_Main_Editor_5_ctl00_Collab {
+        & + label {
+            padding: 0;
+        }
+    }
 
-	.buttons {
-		margin-top: 2rem;
-		text-align: right;
+    .buttons {
+        margin-top: 2rem;
+        text-align: right;
 
-		.button {
-			font-size: .9rem;
+        .button {
+            font-size: .9rem;
+        }
 
-		}
+        a {
+            font-size: .9rem;
+            color: $color-text;
 
-		a {
-			font-size: .9rem;
-			color: $color-text;
+            &:hover {
+                text-decoration: none;
+                color: $color-headline;
+            }
+        }
+    }
 
-			&:hover {
-				text-decoration: none;
-				color: $color-headline;
-			}
-		}
-	}
+    .pickversionWrapper {
+        overflow: hidden;
+    }
 
-	.pickversionWrapper {
-		overflow: hidden;
-	}
-
-	.pickversion {
-		font-size: .95rem;
-		color: $color-text;
-		float: left;
+    .pickversion {
+        font-size: .95rem;
+        color: $color-text;
+        float: left;
 
 
-		input[type="checkbox"] {
-			margin-right: .5rem;
-			margin-bottom: .5rem;
-		}
+        input[type="checkbox"] {
+            margin-right: .5rem;
+            margin-bottom: .5rem;
+        }
 
-		input[type="checkbox"]:checked + * {
-			font-weight: bold;
-		}
-	}
+        input[type="checkbox"]:checked + * {
+            font-weight: bold;
+        }
+    }
 
-	#pickVersion, #pickNetVersion, #pickTrustLevel {
-		label {
-			padding-bottom: .5rem;
-			padding-top: 0;
-		}
-	}
+    #pickVersion, #pickNetVersion, #pickTrustLevel {
+        label {
+            padding-bottom: .5rem;
+            padding-top: 0;
+        }
+    }
 
-	#pickVersion {
-		margin-top: 0;
-		float: left;
-		display: block;
-	}
+    #pickVersion {
+        margin-top: 0;
+        float: left;
+        display: block;
+    }
 
-	&.complete {
-		fieldset {
-			margin-top: 2rem;
+    &.complete {
+        fieldset {
+            margin-top: 2rem;
 
-			label {
-				padding: 1.5rem 0 0;
-			}
+            label {
+                padding: 1.5rem 0 0;
+            }
 
-			p + p {
-				margin: .5rem 0 0;
-			}
-		}
-	}
+            p + p {
+                margin: .5rem 0 0;
+            }
+        }
+    }
 }
 
 
