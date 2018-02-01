@@ -35,3 +35,4 @@ Oslo-Umbraco-Meetup
 Orange-County-Umbraco-Web-Technologies
 umbLeeds
 Barcelona-Umbraco-Meetup
+Belgian-Umbraco-User-Group
