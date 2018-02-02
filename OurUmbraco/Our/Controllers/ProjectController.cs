@@ -197,7 +197,7 @@ namespace OurUmbraco.Our.Controllers
             {
                 using (var archive = ZipFile.OpenRead(zipName))
                 {
-                    var packageXmlFileExists = archive.Entries.Any(x => x.FullName.ToLowerInvariant().EndsWith("\\package.xml".ToLowerInvariant()));
+                    var packageXmlFileExists = archive.Entries.Any(x => string.Equals(x.Name, "package.xml", StringComparison.InvariantCultureIgnoreCase));
                     if (packageXmlFileExists)
                         return true;
                 }
