@@ -5,6 +5,7 @@
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
 @using System.Text.RegularExpressions;
+@using OurUmbraco.MarketPlace.Interfaces
 
 @{
     var project = Model.Content;
@@ -263,7 +264,7 @@
                     <div class="package-detail-sidebar">
 
                         <div class="package-download">
-                            @if (currentRelease != null)
+                            @if (currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package")
                             {
                                 <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br /><small>version @project.GetPropertyValue("version")</small></a>
                             }

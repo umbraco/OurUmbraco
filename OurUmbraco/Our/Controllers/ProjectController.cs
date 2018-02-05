@@ -15,7 +15,6 @@ using OurUmbraco.Project.Helpers;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core.IO;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Services;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -23,6 +22,8 @@ namespace OurUmbraco.Our.Controllers
 {
     public class ProjectController : SurfaceController
     {
+        private string _exceptionName = "uIntra";
+
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
         {
@@ -167,14 +168,14 @@ namespace OurUmbraco.Our.Controllers
             var errorMessage = string.Empty;
             var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
 
-            if (currentPackage == null)
+            // Special exception
+            var isExceptionPackage = string.Equals(project.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase);
+
+            if (isExceptionPackage == false && currentPackage == null)
                 errorMessage = "None of the package files are marked as the current package, please make one current.";
 
-            if (currentPackage != null && ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)) == false)
+            if (isExceptionPackage == false && currentPackage != null && ZipFileContainsPackageXml(currentPackage) == false)
             {
-                LogHelper.Info<ProjectController>(string.Format("Checking if {0} has a package.xml zipped up in there.",
-                    currentPackage.Path));
-
                 var contentService = Services.ContentService;
                 var content = contentService.GetById(project.Id);
                 var projectIsLive = content.GetValue<bool>("projectLive");
@@ -192,11 +193,14 @@ namespace OurUmbraco.Our.Controllers
             return PartialView("~/Views/Partials/Project/Complete.cshtml", model);
         }
 
-        private bool ZipFileContainsPackageXml(string zipName)
+        private bool ZipFileContainsPackageXml(IMediaFile package)
         {
+            var zipFile = IOHelper.MapPath(package.Path);
             try
             {
-                using (var archive = ZipFile.OpenRead(zipName))
+                LogHelper.Info<ProjectController>(string.Format("Checking if {0} has a package.xml zipped up in there.", zipFile));
+
+                using (var archive = ZipFile.OpenRead(zipFile))
                 {
                     var packageXmlFileExists = archive.Entries.Any(x => string.Equals(x.Name, "package.xml", StringComparison.InvariantCultureIgnoreCase));
                     if (packageXmlFileExists)
@@ -205,7 +209,7 @@ namespace OurUmbraco.Our.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.Error<ProjectController>(string.Format("Error unzipping {0}", zipName), ex);
+                LogHelper.Error<ProjectController>(string.Format("Error unzipping {0}", zipFile), ex);
             }
 
             return false;
@@ -223,13 +227,22 @@ namespace OurUmbraco.Our.Controllers
             }
             else
             {
-                var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
-                var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
-
-                if (currentPackage != null && ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)))
+                // Special exception
+                if (string.Equals(model.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase))
                 {
                     project.Live = true;
                     nodeListingProvider.SaveOrUpdate(project);
+                }
+                else
+                {
+                    var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
+                    var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+
+                    if (currentPackage != null && ZipFileContainsPackageXml(currentPackage))
+                    {
+                        project.Live = true;
+                        nodeListingProvider.SaveOrUpdate(project);
+                    }
                 }
             }
 
