@@ -41,6 +41,12 @@
                 @Html.TextBoxFor(m => m.TwitterAlias)
             </div>
 
+            <div class="profile-input" id="github-alias">
+                @Html.LabelFor(m => m.GitHubUsername)
+                <em>We'd love to show of your GitHub contributions to the community.</em>
+                @Html.TextBoxFor(m => m.GitHubUsername)
+            </div>
+
             <div class="profile-input" id="located-at">
                 @Html.LabelFor(m => m.Location)
                 <em>When your location is displayed correctly on the map below, enough information has been provided.</em>

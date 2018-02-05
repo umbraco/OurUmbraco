@@ -19,6 +19,7 @@ namespace OurUmbraco.Our.Controllers
             m.Company = mem.GetValue<string>("company");
             m.TwitterAlias = mem.GetValue<string>("twitter");
             m.Avatar = mem.GetValue<string>("avatar");
+            m.GitHubUsername = mem.GetValue<string>("github");
 
             return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
         }
@@ -56,6 +57,7 @@ namespace OurUmbraco.Our.Controllers
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
             mem.SetValue("avatar", model.Avatar);
+            mem.SetValue("github", model.GitHubUsername);
             ms.Save(mem);
 
             var avatarImage = Utils.GetMemberAvatarImage(Members.GetById(mem.Id));

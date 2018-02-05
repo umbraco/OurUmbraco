@@ -80,6 +80,7 @@ namespace OurUmbraco.Our.Controllers
                 || model.Longitude != null && model.Longitude.Length > maxPropertyLength
                 || model.Latitude != null && model.Latitude.Length > maxPropertyLength
                 || model.TwitterAlias != null && model.TwitterAlias.Length > maxPropertyLength
+                || model.GitHubUsername != null && model.GitHubUsername.Length > maxPropertyLength
                 )
             {
                 // has to be a rogue registration
@@ -93,6 +94,7 @@ namespace OurUmbraco.Our.Controllers
             member.SetValue("latitude", model.Latitude);
             member.SetValue("company", model.Company);
             member.SetValue("twitter", model.TwitterAlias);
+            member.SetValue("github", model.GitHubUsername);
 
             member.SetValue("treshold", "-10");
             member.SetValue("bugMeNot", false);
