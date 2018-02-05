@@ -33,13 +33,9 @@ namespace OurUmbraco.Our.Controllers
             var recaptcha = ModelState["ReCaptcha"];
             if (recaptcha != null && HttpContext.Request.IsLocal)
                 recaptcha.Errors.Clear();
-
-            var locationInvalid = string.IsNullOrEmpty(model.Latitude) || string.IsNullOrEmpty(model.Longitude);
-            if (!ModelState.IsValid || locationInvalid || model.AgreeTerms == false)
+            
+            if (!ModelState.IsValid || model.AgreeTerms == false)
             {
-                if(locationInvalid)
-                    ModelState.AddModelError("Location", "Please tell us a little bit about where you live.");
-
                 if(model.AgreeTerms == false)
                     ModelState.AddModelError("AgreeTerms", "You can only continue if you agree to our terms and conditions.");
 

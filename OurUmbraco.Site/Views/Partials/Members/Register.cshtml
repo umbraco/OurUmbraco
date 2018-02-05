@@ -50,7 +50,6 @@
             <div class="profile-input" id="located-at">
                 @Html.LabelFor(m => m.Location)
                 <em>When your location is displayed correctly on the map below, enough information has been provided.</em>
-                @Html.ValidationMessageFor(m => m.Location)
                 @Html.HiddenFor(m => m.Location)
                 @Html.HiddenFor(m => m.Latitude)
                 @Html.HiddenFor(m => m.Longitude)
