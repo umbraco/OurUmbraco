@@ -27,7 +27,7 @@ namespace OurUmbraco.Documentation.Controllers
             {
                 const string errorMessage = "No job found in payload";
                 var input = JsonConvert.SerializeObject(model.eventData);
-                LogHelper.Warn<DocFxUpdateModel>($"{errorMessage} - input was: {input}");
+                LogHelper.Warn<DocFxUpdateModel>(string.Format("{0} - input was: {1}", errorMessage, input));
                 throw new FormatException(errorMessage);
             }
 
@@ -36,7 +36,7 @@ namespace OurUmbraco.Documentation.Controllers
             {
                 const string errorMessage = "No artifacts found in payload";
                 var input = JsonConvert.SerializeObject(job);
-                LogHelper.Warn<DocFxUpdateModel>($"{errorMessage} - input was: {input}");
+                LogHelper.Warn<DocFxUpdateModel>(string.Format("{0} - input was: {1}", errorMessage, input));
                 throw new FormatException(errorMessage);
             }
 

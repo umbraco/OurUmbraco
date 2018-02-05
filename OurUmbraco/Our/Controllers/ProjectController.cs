@@ -172,7 +172,8 @@ namespace OurUmbraco.Our.Controllers
 
             if (currentPackage != null && ZipFileContainsPackageXml(IOHelper.MapPath(currentPackage.Path)) == false)
             {
-                LogHelper.Info<ProjectController>($"Checking if {currentPackage.Path} has a package.xml zipped up in there.");
+                LogHelper.Info<ProjectController>(string.Format("Checking if {0} has a package.xml zipped up in there.",
+                    currentPackage.Path));
 
                 var contentService = Services.ContentService;
                 var content = contentService.GetById(project.Id);
@@ -183,7 +184,7 @@ namespace OurUmbraco.Our.Controllers
                     content.SetValue("projectLive", false);
                     contentService.SaveAndPublishWithStatus(content);
                 }
-                errorMessage = $"The current package file {currentPackage.Name} is not a valid Umbraco Package, please upload a package";
+                errorMessage = string.Format("The current package file {0} is not a valid Umbraco Package, please upload a package", currentPackage.Name);
             }
 
             var model = new ProjectCompleteModel { Id = project.Id, Name = project.Name, ProjectLive = project.Live, ErrorMessage = errorMessage };
@@ -204,7 +205,7 @@ namespace OurUmbraco.Our.Controllers
             }
             catch (Exception ex)
             {
-                LogHelper.Error<ProjectController>($"Error unzipping {zipName}", ex);
+                LogHelper.Error<ProjectController>(string.Format("Error unzipping {0}", zipName), ex);
             }
 
             return false;
