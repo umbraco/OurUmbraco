@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -21,7 +22,8 @@ namespace OurUmbraco.Community.GitHub
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
 
-        public readonly string JsonPath =  HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
+        public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
+        public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
 
         /// <summary>
         /// Gets a list of the repositories that should be included in the list of contributors.
@@ -37,6 +39,63 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Courier.Contrib",
                 "Umbraco.Deploy.ValueConnectors"
             };
+        }
+
+        public List<GithubPullRequestModel> GetAllPullRequestsForRepository(string repo)
+        {
+            var pulls = new List<GithubPullRequestModel>();
+            if(File.Exists(PullRequestsJsonPath))
+                pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(PullRequestsJsonPath);
+
+            var stopImport = false;
+            for (var i = 0; i < int.MaxValue; i++)
+            {
+                if (stopImport)
+                    break;
+
+                pulls = GetPulls(repo, i, pulls, out stopImport);
+                Thread.Sleep(2000);
+            }
+
+            // Save the JSON to disk
+            var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
+            File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
+
+            return pulls;
+        }
+
+        private List<GithubPullRequestModel> GetPulls(string repo, int page, List<GithubPullRequestModel> pulls, out bool stopImport)
+        {
+            stopImport = false;
+
+            // Initialize the request
+            var client = new RestClient(GitHubApiClient);
+            var resource = string.Format("/repos/{0}/{1}/pulls?state=all&page={2}", RepositoryOwner, repo, page);
+            var request = new RestRequest(resource, Method.GET);
+            client.UserAgent = UserAgent;
+            
+            // Make the request to the GitHub API
+            var result = client.Execute<List<GithubPullRequestModel>>(request);
+
+            if (result.Data == null)
+            {
+                stopImport = true;
+                return null;
+            }
+            
+            foreach (var pull in result.Data)
+            {
+                if (pulls.Any(x => x.Id == pull.Id))
+                {
+                    // we've already imported these, stop going down the list
+                    stopImport = true;
+                    break;
+                }
+
+                pulls.Add(pull);
+            }
+
+            return pulls;
         }
 
         /// <summary>
@@ -102,7 +161,7 @@ namespace OurUmbraco.Community.GitHub
                 // Make the request to the GitHub API
                 var response = GetRepositoryContributors(repo);
 
-                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int) response.StatusCode, response.StatusCode));
+                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int)response.StatusCode, response.StatusCode));
 
                 switch (response.StatusCode)
                 {

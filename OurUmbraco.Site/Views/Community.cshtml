@@ -1,11 +1,19 @@
-﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@using System.Text
+@using System.Web.Hosting
+@using AutoMapper
+@using Newtonsoft.Json
+@using OurUmbraco.Community.GitHub
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
+    //var ghs = new GitHubService();
+    //var prs = ghs.GetAllPullRequestsForRepository("Umbraco-Cms");
+    //Test();
 }
 
 @Html.Partial("~/Views/Partials/Community/Home.cshtml")
 
-@section Search 
+@section Search
 {
     <script type="text/template" class="search-item-template">
         <li>
@@ -30,4 +38,42 @@
 @section EndScripts
 {
     @Html.Partial("~/Views/Partials/Community/Scripts.cshtml")
+}
+
+@functions
+{
+
+    public void Test()
+    {
+        var pullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
+        var json = System.IO.File.ReadAllText(pullRequestsJsonPath, Encoding.UTF8);
+        var pulls = JsonConvert.DeserializeObject<List<PullModel>>(json);
+        var x = pulls;
+    }
+
+    public class PullModel
+    {
+        public int id { get; set; }
+        public string url { get; set; }
+        public string html_url { get; set; }
+        public string diff_url { get; set; }
+        public string patch_url { get; set; }
+        public string issue_url { get; set; }
+        public string commits_url { get; set; }
+        public string review_comments_url { get; set; }
+        public string review_comment_url { get; set; }
+        public string comments_url { get; set; }
+        public string statuses_url { get; set; }
+        public int number { get; set; }
+        public string state { get; set; }
+        public string title { get; set; }
+        public string body { get; set; }
+        public bool locked { get; set; }
+        public string active_lock_reason { get; set; }
+        public DateTime? created_at { get; set; }
+        public DateTime? updated_at { get; set; }
+        public DateTime? closed_at { get; set; }
+        public DateTime? merged_at { get; set; }
+
+    }
 }

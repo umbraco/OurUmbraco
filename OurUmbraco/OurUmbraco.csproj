@@ -388,6 +388,7 @@
     <Compile Include="Community\GitHub\Models\GitHubGlobalContributorModel.cs" />
     <Compile Include="Community\Controllers\TwitterSearchController.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorModel.cs" />
+    <Compile Include="Community\GitHub\Models\GithubPullRequestModel.cs" />
     <Compile Include="Community\GitHub\Models\IGitHubContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorsResult.cs" />
     <Compile Include="Community\Meetup\MeetupService.cs" />
