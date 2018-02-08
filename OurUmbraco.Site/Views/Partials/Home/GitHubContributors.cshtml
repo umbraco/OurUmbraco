@@ -44,7 +44,7 @@ else
         if (string.IsNullOrEmpty(url))
             return string.Empty;
 
-        string host = url.TrimStart("http://").TrimStart("https://");
-        return string.Format("/remote.axd/{0}?width={1}&upscale=true", host,  size);
+        var host = url.TrimStart("http://").TrimStart("https://");
+        return string.Format("/remote.axd?https://{0}?width={1}&upscale=true", host,  size);
     }
 }
