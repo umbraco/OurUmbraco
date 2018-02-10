@@ -250,7 +250,7 @@ namespace OurUmbraco.Our
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
                     if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
-                        return avatarPath;
+                        return avatarPath.Replace("http://", "https://");
 
                     var path = HostingEnvironment.MapPath(avatarPath);
                     if (System.IO.File.Exists(path))
@@ -290,7 +290,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<Utils>("Could not get Screenshot", ex);
             }
 
-            return "http://lorempixel.com/600/600/?" + rnd.Next();
+            return "https://lorempixel.com/600/600/?" + rnd.Next();
         }
 
         public static Image GetMemberAvatarImage(IPublishedContent member)
@@ -328,13 +328,17 @@ namespace OurUmbraco.Our
 
         public static string GetLocalAvatar(string imgPath, int minSize, string memberName, bool getRawUrl = false)
         {
-            var url = string.Format("{0}?width={1}&height={1}&mode=crop", imgPath.Replace(" ", "%20"), minSize);
+            var queryStringSeparator = imgPath.Contains("?") ? "&" : "?";
+            var celanImagePath = imgPath.Replace(" ", "%20");
+
+            var url = string.Format("{0}{1}width={2}&height={2}&mode=crop", 
+                celanImagePath, queryStringSeparator, minSize);
 
             return !getRawUrl
-                ? string.Format("<img src=\"{0}?width={1}&height={1}&mode=crop\" srcset=\"{0}?width={2}&height={2}&mode=crop 2x, {0}?width={3}&height={3}&mode=crop 3x\" alt=\"{4}\" />", imgPath.Replace(" ", "%20"), minSize, (minSize * 2), (minSize * 3), memberName)
+                ? string.Format("<img src=\"{0}{1}width={2}&height={2}&mode=crop\" srcset=\"{0}{1}width={3}&height={3}&mode=crop 2x, {0}{1}width={4}&height={4}&mode=crop 3x\" alt=\"{5}\" />", 
+                    celanImagePath, queryStringSeparator, minSize, (minSize * 2), (minSize * 3), memberName)
                 : url;
         }
-        
     }
 
     public struct ReplacePoint
