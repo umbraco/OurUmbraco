@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Runtime.Serialization;
 
 namespace OurUmbraco.Community.GitHub.Models
 {
     public class GithubPullRequestModel
     {
         public int Id { get; set; }
+        public string Repository { get; set; }
         public string State { get; set; }
         public string Title { get; set; }
         public int Number { get; set; }
