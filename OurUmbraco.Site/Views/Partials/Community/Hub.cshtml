@@ -1,5 +1,6 @@
 ﻿@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Models
+@using Umbraco.Core.Security
 @inherits OurUmbracoTemplatePage
 @{
     // Only for HQ members right now
@@ -10,7 +11,13 @@
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
+    
+    var http = new HttpContextWrapper(HttpContext.Current);
+    var ticket = http.GetUmbracoAuthTicket();
+    http.AuthenticateCurrentRequest(ticket, true);
 
+    var user = UmbracoContext.Current.Security.CurrentUser;
+    var allowed = user != null && user.UserType.Alias == "admin";
 }
 <style>
     .bannertext p {
@@ -30,11 +37,7 @@
     @Html.Raw(homeNotificationText)
 }
 
-@if (Members.IsLoggedIn())
-{
-    @ForumStatistics()
-}
-else
+@if (allowed)
 {
     @ForumStatistics()
 }
