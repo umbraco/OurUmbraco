@@ -5,7 +5,7 @@
     var querystringToDate = Request.QueryString["toDate"];
     var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
     var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? DateTime.Now : DateTime.Parse(querystringToDate);
-    var url = Url.Action("Statistics", "Statistics", new { fromDate = fromDate, toDate = toDate });
+    var url = Html.Raw(Url.Action("Statistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
 }
 
 <script type="text/javascript">
