@@ -28,14 +28,9 @@ namespace OurUmbraco.Our.Controllers
             var loginModel = new LoginModel();
             return PartialView("~/Views/Partials/Members/ForgotPassword.cshtml", loginModel);
         }
-
-        [CaptchaValidator]
+        
         public ActionResult Login(LoginModel model)
         {
-            var recaptcha = ModelState["ReCaptcha"];
-            if (recaptcha != null && HttpContext.Request.IsLocal)
-                recaptcha.Errors.Clear();
-
             if (ModelState.IsValid == false)
                 return CurrentUmbracoPage();
 
