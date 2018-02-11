@@ -1,12 +1,15 @@
 ﻿@using ClientDependency.Core.Mvc
 @{
     Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js");
+    var fromDate = DateTime.Now.AddDays(-365*1);
+    var url = Url.Action("Statistics", "Statistics", new { fromDate = fromDate });
 }
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
+        console.log("@url");
         try {
-            $("#forum-statistics").load("@Url.Action("Statistics", "Statistics")");
+            $("#forum-statistics").load("@url");
         } catch (errForum) {
             console.log("Couldn't load latest forum statistics", errForum.message);
         }

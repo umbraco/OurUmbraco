@@ -15,36 +15,21 @@ namespace OurUmbraco.Community.Controllers
     {
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/ForumStatisticsData.json");
 
-        public ActionResult Statistics()
+        public ActionResult Statistics(DateTime? fromDate, DateTime? toDate)
         {
-            GroupedTopicData groupedTopicData;
+            if (fromDate == null)
+                fromDate = DateTime.Now.Add(TimeSpan.FromDays(-365));
+            if (toDate == null)
+                toDate = DateTime.MaxValue;
 
-            if (System.IO.File.Exists(JsonPath))
-            {
-                var jsonData = System.IO.File.ReadAllText(JsonPath);
-                groupedTopicData = JsonConvert.DeserializeObject<GroupedTopicData>(jsonData);
-            }
-            else
-            {
-                groupedTopicData = GetGroupedTopicData();
-            }
-
+            var groupedTopicData = GetGroupedTopicData((DateTime) fromDate, (DateTime) toDate);
+            
             return PartialView("~/Views/Partials/Home/ForumStatistics.cshtml", groupedTopicData);
         }
 
-        private GroupedTopicData GetGroupedTopicData()
+        private GroupedTopicData GetGroupedTopicData(DateTime fromDate, DateTime toDate)
         {
-            var topicService = new TopicService(DatabaseContext);
-
-            //var currentCulture = CultureInfo.CurrentCulture;
-            var topics = topicService.GetAllTopicsByDateRange(new DateTime(1990, 1, 1), DateTime.MaxValue);
-            var allTopics = topics.GroupBy(d => new
-            {
-                d.Created.Year,
-                //WeekNumber = currentCulture.Calendar.GetWeekOfYear(d.Created, 
-                //currentCulture.DateTimeFormat.CalendarWeekRule, currentCulture.DateTimeFormat.FirstDayOfWeek)
-                d.Created.Month
-            }).ToList();
+            var allTopics = GetAllTopics().Where(x => x.Created >= fromDate && x.Created <= toDate).ToList();
 
             var groupedTopicData = new GroupedTopicData
             {
@@ -52,8 +37,16 @@ namespace OurUmbraco.Community.Controllers
                 DataSets = new List<DataSet>()
             };
 
+            var groupedTopics = allTopics.GroupBy(d => new
+            {
+                d.Created.Year,
+                //WeekNumber = currentCulture.Calendar.GetWeekOfYear(d.Created, 
+                //currentCulture.DateTimeFormat.CalendarWeekRule, currentCulture.DateTimeFormat.FirstDayOfWeek)
+                d.Created.Month
+            }).ToList();
+
             groupedTopicData.DataSets = new List<DataSet>();
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 groupedTopicData.Labels.Add(string.Format("{0} {1}",
                     CultureInfo.CurrentCulture.DateTimeFormat.GetMonthName(topicGroup.Key.Month), topicGroup.Key.Year));
@@ -69,7 +62,7 @@ namespace OurUmbraco.Community.Controllers
                 BorderWidth = 2,
                 Data = new List<int>()
             };
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
                 topicCountDataSet.Data.Add(topicsInGroup.Count);
@@ -89,7 +82,7 @@ namespace OurUmbraco.Community.Controllers
                 Data = new List<int>()
             };
 
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
                 solvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer != 0));
@@ -109,7 +102,7 @@ namespace OurUmbraco.Community.Controllers
                 Data = new List<int>()
             };
 
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
                 unsolvedTopicCountDataSet.Data.Add(topicsInGroup.Count(x => x.Answer == 0));
@@ -129,7 +122,7 @@ namespace OurUmbraco.Community.Controllers
                 Data = new List<int>()
             };
 
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
                 repliesCountDataSet.Data.Add(topicsInGroup.Sum(x => x.Replies));
@@ -149,7 +142,7 @@ namespace OurUmbraco.Community.Controllers
                 Data = new List<int>()
             };
 
-            foreach (var topicGroup in allTopics)
+            foreach (var topicGroup in groupedTopics)
             {
                 var topicsInGroup = topicGroup.ToList();
                 topicsNoRepliesCountDataSet.Data.Add(topicsInGroup.Count(x => x.Replies == 0));
@@ -157,14 +150,53 @@ namespace OurUmbraco.Community.Controllers
 
             groupedTopicData.DataSets.Add(topicsNoRepliesCountDataSet);
             //
-
-            // Serialize the data to raw JSON
-            var rawJson = JsonConvert.SerializeObject(groupedTopicData, Formatting.Indented);
-
-            // Save the JSON to disk
-            System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
+            
             return groupedTopicData;
         }
+
+        private IEnumerable<MinimalTopic> GetAllTopics(bool refreshAll = false)
+        {
+            var topics = new List<MinimalTopic>();
+            if (System.IO.File.Exists(JsonPath) && refreshAll == false)
+            {
+                var jsonData = System.IO.File.ReadAllText(JsonPath);
+                topics = JsonConvert.DeserializeObject<List<MinimalTopic>>(jsonData);
+            }
+            else
+            {
+                var topicService = new TopicService(DatabaseContext);
+
+                //var currentCulture = CultureInfo.CurrentCulture;
+                var topicData = topicService.GetAllTopics();
+                foreach (var topic in topicData)
+                {
+                    var minimalTopic = new MinimalTopic
+                    {
+                        Id = topic.Id,
+                        Created = topic.Created,
+                        Replies = topic.Replies,
+                        Answer = topic.Answer
+                    };
+                    topics.Add(minimalTopic);
+                }
+
+                // Serialize the data to raw JSON
+                var rawJson = JsonConvert.SerializeObject(topics, Formatting.Indented);
+
+                // Save the JSON to disk
+                System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
+            }
+
+            return topics;
+        }
+    }
+
+    public class MinimalTopic
+    {
+        public int Id { get; set; }
+        public DateTime Created { get; set; }
+        public int Replies { get; set; }
+        public int Answer { get; set; }
     }
 
     public class GroupedTopicData
