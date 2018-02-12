@@ -4,9 +4,9 @@
 @using Skybrud.Essentials.Security
 @inherits OurUmbracoTemplatePage
 @{
-    // Only for HQ members right now
+    // Only for HQ members and admins right now
     var member = Members.GetCurrentMember();
-    if (member == null || member.IsHq() == false || member.IsAdmin()) { return; }
+    if (member == null || member.IsHq() == false || member.IsAdmin() == false) { return; }
 
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
