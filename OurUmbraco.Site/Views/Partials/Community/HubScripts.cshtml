@@ -1,14 +1,28 @@
 ﻿@using ClientDependency.Core.Mvc
 @{
     Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js");
+    var querystringFromDate = Request.QueryString["fromDate"];
+    var querystringToDate = Request.QueryString["toDate"];
+    var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
+    var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? DateTime.Now : DateTime.Parse(querystringToDate);
+    var forumStatsUrl = Html.Raw(Url.Action("ForumStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+    var karmaStatsUrl = Html.Raw(Url.Action("KarmaStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+
 }
 
 <script type="text/javascript">
-    $(document).ready(function() {
+    $(document).ready(function () {
+        
         try {
-            $("#forum-statistics").load("@Url.Action("Statistics", "Statistics")");
+            $("#forum-statistics").load("@forumStatsUrl");
         } catch (errForum) {
             console.log("Couldn't load latest forum statistics", errForum.message);
+        }
+
+        try {
+            $("#karma-statistics").load("@karmaStatsUrl");
+        } catch (errKarma) {
+            console.log("Couldn't load latest karma statistics", errKarma.message);
         }
     });
 </script>

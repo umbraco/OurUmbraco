@@ -153,7 +153,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
         /// <summary>
         /// Returns all topics in a certain date range
         /// </summary>
-        public IEnumerable<Topic> GetAllTopicsByDateRange(DateTime fromDate, DateTime toDate, bool unsolved = false, bool noreplies = false)
+        public IEnumerable<Topic> GetAllTopics(bool unsolved = false, bool noreplies = false)
         {
             var sql = @"SELECT * FROM forumTopics WHERE isSpam=0";
             
@@ -168,12 +168,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
                     sql = sql + " AND replies = 0";
                 else
                     sql = sql + " WHERE replies = 0";
-
-            if (sql.Contains("WHERE"))
-                sql = sql + " AND (forumTopics.Created BETWEEN '" + fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')";
-            else
-                sql = sql + " WHERE (forumTopics.Created BETWEEN '" + fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')";
-
+            
             return _databaseContext.Database.Fetch<Topic>(sql);
         }
 

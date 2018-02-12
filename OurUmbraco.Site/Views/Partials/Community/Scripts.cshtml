@@ -25,12 +25,6 @@
         }
 
         try {
-            $("#forum-statistics").load("@Url.Action("Statistics", "Statistics")");
-        } catch (errForum) {
-            console.log("Couldn't load latest forum statistics", errForum.message);
-        }
-
-        try {
             $("#github-contributors").load("@Url.Action("GitHubGetContributorsResult", "GitHubContributor")");
         }
         catch (errForum) {

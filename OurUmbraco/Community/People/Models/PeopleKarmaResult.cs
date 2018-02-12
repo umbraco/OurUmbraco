@@ -6,6 +6,7 @@
         public string MemberId { get; set; }
         public int Performed { get; set; }
         public int Received { get; set; }
-        public int TotalPoints { get; set; }
+        public int TotalPointsInPeriod { get; set; }
+        public int TotalKarma { get; set; }
     }
 }

@@ -868,6 +868,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Repository\webservices\App_Data\" />
+    <Folder Include="Views\Statistics\" />
     <Folder Include="Wiki\usercontrols\scripts\" />
   </ItemGroup>
   <ItemGroup>

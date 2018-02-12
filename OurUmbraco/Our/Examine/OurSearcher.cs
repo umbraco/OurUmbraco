@@ -9,6 +9,7 @@ using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
 using Examine.SearchCriteria;
+using Lucene.Net.Analysis.Standard;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using Umbraco.Core;
@@ -70,28 +71,43 @@ namespace OurUmbraco.Our.Examine
                 //now we need to split the phrase into individual terms so the query parser can understand
                 var split = Term.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (split.Length > 1)
+                //now de-duplicate the terms and remove the stop words and don't include single chars
+                var deduped = new List<string>();
+                foreach (var s in split)
                 {
-                    //do an exact phrase match with boost
-                    sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
+                    if (s.Length > 1
+                        && !deduped.Contains(s, StringComparer.InvariantCultureIgnoreCase)
+                        && !StandardAnalyzer.STOP_WORDS_SET.Contains(s))
+                    {
+                        deduped.Add(s);
+                    }
                 }
 
-                if (split.Length > 0)
+                //do an exact phrase match with boost
+                sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
+
+                if (deduped.Count > 20)
+                {
+                    //truncate, we don't want to search on all of these individually
+                    deduped = deduped.Take(20).ToList();
+                }
+
+                if (deduped.Count > 0)
                 {
                     //do standard match with boost on each term
-                    foreach (var s in split)
+                    foreach (var s in deduped)
                     {
                         sb.AppendFormat("nodeName:{0}^10000 body:{0}^50 ", s);
                     }
 
                     //do suffix with wildcards
-                    foreach (var s in split)
+                    foreach (var s in deduped)
                     {
                         sb.AppendFormat("nodeName:{0}*^1000 body:{0}* ", s);
                     }
 
                     //do fuzzy (close match 0.9)
-                    foreach (var s in split)
+                    foreach (var s in deduped)
                     {
                         sb.AppendFormat("nodeName:{0}~0.9^0.1 body:{0}~0.9^0.1 ", s);
                     }
