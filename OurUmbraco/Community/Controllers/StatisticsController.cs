@@ -194,8 +194,7 @@ namespace OurUmbraco.Community.Controllers
 
         public ActionResult KarmaStatistics()
         {
-            var lastweekStart = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6);
-
+            var lastweekStart = GetLastWeekStartDate();
             var karmaData = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now);
             
             foreach (var period in karmaData.MostActiveDateRange)
@@ -215,6 +214,17 @@ namespace OurUmbraco.Community.Controllers
             }
 
             return PartialView("~/Views/Partials/Community/KarmaStatistics.cshtml", karmaData);
+        }
+
+        private static DateTime GetLastWeekStartDate()
+        {
+            DateTime date = DateTime.Now.AddDays(-7);
+            while (date.DayOfWeek != DayOfWeek.Monday)
+            {
+                date = date.AddDays(-1);
+            }
+
+            return date;
         }
     }
 

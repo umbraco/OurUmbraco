@@ -152,7 +152,7 @@ namespace OurUmbraco.Our.Api
             var currentCulture = CultureInfo.GetCultureInfo("da-DK");
             var yearAndWeekNumbers = new List<YearAndWeekNumbers>();
 
-            for (var dateTime = fromDate; dateTime < toDate; dateTime = dateTime.AddDays(1))
+            for (var dateTime = fromDate; dateTime <= toDate; dateTime = dateTime.AddDays(1))
             {
                 var weeekNumber = currentCulture.Calendar.GetWeekOfYear(
                     dateTime,
