@@ -1,23 +1,17 @@
-﻿@using OurUmbraco.Forum.Extensions
+﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Models
-@using Umbraco.Core.Security
+@using Skybrud.Essentials.Security
 @inherits OurUmbracoTemplatePage
 @{
     // Only for HQ members right now
     var member = Members.GetCurrentMember();
-    if (member == null || member.IsHq() == false) { return; }
+    if (member == null || member.IsHq() == false || member.IsAdmin()) { return; }
 
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
-    
-    var http = new HttpContextWrapper(HttpContext.Current);
-    var ticket = http.GetUmbracoAuthTicket();
-    http.AuthenticateCurrentRequest(ticket, true);
-
-    var user = UmbracoContext.Current.Security.CurrentUser;
-    var allowed = user != null && user.UserType.Alias == "admin";
 }
 <style>
     .bannertext p {
@@ -37,54 +31,114 @@
     @Html.Raw(homeNotificationText)
 }
 
-@if (allowed)
-{
-    @KarmaStatistics()
-    @ForumStatistics()
-}
+@KarmaStatistics()
+@BlogPosts()
+@ForumStatistics()
 
 @helper ForumStatistics()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
 
-                <div class="col-md-12">
-                    <h1 class="text-center">Forum Statistics</h1>
-                    <p>
-                        Number of topics, replies, (un)solved topics and topics with no reply
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Forum activity</small>
-                </div>
+                    <div class="col-md-12">
+                        <h1 class="text-center">Forum Statistics</h1>
+                        <p>
+                            Number of topics, replies, (un)solved topics and topics with no reply
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Forum activity</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="forum-statistics">
-                    <h2>Loading latest forum statistics...</h2>
+                    <div class="col-md-12 flex" id="forum-statistics">
+                        <h2>Loading latest forum statistics...</h2>
+                    </div>
+
                 </div>
-                
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper KarmaStatistics()
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h1 class="text-center">Karma Statistics</h1>
+                        <p>
+                            Top karma earners
+                        </p>
+                    </div>
+
+                    <div class="col-md-12 flex" id="karma-statistics">
+                        <h2>Loading latest karma statistics...</h2>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+}
+
+
+@helper BlogPosts(int maxCount = 20)
 {
-    <section class="forum">
+    var service = new BlogPostsService();
+
+    //var items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();
+    var items = service.GetCachedBlogPosts().Take(maxCount).ToArray();
+
+    if (items.Length == 0)
+    {
+        return;
+    }
+
+    <section class="forum" id="blogPosts">
         <div class="container">
             <div class="row">
-
                 <div class="col-md-12">
-                    <h1 class="text-center">Karma Statistics</h1>
+                    <h1 class="text-center">Blog Posts</h1>
                     <p>
-                        Top karma earners
+                        Blog posts by members of the Umbraco community.
                     </p>
                 </div>
-
-                <div class="col-md-12 flex" id="karma-statistics">
-                    <h2>Loading latest karma statistics...</h2>
+                <div class="col-md-12">
+                    <small>Recent blog posts</small>
                 </div>
-                
+                <div class="col-md-12 flex" id="meetups">
+                    @foreach (var item in items)
+                    {
+                        <a href="@item.Link" class="forum-thread">
+                            @if (item.Blog.HasLogoUrl)
+                            {
+                                <div class="avatar">
+                                    <img src="@item.Blog.LogoUrl" />
+                                </div>
+                            }
+                            else
+                            {
+                                var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
+                                <div class="avatar">
+                                    <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+                                </div>
+                            }
+                            <div class="meta">
+                                <div class="forum-thread-text">
+                                    <h3>@item.Title</h3>
+                                    <p>@item.PublishedDate.ToString("MMM d, yyyy") by @item.Channel.Title</p>
+                                </div>
+                            </div>
+                        </a>
+                    }
+
+                    @if (items.Length % 2 == 1)
+                    {
+                        // If there is an odd amount of items, we add a invisible div so the last item doesn't take up the full width
+                        <div class="forum-thread" style="visibility: hidden;"></div>
+                    }
+                </div>
             </div>
         </div>
     </section>

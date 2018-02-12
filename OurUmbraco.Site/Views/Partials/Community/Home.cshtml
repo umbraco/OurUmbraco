@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Our.Models
-@using Skybrud.Social.Meetup.Models.Events
 @inherits OurUmbracoTemplatePage
 @{
+
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
@@ -70,7 +70,7 @@ else
     @Html.Partial("home/documentation")
     @ForumActivity()
     @Meetups()
-    @GitHubContributors()  
+    @GitHubContributors()
     @TwitterSearch()
 }
 
@@ -169,7 +169,7 @@ else
 }
 
 @helper Meetups()
-{   
+{
     <section class="forum">
         <div class="container">
             <div class="row">

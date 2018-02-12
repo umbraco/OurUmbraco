@@ -229,8 +229,8 @@
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Skybrud.Essentials, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Essentials.1.0.10\lib\net45\Skybrud.Essentials.dll</HintPath>
+    <Reference Include="Skybrud.Essentials, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Essentials.1.1.1\lib\net45\Skybrud.Essentials.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Core">
       <HintPath>..\packages\Skybrud.Social.Core.1.0.0-beta9\lib\net45\Skybrud.Social.Core.dll</HintPath>
@@ -381,6 +381,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
+    <Compile Include="Community\BlogPosts\BlogInfo.cs" />
+    <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
+    <Compile Include="Community\BlogPosts\BlogRssUtils.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
