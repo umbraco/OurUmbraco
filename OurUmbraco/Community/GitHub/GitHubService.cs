@@ -149,11 +149,14 @@ namespace OurUmbraco.Community.GitHub
 
             foreach (var contributor in contributors)
             {
-                var totalPulls = pulls.Where(x => x.User.Login == contributor.Fields["github"]).ToList();
+                var ourName = contributor.Fields["nodeName"];
+                var ourId = contributor.Fields["id"];
+                var githubUsername = contributor.Fields["github"];
+                var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
                 var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
                 var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
-                result += string.Format("User {0} has sent {1} PRs of which {2} have been accepted and {3} have been closed without merging.<br />",
-                    contributor.Fields["github"], totalPulls.Count, acceptedPulls.Count, closedPulls.Count);
+                result += string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.<br />",
+                    ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count);
             }
 
             return result;
