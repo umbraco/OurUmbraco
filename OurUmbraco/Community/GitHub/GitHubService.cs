@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
 using System.Web.Hosting;
+using Examine;
+using Examine.LuceneEngine.SearchCriteria;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
@@ -21,7 +25,8 @@ namespace OurUmbraco.Community.GitHub
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
 
-        public readonly string JsonPath =  HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
+        public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
+        public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
 
         /// <summary>
         /// Gets a list of the repositories that should be included in the list of contributors.
@@ -37,6 +42,124 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Courier.Contrib",
                 "Umbraco.Deploy.ValueConnectors"
             };
+        }
+
+        public List<GithubPullRequestModel> UpdateAllPullRequestsForRepository(string repository, bool sortByUpdated)
+        {
+            var pulls = new List<GithubPullRequestModel>();
+            if (File.Exists(PullRequestsJsonPath))
+            {
+                var content = File.ReadAllText(PullRequestsJsonPath);
+                pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+            }
+
+            var stopImport = false;
+            for (var i = 0; i < int.MaxValue; i++)
+            {
+                if (stopImport)
+                    break;
+
+                pulls = GetPulls(repository: repository, page: i, pulls: pulls, sortByUpdated: sortByUpdated, stopImport: out stopImport);
+                Thread.Sleep(2000);
+            }
+
+            // Save the JSON to disk
+            var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
+            File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
+
+            return pulls;
+        }
+
+        private List<GithubPullRequestModel> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls, bool sortByUpdated, out bool stopImport)
+        {
+            var enabledSetting = ConfigurationManager.AppSettings["GithubPullsImportEnabled"];
+            var enabled = string.Equals(enabledSetting, "true", StringComparison.InvariantCultureIgnoreCase);
+            if (enabled == false)
+            {
+                stopImport = true;
+                return pulls;
+            }
+
+            // Initialize the request
+            var client = new RestClient(GitHubApiClient);
+
+            var resource = string.Format("/repos/{0}/{1}/pulls?state=all&page={2}", RepositoryOwner, repository, page);
+            if (sortByUpdated)
+                resource = string.Format("{0}&sort=updated&direction=desc", resource);
+
+            var request = new RestRequest(resource, Method.GET);
+            client.UserAgent = UserAgent;
+
+            // Make the request to the GitHub API
+            var result = client.Execute<List<GithubPullRequestModel>>(request);
+
+            stopImport = false;
+
+            if (result.Data == null)
+            {
+                stopImport = true;
+                return null;
+            }
+
+            foreach (var pull in result.Data)
+            {
+                var existing = pulls.FirstOrDefault(x => x.Id == pull.Id);
+                if (existing != null && existing.UpdatedAt != pull.UpdatedAt)
+                {
+                    existing.ClosedAt = pull.ClosedAt;
+                    existing.MergedAt = pull.MergedAt;
+                    existing.State = pull.State;
+                    existing.Title = pull.Title;
+                    existing.UpdatedAt = pull.UpdatedAt;
+                }
+                else if (existing != null && existing.UpdatedAt == pull.UpdatedAt)
+                {
+                    // we've already imported these, stop going down the list
+                    stopImport = true;
+                    break;
+                }
+                else
+                {
+                    pull.Repository = repository;
+                    pulls.Add(pull);
+                }
+            }
+
+            return pulls;
+        }
+
+        public string MatchPullsToMembers()
+        {
+            var pulls = new List<GithubPullRequestModel>();
+            if (File.Exists(PullRequestsJsonPath))
+            {
+                var content = File.ReadAllText(PullRequestsJsonPath);
+                pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+            }
+
+            var result = string.Empty;
+
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+            
+            // TODO: Linq is inefficient. Find Lucene query to give all results which are not empty for the `github` field
+            criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
+            var searchResults = searcher.Search(criteria);
+            var contributors = searchResults.Where(x => x.Fields["github"] != null && string.IsNullOrWhiteSpace(x.Fields["github"]) == false);
+
+            foreach (var contributor in contributors)
+            {
+                var ourName = contributor.Fields["nodeName"];
+                var ourId = contributor.Fields["id"];
+                var githubUsername = contributor.Fields["github"];
+                var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
+                var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
+                var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
+                result += string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.<br />",
+                    ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -76,7 +199,7 @@ namespace OurUmbraco.Community.GitHub
 
             // Map the path to the file containg HQ members that should be excluded in the list
             var configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
-            if (!System.IO.File.Exists(configPath))
+            if (!File.Exists(configPath))
             {
                 var message = string.Format("Config file was not found: {0}", configPath);
                 LogHelper.Debug<GitHubService>(message);
@@ -102,7 +225,7 @@ namespace OurUmbraco.Community.GitHub
                 // Make the request to the GitHub API
                 var response = GetRepositoryContributors(repo);
 
-                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int) response.StatusCode, response.StatusCode));
+                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int)response.StatusCode, response.StatusCode));
 
                 switch (response.StatusCode)
                 {

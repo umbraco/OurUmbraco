@@ -1,11 +1,16 @@
-﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@using System.Text
+@using System.Web.Hosting
+@using AutoMapper
+@using Newtonsoft.Json
+@using OurUmbraco.Community.GitHub
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
 }
 
 @Html.Partial("~/Views/Partials/Community/Home.cshtml")
 
-@section Search 
+@section Search
 {
     <script type="text/template" class="search-item-template">
         <li>
