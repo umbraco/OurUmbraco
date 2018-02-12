@@ -2,24 +2,16 @@
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Models
 @using Skybrud.Essentials.Security
-@using Umbraco.Core.Security
 @inherits OurUmbracoTemplatePage
 @{
     // Only for HQ members right now
     var member = Members.GetCurrentMember();
-    if (member == null || member.IsHq() == false) { return; }
+    if (member == null || member.IsHq() == false || member.IsAdmin()) { return; }
 
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
-
-    var http = new HttpContextWrapper(HttpContext.Current);
-    var ticket = http.GetUmbracoAuthTicket();
-    http.AuthenticateCurrentRequest(ticket, true);
-
-    var user = UmbracoContext.Current.Security.CurrentUser;
-    var allowed = user != null && user.UserType.Alias == "admin";
 }
 <style>
     .bannertext p {
@@ -39,12 +31,9 @@
     @Html.Raw(homeNotificationText)
 }
 
-@if (allowed)
-{
-    @KarmaStatistics()
-    @BlogPosts()
-    @ForumStatistics()
-}
+@KarmaStatistics()
+@BlogPosts()
+@ForumStatistics()
 
 @helper ForumStatistics()
     {
@@ -97,7 +86,6 @@
 @helper BlogPosts(int maxCount = 20)
 {
     var service = new BlogPostsService();
-    service.UpdateBlogPostsJsonFile();
 
     //var items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();
     var items = service.GetCachedBlogPosts().Take(maxCount).ToArray();
