@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Text;
+using System.Web.Hosting;
 using Hangfire;
+using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
+using OurUmbraco.Community.BlogPosts;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
 
@@ -8,6 +12,27 @@ namespace OurUmbraco.NotificationsCore.Notifications
 {
     public class ScheduleHangfireJobs
     {
+
+        public void UpdateCommunityBlogPosts() {
+            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(), Cron.HourInterval(1));
+        }
+
+        public void UpdateBlogPostsJsonFile() {
+
+            // Initialize a new service
+            BlogPostsService service = new BlogPostsService();
+
+            // Determine the path to the JSON file
+            string jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
+
+            // Generate the raw JSON
+            string rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
+
+            // Save the JSON to disk
+            System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
+
+        }
+
         public void MarkAsSolvedReminder()
         {
             RecurringJob.AddOrUpdate(() => ScheduleTopics(), Cron.HourInterval(12));

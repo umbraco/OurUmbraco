@@ -645,6 +645,7 @@
     <Content Include="config\feedProxy.config" />
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
+    <Content Include="config\CommunityBlogs.json" />
     <Content Include="config\BackOfficeTours\getting-started.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <None Include="scripts\jquery-1.6.4-vsdoc.js" />
