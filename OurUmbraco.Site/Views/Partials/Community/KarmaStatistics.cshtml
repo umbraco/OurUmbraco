@@ -1,9 +1,10 @@
-﻿@model OurUmbraco.Our.Api.PeopleData
+﻿@using OurUmbraco.Community.People.Models
+@model OurUmbraco.Community.Controllers.KarmaStatistics
 
 <div style="width: 100%; display: block;">
-    @foreach (var karmaResult in Model.MostActiveDateRange)
+    @foreach (var karmaResult in Model.KarmaRecent.MostActiveDateRange)
     {
-        <h2>Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</h2>
+        <p style="font-weight: bold;">Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</p><br />
         <ul>
             @foreach (var person in karmaResult.MostActive.Take(15))
             {
@@ -11,4 +12,34 @@
             }
         </ul>
     }
+
+
+    @{
+        var combinedList = new List<PeopleKarmaResult>();
+    }
+
+    @foreach (var karmaResult in Model.KarmaYear.MostActiveDateRange)
+    {
+        foreach (var person in karmaResult.MostActive)
+        {
+            var existing = combinedList.FirstOrDefault(p => p.MemberId == person.MemberId);
+            if (existing != null)
+            {
+                existing.TotalPointsInPeriod = existing.TotalPointsInPeriod + person.TotalPointsInPeriod;
+            }
+            else
+            {
+                combinedList.Add(person);
+            }
+        }
+    }
+
+    <p style="font-weight: bold;">Leaderboard for @Model.KarmaYear.MostActiveDateRange.First().Year - results are counted from May 1st until May 1st the next year.</p>
+    <p style="color: red; font-weight: bold;">This year list may be incorrect and needs thorough checking</p><br />
+    <ul>
+        @foreach (var person in combinedList.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
+        {
+            <li><a href="/member/@person.MemberId">@person.MemberName</a> (@person.TotalPointsInPeriod earned / total: @person.TotalKarma)</li>
+        }
+    </ul>
 </div>
