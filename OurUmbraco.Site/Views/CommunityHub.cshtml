@@ -1,0 +1,12 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+
+@Html.Partial("~/Views/Partials/Community/Hub.cshtml")
+
+
+@section EndScripts
+{
+    @Html.Partial("~/Views/Partials/Community/HubScripts.cshtml")
+}

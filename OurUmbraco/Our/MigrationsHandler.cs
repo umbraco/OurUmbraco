@@ -9,6 +9,7 @@ using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
+using Umbraco.Core.Services;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -39,13 +40,13 @@ namespace OurUmbraco.Our
             RenameUaaStoUCloud();
             AddMarkAsSolutionReminderSent();
             RenameUaaStoUCloud();
-            AddMarkAsSolutionReminderSent();
             UseNewLoginForm();
             UseNewForgotPasswordForm();
             AddTwitterFilters();
             AddHomeScriptsMacro();
             AddNuGetUrlForPackages();
             AddPeopleKarmaPage();
+            AddCommunityPage();
         }
         
         private void EnsureMigrationsMarkerPathExists()
@@ -980,6 +981,71 @@ namespace OurUmbraco.Our
 
                 fileService.SaveTemplate(releaseCompareTemplate);
                 
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "CommunityHub",
+                        Alias = "communityHub",
+                        Icon = "icon-power"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
+                    contentTypeService.Save(contentType);
+
+                    communityHubContentType = contentTypeService.GetContentType("communityHub");
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHub", "CommunityHub");
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate("communityHub");
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        communityHubContentType.AllowedTemplates = new List<ITemplate> { template };
+                        communityHubContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(communityHubContentType);
+
+                        var contentService = ApplicationContext.Current.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var communityPage = rootContent.Children().FirstOrDefault(x => x.Name == "Community");
+                            if (communityPage == null)
+                            {
+                                communityPage = contentService.CreateContent("Community", rootContent.Id, "communityHub");
+                                communityPage.SetValue("umbracoNaviHide", true);
+                                var saveResult = contentService.SaveAndPublishWithStatus(communityPage);
+                            }
+                        }
+                    }
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);

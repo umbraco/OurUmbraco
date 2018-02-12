@@ -131,6 +131,9 @@
 
                 h3 {
                     font-weight: 600;
+                    word-break: break-word;
+                    overflow-wrap: break-word;
+                    white-space: pre-wrap
                 }
 
                 a {
@@ -216,8 +219,8 @@
             order: 1;
 
             @media (min-width: $md) {
-                flex: 0 0 28%;
-                margin-right: 2%;
+                flex: 0 0 25%;
+                margin-right: 5%;
                 order: 2;
             }
         }

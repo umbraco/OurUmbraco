@@ -1,0 +1,14 @@
+﻿@model OurUmbraco.Our.Api.PeopleData
+
+<div style="width: 100%; display: block;">
+    @foreach (var karmaResult in Model.MostActiveDateRange)
+    {
+        <h2>Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</h2>
+        <ul>
+            @foreach (var person in karmaResult.MostActive.Take(15))
+            {
+                <li><a href="/member/@person.MemberId">@person.MemberName</a> (@person.TotalPointsInPeriod earned / total: @person.TotalKarma)</li>
+            }
+        </ul>
+    }
+</div>

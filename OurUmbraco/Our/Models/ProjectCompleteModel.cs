@@ -8,5 +8,6 @@ namespace OurUmbraco.Our.Models
         public string Name { get; set; }
         [Display(Name = "Make live")]
         public bool ProjectLive { get; set; }
+        public string ErrorMessage { get; set; }
     }
 }

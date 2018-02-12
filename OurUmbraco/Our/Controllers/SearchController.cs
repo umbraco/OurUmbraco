@@ -13,19 +13,28 @@ namespace OurUmbraco.Our.Controllers
         [ChildActionOnly]
         public ActionResult Render(string q, string cat = "", string order = "", int fid = 0, bool solved = false, bool replies = false)
         {
+            // If no search string specified, use a blank one to prevent null exceptions.
+            if (string.IsNullOrEmpty(q))
+                q = string.Empty;
+
             // A particular SQL injection attack uses this query which takes very long to process, turning it into and easy DOS attack
             // /search?q=999999.9' /**/uNiOn/**/aLl /**/sElEcT 0x393133353134353632312e39,0x393133353134353632322e39,0x393133353134353632332e39,0x393133353134353632342e39,0x393133353134353632352e39,0x393133353134353632362e39,0x393133353134353632372e39,0x393133353134353632382e39,0x393133353134353632392e39,0x39313335313435363231302e39,0x39313335313435363231312e39,0x39313335313435363231322e39,0x39313335313435363231332e39,0x39313335313435363231342e39,0x39313335313435363231352e39 and '0'='0-- 
-            if (q.Contains("0x393133353134353632392e39"))
-                Response.Redirect("/search?q=");
+            if (q.Contains("999999.9'") || q.Contains("0x393133353134353632392e39"))
+                q = string.Empty;
 
             var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
 
             var nodeTypeAlias = cat;
-
-            //TODO: If we are searching on projects, they need to be filtered to approved/live!
-
+            
             var forumName = string.Empty;
             var filters = new List<SearchFilters>();
+
+            if (nodeTypeAlias == "project")
+            {
+                var searchFilters = new SearchFilters(BooleanOperation.And);
+                searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                filters.Add(searchFilters);
+            }
 
             if (nodeTypeAlias == "forum" && fid > 0)
             {
@@ -52,7 +61,6 @@ namespace OurUmbraco.Our.Controllers
                 searchFilters.Filters.Add(new SearchFilter("replies", "0"));
                 filters.Add(searchFilters);
             }
-
             var ourSearcher = new OurSearcher(q,
                 //TODO: Depending on what order by this is, we need to pass in a data
                 // type here, for example, if its an INT or a Date!

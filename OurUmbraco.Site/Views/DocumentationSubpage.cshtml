@@ -20,21 +20,10 @@
                             @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                         </div>
 
-                        <div id="doc-survey" class="docs-default-listing markdown-syntax" style="background-color: #daf0c9; padding: 20px; display: none;">
-                            <a href="#" id="doc-survey-hide" title="Hide this survey box forever" style="float: right; text-decoration: none">X</a>
-                            <h3 style="margin: 10px 0 0 0">Help us improve the documentation area</h3>
-                            <p>
-                                We'd love to make the documentation for Umbraco even better, but we need your help on where we should focus the most.
-                                So please help us help you by spending a few minutes taking this short survey.
-                            </p>
-                            <a id="doc-survey-link" class="button green" href="https://www.surveymonkey.com/r/OurDocumentation" target="_blank">Take the Survey (and this box will also go away)</a>
-                        </div>
-
                         <div class="search-big">
                             <input type="search" class="docs-search-input" required placeholder="Search for documentation">
                             <label for="search">Search for documentation</label>
                         </div>
-
 
                         <ul class="search-all-results docs-search-listing"></ul>
 
@@ -46,7 +35,7 @@
             </div><!-- .main-area -->
 
         </div><!-- .page-content -->
-
+        
         <script type="text/template" class="search-item-docs">
             <li>
                 <a href="{{ url }}">
@@ -67,28 +56,3 @@
         </script>
     </div>
 </div>
-<script type="text/javascript">
-
-    // test for cookie
-    $(document).ready(function () {
-
-        $("#doc-survey-link").click(function () {
-            // set cookie
-            document.cookie = 'docSurveyTaken=true; expires=Wed, 1 Jan 2020 20:47:11 UTC; path=/';
-            $("#doc-survey").fadeOut();
-        });
-
-        $("#doc-survey-hide").click(function () {
-            // set cookie
-            document.cookie = 'docSurveyTaken=true; expires=Wed, 1 Jan 2020 20:47:11 UTC; path=/';
-            $("#doc-survey").fadeOut();
-        });
-
-        if (document.cookie.indexOf("docSurveyTaken") == -1) {
-            // don't show on mobile devices
-            var ua = navigator.userAgent;
-            if (!/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(ua)) {
-                $("#doc-survey").fadeIn();
-            }
-        }
-    });</script>

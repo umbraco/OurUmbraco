@@ -151,6 +151,28 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
         }
 
         /// <summary>
+        /// Returns all topics in a certain date range
+        /// </summary>
+        public IEnumerable<Topic> GetAllTopics(bool unsolved = false, bool noreplies = false)
+        {
+            var sql = @"SELECT * FROM forumTopics WHERE isSpam=0";
+            
+            if (unsolved)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND answer = 0";
+                else
+                    sql = sql + " WHERE answer = 0";
+
+            if (noreplies)
+                if (sql.Contains("WHERE"))
+                    sql = sql + " AND replies = 0";
+                else
+                    sql = sql + " WHERE replies = 0";
+            
+            return _databaseContext.Database.Fetch<Topic>(sql);
+        }
+
+        /// <summary>
         /// Returns a count of all topics
         /// </summary>
         /// <param name="category"></param>

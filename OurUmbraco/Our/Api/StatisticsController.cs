@@ -121,7 +121,7 @@ namespace OurUmbraco.Our.Api
         }
 
         [System.Web.Http.HttpGet]
-        public PeopleData GetPeopleData(DateTime fromDate, DateTime toDate)
+        public static PeopleData GetPeopleData(DateTime fromDate, DateTime toDate)
         {
             var peopleData = new PeopleData {  MostActiveDateRange =  new List<PeopleDataByWeek>() };
             var yearAndWeekNumbers = GetYearAndWeekNumbers(fromDate, toDate);
@@ -147,12 +147,12 @@ namespace OurUmbraco.Our.Api
         }
 
         // Adapted from: https://stackoverflow.com/a/25248044/5018
-        public List<YearAndWeekNumbers> GetYearAndWeekNumbers(DateTime fromDate, DateTime toDate)
+        public static List<YearAndWeekNumbers> GetYearAndWeekNumbers(DateTime fromDate, DateTime toDate)
         {
             var currentCulture = CultureInfo.GetCultureInfo("da-DK");
             var yearAndWeekNumbers = new List<YearAndWeekNumbers>();
 
-            for (var dateTime = fromDate; dateTime < toDate; dateTime = dateTime.AddDays(1))
+            for (var dateTime = fromDate; dateTime <= toDate; dateTime = dateTime.AddDays(1))
             {
                 var weeekNumber = currentCulture.Calendar.GetWeekOfYear(
                     dateTime,

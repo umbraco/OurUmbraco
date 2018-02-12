@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
 using System.Web;
@@ -12,6 +13,8 @@ using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Project.Helpers;
 using OurUmbraco.Wiki.BusinessLogic;
+using Umbraco.Core.IO;
+using Umbraco.Core.Logging;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -19,6 +22,8 @@ namespace OurUmbraco.Our.Controllers
 {
     public class ProjectController : SurfaceController
     {
+        private string _exceptionName = "uIntra";
+
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
         {
@@ -34,13 +39,15 @@ namespace OurUmbraco.Our.Controllers
                 model.ProjectCategories.Add(new SelectListItem { Text = category.Name, Value = category.Id.ToString(), Selected = project.CategoryId == category.Id });
 
             model.License = string.IsNullOrWhiteSpace(project.LicenseName) ? "MIT" : project.LicenseName;
-            model.LicenseUrl = string.IsNullOrWhiteSpace(project.LicenseUrl) ? "http://www.opensource.org/licenses/mit-license.php" : project.LicenseUrl;
+            model.LicenseUrl = string.IsNullOrWhiteSpace(project.LicenseUrl) ? "http://www.opensource.org/licenses/MIT" : project.LicenseUrl;
 
             model.Title = project.Name;
             model.Description = project.Description;
             model.Version = project.CurrentVersion;
+            model.ProjectUrl = project.ProjectUrl;
             model.SourceCodeUrl = project.SourceCodeUrl;
             model.NuGetPackageUrl = project.NuGetPackageUrl;
+            model.BugTrackingUrl = project.SupportUrl;
             model.DemonstrationUrl = project.DemonstrationUrl;
             model.OpenForCollaboration = project.OpenForCollab;
             model.GoogleAnalyticsCode = project.GACode;
@@ -85,6 +92,7 @@ namespace OurUmbraco.Our.Controllers
             project.ProjectUrl = model.ProjectUrl;
             project.SourceCodeUrl = model.SourceCodeUrl;
             project.NuGetPackageUrl = model.NuGetPackageUrl;
+            project.SupportUrl = model.BugTrackingUrl;
             project.DemonstrationUrl = model.DemonstrationUrl;
             project.CategoryId = int.Parse(model.Category);
             project.OpenForCollab = model.OpenForCollaboration;
@@ -154,16 +162,89 @@ namespace OurUmbraco.Our.Controllers
         public ActionResult RenderComplete(int id)
         {
             var project = GetProjectForAuthorizedMember(id);
-            var model = new ProjectCompleteModel { Id = id, Name = project.Name, ProjectLive = project.Live };
+            var nodeListingProvider = new NodeListingProvider();
+            var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
+
+            var errorMessage = string.Empty;
+            var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+
+            // Special exception
+            var isExceptionPackage = string.Equals(project.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase);
+
+            if (isExceptionPackage == false && currentPackage == null)
+                errorMessage = "None of the package files are marked as the current package, please make one current.";
+
+            if (isExceptionPackage == false && currentPackage != null && ZipFileContainsPackageXml(currentPackage) == false)
+            {
+                var contentService = Services.ContentService;
+                var content = contentService.GetById(project.Id);
+                var projectIsLive = content.GetValue<bool>("projectLive");
+
+                if (projectIsLive)
+                {
+                    content.SetValue("projectLive", false);
+                    contentService.SaveAndPublishWithStatus(content);
+                }
+                errorMessage = string.Format("The current package file {0} is not a valid Umbraco Package, please upload a package", currentPackage.Name);
+            }
+
+            var model = new ProjectCompleteModel { Id = project.Id, Name = project.Name, ProjectLive = project.Live, ErrorMessage = errorMessage };
+
             return PartialView("~/Views/Partials/Project/Complete.cshtml", model);
+        }
+
+        private bool ZipFileContainsPackageXml(IMediaFile package)
+        {
+            var zipFile = IOHelper.MapPath(package.Path);
+            try
+            {
+                LogHelper.Info<ProjectController>(string.Format("Checking if {0} has a package.xml zipped up in there.", zipFile));
+
+                using (var archive = ZipFile.OpenRead(zipFile))
+                {
+                    var packageXmlFileExists = archive.Entries.Any(x => string.Equals(x.Name, "package.xml", StringComparison.InvariantCultureIgnoreCase));
+                    if (packageXmlFileExists)
+                        return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProjectController>(string.Format("Error unzipping {0}", zipFile), ex);
+            }
+
+            return false;
         }
 
         public ActionResult UpdateProjectLive(ProjectCompleteModel model)
         {
             var nodeListingProvider = new NodeListingProvider();
             var project = GetProjectForAuthorizedMember(model.Id);
-            project.Live = model.ProjectLive;
-            nodeListingProvider.SaveOrUpdate(project);
+
+            if (model.ProjectLive == false)
+            {
+                project.Live = false;
+                nodeListingProvider.SaveOrUpdate(project);
+            }
+            else
+            {
+                // Special exception
+                if (string.Equals(model.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    project.Live = true;
+                    nodeListingProvider.SaveOrUpdate(project);
+                }
+                else
+                {
+                    var packages = nodeListingProvider.GetMediaForProjectByType(project.Id, FileType.package);
+                    var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
+
+                    if (currentPackage != null && ZipFileContainsPackageXml(currentPackage))
+                    {
+                        project.Live = true;
+                        nodeListingProvider.SaveOrUpdate(project);
+                    }
+                }
+            }
 
             return RedirectToCurrentUmbracoPage(Request.Url.Query);
         }

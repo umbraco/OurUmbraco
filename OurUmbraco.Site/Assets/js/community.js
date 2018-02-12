@@ -112,6 +112,10 @@
                 $("#forum-title").val("");
                 $("#forum-description").val("");
             });
+        },
+        
+        getTopicDataByWeek: function () {
+          return $.get("/umbraco/api/Statistics/GetTopicDataByWeek");
         }
     };
 }();
