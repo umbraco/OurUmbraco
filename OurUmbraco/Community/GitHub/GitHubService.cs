@@ -128,7 +128,7 @@ namespace OurUmbraco.Community.GitHub
             return pulls;
         }
 
-        public string MatchPullsToMembers()
+        public List<string> MatchPullsToMembers()
         {
             var pulls = new List<GithubPullRequestModel>();
             if (File.Exists(PullRequestsJsonPath))
@@ -137,7 +137,7 @@ namespace OurUmbraco.Community.GitHub
                 pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
             }
 
-            var result = string.Empty;
+            var results = new List<string>();
 
             var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
             var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
@@ -155,11 +155,11 @@ namespace OurUmbraco.Community.GitHub
                 var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
                 var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
                 var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
-                result += string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.<br />",
-                    ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count);
+                results.Add(string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.",
+                    ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count));
             }
 
-            return result;
+            return results;
         }
 
         /// <summary>

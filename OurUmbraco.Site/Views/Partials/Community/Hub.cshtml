@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Community.GitHub
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Models
 @using Skybrud.Essentials.Security
@@ -45,6 +46,7 @@
 
 @KarmaStatistics()
 @BlogPosts()
+@GitHubMatch()
 @ForumStatistics()
 
 @helper ForumStatistics()
@@ -65,6 +67,40 @@
 
                 <div class="col-md-12 flex" id="forum-statistics">
                     <h2>Loading latest forum statistics...</h2>
+                </div>
+
+            </div>
+        </div>
+    </section>
+}
+
+@helper GitHubMatch()
+{
+    <section class="forum">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">GitHub Match (WIP)</h1>
+                    <p>
+                        For people who have added their GitHub name to their profile, match up their PRs.
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>GitHub activity</small>
+                </div>
+
+                <div class="col-md-12 flex" id="github-statistics">
+                    @{
+                        var githubService = new GitHubService();
+                        var matches = githubService.MatchPullsToMembers();
+                    }
+                    <ul>
+                        @foreach (var match in matches)
+                        {
+                            <li>@Html.Raw(match)</li>
+                        }
+                    </ul>
                 </div>
 
             </div>
