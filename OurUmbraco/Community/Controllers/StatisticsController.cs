@@ -9,6 +9,7 @@ using Examine;
 using Newtonsoft.Json;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Our.Api;
+using Umbraco.Core.Cache;
 using Umbraco.Web.Mvc;
 using SearchResult = Tweetinvi.Logic.Model.SearchResult;
 
@@ -197,7 +198,7 @@ namespace OurUmbraco.Community.Controllers
         {
             var lastweekStart = GetLastWeekStartDate();
             var karmaRecent = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now);
-            
+
             foreach (var period in karmaRecent.MostActiveDateRange)
             {
                 foreach (var person in period.MostActive)
@@ -214,34 +215,43 @@ namespace OurUmbraco.Community.Controllers
                 }
             }
 
-            // Yearly karma counts from May 1st until May 1st each year. If the date in this year is before May 1st, shift back an extra year
-            var yearShift = 0;
-            if (DateTime.Now > new DateTime(DateTime.Now.Year, 5, 1))
-                yearShift = 1;
-            var karmaYear = Our.Api.StatisticsController.GetPeopleData(new DateTime(DateTime.Now.Year - 1 - yearShift, 5, 1), new DateTime(DateTime.Now.Year - yearShift, 5, 1));
-            
-            foreach (var period in karmaYear.MostActiveDateRange)
+            var karmaYearStatistics = ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PeopleData>("OurYearKarmaStatistics",
+            () =>
             {
-                foreach (var person in period.MostActive)
-                {
-                    var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
-                    var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
-                    var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
-                    if (searchResult == null)
-                        continue;
 
-                    int totalKarma;
-                    if (int.TryParse(searchResult.Fields["reputationTotal"], out totalKarma))
-                        person.TotalKarma = totalKarma;
+                    // Yearly karma counts from May 1st until May 1st each year. If the date in this year is before May 1st, shift back an extra year
+                    var yearShift = 0;
+                if (DateTime.Now > new DateTime(DateTime.Now.Year, 5, 1))
+                    yearShift = 1;
+                var karmaYear = Our.Api.StatisticsController.GetPeopleData(new DateTime(DateTime.Now.Year - 1 - yearShift, 5, 1), new DateTime(DateTime.Now.Year - yearShift, 5, 1));
+
+                foreach (var period in karmaYear.MostActiveDateRange)
+                {
+                    foreach (var person in period.MostActive)
+                    {
+                        var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
+                        var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
+                        var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
+                        if (searchResult == null)
+                            continue;
+
+                        int totalKarma;
+                        if (int.TryParse(searchResult.Fields["reputationTotal"], out totalKarma))
+                            person.TotalKarma = totalKarma;
+                    }
                 }
-            }
+
+
+                return karmaYear;
+
+            }, TimeSpan.FromHours(24));
+
 
             var karmaStatistics = new KarmaStatistics
             {
                 KarmaRecent = karmaRecent,
-                KarmaYear = karmaYear
+                KarmaYear = karmaYearStatistics
             };
-
 
             return PartialView("~/Views/Partials/Community/KarmaStatistics.cshtml", karmaStatistics);
         }
