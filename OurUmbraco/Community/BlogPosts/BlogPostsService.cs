@@ -84,7 +84,7 @@ namespace OurUmbraco.Community.BlogPosts
                         Channel = rssChannel,
                         Title = item.GetElementValue("title"),
                         Link = item.GetElementValue("link"),
-                        PublishedDate = item.GetElementValue("pubDate", BlogRssUtils.ParseRfc822DateTime)
+                        PublishedDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(item.GetElementValue("pubDate"))
                     }));
 
                 }
