@@ -194,9 +194,9 @@ namespace OurUmbraco.Community.Controllers
 
         public ActionResult KarmaStatistics()
         {
-            var lastweekStart = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6).AddDays(-365);
+            var lastweekStart = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6);
 
-            var karmaData = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now.AddDays(-365));
+            var karmaData = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now);
             
             foreach (var period in karmaData.MostActiveDateRange)
             {
