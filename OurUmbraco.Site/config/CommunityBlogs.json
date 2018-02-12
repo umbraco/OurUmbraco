@@ -1,6 +1,13 @@
 ﻿{
   "blogs": [
     {
+      "id": "6F278E68-C435-4DFF-A4EA-DB08835AB0F9",
+      "title": "Umbraco HQ",
+      "url": "https://umbraco.com/blog",
+      "rss": "https://umbraco.com/blog/rss-feed/",
+      "logo": "https://umbraco.com/media/1542/100px_transparent.png"
+    },
+    {
       "id": "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
       "title": "Creative Web Specialist",
       "url": "https://creativewebspecialist.co.uk",
@@ -27,6 +34,20 @@
       "url": "http://skrift.io/",
       "rss": "http://skrift.io/articles/rss",
       "logo": "http://skrift.io/css/images/logoRetina-black.png"
+    },
+    {
+      "id": "B8AAE362-4344-47C5-8C91-C6960ABFC3DF",
+      "title": "John D Jones",
+      "url": "http://jondjones.com/",
+      "rss": "http://jondjones.com/rss/",
+      "logo": "http://www.jondjones.com/images/logo.png"
+    },
+    {
+      "id": "D2D254D0-DE05-4B6C-A78A-E8C6D24C8AFD",
+      "title": "Cultiv",
+      "url": "https://cultiv.nl/",
+      "rss": "http://feeds.feedburner.com/blog-cultiv",
+      "logo": "https://cultiv.nl/images/logo.png"
     }
   ]
 }

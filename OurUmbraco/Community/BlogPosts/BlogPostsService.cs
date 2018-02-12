@@ -135,8 +135,6 @@ namespace OurUmbraco.Community.BlogPosts
 
             // Save the JSON to disk
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);
-
         }
-
     }
 }
