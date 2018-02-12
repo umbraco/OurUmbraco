@@ -5,9 +5,11 @@ using System.Linq;
 using System.Text;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using Examine;
 using Newtonsoft.Json;
 using OurUmbraco.Forum.Services;
 using Umbraco.Web.Mvc;
+using SearchResult = Tweetinvi.Logic.Model.SearchResult;
 
 namespace OurUmbraco.Community.Controllers
 {
@@ -15,16 +17,16 @@ namespace OurUmbraco.Community.Controllers
     {
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/ForumStatisticsData.json");
 
-        public ActionResult Statistics(DateTime? fromDate, DateTime? toDate)
+        public ActionResult ForumStatistics(DateTime? fromDate, DateTime? toDate)
         {
             if (fromDate == null)
                 fromDate = DateTime.Now.Add(TimeSpan.FromDays(-365));
             if (toDate == null)
                 toDate = DateTime.MaxValue;
 
-            var groupedTopicData = GetGroupedTopicData((DateTime) fromDate, (DateTime) toDate);
-            
-            return PartialView("~/Views/Partials/Home/ForumStatistics.cshtml", groupedTopicData);
+            var groupedTopicData = GetGroupedTopicData((DateTime)fromDate, (DateTime)toDate);
+
+            return PartialView("~/Views/Partials/Community/ForumStatistics.cshtml", groupedTopicData);
         }
 
         private GroupedTopicData GetGroupedTopicData(DateTime fromDate, DateTime toDate)
@@ -150,7 +152,7 @@ namespace OurUmbraco.Community.Controllers
 
             groupedTopicData.DataSets.Add(topicsNoRepliesCountDataSet);
             //
-            
+
             return groupedTopicData;
         }
 
@@ -188,6 +190,31 @@ namespace OurUmbraco.Community.Controllers
             }
 
             return topics;
+        }
+
+        public ActionResult KarmaStatistics()
+        {
+            var lastweekStart = DateTime.Now.AddDays(-(int)DateTime.Now.DayOfWeek - 6).AddDays(-365);
+
+            var karmaData = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now.AddDays(-365));
+            
+            foreach (var period in karmaData.MostActiveDateRange)
+            {
+                foreach (var person in period.MostActive)
+                {
+                    var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
+                    var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
+                    var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
+                    if (searchResult == null)
+                        continue;
+
+                    int totalKarma;
+                    if (int.TryParse(searchResult.Fields["reputationTotal"], out totalKarma))
+                        person.TotalKarma = totalKarma;
+                }
+            }
+
+            return PartialView("~/Views/Partials/Community/KarmaStatistics.cshtml", karmaData);
         }
     }
 

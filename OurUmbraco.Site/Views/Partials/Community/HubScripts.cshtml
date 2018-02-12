@@ -5,16 +5,24 @@
     var querystringToDate = Request.QueryString["toDate"];
     var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
     var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? DateTime.Now : DateTime.Parse(querystringToDate);
-    var url = Html.Raw(Url.Action("Statistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+    var forumStatsUrl = Html.Raw(Url.Action("ForumStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+    var karmaStatsUrl = Html.Raw(Url.Action("KarmaStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+
 }
 
 <script type="text/javascript">
     $(document).ready(function () {
-        console.log("@url");
+        
         try {
-            $("#forum-statistics").load("@url");
+            $("#forum-statistics").load("@forumStatsUrl");
         } catch (errForum) {
             console.log("Couldn't load latest forum statistics", errForum.message);
+        }
+
+        try {
+            $("#karma-statistics").load("@karmaStatsUrl");
+        } catch (errKarma) {
+            console.log("Couldn't load latest karma statistics", errKarma.message);
         }
     });
 </script>
