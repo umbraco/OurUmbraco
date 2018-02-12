@@ -1,25 +1,32 @@
 ﻿{
-	"blogs": [
-        {
-            "id":  "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
-            "title": "Creative Web Specialist",
-            "url": "https://creativewebspecialist.co.uk",
-            "rss": "https://creativewebspecialist.co.uk/feed/",
-            "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g"
-        },
-        {
-            "id": "feef823f-84e7-4fba-af14-a70d1f6b2dfc",
-            "title": "Shazwazza",
-            "url": "https://shazwazza.com/",
-            "rss": "http://feeds.feedburner.com/Shazwazza",
-            "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg"
-        },
-        {
-            "id": "76e06586-1220-44b2-a475-bffc2c03499d",
-            "title": "Lee Kelleher",
-            "url": "https://leekelleher.com/",
-            "rss": "https://leekelleher.com/feed/",
-            "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png"
-        }
-	]
+  "blogs": [
+    {
+      "id": "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
+      "title": "Creative Web Specialist",
+      "url": "https://creativewebspecialist.co.uk",
+      "rss": "https://creativewebspecialist.co.uk/feed/",
+      "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g"
+    },
+    {
+      "id": "feef823f-84e7-4fba-af14-a70d1f6b2dfc",
+      "title": "Shazwazza",
+      "url": "https://shazwazza.com/",
+      "rss": "http://feeds.feedburner.com/Shazwazza",
+      "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg"
+    },
+    {
+      "id": "76e06586-1220-44b2-a475-bffc2c03499d",
+      "title": "Lee Kelleher",
+      "url": "https://leekelleher.com/",
+      "rss": "https://leekelleher.com/feed/",
+      "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png"
+    },
+    {
+      "id": "573408F9-59D0-4010-87E8-9355ABF48335",
+      "title": "Skrift",
+      "url": "http://skrift.io/",
+      "rss": "http://skrift.io/articles/rss",
+      "logo": "http://skrift.io/css/images/logoRetina-black.png"
+    }
+  ]
 }

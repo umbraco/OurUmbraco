@@ -1,9 +1,9 @@
 ﻿@using OurUmbraco.Community.BlogPosts
 @using OurUmbraco.Our.Models
 @using Skybrud.Essentials.Security
-@inherits OurUmbracoTemplatePage	
+@inherits OurUmbracoTemplatePage
 @{
-    
+
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
@@ -73,134 +73,138 @@ else
     @Html.Partial("home/documentation")
     @ForumActivity()
     @Meetups()
-    @GitHubContributors()  
+    @GitHubContributors()
     @BlogPosts()
     @TwitterSearch()
 }
 
 @helper ForumActivity()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
 
-                <div class="col-md-12">
-                    <h1 class="text-center">Forum Activity</h1>
-                    <p>
-                        Recent activity in the forums, where people are helping each other with current problems.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Recent posts</small>
-                </div>
+                    <div class="col-md-12">
+                        <h1 class="text-center">Forum Activity</h1>
+                        <p>
+                            Recent activity in the forums, where people are helping each other with current problems.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Recent posts</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="forum-activity">
-                    <h2>Loading latest forum activity...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="forum-activity">
+                        <h2>Loading latest forum activity...</h2>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="/forum">Go to Forum &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="/forum">Go to Forum &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper TwitterSearch()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
 
-                <div class="col-md-12">
-                    <h1 class="text-center">Twitter Activity</h1>
-                    <p>
-                        Recent activity on twitter, where people are talking about Umbraco.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Recent tweets</small>
-                </div>
+                    <div class="col-md-12">
+                        <h1 class="text-center">Twitter Activity</h1>
+                        <p>
+                            Recent activity on twitter, where people are talking about Umbraco.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Recent tweets</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="twitter-search">
-                    <h2>Loading twitter search results...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="twitter-search">
+                        <h2>Loading twitter search results...</h2>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper  GitHubContributors()
-{
-    <section class="forum github-contributions">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="text-center">GitHub Contributions</h1>
-                    <p>
-                        <small class="github-repo-list">
-                            Contributions to default branches for
-                            <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
-                            <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
-                            <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
-                            <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
-                            <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
-                            <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
-                        </small>
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Contributions the last 12 months (number indicating accepted commits)</small>
-                </div>
+    {
+        <section class="forum github-contributions">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="text-center">GitHub Contributions</h1>
+                        <p>
+                            <small class="github-repo-list">
+                                Contributions to default branches for
+                                <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
+                                <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
+                                <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
+                            </small>
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Contributions the last 12 months (number indicating accepted commits)</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="github-contributors">
-                    <h2>Loading GitHub contributors...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="github-contributors">
+                        <h2>Loading GitHub contributors...</h2>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="https://our.umbraco.org/contribute">Contribute to Umbraco &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="https://our.umbraco.org/contribute">Contribute to Umbraco &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper Meetups()
-{   
-    <section class="forum">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="text-center">Meetups</h1>
-                    <p>
-                        Upcoming meetups organized by the Umbraco community.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Upcoming meetups</small>
-                </div>
-                <div class="col-md-12 flex" id="meetups">
-                    <h2>Loading meetups...</h2>
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="text-center">Meetups</h1>
+                        <p>
+                            Upcoming meetups organized by the Umbraco community.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Upcoming meetups</small>
+                    </div>
+                    <div class="col-md-12 flex" id="meetups">
+                        <h2>Loading meetups...</h2>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
-@helper BlogPosts(int maxCount = 20) {
+@helper BlogPosts(int maxCount = 20)
+{
+    var service = new BlogPostsService();
 
-    BlogPostsService service = new BlogPostsService();
+    //var items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();
+    var items = service.GetCachedBlogPosts().Take(maxCount).ToArray();
 
-    BlogCachedRssItem[] items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();
-
-    if (items.Length == 0) { return; }
+    if (items.Length == 0)
+    {
+        return;
+    }
 
     <section class="forum" id="blogPosts">
         <div class="container">
@@ -215,14 +219,18 @@ else
                     <small>Recent blog posts</small>
                 </div>
                 <div class="col-md-12 flex" id="meetups">
-                    @foreach (BlogCachedRssItem item in items) {
+                    @foreach (var item in items)
+                    {
                         <a href="@item.Link" class="forum-thread">
-                            @if (item.Blog.HasLogoUrl) {
+                            @if (item.Blog.HasLogoUrl)
+                            {
                                 <div class="avatar">
                                     <img src="@item.Blog.LogoUrl" />
                                 </div>
-                            } else {
-                                string fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
+                            }
+                            else
+                            {
+                                var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
                                 <div class="avatar">
                                     <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
                                 </div>
@@ -235,7 +243,9 @@ else
                             </div>
                         </a>
                     }
-                    @if (items.Length % 2 == 1) {
+
+                    @if (items.Length % 2 == 1)
+                    {
                         // If there is an odd amount of items, we add a invisible div so the last item doesn't take up the full width
                         <div class="forum-thread" style="visibility: hidden;"></div>
                     }
