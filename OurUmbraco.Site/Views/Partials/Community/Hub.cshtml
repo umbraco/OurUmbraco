@@ -6,7 +6,8 @@
 @{
     // Only for HQ members and admins right now
     var member = Members.GetCurrentMember();
-    if (member == null || member.IsHq() == false || member.IsAdmin() == false) { return; }
+    var allowed = member != null && (member.IsHq() || member.IsAdmin());
+    if (allowed == false) { return; }
 
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
