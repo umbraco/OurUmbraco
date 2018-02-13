@@ -53,10 +53,26 @@
                                 @Html.Raw(Utils.GetMemberAvatar(member, 125))
                                 <div class="text">
                                     <h3>@member.Name</h3>
-                                    @if (member.HasValue("twitter"))
+                                    @if (member.HasValue("twitter") || member.HasValue("facebook"))
                                     {
-                                        var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
-                                        <small><a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a></small>
+                                        <div class="social-links">
+                                            @if (member.HasValue("twitter"))
+                                            {
+                                                var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
+                                                <a href="https://twitter.com/@twitterHandle" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener">
+                                                    <i class="icon-twitter"></i>
+                                                    <span>@twitterHandle</span>
+                                                </a>
+                                            }
+                                            @if (member.HasValue("github"))
+                                            {
+                                                var githubUsername = member.GetPropertyValue<string>("github").Replace("@", string.Empty);
+                                                <a href="https://github.com/@githubUsername" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener">
+                                                    <i class="icon-github"></i>
+                                                    <span>@githubUsername</span>
+                                                </a>
+                                            }
+                                        </div>
                                     }
                                 </div>
                             </div> <!-- .member-details -->
