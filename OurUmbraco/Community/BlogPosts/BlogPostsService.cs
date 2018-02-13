@@ -100,30 +100,7 @@ namespace OurUmbraco.Community.BlogPosts
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
-
-        public string GetFeedData(BlogInfo feed)
-        {
-            var response = string.Empty;
-
-            var request = (HttpWebRequest)WebRequest.Create(feed.RssUrl);
-            request.AllowAutoRedirect = true;
-            request.ContentType = feed.Encoding.ToString();
-
-            using (var httpWebResponse = (HttpWebResponse) request.GetResponse())
-            {
-                request.AllowAutoRedirect = true;
-
-                // Read response stream
-
-                var responseStream = httpWebResponse.GetResponseStream();
-                if (responseStream != null)
-                    using (var myStream = new StreamReader(responseStream))
-                        response = myStream.ReadToEnd();
-            }
-
-            return response;
-        }
-
+        
         public BlogCachedRssItem[] GetCachedBlogPosts()
         {
             // Return an empty array as the file doesn't exist
