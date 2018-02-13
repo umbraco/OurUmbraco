@@ -1,35 +1,6 @@
 ﻿@using OurUmbraco.Community.GitHub
-@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
-@{
-    // Only for HQ members and admins right now
-    var member = Members.GetCurrentMember();
-    var allowed = member != null && (member.IsHq() || member.IsAdmin());
-    if (allowed == false) { return; }
-
-    var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
-    var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
-    var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
-    var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
-}
-<style>
-    .bannertext p {
-        line-height: 1.4rem;
-    }
-</style>
-
-@if (showGlobalNotification)
-{
-    <div class="alertbar__yellow">
-        @Html.Raw(globalNotificationText)
-    </div>
-}
-
-@if (showHomeNotification)
-{
-    @Html.Raw(homeNotificationText)
-}
 
 <h1 style="color: red; ">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
 

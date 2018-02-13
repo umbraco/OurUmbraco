@@ -1,40 +1,6 @@
 ﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    Layout = "~/Views/Master.cshtml";
+    Layout = "~/Views/CommunityHubPageLayout.cshtml";
 }
-<div class="has-sidebar">
-    <div class="page-content">
-        <div id="overlay" class="overlay"></div>
-        <div class="sidebar-area">
-            <div class="sidebar-content">
-                <div class="content-wrapper">
-                    <nav>
-                        <ul class="level-1">
-                            @foreach (var child in Model.Content.Children)
-                            {
-                                <li class="">
-                                    <h3><a href="@child.Url">@child.Name</a></h3>
-                                </li>
-                            }
-                        </ul>
-                    </nav>
-                </div><!-- .content-wrapper -->
-            </div><!-- .sidebar-content -->
-        </div><!-- .sidebar-area -->
-        <div class="main-area">
-            <div class="main-content">
-                <div class="content-wrapper">
-                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
-                    <div class="community-content">
-                        @Html.Partial("~/Views/Partials/Community/Hub.cshtml")
-                    </div><!-- .community-content -->
-                </div><!-- .content-wrapper -->
-            </div><!-- .main-content -->
-        </div><!-- .main-area -->
-    </div><!-- .page-content -->
-</div>
 
-@section EndScripts
-{
-    @Html.Partial("~/Views/Partials/Community/HubScripts.cshtml")
-}
+@Html.Partial("~/Views/Partials/Community/Hub.cshtml")

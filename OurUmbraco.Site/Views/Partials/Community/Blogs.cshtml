@@ -1,14 +1,8 @@
 ﻿@using OurUmbraco.Community.BlogPosts
-@using OurUmbraco.Forum.Extensions
 @using Skybrud.Essentials.Security
 
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    // Only for HQ members and admins right now
-    var member = Members.GetCurrentMember();
-    var allowed = member != null && (member.IsHq() || member.IsAdmin());
-    if (allowed == false) { return; }
-
     var service = new BlogPostsService();
 
     //var items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();

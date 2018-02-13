@@ -1,11 +1,4 @@
-﻿@using OurUmbraco.Forum.Extensions
-@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
-@{
-    // Only for HQ members and admins right now
-    var member = Members.GetCurrentMember();
-    var allowed = member != null && (member.IsHq() || member.IsAdmin());
-    if (allowed == false) { return; }
-}
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <section class="community">
     <div class="container">

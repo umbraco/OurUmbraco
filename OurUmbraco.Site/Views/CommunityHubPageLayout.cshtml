@@ -1,0 +1,76 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+
+    var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
+    var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
+    var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
+    var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
+}
+
+<style>
+    .bannertext p {
+        line-height: 1.4rem;
+    }
+</style>
+
+@if (showGlobalNotification)
+{
+    <div class="alertbar__yellow">
+        @Html.Raw(globalNotificationText)
+    </div>
+}
+
+@if (showHomeNotification)
+{
+    @Html.Raw(homeNotificationText)
+}
+
+<div class="has-sidebar">
+    <div class="page-content">
+        <div id="overlay" class="overlay"></div>
+        <div class="sidebar-area">
+            <div class="sidebar-content">
+                <div class="content-wrapper">
+                    <nav>
+                        <ul class="level-1">
+                            @if (Model.Content.Level == 2)
+                            {
+                                foreach (var child in Model.Content.Children)
+                                {
+                                    <li class="">
+                                        <h3><a href="@child.Url">@child.Name</a></h3>
+                                    </li>
+                                }
+                            }
+                            @if (Model.Content.Level == 3)
+                            {
+                                foreach (var child in Model.Content.Parent.Children)
+                                {
+                                    <li class="">
+                                        <h3><a href="@child.Url">@child.Name</a></h3>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </nav>
+                </div><!-- .content-wrapper -->
+            </div><!-- .sidebar-content -->
+        </div><!-- .sidebar-area -->
+        <div class="main-area">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                    <div class="community-content">
+                        @RenderBody()
+                    </div><!-- .community-content -->
+                </div><!-- .content-wrapper -->
+            </div><!-- .main-content -->
+        </div><!-- .main-area -->
+    </div><!-- .page-content -->
+</div>
+
+@section EndScripts
+{
+    @Html.Partial("~/Views/Partials/Community/HubScripts.cshtml")
+}
