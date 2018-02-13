@@ -13,10 +13,8 @@ Umbraco-Oxford-Meetup
 Madrid-Umbraco-Meetup-Group
 Chicago-Umbraco-Meetup
 Umbraco
-Umbraco-Dev-TC
 Goteborg-Umbraco-Meetup
 Dublin-Umbraco-Meetup
-Umbraco-BA
 Manchester-Umbraco-Meetup
 Liverpool-Umbraco-Meetup
 The-Poland-Umbraco-Meetup
