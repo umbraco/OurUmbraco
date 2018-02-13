@@ -10,7 +10,7 @@
                 <div class="content-wrapper">
                     <nav>
                         <ul class="level-1">
-                            @foreach (var child in Model.Content.Children)
+                            @foreach (var child in Model.Content.Parent.Children)
                             {
                                 <li class="">
                                     <h3><a href="@child.Url">@child.Name</a></h3>
@@ -26,7 +26,7 @@
                 <div class="content-wrapper">
                     @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                     <div class="community-content">
-                        @Html.Partial("~/Views/Partials/Community/Hub.cshtml")
+                        @Html.Partial("~/Views/Partials/Community/Blogs.cshtml")
                     </div><!-- .community-content -->
                 </div><!-- .content-wrapper -->
             </div><!-- .main-content -->

@@ -4,12 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
-using RestSharp.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
-using Umbraco.Core.Services;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -47,8 +45,11 @@ namespace OurUmbraco.Our
             AddNuGetUrlForPackages();
             AddPeopleKarmaPage();
             AddCommunityPage();
+            AddCommunityHubPage();
+            AddCommunityBlogs();
+            AddCommunityStatistics();
         }
-        
+
         private void EnsureMigrationsMarkerPathExists()
         {
             var path = HostingEnvironment.MapPath(MigrationMarkersPath);
@@ -580,7 +581,7 @@ namespace OurUmbraco.Our
                     contentType.AddPropertyType(checkboxPropertyType, "Content");
 
                     contentTypeService.Save(contentType);
-                    
+
                     searchContentType = contentTypeService.GetContentType("search");
                     var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("search", "Search");
                     if (templateCreateResult.Success)
@@ -705,7 +706,7 @@ namespace OurUmbraco.Our
                             contentService.SaveAndPublishWithStatus(page);
                         }
                     }
-                    
+
                     var htmlPage = rootContent.Children().FirstOrDefault(x => string.Equals(x.Name, "html", StringComparison.InvariantCultureIgnoreCase));
                     foreach (var page in htmlPage.Children())
                     {
@@ -861,7 +862,7 @@ namespace OurUmbraco.Our
                 if (communityContentType.PropertyTypeExists(propertyTypeAlias) == false)
                 {
                     var textboxAccountsFilter = new PropertyType(textboxMultiple, propertyTypeAlias) { Name = "CSV of Twitter accounts to filter" };
-                    communityContentType.AddPropertyType(textboxAccountsFilter, tabName);   
+                    communityContentType.AddPropertyType(textboxAccountsFilter, tabName);
                 }
 
                 propertyTypeAlias = "twitterFilterWords";
@@ -870,7 +871,7 @@ namespace OurUmbraco.Our
                     var textboxWordFilter = new PropertyType(textboxMultiple, propertyTypeAlias) { Name = "CSV of words filter tweets out" };
                     communityContentType.AddPropertyType(textboxWordFilter, tabName);
                 }
-                
+
                 contentTypeService.Save(communityContentType);
 
                 string[] lines = { "" };
@@ -908,7 +909,7 @@ namespace OurUmbraco.Our
                     };
                     macro.Save();
                 }
-                
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -917,7 +918,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-        
+
         private void AddNuGetUrlForPackages()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -942,7 +943,7 @@ namespace OurUmbraco.Our
                     var textboxNuGetPackage = new PropertyType(textbox, propertyTypeAlias);
                     projectContentType.AddPropertyType(textboxNuGetPackage, tabName);
                 }
-                
+
                 contentTypeService.Save(projectContentType);
 
                 string[] lines = { "" };
@@ -980,7 +981,7 @@ namespace OurUmbraco.Our
                 releaseCompareTemplate.SetMasterTemplate(masterTemplate);
 
                 fileService.SaveTemplate(releaseCompareTemplate);
-                
+
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
@@ -1054,6 +1055,166 @@ namespace OurUmbraco.Our
             {
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
+        }
+
+        private void AddCommunityHubPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
+                if (hubPageContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Community Hub Page",
+                        Alias = "communityHubPage",
+                        Icon = "icon-wifi"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
+                    var rte = new DataTypeDefinition("Umbraco.TinyMCEv3");
+                    var rtePropertyType = new PropertyType(rte, "bodyText") { Name = "Body" };
+                    contentType.AddPropertyType(rtePropertyType, "Content");
+
+                    contentTypeService.Save(contentType);
+
+                    hubPageContentType = contentTypeService.GetContentType("communityHubPage");
+
+                    var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                    if (communityHubContentType != null)
+                    {
+                        var allowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(contentType.Id, 0) };
+                        communityHubContentType.AllowedContentTypes = allowedContentTypes;
+                        contentTypeService.Save(communityHubContentType);
+                    }
+
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage", "CommunityHubPage");
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate("communityHubPage");
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        hubPageContentType.AllowedTemplates = new List<ITemplate> { template };
+                        hubPageContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(hubPageContentType);
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityBlogs()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityBlogs";
+                const string contentItemName = "Blogs";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+
+        private void AddCommunityStatistics()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityStatistics";
+                const string contentItemName = "Statistics";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
+        {
+            var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+            var hubNode = GetCommunityHubNode();
+            if (hubNode != null)
+            {
+                var templateContents = string.Empty;
+
+                var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                if (templateFile != null && File.Exists(templateFile))
+                    templateContents = File.ReadAllText(templateFile);
+
+                var templateCreateResult =
+                    ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage",
+                        templateName);
+                if (templateCreateResult.Success)
+                {
+                    var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                    var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                    template.SetMasterTemplate(masterTemplate);
+                    if (templateContents != string.Empty)
+                        template.Content = templateContents;
+                    ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                    var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                    var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
+                    var allowedTemplates = new List<ITemplate> {template};
+                    allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
+                    hubPageContentType.AllowedTemplates = allowedTemplates;
+                    contentTypeService.Save(hubPageContentType);
+                }
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var hubPage = contentService.CreateContent(contentItemName, hubNode.Id, "communityHubPage");
+                hubPage.SetValue("umbracoNaviHide", false);
+                hubPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                var saveResult = contentService.SaveAndPublishWithStatus(hubPage);
+            }
+        }
+
+        private static IContent GetCommunityHubNode()
+        {
+            var contentService = ApplicationContext.Current.Services.ContentService;
+            var rootContent = contentService.GetRootContent().FirstOrDefault();
+            return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
     }
 }
