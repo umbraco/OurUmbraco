@@ -51,16 +51,20 @@ namespace OurUmbraco.Community.BlogPosts
             {
                 try
                 {
-                    // Initialize a new web client (with the encoding specified for the blog)
                     string raw;
+                    
+                    // Need to make sure we try TLS 1.2 first else the connection will just be closed in us 
+                    // No other protocols allowed SSL * and TLS 1.0 are considered insecure
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
+                    
+                    // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
                         wc.Encoding = blog.Encoding;
-                        
+
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
                     }
-
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
 
@@ -97,6 +101,29 @@ namespace OurUmbraco.Community.BlogPosts
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
 
+        public string GetFeedData(BlogInfo feed)
+        {
+            var response = string.Empty;
+
+            var request = (HttpWebRequest)WebRequest.Create(feed.RssUrl);
+            request.AllowAutoRedirect = true;
+            request.ContentType = feed.Encoding.ToString();
+
+            using (var httpWebResponse = (HttpWebResponse) request.GetResponse())
+            {
+                request.AllowAutoRedirect = true;
+
+                // Read response stream
+
+                var responseStream = httpWebResponse.GetResponseStream();
+                if (responseStream != null)
+                    using (var myStream = new StreamReader(responseStream))
+                        response = myStream.ReadToEnd();
+            }
+
+            return response;
+        }
+
         public BlogCachedRssItem[] GetCachedBlogPosts()
         {
             // Return an empty array as the file doesn't exist
@@ -129,7 +156,7 @@ namespace OurUmbraco.Community.BlogPosts
         {
             // Initialize a new service
             var service = new BlogPostsService();
-            
+
             // Generate the raw JSON
             var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
 
