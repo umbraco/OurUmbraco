@@ -1171,7 +1171,7 @@ namespace OurUmbraco.Our
 
         private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
         {
-            var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+            var relativeTemplateLocation = string.Format("~/Views/{0}.cshtml", templateName);
 
             var hubNode = GetCommunityHubNode();
             if (hubNode != null)
