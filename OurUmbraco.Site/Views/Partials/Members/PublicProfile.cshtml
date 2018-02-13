@@ -53,7 +53,7 @@
                                 @Html.Raw(Utils.GetMemberAvatar(member, 125))
                                 <div class="text">
                                     <h3>@member.Name</h3>
-                                    @if (member.HasValue("twitter") || member.HasValue("facebook"))
+                                    @if (member.HasValue("twitter") || member.HasValue("github"))
                                     {
                                         <div class="social-links">
                                             @if (member.HasValue("twitter"))
