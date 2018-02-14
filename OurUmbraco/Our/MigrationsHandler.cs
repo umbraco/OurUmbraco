@@ -53,6 +53,7 @@ namespace OurUmbraco.Our
             AddCommunityTweets();
             AddCommunityMvpPage();
             AddMvpMemberGroups();
+            AddVideosPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1062,10 +1063,21 @@ namespace OurUmbraco.Our
             }
         }
 
+<<<<<<< HEAD
         private void AddCommunityHubPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
+=======
+
+        private void AddVideosPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            const string docTypeAlias = "videos";
+            const string docTypeName = "Videos";
+
+>>>>>>> Added new migration for creating the new "Videos" section
             try
             {
                 var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
@@ -1073,6 +1085,7 @@ namespace OurUmbraco.Our
                     return;
 
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+<<<<<<< HEAD
                 var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
                 if (hubPageContentType == null)
                 {
@@ -1081,6 +1094,16 @@ namespace OurUmbraco.Our
                         Name = "Community Hub Page",
                         Alias = "communityHubPage",
                         Icon = "icon-wifi"
+=======
+                var videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                if (videosContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = docTypeName,
+                        Alias = docTypeAlias,
+                        Icon = "icon-power"
+>>>>>>> Added new migration for creating the new "Videos" section
                     };
                     contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
 
@@ -1088,6 +1111,7 @@ namespace OurUmbraco.Our
                     var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
                     contentType.AddPropertyType(checkboxPropertyType, "Content");
 
+<<<<<<< HEAD
                     var rte = new DataTypeDefinition("Umbraco.TinyMCEv3");
                     var rtePropertyType = new PropertyType(rte, "bodyText") { Name = "Body" };
                     contentType.AddPropertyType(rtePropertyType, "Content");
@@ -1108,13 +1132,41 @@ namespace OurUmbraco.Our
                     if (templateCreateResult.Success)
                     {
                         var template = ApplicationContext.Current.Services.FileService.GetTemplate("communityHubPage");
+=======
+                    contentTypeService.Save(contentType);
+
+                    videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType(docTypeAlias, docTypeName);
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(docTypeAlias);
+>>>>>>> Added new migration for creating the new "Videos" section
                         var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
                         template.SetMasterTemplate(masterTemplate);
                         ApplicationContext.Current.Services.FileService.SaveTemplate(template);
 
+<<<<<<< HEAD
                         hubPageContentType.AllowedTemplates = new List<ITemplate> { template };
                         hubPageContentType.SetDefaultTemplate(template);
                         contentTypeService.Save(hubPageContentType);
+=======
+                        videosContentType.AllowedTemplates = new List<ITemplate> { template };
+                        videosContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(videosContentType);
+
+                        var contentService = ApplicationContext.Current.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var videosPage = rootContent.Children().FirstOrDefault(x => x.Name == "Videos");
+                            if (videosPage == null)
+                            {
+                                videosPage = contentService.CreateContent("Videos", rootContent.Id, docTypeAlias);
+                                videosPage.SetValue("umbracoNaviHide", true);
+                                var saveResult = contentService.SaveAndPublishWithStatus(videosPage);
+                            }
+                        }
+>>>>>>> Added new migration for creating the new "Videos" section
                     }
                 }
 
@@ -1127,6 +1179,7 @@ namespace OurUmbraco.Our
             }
         }
 
+<<<<<<< HEAD
         private void AddCommunityBlogs()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1357,5 +1410,7 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
+=======
+>>>>>>> Added new migration for creating the new "Videos" section
     }
 }
