@@ -111,6 +111,14 @@
       "rss": "http://www.bjerner.dk/blog/rss/",
       "logo": "http://www.gravatar.com/avatar/e3ad43cc015da910c21237961fa6d74d.jpg?s=256&d=mm",
       "memberId": 66039
+    },
+    {
+      "id": "B916F613-DBC2-41A4-9499-2FA756A31630",
+      "title": "Attackmonkey",
+      "url": "http://www.attackmonkey.co.uk/blog",
+      "rss": "http://www.attackmonkey.co.uk/blog/rss?filterBy=umbraco",
+      "logo": "http://www.attackmonkey.co.uk/images/header-logo.png",
+      "memberId": 6280
     }
   ]
 }
