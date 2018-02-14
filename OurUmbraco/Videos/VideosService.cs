@@ -42,7 +42,7 @@ namespace OurUmbraco.Videos {
             {
                 
                 // Make the request to the Vimeo API
-                var response = vimeo.Videos.GetVideos("umbraco", page, 100);
+                var response = vimeo.Videos.GetVideos(username, page, 100);
 
                 // Append the videos of the response to the list
                 videos.AddRange(response.Body.Data);
