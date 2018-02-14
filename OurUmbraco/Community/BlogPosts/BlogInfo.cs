@@ -20,6 +20,8 @@ namespace OurUmbraco.Community.BlogPosts {
 
         public string LogoUrl { get; private set; }
 
+        public int MemberId { get; private set; }
+
         public bool HasLogoUrl {
             get { return !String.IsNullOrWhiteSpace(LogoUrl); }
         }
@@ -35,6 +37,7 @@ namespace OurUmbraco.Community.BlogPosts {
             Url = obj.GetString("url");
             RssUrl = obj.GetString("rss");
             LogoUrl = obj.GetString("logo");
+            MemberId = obj.GetInt32("memberId");
             Encoding = Encoding.UTF8;
         }
 
