@@ -3,11 +3,15 @@
     Html.RequiresJs("https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.bundle.js");
     var querystringFromDate = Request.QueryString["fromDate"];
     var querystringToDate = Request.QueryString["toDate"];
-    var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
-    var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? DateTime.Now : DateTime.Parse(querystringToDate);
-    var forumStatsUrl = Html.Raw(Url.Action("ForumStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
-    var karmaStatsUrl = Html.Raw(Url.Action("KarmaStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
 
+    var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
+
+    var daysInPreviousMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month - 1);
+    var toDateDefault = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, daysInPreviousMonth);
+    var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? toDateDefault : DateTime.Parse(querystringToDate);
+
+    var forumStatsUrl = Html.Raw(Url.Action("ForumStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));
+    var karmaStatsUrl = Html.Raw(Url.Action("KarmaStatistics", "Statistics"));
 }
 
 <script type="text/javascript">
