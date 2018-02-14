@@ -12,10 +12,14 @@ using Examine.LuceneEngine.SearchCriteria;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
+using OurUmbraco.Our.Api;
 using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
+using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
+using Umbraco.Web;
 
 namespace OurUmbraco.Community.GitHub
 {
@@ -130,36 +134,44 @@ namespace OurUmbraco.Community.GitHub
 
         public List<string> MatchPullsToMembers()
         {
-            var pulls = new List<GithubPullRequestModel>();
-            if (File.Exists(PullRequestsJsonPath))
-            {
-                var content = File.ReadAllText(PullRequestsJsonPath);
-                pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
-            }
+            var matches = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<string>>("OurPullsMatchToMembers",
+                () =>
+                {
+                    var pulls = new List<GithubPullRequestModel>();
 
-            var results = new List<string>();
+                    if (File.Exists(PullRequestsJsonPath))
+                    {
+                        var content = File.ReadAllText(PullRequestsJsonPath);
+                        pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+                    }
 
-            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
-            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
-            
-            // TODO: Linq is inefficient. Find Lucene query to give all results which are not empty for the `github` field
-            criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
-            var searchResults = searcher.Search(criteria);
-            var contributors = searchResults.Where(x => x.Fields["github"] != null && string.IsNullOrWhiteSpace(x.Fields["github"]) == false);
+                    var results = new List<string>();
 
-            foreach (var contributor in contributors)
-            {
-                var ourName = contributor.Fields["nodeName"];
-                var ourId = contributor.Fields["id"];
-                var githubUsername = contributor.Fields["github"];
-                var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
-                var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
-                var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
-                results.Add(string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.",
-                    ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count));
-            }
+                    var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+                    var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
 
-            return results;
+                    // TODO: Linq is inefficient. Find Lucene query to give all results which are not empty for the `github` field
+                    criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
+                    var searchResults = searcher.Search(criteria);
+                    var contributors = searchResults.Where(x => x.Fields["github"] != null && string.IsNullOrWhiteSpace(x.Fields["github"]) == false);
+
+                    foreach (var contributor in contributors)
+                    {
+                        var ourName = contributor.Fields["nodeName"];
+                        var ourId = contributor.Fields["id"];
+                        var githubUsername = contributor.Fields["github"];
+                        var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
+                        var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
+                        var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
+                        results.Add(string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.",
+                            ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count));
+                    }
+
+                    return results;
+
+                }, TimeSpan.FromMinutes(15));
+
+            return matches;
         }
 
         /// <summary>
