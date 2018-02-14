@@ -119,6 +119,14 @@
       "rss": "http://www.attackmonkey.co.uk/blog/rss?filterBy=umbraco",
       "logo": "http://www.attackmonkey.co.uk/images/header-logo.png",
       "memberId": 6280
+    },
+    {
+      "id": "7DF2AE1C-26C6-4BCB-A688-2346CBFAA042",
+      "title": "ProWorks",
+      "url": "http://www.proworks.com/blog",
+      "rss": "http://www.proworks.com/blog/rss",
+      "logo": "http://www.proworks.com/images/PWlogo.png",
+      "memberId": null
     }
   ]
 }
