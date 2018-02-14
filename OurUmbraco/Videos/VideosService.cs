@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using Skybrud.Essentials.Json;
@@ -28,7 +29,7 @@ namespace OurUmbraco.Videos {
             string path = dir + "VimeoVideos_" + username + ".json";
 
             // Initialize a new service from an OAuth 2.0 access token
-            var vimeo = VimeoService.CreateFromAccessToken("9307ee4ce73a77fbaf36db93cbef8d02");
+            var vimeo = VimeoService.CreateFromAccessToken(ConfigurationManager.AppSettings["VimeoAccessToken"]);
             
             int page = 1;
             int maxPages = 10;
