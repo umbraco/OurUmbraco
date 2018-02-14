@@ -103,6 +103,14 @@
       "rss": "https://blog.mortenbock.dk/tag/umbraco/feed/",
       "logo": "https://pbs.twimg.com/profile_images/606096665087344640/9aO-6dV4_400x400.jpg",
       "memberId": 1201
+    },
+    {
+      "id": "12f4440a-c87b-4450-964a-d4ea50fae18c",
+      "title": "Anders Bjerner",
+      "url": "http://www.bjerner.dk/blog/",
+      "rss": "http://www.bjerner.dk/blog/rss/",
+      "logo": "http://www.gravatar.com/avatar/e3ad43cc015da910c21237961fa6d74d.jpg?s=256&d=mm",
+      "memberId": 66039
     }
   ]
 }
