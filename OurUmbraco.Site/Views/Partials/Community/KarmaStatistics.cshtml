@@ -16,6 +16,8 @@
             if (existing != null)
             {
                 existing.TotalPointsInPeriod = existing.TotalPointsInPeriod + person.TotalPointsInPeriod;
+                existing.Performed = existing.Performed + person.Performed;
+                existing.Received = existing.Received + person.Received;
             }
             else
             {
@@ -24,6 +26,13 @@
         }
     }
 }
+
+<style type="text/css">
+    .contrib-count {
+        right: 6px!important;
+        left: 6px!important;
+    }
+</style>
 
 @foreach (var karmaResult in karmaStatistics.KarmaRecent.MostActiveDateRange)
 {
