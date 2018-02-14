@@ -48,6 +48,27 @@
       "url": "https://cultiv.nl/",
       "rss": "http://feeds.feedburner.com/blog-cultiv",
       "logo": "https://cultiv.nl/images/logo.png"
+    },
+    {
+      "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
+      "title": "Ismail’s umbraco adventures",
+      "url": "https://ismailmayat.wordpress.com/",
+      "rss": "https://ismailmayat.wordpress.com/tag/umbraco/feed/",
+      "logo": "https://0.gravatar.com/avatar/6495743815f2137983c9d19ad4746edb?s=96&d=&r=G"
+    },
+    {
+      "id": "35E96E73-29A9-4DE0-BDA4-159CE4D23BB4",
+      "title": "ZpqrtBnk - Software Ektropist",
+      "url": "https://www.zpqrtbnk.net/",
+      "rss": "https://www.zpqrtbnk.net/rss",
+      "logo": "https://www.zpqrtbnk.net/img/zpqrtbnk/entropy2.png"
+    },
+    {
+      "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
+      "title": "codeshare.co.uk Blog | Code examples and knowledge sharing",
+      "url": "https://codeshare.co.uk/",
+      "rss": "https://codeshare.co.uk/rss/",
+      "logo": "https://codeshare.co.uk/img/logo.gif"
     }
   ]
 }

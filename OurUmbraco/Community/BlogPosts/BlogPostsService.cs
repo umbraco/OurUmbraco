@@ -83,11 +83,15 @@ namespace OurUmbraco.Community.BlogPosts
                         Link = channelLink
                     };
 
-                    posts.AddRange(channel.GetElements("item").Select(item => new BlogRssItem
+                    posts.AddRange(channel.GetElements("item")
+                        // Some posts in some feeds have an empty publish date, skip them
+                        .Where(x => string.IsNullOrWhiteSpace(x.GetElementValue("pubDate")) == false)
+                        .Select(item => new BlogRssItem
                     {
                         Channel = rssChannel,
                         Title = item.GetElementValue("title"),
-                        Link = item.GetElementValue("link"),
+                        // some sites store the link in the <guid/> element 
+                        Link = string.IsNullOrEmpty(item.GetElementValue("link")) ? item.GetElementValue("guid") : item.GetElementValue("link"),
                         PublishedDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(item.GetElementValue("pubDate"))
                     }));
 
@@ -111,16 +115,22 @@ namespace OurUmbraco.Community.BlogPosts
 
             try
             {
-                var temp = new List<BlogCachedRssItem>();
+                var blogPosts = new List<BlogCachedRssItem>();
 
                 foreach (var item in JsonUtils.LoadJsonArray(JsonFile).Select(token => token.ToObject<BlogRssItem>()))
                 {
                     BlogInfo blog;
-                    if (!blogs.TryGetValue(item.Channel.Id, out blog)) continue;
-                    temp.Add(new BlogCachedRssItem(blog, item));
+                    if (blogs.TryGetValue(item.Channel.Id, out blog) == false)
+                        continue;
+                    blogPosts.Add(new BlogCachedRssItem(blog, item));
                 }
 
-                return temp.ToArray();
+                var filteredBlogPosts = new List<BlogCachedRssItem>();
+                foreach (var item in blogPosts)
+                    if (filteredBlogPosts.Count(b => b.Blog.Id == item.Blog.Id) < 2)
+                        filteredBlogPosts.Add(item);
+                
+                return filteredBlogPosts.Take(20).OrderByDescending(x => x.PublishedDate).ToArray();
             }
             catch (Exception ex)
             {

@@ -5,9 +5,8 @@
 @{
     var service = new BlogPostsService();
 
-    //var items = service.GetCachedBlogPosts().DistinctBy(x => x.Blog.Id).Take(maxCount).ToArray();
-    var items = service.GetCachedBlogPosts().Take(20).ToArray();
-
+    var items = service.GetCachedBlogPosts().ToArray();
+    
     if (items.Length == 0)
     {
         return;
