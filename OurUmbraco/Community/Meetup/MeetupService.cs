@@ -5,7 +5,7 @@ using System.Text;
 using System.Web.Hosting;
 using Newtonsoft.Json;
 using OurUmbraco.Community.Meetup.Models;
-using Skybrud.Social.Meetup;
+using Skybrud.Social.Meetup.OAuth;
 using Skybrud.Social.Meetup.Responses.Events;
 
 namespace OurUmbraco.Community.Meetup
@@ -29,7 +29,7 @@ namespace OurUmbraco.Community.Meetup
             var newCounter = aliases.Length <= counter ? 0 : counter + 1;
             File.WriteAllText(counterPath, newCounter.ToString(), Encoding.UTF8);
 
-            var client = new MeetupClient();
+            var client = new MeetupOAuth2Client();
             var response = client.DoHttpGetRequest(string.Format("https://api.meetup.com/{0}/events?page=1000&status=past", aliases[counter]));
             var events = MeetupGetEventsResponse.ParseResponse(response).Body;
 

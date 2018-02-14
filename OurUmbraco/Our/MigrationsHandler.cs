@@ -48,6 +48,7 @@ namespace OurUmbraco.Our
             AddCommunityHubPage();
             AddCommunityBlogs();
             AddCommunityStatistics();
+            AddVideosPage();			
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1216,5 +1217,74 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
+		
+		private void AddVideosPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            const string docTypeAlias = "videos";
+            const string docTypeName = "Videos";
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                if (videosContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = docTypeName,
+                        Alias = docTypeAlias,
+                        Icon = "icon-power"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
+                    contentTypeService.Save(contentType);
+
+                    videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType(docTypeAlias, docTypeName);
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(docTypeAlias);
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        videosContentType.AllowedTemplates = new List<ITemplate> { template };
+                        videosContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(videosContentType);
+
+                        var contentService = ApplicationContext.Current.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var videosPage = rootContent.Children().FirstOrDefault(x => x.Name == "Videos");
+                            if (videosPage == null)
+                            {
+                                videosPage = contentService.CreateContent("Videos", rootContent.Id, docTypeAlias);
+                                videosPage.SetValue("umbracoNaviHide", true);
+                                var saveResult = contentService.SaveAndPublishWithStatus(videosPage);
+                            }
+                        }
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+		
     }
 }

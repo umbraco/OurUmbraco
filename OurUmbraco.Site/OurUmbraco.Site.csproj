@@ -224,13 +224,11 @@
     <Reference Include="Skybrud.Essentials, Version=1.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Essentials.1.1.1\lib\net45\Skybrud.Essentials.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Core.1.0.0-beta9\lib\net45\Skybrud.Social.Core.dll</HintPath>
-      <Private>True</Private>
+    <Reference Include="Skybrud.Social.Core, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Core.1.0.4\lib\net45\Skybrud.Social.Core.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta002\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
-      <Private>True</Private>
+      <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6614.16985, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.8.1\lib\net45\SQLCE4Umbraco.dll</HintPath>
@@ -4349,6 +4347,8 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
+    <Content Include="Views\Videos.cshtml" />
+    <Content Include="Views\Partials\Videos\Home.cshtml" />    
     <Content Include="Views\CommunityBlogs.cshtml" />
     <Content Include="Views\Partials\Community\Blogs.cshtml" />
     <Content Include="Views\Partials\Community\Statistics.cshtml" />
