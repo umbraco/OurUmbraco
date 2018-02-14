@@ -788,6 +788,8 @@
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVerison.cs" />
+    <Compile Include="Videos\VideosCategory.cs" />
+    <Compile Include="Videos\VideosService.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
     <Compile Include="Wiki\BusinessLogic\Data.cs" />
     <Compile Include="Wiki\BusinessLogic\Events.cs" />
