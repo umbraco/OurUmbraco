@@ -61,12 +61,8 @@
 
     }
 
-
-
-
-
-
-
+    // Count the total amount of videos matching the parameters
+    int videosCount = videos.Count();
 
 }
 
@@ -123,7 +119,7 @@
                         <div class="videos-list">
                             <h1>Videos</h1>
                             <div class="videos-list-meta">
-                                Showing @videos.Count() videos
+                                Showing @videosCount @(videosCount == 1 ? "video" : "videos")
                                 @if (selectedCategory != null)
                                 {
                                     <span>matching <strong>@selectedCategory.Name</strong></span>
@@ -146,7 +142,7 @@
                                             &ndash;
                                             @video.Duration.TotalMinutes.ToString("N0") min
                                             &ndash;
-                                            @video.Stats.Plays plays
+                                            @video.Stats.Plays @(@video.Stats.Plays == 1 ? "play" : "plays")
                                             @if (video.MetaData.Connections.Likes.Total > 0)
                                             {
                                                 <span>
