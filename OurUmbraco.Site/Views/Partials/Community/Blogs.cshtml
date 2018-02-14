@@ -28,7 +28,7 @@
             <div class="col-md-12 flex" id="community-posts">
                 @foreach (var item in items)
                 {
-                    <a href="@item.Link" class="community-post">
+                    <a href="@item.Link" target="_blank" rel="noopener" class="community-post">
                         @if (item.Blog.HasLogoUrl)
                         {
                             <div class="avatar">
@@ -45,7 +45,7 @@
                         <div class="meta">
                             <div class="forum-thread-text">
                                 <h3>@item.Title</h3>
-                                <p>@item.PublishedDate.ToString("MMM d, yyyy") by @item.Channel.Title</p>
+                                <p>@item.PublishedDate.ToString("MMM d, yyyy") by @item.Blog.Title</p>
                             </div>
                         </div>
                     </a>

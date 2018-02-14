@@ -25,7 +25,7 @@
       "id": "76e06586-1220-44b2-a475-bffc2c03499d",
       "title": "Lee Kelleher",
       "url": "https://leekelleher.com/",
-      "rss": "https://leekelleher.com/feed/",
+      "rss": "https://leekelleher.com/tag/umbraco/feed/",
       "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png"
     },
     {
@@ -69,6 +69,20 @@
       "url": "https://codeshare.co.uk/",
       "rss": "https://codeshare.co.uk/rss/",
       "logo": "https://codeshare.co.uk/img/logo.gif"
+    },
+    {
+      "id": "27A50A0B-376B-451E-B203-8366DA22F511",
+      "title": "Dave on Umbraco",
+      "url": "http://dawoe.blogspot.dk/",
+      "rss": "http://dawoe.blogspot.com/feeds/posts/default?alt=rss",
+      "logo": "https://pbs.twimg.com/profile_images/542408550601859072/r4YfpaR7_400x400.jpeg"
+    },
+    {
+      "id": "E3BA4BBE-2C08-4741-80BC-19FB536D7591",
+      "title": "Code 101",
+      "url": "https://code101.net/",
+      "rss": "https://code101.net/feed",
+      "logo": "https://pbs.twimg.com/profile_images/580012767815413760/19yrvSAF_400x400.png"
     }
   ]
 }
