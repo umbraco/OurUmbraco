@@ -80,14 +80,14 @@
                                 string name = category.Name.ToKebabCase();
                                 bool active = categoryName == name;
                                 <li class="@(active ? "active open" : null)">
-                                    <a href="@(baseUrl)?category=@(name)"><h3>@category.Name</h3></a>
+                                    <a href="@GetCategoryLink(category)"><h3>@category.Name</h3></a>
                                     @if (active)
                                     {
                                         <ul class="level-2 open">
                                             @foreach (int year in category.Years.OrderByDescending(x => x))
                                             {
                                                 <li class="@(year.ToString() == categoryYear ? "active" : null)">
-                                                    <a href="@(baseUrl)?category=@(name)&year=@(year)"><h4>@year</h4></a>
+                                                    <a href="@GetCategoryLink(category, year)"><h4>@year</h4></a>
                                                 </li>
                                             }
                                         </ul>
@@ -107,10 +107,10 @@
                         <li><a href="@Model.Url">@Model.Name</a></li>
                         @if (selectedCategory != null)
                         {
-                            <li><a href="@Model.Url?category=@(selectedCategory.Name.ToKebabCase())">@selectedCategory.Name</a></li>
+                            <li><a href="@GetCategoryLink(selectedCategory)">@selectedCategory.Name</a></li>
                             if (selectedYear > 0)
                             {
-                                <li><a href="@Model.Url?category=@(selectedCategory.Name.ToKebabCase())&year=@selectedYear">@selectedYear</a></li>
+                                <li><a href="@GetCategoryLink(selectedCategory, selectedYear)">@selectedYear</a></li>
                             }
                         }
                     </ul>
@@ -190,6 +190,20 @@
         </div>
     </div>
 </div>
+
+@functions {
+
+    public string GetCategoryLink(VideosCategory category)
+    {
+        return Model.Url + category.Name.ToKebabCase() + "/";
+    }
+
+    public string GetCategoryLink(VideosCategory category, int year)
+    {
+        return Model.Url + category.Name.ToKebabCase() + "/" + year + "/";
+    }
+
+}
 
 
 <style>
