@@ -4347,7 +4347,6 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
-    <Content Include="Views\CommunityBlogs.cshtml" />
     <Content Include="Views\Partials\Community\Blogs.cshtml" />
     <Content Include="Views\Partials\Community\Statistics.cshtml" />
     <Content Include="Views\CommunityStatistics.cshtml" />
@@ -4360,7 +4359,9 @@
     <Content Include="Views\Partials\Community\Twitter.cshtml" />
     <Content Include="Views\CommunityMvps.cshtml" />
     <Content Include="Views\Partials\Community\MVPs.cshtml" />
-    <None Include="web.Debug.config">
+    <Content Include="Views\Videos.cshtml" />
+    <Content Include="Views\Partials\Videos\Home.cshtml" />
+	<None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
     <None Include="web.Release.config">
