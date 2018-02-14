@@ -47,6 +47,7 @@ namespace OurUmbraco.Our
             AddCommunityPage();
             AddCommunityHubPage();
             AddCommunityBlogs();
+            AddCommunityKarma();
             AddCommunityStatistics();
         }
 
@@ -1134,6 +1135,29 @@ namespace OurUmbraco.Our
 
                 const string templateName = "CommunityBlogs";
                 const string contentItemName = "Blogs";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityKarma()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityKarma";
+                const string contentItemName = "Karma Leaderboard";
                 CreateNewCommunityHubPage(templateName, contentItemName);
 
                 string[] lines = { "" };

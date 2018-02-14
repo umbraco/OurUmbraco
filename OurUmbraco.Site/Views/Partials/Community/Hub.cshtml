@@ -2,7 +2,6 @@
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 
-@KarmaStatistics()
 @GitHubMatch()
 
 @helper GitHubMatch()
@@ -32,28 +31,6 @@
                                 <li>@Html.Raw(match)</li>
                             }
                         </ul>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-}
-
-@helper KarmaStatistics()
-    {
-        <section class="community">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-md-12">
-                        <h1 class="text-center">Karma Statistics</h1>
-                        <p>
-                            Top karma earners
-                        </p>
-                    </div>
-
-                    <div class="col-md-12 flex" id="karma-statistics">
-                        <h2>Loading latest karma statistics...</h2>
                     </div>
 
                 </div>

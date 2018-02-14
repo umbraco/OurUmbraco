@@ -1,24 +1,14 @@
-﻿@using OurUmbraco.Community.People.Models
-@model OurUmbraco.Community.Controllers.KarmaStatistics
+﻿@using OurUmbraco.Community.Karma
+@using OurUmbraco.Community.People.Models
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+    var combinedList = new List<PeopleKarmaResult>();
 
-<div style="width: 100%; display: block;">
-    @foreach (var karmaResult in Model.KarmaRecent.MostActiveDateRange)
-    {
-        <p style="font-weight: bold;">Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</p><br />
-        <ul>
-            @foreach (var person in karmaResult.MostActive.Take(15))
-            {
-                <li><a href="/member/@person.MemberId">@person.MemberName</a> (@person.TotalPointsInPeriod earned / total: @person.TotalKarma)</li>
-            }
-        </ul>
-    }
+    var karmaService = new KarmaService();
+    var karmaStatistics = karmaService.GetKarmaStatistics();
 
-
-    @{
-        var combinedList = new List<PeopleKarmaResult>();
-    }
-
-    @foreach (var karmaResult in Model.KarmaYear.MostActiveDateRange)
+    foreach (var karmaResult in karmaStatistics.KarmaYear.MostActiveDateRange)
     {
         foreach (var person in karmaResult.MostActive)
         {
@@ -33,13 +23,100 @@
             }
         }
     }
+}
 
-    <p style="font-weight: bold;">Leaderboard for @Model.KarmaYear.MostActiveDateRange.First().Year - results are counted from May 1st until May 1st the next year.</p>
-    <p style="color: red; font-weight: bold;">This year list may be incorrect and needs thorough checking</p><br />
-    <ul>
+@foreach (var karmaResult in karmaStatistics.KarmaRecent.MostActiveDateRange)
+{
+    <div style="width: 100%; display: block; clear: both;">
+        <p style="font-weight: bold;">Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</p><br />
+
+        <div class="flex flex-wrap github-contributor-list forum-thread">
+            @foreach (var person in karmaResult.MostActive.Take(15))
+            {
+                var member = umbracoHelper.TypedMember(person.MemberId);
+
+                <div class="contributor">
+                    <a href="/member/@person.MemberId" title="@person.MemberName">
+                        <div class="avatar">
+                            <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x,@GetAvatarUrl(member, 336) 3x" />
+                            <span class="contrib-count" title="Total: @person.TotalKarma">
+                                @person.TotalPointsInPeriod
+                            </span>
+                            <div class="counts">
+                                <div>
+                                    Performed<br />
+                                    <strong>@person.Performed</strong>
+                                </div>
+                                <div>
+                                    Received<br />
+                                    <strong>@person.Received</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
+
+<div style="width: 100%; display: block; clear: both;">
+    <p style="font-weight: bold;">Leaderboard for @karmaStatistics.KarmaYear.MostActiveDateRange.First().Year - results are counted from May 1st until May 1st the next year.</p>
+
+    <div class="flex flex-wrap github-contributor-list forum-thread">
         @foreach (var person in combinedList.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
         {
-            <li><a href="/member/@person.MemberId">@person.MemberName</a> (@person.TotalPointsInPeriod earned / total: @person.TotalKarma)</li>
+            var member = umbracoHelper.TypedMember(person.MemberId);
+
+            <div class="contributor">
+                <a href="/member/@person.MemberId" title="@person.MemberName">
+                    <div class="avatar">
+                        <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x, @GetAvatarUrl(member, 336) 3x" />
+                        <span class="contrib-count" title="Total: @person.TotalKarma">
+                            @person.TotalPointsInPeriod
+                        </span>
+                        <div class="counts">
+                            <div>
+                                Performed<br />
+                                <strong>@person.Performed</strong>
+                            </div>
+                            <div>
+                                Received<br />
+                                <strong>@person.Received</strong>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
         }
-    </ul>
+    </div>
 </div>
+
+@functions
+{
+    private string GetAvatarUrl(IPublishedContent member, int size)
+    {
+        var url = string.Empty;
+        var hasAvatar = member.HasValue("avatar");
+        if (hasAvatar)
+        {
+            var avatarPath = member.GetPropertyValue("avatar").ToString();
+            if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
+            {
+                url = avatarPath.Replace("http://", "https://");
+                return url;
+            }
+
+            url = avatarPath;
+
+            if (string.IsNullOrEmpty(url))
+            {
+                return string.Empty;
+            }
+
+            return string.Format("{0}?width={1}&height={1}&mode=crop&upscale=true", url, size);
+        }
+
+        return string.Empty;
+    }
+}
