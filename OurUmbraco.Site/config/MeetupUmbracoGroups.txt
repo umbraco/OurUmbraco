@@ -12,7 +12,6 @@ Dorset-Umbraco-Meetup
 Umbraco-Oxford-Meetup
 Madrid-Umbraco-Meetup-Group
 Chicago-Umbraco-Meetup
-Umbraco
 Goteborg-Umbraco-Meetup
 Dublin-Umbraco-Meetup
 Manchester-Umbraco-Meetup
