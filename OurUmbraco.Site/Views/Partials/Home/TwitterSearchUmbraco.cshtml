@@ -24,7 +24,7 @@
     var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
     var member = membershipHelper.GetCurrentMember();
     // Only Seb will see this :D
-    if (member.Id == 4576)
+    if (member != null && member.Id == 4576)
     {
         <p>
             <a href="/umbraco/surface/TwitterSearch/TwitterSearchResult?numberOfResults=100&adminOverview=true">Fight spam</a>
