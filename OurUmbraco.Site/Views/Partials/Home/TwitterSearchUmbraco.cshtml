@@ -8,7 +8,7 @@
         <a href="@tweet.Url" class="forum-thread">
 
             <div class="avatar">
-                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
+                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")"/>
             </div>
 
             <div class="meta">
@@ -18,6 +18,17 @@
                 </div>
             </div>
         </a>
+    }
+
+
+    var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+    var member = membershipHelper.GetCurrentMember();
+    // Only Seb will see this :D
+    if (member.Id == 4576)
+    {
+        <p>
+            <a href="/umbraco/surface/TwitterSearch/TwitterSearchResult?numberOfResults=100&adminOverview=true">Fight spam</a>
+        </p>
     }
 }
 else
