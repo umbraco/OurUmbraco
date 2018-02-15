@@ -1,16 +1,8 @@
-﻿using System;
-using System.Configuration;
-using System.Linq;
+﻿using System.Linq;
 using System.Web.Mvc;
-using OurUmbraco.Community.Models;
+using OurUmbraco.Community.Twitter;
 using OurUmbraco.Forum.Extensions;
-using Tweetinvi;
-using Tweetinvi.Models;
-using Tweetinvi.Parameters;
-using Umbraco.Core;
-using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
-using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Community.Controllers
@@ -19,60 +11,8 @@ namespace OurUmbraco.Community.Controllers
     {
         public ActionResult TwitterSearchResult(int numberOfResults = 6, bool adminOverview = false)
         {
-            var model = new TweetsModel { ShowAdminOverView = adminOverview };
-            var member = Members.GetCurrentMember();
-            if (member == null || member.IsHq() == false)
-                model.ShowAdminOverView = false;
-
-            if (member.IsHq() == false && numberOfResults > 30)
-                numberOfResults = 6;
-
-            ITweet[] filteredTweets = {};
-            try
-            {
-                var tweets =
-                    ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<ITweet[]>("UmbracoSearchedTweets",
-                        () =>
-                        {
-                            Auth.SetUserCredentials(ConfigurationManager.AppSettings["twitterConsumerKey"],
-                                ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                                ConfigurationManager.AppSettings["twitterUserAccessToken"],
-                                ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
-                            Tweetinvi.User.GetAuthenticatedUser();
-
-                            var searchParameter = new SearchTweetsParameters("umbraco")
-                            {
-                                SearchType = SearchResultType.Recent
-                            };
-                            return Search.SearchTweets(searchParameter).ToArray();
-
-                        }, TimeSpan.FromMinutes(2));
-
-                var settingsNode = Umbraco.TypedContentAtRoot().FirstOrDefault();
-                if (settingsNode != null)
-                {
-                    var usernameFilter = settingsNode.GetPropertyValue<string>("twitterFilterAccounts")
-                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty).ToArray();
-                    var wordFilter = settingsNode.GetPropertyValue<string>("twitterFilterWords")
-                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
-
-                    filteredTweets = tweets.Where(x =>
-                            x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) ==
-                            false
-                            && x.UserMentions.Any(m => m.ScreenName.ContainsAny(usernameFilter)) == false
-                            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false
-                            && x.Text.StartsWith("RT ") == false)
-                        .Take(numberOfResults)
-                        .ToArray();
-                }
-
-                model.Tweets = filteredTweets;
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<ITweet>("Could not get tweets", ex);
-            }
-            
+            var twitterService = new TwitterService();
+            var model = twitterService.GetTweets(numberOfResults, adminOverview);
             return PartialView("~/Views/Partials/Home/TwitterSearchUmbraco.cshtml", model);
         }
 

@@ -406,6 +406,7 @@
     <Compile Include="Community\Models\TweetsModel.cs" />
     <Compile Include="Community\People\Models\PeopleKarmaResult.cs" />
     <Compile Include="Community\People\PeopleService.cs" />
+    <Compile Include="Community\Twitter\TwitterService.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />

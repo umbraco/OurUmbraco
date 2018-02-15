@@ -5,13 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Web.Hosting;
 using System.Web.Mvc;
-using Examine;
 using Newtonsoft.Json;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Our.Api;
-using Umbraco.Core.Cache;
 using Umbraco.Web.Mvc;
-using SearchResult = Tweetinvi.Logic.Model.SearchResult;
 
 namespace OurUmbraco.Community.Controllers
 {

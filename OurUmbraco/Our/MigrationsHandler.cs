@@ -49,6 +49,8 @@ namespace OurUmbraco.Our
             AddCommunityBlogs();
             AddCommunityKarma();
             AddCommunityStatistics();
+            AddCommunityMeetups();
+            AddCommunityTweets();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1193,6 +1195,52 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void AddCommunityMeetups()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityMeetups";
+                const string contentItemName = "Meetups";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityTweets()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityTweets";
+                const string contentItemName = "Twitter activity";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
         private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
         {
             var relativeTemplateLocation = string.Format("~/Views/{0}.cshtml", templateName);
@@ -1206,9 +1254,7 @@ namespace OurUmbraco.Our
                 if (templateFile != null && File.Exists(templateFile))
                     templateContents = File.ReadAllText(templateFile);
 
-                var templateCreateResult =
-                    ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage",
-                        templateName);
+                var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage", templateName);
                 if (templateCreateResult.Success)
                 {
                     var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);

@@ -4356,6 +4356,10 @@
     <Content Include="Views\CommunityHubPage.cshtml" />
     <Content Include="Views\CommunityHubPageLayout.cshtml" />
     <Content Include="Views\CommunityKarma.cshtml" />
+    <Content Include="Views\CommunityTweets.cshtml" />
+    <Content Include="Views\CommunityMeetups.cshtml" />
+    <Content Include="Views\Partials\Community\Meetups.cshtml" />
+    <Content Include="Views\Partials\Community\Twitter.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
