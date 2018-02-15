@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Json.Extensions;
 using Skybrud.Essentials.Xml.Extensions;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Community.BlogPosts
@@ -52,11 +53,11 @@ namespace OurUmbraco.Community.BlogPosts
                 try
                 {
                     string raw;
-                    
+
                     // Need to make sure we try TLS 1.2 first else the connection will just be closed in us 
                     // No other protocols allowed SSL * and TLS 1.0 are considered insecure
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-                    
+
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
@@ -64,13 +65,14 @@ namespace OurUmbraco.Community.BlogPosts
 
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
-                        raw = raw.Replace("a10:updated", "pubDate");
+                        raw = raw
+                                .TrimStart() // remove whitespace on the first line so <?xml are the first characters found, else XElement.Parse fails
+                                .Replace("a10:updated", "pubDate");
                     }
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
 
                     var channel = feed.Element("channel");
-
                     var channelTitle = channel.GetElementValue("title");
                     var channelLink = channel.GetElementValue("link");
                     var channelDescription = channel.GetElementValue("description");
@@ -83,21 +85,49 @@ namespace OurUmbraco.Community.BlogPosts
                         Title = channelTitle,
                         Link = channelLink
                     };
-
+                    
                     foreach (var item in channel.GetElements("item"))
                     {
+                        var title = item.GetElementValue("title");
+                        var link = (string.IsNullOrEmpty(item.GetElementValue("link"))
+                            ? item.GetElementValue("guid")
+                            : item.GetElementValue("link"))
+                                .Trim();
+
                         var pubDate = GetPublishDate(item);
-                        if(pubDate == default(DateTimeOffset)) 
+                        if (pubDate == default(DateTimeOffset))
                             continue;
+
+                        var approvedCategories = new List<string> { "umbraco", "codegarden", "articulate", "examine" };
+                        var categories = item.GetElements("category");
+                        if (categories.Any())
+                        {
+                            var includeItem = title.ToLowerInvariant().ContainsAny(approvedCategories);
+                            foreach (var category in categories)
+                            {
+                                // no need to check more if the item is already approved
+                                if (includeItem)
+                                    continue;
+
+                                foreach (var approvedCategory in approvedCategories)
+                                    if (category.Value.ToLowerInvariant().Contains(approvedCategory.ToLowerInvariant()))
+                                        includeItem = true;
+                            }
+
+                            if (includeItem == false)
+                            {
+                                var allCategories = string.Join(",", categories.Select(i => i.Value));
+                                LogHelper.Info<BlogPostsService>(string.Format("Not including post titled {0} because it was not in an approved category. The categories it was found in: {1}. [{2}]", title, allCategories, link));
+                                continue;
+                            }
+                        }
 
                         var blogPost = new BlogRssItem
                         {
                             Channel = rssChannel,
-                            Title = item.GetElementValue("title"),
+                            Title = title,
                             // some sites store the link in the <guid/> element 
-                            Link = string.IsNullOrEmpty(item.GetElementValue("link"))
-                                ? item.GetElementValue("guid")
-                                : item.GetElementValue("link"),
+                            Link = link,
                             PublishedDate = pubDate
                         };
 
@@ -131,7 +161,7 @@ namespace OurUmbraco.Community.BlogPosts
             return pubDate;
         }
 
-        public BlogCachedRssItem[] GetCachedBlogPosts(int take)
+        public BlogCachedRssItem[] GetCachedBlogPosts(int take, int numberOfPostsPerBlog)
         {
             // Return an empty array as the file doesn't exist
             if (File.Exists(JsonFile) == false)
@@ -153,9 +183,9 @@ namespace OurUmbraco.Community.BlogPosts
 
                 var filteredBlogPosts = new List<BlogCachedRssItem>();
                 foreach (var item in blogPosts)
-                    if (filteredBlogPosts.Count(b => b.Blog.Id == item.Blog.Id) < 2)
+                    if (filteredBlogPosts.Count(b => b.Blog.Id == item.Blog.Id) < numberOfPostsPerBlog)
                         filteredBlogPosts.Add(item);
-                
+
                 return filteredBlogPosts.Take(take).OrderByDescending(x => x.PublishedDate).ToArray();
             }
             catch (Exception ex)
