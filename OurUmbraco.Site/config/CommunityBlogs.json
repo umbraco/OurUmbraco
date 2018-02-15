@@ -6,7 +6,7 @@
       "url": "https://umbraco.com/blog",
       "rss": "https://umbraco.com/blog/rss-feed/",
       "logo": "https://umbraco.com/media/1542/100px_transparent.png",
-      "memberId": null 
+      "memberId": null
     },
     {
       "id": "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
@@ -126,6 +126,22 @@
       "url": "http://www.proworks.com/blog",
       "rss": "http://www.proworks.com/blog/rss",
       "logo": "http://www.proworks.com/images/PWlogo.png",
+      "memberId": null
+    },
+    {
+      "id": "AADCF9A6-886A-4BD4-B184-ED1CF4D45974",
+      "title": "DotSee Blog",
+      "url": "https://www.dot-see.com",
+      "rss": "https://www.dot-see.com/en/blog/rss",
+      "logo": "https://www.dot-see.com/media/24590/dotsee.png",
+      "memberId": 3185
+    },
+    {
+      "id": "393514BF-F415-485A-A43E-7021B92FC78F",
+      "title": "Perplex",
+      "url": "https://www.perplex.nl/en/blog/umbraco",
+      "rss": "https://www.perplex.nl/rss/en/blog/umbraco",
+      "logo": "https://scontent-bru2-1.xx.fbcdn.net/v/t1.0-1/p200x200/18301933_1704816986200741_8275590260623615358_n.jpg?oh=8e0135ffe88177980a0c6651a289e216&oe=5B1D527F",
       "memberId": null
     }
   ]
