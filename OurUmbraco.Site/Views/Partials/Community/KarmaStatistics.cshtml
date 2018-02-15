@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Community.Karma
+﻿@using System.Globalization
+@using OurUmbraco.Community.Karma
 @using OurUmbraco.Community.People.Models
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
@@ -25,6 +26,9 @@
             }
         }
     }
+    var currentInfo = DateTimeFormatInfo.CurrentInfo;
+    var cal = currentInfo.Calendar;
+    var currentWeekNumber = cal.GetWeekOfYear(DateTime.Now, currentInfo.CalendarWeekRule, currentInfo.FirstDayOfWeek);
 }
 
 <style type="text/css">
@@ -34,10 +38,12 @@
     }
 </style>
 
-@foreach (var karmaResult in karmaStatistics.KarmaRecent.MostActiveDateRange)
+@foreach (var karmaResult in karmaStatistics.KarmaRecent.MostActiveDateRange.OrderByDescending(x => x.WeekNumber))
 {
+    var currentWeek = karmaResult.WeekNumber == currentWeekNumber;
+
     <div style="width: 100%; display: block; clear: both;">
-        <p style="font-weight: bold;">Top Karma earned in @karmaResult.Year, week @karmaResult.WeekNumber</p><br />
+        <p style="font-weight: bold;">Top Karma earned @(currentWeek ? "in this week" : "last week")</p><br />
 
         <div class="flex flex-wrap github-contributor-list forum-thread">
             @foreach (var person in karmaResult.MostActive.Take(15))
