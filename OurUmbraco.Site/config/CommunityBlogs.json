@@ -108,7 +108,7 @@
       "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
       "title": "codeshare.co.uk Blog",
       "url": "https://codeshare.co.uk/",
-      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
+      "rss": "https://codeshare.co.uk/feed/",
       "logo": "https://codeshare.co.uk/img/logo.gif",
       "memberId": 126488
     },
