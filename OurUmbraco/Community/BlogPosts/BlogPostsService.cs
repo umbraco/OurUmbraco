@@ -64,6 +64,7 @@ namespace OurUmbraco.Community.BlogPosts
 
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
+                        raw = raw.Replace("a10:updated", "pubDate");
                     }
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
@@ -83,17 +84,25 @@ namespace OurUmbraco.Community.BlogPosts
                         Link = channelLink
                     };
 
-                    posts.AddRange(channel.GetElements("item")
-                        // Some posts in some feeds have an empty publish date, skip them
-                        .Where(x => string.IsNullOrWhiteSpace(x.GetElementValue("pubDate")) == false)
-                        .Select(item => new BlogRssItem
+                    foreach (var item in channel.GetElements("item"))
                     {
-                        Channel = rssChannel,
-                        Title = item.GetElementValue("title"),
-                        // some sites store the link in the <guid/> element 
-                        Link = string.IsNullOrEmpty(item.GetElementValue("link")) ? item.GetElementValue("guid") : item.GetElementValue("link"),
-                        PublishedDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(item.GetElementValue("pubDate"))
-                    }));
+                        var pubDate = GetPublishDate(item);
+                        if(pubDate == default(DateTimeOffset)) 
+                            continue;
+
+                        var blogPost = new BlogRssItem
+                        {
+                            Channel = rssChannel,
+                            Title = item.GetElementValue("title"),
+                            // some sites store the link in the <guid/> element 
+                            Link = string.IsNullOrEmpty(item.GetElementValue("link"))
+                                ? item.GetElementValue("guid")
+                                : item.GetElementValue("link"),
+                            PublishedDate = pubDate
+                        };
+
+                        posts.Add(blogPost);
+                    }
 
                 }
                 catch (Exception ex)
@@ -104,8 +113,25 @@ namespace OurUmbraco.Community.BlogPosts
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
-        
-        public BlogCachedRssItem[] GetCachedBlogPosts()
+
+        private static DateTimeOffset GetPublishDate(XElement item)
+        {
+            var publishDate = item.GetElementValue("pubDate");
+            DateTimeOffset pubDate;
+            try
+            {
+                pubDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(publishDate);
+            }
+            catch (Exception e)
+            {
+                // special dateformat, try normal C# date parser
+            }
+
+            DateTimeOffset.TryParse(publishDate, out pubDate);
+            return pubDate;
+        }
+
+        public BlogCachedRssItem[] GetCachedBlogPosts(int take)
         {
             // Return an empty array as the file doesn't exist
             if (File.Exists(JsonFile) == false)
@@ -130,7 +156,7 @@ namespace OurUmbraco.Community.BlogPosts
                     if (filteredBlogPosts.Count(b => b.Blog.Id == item.Blog.Id) < 2)
                         filteredBlogPosts.Add(item);
                 
-                return filteredBlogPosts.Take(20).OrderByDescending(x => x.PublishedDate).ToArray();
+                return filteredBlogPosts.Take(take).OrderByDescending(x => x.PublishedDate).ToArray();
             }
             catch (Exception ex)
             {
