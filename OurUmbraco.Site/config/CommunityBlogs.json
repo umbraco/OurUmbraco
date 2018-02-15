@@ -1,6 +1,38 @@
 ﻿{
   "blogs": [
     {
+      "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
+      "title": "Jamie's Blog",
+      "url": "https://jamiepollock.net/blog/",
+      "rss": "https://jamiepollock.net/blog/atom.xml",
+      "logo": "https://jamiepollock.net/images/favicon-64x64.png",
+      "memberId": 3305
+    },
+    {
+      "id": "D946B0EC-2208-455E-8BD5-C8A3E739215E",
+      "title": "Lars-Erik's blog",
+      "url": "http://blog.aabech.no/",
+      "rss": "http://blog.aabech.no/rss",
+      "logo": "http://blog.aabech.no/media/1002/umbarcelonajpeg.jpg?mode=max&rnd=131284736200000000",
+      "memberId": 30373
+    },
+    {
+      "id": "F0E727E8-4745-47EA-B75A-BE86661F9349",
+      "title": "Paul Aikman",
+      "url": "https://www.paulaikman.co.uk/",
+      "rss": "https://www.paulaikman.co.uk/rss/",
+      "logo": "https://www.paulaikman.co.uk/content/images/2017/12/logo.jpg",
+      "memberId": 49943
+    },
+    {
+      "id": "E325DF68-908E-41A9-AB29-16C66A2D32E7",
+      "title": "Vizioz",
+      "url": "https://www.vizioz.com/blog/",
+      "rss": "https://www.vizioz.com/blog/rss",
+      "logo": "https://www.vizioz.com/images/vizioz_logo3.png",
+      "memberId": 1868
+    },
+    {
       "id": "6F278E68-C435-4DFF-A4EA-DB08835AB0F9",
       "title": "Umbraco HQ",
       "url": "https://umbraco.com/blog",
@@ -74,9 +106,9 @@
     },
     {
       "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
-      "title": "codeshare.co.uk Blog | Code examples and knowledge sharing",
+      "title": "codeshare.co.uk Blog",
       "url": "https://codeshare.co.uk/",
-      "rss": "https://codeshare.co.uk/rss/",
+      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
       "logo": "https://codeshare.co.uk/img/logo.gif",
       "memberId": 126488
     },
