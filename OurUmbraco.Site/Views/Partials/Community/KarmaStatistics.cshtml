@@ -43,7 +43,7 @@
     var currentWeek = karmaResult.WeekNumber == currentWeekNumber;
 
     <div style="width: 100%; display: block; clear: both;">
-        <p style="font-weight: bold;">Top Karma earned @(currentWeek ? "in this week" : "last week")</p><br />
+        <p style="font-weight: bold;">Top Karma earners @(currentWeek ? "in this week" : "last week")</p><br />
 
         <div class="flex flex-wrap github-contributor-list forum-thread">
             @foreach (var person in karmaResult.MostActive.Take(15))
@@ -76,7 +76,7 @@
 }
 
 <div style="width: 100%; display: block; clear: both;">
-    <p style="font-weight: bold;">Leaderboard for @karmaStatistics.KarmaYear.MostActiveDateRange.First().Year - results are counted from May 1st until May 1st the next year.</p>
+    <p style="font-weight: bold;">Leaderboard for @karmaStatistics.KarmaYear.MostActiveDateRange.First().Year - the year results are tallied up on May 1st each year.</p>
 
     <div class="flex flex-wrap github-contributor-list forum-thread">
         @foreach (var person in combinedList.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
