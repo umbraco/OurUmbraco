@@ -60,12 +60,18 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("updateDate", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));
             simpleDataSet.RowData.Add("nodeTypeAlias", "documentation");
 
-            simpleDataSet.RowData.Add("dateCreated", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));
-
-            //TODO: This will always be exactly the same since all files are written at the same time IIRC
+            simpleDataSet.RowData.Add("dateCreated", file.CreationTime.ToString("yyyy-MM-dd HH:mm:ss"));          
+            
+            //TODO: This will always be exactly the same since results all files are written at the same time IIRC
             simpleDataSet.RowData.Add("Path", file.FullName);
             simpleDataSet.RowData.Add("searchAblePath", file.FullName.Replace("\\", " ").Replace(":", ""));
             simpleDataSet.RowData.Add("url", BuildUrl(file.FullName));
+            
+            // Used to exclude broken link page from the search results.
+            if(file.Name == "broken-link.md")
+            {
+                simpleDataSet.RowData.Clear();
+            }
             return simpleDataSet;
         }
 
