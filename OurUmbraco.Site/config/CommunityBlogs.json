@@ -1,6 +1,14 @@
 ﻿{
   "blogs": [
     {
+      "id": "7753D2AA-E80B-4DF8-B1C5-3CBC5C9A5200",
+      "title": "Yuri Burger",
+      "url": "https://yuriburger.net/",
+      "rss": "https://yuriburger.net/feed/",
+      "logo": "https://pbs.twimg.com/profile_images/2218895203/burger_400x400.png",
+      "memberId": null
+    },
+    {
       "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
       "title": "Jamie's Blog",
       "url": "https://jamiepollock.net/blog/",
