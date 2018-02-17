@@ -1,6 +1,14 @@
 ﻿{
   "blogs": [
     {
+      "id": "1D769116-B595-475E-B1C9-8B2B33A1548C",
+      "title": "24 Days In Umbraco",
+      "url": "https://24days.in/umbraco-cms",
+      "rss": "https://24days.in/umbraco-cms/rss/",
+      "logo": "https://pbs.twimg.com/profile_images/803704047769419776/wIJwpK82_400x400.jpg",
+      "memberId": null
+    },
+    {
       "id": "7753D2AA-E80B-4DF8-B1C5-3CBC5C9A5200",
       "title": "Yuri Burger",
       "url": "https://yuriburger.net/",
