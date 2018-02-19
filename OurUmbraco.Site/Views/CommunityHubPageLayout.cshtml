@@ -1,4 +1,5 @@
-﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@using OurUmbraco.Forum.Extensions
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
 
@@ -6,6 +7,19 @@
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
+    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+    var member = umbracoHelper.MembershipHelper.GetCurrentMember();
+    if (member != null)
+    {
+        if (member.IsHq() == false || member.IsAdmin() == false)
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
 }
 
 <style>
