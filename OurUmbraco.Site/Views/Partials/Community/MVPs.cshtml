@@ -15,9 +15,9 @@
             <div class="col-md-12 flex" id="community-posts">
                 @foreach (var memberGroup in allMemberGroups)
                 {
-                    var members = memberService.GetMembersByGroup(memberGroup.Name);
+                    var members = memberService.GetMembersByGroup(memberGroup.Name).OrderBy(x => x.Name);
                     <div style="width: 100%;">
-                        <h2>@memberGroup.Name</h2>
+                        <br /><br/><h2 style="font-weight: bold;">@memberGroup.Name</h2>
 
                         <ul>
                             @foreach (var member in members)
