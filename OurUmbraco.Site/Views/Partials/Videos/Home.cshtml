@@ -74,7 +74,9 @@
                 <div class="content-wrapper">
                     <nav>
                         <ul class="level-1">
-                                
+                            <li class="@(selectedCategory == null ? "active" : null)">
+                                <a href="@Model.Url"><h3>All videos</h3></a>
+                            </li>
                             @foreach (var category in categories)
                             {
                                 string name = category.Name.ToKebabCase();
