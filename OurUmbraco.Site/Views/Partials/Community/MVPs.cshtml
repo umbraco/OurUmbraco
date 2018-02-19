@@ -1,0 +1,33 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var memberGroupService = UmbracoContext.Application.Services.MemberGroupService;
+    var memberService = UmbracoContext.Application.Services.MemberService;
+    var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP ")).OrderBy(x => x.Name);
+}
+
+<section class="community">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Most Valueable People</h1>
+                <p>The MVPs of the Umbraco Community</p>
+            </div>
+            <div class="col-md-12 flex" id="community-posts">
+                @foreach (var memberGroup in allMemberGroups)
+                {
+                    var members = memberService.GetMembersByGroup(memberGroup.Name);
+                    <div style="width: 100%;">
+                        <h2>@memberGroup.Name</h2>
+
+                        <ul>
+                            @foreach (var member in members)
+                            {
+                                <li><a href="/member/@member.Id">@member.Name</a></li>
+                            }
+                        </ul>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -4360,6 +4360,8 @@
     <Content Include="Views\CommunityMeetups.cshtml" />
     <Content Include="Views\Partials\Community\Meetups.cshtml" />
     <Content Include="Views\Partials\Community\Twitter.cshtml" />
+    <Content Include="Views\CommunityMvps.cshtml" />
+    <Content Include="Views\Partials\Community\MVPs.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

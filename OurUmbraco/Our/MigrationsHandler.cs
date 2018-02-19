@@ -51,6 +51,8 @@ namespace OurUmbraco.Our
             AddCommunityStatistics();
             AddCommunityMeetups();
             AddCommunityTweets();
+            AddCommunityMvpPage();
+            AddMvpMemberGroups();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1240,6 +1242,75 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+        private void AddCommunityMvpPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityMvps";
+                const string contentItemName = "Most Valueable People";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddMvpMemberGroups()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var memberGroupService = ApplicationContext.Current.Services.MemberGroupService;
+                var existingMemberGroups = memberGroupService.GetAll().ToList();
+
+                var memberGroups = new List<string>
+                {
+                    "MVP 2007",
+                    "MVP 2008",
+                    "MVP 2009",
+                    "MVP 2010",
+                    "MVP 2011",
+                    "MVP 2013",
+                    "MVP 2013 - Lifetime MVP",
+                    "MVP 2014",
+                    "MVP 2015",
+                    "MVP 2015 - Lifetime MVP",
+                    "MVP 2016 - Packages",
+                    "MVP 2016 - Core Contributors",
+                    "MVP 2016 - Community Contributors",
+                    "MVP 2016 - Forum Participation",
+                    "MVP 2017 - Core Contributors",
+                    "MVP 2017 - Forum Participation",
+                    "MVP 2017 - Community Contributors"
+                };
+
+                foreach (var memberGroup in memberGroups)
+                    if (existingMemberGroups.Any(x => x.Name == memberGroup) == false)
+                        memberGroupService.Save(new MemberGroup { Name = memberGroup });
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
 
         private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
         {
@@ -1266,7 +1337,7 @@ namespace OurUmbraco.Our
 
                     var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
-                    var allowedTemplates = new List<ITemplate> {template};
+                    var allowedTemplates = new List<ITemplate> { template };
                     allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
                     hubPageContentType.AllowedTemplates = allowedTemplates;
                     contentTypeService.Save(hubPageContentType);

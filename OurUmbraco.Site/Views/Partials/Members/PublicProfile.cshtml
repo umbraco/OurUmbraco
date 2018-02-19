@@ -21,7 +21,8 @@
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
 
-        var roles = member.GetRoles();
+        var roles = member.GetRoles().Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+        var numberOfMvps = member.GetRoles().Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
 
         var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
         IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
@@ -84,6 +85,18 @@
                                 @if (roles.Any())
                                 {
                                     <span class="roles">
+                                        @if (numberOfMvps != 0)
+                                        {
+                                            var name = "MVP";
+                                            if (numberOfMvps > 1)
+                                            {
+                                                name = string.Format("{0} {1}x", name, numberOfMvps);
+                                            }
+
+                                            @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
+                                            <span class="mvp">@name</span>
+                                        }
+
                                         @foreach (var role in roles)
                                         {
                                             <span class="@role">@role</span>
