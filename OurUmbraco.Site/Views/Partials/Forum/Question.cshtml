@@ -1,27 +1,32 @@
-﻿@inherits UmbracoViewPage<OurUmbraco.Forum.Models.Topic>
+﻿@inherits UmbracoViewPage<Topic>
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Models
 @using OurUmbraco.Powers.Library
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    var topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
-
-    var roles = new List<string>();
-    var numberOfMvps = 0;
-    if (topicAuthor != null)
+    TopicMember topicAuthor = null;
+    if (Model.IsSpam == false)
     {
-        roles = topicAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-        numberOfMvps = topicAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+        topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
     }
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
     if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
     {
+        var roles = topicAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+        var numberOfMvps = topicAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+
         <li class="comment question" id="comment-@Model.Id" data-deeplink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
             <!-- Start of question -->
             <div class="meta">
                 <div class="profile">
-                    <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a> <span>@if (topicAuthor.Member.ForumPosts() == 0 || topicAuthor.Member.ForumPosts() > 1){@topicAuthor.Member.ForumPosts() <text>posts</text>}else{@topicAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@topicAuthor.Member.Karma() karma points</span>
+                    <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a> <span>
+                        @if (topicAuthor.Member.ForumPosts() == 0 || topicAuthor.Member.ForumPosts() > 1)
+                        {@topicAuthor.Member.ForumPosts() <text>posts</text>}
+                    else
+                    {@topicAuthor.Member.ForumPosts() <text>post</text>}
+                    </span> <span>@topicAuthor.Member.Karma() karma points</span>
 
                     @if (topicAuthor.Roles.Any())
                     {
@@ -62,7 +67,7 @@
                             html = string.Format("{0}<a href='/member/{1}'>{2}</a><br />", html, vote.MemberId, vote.MemberName);
                         }
                         @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
-                    }                    
+                    }
                     <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                         @Model.Score
                     </div>
@@ -70,7 +75,7 @@
                     {
                         if (currentMember.Id != Model.MemberId)
                         {
-                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five"/>High Five</a>
+                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
                         }
                     }
                 </div>
@@ -100,7 +105,7 @@
                         <div class="alert">
                             @if (Model.MemberData != null && Model.MemberData.IsAdmin)
                             {
-                                <span>You can see this topic because you're a moderator of the forum.</span><br/><br/>
+                                <span>You can see this topic because you're a moderator of the forum.</span><br /><br />
                             }
                             Sorry if we're causing you any inconvenience but this post has been automatically marked for manual approval. A moderator has been notified and will evaluate to make sure you're not trying to post spam. <br />
                             Only moderators and the post author can see this post. When this post has been approved this post will be shown as normal. After that, your future posts will not need manual approval.<br /><br />
@@ -159,7 +164,6 @@
                     <i class="icon-Link"></i><span>Copy Link</span>
                 </a>
             </div>
-        </li>
-        <!-- End of question -->
+        </li> <!-- End of question -->
     }
 }
