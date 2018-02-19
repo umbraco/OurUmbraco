@@ -3,8 +3,6 @@
 @using OurUmbraco.Our.Models
 @{
     var profile = MemberData;
-    var roles = profile.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-    var numberOfMvps = profile.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
 }
 <div class="quick-menu">
     <div class="container">
@@ -12,6 +10,8 @@
             <div class="col-md-12">
                 @if (profile != null)
                 {
+                    var roles = profile.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+                    var numberOfMvps = profile.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
                     <div class="close">
                         <i class="icon-Delete"></i>Close
                     </div>
