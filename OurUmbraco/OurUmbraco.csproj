@@ -592,6 +592,7 @@
     <Compile Include="Our\Scheduling\Scheduler.cs" />
     <Compile Include="Our\Scheduling\YouTrackSync.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
+    <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\__acceptTos.ascx.cs">
       <DependentUpon>__acceptTos.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

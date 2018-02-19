@@ -1,4 +1,4 @@
-﻿@using OurUmbraco.Forum.Extensions
+﻿@using OurUmbraco.Our
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
@@ -7,19 +7,9 @@
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
-    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-    var member = umbracoHelper.MembershipHelper.GetCurrentMember();
-    if (member != null)
-    {
-        if (member.IsHq() == false || member.IsAdmin() == false)
-        {
-            return;
-        }
-    }
-    else
-    {
-        return;
-    }
+
+    var featuresService = new UpcomingFeaturesService();
+    var allowed = featuresService.MemberHasAccessToFeature();
 }
 
 <style>
@@ -46,37 +36,46 @@
         <div class="sidebar-area">
             <div class="sidebar-content">
                 <div class="content-wrapper">
-                    <nav>
-                        <ul class="level-1">
-                            @if (Model.Content.Level == 2)
-                            {
-                                foreach (var child in Model.Content.Children)
+                    @if (allowed)
+                    {
+                        <nav>
+                            <ul class="level-1">
+                                @if (Model.Content.Level == 2)
                                 {
-                                    <li class="">
-                                        <h3><a href="@child.Url">@child.Name</a></h3>
-                                    </li>
+                                    foreach (var child in Model.Content.Children)
+                                    {
+                                        <li class="">
+                                            <h3><a href="@child.Url">@child.Name</a></h3>
+                                        </li>
+                                    }
                                 }
-                            }
-                            @if (Model.Content.Level == 3)
-                            {
-                                foreach (var child in Model.Content.Parent.Children)
+                                @if (Model.Content.Level == 3)
                                 {
-                                    <li class="">
-                                        <h3><a href="@child.Url">@child.Name</a></h3>
-                                    </li>
+                                    foreach (var child in Model.Content.Parent.Children)
+                                    {
+                                        <li class="">
+                                            <h3><a href="@child.Url">@child.Name</a></h3>
+                                        </li>
+                                    }
                                 }
-                            }
-                        </ul>
-                    </nav>
+                            </ul>
+                        </nav>
+                    }
                 </div><!-- .content-wrapper -->
             </div><!-- .sidebar-content -->
         </div><!-- .sidebar-area -->
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
-                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                    @if (allowed)
+                    {
+                        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                    }
                     <div class="community-content">
-                        <h1 style="color: red; ">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
+                        @if (allowed)
+                        {
+                            <h1 style="color: red;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
+                        }
                         @RenderBody()
                     </div><!-- .community-content -->
                 </div><!-- .content-wrapper -->
