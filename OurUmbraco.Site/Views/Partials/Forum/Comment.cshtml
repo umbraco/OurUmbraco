@@ -6,6 +6,9 @@
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
+
+    var roles = commentAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+    var numberOfMvps = commentAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
@@ -15,11 +18,22 @@
             <div class="profile">
                 <a href="/member/@commentAuthor.Member.Id">@commentAuthor.Member.Name</a> <span>@if (commentAuthor.Member.ForumPosts() == 0 || commentAuthor.Member.ForumPosts() > 1){@commentAuthor.Member.ForumPosts() <text>posts</text>}else{@commentAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Member.Karma() karma points</span>
                 
-
-                @if (commentAuthor.Roles.Any())
+                @if (roles.Any())
                 {
                     <span class="roles">
-                        @foreach (var role in (commentAuthor.Roles))
+                        @if (numberOfMvps != 0)
+                        {
+                            var name = "MVP";
+                            if (numberOfMvps > 1)
+                            {
+                                name = string.Format("{0} {1}x", name, numberOfMvps);
+                            }
+
+                            @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
+                            <span class="mvp">@name</span>
+                        }
+
+                        @foreach (var role in roles)
                         {
                             <span class="@role">@role</span>
                         }

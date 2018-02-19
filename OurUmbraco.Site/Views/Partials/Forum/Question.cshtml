@@ -6,6 +6,9 @@
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
 
+    var roles = topicAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+    var numberOfMvps = topicAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+    
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
     if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
     {
@@ -18,7 +21,19 @@
                     @if (topicAuthor.Roles.Any())
                     {
                         <span class="roles">
-                            @foreach (var role in topicAuthor.Roles)
+                            @if (numberOfMvps != 0)
+                            {
+                                var name = "MVP";
+                                if (numberOfMvps > 1)
+                                {
+                                    name = string.Format("{0} {1}x", name, numberOfMvps);
+                                }
+
+                                @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
+                                <span class="mvp">@name</span>
+                            }
+
+                            @foreach (var role in roles)
                             {
                                 <span class="@role">@role</span>
                             }
