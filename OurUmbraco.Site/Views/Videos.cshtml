@@ -1,0 +1,19 @@
+﻿@using OurUmbraco.Forum.Extensions
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml"; var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+    var member = umbracoHelper.MembershipHelper.GetCurrentMember();
+    if (member != null)
+    {
+        if (member.IsHq() == false || member.IsAdmin() == false)
+        {
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+}
+
+@Html.Partial("~/Views/Partials/Videos/Home.cshtml")

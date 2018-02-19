@@ -5,6 +5,7 @@ using Hangfire;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Videos;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
 
@@ -59,6 +60,17 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void UpdateCommunityBlogPosts()
         {
             RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(), Cron.HourInterval(1));
+        }
+
+        public void UpdateVimeoVideos()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateVimeoJsonFile(), Cron.HourInterval(1));
+        }
+
+        public void UpdateVimeoJsonFile()
+        {
+            var vimeoVideoService = new VideosService();
+            vimeoVideoService.UpdateVimeoVideos("umbraco");
         }
 
         public void UpdateBlogPostsJsonFile()
