@@ -7,8 +7,13 @@
     var commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 
-    var roles = commentAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-    var numberOfMvps = commentAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+    var roles = new List<string>();
+    var numberOfMvps = 0;
+    if (commentAuthor != null)
+    {
+        roles = commentAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+        numberOfMvps = commentAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+    }
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
