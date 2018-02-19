@@ -47,13 +47,8 @@ namespace OurUmbraco.Our
             AddCommunityPage();
             AddCommunityHubPage();
             AddCommunityBlogs();
-            AddCommunityKarma();
             AddCommunityStatistics();
-            AddCommunityMeetups();
-            AddCommunityTweets();
-            AddCommunityMvpPage();
-            AddMvpMemberGroups();
-            AddVideosPage();
+            AddVideosPage();			
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1063,21 +1058,10 @@ namespace OurUmbraco.Our
             }
         }
 
-<<<<<<< HEAD
         private void AddCommunityHubPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
-=======
-
-        private void AddVideosPage()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            const string docTypeAlias = "videos";
-            const string docTypeName = "Videos";
-
->>>>>>> Added new migration for creating the new "Videos" section
             try
             {
                 var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
@@ -1085,7 +1069,6 @@ namespace OurUmbraco.Our
                     return;
 
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
-<<<<<<< HEAD
                 var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
                 if (hubPageContentType == null)
                 {
@@ -1094,16 +1077,6 @@ namespace OurUmbraco.Our
                         Name = "Community Hub Page",
                         Alias = "communityHubPage",
                         Icon = "icon-wifi"
-=======
-                var videosContentType = contentTypeService.GetContentType(docTypeAlias);
-                if (videosContentType == null)
-                {
-                    var contentType = new ContentType(-1)
-                    {
-                        Name = docTypeName,
-                        Alias = docTypeAlias,
-                        Icon = "icon-power"
->>>>>>> Added new migration for creating the new "Videos" section
                     };
                     contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
 
@@ -1111,7 +1084,6 @@ namespace OurUmbraco.Our
                     var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
                     contentType.AddPropertyType(checkboxPropertyType, "Content");
 
-<<<<<<< HEAD
                     var rte = new DataTypeDefinition("Umbraco.TinyMCEv3");
                     var rtePropertyType = new PropertyType(rte, "bodyText") { Name = "Body" };
                     contentType.AddPropertyType(rtePropertyType, "Content");
@@ -1132,41 +1104,13 @@ namespace OurUmbraco.Our
                     if (templateCreateResult.Success)
                     {
                         var template = ApplicationContext.Current.Services.FileService.GetTemplate("communityHubPage");
-=======
-                    contentTypeService.Save(contentType);
-
-                    videosContentType = contentTypeService.GetContentType(docTypeAlias);
-                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType(docTypeAlias, docTypeName);
-                    if (templateCreateResult.Success)
-                    {
-                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(docTypeAlias);
->>>>>>> Added new migration for creating the new "Videos" section
                         var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
                         template.SetMasterTemplate(masterTemplate);
                         ApplicationContext.Current.Services.FileService.SaveTemplate(template);
 
-<<<<<<< HEAD
                         hubPageContentType.AllowedTemplates = new List<ITemplate> { template };
                         hubPageContentType.SetDefaultTemplate(template);
                         contentTypeService.Save(hubPageContentType);
-=======
-                        videosContentType.AllowedTemplates = new List<ITemplate> { template };
-                        videosContentType.SetDefaultTemplate(template);
-                        contentTypeService.Save(videosContentType);
-
-                        var contentService = ApplicationContext.Current.Services.ContentService;
-                        var rootContent = contentService.GetRootContent().FirstOrDefault();
-                        if (rootContent != null)
-                        {
-                            var videosPage = rootContent.Children().FirstOrDefault(x => x.Name == "Videos");
-                            if (videosPage == null)
-                            {
-                                videosPage = contentService.CreateContent("Videos", rootContent.Id, docTypeAlias);
-                                videosPage.SetValue("umbracoNaviHide", true);
-                                var saveResult = contentService.SaveAndPublishWithStatus(videosPage);
-                            }
-                        }
->>>>>>> Added new migration for creating the new "Videos" section
                     }
                 }
 
@@ -1179,7 +1123,6 @@ namespace OurUmbraco.Our
             }
         }
 
-<<<<<<< HEAD
         private void AddCommunityBlogs()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1192,29 +1135,6 @@ namespace OurUmbraco.Our
 
                 const string templateName = "CommunityBlogs";
                 const string contentItemName = "Blogs";
-                CreateNewCommunityHubPage(templateName, contentItemName);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
-        private void AddCommunityKarma()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                const string templateName = "CommunityKarma";
-                const string contentItemName = "Karma Leaderboard";
                 CreateNewCommunityHubPage(templateName, contentItemName);
 
                 string[] lines = { "" };
@@ -1250,121 +1170,6 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddCommunityMeetups()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                const string templateName = "CommunityMeetups";
-                const string contentItemName = "Meetups";
-                CreateNewCommunityHubPage(templateName, contentItemName);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
-        private void AddCommunityTweets()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                const string templateName = "CommunityTweets";
-                const string contentItemName = "Twitter activity";
-                CreateNewCommunityHubPage(templateName, contentItemName);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-        private void AddCommunityMvpPage()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                const string templateName = "CommunityMvps";
-                const string contentItemName = "Most Valueable People";
-                CreateNewCommunityHubPage(templateName, contentItemName);
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
-        private void AddMvpMemberGroups()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                var memberGroupService = ApplicationContext.Current.Services.MemberGroupService;
-                var existingMemberGroups = memberGroupService.GetAll().ToList();
-
-                var memberGroups = new List<string>
-                {
-                    "MVP 2007",
-                    "MVP 2008",
-                    "MVP 2009",
-                    "MVP 2010",
-                    "MVP 2011",
-                    "MVP 2013",
-                    "MVP 2013 - Lifetime MVP",
-                    "MVP 2014",
-                    "MVP 2015",
-                    "MVP 2015 - Lifetime MVP",
-                    "MVP 2016 - Packages",
-                    "MVP 2016 - Core Contributors",
-                    "MVP 2016 - Community Contributors",
-                    "MVP 2016 - Forum Participation",
-                    "MVP 2017 - Core Contributors",
-                    "MVP 2017 - Forum Participation",
-                    "MVP 2017 - Community Contributors"
-                };
-
-                foreach (var memberGroup in memberGroups)
-                    if (existingMemberGroups.Any(x => x.Name == memberGroup) == false)
-                        memberGroupService.Save(new MemberGroup { Name = memberGroup });
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
         private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
         {
             var relativeTemplateLocation = string.Format("~/Views/{0}.cshtml", templateName);
@@ -1378,7 +1183,9 @@ namespace OurUmbraco.Our
                 if (templateFile != null && File.Exists(templateFile))
                     templateContents = File.ReadAllText(templateFile);
 
-                var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage", templateName);
+                var templateCreateResult =
+                    ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("communityHubPage",
+                        templateName);
                 if (templateCreateResult.Success)
                 {
                     var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
@@ -1390,7 +1197,7 @@ namespace OurUmbraco.Our
 
                     var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
-                    var allowedTemplates = new List<ITemplate> { template };
+                    var allowedTemplates = new List<ITemplate> {template};
                     allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
                     hubPageContentType.AllowedTemplates = allowedTemplates;
                     contentTypeService.Save(hubPageContentType);
@@ -1410,7 +1217,74 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
-=======
->>>>>>> Added new migration for creating the new "Videos" section
+		
+		private void AddVideosPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            const string docTypeAlias = "videos";
+            const string docTypeName = "Videos";
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                if (videosContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = docTypeName,
+                        Alias = docTypeAlias,
+                        Icon = "icon-power"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, "umbracoNaviHide") { Name = "Hide in navigation?" };
+                    contentType.AddPropertyType(checkboxPropertyType, "Content");
+
+                    contentTypeService.Save(contentType);
+
+                    videosContentType = contentTypeService.GetContentType(docTypeAlias);
+                    var templateCreateResult = ApplicationContext.Current.Services.FileService.CreateTemplateForContentType(docTypeAlias, docTypeName);
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(docTypeAlias);
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        videosContentType.AllowedTemplates = new List<ITemplate> { template };
+                        videosContentType.SetDefaultTemplate(template);
+                        contentTypeService.Save(videosContentType);
+
+                        var contentService = ApplicationContext.Current.Services.ContentService;
+                        var rootContent = contentService.GetRootContent().FirstOrDefault();
+                        if (rootContent != null)
+                        {
+                            var videosPage = rootContent.Children().FirstOrDefault(x => x.Name == "Videos");
+                            if (videosPage == null)
+                            {
+                                videosPage = contentService.CreateContent("Videos", rootContent.Id, docTypeAlias);
+                                videosPage.SetValue("umbracoNaviHide", true);
+                                var saveResult = contentService.SaveAndPublishWithStatus(videosPage);
+                            }
+                        }
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+		
     }
 }

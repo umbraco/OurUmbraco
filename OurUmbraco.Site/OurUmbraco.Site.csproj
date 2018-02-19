@@ -4347,6 +4347,8 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
+    <Content Include="Views\Partials\Videos\Home.cshtml" />    
+    <Content Include="Views\CommunityBlogs.cshtml" />
     <Content Include="Views\Partials\Community\Blogs.cshtml" />
     <Content Include="Views\Partials\Community\Statistics.cshtml" />
     <Content Include="Views\CommunityStatistics.cshtml" />
