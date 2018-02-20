@@ -21,7 +21,8 @@ namespace OurUmbraco.Videos
 
             // Map the path to the directory
             var savePath = IOHelper.MapPath(SaveDirectory);
-            if (!Directory.Exists(savePath)) Directory.CreateDirectory(savePath);
+            if (Directory.Exists(savePath) == false)
+                Directory.CreateDirectory(savePath);
 
             // Map the path to the JSON file
             var path = savePath + "VimeoVideos_" + username + ".json";
@@ -45,7 +46,8 @@ namespace OurUmbraco.Videos
                 videos.AddRange(response.Body.Data);
 
                 // Break the loop if there are no further pages
-                if (response.Body.Paging.Next == null) break;
+                if (response.Body.Paging.Next == null)
+                    break;
 
                 // Increment the page count
                 page++;
@@ -95,7 +97,7 @@ namespace OurUmbraco.Videos
 
                     // Get the video category (or create it if not found)
                     VideosCategory category;
-                    if (!videosByTag.TryGetValue(categoryName, out category))
+                    if (videosByTag.TryGetValue(categoryName, out category) == false)
                         videosByTag.Add(categoryName, category = new VideosCategory(categoryName));
 
                     // Append the video to the category
