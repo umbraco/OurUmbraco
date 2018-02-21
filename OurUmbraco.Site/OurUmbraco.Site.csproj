@@ -4363,6 +4363,7 @@
     <Content Include="Views\Partials\Community\MVPs.cshtml" />
     <Content Include="Views\Videos.cshtml" />
     <Content Include="Views\ProjectGroup.cshtml" />
+    <Content Include="Views\ProjectsTags.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
