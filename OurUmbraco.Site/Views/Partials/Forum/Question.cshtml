@@ -5,11 +5,7 @@
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    TopicMember topicAuthor = null;
-    if (Model.IsSpam == false)
-    {
-        topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
-    }
+    var topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
     if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))

@@ -5,11 +5,7 @@
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
-    TopicMember commentAuthor = null;
-    if (Model.IsSpam == false)
-    {
-        commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
-    }
+    var commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
 
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 }
