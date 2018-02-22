@@ -54,5 +54,7 @@ namespace OurUmbraco.MarketPlace.Interfaces
         Guid Version { get; }
         string LicenseKey { get; set; }
         int ProjectViews { get; }
+        bool IsRetired { get; set; }
+        string RetiredMessage { get; set; }
     }
 }

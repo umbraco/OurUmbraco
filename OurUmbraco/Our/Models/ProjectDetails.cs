@@ -55,6 +55,12 @@ namespace OurUmbraco.Our.Models
         [Display(Name = "This project is open for collaboration")]
         public bool OpenForCollaboration { get; set; }
 
+        [Display(Name = "This project is retired")]
+        public bool IsRetired { get; set; }
+
+        [Display(Name = "Retired message")]
+        public string RetiredMessage { get; set; }
+
         public List<SelectListItem> ProjectCategories { get; set; }
     }
 }
