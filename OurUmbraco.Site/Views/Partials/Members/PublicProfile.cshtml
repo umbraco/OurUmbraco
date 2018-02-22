@@ -22,7 +22,7 @@
         var topics = ts.GetLatestTopicsForMember(member.Id);
 
         var roles = member.GetRoles().Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-        var numberOfMvps = member.GetRoles().Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+        var numberOfMvps = member.GetRoles().Count(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()));
 
         var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
         IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
