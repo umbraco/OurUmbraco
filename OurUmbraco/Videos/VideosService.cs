@@ -17,7 +17,7 @@ namespace OurUmbraco.Videos
 
         public void UpdateVimeoVideos(string username)
         {
-            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException(nameof(username));
+            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException("username");
 
             // Map the path to the directory
             var savePath = IOHelper.MapPath(SaveDirectory);
@@ -59,7 +59,7 @@ namespace OurUmbraco.Videos
 
         public VimeoVideo[] GetVimeoVideosFromDisk(string username)
         {
-            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException(nameof(username));
+            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException("username");
 
             // Make the path to the JSON file
             var path = IOHelper.MapPath(SaveDirectory + "VimeoVideos_" + username + ".json");
