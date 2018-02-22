@@ -1310,7 +1310,7 @@ namespace OurUmbraco.Our
                 if (projectContentType.PropertyTypeExists(checkboxTypeAlias) == false)
                 {
                     var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
-                    var checkboxPropertyType = new PropertyType(checkbox, checkboxTypeAlias) { Name = "Is retired?" };
+                    var checkboxPropertyType = new PropertyType(checkbox, checkboxTypeAlias) { Name = "Is Retired?" };
                     projectContentType.AddPropertyType(checkboxPropertyType, projectContentTypeAlias);
                     contentTypeService.Save(projectContentType);
                 }
@@ -1318,7 +1318,7 @@ namespace OurUmbraco.Our
                 if (projectContentType.PropertyTypeExists(textboxTypeAlias) == false)
                 {
                     var textbox = new DataTypeDefinition("Umbraco.Textbox");
-                    var textboxPropertyType = new PropertyType(textbox, textboxTypeAlias) { Name = "Retired message" };
+                    var textboxPropertyType = new PropertyType(textbox, textboxTypeAlias) { Name = "Retired Message" };
                     projectContentType.AddPropertyType(textboxPropertyType, projectContentTypeAlias);
                     contentTypeService.Save(projectContentType);
                 }
