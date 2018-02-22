@@ -1,5 +1,6 @@
 ﻿@inherits OurUmbracoTemplatePage
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Models
 @{
     var profile = MemberData;
@@ -10,8 +11,7 @@
             <div class="col-md-12">
                 @if (profile != null)
                 {
-                    var roles = profile.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-                    var numberOfMvps = profile.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+                    var badges = profile.Roles.GetBadges();
                     <div class="close">
                         <i class="icon-Delete"></i>Close
                     </div>
@@ -47,24 +47,20 @@
                                 <a href="https://twitter.com/@profile.TwitterHandle">&commat;<span>@profile.TwitterHandle</span></a>
                             </div>
                         }
-                        @if (roles.Any())
+                        @if (badges.Any())
                         {
                             <span class="roles">
-                                @if (numberOfMvps != 0)
+                                @foreach (var badge in badges)
                                 {
-                                    var name = "MVP";
-                                    if (numberOfMvps > 1)
+                                    if (string.IsNullOrWhiteSpace(badge.Link))
                                     {
-                                        name = string.Format("{0} {1}x", name, numberOfMvps);
+                                        <span class="@badge.CssClass">@badge.Name</span>
                                     }
-
-                                    @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
-                                    <span class="mvp">@name</span>
-                                }
-
-                                @foreach (var role in roles)
-                                {
-                                    <span class="@role">@role</span>
+                                    else
+                                    {
+                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                                        <span class="@badge.CssClass">@badge.Name</span>
+                                    }
                                 }
                             </span>
                         }

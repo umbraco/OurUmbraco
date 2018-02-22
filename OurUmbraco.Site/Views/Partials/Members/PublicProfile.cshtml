@@ -4,6 +4,7 @@
 @using OurUmbraco.Forum.Services
 @using OurUmbraco.MarketPlace.NodeListing
 @using OurUmbraco.Our
+@using OurUmbraco.Our.Extensions
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -21,8 +22,7 @@
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
 
-        var roles = member.GetRoles().Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-        var numberOfMvps = member.GetRoles().Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+        var badges = member.GetRoles().GetBadges();
 
         var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
         IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
@@ -82,24 +82,20 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="member-details">
-                                @if (roles.Any())
+                                @if (badges.Any())
                                 {
                                     <span class="roles">
-                                        @if (numberOfMvps != 0)
+                                        @foreach (var badge in badges)
                                         {
-                                            var name = "MVP";
-                                            if (numberOfMvps > 1)
+                                            if (string.IsNullOrWhiteSpace(badge.Link))
                                             {
-                                                name = string.Format("{0} {1}x", name, numberOfMvps);
+                                                <span class="@badge.CssClass">@badge.Name</span>
                                             }
-
-                                            @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
-                                            <span class="mvp">@name</span>
-                                        }
-
-                                        @foreach (var role in roles)
-                                        {
-                                            <span class="@role">@role</span>
+                                            else
+                                            {
+                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                                                <span class="@badge.CssClass">@badge.Name</span>
+                                            }
                                         }
                                     </span>
                                 }
