@@ -477,6 +477,7 @@
     <Compile Include="Forum\Services\ForumService.cs" />
     <Compile Include="Forum\Services\TopicService.cs" />
     <Compile Include="Forum\Singleton.cs" />
+    <Compile Include="Gitter\GitterProxyHub.cs" />
     <Compile Include="Gitter\GitterUmbracoEventHandler.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStep.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStepCollection.cs" />
