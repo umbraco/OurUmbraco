@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using GitterSharp.Services;
+using Microsoft.AspNet.SignalR;
 using Umbraco.Core;
 
 namespace OurUmbraco.Gitter
@@ -18,8 +19,8 @@ namespace OurUmbraco.Gitter
             //Register & setup/connect to Gitter Realtime API
             var realtimeGitterService = new RealtimeGitterService(apiToken);
 
-            var proxyHub = new GitterProxyHub();
-
+            var gitter = GlobalHost.ConnectionManager.GetHubContext<GitterHub>();
+            
             //Let's connect & listen...
             realtimeGitterService.Connect();
 
@@ -28,7 +29,7 @@ namespace OurUmbraco.Gitter
                 .Subscribe(x =>
                 {
                     //Proxy the request with SignalR Hub
-                    proxyHub.SendRealtimePresenceEvent(x);
+                    gitter.Clients.All.prescenceEvent(x);
                 }, onError:OnError);
 
 
@@ -36,7 +37,7 @@ namespace OurUmbraco.Gitter
             realtimeGitterService.SubscribeToRoomEvents(roomId)
                 .Subscribe(x =>
                 {
-                    proxyHub.SendRealtimeRoomEvent(x);
+                    gitter.Clients.All.roomEvent(x);
                 }, onError:OnError);
 
 
@@ -44,7 +45,7 @@ namespace OurUmbraco.Gitter
             realtimeGitterService.SubscribeToRoomUsers(roomId)
                 .Subscribe(x =>
                 {
-                    proxyHub.SendRealtimeUserEvent(x);
+                    gitter.Clients.All.userEvent(x);
                 }, onError:OnError);
             
 
@@ -52,7 +53,7 @@ namespace OurUmbraco.Gitter
             realtimeGitterService.SubscribeToChatMessages(roomId)
                 .Subscribe(x =>
                 {
-                    proxyHub.SendRealtimeChatMessageEvent(x);
+                    gitter.Clients.All.chatMessage(x);
                 }, onError:OnError);
         }
 

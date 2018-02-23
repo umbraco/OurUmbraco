@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GitterSharp.Model.Realtime;
+﻿using GitterSharp.Model.Realtime;
 using Microsoft.AspNet.SignalR;
 
 namespace OurUmbraco.Gitter
@@ -13,8 +8,12 @@ namespace OurUmbraco.Gitter
     /// That proxy's the Realtime events from Gitter's API to anyone connected to the our.umb site
     /// Where we can display a total count of users online currently or similar
     /// </summary>
-    public class GitterProxyHub : Hub
+    public class GitterHub : Hub
     {
+        //We only send messages from server to the client
+        //And the client never calls back to the server with an update
+        //This is a one way street
+
         public void SendRealtimePresenceEvent(RealtimeUserPresence userPresence)
         {
             Clients.All.prescenceEvent(userPresence);
@@ -34,6 +33,5 @@ namespace OurUmbraco.Gitter
         {
             Clients.All.chatMessage(chatMessage);
         }
-        
     }
 }
