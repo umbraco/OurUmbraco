@@ -1,14 +1,18 @@
 ﻿@using ClientDependency.Core.Mvc
-
-@Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js")
-@Html.RequiresJs("~/signalr/hubs")
+@{
+    Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js");
+    Html.RequiresJs("~/signalr/hubs");
+}
 
 @* Mustache JS template to render a chat message *@
 <script type="text/template" id="gitter-chat-template">    
     <a class="forum-thread" data-message-id="{{ model.id }}">
         <div class="avatar">
             <img src="{{ model.fromUser.avatarUrlMedium }}" alt="{{ model.fromUser.displayName }}" />
-            <small>{{ model.fromUser.displayName }}</small>
+            <p>
+                {{ model.fromUser.displayName }}<br />
+                @@{{ model.fromUser.username }}
+            </p>
         </div>
 
         <div class="meta">
@@ -18,6 +22,69 @@
         </div>
     </a>
 </script>
+
+<style>
+    pre code {
+        overflow-x: auto;
+        display: block;
+        padding: .5em;
+        background: #23241f;
+        line-height: 1.4em;
+        word-wrap: normal
+    }
+
+    pre .tag, pre code {
+        color: #f8f8f2
+    }
+
+    pre .hljs, pre .tag, pre .css .rule, pre .css .value, pre .aspectj .function, pre .css .function .preprocessor, pre .pragma {
+        color: #f8f8f2
+    }
+
+    pre .strongemphasis, pre .strong, pre .emphasis {
+        color: #a8a8a2
+    }
+
+    pre .bullet, pre .blockquote, pre .horizontal_rule, pre .number, pre .regexp, pre .alias .keyword, pre .literal, pre .hexcolor {
+        color: #ae81ff
+    }
+
+    pre .tag .value, pre .code, pre .title, pre .css .class, pre .class .title:last-child {
+        color: #a6e22e
+    }
+
+    pre .link_url {
+        font-size: 80%
+    }
+
+    pre .strong, pre .strongemphasis {
+        font-weight: 700
+    }
+
+    pre .emphasis, pre .strongemphasis, pre .class .title:last-child, pre .typename {
+        font-style: italic
+    }
+
+    pre .keyword, pre .ruby .class .keyword:first-child, pre .ruby .function .keyword, pre .function, pre .change, pre .winutils, pre .flow, pre .nginx .title, pre .tex .special, pre .header, pre .attribute, pre .symbol, pre .symbol .string, pre .tag .title, pre .value, pre .alias .keyword:first-child, pre .css .tag, pre .css .unit, pre .css .important {
+        color: #f92672
+    }
+
+        pre .function .keyword, pre .class .keyword:first-child, pre .aspect .keyword:first-child, pre .constant, pre .typename, pre .name, pre .css .attribute {
+            color: #66d9ef
+        }
+
+    pre .variable, pre .params, pre .class .title, pre .aspect .title {
+        color: #f8f8f2
+    }
+
+    pre .string, pre .css .id, pre .subst, pre .type, pre .ruby .class .parent, pre .built_in, pre .django .template_tag, pre .django .variable, pre .smalltalk .class, pre .django .filter .argument, pre .smalltalk .localvars, pre .smalltalk .array, pre .attr_selector, pre .pseudo, pre .addition, pre .stream, pre .envvar, pre .apache .tag, pre .apache .cbracket, pre .tex .command, pre .prompt, pre .link_label, pre .link_url {
+        color: #e6db74
+    }
+
+    pre .comment, pre .annotation, pre .decorator, pre .pi, pre .doctype, pre .deletion, pre .shebang, pre .apache .sqbracket, pre .tex .formula {
+        color: #75715e
+    }
+</style>
 
 <script>
     $(function () {
