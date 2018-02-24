@@ -1,4 +1,82 @@
-﻿<script type="text/javascript">
+﻿@using ClientDependency.Core.Mvc
+
+@Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js")
+@Html.RequiresJs("~/signalr/hubs")
+
+@* Mustache JS template to render a chat message *@
+<script type="text/template" id="gitter-chat-template">    
+    <a class="forum-thread" data-message-id="{{ model.id }}">
+        <div class="avatar">
+            <img src="{{ model.fromUser.avatarUrlMedium }}" alt="{{ model.fromUser.displayName }}" />
+            <small>{{ model.fromUser.displayName }}</small>
+        </div>
+
+        <div class="meta">
+            <div class="forum-thread-text">
+                {{{ model.html }}}
+            </div>
+        </div>
+    </a>
+</script>
+
+<script>
+    $(function () {
+        // Reference the auto-generated proxy for the hub.  
+        var gitter = $.connection.gitterHub;
+        
+        gitter.client.prescenceEvent = function(data) {
+            console.log('User Presence', data);
+        };
+
+        gitter.client.roomEvent = function(data) {
+            console.log('Room event', data);
+        };
+
+        gitter.client.userEvent = function(data) {
+            console.log('User event', data);
+        };
+
+        gitter.client.chatMessage = function(data) {
+            console.log('Chat message', data);
+
+            //Render mustache js template with JSON data
+            var template = $('#gitter-chat-template').html();
+            console.log('html template', template);
+
+            var rendered = Mustache.render(template, data);
+            console.log('rendered template', rendered);
+
+            $('#gitter').html(rendered);
+
+            //data.model.html
+            //data.model.id
+            //data.model.fromUser.displayName
+            //data.model.fromUser.username
+            //data.model.fromUser.avatarUrlMedium
+            //data.model.fromUser.avatarUrlSmall
+            //data.model.sent
+            //data.model.editedAt
+
+            //Could be 'create' or 'update'
+            //if (data.operation === 'create') {
+            //    $('#gitter').append(renderedMarkup);
+
+
+            //} else if (data.type === 'update') {
+
+            //}
+        };
+
+        $.connection.hub.logging = true;
+
+        $.connection.hub.start().done(function() {
+            console.log('SignalR has connected');
+        });
+    });
+
+</script>
+
+<script type="text/javascript">
 
     function loadAllGitHubContributors() {
         $('#github-contributors .github-contributor-list').addClass('all');
