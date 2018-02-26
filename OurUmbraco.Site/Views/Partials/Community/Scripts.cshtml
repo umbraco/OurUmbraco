@@ -6,7 +6,7 @@
 
 @* Mustache JS template to render a chat message *@
 <script type="text/template" id="gitter-chat-template">    
-    <a class="forum-thread" data-message-id="{{ model.id }}">
+    <a class="forum-thread gitter-message" data-message-id="{{ model.id }}">
         <div class="avatar">
             <img src="{{ model.fromUser.avatarUrlMedium }}" alt="{{ model.fromUser.displayName }}" />
             <p>
@@ -91,14 +91,17 @@
         // Reference the auto-generated proxy for the hub.  
         var gitter = $.connection.gitterHub;
         
+        //Currently unused - but ready to work
         gitter.client.prescenceEvent = function(data) {
             console.log('User Presence', data);
         };
 
+        //Currently unused - but ready to work
         gitter.client.roomEvent = function(data) {
             console.log('Room event', data);
         };
 
+        //Currently unused - but ready to work
         gitter.client.userEvent = function(data) {
             console.log('User event', data);
         };
@@ -106,15 +109,31 @@
         gitter.client.chatMessage = function(data) {
             console.log('Chat message', data);
 
-            //Render mustache js template with JSON data
-            var template = $('#gitter-chat-template').html();
-            console.log('html template', template);
+            //If the payload is 'remove' then user has deleted message
+            if (data.operation === 'remove') {
+                //Check if the current message being displayed in the DOM
+                //Matches the ID of this item we want to remove
+                if (checkMessageIsInDom(data.model.id)) {
+                    //If so then remove from DOM
+                    $('#gitter').html('<strong>MESSAGE REMOVED</strong>');
 
-            var rendered = Mustache.render(template, data);
-            console.log('rendered template', rendered);
+                    //Then we would need to do an API call to get the last message to replace it
+                }
+            }
 
-            $('#gitter').html(rendered);
+            //Operation is 'create' so just update the DOM instantly
+            if (data.operation === 'create') {
+                $('#gitter').html(renderMustacheTemplate(data));
+            }
 
+            //Operation is 'update' - need to check if its the current message being displayed
+            if (data.operation === 'update') {
+                if (checkMessageIsInDom(data.model.id)) {
+                    //If so then update the DOM
+                    $('#gitter').html(renderMustacheTemplate(data));
+                }
+            }
+            
             //data.model.html
             //data.model.id
             //data.model.fromUser.displayName
@@ -123,15 +142,7 @@
             //data.model.fromUser.avatarUrlSmall
             //data.model.sent
             //data.model.editedAt
-
-            //Could be 'create' or 'update'
-            //if (data.operation === 'create') {
-            //    $('#gitter').append(renderedMarkup);
-
-
-            //} else if (data.type === 'update') {
-
-            //}
+            
         };
 
         $.connection.hub.logging = true;
@@ -139,6 +150,17 @@
         $.connection.hub.start().done(function() {
             console.log('SignalR has connected');
         });
+
+        function checkMessageIsInDom(messageId) {
+            var currentMessageId = $('.gitter-message').attr('');
+            return currentMessageId === messageId;
+        }
+
+        function renderMustacheTemplate(data) {
+            //Render mustache js template with JSON data
+            var template = $('#gitter-chat-template').html();
+            return Mustache.render(template, data);
+        }
     });
 
 </script>
