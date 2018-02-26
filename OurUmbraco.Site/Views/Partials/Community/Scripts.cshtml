@@ -5,21 +5,27 @@
 }
 
 @* Mustache JS template to render a chat message *@
+<script type="text/template" id="gitter-chat-messages-template">
+    {{ #. }}
+        {{ >message }}
+    {{ /. }}
+</script>
+
 <script type="text/template" id="gitter-chat-template">    
-    <a class="forum-thread gitter-message" data-message-id="{{ model.id }}">
+    <a class="forum-thread gitter-message" data-message-id="{{ id }}">
         <div class="avatar">
-            <img src="{{ model.fromUser.avatarUrlMedium }}" alt="{{ model.fromUser.displayName }}" />
+            <img src="{{ fromUser.avatarUrlMedium }}" alt="{{ fromUser.displayName }}" />
             <p>
-                {{ model.fromUser.displayName }}<br />
-                @@{{ model.fromUser.username }}
+                {{ fromUser.displayName }}<br />
+                @@{{ fromUser.username }}
             </p>
         </div>
 
         <div class="meta">
-            {{#model.sent}}<small>Sent at {{ model.sent }}</small>{{/model.sent}}
-            {{#model.editedAt}}<small>Edited at {{ model.editedAt }}</small>{{/model.editedAt}}
+            {{#sent}}<small>Sent at {{ sent }}</small>{{/sent}}
+            {{#editedAt}}<small>Edited at {{ editedAt }}</small>{{/editedAt}}
             <div class="forum-thread-text">
-                {{{ model.html }}}
+                {{{ html }}}
             </div>
         </div>
     </a>
@@ -90,6 +96,8 @@
 
 <script>
     $(function () {
+        var numberOfMessages = 4;
+
         // Reference the auto-generated proxy for the hub.  
         var gitter = $.connection.gitterHub;
         
@@ -109,7 +117,7 @@
         };
 
         gitter.client.chatMessage = function(data) {
-            console.log('Chat message', data);
+            console.log('Chat message inbound', data);
 
             //If the payload is 'remove' then user has deleted message
             if (data.operation === 'remove') {
@@ -118,20 +126,27 @@
                 if (checkMessageIsInDom(data.model.id)) {
                     //If so call the SignalR server event to get last message
                     //Which will then call back to fetchedChatMessage
-                    $.connection.gitterHub.server.getLatestChatMessage();
+                    $.connection.gitterHub.server.getLatestChatMessages(numberOfMessages);
                 }
             }
 
             //Operation is 'create' so just update the DOM instantly
             if (data.operation === 'create') {
-                $('#gitter').html(renderMustacheTemplate(data));
+
+                //Need to remove the first DOM item in the container
+                //As its the oldest
+                $('#gitter .gitter-message:first-child').remove();
+
+                //Insert new item in the container at the bottom
+                $('#gitter').append(renderMustacheTemplate(data));
             }
 
             //Operation is 'update' - need to check if its the current message being displayed
             if (data.operation === 'update') {
                 if (checkMessageIsInDom(data.model.id)) {
-                    //If so then update the DOM
-                    $('#gitter').html(renderMustacheTemplate(data));
+                    //If so then update the DOM item
+                    $("#gitter .gitter-message[data-message-id='" + data.model.id + "']")
+                        .replaceWith(renderMustacheTemplate(data));
                 }
             }
             
@@ -140,33 +155,39 @@
         gitter.client.fetchedChatMessage = function(data) {
             //On init load of SignalR, it's pinged from client to server to fetch latest message
             //Via Gitter API which returns a collection of messages (even though its one message)
-           
-            //It's an array of messages - but only still has one item
-            var item = data[0];
-
-            //Need to inject it into a new JSON object where the message is on a property called model
-            //To match the same style we get as the realtime JSON payloads for the mustache template rendering
-            var updatedData = { model: item };
-
-            $('#gitter').html(renderMustacheTemplate(updatedData));
+            $('#gitter').html(renderMultipleMustacheTemplate(data));
 
         };
 
         $.connection.hub.logging = true;
 
         $.connection.hub.start().done(function() {
-            $.connection.gitterHub.server.getLatestChatMessage();
+            $.connection.gitterHub.server.getLatestChatMessages(numberOfMessages);
         });
 
         function checkMessageIsInDom(messageId) {
-            var currentMessageId = $('.gitter-message').data('message-id');
-            return currentMessageId === messageId;
+            var foundInDom = $(".gitter-message[data-message-id='" + messageId + "']");
+            return foundInDom.length > 0;
         }
+
+        function renderMultipleMustacheTemplate(data) {
+
+            var innerTemplate = $('#gitter-chat-template').html();
+            var outerTemplate = $('#gitter-chat-messages-template').html();
+            
+            var output = Mustache.render(outerTemplate, data, {
+                message: innerTemplate
+            });
+            
+            return output;
+        };
 
         function renderMustacheTemplate(data) {
             //Render mustache js template with JSON data
+            //This is used for single messages coming from the realtime api
+            //Where the main message payload is a subobject stored in 'model'
             var template = $('#gitter-chat-template').html();
-            return Mustache.render(template, data);
+            return Mustache.render(template, data.model);
         }
     });
 
