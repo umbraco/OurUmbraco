@@ -1,4 +1,5 @@
-﻿using GitterSharp.Model.Realtime;
+﻿using System.Threading.Tasks;
+using GitterSharp.Model.Realtime;
 using Microsoft.AspNet.SignalR;
 
 namespace OurUmbraco.Gitter
@@ -10,6 +11,13 @@ namespace OurUmbraco.Gitter
     /// </summary>
     public class GitterHub : Hub
     {
+        private GitterService _gitterService;
+
+        public GitterHub()
+        {
+            _gitterService = new GitterService();
+        }
+
         //We only send messages from server to the client
         //And the client never calls back to the server with an update
         //This is a one way street
@@ -32,6 +40,12 @@ namespace OurUmbraco.Gitter
         public void SendRealtimeChatMessageEvent(RealtimeChatMessage chatMessage)
         {
             Clients.All.chatMessage(chatMessage);
+        }
+
+        public async Task GetLatestChatMessage()
+        {
+            var latestMessage = await _gitterService.GetMessages(1);
+            Clients.All.fetchedChatMessage(latestMessage);
         }
     }
 }

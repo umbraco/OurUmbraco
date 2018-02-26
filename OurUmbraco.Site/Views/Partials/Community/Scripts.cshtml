@@ -118,6 +118,7 @@
                     $('#gitter').html('<strong>MESSAGE REMOVED</strong>');
 
                     //Then we would need to do an API call to get the last message to replace it
+                    //gitter.server.getLatestChatMessage();
                 }
             }
 
@@ -145,10 +146,27 @@
             
         };
 
+        gitter.client.fetchedChatMessage = function(data) {
+            //On init load of SignalR, it's pinged from client to server to fetch latest message
+            //Via Gitter API which returns a collection of messages (even though its one message)
+            console.log('fetched chat message', data);
+            console.log('item', data[0]);
+
+            //It's an array of messages - but only still has one item
+            var item = data[0];
+
+            //Need to inject it into a new JSON object where the message is on a property called model
+            //To match the same style we get as the realtime JSON payloads for the mustache template rendering
+            var updatedData = { model: item };
+
+            $('#gitter').html(renderMustacheTemplate(updatedData));
+
+        };
+
         $.connection.hub.logging = true;
 
         $.connection.hub.start().done(function() {
-            console.log('SignalR has connected');
+            $.connection.gitterHub.server.getLatestChatMessage();
         });
 
         function checkMessageIsInDom(messageId) {
