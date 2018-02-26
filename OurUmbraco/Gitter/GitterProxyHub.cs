@@ -42,9 +42,12 @@ namespace OurUmbraco.Gitter
             Clients.All.chatMessage(chatMessage);
         }
 
-        public async Task GetLatestChatMessage()
+        public async Task GetLatestChatMessages(int numberOfMessages)
         {
-            var latestMessage = await _gitterService.GetMessages(1);
+            //Enfore a hard limit incase people try to request a large set from gitter
+            numberOfMessages = numberOfMessages > 10 ? 10 : numberOfMessages;
+
+            var latestMessage = await _gitterService.GetMessages(numberOfMessages);
             Clients.All.fetchedChatMessage(latestMessage);
         }
     }
