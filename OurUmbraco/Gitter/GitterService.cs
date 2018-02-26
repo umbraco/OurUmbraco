@@ -18,7 +18,7 @@ namespace OurUmbraco.Gitter
             _roomId = ConfigurationManager.AppSettings["GitterRoomId"];
         }
 
-        public Task<IEnumerable<Message>> GetMessages(int numberOfMessages = 2)
+        public Task<IEnumerable<Message>> GetMessages(int numberOfMessages = 10)
         {
             return _gitterApi.GetRoomMessagesAsync(_roomId, new MessageRequest {Limit = numberOfMessages});
         }
