@@ -16,6 +16,8 @@
         </div>
 
         <div class="meta">
+            {{#model.sent}}<small>Sent at {{ model.sent }}</small>{{/model.sent}}
+            {{#model.editedAt}}<small>Edited at {{ model.editedAt }}</small>{{/model.editedAt}}
             <div class="forum-thread-text">
                 {{{ model.html }}}
             </div>
@@ -114,11 +116,9 @@
                 //Check if the current message being displayed in the DOM
                 //Matches the ID of this item we want to remove
                 if (checkMessageIsInDom(data.model.id)) {
-                    //If so then remove from DOM
-                    $('#gitter').html('<strong>MESSAGE REMOVED</strong>');
-
-                    //Then we would need to do an API call to get the last message to replace it
-                    //gitter.server.getLatestChatMessage();
+                    //If so call the SignalR server event to get last message
+                    //Which will then call back to fetchedChatMessage
+                    $.connection.gitterHub.server.getLatestChatMessage();
                 }
             }
 
@@ -135,23 +135,12 @@
                 }
             }
             
-            //data.model.html
-            //data.model.id
-            //data.model.fromUser.displayName
-            //data.model.fromUser.username
-            //data.model.fromUser.avatarUrlMedium
-            //data.model.fromUser.avatarUrlSmall
-            //data.model.sent
-            //data.model.editedAt
-            
         };
 
         gitter.client.fetchedChatMessage = function(data) {
             //On init load of SignalR, it's pinged from client to server to fetch latest message
             //Via Gitter API which returns a collection of messages (even though its one message)
-            console.log('fetched chat message', data);
-            console.log('item', data[0]);
-
+           
             //It's an array of messages - but only still has one item
             var item = data[0];
 
@@ -170,7 +159,7 @@
         });
 
         function checkMessageIsInDom(messageId) {
-            var currentMessageId = $('.gitter-message').attr('');
+            var currentMessageId = $('.gitter-message').data('message-id');
             return currentMessageId === messageId;
         }
 
