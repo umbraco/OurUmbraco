@@ -91,6 +91,7 @@ namespace OurUmbraco.Community.GitHub
             if (sortByUpdated)
                 resource = string.Format("{0}&sort=updated&direction=desc", resource);
 
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var request = new RestRequest(resource, Method.GET);
             client.UserAgent = UserAgent;
 
