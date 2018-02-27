@@ -24,22 +24,20 @@ body.download {
 	}
 
 	.col-padding {
-		padding-left:15px;
-		padding-right:15px;
-	}
-
-	.medium-text {
-		font-size:18px;
-	}
-
-	img {
-		max-width: 100%;
+		padding-left:50px;
+		padding-right:50px;
 	}
 
 	h2 {
 		font-size: 28.8px;
 		font-weight:bold;
 		margin-bottom: 2rem;
+	}
+
+	.download-link {
+		font-weight: bold;
+		color: #000000;
+		text-decoration: underline;
 	}
 
 	.signup{
@@ -78,14 +76,13 @@ body.download {
 
 		&.download-teaser {
 			font-size: 18px;
-			line-height: 30px;
-			margin-bottom:40px;
+			line-height: 1.6em;
+			margin-bottom: 40px;
 		}
 
 		a {
 			text-decoration: underline;
-			color: $color-our;
-			font-weight:bold;
+			color: #000000;
 		}
 	}
 
@@ -99,8 +96,8 @@ body.download {
 		line-height: 1.4em;
 		background-clip: padding-box;
 		padding: 8px 25px;
-		border-radius: 5px;
-		height:42px;
+		border-radius: 3px;
+		height: 42px;
 		align-items: center;
 
 		span {
@@ -116,8 +113,8 @@ body.download {
 		}
 
 		li {
-			font-size:13px;
-			margin-bottom:5px;
+			font-size: 13px;
+			margin-bottom: 7px;
 		}
 	}
 
@@ -125,16 +122,19 @@ body.download {
 	.video {
 		position: relative;
 
-		.overlay{
+		.video-overlay {
 			position: absolute;
-			height:100%;
-			width:100%;
-			background:rgba(0,0,0,0.5);
+			left: 0;
+			top: 0;
+			right: 0;
+			bottom: 0;
+			background: #ffffff;
+			opacity: 0.8;
 		}
 
 		img {
 			border-radius: 3px;
-			box-shadow: 0 3px 6px 0 rgba(0,0,0,0.26);
+			max-width: 100%;
 		}
 
 		.play {
