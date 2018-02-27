@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using GitterSharp.Model.Realtime;
 using Microsoft.AspNet.SignalR;
 
 namespace OurUmbraco.Gitter
@@ -18,37 +17,19 @@ namespace OurUmbraco.Gitter
             _gitterService = new GitterService();
         }
 
-        //We only send messages from server to the client
-        //And the client never calls back to the server with an update
-        //This is a one way street
-
-        public void SendRealtimePresenceEvent(RealtimeUserPresence userPresence)
-        {
-            Clients.All.prescenceEvent(userPresence);
-        }
-
-        public void SendRealtimeRoomEvent(RealtimeRoomEvent roomEvent)
-        {
-            Clients.All.roomEvent(roomEvent);
-        }
-        
-        public void SendRealtimeUserEvent(RealtimeRoomUser roomUser)
-        {
-            Clients.All.userEvent(roomUser);
-        }
-        
-        public void SendRealtimeChatMessageEvent(RealtimeChatMessage chatMessage)
-        {
-            Clients.All.chatMessage(chatMessage);
-        }
-
-        public async Task GetLatestChatMessages(int numberOfMessages)
+        public async Task GetLatestChatMessages(string roomId, int numberOfMessages)
         {
             //Enfore a hard limit incase people try to request a large set from gitter
             numberOfMessages = numberOfMessages > 10 ? 10 : numberOfMessages;
 
-            var latestMessage = await _gitterService.GetMessages(numberOfMessages);
-            Clients.All.fetchedChatMessage(latestMessage);
+            var latestMessages = await _gitterService.GetMessages(roomId, numberOfMessages);
+
+            //Add the current SignalR connection to a group (So they only get messages for this room)
+            await Groups.Add(Context.ConnectionId, roomId);
+
+            //Call only the SignalR clients who are part of this room/group
+            //Otherwise we will send messages from other rooms
+            Clients.Group(roomId).fetchedChatMessage(latestMessages);
         }
     }
 }

@@ -12,49 +12,64 @@ namespace OurUmbraco.Gitter
         {
             //Gitter API token
             var apiToken = ConfigurationManager.AppSettings["GitterApiToken"];
-
-            //The Room ID we want to listen for events from
-            var roomId = ConfigurationManager.AppSettings["GitterRoomId"];
-
+            
             //Register & setup/connect to Gitter Realtime API
             var realtimeGitterService = new RealtimeGitterService(apiToken);
 
+            //Used to communicate & fire events from server code to SignalR connected JS clients
             var gitter = GlobalHost.ConnectionManager.GetHubContext<GitterHub>();
             
             //Let's connect & listen...
+            //This has to be done first before subscribe's
             realtimeGitterService.Connect();
 
-            //User presence
-            realtimeGitterService.SubscribeToUserPresence(roomId)
-                .Subscribe(x =>
-                {
-                    //Proxy the request with SignalR Hub
-                    gitter.Clients.All.prescenceEvent(x);
-                }, onError:OnError);
+            //The Room ID we want to listen for events from
+            //This appSetting contains a CSV of room IDs
+            var roomIds = ConfigurationManager.AppSettings["GitterRoomIds"];
+            if (string.IsNullOrEmpty(roomIds))
+                return;
+
+            var rooms = roomIds.Split(',');
+
+            //Setup the events for each room ID
+            foreach (var roomId in rooms)
+            {
+                //User presence
+                realtimeGitterService.SubscribeToUserPresence(roomId)
+                    .Subscribe(x =>
+                    {
+                        //Proxy the request with SignalR Hub
+                        gitter.Clients.Group(roomId).prescenceEvent(x);
+                    }, onError:OnError);
 
 
-            //Room Events
-            realtimeGitterService.SubscribeToRoomEvents(roomId)
-                .Subscribe(x =>
-                {
-                    gitter.Clients.All.roomEvent(x);
-                }, onError:OnError);
+                //Room Events
+                realtimeGitterService.SubscribeToRoomEvents(roomId)
+                    .Subscribe(x =>
+                    {
+                        gitter.Clients.Group(roomId).roomEvent(x);
+                    }, onError:OnError);
 
 
-            //Users in room
-            realtimeGitterService.SubscribeToRoomUsers(roomId)
-                .Subscribe(x =>
-                {
-                    gitter.Clients.All.userEvent(x);
-                }, onError:OnError);
+                //Users in room
+                realtimeGitterService.SubscribeToRoomUsers(roomId)
+                    .Subscribe(x =>
+                    {
+                        gitter.Clients.Group(roomId).userEvent(x);
+                    }, onError:OnError);
             
 
-            //Chat messages
-            realtimeGitterService.SubscribeToChatMessages(roomId)
-                .Subscribe(x =>
-                {
-                    gitter.Clients.All.chatMessage(x);
-                }, onError:OnError);
+                //Chat messages
+                realtimeGitterService.SubscribeToChatMessages(roomId)
+                    .Subscribe(x =>
+                    {
+                        gitter.Clients.Group(roomId).chatMessage(x);
+                    }, onError:OnError);
+            }
+            
+            
+
+            
         }
 
         private void OnError(Exception exception)
@@ -62,7 +77,11 @@ namespace OurUmbraco.Gitter
             //TODO: Log exception/warning
             //Maybe connection issues?!
 
-            throw new NotImplementedException();
+            //Managed to get an ex
+            //System.InvalidOperationException: Not connected to server.
+
+
+            throw exception;
         }
     }
 }

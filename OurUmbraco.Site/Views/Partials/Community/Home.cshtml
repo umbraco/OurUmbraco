@@ -59,7 +59,7 @@
 
 @if (Members.IsLoggedIn())
 {
-    @Gitter()
+    @Html.Partial("Community/Gitter")
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
@@ -69,7 +69,7 @@
 else
 {
     @Html.Partial("home/documentation")
-    @Gitter()
+    @Html.Partial("Community/Gitter")
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
@@ -186,33 +186,6 @@ else
                     </div>
                     <div class="col-md-12 flex" id="meetups">
                         <h2>Loading meetups...</h2>
-                    </div>
-                </div>
-            </div>
-        </section>
-}
-
-@helper Gitter()
-    {
-        <section class="forum gitter-chat">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="text-center">Community Chat</h1>
-                        <p>
-                            Live messages from the Gitter.im Umbraco chat room
-                        </p>
-                    </div>
-                    <div class="col-md-12">
-                        <small>Latest messages</small>
-                    </div>
-
-                    <div class="col-md-12 flex" id="gitter">
-                        <p>Loading messages...</p>
-                    </div>
-
-                    <div class="col-md-12 goto-forum">
-                        <a class="button green" href="https://gitter.im/umbraco/Playground">Join the discussion on Gitter &rarr;</a>
                     </div>
                 </div>
             </div>

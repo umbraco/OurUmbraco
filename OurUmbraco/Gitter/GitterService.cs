@@ -10,17 +10,17 @@ namespace OurUmbraco.Gitter
     public class GitterService
     {
         private GitterApiService _gitterApi;
-        private string _roomId;
 
         public GitterService()
         {
             _gitterApi = new GitterApiService(ConfigurationManager.AppSettings["GitterApiToken"]);
-            _roomId = ConfigurationManager.AppSettings["GitterRoomId"];
         }
 
-        public Task<IEnumerable<Message>> GetMessages(int numberOfMessages = 10)
+        public Task<IEnumerable<Message>> GetMessages(string roomId, int numberOfMessages = 10)
         {
-            return _gitterApi.GetRoomMessagesAsync(_roomId, new MessageRequest {Limit = numberOfMessages});
+            //TODO: Clean & sanity check the room ID of a whitelist of rooms from a gitter.json config file or something
+            //Otherwise open for abuse?
+            return _gitterApi.GetRoomMessagesAsync(roomId, new MessageRequest {Limit = numberOfMessages});
         }
     }
 }

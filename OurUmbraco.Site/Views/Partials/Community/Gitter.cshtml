@@ -1,0 +1,236 @@
+﻿@using ClientDependency.Core.Mvc
+@{
+    Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js");
+    Html.RequiresJs("~/signalr/hubs");
+
+    //Need Room ID passed in
+    var roomId = "5a8c90b2d73408ce4f8e1188";
+
+    var roomName = "Community Chat";
+
+    //Need this passed in
+    var roomUrl = "https://gitter.im/umbraco/Playground";
+}
+
+@* This is the main init render in the DOM *@
+<section class="forum gitter-chat">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">@roomName</h1>
+                <p>
+                    Live messages from the Gitter.im Umbraco chat room
+                </p>
+            </div>
+            <div class="col-md-12">
+                <small>Latest messages</small>
+            </div>
+
+            <div class="col-md-12 flex gitter-room" data-room="@roomId">
+                <p>Loading messages...</p>
+            </div>
+
+            <div class="col-md-12 goto-forum">
+                <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+@* Mustache JS template to render a collection of chat messages that re-uses template for single message *@
+<script type="text/template" id="gitter-chat-messages-template">
+    {{ #. }}
+    {{ >message }}
+    {{ /. }}
+</script>
+
+@* Mustache JS template to render a single chat message *@
+<script type="text/template" id="gitter-chat-template">
+    <a class="forum-thread gitter-message" data-message-id="{{ id }}">
+        <div class="avatar">
+            <img src="{{ fromUser.avatarUrlMedium }}" alt="{{ fromUser.displayName }}" />
+            <p>
+                {{ fromUser.displayName }}<br />
+                @@{{ fromUser.username }}
+            </p>
+        </div>
+
+        <div class="meta">
+            {{#sent}}<small>Sent at {{ sent }}</small>{{/sent}}
+            {{#editedAt}}<small>Edited at {{ editedAt }}</small>{{/editedAt}}
+            <div class="forum-thread-text">
+                {{{ html }}}
+            </div>
+        </div>
+    </a>
+</script>
+
+@* SignalR JS client code - TODO move to seperate JS file *@
+<script>
+    $(function () {
+        var numberOfMessages = 4;
+        var roomId = '5a8c90b2d73408ce4f8e1188'; //Umbraco Playground Room
+
+        // Reference the auto-generated proxy for the hub.
+        var gitter = $.connection.gitterHub;
+
+        //Currently unused - but ready to work
+        gitter.client.prescenceEvent = function(data) {
+            console.log('User Presence', data);
+        };
+
+        //Currently unused - but ready to work
+        gitter.client.roomEvent = function(data) {
+            console.log('Room event', data);
+        };
+
+        //Currently unused - but ready to work
+        gitter.client.userEvent = function(data) {
+            console.log('User event', data);
+        };
+
+        gitter.client.chatMessage = function(data) {
+            console.log('Chat message inbound', data);
+
+            //If the payload is 'remove' then user has deleted message
+            if (data.operation === 'remove') {
+                //Check if the current message being displayed in the DOM
+                //Matches the ID of this item we want to remove
+                if (checkMessageIsInDom(data.model.id)) {
+                    //If so call the SignalR server event to get last message
+                    //Which will then call back to fetchedChatMessage
+                    $.connection.gitterHub.server.getLatestChatMessages(roomId, numberOfMessages);
+                }
+            }
+
+            //Operation is 'create' so just update the DOM instantly
+            if (data.operation === 'create') {
+
+                //Need to remove the first DOM item in the container
+                //As its the oldest
+                $(".gitter-room[data-room='" + roomId + "'] .gitter-message:first-child").remove();
+
+                //Insert new item in the container at the bottom
+                $(".gitter-room[data-room='" + roomId + "']").append(renderMustacheTemplate(data));
+            }
+
+            //Operation is 'update' - need to check if its the current message being displayed
+            if (data.operation === 'update') {
+                if (checkMessageIsInDom(data.model.id)) {
+                    //If so then update the DOM item
+                    $(".gitter-room[data-room='" + roomId + "'] .gitter-message[data-message-id='" + data.model.id + "']")
+                        .replaceWith(renderMustacheTemplate(data));
+                }
+            }
+
+        };
+
+        gitter.client.fetchedChatMessage = function(data) {
+
+            //On init load of SignalR, it's pinged from client to server to fetch latest message
+            //Via Gitter API which returns a collection of messages (even though its one message)
+            var html = renderMultipleMustacheTemplate(data);
+            console.log('html', html);
+            console.log('room id', roomId);
+            $(".gitter-room[data-room='" + roomId + "']").html(html);
+
+        };
+
+        $.connection.hub.logging = true;
+
+        $.connection.hub.start().done(function() {
+            $.connection.gitterHub.server.getLatestChatMessages(roomId, numberOfMessages);
+        });
+
+        function checkMessageIsInDom(messageId) {
+            var foundInDom = $(".gitter-message[data-message-id='" + messageId + "']");
+            return foundInDom.length > 0;
+        }
+
+        function renderMultipleMustacheTemplate(data) {
+
+            var innerTemplate = $('#gitter-chat-template').html();
+            var outerTemplate = $('#gitter-chat-messages-template').html();
+
+            var output = Mustache.render(outerTemplate, data, {
+                message: innerTemplate
+            });
+            
+            return output;
+        };
+
+        function renderMustacheTemplate(data) {
+            //Render mustache js template with JSON data
+            //This is used for single messages coming from the realtime api
+            //Where the main message payload is a subobject stored in 'model'
+            var template = $('#gitter-chat-template').html();
+            return Mustache.render(template, data.model);
+        }
+    });
+
+</script>
+
+@* CSS Inline Style - TODO move to CSS file *@
+<style>
+    pre code {
+        overflow-x: auto;
+        display: block;
+        padding: .5em;
+        background: #23241f;
+        line-height: 1.4em;
+        word-wrap: normal
+    }
+
+    pre .tag, pre code {
+        color: #f8f8f2
+    }
+
+    pre .hljs, pre .tag, pre .css .rule, pre .css .value, pre .aspectj .function, pre .css .function .preprocessor, pre .pragma {
+        color: #f8f8f2
+    }
+
+    pre .strongemphasis, pre .strong, pre .emphasis {
+        color: #a8a8a2
+    }
+
+    pre .bullet, pre .blockquote, pre .horizontal_rule, pre .number, pre .regexp, pre .alias .keyword, pre .literal, pre .hexcolor {
+        color: #ae81ff
+    }
+
+    pre .tag .value, pre .code, pre .title, pre .css .class, pre .class .title:last-child {
+        color: #a6e22e
+    }
+
+    pre .link_url {
+        font-size: 80%
+    }
+
+    pre .strong, pre .strongemphasis {
+        font-weight: 700
+    }
+
+    pre .emphasis, pre .strongemphasis, pre .class .title:last-child, pre .typename {
+        font-style: italic
+    }
+
+    pre .keyword, pre .ruby .class .keyword:first-child, pre .ruby .function .keyword, pre .function, pre .change, pre .winutils, pre .flow, pre .nginx .title, pre .tex .special, pre .header, pre .attribute, pre .symbol, pre .symbol .string, pre .tag .title, pre .value, pre .alias .keyword:first-child, pre .css .tag, pre .css .unit, pre .css .important {
+        color: #f92672
+    }
+
+        pre .function .keyword, pre .class .keyword:first-child, pre .aspect .keyword:first-child, pre .constant, pre .typename, pre .name, pre .css .attribute {
+            color: #66d9ef
+        }
+
+    pre .variable, pre .params, pre .class .title, pre .aspect .title {
+        color: #f8f8f2
+    }
+
+    pre .string, pre .css .id, pre .subst, pre .type, pre .ruby .class .parent, pre .built_in, pre .django .template_tag, pre .django .variable, pre .smalltalk .class, pre .django .filter .argument, pre .smalltalk .localvars, pre .smalltalk .array, pre .attr_selector, pre .pseudo, pre .addition, pre .stream, pre .envvar, pre .apache .tag, pre .apache .cbracket, pre .tex .command, pre .prompt, pre .link_label, pre .link_url {
+        color: #e6db74
+    }
+
+    pre .comment, pre .annotation, pre .decorator, pre .pi, pre .doctype, pre .deletion, pre .shebang, pre .apache .sqbracket, pre .tex .formula {
+        color: #75715e
+    }
+</style>
