@@ -9,19 +9,17 @@
 
 <section id="download" class="download-umbraco">
     <div class="container">
-        <div class="row">
-            <div class="col-xs-6 col-padding">
+        <div class="row" style="margin-top: 60px;">
+            <div class="col-md-6 col-padding">
                 <h2>Looking to try Umbraco?</h2>
                 <p class="download-teaser large-margin-bottom">
                     Umbraco Cloud is the easiest and fastest way to use Umbraco yet with full support for all your custom .NET code
                     and intergrations. You're up and running in less than a minute and your life will be made easier with automated upgrades 
                     and a built-in deployment engine.
                 </p>
-                <div>
-                    <form class="signup small-margin-bottom">
-                        <input type="email" placeholder="Your e-mail" class="email" />
-                        <input type="submit" value="Start free trial" class="button green" />
-                    </form>
+
+                <div class="large-margin-bottom">
+                    <a class="button green" href="https://umbraco.com/">Sign up on umbraco.com</a>
                 </div>
                 
                 <p>
@@ -35,7 +33,7 @@
                 </p>
                 <div class="video video-element" data-video="172382998">
                     <img src="https://umbraco.com/media/1001/video-thumb.jpg?mode=crop&quality=75&height=378.921875&width=720" alt="See how Umbraco Cloud works"/>
-                    <span class="overlay"></span>
+                    <span class="video-overlay"></span>
                     <div class="play">
                         <svg class="icon--play icon--white"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/images/icons.svg#play"></use></svg>
                     </div>
@@ -43,7 +41,7 @@
             </div>
             
             <!-- Download Umbraco Column -->
-            <div class="col-xs-6 col-padding">
+            <div class="col-md-6 col-padding">
                 <h2>Download Umbraco</h2>
                 <p class="download-teaser large-margin-bottom">
                     If you want to DIY you can download Umbraco either as a ZIP file or via NuGet.
@@ -52,16 +50,17 @@
                 </p>
                 <p>
                 <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
-                <p class="medium-text large-margin-bottom">
+                <p class="large-margin-bottom">
                     Current Version: 
-                    <a href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
-                    -  See all <a href="/contribute/releases/">previous releases</a>
+                    <a class="download-link" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
+                    -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
                 
-                <p>
+                <p class="medium-margin-bottom">
                     We recommend using Microsoft Visual Studio 2015+ or Microsoft Visual Studio Code
                     with the IIS Express plugin. Make sure to check the full <a href="/documentation/Getting-Started/Setup/Install/">installation guide</a>
                 </p>
+
                 <div class="requirements">
                     <strong>Requirements:</strong>
                     <ul>
