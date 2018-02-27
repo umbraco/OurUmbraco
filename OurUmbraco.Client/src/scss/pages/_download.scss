@@ -15,6 +15,9 @@ body.download {
 
 .download-umbraco {
 
+	position: relative;
+	min-height: 80vh;
+
 	.large-margin-bottom {
 		margin-bottom:40px;
 	}
@@ -179,18 +182,19 @@ body.download {
 
 	.archive {
 		position: absolute;
-		bottom: 5%;
+		bottom: 30px;
 		left: 50%;
 		transform: translate(-50%, 0);
-		color: $color-text;
-		z-index: 200;
-
 
 		a:hover {
 			text-decoration: none;
 			opacity: 1;
 		}
 	}
+}
+
+.download-umbraco--install {
+	background: $color-our;
 }
 
 .historical-releases {
@@ -332,7 +336,7 @@ body.download {
 
 .steps {
 	text-align: left;
-	margin: 60px auto 0;
+	margin: 70px auto 0;
 
 	@media (min-width: $md) {
 		min-width: 960px;
@@ -340,9 +344,10 @@ body.download {
 
 	h2 {
 		font-size:1.9rem;
-		margin-bottom: 50px;
-		font-weight: 600;
+		margin-bottom: 60px;
+		font-weight: bold;
 		text-align: center;
+		color: #ffffff;
 	}
 
 	.guide {
@@ -363,6 +368,7 @@ body.download {
 		margin-bottom: 80px;
 		position: relative;
 		@extend .fadeInUp;
+		color: #fff;
 
 		display: inline-block;
 		width: 30%;

@@ -94,7 +94,7 @@
 
 <section id="download" class="download-umbraco">
     <div class="container">
-        <div class="row" style="margin-top: 60px;">
+        <div class="row dl-content" style="margin-top: 60px;">
             <div class="col-md-6 col-padding">
                 <h2>Looking to try Umbraco?</h2>
                 <p class="download-teaser large-margin-bottom">
@@ -135,9 +135,13 @@
                 </p>
                 <p>
                 <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
+                
+                <!-- This should be removed -->
+                <div id="downloadButton">Testing download - Click me</div> 
+
                 <p class="large-margin-bottom">
-                    Current Version: 
-                    <a class="download-link" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
+                    Current Version:
+                    <a id="downloadButton" class="download-link" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
                     -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
                 
@@ -161,7 +165,7 @@
 </section>
 
 <!-- Does this work -->
-<section id="install" class="download-umbraco" style="display: none">
+<section id="install" class="download-umbraco download-umbraco--install" style="display: none">
     <div class="mac-notice">
         You're running MacOS, follow <a href="">this guide.</a>
     </div>
@@ -201,7 +205,20 @@
 
 @section EndScripts {
 
-<script src="https://cdn.rawgit.com/MohammadYounes/jquery-scrollLock/master/jquery-scrollLock.js"></script>    
+<script src="https://cdn.rawgit.com/MohammadYounes/jquery-scrollLock/master/jquery-scrollLock.js"></script>
+
+
+    <script>
+    
+        (function () {
+            $('.dl-content').on('click', '#downloadButton', function (e) {
+                $('section#download').fadeOut();
+                $('section#install').fadeIn();
+            });
+        })();
+
+    </script>
+
     <script>
         var umbraco = umbraco || {};
         umbraco.video = umbraco.video || function() {
