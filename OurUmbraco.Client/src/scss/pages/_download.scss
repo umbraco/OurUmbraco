@@ -121,6 +121,7 @@ body.download {
 
 	.video {
 		position: relative;
+		cursor: pointer;
 
 		.video-overlay {
 			position: absolute;
@@ -130,6 +131,11 @@ body.download {
 			bottom: 0;
 			background: #ffffff;
 			opacity: 0.8;
+			transition: opacity 0.2s ease-in-out;
+		}
+
+		&:hover .video-overlay {
+			opacity: 0.7;
 		}
 
 		img {
