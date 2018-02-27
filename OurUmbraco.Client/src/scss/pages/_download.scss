@@ -14,168 +14,160 @@ body.download {
 
 
 .download-umbraco {
-	background: $color-our;
-	text-align: center;
-	color: #fff;
-	padding: 0 0 100px;
-	position: relative;
-	z-index: 90;
-	min-height: 530px;
 
-	height: calc(100vh - 262px);
-	
-	@media (min-width: $md) {
-		height: calc(100vh - 262px);
-		background: transparent;
-
-		&:after {
-			content:"";
-			position: absolute;
-			top: 0;
-			left: 0;
-			height: 100%;
-			width: 100%;
-			background: rgba($color-our, 1);
-			z-index: 100;
-		}
+	.large-margin-bottom {
+		margin-bottom:40px;
 	}
 
-	
-
-	.container {
-		padding: 20px 20px 0;
-		position: relative;
-		z-index: 200;
-
-		@media (min-width: $md){
-			transform: translate(-50%, -65%);
-			position: absolute;
-			top: 50%;
-			left: 50%;
-			padding: 20px 0 0;
-		}
+	.small-margin-bottom {
+		margin-bottom:25px;
 	}
 
-	@media (min-width: $md) {
-		padding: 0 0 100px;
+	.col-padding {
+		padding-left:15px;
+		padding-right:15px;
 	}
 
-	h1 {
-		font-size: 2rem;
+	.medium-text {
+		font-size:18px;
+	}
+
+	img {
+		max-width: 100%;
+	}
+
+	h2 {
+		font-size: 28.8px;
+		font-weight:bold;
 		margin-bottom: 2rem;
+	}
 
-		@media (min-width: $md) {
-			font-size: 3rem;
+	.signup{
+		display: flex;
+
+		.email {
+			font-size: .95rem;
+			color: #7F9499;
+			border: 2px solid rgba(127,148,153,.33);
+			transition: border 150ms ease;
+			padding: 10px;
+			outline: 0;
+			display: inline-block;
+			flex:1;
+			margin-right:10px;
+
+			&:hover{
+				border: 2px solid rgba(127,148,153,.66);
+			}
+		}
+
+		.button {
+			flex: 0;
+			border-radius: 3px;
+			overflow:visible;
+			padding-left:15px;
+			padding-right:15px;
 		}
 	}
 
 	p {
 		margin: 0 auto 1.5rem;
-		font-size: .97rem;
-		line-height: 1.5;
+		font-size: 16px;
+		line-height: 1.6em;
 		color: $color-text;
 
-		+ .button {
-			margin-top: 1.5rem;
-		}
-
-		@media (min-width: $md) {
-			font-size: 1.3rem;
-		}
-
-		&.small {
-			font-size: .97rem;
+		&.download-teaser {
+			font-size: 18px;
+			line-height: 30px;
+			margin-bottom:40px;
 		}
 
 		a {
-			text-decoration: none;
-			border-bottom: 2px solid rgba(#000, .48);
-
-			&:hover {
-				border-color: rgba(#fff, 1);
-			}
-		}
-	}
-
-	.button {
-		margin-bottom: 1rem;
-		position: relative;
-		padding-left: 60px;
-		cursor: pointer;
-		overflow: hidden;
-		transition: all .2s ease;
-
-		i {
-			font-size: 1.5rem;
-			position: absolute;
-			top: 50%;
-			left: 0;
-			opacity: .5;
-			transform: translate(20px, -53%);
-			@include transition(opacity, .2s);
-		}
-
-		&:hover {
-			opacity: 1;
-
-			i {
-				opacity: 1;
-			}
-		}
-
-		.ink {
-			background:rgba($color-our, .3);
-		}
-
-		&:not(:active) {
-		    @include transition(box-shadow, .2s);
-		}
-
-		&:active {
-		    box-shadow: none;
+			text-decoration: underline;
+			color: $color-our;
+			font-weight:bold;
 		}
 	}
 
 	.pre {
 		overflow: auto;
-		display: block;
+		display: inline-flex;
 		font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
 		background-color: #333;
 		color: #fff;
 		font-size: 0.8rem;
 		line-height: 1.4em;
 		background-clip: padding-box;
-		padding: 8px 25px 8px 50px;
+		padding: 8px 25px;
 		border-radius: 5px;
-		width: auto;
-		min-width: 300px;
-		text-align: center;
-		border: none;
-		margin: 0 auto;
+		height:42px;
+		align-items: center;
 
-		&:hover {
-			background: lighten(#333, 5%);
-			cursor: pointer;
+		span {
+			user-select: none;
+			margin-right:10px;
 		}
 	}
 
-	.pm-nuget {
-		position: relative;
-		display: block;
-		margin: 0 auto;
-		height: 100%;
-		width: 300px;
+	.requirements {
+		ul {
+			margin-top:10px;
+			list-style:none;
+		}
 
-		&:before {
-			content:"PM>";
-			display: block;
+		li {
+			font-size:13px;
+			margin-bottom:5px;
+		}
+	}
+
+
+	.video {
+		position: relative;
+
+		.overlay{
 			position: absolute;
+			height:100%;
+			width:100%;
+			background:rgba(0,0,0,0.5);
+		}
+
+		img {
+			border-radius: 3px;
+			box-shadow: 0 3px 6px 0 rgba(0,0,0,0.26);
+		}
+
+		.play {
+			height: 75px;
+			width: 75px;
+			position: absolute;
+			left: 50%;
 			top: 50%;
-			left: 0;
-			font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-			font-size: 0.8rem;
-			transform: translate(25px, -46%);
-			opacity: .9;
+			-webkit-transform: translate(-50%,-50%);
+			-ms-transform: translate(-50%,-50%);
+			transform: translate(-50%,-50%);
+			background: rgba(0,0,0,.3);
+			border-radius: 50%;
+			display: -webkit-box;
+			display: -webkit-flex;
+			display: -ms-flexbox;
+			display: flex;
+			-webkit-box-align: center;
+			-webkit-align-items: center;
+			-ms-flex-align: center;
+			align-items: center;
+			-webkit-box-pack: center;
+			-webkit-justify-content: center;
+			-ms-flex-pack: center;
+			justify-content: center;
+			z-index: 1;
+
+			svg {
+				height: 40px;
+				width: 28px;
+				fill: #ffffff;
+				margin-left: 5px;
+			}
 		}
 	}
 
@@ -354,7 +346,7 @@ body.download {
 	}
 
 	img {
-		display: block; 
+		display: block;
 		margin: 0 auto;
 		width: 60%;
 		height: auto;
