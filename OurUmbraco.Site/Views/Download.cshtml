@@ -33,7 +33,7 @@
                     comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
                     of a button. See how it works:
                 </p>
-                <div class="video">
+                <div class="video video-element" data-video="172382998">
                     <img src="https://umbraco.com/media/1001/video-thumb.jpg?mode=crop&quality=75&height=378.921875&width=720" alt="See how Umbraco Cloud works"/>
                     <span class="overlay"></span>
                     <div class="play">
@@ -93,7 +93,7 @@
                         </div>
                         <div class="step step-two">
                             <span>2</span>
-                            <div>Run with WebMatrix</div>
+                            <div>Run with VS Code & IIS Express</div>
                         </div>
                         <div class="step step-three">
                             <span>3</span>
@@ -111,12 +111,83 @@
     </div>
 </section>
 
-    <script type="text/javascript">
-        (function () {
-            $('.dl-content').on('click', '#downloadButton', function (e) {
-                $('section#download').fadeOut();
-                $('section#install').fadeIn();
-            });
-        })();
-    </script>
+    
 
+
+
+@section EndScripts {
+
+<script src="https://cdn.rawgit.com/MohammadYounes/jquery-scrollLock/master/jquery-scrollLock.js"></script>    
+<script>
+var umbraco = umbraco || {};
+umbraco.video = umbraco.video || function() {
+    function e() {
+        $(".video-element").on("click",
+            function() {
+                var e = $(this).data("video");
+                if (e) {
+                    var o = $('<iframe width="1200" height="674" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>')
+                            .attr("src", "https://player.vimeo.com/video/" + e + "?autoplay=1&color=ffffff&title=0&byline=0&portrait=0");
+
+                    umbraco.overlay.create({
+                        content: o,
+                        class: "overlay--video"
+                    });
+                }
+            });
+    }
+    return {
+        init: e
+    }
+}();
+
+var umbraco = umbraco || {};
+        umbraco.overlay = umbraco.overlay ||
+            function() {
+                function e() {
+                    1 !== $("#overlay-backdrop").length && ($("body").append('<div id="overlay-backdrop" class="overlay-backdrop"></div>'),
+                        $("#overlay-backdrop").height($("body").height()),
+                        $("#overlay-backdrop").on("click", function() {
+                            n();
+                        }), $(document).keyup(function(e) {
+                            27 === e.keyCode && n();
+                        }));
+                }
+
+                function o(o) {
+                    1 === $("#overlay").length ? $("#overlay, #overlay-content").remove() : e();
+                    var t = $('<a><svg class="overlay-close__icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/images/icons.svg#cross"></use></svg></a>').attr({
+                                href: "#",
+                                class: "overlay-close",
+                                id: "closeOverlay"
+                            }),
+                        i = $("<div>").addClass("overlay-inner")
+                            .append($("<div>").addClass("overlay-inner-scroll").append(o.content));
+                    $("body").append($("<div>").attr("id", "overlay-content").append(t).append(i).fadeIn("fast")),
+                        setTimeout(function() {
+                                $("#overlay-content").addClass("active")
+                            },
+                            100), void 0 !== o.class && $("#overlay-content").addClass(o.class), $("#closeOverlay").on(
+                            "click",
+                            function(e) {
+                                e.preventDefault(), n();
+                            })
+                }
+
+                function n() {
+                    1 === $("#overlay-backdrop").length &&
+                    ($(".open").removeClass("open"), $("#overlay-backdrop, #overlay-content").remove());
+                }
+
+                return {
+                    backdrop: e,
+                    create: o,
+                    destroy: n
+                }
+            }();
+
+        $(function() {
+            umbraco.video.init();
+        });
+</script>
+}
