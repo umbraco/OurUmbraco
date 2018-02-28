@@ -22,5 +22,16 @@ namespace OurUmbraco.Gitter
             //Otherwise open for abuse?
             return _gitterApi.GetRoomMessagesAsync(roomId, new MessageRequest {Limit = numberOfMessages});
         }
+
+        
+        public Task<Room> GetRoomInfo(string roomName)
+        {
+            //TODO: Perhaps clean & sanity check with our whitelist of rooms in appsetting or json file?!
+
+            //NOTE: The method of Join Room - is a bit confusing here from GitterSharp lib
+            //It's because you use two JoinRoom methods - this one to fetch the room based on its URI 'umbraco/playground'
+            //Then another JoinRoom method is used where you use the Room GUID id from this request to join a user to a room
+            return _gitterApi.JoinRoomAsync(roomName);
+        }
     }
 }
