@@ -182,6 +182,8 @@ namespace OurUmbraco.Community.GitHub
         /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
         public IRestResponse<List<GitHubContributorModel>> GetRepositoryContributors(string repo)
         {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
             // Initialize the request
             var client = new RestClient(GitHubApiClient);
             var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
