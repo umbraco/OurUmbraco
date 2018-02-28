@@ -54,18 +54,17 @@ namespace OurUmbraco.Gitter
 
             //Setup the events for each room ID
             foreach (var roomName in rooms)
-            {
-
+            {   
                 //Call the API & get the Room ID
                 //Store the topic & other info of the room object into the cache
                 //Only at startup here will it ever get updated
                 var room =
-                    applicationContext.ApplicationCache.RuntimeCache.GetCacheItem<Room>("GitterRoom__" + roomName,
+                    applicationContext.ApplicationCache.StaticCache.GetCacheItem<Room>("GitterRoom__" + roomName,
                         () =>
                         {
                             return gitterService.GetRoomInfo(roomName).Result;
 
-                        }, TimeSpan.FromMinutes(10));
+                        });
 
 
                 //User presence

@@ -17,7 +17,7 @@ namespace OurUmbraco.Gitter
         {
             //Use Gitter API to get info about the room such as it's ID, name & other info
             //Fetch from runtime cache - stored at appstartup event handler
-            var room = UmbracoContext.Application.ApplicationCache.RuntimeCache.GetCacheItem("GitterRoom__" + roomName);
+            var room = UmbracoContext.Application.ApplicationCache.StaticCache.GetCacheItem("GitterRoom__" + roomName);
             return PartialView("~/views/partials/community/gitter.cshtml", room);
         }
 
