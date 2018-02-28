@@ -30,5 +30,6 @@ namespace OurUmbraco.Gitter
             //Otherwise open for abuse?
             return _gitterApi.GetRoomAsync(roomName);
         }
+        
     }
 }

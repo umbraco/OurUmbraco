@@ -1,9 +1,15 @@
 ﻿using System;
 using System.Configuration;
+using System.Linq;
+using GitterSharp.Model;
 using GitterSharp.Services;
 using Microsoft.AspNet.SignalR;
+using Tweetinvi;
+using Tweetinvi.Models;
+using Tweetinvi.Parameters;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Cache;
 
 namespace OurUmbraco.Gitter
 {
@@ -27,58 +33,80 @@ namespace OurUmbraco.Gitter
             //This has to be done first before subscribe's
             realtimeGitterService.Connect();
 
+            //Get the room names from the appsetting
+            //'umbraco/playground,umbraco/some-other-room'
+
             //The Room ID we want to listen for events from
             //This appSetting contains a CSV of room IDs
-            var roomIds = ConfigurationManager.AppSettings["GitterRoomIds"];
-            if (string.IsNullOrEmpty(roomIds))
+            var roomNames = ConfigurationManager.AppSettings["GitterRooms"];
+
+
+            if (string.IsNullOrEmpty(roomNames))
             {
-                logger.Warn<GitterUmbracoEventHandler>("No Gitter Room IDs found in AppSetting key 'GitterRoomIds'");
+                logger.Warn<GitterUmbracoEventHandler>("No Gitter Room Names are found in AppSetting key 'GitterRooms'");
                 return;
             }
 
-            var rooms = roomIds.Split(',');
+            var rooms = roomNames.Split(',');
+
+            //Gitter API
+            var gitterService = new GitterService();
 
             //Setup the events for each room ID
-            foreach (var roomId in rooms)
+            foreach (var roomName in rooms)
             {
+
+                //Call the API & get the Room ID
+                //Store the topic & other info of the room object into the cache
+                //Only at startup here will it ever get updated
+                var room =
+                    applicationContext.ApplicationCache.RuntimeCache.GetCacheItem<Room>("GitterRoom__" + roomName,
+                        () =>
+                        {
+                            return gitterService.GetRoomInfo(roomName).Result;
+
+                        }, TimeSpan.FromMinutes(5));
+
+
                 //User presence
-                realtimeGitterService.SubscribeToUserPresence(roomId)
+                realtimeGitterService.SubscribeToUserPresence(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime User Presence for room id: " + roomId);
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime User Presence for room id: " + room.Id);
 
                         //Proxy the request with SignalR Hub
-                        gitter.Clients.Group(roomId).prescenceEvent(x);
+                        gitter.Clients.Group(room.Id).prescenceEvent(x);
                     }, onError:OnError);
 
 
                 //Room Events
-                realtimeGitterService.SubscribeToRoomEvents(roomId)
+                realtimeGitterService.SubscribeToRoomEvents(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Events for room id: " + roomId);
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Events for room id: " + room.Id);
 
-                        gitter.Clients.Group(roomId).roomEvent(x);
+                        gitter.Clients.Group(room.Id).roomEvent(x);
                     }, onError:OnError);
 
 
                 //Users in room
-                realtimeGitterService.SubscribeToRoomUsers(roomId)
+                realtimeGitterService.SubscribeToRoomUsers(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Users for room id: " + roomId);
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Users for room id: " + room.Id);
 
-                        gitter.Clients.Group(roomId).userEvent(x);
+                        gitter.Clients.Group(room.Id).userEvent(x);
                     }, onError:OnError);
             
 
                 //Chat messages
-                realtimeGitterService.SubscribeToChatMessages(roomId)
+                realtimeGitterService.SubscribeToChatMessages(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Chat Messages for room id: " + roomId);
+                        //TODO: This will add too many messages to log file - as it will fire every time as opposed to registration
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Chat Messages for room id: " + room.Id);
 
-                        gitter.Clients.Group(roomId).chatMessage(x);
+                        gitter.Clients.Group(room.Id).chatMessage(x);
                     }, onError:OnError);
             }
         }
