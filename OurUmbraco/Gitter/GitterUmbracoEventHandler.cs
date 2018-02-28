@@ -65,7 +65,7 @@ namespace OurUmbraco.Gitter
                         {
                             return gitterService.GetRoomInfo(roomName).Result;
 
-                        }, TimeSpan.FromMinutes(5));
+                        }, TimeSpan.FromMinutes(10));
 
 
                 //User presence
@@ -75,7 +75,7 @@ namespace OurUmbraco.Gitter
                         logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime User Presence for room id: " + room.Id);
 
                         //Proxy the request with SignalR Hub
-                        gitter.Clients.Group(room.Id).prescenceEvent(x);
+                        gitter.Clients.Group(room.Id).prescenceEvent(new { prescenceEvent = x, room = room.Id });
                     }, onError:OnError);
 
 
@@ -85,7 +85,7 @@ namespace OurUmbraco.Gitter
                     {
                         logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Events for room id: " + room.Id);
 
-                        gitter.Clients.Group(room.Id).roomEvent(x);
+                        gitter.Clients.Group(room.Id).roomEvent(new { roomEvent = x, room = room.Id });
                     }, onError:OnError);
 
 
@@ -95,7 +95,7 @@ namespace OurUmbraco.Gitter
                     {
                         logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Users for room id: " + room.Id);
 
-                        gitter.Clients.Group(room.Id).userEvent(x);
+                        gitter.Clients.Group(room.Id).userEvent(new { userEvent = x, room = room.Id });
                     }, onError:OnError);
             
 
@@ -106,7 +106,7 @@ namespace OurUmbraco.Gitter
                         //TODO: This will add too many messages to log file - as it will fire every time as opposed to registration
                         logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Chat Messages for room id: " + room.Id);
 
-                        gitter.Clients.Group(room.Id).chatMessage(x);
+                        gitter.Clients.Group(room.Id).chatMessage(new { message = x, room = room.Id });
                     }, onError:OnError);
             }
         }

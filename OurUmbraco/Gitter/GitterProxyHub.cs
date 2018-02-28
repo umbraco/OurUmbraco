@@ -29,7 +29,7 @@ namespace OurUmbraco.Gitter
 
             //Call only the SignalR clients who are part of this room/group
             //Otherwise we will send messages from other rooms
-            Clients.Group(roomId).fetchedChatMessage(latestMessages);
+            Clients.Group(roomId).fetchedChatMessage(new { messages = latestMessages, room = roomId });
         }
     }
 }

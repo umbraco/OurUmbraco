@@ -193,3 +193,24 @@ else
             </div>
         </section>
 }
+
+<script>
+    $(function() {
+        $.connection.hub.logging = true;
+
+        //This is duplicated & last one in wins !
+        $.connection.hub.start().done(function() {
+            //TODO: Need to get a collection of room IDS that have been pushed into an array/object
+            var roomIds = JSON.parse(sessionStorage.getItem("gitterRoomIds") || null);
+
+            console.log('fetched ROOM ids', roomIds);
+
+            for (var i = 0; i < roomIds.length; i++) {
+                var roomId = roomIds[i];
+                console.log('SignalR roomID', roomId);
+
+                $.connection.gitterHub.server.getLatestChatMessages(roomId, 4);
+            }
+        });
+    });
+</script>
