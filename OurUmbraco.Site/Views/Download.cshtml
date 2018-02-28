@@ -4,93 +4,9 @@
 @{
     Layout = "~/Views/Master.cshtml";
     Html.RequiresCss("~/css/releases.css");
+    Html.RequiresJs("~/assets/js/components/overlay.js");
     var latestRelease = Download.GetCurrentReleaseFromFile();
 }
-
-<style>
-/**
- * Component: Overlay
- */
-    .overlay-backdrop {
-        position: fixed;
-        top: 0;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        overflow-x: hidden;
-        overflow-y: auto;
-        outline: 0;
-        z-index: 1000;
-        background: rgba(0, 0, 0, 0.75);
-    }
-    #overlay-content {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        height: auto;
-        z-index: 3501;
-        -webkit-transform: translate(-50%, -50%);
-        -ms-transform: translate(-50%, -50%);
-        -o-transform: translate(-50%, -50%);
-        transform: translate(-50%, -50%);
-        width: 80%;
-    }
-    #overlay-content .overlay-inner {
-        overflow: hidden;
-        position: relative;
-        opacity: 0;
-        -webkit-transition: all 0.3s;
-        -o-transition: all 0.3s;
-        transition: all 0.3s;
-    }
-    #overlay-content .overlay-inner-scroll {
-        webkit-overflow-scrolling: touch;
-    }
-    #overlay-content.active .overlay-inner {
-        opacity: 1;
-    }
-    .overlay-close {
-        cursor: pointer;
-        background: #ffffff;
-        color: #000000;
-        position: absolute;
-        top: -15px;
-        right: -15px;
-        display: block;
-        width: 30px;
-        height: 30px;
-        line-height: 30px;
-        padding: 1px 0 0;
-        z-index: 1;
-        text-align: center;
-        font-weight: bold;
-        text-decoration: none;
-        border-radius: 50%;
-    }
-    .overlay-close:hover {
-        text-decoration: none;
-        background: #e6e6e6;
-    }
-    .overlay-close__icon {
-        fill: currentColor;
-        width: 14px;
-        height: 14px;
-    }
-    .overlay-inner-scroll {
-        padding-bottom: 56.25%;
-        height: 0;
-        position: relative;
-        overflow: hidden;
-    }
-    .overlay-inner-scroll iframe {
-        display: block;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-    }
-</style>
 
 <section id="download" class="download-umbraco">
     <div class="container">
@@ -116,6 +32,7 @@
                     comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
                     of a button. See how it works:
                 </p>
+                
                 <div class="video video-element" data-video="172382998">
                     <img src="https://umbraco.com/media/1001/video-thumb.jpg?mode=crop&quality=75&height=378.921875&width=720" alt="See how Umbraco Cloud works"/>
                     <span class="video-overlay"></span>
@@ -199,96 +116,34 @@
     </div>
 </section>
 
-    
-
-
-
 @section EndScripts {
 
-<script src="https://cdn.rawgit.com/MohammadYounes/jquery-scrollLock/master/jquery-scrollLock.js"></script>
-
+    <script src="https://cdn.rawgit.com/MohammadYounes/jquery-scrollLock/master/jquery-scrollLock.js"></script>
 
     <script>
-    
         (function () {
+            
+            // show install screen when clicking the manual download link
             $('.dl-content').on('click', '#downloadButton', function (e) {
                 $('section#download').fadeOut();
                 $('section#install').fadeIn();
             });
+
+            // open video overlay when clicking the video thumbnail            
+            $('.video-element').on('click', function(){
+                var videoId = $(this).data('video');
+
+                if(videoId) {
+                    var videoIframeHtml = $('<iframe width="1200" height="674" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('src', 'https://player.vimeo.com/video/'+ videoId +'?autoplay=1&color=ffffff&title=0&byline=0&portrait=0');
+                    umbraco.overlay.create({
+                        'content': videoIframeHtml,
+                        'class': 'overlay--video'
+                    });
+
+                }
+            });
+
         })();
 
-    </script>
-
-    <script>
-        var umbraco = umbraco || {};
-        umbraco.video = umbraco.video || function() {
-            function e() {
-                $(".video-element").on("click",
-                    function() {
-                        var e = $(this).data("video");
-                        if (e) {
-                            var o = $('<iframe width="1200" height="674" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>')
-                                .attr("src", "https://player.vimeo.com/video/" + e + "?autoplay=1&color=ffffff&title=0&byline=0&portrait=0");
-
-                            umbraco.overlay.create({
-                                content: o,
-                                class: "overlay--video"
-                            });
-                        }
-                    });
-            }
-            return {
-                init: e
-            }
-        }();
-
-        var umbraco = umbraco || {};
-        umbraco.overlay = umbraco.overlay ||
-            function() {
-                function e() {
-                    1 !== $("#overlay-backdrop").length && ($("body").append('<div id="overlay-backdrop" class="overlay-backdrop"></div>'),
-                        $("#overlay-backdrop").height($("body").height()),
-                        $("#overlay-backdrop").on("click", function() {
-                            n();
-                        }), $(document).keyup(function(e) {
-                            27 === e.keyCode && n();
-                        }));
-                }
-
-                function o(o) {
-                    1 === $("#overlay").length ? $("#overlay, #overlay-content").remove() : e();
-                    var t = $('<a><svg class="overlay-close__icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/images/icons.svg#cross"></use></svg></a>').attr({
-                            href: "#",
-                            class: "overlay-close",
-                            id: "closeOverlay"
-                        }),
-                        i = $("<div>").addClass("overlay-inner")
-                            .append($("<div>").addClass("overlay-inner-scroll").append(o.content));
-                    $("body").append($("<div>").attr("id", "overlay-content").append(t).append(i).fadeIn("fast")),
-                        setTimeout(function() {
-                                $("#overlay-content").addClass("active")
-                            },
-                            100), void 0 !== o.class && $("#overlay-content").addClass(o.class), $("#closeOverlay").on(
-                            "click",
-                            function(e) {
-                                e.preventDefault(), n();
-                            })
-                }
-
-                function n() {
-                    1 === $("#overlay-backdrop").length &&
-                        ($(".open").removeClass("open"), $("#overlay-backdrop, #overlay-content").remove());
-                }
-
-                return {
-                    backdrop: e,
-                    create: o,
-                    destroy: n
-                }
-            }();
-
-        $(function() {
-            umbraco.video.init();
-        });
     </script>
 }
