@@ -515,6 +515,7 @@
     <Content Include="css\tooltipster.css" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="google98fb13fcf3cf0ae7.html" />
     <Content Include="Hiccup.aspx" />
     <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="images\releases\download.png" />
@@ -1655,6 +1656,8 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
+    <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
+    <Content Include="usercontrols\dashboard\ForceYouTrackDownload.ascx" />
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
