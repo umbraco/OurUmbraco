@@ -84,9 +84,7 @@
 
         //Now array is updated - lets push it into sessionStorage
         sessionStorage.setItem('gitterRoomIds', JSON.stringify(roomIds));
-
-        var roomId = '@roomId';
-
+        
         // Reference the auto-generated proxy for the hub.
         var gitter = $.connection.gitterHub;
 
@@ -106,7 +104,6 @@
         };
 
         gitter.client.chatMessage = function(data) {
-            console.log('Chat message inbound', data);
 
             //If the payload is 'remove' then user has deleted message
             if (data.message.operation === 'remove') {
@@ -176,10 +173,7 @@
             //This is used for single messages coming from the realtime api
             //Where the main message payload is a subobject stored in 'model'
             var template = $('#gitter-chat-template').html();
-
             var html = Mustache.render(template, data.model);
-            console.log('HTML', html);
-
             return html;
         }
     });
