@@ -5,6 +5,8 @@
     Layout = "~/Views/Master.cshtml";
     Html.RequiresCss("~/css/releases.css");
     Html.RequiresJs("~/assets/js/components/overlay.js");
+    Html.RequiresJs("~/assets/js/lib/svg4everybody.min.js");
+
     var latestRelease = Download.GetCurrentReleaseFromFile();
 }
 
@@ -15,33 +17,33 @@
                 <h2>Looking to try Umbraco?</h2>
                 <p class="download-teaser large-margin-bottom">
                     Umbraco Cloud is the easiest and fastest way to use Umbraco yet with full support for all your custom .NET code
-                    and intergrations. You're up and running in less than a minute and your life will be made easier with automated upgrades 
+                    and intergrations. You're up and running in less than a minute and your life will be made easier with automated upgrades
                     and a built-in deployment engine.
                 </p>
 
                 <div class="large-margin-bottom">
                     <a class="button green" href="https://umbraco.com/">Sign up on umbraco.com</a>
                 </div>
-                
+
                 <p>
                     Powered by Microsoft Azure. No credit card needed. Free 14 day trial and pricing starts at just 25 EUR including hosting.
                 </p>
-                
+
                 <p>
                     When you want to intergrate custom .NET code, you can clone it to your local machine as it's all powered by Git and even
                     comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
                     of a button. See how it works:
                 </p>
-                
+
                 <div class="video video-element" data-video="172382998">
-                    <img src="https://umbraco.com/media/1001/video-thumb.jpg?mode=crop&quality=75&height=378.921875&width=720" alt="See how Umbraco Cloud works"/>
+                    <img src="https://umbraco.com/media/1001/video-thumb.jpg?mode=crop&quality=75&height=378.921875&width=720" alt="See how Umbraco Cloud works" />
                     <span class="video-overlay"></span>
                     <div class="play">
                         <svg class="icon--play icon--white"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/images/icons.svg#play"></use></svg>
                     </div>
                 </div>
             </div>
-            
+
             <!-- Download Umbraco Column -->
             <div class="col-md-6 col-padding">
                 <h2>Download Umbraco</h2>
@@ -51,14 +53,14 @@
                     a place to host yourself and handling deployments and upgrades is all down to you.
                 </p>
                 <p>
-                <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
+                    <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
 
                 <p class="large-margin-bottom">
                     Current Version:
                     <a id="downloadButton" class="download-link" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
                     -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
-                
+
                 <p class="medium-margin-bottom">
                     We recommend using Microsoft Visual Studio 2015+ or Microsoft Visual Studio Code
                     with the IIS Express plugin. Make sure to check the full <a href="/documentation/Getting-Started/Setup/Install/">installation guide</a>
@@ -119,19 +121,20 @@
 
     <script>
         (function () {
-            
+            svg4everybody();
+
             // show install screen when clicking the manual download link
             $('.dl-content').on('click', '#downloadButton', function (e) {
                 $('section#download').fadeOut();
                 $('section#install').fadeIn();
             });
 
-            // open video overlay when clicking the video thumbnail            
-            $('.video-element').on('click', function(){
+            // open video overlay when clicking the video thumbnail
+            $('.video-element').on('click', function () {
                 var videoId = $(this).data('video');
 
-                if(videoId) {
-                    var videoIframeHtml = $('<iframe width="1200" height="674" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('src', 'https://player.vimeo.com/video/'+ videoId +'?autoplay=1&color=ffffff&title=0&byline=0&portrait=0');
+                if (videoId) {
+                    var videoIframeHtml = $('<iframe width="1200" height="674" frameborder="0" webkitallowfullscreen mozallowfullscreen allowfullscreen>').attr('src', 'https://player.vimeo.com/video/' + videoId + '?autoplay=1&color=ffffff&title=0&byline=0&portrait=0');
                     umbraco.overlay.create({
                         'content': videoIframeHtml,
                         'class': 'overlay--video'
