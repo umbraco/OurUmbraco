@@ -40,7 +40,7 @@ umbraco.overlay = umbraco.overlay || function() {
             backdrop();
         }
 
-        var btnClose = $('<a><svg class="overlay-close__icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/dist/icons/icons.svg#cross"></use></svg></a>').attr({'href': '#', 'class': 'overlay-close', 'id': 'closeOverlay'});
+        var btnClose = $('<a><svg class="overlay-close__icon"><use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="/assets/images/icons.svg#cross"></use></svg></a>').attr({'href': '#', 'class': 'overlay-close', 'id': 'closeOverlay'});
 
         var overlayInner = $('<div>').addClass('overlay-inner').append($('<div>').addClass('overlay-inner-scroll').append(data.content));
 
