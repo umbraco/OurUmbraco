@@ -3,6 +3,7 @@ using System.Configuration;
 using GitterSharp.Services;
 using Microsoft.AspNet.SignalR;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Gitter
 {
@@ -10,6 +11,9 @@ namespace OurUmbraco.Gitter
     {
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
+            //Logger
+            var logger = applicationContext.ProfilingLogger.Logger;
+
             //Gitter API token
             var apiToken = ConfigurationManager.AppSettings["GitterApiToken"];
             
@@ -27,7 +31,10 @@ namespace OurUmbraco.Gitter
             //This appSetting contains a CSV of room IDs
             var roomIds = ConfigurationManager.AppSettings["GitterRoomIds"];
             if (string.IsNullOrEmpty(roomIds))
+            {
+                logger.Warn<GitterUmbracoEventHandler>("No Gitter Room IDs found in AppSetting key 'GitterRoomIds'");
                 return;
+            }
 
             var rooms = roomIds.Split(',');
 
@@ -38,6 +45,8 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToUserPresence(roomId)
                     .Subscribe(x =>
                     {
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime User Presence for room id: " + roomId);
+
                         //Proxy the request with SignalR Hub
                         gitter.Clients.Group(roomId).prescenceEvent(x);
                     }, onError:OnError);
@@ -47,6 +56,8 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToRoomEvents(roomId)
                     .Subscribe(x =>
                     {
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Events for room id: " + roomId);
+
                         gitter.Clients.Group(roomId).roomEvent(x);
                     }, onError:OnError);
 
@@ -55,6 +66,8 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToRoomUsers(roomId)
                     .Subscribe(x =>
                     {
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Users for room id: " + roomId);
+
                         gitter.Clients.Group(roomId).userEvent(x);
                     }, onError:OnError);
             
@@ -63,13 +76,11 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToChatMessages(roomId)
                     .Subscribe(x =>
                     {
+                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Chat Messages for room id: " + roomId);
+
                         gitter.Clients.Group(roomId).chatMessage(x);
                     }, onError:OnError);
             }
-            
-            
-
-            
         }
 
         private void OnError(Exception exception)
