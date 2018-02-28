@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using System.Web.Mvc;
+﻿using System.Web.Mvc;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Gitter
@@ -14,13 +13,10 @@ namespace OurUmbraco.Gitter
         }
 
         [ChildActionOnly]
-        public async Task<ActionResult> RenderGitterRoom(string roomName)
+        public ActionResult RenderGitterRoom(string roomName)
         {
             //Use Gitter API to get info about the room such as it's ID, name & other info
-            var room = await _gitterService.GetRoomInfo(roomName);
-
-            var foo = room.Id;
-
+            var room = _gitterService.GetRoomInfo(roomName);
             return PartialView("~/views/partials/community/gitter.cshtml", room);
         }
 

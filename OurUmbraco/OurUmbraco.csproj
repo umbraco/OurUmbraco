@@ -75,7 +75,7 @@
       <HintPath>..\packages\Examine.0.1.89\lib\net45\Examine.dll</HintPath>
     </Reference>
     <Reference Include="GitterSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gitter-api-pcl.1.0.0-preview1\lib\netstandard1.1\GitterSharp.dll</HintPath>
+      <HintPath>..\packages\gitter-api-pcl.1.0.0-preview2\lib\netstandard1.1\GitterSharp.dll</HintPath>
     </Reference>
     <Reference Include="Hangfire.Core, Version=1.6.17.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Core.1.6.17\lib\net45\Hangfire.Core.dll</HintPath>

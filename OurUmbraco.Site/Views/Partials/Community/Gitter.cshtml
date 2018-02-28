@@ -1,15 +1,18 @@
 ﻿@using ClientDependency.Core.Mvc
+@model GitterSharp.Model.Room
 @{
     Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js");
     Html.RequiresJs("~/signalr/hubs");
+    
 
     //Need Room ID passed in
-    var roomId = "5a8c90b2d73408ce4f8e1188";
+    var roomId = Model.Id;
 
-    var roomName = "Community Chat";
+    //Topic/room name desription
+    var roomName = Model.Topic;
 
     //Need this passed in
-    var roomUrl = "https://gitter.im/umbraco/Playground";
+    var roomUrl = "https://gitter.im/" + Model.Uri;
 }
 
 @* This is the main init render in the DOM *@
