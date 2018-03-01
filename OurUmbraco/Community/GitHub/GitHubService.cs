@@ -91,7 +91,6 @@ namespace OurUmbraco.Community.GitHub
             if (sortByUpdated)
                 resource = string.Format("{0}&sort=updated&direction=desc", resource);
 
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var request = new RestRequest(resource, Method.GET);
             client.UserAgent = UserAgent;
 
@@ -182,8 +181,6 @@ namespace OurUmbraco.Community.GitHub
         /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
         public IRestResponse<List<GitHubContributorModel>> GetRepositoryContributors(string repo)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
             // Initialize the request
             var client = new RestClient(GitHubApiClient);
             var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
@@ -200,8 +197,6 @@ namespace OurUmbraco.Community.GitHub
         /// <returns></returns>
         public IRestResponse<List<GitHubContributorModel>> GetAllRepoContributors(string repo)
         {
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
             var client = new RestClient(GitHubApiClient);
             var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
             client.UserAgent = UserAgent;

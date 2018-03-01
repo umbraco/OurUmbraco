@@ -24,6 +24,9 @@ namespace OurUmbraco.Our.CustomHandlers
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             DefaultRenderMvcControllerResolver.Current.SetDefaultControllerType(typeof(OurUmbracoController));
+            
+            System.Net.ServicePointManager.SecurityProtocol = System.Net.ServicePointManager.SecurityProtocol =
+                System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls;
         }
 
         private void BindExamineEvents()

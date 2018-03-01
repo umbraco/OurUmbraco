@@ -586,7 +586,6 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
             if (File.Exists(path))
                 File.Delete(path);
 
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             using (var client = new WebClient())
             {
                 client.DownloadFile(url, path);
