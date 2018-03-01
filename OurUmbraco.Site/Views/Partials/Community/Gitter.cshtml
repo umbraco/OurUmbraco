@@ -16,7 +16,7 @@
 }
 
 @* This is the main init render in the DOM *@
-<section class="forum gitter-chat">
+<section class="gitter-chat">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
@@ -33,7 +33,7 @@
                 <p>Loading messages...</p>
             </div>
 
-            <div class="col-md-12 goto-forum">
+            <div class="col-md-12 gitter-link">
                 <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
             </div>
         </div>
@@ -50,23 +50,23 @@
 
 @* Mustache JS template to render a single chat message *@
 <script type="text/template" id="gitter-chat-template">
-    <a class="forum-thread gitter-message" data-message-id="{{ id }}">
+    <div class="gitter-message" data-message-id="{{ id }}">
         <div class="avatar">
             <img src="{{ fromUser.avatarUrlMedium }}" alt="{{ fromUser.displayName }}" />
-            <p>
-                {{ fromUser.displayName }}<br />
-                @@{{ fromUser.username }}
-            </p>
+            <div class="username">
+                {{ fromUser.displayName }}<br/><em>@@{{ fromUser.username }}</em>
+            </div>
         </div>
 
         <div class="meta">
-            {{#sent}}<small>Sent at {{ sent }}</small>{{/sent}}
-            {{#editedAt}}<small>Edited at {{ editedAt }}</small>{{/editedAt}}
-            <div class="forum-thread-text">
+            <div class="gitter-message-text">
                 {{{ html }}}
             </div>
+
+            {{#sent}}<small>Sent at {{ sent }}</small>{{/sent}}
+            {{#editedAt}}<small>Edited at {{ editedAt }}</small>{{/editedAt}}
         </div>
-    </a>
+    </div>
 </script>
 
 @* SignalR JS client code - TODO move to seperate JS file *@

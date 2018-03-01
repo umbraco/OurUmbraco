@@ -1,0 +1,69 @@
+﻿.gitter-chat {
+    background: rgba($color-space, .11);
+
+    h1 {
+		font-size: 1.8rem;
+        text-align: center;
+        @media (min-width: $md) {
+			font-size: 2.4rem;
+		}
+
+		+ p {
+			max-width: 700px;
+			margin: 1rem auto 3.5rem;
+			margin-bottom: 3rem;
+			padding: 0 10px;
+
+			font-size: 1rem;
+			color: darken($color-space, 15%);
+			text-align: center;
+
+			@media (min-width: $md) {
+				padding: 0;
+				font-size: 1.2rem;
+			}
+        }
+    }
+
+    small {
+		font-size: .9rem;
+	    color: darken($color-space, 20%);
+	    text-transform: uppercase;
+	    font-weight: 700;
+	    letter-spacing: .5px;
+	    display: block;
+	    margin-bottom: .5rem;
+	}
+
+    .gitter-link {
+        text-align:center;
+    }
+}
+
+.gitter-room{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+
+.gitter-message {
+    flex: 1 0 49%;
+    background:#fff;
+    padding:7px 10px;
+    border:1px solid red;
+
+    .avatar {
+        display:flex;
+        align-items: center;
+        margin-bottom:5px;
+
+        img {
+            border-radius:5px;
+            max-height:50px;
+        }
+
+        .username {
+            margin-left:7px;
+        }
+    }
+}
