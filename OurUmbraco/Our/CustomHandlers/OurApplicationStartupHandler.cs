@@ -1,4 +1,5 @@
-﻿using Examine;
+﻿using System.Net;
+using Examine;
 using Examine.LuceneEngine.Providers;
 using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
@@ -24,9 +25,8 @@ namespace OurUmbraco.Our.CustomHandlers
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             DefaultRenderMvcControllerResolver.Current.SetDefaultControllerType(typeof(OurUmbracoController));
-            
-            System.Net.ServicePointManager.SecurityProtocol = System.Net.ServicePointManager.SecurityProtocol =
-                System.Net.SecurityProtocolType.Tls12 | System.Net.SecurityProtocolType.Tls11 | System.Net.SecurityProtocolType.Tls;
+            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol = 
+                SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
         private void BindExamineEvents()
