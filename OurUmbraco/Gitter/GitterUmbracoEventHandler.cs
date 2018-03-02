@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using System.Linq;
 using GitterSharp.Model;
 using GitterSharp.Services;
 using Microsoft.AspNet.SignalR;
-using Tweetinvi;
-using Tweetinvi.Models;
-using Tweetinvi.Parameters;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Cache;
@@ -51,7 +47,7 @@ namespace OurUmbraco.Gitter
             var gitterService = new GitterService();
 
             //Do some AutoMapper - so we get our new dervived class with computed friendly date to use in the JSON
-            AutoMapper.Mapper.CreateMap<GitterSharp.Model.Message, UmbracoMessage>();
+            AutoMapper.Mapper.CreateMap<Message, UmbracoMessage>();
 
 
             var rooms = roomNames.Split(',');
@@ -75,10 +71,10 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToUserPresence(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime User Presence for room id: " + room.Id);
-
-                        //Proxy the request with SignalR Hub
+                        //Invoke signalR JS function prescenceEvent()
+                        //Currently only fires a console.log with the data
                         gitter.Clients.Group(room.Id).prescenceEvent(new { prescenceEvent = x, room = room.Id });
+
                     }, onError:OnError);
 
 
@@ -86,9 +82,10 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToRoomEvents(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Events for room id: " + room.Id);
-
+                        //Invoke signalR JS function roomEvent()
+                        //Currently only fires a console.log with the data
                         gitter.Clients.Group(room.Id).roomEvent(new { roomEvent = x, room = room.Id });
+
                     }, onError:OnError);
 
 
@@ -96,9 +93,10 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToRoomUsers(room.Id)
                     .Subscribe(x =>
                     {
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Room Users for room id: " + room.Id);
-
+                        //Invoke signalR JS function userEvent()
+                        //Currently only fires a console.log with the data
                         gitter.Clients.Group(room.Id).userEvent(new { userEvent = x, room = room.Id });
+
                     }, onError:OnError);
             
 
@@ -106,13 +104,12 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToChatMessages(room.Id)
                     .Subscribe(x =>
                     {   
-                        //TODO:
-                        //The message object aka model - needs to use UmbracoMessage with our new property
-                        
                         //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
                         var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
 
+                        //Invoke signalR JS function chatMessage()
                         gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
+
                     }, onError:OnError);
             }
         }
