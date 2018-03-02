@@ -89,8 +89,8 @@
                             {
 
                                 var company = member.GetValue<string>("company");
-                                var twitter = member.GetValue<string>("twitter");
-                                var github = member.GetValue<string>("github");
+                                var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
+                                var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
 
                                 // Hacky as we need IPublishedContent to render the avatar
                                 var m = membershipHelper.GetById(member.Id);
