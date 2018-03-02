@@ -83,13 +83,21 @@
 
     .user {
         margin-bottom:5px;
+        display: flex;
+        align-items:baseline;
 
         .name {
             font-weight:bold;
+            margin-right:5px;
         }
 
         .username {
             color:rgba($color-space, .80);
+            margin-right:10px;
+        }
+
+        .date {
+            font-size:0.8em;
         }
     }
 }
