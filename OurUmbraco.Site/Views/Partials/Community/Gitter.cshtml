@@ -19,22 +19,24 @@
 <section class="gitter-chat">
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-6">
                 <h1 class="text-center">@roomName</h1>
                 <p>
-                    Live messages from the Gitter.im Umbraco chat room
+                    Come and join in the discussion over on our lively & active
+                    Gitter community chat, where you can discuss all things Umbraco.
+                </p>
+                <p>
+                    <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
                 </p>
             </div>
-            <div class="col-md-12">
-                <small>Latest messages</small>
-            </div>
-
-            <div class="col-md-12 flex gitter-room" data-room="@roomId">
-                <p>Loading messages...</p>
-            </div>
-
-            <div class="col-md-12 gitter-link">
-                <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
+            <div class="col-md-6">
+                <div class="gitter-room" data-room="@roomId">
+                    <ul class="umb-load-indicator animated -half-second">
+                        <li class="umb-load-indicator__bubble"></li>
+                        <li class="umb-load-indicator__bubble"></li>
+                        <li class="umb-load-indicator__bubble"></li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -51,20 +53,23 @@
 @* Mustache JS template to render a single chat message *@
 <script type="text/template" id="gitter-chat-template">
     <div class="gitter-message" data-message-id="{{ id }}">
+
         <div class="avatar">
             <img src="{{ fromUser.avatarUrlMedium }}" alt="{{ fromUser.displayName }}" />
-            <div class="username">
-                {{ fromUser.displayName }}<br/><em>@@{{ fromUser.username }}</em>
-            </div>
         </div>
 
-        <div class="meta">
-            <div class="gitter-message-text">
-                {{{ html }}}
-            </div>
-            
-            {{#friendlyDate}}<em>{{ friendlyDate }}</em>{{/friendlyDate}}
+        <div class="message">
+            <div class="user">
+                <strong class="name">{{ fromUser.displayName }}</strong>
+                <span class="username">@@{{ fromUser.username }}</span>
+            </div>                     
+            <span class="date">{{ friendlyDate }}</span>
         </div>
+
+        <div class="gitter-message-text">
+            {{{ html }}}
+        </div>
+
     </div>
 </script>
 

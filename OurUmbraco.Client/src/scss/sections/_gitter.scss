@@ -3,7 +3,7 @@
 
     h1 {
 		font-size: 1.8rem;
-        text-align: center;
+        text-align: left;
         @media (min-width: $md) {
 			font-size: 2.4rem;
 		}
@@ -16,7 +16,7 @@
 
 			font-size: 1rem;
 			color: darken($color-space, 15%);
-			text-align: center;
+			text-align: left;
 
 			@media (min-width: $md) {
 				padding: 0;
@@ -37,6 +37,12 @@
 
     .gitter-link {
         text-align:center;
+
+        .button {
+            @media (min-width: $md) {
+                font-size: 1.2rem;
+            }
+        }
     }
 }
 
@@ -50,7 +56,8 @@
     flex: 1 0 49%;
     background:#fff;
     padding:7px 10px;
-    border:1px solid red;
+    border: 1px solid darken(#f6f6f6, 5%);
+    margin-bottom:10px;
 
     .avatar {
         display:flex;
@@ -65,5 +72,15 @@
         .username {
             margin-left:7px;
         }
+    }
+}
+
+.gitter-message-text {
+
+    blockquote {
+        border-left:3px solid red;
+        padding-left:10px;
+        padding-top:2px;
+        padding-bottom:2px;
     }
 }
