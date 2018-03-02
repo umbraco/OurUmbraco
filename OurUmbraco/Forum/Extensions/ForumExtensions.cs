@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
+using Ganss.XSS;
 using HtmlAgilityPack;
 using MarkdownSharp;
 using OurUmbraco.Forum.AntiSpam;
@@ -122,7 +123,10 @@ namespace OurUmbraco.Forum.Extensions
                 }
             }
 
-            return new HtmlString(Utils.Sanitize(html));
+            var sanitizer = new HtmlSanitizer();
+            var sanitized = sanitizer.Sanitize(html);
+
+            return new HtmlString(sanitized);
         }
 
         public static string SanitizeEdit(this string input)

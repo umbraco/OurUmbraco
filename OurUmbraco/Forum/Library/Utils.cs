@@ -5,7 +5,6 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Security;
 using OurUmbraco.Forum.Extensions;
@@ -25,49 +24,7 @@ namespace OurUmbraco.Forum.Library
         private static readonly int PotentialSpammerThreshold = int.Parse(ConfigurationManager.AppSettings["PotentialSpammerThreshold"]);
         private static readonly int SpamBlockThreshold = int.Parse(ConfigurationManager.AppSettings["SpamBlockThreshold"]);
         private const int ReputationThreshold = 30;
-
-        /// <summary>
-        /// sanitize any potentially dangerous tags from the provided raw HTML input using 
-        /// a whitelist based approach, leaving the "safe" HTML tags
-        /// </summary>
-        public static string Sanitize(string html)
-        {
-            html = html.Replace("[code]", "<pre>");
-            html = html.Replace("[/code]", "</pre>");
-
-            var cleanHtml = CleanInvalidXmlChars(html);
-
-            // Add links to URLs that aren't "properly" linked in a markdown way
-            var regex = new Regex(@"(^|\s|>|;)(https?|ftp)(:\/\/[-A-Z0-9+&@#\/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#\/%=~_|\[\]])($|\W)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
-
-            var linkedHtml = regex.Replace(cleanHtml, "$1<a href=\"$2$3\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
-            
-            var scriptRegex = new Regex("<script.*?</script>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            var scriptRegexMatches = scriptRegex.Matches(linkedHtml);
-            for (var i = 0; i < scriptRegexMatches.Count; i++)
-            {
-                linkedHtml = linkedHtml.Replace(scriptRegexMatches[i].Value, string.Format("<pre>{0}</pre>", HttpContext.Current.Server.HtmlEncode(scriptRegexMatches[i].Value)));
-            }
-
-            var iframeRegex = new Regex("<iframe.*?</iframe>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
-            var iframeMatches = iframeRegex.Matches(linkedHtml);
-            for (var i = 0; i < iframeMatches.Count; i++)
-            {
-                linkedHtml = linkedHtml.Replace(iframeMatches[i].Value, string.Format("<pre>{0}</pre>", HttpContext.Current.Server.HtmlEncode(iframeMatches[i].Value)));
-            }
-
-            return linkedHtml;
-        }
-
-        public static string CleanInvalidXmlChars(string text)
-        {
-            // From xml spec valid chars:
-            // #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]    
-            // any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
-            const string re = @"[^\x09\x0A\x0D\x20-\xD7FF\xE000-\xFFFD\x10000-x10FFFF]";
-            return Regex.Replace(text, re, "");
-        }
-
+        
         public static IPublishedContent GetMember(int id)
         {
             var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
