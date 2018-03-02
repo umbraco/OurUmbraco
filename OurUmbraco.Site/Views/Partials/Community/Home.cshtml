@@ -216,7 +216,11 @@ else
 
 <script>
     $(function() {
-        $.connection.hub.logging = true;
+        @* Only add signalR browser consone logging - if site is in debug mode *@
+        @if (HttpContext.Current.IsDebuggingEnabled)
+        {
+            <text>$.connection.hub.logging = true;</text>
+        }
         
         $.connection.hub.start().done(function() {
             //Get the rooms from sessionStorage - for each room loaded on the page
