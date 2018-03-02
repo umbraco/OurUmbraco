@@ -48,29 +48,48 @@
 
 .gitter-room{
     display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
+    flex-direction: column;
+    position:relative;
+}
+
+.gradient {
+    position:absolute;
+    height:90px;
+    background:linear-gradient(to bottom, rgba(241,244,245,1) 0%, rgba(241,244,245,0.86) 14%, rgba(241,244,245,0) 100%);
+    top:-10px;
+    width:100%;
 }
 
 .gitter-message {
-    flex: 1 0 49%;
+    display: flex;
     background:#fff;
     padding:7px 10px;
     border: 1px solid darken(#f6f6f6, 5%);
     margin-bottom:10px;
 
     .avatar {
-        display:flex;
-        align-items: center;
         margin-bottom:5px;
 
         img {
             border-radius:5px;
             max-height:50px;
         }
+    }
+
+    .message {
+        display:flex;
+        align-items: center;
+        flex-direction: row;
+    }
+
+    .user {
+
+        .name {
+            font-weight:bold;
+        }
 
         .username {
-            margin-left:7px;
+            color:rgba($color-space, .80);
         }
     }
 }

@@ -48,6 +48,7 @@
     {{ #. }}
     {{ >message }}
     {{ /. }}
+    <div class="gradient"></div>
 </script>
 
 @* Mustache JS template to render a single chat message *@
@@ -58,17 +59,19 @@
             <img src="{{ fromUser.avatarUrlMedium }}" alt="{{ fromUser.displayName }}" />
         </div>
 
-        <div class="message">
+        <div class="message-container">
             <div class="user">
                 <strong class="name">{{ fromUser.displayName }}</strong>
                 <span class="username">@@{{ fromUser.username }}</span>
-            </div>                     
-            <span class="date">{{ friendlyDate }}</span>
+                <span class="date">{{ friendlyDate }}</span>
+            </div>
+
+            <div class="gitter-message-text">
+                {{{ html }}}
+            </div>
         </div>
 
-        <div class="gitter-message-text">
-            {{{ html }}}
-        </div>
+        
 
     </div>
 </script>
@@ -76,8 +79,6 @@
 @* SignalR JS client code - TODO move to seperate JS file *@
 <script>
     $(function () {
-        var numberOfMessages = 4;
-
         //Get existing value from SessionStorage
         var roomIds = JSON.parse(sessionStorage.getItem("gitterRoomIds") || null);
         if (!roomIds) {
@@ -85,6 +86,9 @@
         } else {
             roomIds.push("@roomId");
         }
+        
+        var numberOfMessages = 4;
+
 
         //Now array is updated - lets push it into sessionStorage
         sessionStorage.setItem('gitterRoomIds', JSON.stringify(roomIds));
