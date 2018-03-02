@@ -62,9 +62,8 @@
             <div class="gitter-message-text">
                 {{{ html }}}
             </div>
-
-            {{#sent}}<small>Sent at {{ sent }}</small>{{/sent}}
-            {{#editedAt}}<small>Edited at {{ editedAt }}</small>{{/editedAt}}
+            
+            {{#friendlyDate}}<em>{{ friendlyDate }}</em>{{/friendlyDate}}
         </div>
     </div>
 </script>
@@ -106,10 +105,10 @@
         gitter.client.chatMessage = function(data) {
 
             //If the payload is 'remove' then user has deleted message
-            if (data.message.operation === 'remove') {
+            if (data.operation === 'remove') {
                 //Check if the current message being displayed in the DOM
                 //Matches the ID of this item we want to remove
-                if (checkMessageIsInDom(data.message.model.id)) {
+                if (checkMessageIsInDom(data.message.id)) {
                     //If so call the SignalR server event to get last message
                     //Which will then call back to fetchedChatMessage
                     $.connection.gitterHub.server.getLatestChatMessages(data.room, numberOfMessages);
@@ -117,7 +116,7 @@
             }
 
             //Operation is 'create' so just update the DOM instantly
-            if (data.message.operation === 'create') {
+            if (data.operation === 'create') {
 
                 //Need to remove the first DOM item in the container
                 //As its the oldest
@@ -128,10 +127,10 @@
             }
 
             //Operation is 'update' - need to check if its the current message being displayed
-            if (data.message.operation === 'update') {
-                if (checkMessageIsInDom(data.message.model.id)) {
+            if (data.operation === 'update') {
+                if (checkMessageIsInDom(data.message.id)) {
                     //If so then update the DOM item
-                    $(".gitter-room[data-room='" + data.room + "'] .gitter-message[data-message-id='" + data.message.model.id + "']")
+                    $(".gitter-room[data-room='" + data.room + "'] .gitter-message[data-message-id='" + data.message.id + "']")
                         .replaceWith(renderMustacheTemplate(data.message));
                 }
             }
@@ -139,7 +138,7 @@
         };
 
         gitter.client.fetchedChatMessage = function(data) {
-            
+
             //On init load of SignalR, it's pinged from client to server to fetch latest message
             //Via Gitter API which returns a collection of messages (even though its one message)
             var html = renderMultipleMustacheTemplate(data.messages);
@@ -167,13 +166,11 @@
 
         function renderMustacheTemplate(data) {
 
-            console.log('render mustache model', data);
-
             //Render mustache js template with JSON data
             //This is used for single messages coming from the realtime api
             //Where the main message payload is a subobject stored in 'model'
             var template = $('#gitter-chat-template').html();
-            var html = Mustache.render(template, data.model);
+            var html = Mustache.render(template, data);
             return html;
         }
     });

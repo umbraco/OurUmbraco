@@ -47,10 +47,14 @@ namespace OurUmbraco.Gitter
                 return;
             }
 
-            var rooms = roomNames.Split(',');
-
             //Gitter API
             var gitterService = new GitterService();
+
+            //Do some AutoMapper - so we get our new dervived class with computed friendly date to use in the JSON
+            AutoMapper.Mapper.CreateMap<GitterSharp.Model.Message, UmbracoMessage>();
+
+
+            var rooms = roomNames.Split(',');
 
             //Setup the events for each room ID
             foreach (var roomName in rooms)
@@ -101,11 +105,14 @@ namespace OurUmbraco.Gitter
                 //Chat messages
                 realtimeGitterService.SubscribeToChatMessages(room.Id)
                     .Subscribe(x =>
-                    {
-                        //TODO: This will add too many messages to log file - as it will fire every time as opposed to registration
-                        logger.Info<GitterUmbracoEventHandler>("Subscribed to Realtime Chat Messages for room id: " + room.Id);
+                    {   
+                        //TODO:
+                        //The message object aka model - needs to use UmbracoMessage with our new property
+                        
+                        //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
+                        var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
 
-                        gitter.Clients.Group(room.Id).chatMessage(new { message = x, room = room.Id });
+                        gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
                     }, onError:OnError);
             }
         }

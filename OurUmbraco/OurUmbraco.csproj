@@ -481,6 +481,7 @@
     <Compile Include="Gitter\GitterRoomSurfaceController.cs" />
     <Compile Include="Gitter\GitterService.cs" />
     <Compile Include="Gitter\GitterUmbracoEventHandler.cs" />
+    <Compile Include="Gitter\UmbracoMessage.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStep.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStepCollection.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\StepDefinitions\Complete.cs" />

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNet.SignalR;
 
 namespace OurUmbraco.Gitter
@@ -24,12 +25,15 @@ namespace OurUmbraco.Gitter
 
             var latestMessages = await _gitterService.GetMessages(roomId, numberOfMessages);
 
+            //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
+            var umbracoMessages = latestMessages.Select(AutoMapper.Mapper.Map<UmbracoMessage>).ToList();
+
             //Add the current SignalR connection to a group (So they only get messages for this room)
             await Groups.Add(Context.ConnectionId, roomId);
 
             //Call only the SignalR clients who are part of this room/group
             //Otherwise we will send messages from other rooms
-            Clients.Group(roomId).fetchedChatMessage(new { messages = latestMessages, room = roomId });
+            Clients.Group(roomId).fetchedChatMessage(new { messages = umbracoMessages, room = roomId });
         }
     }
 }
