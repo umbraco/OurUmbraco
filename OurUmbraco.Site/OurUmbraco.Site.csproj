@@ -50,6 +50,9 @@
     <AutoParameterizationWebConfigConnectionStrings>False</AutoParameterizationWebConfigConnectionStrings>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AngleSharp, Version=0.9.9.0, Culture=neutral, PublicKeyToken=e83494dcdc6d31ea, processorArchitecture=MSIL">
+      <HintPath>..\packages\AngleSharp.0.9.9.1\lib\net45\AngleSharp.dll</HintPath>
+    </Reference>
     <Reference Include="Autofac, Version=3.5.0.0, Culture=neutral, PublicKeyToken=17863af14b0044da, processorArchitecture=MSIL">
       <HintPath>..\packages\Autofac.3.5.2\lib\net40\Autofac.dll</HintPath>
       <Private>True</Private>
@@ -92,6 +95,9 @@
     <Reference Include="HtmlAgilityPack, Version=1.4.9.5, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.4.9.5\lib\Net45\HtmlAgilityPack.dll</HintPath>
       <Private>True</Private>
+    </Reference>
+    <Reference Include="HtmlSanitizer, Version=3.0.0.0, Culture=neutral, PublicKeyToken=61c49a1a9e79cc28, processorArchitecture=MSIL">
+      <HintPath>..\packages\HtmlSanitizer.4.0.183\lib\net45\HtmlSanitizer.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -421,6 +427,7 @@
     <Content Include="Assets\images\forum.png" />
     <Content Include="Assets\images\GitHub-Mark-32px.png" />
     <Content Include="Assets\images\highfive.svg" />
+    <Content Include="Assets\images\icons.svg" />
     <Content Include="Assets\images\imagegen %281%29.png" />
     <Content Include="Assets\images\imagegen %282%29.png" />
     <Content Include="Assets\images\imagegen %283%29.png" />
@@ -439,10 +446,12 @@
     <Content Include="Assets\images\tools.png" />
     <Content Include="Assets\js\app.min.js" />
     <Content Include="Assets\js\community.js" />
+    <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\gitter\gitter.signalr.init.js" />
     <Content Include="Assets\js\gitter\gitter.signalr.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
+    <Content Include="Assets\js\lib\svg4everybody.min.js" />
     <Content Include="Assets\js\lodash.min.js" />
     <Content Include="Assets\swipebox\css\swipebox.css" />
     <Content Include="Assets\swipebox\css\swipebox.min.css" />
@@ -514,6 +523,7 @@
     <Content Include="css\tooltipster.css" />
     <Content Include="default.aspx" />
     <Content Include="Global.asax" />
+    <Content Include="google98fb13fcf3cf0ae7.html" />
     <Content Include="Hiccup.aspx" />
     <Content Include="css\forum\wmd-buttons.png" />
     <Content Include="images\releases\download.png" />
@@ -1654,6 +1664,8 @@
     <Content Include="umbraco_client\tablesorting\jquery.tablesorter.min.js" />
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
+    <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
+    <Content Include="usercontrols\dashboard\ForceYouTrackDownload.ascx" />
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />

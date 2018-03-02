@@ -1,6 +1,7 @@
 ﻿@inherits UmbracoViewPage<ReadOnlyComment>
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Powers.Library
 
 @{
@@ -12,9 +13,8 @@
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
 {
-    var roles = commentAuthor.Roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-    var numberOfMvps = commentAuthor.Roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
-
+    var badges = commentAuthor.Roles.GetBadges();
+    
     <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.IsAnswer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
@@ -23,29 +23,24 @@
             else
             {@commentAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Member.Karma() karma points</span>
 
-            @if (roles.Any())
+            @if (badges.Any())
             {
                 <span class="roles">
-                    @if (numberOfMvps != 0)
+                    @foreach (var badge in badges)
                     {
-                        var name = "MVP";
-                        if (numberOfMvps > 1)
+                        if (string.IsNullOrWhiteSpace(badge.Link))
                         {
-                            name = string.Format("{0} {1}x", name, numberOfMvps);
+                            <span class="@badge.CssClass">@badge.Name</span>
                         }
-
-                        @*<span class="mvp"><a href="/community/most-valueable-people/">@name</a></span>*@
-                        <span class="mvp">@name</span>
-                    }
-
-                    @foreach (var role in roles)
-                    {
-                        <span class="@role">@role</span>
+                        else
+                        {
+                                    @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                            <span class="@badge.CssClass">@badge.Name</span>
+                        }
                     }
                 </span>
             }
-
-        </div>
+            </div>
         <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
             @Model.Created.ConvertToRelativeTime()
         </div>

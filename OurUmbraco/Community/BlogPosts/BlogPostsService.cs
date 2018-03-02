@@ -53,11 +53,7 @@ namespace OurUmbraco.Community.BlogPosts
                 try
                 {
                     string raw;
-
-                    // Need to make sure we try TLS 1.2 first else the connection will just be closed in us 
-                    // No other protocols allowed SSL * and TLS 1.0 are considered insecure
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-
+                    
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
