@@ -33,7 +33,21 @@ namespace OurUmbraco.Gitter
             
             //Let's connect & listen...
             //This has to be done first before subscribe's
-            realtimeGitterService.Connect();
+            try
+            {
+                realtimeGitterService.Connect();
+            }
+            catch (Exception e)
+            {
+                //Could be connection issues
+                //Could be invalid API key etc...
+
+                //Log the error but don't attempt anymore Gitter bootup
+                var err = "Could not connect to Gitter's Realtime API Service.";
+                logger.Error<GitterUmbracoEventHandler>(err, e);
+
+                return;
+            }
 
             //Get the room names from the appsetting
             //'umbraco/playground,umbraco/some-other-room'
