@@ -448,6 +448,8 @@
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
+    <Content Include="Assets\js\gitter\gitter.signalr.init.js" />
+    <Content Include="Assets\js\gitter\gitter.signalr.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
     <Content Include="Assets\js\lib\svg4everybody.min.js" />
     <Content Include="Assets\js\lodash.min.js" />
@@ -4376,6 +4378,7 @@
     <Content Include="Views\Videos.cshtml" />
     <Content Include="Views\ProjectGroup.cshtml" />
     <Content Include="Views\ProjectsTags.cshtml" />
+    <Content Include="Views\Partials\Community\Gitter.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

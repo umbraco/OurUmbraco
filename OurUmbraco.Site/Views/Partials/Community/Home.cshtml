@@ -75,117 +75,137 @@ else
 }
 
 @helper ForumActivity()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
 
-                <div class="col-md-12">
-                    <h1 class="text-center">Forum Activity</h1>
-                    <p>
-                        Recent activity in the forums, where people are helping each other with current problems.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Recent posts</small>
-                </div>
+                    <div class="col-md-12">
+                        <h1 class="text-center">Forum Activity</h1>
+                        <p>
+                            Recent activity in the forums, where people are helping each other with current problems.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Recent posts</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="forum-activity">
-                    <h2>Loading latest forum activity...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="forum-activity">
+                        <h2>Loading latest forum activity...</h2>
+                        <ul class="umb-load-indicator animated -half-second">
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                        </ul>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="/forum">Go to Forum &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="/forum">Go to Forum &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper TwitterSearch()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
 
-                <div class="col-md-12">
-                    <h1 class="text-center">Twitter Activity</h1>
-                    <p>
-                        Recent activity on twitter, where people are talking about Umbraco.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Recent tweets</small>
-                </div>
+                    <div class="col-md-12">
+                        <h1 class="text-center">Twitter Activity</h1>
+                        <p>
+                            Recent activity on twitter, where people are talking about Umbraco.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Recent tweets</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="twitter-search">
-                    <h2>Loading twitter search results...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="twitter-search">
+                        <h2>Loading twitter search results...</h2>
+                        <ul class="umb-load-indicator animated -half-second">
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                        </ul>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper  GitHubContributors()
-{
-    <section class="forum github-contributions">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="text-center">GitHub Contributions</h1>
-                    <p>
-                        <small class="github-repo-list">
-                            Contributions to default branches for
-                            <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
-                            <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
-                            <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
-                            <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
-                            <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
-                            <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
-                        </small>
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Contributions the last 12 months (number indicating accepted commits)</small>
-                </div>
+    {
+        <section class="forum github-contributions">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="text-center">GitHub Contributions</h1>
+                        <p>
+                            <small class="github-repo-list">
+                                Contributions to default branches for
+                                <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
+                                <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
+                                <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
+                            </small>
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Contributions the last 12 months (number indicating accepted commits)</small>
+                    </div>
 
-                <div class="col-md-12 flex" id="github-contributors">
-                    <h2>Loading GitHub contributors...</h2>
-                </div>
+                    <div class="col-md-12 flex" id="github-contributors">
+                        <h2>Loading GitHub contributors...</h2>
+                        <ul class="umb-load-indicator animated -half-second">
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                        </ul>
+                    </div>
 
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="https://our.umbraco.org/contribute">Contribute to Umbraco &rarr;</a>
-                </div>
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="https://our.umbraco.org/contribute">Contribute to Umbraco &rarr;</a>
+                    </div>
 
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
 
 @helper Meetups()
-{
-    <section class="forum">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <h1 class="text-center">Meetups</h1>
-                    <p>
-                        Upcoming meetups organized by the Umbraco community.
-                    </p>
-                </div>
-                <div class="col-md-12">
-                    <small>Upcoming meetups</small>
-                </div>
-                <div class="col-md-12 flex" id="meetups">
-                    <h2>Loading meetups...</h2>
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h1 class="text-center">Meetups</h1>
+                        <p>
+                            Upcoming meetups organized by the Umbraco community.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Upcoming meetups</small>
+                    </div>
+                    <div class="col-md-12 flex" id="meetups">
+                        <h2>Loading meetups...</h2>
+                        <ul class="umb-load-indicator animated -half-second">
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 }
