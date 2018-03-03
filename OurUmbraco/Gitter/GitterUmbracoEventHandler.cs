@@ -18,6 +18,12 @@ namespace OurUmbraco.Gitter
 
             //Gitter API token
             var apiToken = ConfigurationManager.AppSettings["GitterApiToken"];
+
+            if (string.IsNullOrEmpty(apiToken))
+            {
+                logger.Warn<GitterUmbracoEventHandler>("No Gitter API AppSetting key found in 'GitterApiToken'");
+                return;
+            }
             
             //Register & setup/connect to Gitter Realtime API
             var realtimeGitterService = new RealtimeGitterService(apiToken);
