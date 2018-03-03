@@ -10,7 +10,8 @@
     var roomId = Model.Id;
 
     //Topic/room name desription
-    var roomName = Model.Topic;
+    var roomName = Model.Name.Split('/').Skip(1).First().Replace("-", " ");
+    var roomTopic = Model.Topic;
 
     //Need this passed in
     var roomUrl = "https://gitter.im/" + Model.Uri;
@@ -19,18 +20,14 @@
 @* This is the main init render in the DOM *@
 <section class="gitter-chat">
     <div class="container">
-        <div class="row">
-            <div class="col-md-5 room-info">
+        <div>
+            <div class="col-md-12 room-info">
                 <h1 class="text-center">@roomName</h1>
-                <p>
-                    Come and join in the discussion over on our lively & active
-                    Gitter community chat, where you can discuss all things Umbraco.
-                </p>
-                <p>
-                    <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
-                </p>
+                <p>@roomTopic</p>
             </div>
-            <div class="col-md-7">
+        </div>
+        <div>
+            <div class="col-md-12">
                 <div class="gitter-room" data-room="@roomId">
                     <ul class="umb-load-indicator animated -half-second">
                         <li class="umb-load-indicator__bubble"></li>
@@ -38,6 +35,10 @@
                         <li class="umb-load-indicator__bubble"></li>
                     </ul>
                 </div>
+
+                <p>
+                    <a class="button green" href="@roomUrl">Join the discussion in @roomName on Gitter &rarr;</a>
+                </p>
             </div>
         </div>
     </div>

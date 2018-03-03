@@ -59,8 +59,6 @@
 
 @if (Members.IsLoggedIn())
 {
-    @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
-    @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
@@ -70,8 +68,6 @@
 else
 {
     @Html.Partial("home/documentation")
-    @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
-    @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
