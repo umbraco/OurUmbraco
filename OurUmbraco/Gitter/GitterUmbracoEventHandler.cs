@@ -124,12 +124,20 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToChatMessages(room.Id)
                     .Subscribe(x =>
                     {   
-                        //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
-                        var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
+                        try
+                        {
+                            //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
+                            var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
 
-                        //Invoke signalR JS function chatMessage()
-                        gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
-
+                            //Invoke signalR JS function chatMessage()
+                            gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
+                        }
+                        catch (Exception e)
+                        {
+                            //Error with JSON serialisation for SignalR
+                            //OR Error with AutoMapper Mapping
+                            logger.Error<GitterUmbracoEventHandler>("Error sending realtime message", e);
+                        }
                     }, onError:OnError);
             }
         }
