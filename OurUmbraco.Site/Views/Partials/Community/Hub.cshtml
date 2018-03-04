@@ -3,12 +3,13 @@
 @inherits OurUmbracoTemplatePage
 
 @*@GitHubMatch()*@
+@Html.Partial("Community/Map")
 
-@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
+@*@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/OurUmbraco" })
-@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-Community" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-Community" })*@
 
 @helper GitHubMatch()
 {
