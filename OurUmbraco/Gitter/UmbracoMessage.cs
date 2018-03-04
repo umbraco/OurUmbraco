@@ -40,9 +40,9 @@ namespace OurUmbraco.Gitter
                 if (string.IsNullOrWhiteSpace(User.Username) == false)
                 {
                     var peopleService = new PeopleService();
-                    var member = peopleService.GetMemberFromGithubName(User.Username);
-                    if (member != null)
-                        return $"<a href=\"/member/{member.Id}\">{User.Username}</a>";
+                    var memberId = peopleService.GetMemberIdFromGithubName(User.Username);
+                    if (memberId != null)
+                        return $"<a href=\"/member/{memberId}\">{User.Username}</a>";
                 }
 
                 return User.Username;
