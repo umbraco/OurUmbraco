@@ -92,7 +92,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateCommunityVideos()
         {
-            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate(() => UpdateCommunityVideosOnDisk(), Cron.HourInterval(1));
         }
 
         public void UpdateCommunityVideosOnDisk()
