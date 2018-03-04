@@ -75,19 +75,14 @@ namespace OurUmbraco.Community.People
             return query;
         }
 
-        public IPublishedContent GetMemberFromGithubName(string githubName)
+        public int? GetMemberIdFromGithubName(string githubName)
         {
             var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
             var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
             criteria.Field("github", githubName);
             var searchResults = searcher.Search(criteria);
             var searchResult = searchResults.FirstOrDefault();
-            if (searchResult == null)
-                return null;
-
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(Umbraco.Web.UmbracoContext.Current);
-            var member = memberShipHelper.GetById(searchResult.Id);
-            return member;
+            return searchResult?.Id;
         }
     }
 }

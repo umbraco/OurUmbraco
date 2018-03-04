@@ -1,8 +1,12 @@
 ﻿@using ClientDependency.Core.Mvc
 @model GitterSharp.Model.Room
 @{
+
     Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js");
     Html.RequiresJs("~/signalr/hubs");
+
+    Html.RequiresJs("~/assets/js/lib/emojione.min.js");
+
     Html.RequiresJs("~/assets/js/gitter/gitter.signalr.js");
     Html.RequiresJs("~/assets/js/gitter/gitter.signalr.init.js");
 

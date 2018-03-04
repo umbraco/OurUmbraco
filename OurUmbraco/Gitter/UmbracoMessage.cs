@@ -19,6 +19,7 @@ namespace OurUmbraco.Gitter
                     return $"Edited at {editedDate}";
                 }
 
+                //Even with a deletion - we get a blank date sent to us in payload
                 var createdDate = SentDate.ToString("D");
 
                 //Return the edited dates
@@ -31,12 +32,17 @@ namespace OurUmbraco.Gitter
         {
             get
             {
+                //When we get a delete message payload
+                //It would crash the realtime server as it would not contain a User JSON nested object
+                if (User == null)
+                    return null;
+
                 if (string.IsNullOrWhiteSpace(User.Username) == false)
                 {
                     var peopleService = new PeopleService();
-                    var member = peopleService.GetMemberFromGithubName(User.Username);
-                    if (member != null)
-                        return $"<a href=\"/member/{member.Id}\">{User.Username}</a>";
+                    var memberId = peopleService.GetMemberIdFromGithubName(User.Username);
+                    if (memberId != null)
+                        return $"<a href=\"/member/{memberId}\">{User.Username}</a>";
                 }
 
                 return User.Username;

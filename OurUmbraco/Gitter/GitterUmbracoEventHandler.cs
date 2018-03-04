@@ -18,6 +18,12 @@ namespace OurUmbraco.Gitter
 
             //Gitter API token
             var apiToken = ConfigurationManager.AppSettings["GitterApiToken"];
+
+            if (string.IsNullOrEmpty(apiToken))
+            {
+                logger.Warn<GitterUmbracoEventHandler>("No Gitter API AppSetting key found in 'GitterApiToken'");
+                return;
+            }
             
             //Register & setup/connect to Gitter Realtime API
             var realtimeGitterService = new RealtimeGitterService(apiToken);
@@ -27,7 +33,21 @@ namespace OurUmbraco.Gitter
             
             //Let's connect & listen...
             //This has to be done first before subscribe's
-            realtimeGitterService.Connect();
+            try
+            {
+                realtimeGitterService.Connect();
+            }
+            catch (Exception e)
+            {
+                //Could be connection issues
+                //Could be invalid API key etc...
+
+                //Log the error but don't attempt anymore Gitter bootup
+                var err = "Could not connect to Gitter's Realtime API Service.";
+                logger.Error<GitterUmbracoEventHandler>(err, e);
+
+                return;
+            }
 
             //Get the room names from the appsetting
             //'umbraco/playground,umbraco/some-other-room'
@@ -104,12 +124,20 @@ namespace OurUmbraco.Gitter
                 realtimeGitterService.SubscribeToChatMessages(room.Id)
                     .Subscribe(x =>
                     {   
-                        //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
-                        var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
+                        try
+                        {
+                            //Cast them with AutoMapper to our derivied class - with the computed friendly date on it
+                            var umbracoMessage = AutoMapper.Mapper.Map<UmbracoMessage>(x.Model);
 
-                        //Invoke signalR JS function chatMessage()
-                        gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
-
+                            //Invoke signalR JS function chatMessage()
+                            gitter.Clients.Group(room.Id).chatMessage(new { operation = x.Operation, message = umbracoMessage, room = room.Id });
+                        }
+                        catch (Exception e)
+                        {
+                            //Error with JSON serialisation for SignalR
+                            //OR Error with AutoMapper Mapping
+                            logger.Error<GitterUmbracoEventHandler>("Error sending realtime message", e);
+                        }
                     }, onError:OnError);
             }
         }

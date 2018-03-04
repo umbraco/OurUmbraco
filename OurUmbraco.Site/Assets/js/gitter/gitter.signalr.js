@@ -1,6 +1,10 @@
 ﻿$(function() {
     var numberOfMessages = 4;
 
+    //Emoji-lib - allow :-) to be parsed
+    //Rather than just :smile:
+    emojione.ascii = true;
+
     // Reference the auto-generated proxy for the hub.
     var gitter = $.connection.gitterHub;
 
@@ -73,11 +77,14 @@
         var innerTemplate = $('#gitter-chat-template').html();
         var outerTemplate = $('#gitter-chat-messages-template').html();
 
-        var output = Mustache.render(outerTemplate, data, {
+        var multiHtml = Mustache.render(outerTemplate, data, {
             message: innerTemplate
         });
-            
-        return output;
+
+        //Re-render HTML with emjoi's
+        //var emjoiHtml = emojione.shortnameToUnicode(multiHtml);
+        var emjoiHtml = emojione.toImage(multiHtml);
+        return emjoiHtml;
     };
 
     function renderMustacheTemplate(data) {
@@ -87,6 +94,10 @@
         //Where the main message payload is a subobject stored in 'model'
         var template = $('#gitter-chat-template').html();
         var html = Mustache.render(template, data);
-        return html;
+
+        //Re-render HTML with emjoi's
+        //var emjoiHtml = emojione.shortnameToUnicode(html);
+        var emjoiHtml = emojione.toImage(html);
+        return emjoiHtml;
     }
 });
