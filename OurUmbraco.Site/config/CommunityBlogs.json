@@ -1,6 +1,14 @@
 ﻿{
   "blogs": [
     {
+      "id": "8331444E-D061-4833-889D-4304515CD74D",
+      "title": "Offroadcode Journal",
+      "url": "https://offroadcode.com/journal/",
+      "rss": "https://offroadcode.com/journal/rss/",
+      "logo": "https://pbs.twimg.com/profile_images/938413689098719232/JD4bm6jK_400x400.jpg",
+      "memberId": null
+    },
+    {
       "id": "1D769116-B595-475E-B1C9-8B2B33A1548C",
       "title": "24 Days In Umbraco",
       "url": "https://24days.in/umbraco-cms",

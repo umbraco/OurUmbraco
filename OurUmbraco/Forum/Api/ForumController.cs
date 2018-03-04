@@ -16,6 +16,7 @@ using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Library;
 using OurUmbraco.Forum.Models;
 using OurUmbraco.Forum.Services;
+using OurUmbraco.Our.Extensions;
 using umbraco;
 using umbraco.cms.helpers;
 using Umbraco.Core;
@@ -62,7 +63,7 @@ namespace OurUmbraco.Forum.Api
             var author = Members.GetById(currentMemberId);
             o.authorKarma = author.Karma();
             o.authorName = author.Name;
-            o.roles = author.GetRoles();
+            o.roles = author.GetRoles().GetBadges();
             o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
             o.parent = model.Parent;
             o.isSpam = c.IsSpam;

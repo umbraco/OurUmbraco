@@ -53,11 +53,7 @@ namespace OurUmbraco.Community.BlogPosts
                 try
                 {
                     string raw;
-
-                    // Need to make sure we try TLS 1.2 first else the connection will just be closed in us 
-                    // No other protocols allowed SSL * and TLS 1.0 are considered insecure
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11;
-
+                    
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
@@ -65,9 +61,7 @@ namespace OurUmbraco.Community.BlogPosts
 
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
-                        raw = raw
-                                .TrimStart() // remove whitespace on the first line so <?xml are the first characters found, else XElement.Parse fails
-                                .Replace("a10:updated", "pubDate");
+                        raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
                     }
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
@@ -142,6 +136,26 @@ namespace OurUmbraco.Community.BlogPosts
             }
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
+        }
+        
+        private static string RemoveLeadingCharacters(string inString)
+        {
+            if (inString == null)
+                return null;
+
+            var substringStart = 0;
+            for (var i = substringStart; i < inString.Length; i++)
+            {
+                var character = inString[i];
+                if (character != '<')
+                    continue;
+
+                // As soon as we find the XML opening tag, break and return the rest of the string, else XElement.Parse fails
+                substringStart = i;
+                break;
+            }
+
+            return inString.Substring(substringStart);
         }
 
         private static DateTimeOffset GetPublishDate(XElement item)
