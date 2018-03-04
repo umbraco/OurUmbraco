@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Examine;
 using Umbraco.Web.WebApi;
@@ -8,8 +9,8 @@ namespace OurUmbraco.Community.Map
 {
     public class MapApiController : UmbracoApiController
     {
-        [HttpGet ]
-        public ISearchResults GetAllMemberLocations()
+        [HttpGet]
+        public List<MemberLocation> GetAllMemberLocations()
         { 
             var memberSearcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
             var query = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
@@ -24,9 +25,19 @@ namespace OurUmbraco.Community.Map
 
             //Query
             var results = memberSearcher.Search(query);
-
             var rawQuery = query.ToString();
-            return results;
+
+            //Pluck the fields we need from the Examine index fields
+            //For our much simpler model to send back as the JSON response
+            var members = results.Select(result => new MemberLocation
+            {
+                Name = result.Fields["nodeName"],
+                Lat = result.Fields["latitude"],
+                Lon = result.Fields["longitude"]
+            })
+            .ToList();
+            
+            return members;
         }
 
     }
