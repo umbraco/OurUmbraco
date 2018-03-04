@@ -4735,7 +4735,9 @@ will override element type to textarea and add own attribute ngModel tied to jso
                                 toolbar: toolbar,
                                 content_css: stylesheets,
                                 style_formats: styleFormats,
-                                autoresize_bottom_margin: 0
+                                autoresize_bottom_margin: 0,
+                                //see http://archive.tinymce.com/wiki.php/Configuration:cache_suffix
+                                cache_suffix: '?umb__rnd=' + Umbraco.Sys.ServerVariables.application.cacheBuster
                             };
                             if (tinyMceConfig.customConfig) {
                                 //if there is some custom config, we need to see if the string value of each item might actually be json and if so, we need to
@@ -6338,7 +6340,7 @@ Opens an overlay to show a custom YSOD. </br>
 * @name umbraco.directives.directive:umbProperty
 * @restrict E
 **/
-    angular.module('umbraco.directives').directive('umbProperty', function (umbPropEditorHelper) {
+    angular.module('umbraco.directives').directive('umbProperty', function (umbPropEditorHelper, userService) {
         return {
             scope: { property: '=' },
             transclude: true,
@@ -6346,7 +6348,10 @@ Opens an overlay to show a custom YSOD. </br>
             replace: true,
             templateUrl: 'views/components/property/umb-property.html',
             link: function (scope) {
-                scope.propertyAlias = Umbraco.Sys.ServerVariables.isDebuggingEnabled === true ? scope.property.alias : null;
+                userService.getCurrentUser().then(function (u) {
+                    var isAdmin = u.userGroups.indexOf('admin') !== -1;
+                    scope.propertyAlias = Umbraco.Sys.ServerVariables.isDebuggingEnabled === true || isAdmin ? scope.property.alias : null;
+                });
             },
             //Define a controller for this directive to expose APIs to other directives
             controller: function ($scope, $timeout) {
@@ -9342,7 +9347,7 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                     scope.editPropertyTypeSettings(property, group);
                 };
                 scope.editPropertyTypeSettings = function (property, group) {
-                    if (!property.inherited && !property.locked) {
+                    if (!property.inherited) {
                         scope.propertySettingsDialogModel = {};
                         scope.propertySettingsDialogModel.title = 'Property settings';
                         scope.propertySettingsDialogModel.property = property;
@@ -9387,6 +9392,7 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                             property.validation.pattern = oldModel.property.validation.pattern;
                             property.showOnMemberProfile = oldModel.property.showOnMemberProfile;
                             property.memberCanEdit = oldModel.property.memberCanEdit;
+                            property.isSensitiveValue = oldModel.property.isSensitiveValue;
                             // because we set state to active, to show a preview, we have to check if has been filled out
                             // label is required so if it is not filled we know it is a placeholder
                             if (oldModel.property.editor === undefined || oldModel.property.editor === null || oldModel.property.editor === '') {

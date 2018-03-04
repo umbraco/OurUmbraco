@@ -390,7 +390,7 @@
     });
     angular.module('umbraco.install').controller('Umbraco.Install.UserController', function ($scope, installerService) {
         $scope.passwordPattern = /.*/;
-        $scope.installer.current.model.subscribeToNewsLetter = true;
+        $scope.installer.current.model.subscribeToNewsLetter = false;
         if ($scope.installer.current.model.minNonAlphaNumericLength > 0) {
             var exp = '';
             for (var i = 0; i < $scope.installer.current.model.minNonAlphaNumericLength; i++) {
