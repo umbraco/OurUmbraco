@@ -419,6 +419,8 @@
     <Compile Include="Community\GitHub\Models\IGitHubContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorsResult.cs" />
     <Compile Include="Community\Karma\KarmaService.cs" />
+    <Compile Include="Community\Map\MapApiController.cs" />
+    <Compile Include="Community\Map\MapEventHandler.cs" />
     <Compile Include="Community\Meetup\MeetupService.cs" />
     <Compile Include="Community\Meetup\Models\MeetupCacheItem.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
