@@ -2,10 +2,16 @@
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 
-@GitHubMatch()
+@*@GitHubMatch()*@
+
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/OurUmbraco" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-Community" })
 
 @helper GitHubMatch()
-    {
+{
         <section class="community">
             <div class="container">
                 <div class="row">

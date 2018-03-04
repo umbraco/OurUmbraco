@@ -52,6 +52,8 @@
 @import 'elements/alertbar';
 @import 'elements/utilities';
 @import 'elements/videos';
+@import 'elements/overlay';
+@import 'elements/umb-load-indicator';
 
 /**
 /* Sections
@@ -62,6 +64,7 @@
 @import 'sections/people';
 @import 'sections/events';
 @import 'sections/contributors';
+@import 'sections/gitter';
 
 /**
 /* Pages

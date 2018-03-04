@@ -5,6 +5,7 @@ using Hangfire;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.Videos;
 using OurUmbraco.Videos;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
@@ -87,6 +88,23 @@ namespace OurUmbraco.NotificationsCore.Notifications
             // Save the JSON to disk
             System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
         }
+
+
+        public void UpdateCommunityVideos()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateCommunityVideosOnDisk(), Cron.HourInterval(1));
+        }
+
+        public void UpdateCommunityVideosOnDisk()
+        {
+            
+            // Initialize a new service
+            var service = new CommunityVideosService();
+            
+            service.UpdateYouTubePlaylistVideos(CommunityVideosConstants.Playlists.UmbraCoffeePlaylistId);
+
+        }
+
     }
 
     public class ReminderTopic

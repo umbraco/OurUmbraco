@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using Examine;
+using Examine.LuceneEngine.SearchCriteria;
 using OurUmbraco.Community.People.Models;
 using Umbraco.Core;
+using Umbraco.Core.Models;
 
 namespace OurUmbraco.Community.People
 {
@@ -69,6 +73,16 @@ namespace OurUmbraco.Community.People
                          group by text, memberId order by totalPointsInPeriod DESC", @where, top);
 
             return query;
+        }
+
+        public int? GetMemberIdFromGithubName(string githubName)
+        {
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+            criteria.Field("github", githubName);
+            var searchResults = searcher.Search(criteria);
+            var searchResult = searchResults.FirstOrDefault();
+            return searchResult?.Id;
         }
     }
 }

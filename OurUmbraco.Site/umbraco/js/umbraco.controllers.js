@@ -938,6 +938,7 @@
             passwordPolicies: null,
             passwordPolicyText: ''
         };
+        $scope.loginStates = { submitButton: 'init' };
         $scope.avatarFile = {
             filesHolder: null,
             uploadStatus: null,
@@ -1152,7 +1153,9 @@
             if ($scope.loginForm.$invalid) {
                 return;
             }
+            $scope.loginStates.submitButton = 'busy';
             userService.authenticate(login, password).then(function (data) {
+                $scope.loginStates.submitButton = 'success';
                 $scope.submit(true);
             }, function (reason) {
                 //is Two Factor required?
@@ -1160,6 +1163,7 @@
                     $scope.errorMsg = 'Additional authentication required';
                     show2FALoginDialog(reason.data.twoFactorView, $scope.submit);
                 } else {
+                    $scope.loginStates.submitButton = 'error';
                     $scope.errorMsg = reason.errorMsg;
                     //set the form inputs to invalid
                     $scope.loginForm.username.$setValidity('auth', false);
@@ -1170,12 +1174,14 @@
             // while the form is invalid, then revalidate them so that the form can
             // be submitted again.
             $scope.loginForm.username.$viewChangeListeners.push(function () {
-                if ($scope.loginForm.username.$invalid) {
+                if ($scope.loginForm.$invalid) {
                     $scope.loginForm.username.$setValidity('auth', true);
+                    $scope.loginForm.password.$setValidity('auth', true);
                 }
             });
             $scope.loginForm.password.$viewChangeListeners.push(function () {
-                if ($scope.loginForm.password.$invalid) {
+                if ($scope.loginForm.$invalid) {
+                    $scope.loginForm.username.$setValidity('auth', true);
                     $scope.loginForm.password.$setValidity('auth', true);
                 }
             });
@@ -2437,7 +2443,7 @@
  */
     (function () {
         'use strict';
-        function PropertySettingsOverlay($scope, contentTypeResource, dataTypeResource, dataTypeHelper, localizationService) {
+        function PropertySettingsOverlay($scope, contentTypeResource, dataTypeResource, dataTypeHelper, localizationService, userService) {
             var vm = this;
             vm.showValidationPattern = false;
             vm.focusOnPatternField = false;
@@ -2473,6 +2479,9 @@
             vm.changeValidationPattern = changeValidationPattern;
             vm.openEditorPickerOverlay = openEditorPickerOverlay;
             vm.openEditorSettingsOverlay = openEditorSettingsOverlay;
+            userService.getCurrentUser().then(function (user) {
+                vm.showSensitiveData = user.userGroups.indexOf('sensitiveData') != -1;
+            });
             function activate() {
                 matchValidationType();
             }
@@ -8295,6 +8304,7 @@
         $scope.page.nameLocked = false;
         $scope.page.listViewPath = null;
         $scope.page.saveButtonState = 'init';
+        $scope.page.exportButton = 'init';
         $scope.busy = false;
         $scope.page.listViewPath = $routeParams.page && $routeParams.listName ? '/member/member/list/' + $routeParams.listName + '?page=' + $routeParams.page : null;
         //build a path to sync the tree with
@@ -8402,6 +8412,10 @@
             } else {
                 $scope.busy = false;
             }
+        };
+        $scope.export = function () {
+            var memberKey = $scope.content.key;
+            memberResource.exportMemberData(memberKey);
         };
     }
     angular.module('umbraco').controller('Umbraco.Editors.Member.EditController', MemberEditController);
@@ -14334,10 +14348,13 @@
             };
         };
         $scope.sortableOptions = {
+            disabled: !$scope.isMultiPicker,
+            items: 'li:not(.add-wrapper)',
+            cancel: '.unsortable',
             update: function (e, ui) {
                 var r = [];
-                //TODO: Instead of doing this with a half second delay would be better to use a watch like we do in the
-                // content picker. THen we don't have to worry about setting ids, render models, models, we just set one and let the
+                // TODO: Instead of doing this with a half second delay would be better to use a watch like we do in the
+                // content picker. Then we don't have to worry about setting ids, render models, models, we just set one and let the
                 // watch do all the rest.
                 $timeout(function () {
                     angular.forEach($scope.images, function (value, key) {
@@ -15422,14 +15439,16 @@
                     extended_valid_elements: extendedValidElements,
                     menubar: false,
                     statusbar: false,
+                    relative_urls: false,
                     height: editorConfig.dimensions.height,
                     width: editorConfig.dimensions.width,
                     maxImageSize: editorConfig.maxImageSize,
                     toolbar: toolbar,
                     content_css: stylesheets,
-                    relative_urls: false,
                     style_formats: styleFormats,
-                    language: language
+                    language: language,
+                    //see http://archive.tinymce.com/wiki.php/Configuration:cache_suffix
+                    cache_suffix: '?umb__rnd=' + Umbraco.Sys.ServerVariables.application.cacheBuster
                 };
                 if (tinyMceConfig.customConfig) {
                     //if there is some custom config, we need to see if the string value of each item might actually be json and if so, we need to

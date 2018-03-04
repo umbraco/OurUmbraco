@@ -24,23 +24,23 @@ var anchor = (function () {
       editor.execCommand('mceInsertContent', false, editor.dom.createHTML('a', { id: id }));
     }
   };
-  var $_fo6uw87ojd08mc8e = {
+  var $_82jdn7xje5nvbg8 = {
     isValidId: isValidId,
     getId: getId,
     insert: insert
   };
 
   var insertAnchor = function (editor, newId) {
-    if (!$_fo6uw87ojd08mc8e.isValidId(newId)) {
+    if (!$_82jdn7xje5nvbg8.isValidId(newId)) {
       editor.windowManager.alert('Id should start with a letter, followed only by letters, numbers, dashes, dots, colons or underscores.');
       return true;
     } else {
-      $_fo6uw87ojd08mc8e.insert(editor, newId);
+      $_82jdn7xje5nvbg8.insert(editor, newId);
       return false;
     }
   };
   var open = function (editor) {
-    var currentId = $_fo6uw87ojd08mc8e.getId(editor);
+    var currentId = $_82jdn7xje5nvbg8.getId(editor);
     editor.windowManager.open({
       title: 'Anchor',
       body: {
@@ -58,14 +58,14 @@ var anchor = (function () {
       }
     });
   };
-  var $_gaq9wd7njd08mc8d = { open: open };
+  var $_9t23yi7wje5nvbg7 = { open: open };
 
   var register = function (editor) {
     editor.addCommand('mceAnchor', function () {
-      $_gaq9wd7njd08mc8d.open(editor);
+      $_9t23yi7wje5nvbg7.open(editor);
     });
   };
-  var $_d9nekh7mjd08mc8b = { register: register };
+  var $_emjhn07vje5nvbg6 = { register: register };
 
   var isAnchorNode = function (node) {
     return !node.attr('href') && (node.attr('id') || node.attr('name')) && !node.firstChild;
@@ -85,7 +85,7 @@ var anchor = (function () {
       editor.serializer.addNodeFilter('a', setContentEditable(null));
     });
   };
-  var $_81c0wz7pjd08mc8f = { setup: setup };
+  var $_7hsabi7yje5nvbga = { setup: setup };
 
   var register$1 = function (editor) {
     editor.addButton('anchor', {
@@ -101,12 +101,12 @@ var anchor = (function () {
       cmd: 'mceAnchor'
     });
   };
-  var $_dwl5477qjd08mc8g = { register: register$1 };
+  var $_a80t3h7zje5nvbgb = { register: register$1 };
 
   PluginManager.add('anchor', function (editor) {
-    $_81c0wz7pjd08mc8f.setup(editor);
-    $_d9nekh7mjd08mc8b.register(editor);
-    $_dwl5477qjd08mc8g.register(editor);
+    $_7hsabi7yje5nvbga.setup(editor);
+    $_emjhn07vje5nvbg6.register(editor);
+    $_a80t3h7zje5nvbgb.register(editor);
   });
   function Plugin () {
   }
@@ -114,4 +114,4 @@ var anchor = (function () {
   return Plugin;
 
 }());
-})()
+})();
