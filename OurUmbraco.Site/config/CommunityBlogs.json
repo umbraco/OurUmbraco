@@ -1,0 +1,229 @@
+﻿{
+  "blogs": [
+    {
+      "id": "8331444E-D061-4833-889D-4304515CD74D",
+      "checkTitles": false,
+      "title": "Offroadcode Journal",
+      "url": "https://offroadcode.com/journal/",
+      "rss": "https://offroadcode.com/journal/rss/",
+      "logo": "https://pbs.twimg.com/profile_images/938413689098719232/JD4bm6jK_400x400.jpg",
+      "memberId": null
+    },
+    {
+      "id": "1D769116-B595-475E-B1C9-8B2B33A1548C",
+      "checkTitles": false,
+      "title": "24 Days In Umbraco",
+      "url": "https://24days.in/umbraco-cms",
+      "rss": "https://24days.in/umbraco-cms/rss/",
+      "logo": "https://pbs.twimg.com/profile_images/803704047769419776/wIJwpK82_400x400.jpg",
+      "memberId": null
+    },
+    {
+      "id": "7753D2AA-E80B-4DF8-B1C5-3CBC5C9A5200",
+      "checkTitles": false,
+      "title": "Yuri Burger",
+      "url": "https://yuriburger.net/",
+      "rss": "https://yuriburger.net/feed/",
+      "logo": "https://pbs.twimg.com/profile_images/2218895203/burger_400x400.png",
+      "memberId": null
+    },
+    {
+      "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
+      "checkTitles": false,
+      "title": "Jamie's Blog",
+      "url": "https://jamiepollock.net/blog/",
+      "rss": "https://jamiepollock.net/blog/atom.xml",
+      "logo": "https://jamiepollock.net/images/favicon-64x64.png",
+      "memberId": 3305
+    },
+    {
+      "id": "D946B0EC-2208-455E-8BD5-C8A3E739215E",
+      "checkTitles": false,
+      "title": "Lars-Erik's blog",
+      "url": "http://blog.aabech.no/",
+      "rss": "http://blog.aabech.no/rss",
+      "logo": "http://blog.aabech.no/media/1002/umbarcelonajpeg.jpg?mode=max&rnd=131284736200000000",
+      "memberId": 30373
+    },
+    {
+      "id": "F0E727E8-4745-47EA-B75A-BE86661F9349",
+      "checkTitles": false,
+      "title": "Paul Aikman",
+      "url": "https://www.paulaikman.co.uk/",
+      "rss": "https://www.paulaikman.co.uk/rss/",
+      "logo": "https://www.paulaikman.co.uk/content/images/2017/12/logo.jpg",
+      "memberId": 49943
+    },
+    {
+      "id": "E325DF68-908E-41A9-AB29-16C66A2D32E7",
+      "checkTitles": false,
+      "title": "Vizioz",
+      "url": "https://www.vizioz.com/blog/",
+      "rss": "https://www.vizioz.com/blog/rss",
+      "logo": "https://www.vizioz.com/images/vizioz_logo3.png",
+      "memberId": 1868
+    },
+    {
+      "id": "6F278E68-C435-4DFF-A4EA-DB08835AB0F9",
+      "checkTitles": false,
+      "title": "Umbraco HQ",
+      "url": "https://umbraco.com/blog",
+      "rss": "https://umbraco.com/blog/rss-feed/",
+      "logo": "https://umbraco.com/media/1542/100px_transparent.png",
+      "memberId": null
+    },
+    {
+      "id": "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
+      "checkTitles": false,
+      "title": "Creative Web Specialist",
+      "url": "https://creativewebspecialist.co.uk",
+      "rss": "https://creativewebspecialist.co.uk/feed/",
+      "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g",
+      "memberId": 1175
+    },
+    {
+      "id": "feef823f-84e7-4fba-af14-a70d1f6b2dfc",
+      "checkTitles": false,
+      "title": "Shazwazza",
+      "url": "https://shazwazza.com/",
+      "rss": "http://feeds.feedburner.com/Shazwazza",
+      "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg",
+      "memberId": 1767
+    },
+    {
+      "id": "76e06586-1220-44b2-a475-bffc2c03499d",
+      "checkTitles": false,
+      "title": "Lee Kelleher",
+      "url": "https://leekelleher.com/",
+      "rss": "https://leekelleher.com/tag/umbraco/feed/",
+      "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png",
+      "memberId": 3042
+    },
+    {
+      "id": "573408F9-59D0-4010-87E8-9355ABF48335",
+      "checkTitles": false,
+      "title": "Skrift",
+      "url": "http://skrift.io/",
+      "rss": "http://skrift.io/articles/rss",
+      "logo": "http://skrift.io/css/images/logoRetina-black.png",
+      "memberId": null
+    },
+    {
+      "id": "B8AAE362-4344-47C5-8C91-C6960ABFC3DF",
+      "checkTitles": true,
+      "title": "John D Jones",
+      "url": "http://jondjones.com/",
+      "rss": "http://jondjones.com/rss/",
+      "logo": "http://www.jondjones.com/images/logo.png",
+      "memberId": 153060
+    },
+    {
+      "id": "D2D254D0-DE05-4B6C-A78A-E8C6D24C8AFD",
+      "checkTitles": false,
+      "title": "Cultiv",
+      "url": "https://cultiv.nl/",
+      "rss": "http://feeds.feedburner.com/blog-cultiv",
+      "logo": "https://cultiv.nl/images/logo.png",
+      "memberId": 4576
+    },
+    {
+      "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
+      "checkTitles": false,
+      "title": "Ismail’s umbraco adventures",
+      "url": "https://ismailmayat.wordpress.com/",
+      "rss": "https://ismailmayat.wordpress.com/tag/umbraco/feed/",
+      "logo": "https://0.gravatar.com/avatar/6495743815f2137983c9d19ad4746edb?s=96&d=&r=G",
+      "memberId": 1203
+    },
+    {
+      "id": "35E96E73-29A9-4DE0-BDA4-159CE4D23BB4",
+      "checkTitles": false,
+      "title": "ZpqrtBnk - Software Ektropist",
+      "url": "https://www.zpqrtbnk.net/",
+      "rss": "https://www.zpqrtbnk.net/rss",
+      "logo": "https://www.zpqrtbnk.net/img/zpqrtbnk/entropy2.png",
+      "memberId": 6724
+    },
+    {
+      "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
+      "checkTitles": false,
+      "title": "codeshare.co.uk Blog",
+      "url": "https://codeshare.co.uk/",
+      "rss": "https://codeshare.co.uk/feed/",
+      "logo": "https://codeshare.co.uk/img/logo.gif",
+      "memberId": 126488
+    },
+    {
+      "id": "27A50A0B-376B-451E-B203-8366DA22F511",
+      "checkTitles": false,
+      "title": "Dave on Umbraco",
+      "url": "http://dawoe.blogspot.dk/",
+      "rss": "http://dawoe.blogspot.com/feeds/posts/default?alt=rss",
+      "logo": "https://pbs.twimg.com/profile_images/542408550601859072/r4YfpaR7_400x400.jpeg",
+      "memberId": 2054
+    },
+    {
+      "id": "E3BA4BBE-2C08-4741-80BC-19FB536D7591",
+      "checkTitles": false,
+      "title": "Code 101",
+      "url": "https://code101.net/",
+      "rss": "https://code101.net/feed",
+      "logo": "https://pbs.twimg.com/profile_images/580012767815413760/19yrvSAF_400x400.png",
+      "memberId": 8882
+    },
+    {
+      "id": "55591488-7406-4287-AF72-CCF9F8AE7378",
+      "checkTitles": false,
+      "title": "Morten Bock",
+      "url": "https://blog.mortenbock.dk/",
+      "rss": "https://blog.mortenbock.dk/tag/umbraco/feed/",
+      "logo": "https://pbs.twimg.com/profile_images/606096665087344640/9aO-6dV4_400x400.jpg",
+      "memberId": 1201
+    },
+    {
+      "id": "12f4440a-c87b-4450-964a-d4ea50fae18c",
+      "checkTitles": false,
+      "title": "Anders Bjerner",
+      "url": "http://www.bjerner.dk/blog/",
+      "rss": "http://www.bjerner.dk/blog/rss/",
+      "logo": "http://www.gravatar.com/avatar/e3ad43cc015da910c21237961fa6d74d.jpg?s=256&d=mm",
+      "memberId": 66039
+    },
+    {
+      "id": "B916F613-DBC2-41A4-9499-2FA756A31630",
+      "checkTitles": false,
+      "title": "Attackmonkey",
+      "url": "http://www.attackmonkey.co.uk/blog",
+      "rss": "http://www.attackmonkey.co.uk/blog/rss?filterBy=umbraco",
+      "logo": "http://www.attackmonkey.co.uk/images/header-logo.png",
+      "memberId": 6280
+    },
+    {
+      "id": "7DF2AE1C-26C6-4BCB-A688-2346CBFAA042",
+      "checkTitles": false,
+      "title": "ProWorks",
+      "url": "http://www.proworks.com/blog",
+      "rss": "http://www.proworks.com/blog/rss",
+      "logo": "http://www.proworks.com/images/PWlogo.png",
+      "memberId": null
+    },
+    {
+      "id": "AADCF9A6-886A-4BD4-B184-ED1CF4D45974",
+      "checkTitles": false,
+      "title": "DotSee Blog",
+      "url": "https://www.dot-see.com",
+      "rss": "https://www.dot-see.com/en/blog/rss",
+      "logo": "https://www.dot-see.com/media/24590/dotsee.png",
+      "memberId": 3185
+    },
+    {
+      "id": "393514BF-F415-485A-A43E-7021B92FC78F",
+      "checkTitles": false,
+      "title": "Perplex",
+      "url": "https://www.perplex.nl/en/blog/umbraco",
+      "rss": "https://www.perplex.nl/rss/en/blog/umbraco",
+      "logo": "https://scontent-bru2-1.xx.fbcdn.net/v/t1.0-1/p200x200/18301933_1704816986200741_8275590260623615358_n.jpg?oh=8e0135ffe88177980a0c6651a289e216&oe=5B1D527F",
+      "memberId": null
+    }
+  ]
+}

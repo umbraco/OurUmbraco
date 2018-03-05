@@ -128,3 +128,33 @@
 		}
 	}
 }
+
+
+
+
+.social-links {
+	display: flex;
+	a {
+		border: 1px solid #7F9499;
+		border-radius: 3px;
+		background: #fff;
+		display: flex;
+		margin-top: 5px;
+		margin-right: 5px;
+		font-size: 13px;
+		font-weight: 400;
+		color: #445255;
+		padding: 1px 6px;
+		text-decoration: none;
+		i {
+			margin: 2px 4px 0 0;
+		}
+		&:hover,
+		&:focus {
+			background: #2EB369;
+			color: #fff;
+			font-weight: 700;
+			border-color: #2EB369;
+		}
+	}
+}

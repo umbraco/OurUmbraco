@@ -1,0 +1,84 @@
+﻿@using OurUmbraco.Community.Meetup
+@using Skybrud.Essentials.Locations
+@using Skybrud.Essentials.Locations.Extensions
+@using Skybrud.Essentials.Security
+
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    // Get a reference to the current member
+    var member = Members.GetCurrentMember();
+
+    // Get the location of the current member (if logged in and a location is present)
+    EssentialsLocation memberLocation = null;
+    if (member != null && member.HasValue("latitude") && member.HasValue("longitude"))
+    {
+        memberLocation =  new EssentialsLocation( member.GetPropertyValue<double>("latitude"), member.GetPropertyValue<double>("longitude"));
+    }
+    var meetupService = new MeetupService();
+    var meetups = meetupService.GetUpcomingMeetups().Items;
+}
+
+<section class="community">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Meetups</h1>
+                <p>
+                    Upcoming meetups organized by the Umbraco community.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <small>The first upcoming meetup for each meetup group are listed here</small>
+            </div>
+            <div class="col-md-12 flex" id="community-posts">
+                @foreach (var item in meetups)
+                {
+                    double distance = -1;
+
+                    if (memberLocation != null)
+                    {
+                        distance = item.Event.HasVenue ? memberLocation.GetDistance(item.Event.Venue) : memberLocation.GetDistance(item.Group);
+                    }
+
+                    <a href="@item.Event.Link" class="community-post">
+                        @if (item.Group.GroupPhoto != null)
+                        {
+                            <div class="avatar">
+                                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
+                            </div>
+                        }
+                        else
+                        {
+                            var fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+                            <div class="avatar">
+                                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+                            </div>
+            
+                        }
+                        <div class="meta">
+                            <div class="forum-thread-text">
+                                @if (distance >= 0 && distance <= 50000)
+                                {
+                                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @string.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
+                                }
+                                <h3>@item.Event.Name</h3>
+                                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+                @if (meetups.Length % 2 == 1)
+                {
+                    // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
+                    <div class="forum-thread" style="visibility: hidden;"></div>
+                }
+
+                @if (meetups.Any() == false)
+                {
+                    <h2>Could not load upcoming meetups.</h2>
+                }
+            </div>
+        </div>
+    </div>
+</section>

@@ -1,0 +1,45 @@
+﻿@using OurUmbraco.Community.GitHub
+@using OurUmbraco.Our.Models
+@inherits OurUmbracoTemplatePage
+
+@*@GitHubMatch()*@
+
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/OurUmbraco" })
+@Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-Community" })
+
+@helper GitHubMatch()
+{
+        <section class="community">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h1 class="text-center">GitHub Match (WIP)</h1>
+                        <p>
+                            For people who have added their GitHub name to their profile, match up their PRs.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>GitHub activity</small>
+                    </div>
+
+                    <div class="col-md-12 flex" id="github-statistics">
+                        @{
+                            var githubService = new GitHubService();
+                            var matches = githubService.MatchPullsToMembers();
+                        }
+                        <ul>
+                            @foreach (var match in matches)
+                            {
+                                <li>@Html.Raw(match)</li>
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+}

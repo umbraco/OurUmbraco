@@ -4,6 +4,7 @@
 @using OurUmbraco.Forum.Services
 @using OurUmbraco.MarketPlace.NodeListing
 @using OurUmbraco.Our
+@using OurUmbraco.Our.Extensions
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -21,7 +22,7 @@
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
 
-        var roles = member.GetRoles();
+        var badges = member.GetRoles().GetBadges();
 
         var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
         IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
@@ -53,10 +54,26 @@
                                 @Html.Raw(Utils.GetMemberAvatar(member, 125))
                                 <div class="text">
                                     <h3>@member.Name</h3>
-                                    @if (member.HasValue("twitter"))
+                                    @if (member.HasValue("twitter") || member.HasValue("github"))
                                     {
-                                        var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
-                                        <small><a href="https://twitter.com/@twitterHandle">&commat;<span>@twitterHandle</span></a></small>
+                                        <div class="social-links">
+                                            @if (member.HasValue("twitter"))
+                                            {
+                                                var twitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty);
+                                                <a href="https://twitter.com/@twitterHandle" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener">
+                                                    <i class="icon-twitter" aria-hidden="true"></i>
+                                                    <span>@twitterHandle</span>
+                                                </a>
+                                            }
+                                            @if (member.HasValue("github"))
+                                            {
+                                                var githubUsername = member.GetPropertyValue<string>("github").Replace("@", string.Empty);
+                                                <a href="https://github.com/@githubUsername" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener">
+                                                    <i class="icon-github" aria-hidden="true"></i>
+                                                    <span>@githubUsername</span>
+                                                </a>
+                                            }
+                                        </div>
                                     }
                                 </div>
                             </div> <!-- .member-details -->
@@ -65,12 +82,20 @@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="member-details">
-                                @if (roles.Any())
+                                @if (badges.Any())
                                 {
                                     <span class="roles">
-                                        @foreach (var role in roles)
+                                        @foreach (var badge in badges)
                                         {
-                                            <span class="@role">@role</span>
+                                            if (string.IsNullOrWhiteSpace(badge.Link))
+                                            {
+                                                <span class="@badge.CssClass">@badge.Name</span>
+                                            }
+                                            else
+                                            {
+                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                                                <span class="@badge.CssClass">@badge.Name</span>
+                                            }
                                         }
                                     </span>
                                 }

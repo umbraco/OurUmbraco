@@ -14,8 +14,8 @@
         try {
             $("#meetups").load("@Url.Action("GetEvents", "Meetups")");
         }
-        catch (errTwitter) {
-            console.log("Couldn't load meetups", errTwitter.message);
+        catch (errMeetups) {
+            console.log("Couldn't load meetups", errMeetups.message);
         }
 
         try {
@@ -27,8 +27,9 @@
         try {
             $("#github-contributors").load("@Url.Action("GitHubGetContributorsResult", "GitHubContributor")");
         }
-        catch (errForum) {
-            console.log("Couldn't load latest GitHub contributor activity", errForum.message);
+        catch (errGitHub) {
+            console.log("Couldn't load latest GitHub contributor activity", errGitHub.message);
         }
+        
     });
 </script> 

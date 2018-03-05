@@ -1,0 +1,228 @@
+﻿@using System.Text.RegularExpressions
+@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Videos
+@using Skybrud.Essentials.Strings
+@using Skybrud.Essentials.Strings.Extensions
+@using Skybrud.Social.Vimeo.Models.Videos
+@inherits UmbracoViewPage
+
+@{
+
+    var repo = new VideosService();
+
+    if (Request.QueryString["force-update"] == "1" && Members.IsAdmin())
+    {
+        repo.UpdateVimeoVideos("umbraco");
+    }
+
+    var allVideos = repo.GetVimeoVideosFromDisk("umbraco");
+    var categories = repo.GroupVideosByCategoryAndYear(allVideos);
+
+    string baseUrl = Request.RawUrl.Split('?')[0];
+
+    string categoryName = Request.QueryString["category"];
+    string categoryYear = Request.QueryString["year"];
+    
+
+    IEnumerable<VimeoVideo> videos;
+
+    VideosCategory selectedCategory = null;
+    int selectedYear = 0;
+
+    if (String.IsNullOrWhiteSpace(categoryName))
+    {
+        videos = allVideos;
+    }
+    else
+    {
+        selectedCategory = categories.FirstOrDefault(x => x.Name.ToKebabCase() == categoryName);
+        selectedYear = StringUtils.ParseInt32(categoryYear);
+
+        if (selectedCategory == null)
+        {
+            <p>Nay</p>
+            return;
+        }
+
+        if (selectedYear > 0)
+        {
+            List<VimeoVideo> yearVideos;
+            if (!selectedCategory.TryGetYear(selectedYear, out yearVideos))
+            {
+                <p>Nay</p>
+                return;
+            }
+            videos = yearVideos;
+        }
+        else
+        {
+            videos = selectedCategory.Videos;
+        }
+
+    }
+
+    // Count the total amount of videos matching the parameters
+    int videosCount = videos.Count();
+
+}
+
+<div class="has-sidebar">
+    <div class="page-content">
+        <div id="overlay" class="overlay"></div>
+        <div class="sidebar-area">
+            <div class="sidebar-content">
+                <div class="content-wrapper">
+                    <nav>
+                        <ul class="level-1">
+                            <li class="@(selectedCategory == null ? "active" : null)">
+                                <a href="@Model.Url"><h3>All videos</h3></a>
+                            </li>
+                            @foreach (var category in categories)
+                            {
+                                string name = category.Name.ToKebabCase();
+                                bool active = categoryName == name;
+                                <li class="@(active ? "active open" : null)">
+                                    <a href="@GetCategoryLink(category)"><h3>@category.Name</h3></a>
+                                    @if (active)
+                                    {
+                                        <ul class="level-2 open">
+                                            @foreach (int year in category.Years.OrderByDescending(x => x))
+                                            {
+                                                <li class="@(year.ToString() == categoryYear ? "active" : null)">
+                                                    <a href="@GetCategoryLink(category, year)"><h4>@year</h4></a>
+                                                </li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <div class="main-area">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <ul id="breadcrumb">
+                        <li><a href="@Model.Parent.Url">Our</a></li>
+                        <li><a href="@Model.Url">@Model.Name</a></li>
+                        @if (selectedCategory != null)
+                        {
+                            <li><a href="@GetCategoryLink(selectedCategory)">@selectedCategory.Name</a></li>
+                            if (selectedYear > 0)
+                            {
+                                <li><a href="@GetCategoryLink(selectedCategory, selectedYear)">@selectedYear</a></li>
+                            }
+                        }
+                    </ul>
+                    <div class="community-content">
+                        <h1 style="color: red; margin-bottom: 20px;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
+                        <div class="videos-list">
+                            <h1>Videos</h1>
+                            <div class="videos-list-meta">
+                                Showing @videosCount @(videosCount == 1 ? "video" : "videos")
+                                @if (selectedCategory != null)
+                                {
+                                    <span>matching <strong>@selectedCategory.Name</strong></span>
+                                    if (selectedYear > 0)
+                                    {
+                                        <span>and <strong>@selectedYear</strong></span>
+                                    }
+                                }
+                            </div>
+                            @foreach (var video in videos)
+                            {
+
+                                var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
+
+                                <div class="videos-item">
+                                    <div class="videos-details">
+                                        <a href="@video.Link" target="_blank" rel="noopener"><strong>@video.Name</strong></a>
+                                        <div class="videos-meta">
+                                            @video.CreatedTime.ToString("MMM d, yyyy")
+                                            &ndash;
+                                            @video.Duration.TotalMinutes.ToString("N0") min
+                                            &ndash;
+                                            @video.Stats.Plays @(@video.Stats.Plays == 1 ? "play" : "plays")
+                                            @if (video.MetaData.Connections.Likes.Total > 0)
+                                            {
+                                                <span>
+                                                    &ndash;
+                                                    @video.MetaData.Connections.Likes.Total likes
+                                                </span>
+                                            }
+                                        </div>
+                                        @if (video.HasTags)
+                                        {
+                                            <div class="videos-tags">
+                                                @foreach (var tag in video.Tags)
+                                                {
+                                                    <span class="videos-tag">@tag.Name</span>
+                                                }
+                                            </div>
+                                        }
+                                        @if (video.HasDescription)
+                                        {
+                                            string pattern = @"(((http|ftp|https):\/\/)?[\w\-_]+(\.[\w\-_]+)+([\w\-\.,@?^=%&amp;:\/~\+#]*[\w\-\@?^=%&amp;\/~\+#])?)";
+
+                                            string html = StringUtils.StripHtml(video.Description).Replace("\n", "<br />\n");
+
+                                            Regex rgxUrls = new Regex(pattern);
+                                            html = rgxUrls.Replace(html, "<a href=\"$1\" target=\"_blank\" rel=\"noopener\">$1</a>");
+
+                                            <div class="videos-description">@Html.Raw(html)</div>
+                                        }
+                                    </div>
+                                    @if (thumbnail != null)
+                                    {
+                                        <a href="#" class="videos-thumbnail" onclick="playVimeoVideo(this, '@video.Id'); return false;">
+                                            <div class="videos-thumbnail-overlay">
+                                                <i class="icon-Video"></i>
+                                            </div>
+                                            <div class="videos-thumbnail-background" style="background-image: url(@thumbnail.Link);"></div>
+                                        </a>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@functions {
+
+    public string GetCategoryLink(VideosCategory category)
+    {
+        return Model.Url + category.Name.ToKebabCase() + "/";
+    }
+
+    public string GetCategoryLink(VideosCategory category, int year)
+    {
+        return Model.Url + category.Name.ToKebabCase() + "/" + year + "/";
+    }
+
+}
+
+<script>
+
+    function playVimeoVideo(e, id) {
+
+        $('<iframe/>').attr({
+            src: 'https://player.vimeo.com/video/' + id + '?autoplay=1&amp;badge=0&amp;player_id=0',
+            frameborder: 0,
+            webkitallowfullscreen: '',
+            mozallowfullscreen: '',
+            allowfullscreen: '',
+            style: 'width: 100%; height: 100%;'
+        }).appendTo(e);
+
+        $('.videos-thumbnail-overlay', e).remove();
+        $('.videos-thumbnail-background', e).remove();
+
+    }
+
+</script>

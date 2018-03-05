@@ -1,7 +1,7 @@
 ﻿@using OurUmbraco.Wiki.BusinessLogic
 @inherits UmbracoTemplatePage
 @{
-    Layout = "~/Views/Master.cshtml";
+    Layout = null;
     if (Request["id"] == null)
     {
         return;
@@ -20,7 +20,11 @@
 
     var wikiFile = new WikiFile(fileId);
 
-    wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
+    if (wikiFile.FileType != null)
+    {
+        wikiFile.UpdateDownloadCounter(false, wikiFile.FileType == "package");
+    }
+
     using (var sqlHelper = umbraco.BusinessLogic.Application.SqlHelper)
     {
         var path = sqlHelper.ExecuteScalar<string>(
@@ -31,51 +35,56 @@
             "Select name from wikiFiles where id = @id;",
             sqlHelper.CreateParameter("@id", fileId));
 
-        var fileinfo = new System.IO.FileInfo(Server.MapPath(path));
-
-        var extension = System.IO.Path.GetExtension(Server.MapPath(path));
-        var type = "";
-        // set known types based on file extension  
-        if (extension != null)
+        if(file != null)
         {
-            switch (extension.ToLower())
+            var fileinfo = new FileInfo(Server.MapPath(path));
+            if(fileinfo.Exists)
             {
-                case ".tif":
-                case ".tiff":
-                    type = "image/tiff";
-                    break;
-                case ".jpg":
-                case ".jpeg":
-                    type = "image/jpeg";
-                    break;
-                case ".gif":
-                    type = "image/gif";
-                    break;
-                case ".docx":
-                case ".doc":
-                case ".rtf":
-                    type = "Application/msword";
-                    break;
-                case ".pdf":
-                    type = "Application/pdf";
-                    break;
-                case ".png":
-                    type = "image/png";
-                    break;
-                case ".bmp":
-                    type = "image/bmp";
-                    break;
-                default:
-                    type = "application/octet-stream";
-                    break;
+                var extension = Path.GetExtension(Server.MapPath(path));
+                var type = "";
+                // set known types based on file extension  
+                if (extension != null)
+                {
+                    switch (extension.ToLower())
+                    {
+                        case ".tif":
+                        case ".tiff":
+                            type = "image/tiff";
+                            break;
+                        case ".jpg":
+                        case ".jpeg":
+                            type = "image/jpeg";
+                            break;
+                        case ".gif":
+                            type = "image/gif";
+                            break;
+                        case ".docx":
+                        case ".doc":
+                        case ".rtf":
+                            type = "Application/msword";
+                            break;
+                        case ".pdf":
+                            type = "Application/pdf";
+                            break;
+                        case ".png":
+                            type = "image/png";
+                            break;
+                        case ".bmp":
+                            type = "image/bmp";
+                            break;
+                        default:
+                            type = "application/octet-stream";
+                            break;
+                    }
+                }
+
+                Response.Clear();
+
+                Response.AddHeader("Content-Disposition", "attachment; filename= " + file.Replace(" ", "-"));
+                Response.AddHeader("Content-Length", fileinfo.Length.ToString());
+                Response.ContentType = type;
+                Response.WriteFile(path);
             }
         }
-
-        Response.Clear();
-
-        Response.AddHeader("Content-Disposition", "attachment; filename= " + file.Replace(" ", "-"));
-        Response.AddHeader("Content-Length", fileinfo.Length.ToString());
-        Response.ContentType = type;
-        Response.WriteFile(path);
     }
 }

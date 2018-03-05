@@ -1,147 +1,161 @@
-﻿@inherits UmbracoViewPage<OurUmbraco.Forum.Models.ReadOnlyComment>
+﻿@inherits UmbracoViewPage<ReadOnlyComment>
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Forum.Models
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Powers.Library
 
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var commentAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
+
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin admin *@
 @if (commentAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == commentAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
 {
+    var badges = commentAuthor.Roles.GetBadges();
+    
     <li class="comment  @(Model.ParentCommentId > 0 ? "level-2" : null) @(Model.IsAnswer ? "solution" : null)" data-parent="@Model.ParentCommentId" id="comment-@Model.Id">
         <div class="meta">
             <div class="profile">
-                <a href="/member/@commentAuthor.Member.Id">@commentAuthor.Member.Name</a> <span>@if (commentAuthor.Member.ForumPosts() == 0 || commentAuthor.Member.ForumPosts() > 1){@commentAuthor.Member.ForumPosts() <text>posts</text>}else{@commentAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Member.Karma() karma points</span>
-                
+                <a href="/member/@commentAuthor.Member.Id">@commentAuthor.Member.Name</a> <span>@if (commentAuthor.Member.ForumPosts() == 0 || commentAuthor.Member.ForumPosts() > 1)
+                {@commentAuthor.Member.ForumPosts() <text>posts</text>}
+            else
+            {@commentAuthor.Member.ForumPosts() <text>post</text>}</span> <span>@commentAuthor.Member.Karma() karma points</span>
 
-                @if (commentAuthor.Roles.Any())
-                {
-                    <span class="roles">
-                        @foreach (var role in (commentAuthor.Roles))
-                        {
-                            <span class="@role">@role</span>
-                        }
-                    </span>
-                }
-
-            </div>
-            <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
-                @Model.Created.ConvertToRelativeTime()
-            </div>
-        </div>
-
-        <div class="comment-inner">
-            <a href="/member/@commentAuthor.Member.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor.Member, 75))</a>
-
-            <div class="highfive highfive-comment">
-                @{
-                    var html = "High fives from:<br />";
-                    foreach (var vote in Model.Votes)
+            @if (badges.Any())
+            {
+                <span class="roles">
+                    @foreach (var badge in badges)
                     {
-                        if (Model.IsAnswer && vote.MemberId == Model.TopicAuthorId)
+                        if (string.IsNullOrWhiteSpace(badge.Link))
                         {
-                            html = string.Format("{0}<a href=\"/member/{1}\">{2}</a> (marked as the answer)<br />", html, vote.MemberId, vote.MemberName);
+                            <span class="@badge.CssClass">@badge.Name</span>
                         }
                         else
                         {
-                            html = string.Format("{0}<a href=\"/member/{1}\">{2}</a><br />", html, vote.MemberId, vote.MemberName);
+                                    @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                            <span class="@badge.CssClass">@badge.Name</span>
                         }
                     }
-
-                    @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
-                }
-                <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
-                    @Model.Score
-                </div>
-                @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
-                {
-                    if (currentMember.Id != Model.MemberId)
-                    {
-                        <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
-
-                    }
-                }
+                </span>
+            }
             </div>
-
-            <div class="body markdown-syntax">
-                @if (Model.IsSpam)
-                {
-                    <div class="alert">
-                        @if (Model.MemberData.IsAdmin)
-                        {
-                            <span>You can see this comment because you're a moderator of the forum.</span><br/><br/>
-                        }
-                        Sorry if we're causing you any inconvenience but this comment has been automatically marked for manual approval. A moderator has been notified and will evaluate to make sure you're not trying to post spam. <br />
-                        Only moderators and the comment author can see this comment. When this comment has been approved this comment will be shown as normal. After that, your future comments will not need manual approval.<br /><br />
-                        <strong>Note:</strong> We will send you an email when your account has been approved.<br /><br />
-                        <strong>Why are we doing this?</strong> We're dealing with a spam problem that cannot be fought with automated systems. Therefore, we approve each account that has a low number of posts manually. Again, sorry for the inconvenience, we much appreciate your contribution and your patience while we approve your account.
-                    </div>
-                }
-
-                @Model.Body.Sanitize()
-            </div>
+        <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
+            @Model.Created.ConvertToRelativeTime()
         </div>
-        <div class="actions">
-            @if (Model.MemberData != null)
+    </div>
+
+    <div class="comment-inner">
+        <a href="/member/@commentAuthor.Member.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(commentAuthor.Member, 75))</a>
+
+        <div class="highfive highfive-comment">
+            @{
+                var html = "High fives from:<br />";
+                foreach (var vote in Model.Votes)
+                {
+                    if (Model.IsAnswer && vote.MemberId == Model.TopicAuthorId)
+                    {
+                        html = string.Format("{0}<a href=\"/member/{1}\">{2}</a> (marked as the answer)<br />", html, vote.MemberId, vote.MemberName);
+                    }
+                    else
+                    {
+                        html = string.Format("{0}<a href=\"/member/{1}\">{2}</a><br />", html, vote.MemberId, vote.MemberName);
+                    }
+                }
+
+                @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
+            }
+            <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
+                @Model.Score
+            </div>
+            @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
             {
-                <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id">
-                    <i class="icon-Flag"></i><span>Flag as spam</span>
+                if (currentMember.Id != Model.MemberId)
+                {
+                    <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" />High Five</a>
+
+                }
+            }
+        </div>
+
+        <div class="body markdown-syntax">
+            @if (Model.IsSpam)
+            {
+                <div class="alert">
+                    @if (Model.MemberData.IsAdmin)
+                    {
+                        <span>You can see this comment because you're a moderator of the forum.</span><br /><br />
+                    }
+                    Sorry if we're causing you any inconvenience but this comment has been automatically marked for manual approval. A moderator has been notified and will evaluate to make sure you're not trying to post spam. <br />
+                    Only moderators and the comment author can see this comment. When this comment has been approved this comment will be shown as normal. After that, your future comments will not need manual approval.<br /><br />
+                    <strong>Note:</strong> We will send you an email when your account has been approved.<br /><br />
+                    <strong>Why are we doing this?</strong> We're dealing with a spam problem that cannot be fought with automated systems. Therefore, we approve each account that has a low number of posts manually. Again, sorry for the inconvenience, we much appreciate your contribution and your patience while we approve your account.
+                </div>
+            }
+
+            @Model.Body.Sanitize()
+        </div>
+    </div>
+    <div class="actions">
+        @if (Model.MemberData != null)
+        {
+            <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id">
+                <i class="icon-Flag"></i><span>Flag as spam</span>
+            </a>
+
+            if (Model.IsAnswer == false && (Model.MemberData.IsAdmin || currentMember.Id == Model.TopicAuthorId))
+            {
+                <a href="#" class="solved" data-id="@Model.Id">
+                    <i class="icon-Check"></i><span>Mark as solution</span>
+                </a>
+            }
+
+            if (Model.ParentCommentId <= 0 && forumReadOnly == false)
+            {
+                <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
+                    <i class="icon-Reply-arrow"></i><span>Reply</span>
+                </a>
+            }
+
+            if (Model.ParentCommentId > 0 && forumReadOnly == false)
+            {
+                <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
+                    <i class="icon-Reply-arrow"></i><span>Reply</span>
+                </a>
+            }
+
+            if (Model.MemberData.IsAdmin || currentMember.Id == Model.MemberId)
+            {
+                <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
+                    <i class="icon-Edit"></i><span>Edit</span>
                 </a>
 
-                if (Model.IsAnswer == false && (Model.MemberData.IsAdmin || currentMember.Id == Model.TopicAuthorId))
-                {
-                    <a href="#" class="solved" data-id="@Model.Id">
-                        <i class="icon-Check"></i><span>Mark as solution</span>
-                    </a>
-                }
+                <a href="#" class="delete-reply" data-id="@Model.Id">
+                    <i class="icon-Delete-key"></i><span>Delete</span>
+                </a>
 
-                if (Model.ParentCommentId <= 0 && forumReadOnly == false)
+                if (Model.MemberData.IsAdmin)
                 {
-                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
-                        <i class="icon-Reply-arrow"></i><span>Reply</span>
-                    </a>
-                }
-
-                if (Model.ParentCommentId > 0 && forumReadOnly == false)
-                {
-                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
-                        <i class="icon-Reply-arrow"></i><span>Reply</span>
-                    </a>
-                }
-                
-                if (Model.MemberData.IsAdmin || currentMember.Id == Model.MemberId)
-                {
-                    <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
-                        <i class="icon-Edit"></i><span>Edit</span>
-                    </a>
-
-                    <a href="#" class="delete-reply" data-id="@Model.Id">
-                        <i class="icon-Delete-key"></i><span>Delete</span>
-                    </a>
-
-                    if (Model.MemberData.IsAdmin)
+                    if (Model.IsSpam)
                     {
-                        if (Model.IsSpam)
-                        {
-                            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
-                                <i class="icon-Alert-alt"></i><span>Mark as ham</span>
-                            </a>
-                        }
-                        else
-                        {
-                            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
-                                <i class="icon-Alert-alt"></i><span>Mark as spam</span>
-                            </a>
-                        }
+                        <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
+                            <i class="icon-Alert-alt"></i><span>Mark as ham</span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
+                            <i class="icon-Alert-alt"></i><span>Mark as spam</span>
+                        </a>
                     }
                 }
             }
+        }
 
-            <a href="#" id="copy-link" class="copy-link" data-id="#comment-@Model.Id">
-                <i class="icon-Link"></i><span>Copy Link</span>
-            </a>
-        </div>
-    </li>
+        <a href="#" id="copy-link" class="copy-link" data-id="#comment-@Model.Id">
+            <i class="icon-Link"></i><span>Copy Link</span>
+        </a>
+    </div>
+</li>
 }

@@ -22,10 +22,12 @@ namespace OurUmbraco.Our.Models
 
         public string Bio { get; set; }
 
+        [Display(Name = "Twitter alias")]
         public string TwitterAlias { get; set; }
 
         public string Location { get; set; }
 
-
+        [Display(Name = "GitHub username")]
+        public string GitHubUsername { get; set; }
     }
 }

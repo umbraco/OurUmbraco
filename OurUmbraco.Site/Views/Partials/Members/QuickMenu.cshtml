@@ -1,13 +1,17 @@
 ﻿@inherits OurUmbracoTemplatePage
 @using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Models
-@{ var profile = MemberData; }
+@{
+    var profile = MemberData;
+}
 <div class="quick-menu">
     <div class="container">
         <div class="row">
             <div class="col-md-12">
                 @if (profile != null)
                 {
+                    var badges = profile.Roles.GetBadges();
                     <div class="close">
                         <i class="icon-Delete"></i>Close
                     </div>
@@ -43,12 +47,20 @@
                                 <a href="https://twitter.com/@profile.TwitterHandle">&commat;<span>@profile.TwitterHandle</span></a>
                             </div>
                         }
-                        @if (profile.Roles.Any())
+                        @if (badges.Any())
                         {
                             <span class="roles">
-                                @foreach (var role in profile.Roles)
+                                @foreach (var badge in badges)
                                 {
-                                    <span class="@role">@role</span>
+                                    if (string.IsNullOrWhiteSpace(badge.Link))
+                                    {
+                                        <span class="@badge.CssClass">@badge.Name</span>
+                                    }
+                                    else
+                                    {
+                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                                        <span class="@badge.CssClass">@badge.Name</span>
+                                    }
                                 }
                             </span>
                         }
@@ -114,7 +126,7 @@
                 }
                 else
                 {
-                    <a href="/member/login">Sign in</a>  <a href="/member/Signup">Register</a>
+                    <a href="/member/login">Sign in</a> <a href="/member/Signup">Register</a>
                 }
             </div>
         </div>

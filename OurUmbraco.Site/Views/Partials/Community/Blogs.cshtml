@@ -1,0 +1,62 @@
+﻿@using OurUmbraco.Community.BlogPosts
+@using Skybrud.Essentials.Security
+
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var service = new BlogPostsService();
+
+    var items = service.GetCachedBlogPosts(30, 4).ToArray();
+
+    if (items.Length == 0)
+    {
+        return;
+    }
+}
+
+<section class="community">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Blog Posts</h1>
+                <p>
+                    Blog posts by members of the Umbraco community.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <small>Recent blog posts</small>
+            </div>
+            <div class="col-md-12 flex" id="community-posts">
+                @foreach (var item in items)
+                {
+                    <a href="@item.Link" target="_blank" rel="noopener" class="community-post">
+                        @if (item.Blog.HasLogoUrl)
+                        {
+                            <div class="avatar">
+                                <img src="@item.Blog.LogoUrl" />
+                            </div>
+                        }
+                        else
+                        {
+                            var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
+                            <div class="avatar">
+                                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+                            </div>
+                        }
+                        <div class="meta">
+                            <div class="forum-thread-text">
+                                <h3>@item.Title</h3>
+                                <p>@item.PublishedDate.ToString("MMM d, yyyy") by @item.Blog.Title</p>
+                            </div>
+                        </div>
+                    </a>
+                }
+
+                @if (items.Length % 2 == 1)
+                {
+                    // If there is an odd amount of items, we add a invisible div so the last item doesn't take up the full width
+                    <div class="community-post" style="visibility: hidden;"></div>
+                }
+            </div>
+        </div>
+    </div>
+</section>

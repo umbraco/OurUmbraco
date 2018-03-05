@@ -34,10 +34,7 @@ namespace OurUmbraco.Our.CustomHandlers
         {
             foreach (var item in e.PublishedEntities.Where(x => x.ContentType.Alias == "Project"))
             {
-                if (item.GetValue<bool>("projectLive"))
-                {
-                    UpdateProjectExamineIndex(item);
-                }
+                UpdateProjectExamineIndex(item);
             }
         }
 

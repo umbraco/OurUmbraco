@@ -246,15 +246,15 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "implementation":
                             return 1;
                         case "extending":
-                            return 3;
+                            return 2;
                         case "reference":
-                            return 4;
+                            return 3;
                         case "tutorials":
-                            return 5;
+                            return 4;
                         case "add-ons":
+                            return 5;
+                        case "umbraco-cloud":
                             return 6;
-                        case "umbraco-as-a-service":
-                            return 7;
                     }
                     break;
 
@@ -267,13 +267,23 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "backoffice":
                             return 1;
                         case "data":
-                            return 3;
+                            return 2;
                         case "design":
+                            return 3;
+                        case "code":
                             return 4;
 
                         //Implementation
                         case "default-routing":
                             return 0;
+                        case "custom-routing":
+                            return 1;
+                        case "controllers":
+                            return 2;
+                        case "data-persistence":
+                            return 3;
+                        case "rest-api":
+                            return 4;
 
                         //Extending
                         case "dashboards":
@@ -284,6 +294,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
                         case "macro-parameter-editors":
                             return 3;
+                        case "healthcheck":
+                            return 4;
+                        case "language-files":
+                            return 5;
 
                         //Reference
                         case "config":
@@ -304,14 +318,30 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 7;
                         case "cache":
                             return 8;
+                        case "packaging":
+                            return 9;
+                        case "security":
+                            return 10;
+                        case "common-pitfalls":
+                            return 11;
 
                         //Tutorials
                         case "creating-basic-site":
                             return 0;
+                        case "creating-a-custom-dashboard":
+                            return 1;
+                        case "creating-a-property-editor":
+                            return 2;
+                        case "multilanguage-setup":
+                            return 3;
+                        case "starter-kit":
+                            return 4;
 
                         //Add ons
                         case "umbracoforms":
                             return 0;
+                        case "umbracocourier":
+                            return 1;
 
                         //Umbraco Cloud
                         case "getting-started":
@@ -320,8 +350,15 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "deployment":
                             return 2;
-                        case "troubleshooting":
+                        case "databases":
                             return 3;
+                        case "upgrades":
+                            return 4;
+                        case "troubleshooting":
+                            return 5;
+                        case "frequently-asked-questions":
+                            return 6;
+                        
                     }
                     break;
 
@@ -343,6 +380,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 0;
                         case "property-editors":
                             return 1;
+                        case "login":
+                            return 2;
 
                         //Getting Started - Data
                         case "defining-content":
@@ -353,6 +392,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 2;
                         case "data-types":
                             return 3;
+                        case "scheduled-publishing":
+                            return 4;
 
                         //Getting Started - Design
                         case "templates":
@@ -385,7 +426,7 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 0;
                         case "404handlers":
                             return 1;
-                        case "appalications":
+                        case "applications":
                             return 2;
                         case "embeddedmedia":
                             return 3;
@@ -403,6 +444,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 9;
                         case "umbracosettings":
                             return 10;
+                        case "dashboard":
+                            return 11;
+                        case "healthchecks":
+                            return 12;
 
                         //Reference - Templating
                         case "mvc":
@@ -411,6 +456,8 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "macros":
                             return 2;
+                        case "modelsbuilder":
+                            return 3;
 
                         //Reference - Querying
                         case "ipublishedcontent":
@@ -429,6 +476,10 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                             return 1;
                         case "webapi":
                             return 2;
+                        case "iisrewriterules":
+                            return 3;
+                        case "url-tracking":
+                            return 4;
 
                         //Add Ons - UmbracoForms
                         case "installation":
@@ -438,25 +489,73 @@ namespace OurUmbraco.Documentation.Busineslogic.GithubSourcePull
                         case "developer":
                             return 2;
 
-                        //Add ons - UmbracoCourrier
+                        //Add ons - UmbracoCourier
                         case "architechture":
-                            return 3;
-
-                        //UaaS - Getting Started
-                        case "baselines":
-                            return 0;
-                        case "baseline-merge-conflicts":
                             return 1;
 
-                        //UaaS - Set Up
+                        //Umbraco Cloud - Getting Started
+                        case "project-overview":
+                            return 0;
+                        case "environments":
+                            return 1;
+                        case "the-umbraco-cloud-portal":
+                            return 2;
+                        case "baselines":
+                            return 3;
+                        case "migrate-existing-site":
+                            return 4;
+
+                        //Umbraco Cloud - Set Up
                         case "working-locally":
                             return 0;
-                        case "team-members":
-                            return 1;
                         case "visual-studio":
+                            return 1;
+                        case "working-with-visual-studio":
                             return 2;
-                        case "media":
+                        case "working-with-uaas-cli":
                             return 3;
+                        case "project-settings":
+                            return 4;
+                        case "team-members":
+                            return 5;
+                        case "media":
+                            return 6;
+                        case "smtp-settings":
+                            return 7;
+                        case "manage-domains":
+                            return 8;
+                        case "config-transforms":
+                            return 9;
+                        case "power-tools":
+                            return 10;
+
+                        //Umbraco Cloud - Deployment
+                        case "local-to-cloud":
+                            return 0;
+                        case "cloud-to-cloud":
+                            return 1;
+                        case "content-transfer":
+                            return 2;
+                        case "restoring-content":
+                            return 3;
+                        case "deployment-webhook":
+                            return 4;
+
+                        //Umbraco Cloud - Troubleshooting
+                        case "content-deploy-schema":
+                            return 0;
+                        case "content-deploy-error":
+                            return 1;
+                        case "structure-error":
+                            return 2;
+                        case "duplicate-dictionary-items":
+                            return 3;
+                        case "moving-from-courier-to-deploy":
+                            return 4;
+                        case "minor-upgrades":
+                            return 5;
+                        case "plugins-known-issues":
+                            return 6;
 
                     }
                     break;
