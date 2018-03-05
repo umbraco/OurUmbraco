@@ -1,7 +1,7 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
-using MarkdownDeep;
+using Markdig;
+
 
 namespace OurUmbraco.Documentation.Busineslogic
 {
@@ -41,8 +41,9 @@ namespace OurUmbraco.Documentation.Busineslogic
                 var clean = Regex.Replace(text, MarkdownLogic.RegEx, new MatchEvaluator(match => LinkEvaluator(match, PrefixLinks)),
                     RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
 
-                Markdown md = new Markdown();
-                string transform = md.Transform(clean);
+                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                var transform = Markdown.ToHtml(clean, pipeline);
+
                 return transform;
             }
 
