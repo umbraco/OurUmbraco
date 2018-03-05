@@ -74,7 +74,7 @@
                             <div class="package-retired">
                                 <h3>This project is marked as retired</h3>
 
-                                @{ 
+                                @{
                                     var retiredMessage = project.GetPropertyValue<string>("retiredMessage");
 
                                     if (!string.IsNullOrWhiteSpace(retiredMessage))
@@ -401,7 +401,7 @@
                             </ul>
                         </div>
 
-                        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl))
+                        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl) || !string.IsNullOrEmpty(demoUrl))
                         {
                             <div class="package-compatibility-information">
                                 <h3>External resources</h3>
@@ -410,19 +410,25 @@
                                     @if (!string.IsNullOrEmpty(sourceUrl))
                                     {
                                         <li>
-                                            <a href="@sourceUrl">Source code</a>
+                                            <a href="@sourceUrl" rel="nofollow">Source code</a>
                                         </li>
                                     }
                                     @if (!string.IsNullOrEmpty(websiteUrl))
                                     {
                                         <li>
-                                            <a href="@websiteUrl">Project website</a>
+                                            <a href="@websiteUrl" rel="nofollow">Project website</a>
                                         </li>
                                     }
                                     @if (!string.IsNullOrEmpty(supportUrl))
                                     {
                                         <li>
-                                            <a href="@supportUrl">Issue tracker</a>
+                                            <a href="@supportUrl" rel="nofollow">Issue tracker</a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(demoUrl))
+                                    {
+                                        <li>
+                                            <a href="@demoUrl" rel="nofollow">Demonstration</a>
                                         </li>
                                     }
                                 </ul>
