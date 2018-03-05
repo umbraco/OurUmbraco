@@ -54,6 +54,8 @@ namespace OurUmbraco.MarketPlace.ListingItem
             VendorId = content.GetPropertyValue<int>("owner");
             Logo = content.GetPropertyValue<string>("logo", "");
             LicenseKey = content.GetPropertyValue<string>("licenseKey", "");
+            IsRetired = content.GetPropertyValue<bool>("isRetired", false);
+            RetiredMessage = content.GetPropertyValue<string>("retiredMessage", "");
         }
 
         public PublishedContentListingItem()
@@ -123,6 +125,7 @@ namespace OurUmbraco.MarketPlace.ListingItem
         public int ProjectViews { get; set; }
         public Guid Version { get; set; }
         public DateTime CreateDate { get; set; }
-        
+        public bool IsRetired { get; set; }
+        public string RetiredMessage { get; set; }
     }
 }

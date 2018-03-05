@@ -79,7 +79,9 @@ namespace OurUmbraco.Our.Controllers
         public ActionResult SaveDetails(ProjectDetails model)
         {
             if (ModelState.IsValid == false)
+            {
                 return CurrentUmbracoPage();
+            }
 
             var nodeListingProvider = new NodeListingProvider();
             var project = (model.Id != 0) ? nodeListingProvider.GetListing(model.Id) : new PublishedContentListingItem();
@@ -99,9 +101,14 @@ namespace OurUmbraco.Our.Controllers
             project.GACode = model.GoogleAnalyticsCode;
             project.ProjectGuid = (model.Guid == Guid.Empty) ? Guid.NewGuid() : model.Guid; //this is used as the Unique project ID.
             project.ListingType = ListingType.free;
+            project.IsRetired = model.IsRetired;
+            project.RetiredMessage = model.RetiredMessage;
+
             // only set memberId when saving for the first time, else collaborators will cause it to switch the owner of the package
             if (model.Id == 0)
+            {
                 project.VendorId = Members.GetCurrentMemberId();
+            }
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
 

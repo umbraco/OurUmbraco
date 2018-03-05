@@ -49,7 +49,8 @@ namespace OurUmbraco.Our
             AddCommunityBlogs();
             AddCommunityStatistics();
             AddCommunityVideos();
-            AddVideosPage();			
+            AddVideosPage();
+            AddRetiredStatusToPackages();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1147,7 +1148,6 @@ namespace OurUmbraco.Our
             }
         }
 
-
         private void AddCommunityStatistics()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1310,6 +1310,51 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-		
+
+        private void AddRetiredStatusToPackages()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var projectContentTypeAlias = "Project";
+                var projectContentType = contentTypeService.GetContentType(projectContentTypeAlias);
+
+                var checkboxTypeAlias = "isRetired";
+                var textboxTypeAlias = "retiredMessage";
+
+                if (projectContentType.PropertyTypeExists(checkboxTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, checkboxTypeAlias) { Name = "Is Retired?" };
+                    projectContentType.AddPropertyType(checkboxPropertyType, projectContentTypeAlias);
+                    contentTypeService.Save(projectContentType);
+                }
+
+                if (projectContentType.PropertyTypeExists(textboxTypeAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, textboxTypeAlias) { Name = "Retired Message" };
+                    projectContentType.AddPropertyType(textboxPropertyType, projectContentTypeAlias);
+                    contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }

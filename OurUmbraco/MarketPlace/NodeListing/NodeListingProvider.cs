@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
+using Examine;
 using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Providers;
@@ -172,6 +173,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("owner", listingItem.VendorId);
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
             content.SetValue("licenseKey", listingItem.LicenseKey);
+            content.SetValue("isRetired", listingItem.IsRetired);
+            content.SetValue("retiredMessage", listingItem.RetiredMessage);
 
             if (listingItem.PackageFile != null)
             {
@@ -215,10 +218,17 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 }
             }
 
+            if (listingItem.IsRetired)
+                listingItem.Live = false;
+
             contentService.SaveAndPublishWithStatus(content);
 
             listingItem.Id = content.Id;
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
+
+            var indexer = ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
+            if(indexer != null)
+                indexer.DeleteFromIndex(listingItem.Id.ToString());
         }
 
 
