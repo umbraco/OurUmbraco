@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using Examine;
+using Examine.SearchCriteria;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
 
@@ -13,19 +14,16 @@ namespace OurUmbraco.Community.Map
         public List<MemberLocation> GetAllMemberLocations()
         { 
             var memberSearcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
-            var query = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
-
+            var searchCritera = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
+            
             //Find all active members - where a lat & lon is set (with new NodeGathering field to index)
-            query.Field("hasLocationSet", "1");
+            var query = searchCritera.Field("hasLocationSet", "1");
 
-                /*
-                .And().Field("blocked", "0")
-                .And().Field("umbracoMemberApproved ", "1").Compile();
-                */
+            //TODO: Check for members where blocked is false (0)
+            //And umbracoMemberApproved is true (1)
+            //I can't get to get it to work with the results I would expect currently
 
-            //Query
-            var results = memberSearcher.Search(query);
-            var rawQuery = query.ToString();
+            var results = memberSearcher.Search(query.Compile());
 
             //Pluck the fields we need from the Examine index fields
             //For our much simpler model to send back as the JSON response
