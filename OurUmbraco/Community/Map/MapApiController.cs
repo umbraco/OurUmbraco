@@ -31,7 +31,9 @@ namespace OurUmbraco.Community.Map
             {
                 Name = result.Fields["nodeName"],
                 Lat = result.Fields["latitude"],
-                Lon = result.Fields["longitude"]
+                Lon = result.Fields["longitude"],
+                Avatar = result.Fields["avatar"],
+                Id = result.Id
             })
             .ToList();
             
