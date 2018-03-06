@@ -45,7 +45,7 @@ namespace OurUmbraco.Community.Karma
                 {
                     // Yearly karma counts from May 1st until May 1st each year. If the date in this year is before May 1st, shift back an extra year
                     var yearShift = 0;
-                    if (DateTime.Now > new DateTime(DateTime.Now.Year, 5, 1))
+                    if (DateTime.Now >= new DateTime(DateTime.Now.Year, 5, 1))
                         yearShift = 1;
 
                     var karmaYear = Our.Api.StatisticsController.GetPeopleData(
@@ -86,9 +86,7 @@ namespace OurUmbraco.Community.Karma
         {
             DateTime date = DateTime.Now.AddDays(-7);
             while (date.DayOfWeek != DayOfWeek.Monday)
-            {
                 date = date.AddDays(-1);
-            }
 
             return date;
         }
