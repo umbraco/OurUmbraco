@@ -143,9 +143,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 ? contentService.GetById(listingItem.Id)
                 : contentService.CreateContent(listingItem.Name, listingItem.CategoryId, "Project");
 
-            Guid packageGuid;
             var packageGuidValue = content.GetValue<string>("packageGuid");
-            var packageGuidString = Guid.TryParse(packageGuidValue, out packageGuid)
+            var packageGuidString = Guid.TryParse(packageGuidValue, out Guid packageGuid)
                 ? packageGuid.ToString()
                 : Guid.NewGuid().ToString();
 
@@ -169,7 +168,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("notAPackage", listingItem.NotAPackage);
             content.SetValue("packageGuid", packageGuidString);
             content.SetValue("approved", (listingItem.Approved) ? "1" : "0");
-            content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
+            if(isUpdate == false)
+                content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
             content.SetValue("owner", listingItem.VendorId);
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
             content.SetValue("licenseKey", listingItem.LicenseKey);
@@ -227,7 +227,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
 
             var indexer = ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
-            if(indexer != null)
+            if(indexer != null && listingItem.IsRetired)
                 indexer.DeleteFromIndex(listingItem.Id.ToString());
         }
 
