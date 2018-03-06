@@ -510,6 +510,7 @@
     <Content Include="config\uVersion.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
     <Content Include="css\img\select2.png" />
@@ -4362,7 +4363,7 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
-    <Content Include="Views\Partials\Videos\Home.cshtml" />    
+    <Content Include="Views\Partials\Videos\Home.cshtml" />
     <Content Include="Views\CommunityBlogs.cshtml" />
     <Content Include="Views\Partials\Community\Blogs.cshtml" />
     <Content Include="Views\Partials\Community\Statistics.cshtml" />
@@ -4380,13 +4381,13 @@
     <Content Include="Views\ProjectGroup.cshtml" />
     <Content Include="Views\ProjectsTags.cshtml" />
     <Content Include="Views\CommunityVideos.cshtml" />
-    <Content Include="Views\Partials\Community\Gitter.cshtml" />    
+    <Content Include="Views\Partials\Community\Gitter.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
     <Content Include="Views\Partials\Videos\Home.cshtml" />
-    <Content Include="Views\Partials\Community\Videos.cshtml" />    
+    <Content Include="Views\Partials\Community\Videos.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />

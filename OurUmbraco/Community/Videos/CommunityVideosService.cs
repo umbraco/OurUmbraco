@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Web.Hosting;
+using Newtonsoft.Json;
 using Skybrud.Essentials.Json;
 using Skybrud.Social.Google.Common;
 using Skybrud.Social.Google.YouTube.Models.Videos;
@@ -11,13 +13,13 @@ using Skybrud.Social.Google.YouTube.Options.Playlists;
 using Skybrud.Social.Google.YouTube.Options.Videos;
 using Umbraco.Core;
 using Umbraco.Core.IO;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Community.Videos
 {
 
     public class CommunityVideosService
     {
-
         protected GoogleService Api { get; private set; }
 
         public CommunityVideosService()
@@ -40,15 +42,53 @@ namespace OurUmbraco.Community.Videos
             string path = dir + "Video_" + videoId + ".json";
             return JsonUtils.LoadJsonObject(path, YouTubeVideo.Parse);
         }
+        
+        public Playlist[] GetPlaylists()
+        {
+            try
+            {
+                var path = HostingEnvironment.MapPath("~/config/YouTubePlaylists.json");
+                using (var file = File.OpenText(path))
+                {
+                    var jsonSerializer = new JsonSerializer();
+                    var youtube = (YouTubeInfo)jsonSerializer.Deserialize(file, typeof(YouTubeInfo));
+                    return youtube.PlayLists;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<CommunityVideosService>("Unable to parse config file", ex);
+            }
 
-        public YouTubeVideo[] LoadYouTubePlaylistVideos(string playlistId)
+            return new List<Playlist>().ToArray();
+        }
+
+        public YouTubeVideo[] LoadYouTubePlaylistVideos()
+        {
+            var videos = new List<YouTubeVideo>();
+
+            var playlists = GetPlaylists();
+            foreach (var playlist in playlists)
+                videos.AddRange(LoadYouTubePlaylistVideo(playlist.Id));
+
+            return videos.ToArray();
+        }
+
+        public YouTubeVideo[] LoadYouTubePlaylistVideo(string playlistId)
         {
             string dir = IOHelper.MapPath("~/App_Data/TEMP/YouTube/");
             string path = dir + "Playlist_" + playlistId + "_Videos.json";
             return JsonUtils.LoadJsonArray(path, YouTubeVideo.Parse);
         }
 
-        public void UpdateYouTubePlaylistVideos(string playlistId)
+        public void UpdateYouTubePlaylistVideos()
+        {
+            var playlists = GetPlaylists();
+            foreach (var playlist in playlists)
+                UpdateYouTubePlaylistVideo(playlist.Id);
+        }
+
+        public void UpdateYouTubePlaylistVideo(string playlistId)
         {
 
             // Make sure we have a TEMP directory
@@ -133,9 +173,6 @@ namespace OurUmbraco.Community.Videos
 
             // Load the videos from the individual files, and save them to a common file
             JsonUtils.SaveJsonArray(dir + "Playlist_" + playlistId + "_Videos.json", ids.Select(LoadYouTubeVideo).WhereNotNull());
-
         }
-
     }
-
 }

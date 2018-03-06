@@ -97,12 +97,9 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateCommunityVideosOnDisk()
         {
-            
             // Initialize a new service
             var service = new CommunityVideosService();
-            
-            service.UpdateYouTubePlaylistVideos(CommunityVideosConstants.Playlists.UmbraCoffeePlaylistId);
-
+            service.UpdateYouTubePlaylistVideos();
         }
 
     }
