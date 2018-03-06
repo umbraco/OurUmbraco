@@ -16,7 +16,7 @@ namespace OurUmbraco.Community.Karma
                 () =>
                 {
                     var lastweekStart = GetLastWeekStartDate();
-                    var karmaRecent = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now.AddYears(-1));
+                    var karmaRecent = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now);
 
                     foreach (var period in karmaRecent.MostActiveDateRange)
                     {
