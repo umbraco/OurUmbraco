@@ -1,12 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Examine;
 using OurUmbraco.Community.Controllers;
 using OurUmbraco.Our.Api;
-using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Web;
 
@@ -88,7 +84,7 @@ namespace OurUmbraco.Community.Karma
 
         private static DateTime GetLastWeekStartDate()
         {
-            DateTime date = DateTime.Now.AddYears(-1).AddDays(-7);
+            DateTime date = DateTime.Now.AddDays(-7);
             while (date.DayOfWeek != DayOfWeek.Monday)
             {
                 date = date.AddDays(-1);
