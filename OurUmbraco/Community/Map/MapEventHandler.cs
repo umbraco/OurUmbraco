@@ -1,4 +1,6 @@
 ﻿using Examine;
+using Lucene.Net.Documents;
+using System;
 using Umbraco.Core;
 using UmbracoExamine;
 
@@ -14,8 +16,36 @@ namespace OurUmbraco.Community.Map
             //This is so that we can add 'null' to the lat & lon member fields
             //Or add new computed field that is a bool - that indicates that the member has lat/lon info
             //To help filter/exclude members who does not have this property set
-
             ExamineManager.Instance.IndexProviderCollection["InternalMemberIndexer"].GatheringNodeData += MapEventHandler_GatheringNodeData;
+
+            //Add lower level Document Writing Examine Event - when we are saving/storing the Lucene Document
+            //Allows us to add a new field type - but also set its type (which cant be done in GatheringNodeData even)
+            var indexer = (UmbracoContentIndexer)ExamineManager.Instance.IndexProviderCollection["InternalMemberIndexer"];
+            indexer.DocumentWriting += Indexer_DocumentWriting;
+        }
+
+        private void Indexer_DocumentWriting(object sender, Examine.LuceneEngine.DocumentWritingEventArgs e)
+        {
+            //Get existing field karma field - some members may not have a value set - so check in case
+            var existingField = e.Document.GetField("reputationCurrent");
+            if(existingField != null)
+            {
+                //Add new field that is numeric
+                var karmaField = new NumericField("karma", Field.Store.YES, true);
+
+                //Get the existing value that is stored on the vanilla property that stores as strings
+                var existingValue = existingField.StringValue();
+
+                //Convert to int
+                var valAsInt = Convert.ToInt32(existingValue);
+
+                //Set it on the karma field
+                karmaField.SetIntValue(valAsInt);
+
+                //Add the field to the document
+                e.Document.Add(karmaField);
+            }
+
         }
 
         private void MapEventHandler_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
@@ -24,7 +54,7 @@ namespace OurUmbraco.Community.Map
             //Lets be certain that the indextype is member
             if (e.IndexType != IndexTypes.Member)
                 return;
-
+            
             var hasLocationSet = false;
 
             //Check if the fields

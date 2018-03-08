@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
 using Examine;
-using Examine.SearchCriteria;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
 
@@ -19,9 +19,9 @@ namespace OurUmbraco.Community.Map
             //Find all active members - where a lat & lon is set (with new NodeGathering field to index)
             var query = searchCritera.Field("hasLocationSet", "1")
                 .And().Field("blocked", "0")
-                .And().Field("umbracoMemberApproved", "1");
-
-            var rawQuery = query.ToString();
+                .And().Field("umbracoMemberApproved", "1")
+                .Not().Range("karma", 0, 70, true, true); //Does not have karma points in between 0 to 70 (So must be over 70 then)
+            
             var results = memberSearcher.Search(query.Compile());
 
             //Pluck the fields we need from the Examine index fields
@@ -32,7 +32,8 @@ namespace OurUmbraco.Community.Map
                 Name = result.Fields["nodeName"],
                 Avatar = result.Fields["avatar"],
                 Lat = result.Fields["latitude"],
-                Lon = result.Fields["longitude"]
+                Lon = result.Fields["longitude"],
+                Karma = Convert.ToInt32(result.Fields["karma"])
             })
             .ToList();
             

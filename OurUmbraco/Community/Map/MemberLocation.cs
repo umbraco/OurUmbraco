@@ -11,5 +11,7 @@
         public int Id { get; set; }
 
         public string Avatar { get; set; }
+
+        public int Karma {  get; set; }
     }
 }
