@@ -26,9 +26,15 @@ namespace OurUmbraco.Community.Map
 
         private void Indexer_DocumentWriting(object sender, Examine.LuceneEngine.DocumentWritingEventArgs e)
         {
+            SetKarmaAsNumericField(e);
+            SetLocationAsDoubleField(e);
+        }
+
+        private static void SetKarmaAsNumericField(Examine.LuceneEngine.DocumentWritingEventArgs e)
+        {
             //Get existing field karma field - some members may not have a value set - so check in case
             var existingField = e.Document.GetField("reputationCurrent");
-            if(existingField != null)
+            if (existingField != null)
             {
                 //Add new field that is numeric
                 var karmaField = new NumericField("karma", Field.Store.YES, true);
@@ -45,7 +51,25 @@ namespace OurUmbraco.Community.Map
                 //Add the field to the document
                 e.Document.Add(karmaField);
             }
+        }
 
+        private static void SetLocationAsDoubleField(Examine.LuceneEngine.DocumentWritingEventArgs e)
+        {
+            //Get existing field - some members may not have a valueset - so check in case
+            var existingLatField = e.Document.GetField("latitude");
+            var existingLonField = e.Document.GetField("longitude");
+
+            if (existingLatField != null && existingLonField != null)
+            {
+                var latitude = Convert.ToDouble(existingLatField.StringValue());
+                var longitude = Convert.ToDouble(existingLonField.StringValue());
+
+                var latNumnber = new NumericField("latitudeNumber", Field.Store.YES, true).SetDoubleValue(latitude);
+                var lonNumnber = new NumericField("longitudeNumber", Field.Store.YES, true).SetDoubleValue(longitude);
+                
+                e.Document.Add(latNumnber);
+                e.Document.Add(lonNumnber);
+            }
         }
 
         private void MapEventHandler_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
