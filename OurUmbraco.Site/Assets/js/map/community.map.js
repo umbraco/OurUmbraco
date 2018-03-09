@@ -2,9 +2,26 @@
 
     var map = new google.maps.Map(document.getElementById('map'),
         {
-            zoom: 2,
+            zoom: 5,
             center: { lat: 0, lng: 0 }
         });
+
+    // Try HTML5 geolocation.
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(function (position) {            
+            var pos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            //Use the lat & lon of the users current location
+            //To set the center of the map
+            map.setCenter(pos);
+
+        }, function () {
+            //If we ever need todo handle error handling - or user denined permission
+        });
+    }
 
     // Add some markers to the map.
     // Note: The code uses the JavaScript Array.prototype.map() method to
