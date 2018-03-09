@@ -19,10 +19,14 @@
             });
 
             var infowindow = new google.maps.InfoWindow({
-                content: "<a href='/member/" + item.Id + "' style='display:flex; align-items:center;'><img src='" + item.Avatar +"' title='" + item.Name + "' style='margin-right:5px;'/>" + item.Name + "</a>"
+                content: "<span>Loading</span>"
             });
 
-            marker.addListener('click', function() {
+            //Only render the HTML content - when you click the marker
+            var html = "<a href='/member/" + item.Id + "' style='display:flex; align-items:center;'><img src='" + item.Avatar + "' title='" + item.Name + "' style='margin-right:5px;'/>" + item.Name + "</a>";
+
+            marker.addListener('click', function () {
+                infowindow.setContent(html);
                 infowindow.open(map, marker);
             });
 
