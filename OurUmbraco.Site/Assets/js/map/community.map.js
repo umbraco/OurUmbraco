@@ -3,7 +3,7 @@
     var map = new google.maps.Map(document.getElementById('map'),
         {
             zoom: 5,
-            center: { lat: 0, lng: 0 }
+            center: { lat: 51.4472452, lng: 2.8123371 }
         });
 
     // Try HTML5 geolocation.
@@ -15,8 +15,9 @@
             };
 
             //Use the lat & lon of the users current location
-            //To set the center of the map
+            //To set the center of the map and zoom in closer
             map.setCenter(pos);
+            map.setZoom(8);
 
         }, function () {
             //If we ever need todo handle error handling - or user denined permission
