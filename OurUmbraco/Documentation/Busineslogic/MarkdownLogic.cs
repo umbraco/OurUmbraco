@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Text.RegularExpressions;
 using Markdig;
+using Markdig.Extensions.AutoIdentifiers;
 
 
 namespace OurUmbraco.Documentation.Busineslogic
@@ -41,7 +42,7 @@ namespace OurUmbraco.Documentation.Busineslogic
                 var clean = Regex.Replace(text, MarkdownLogic.RegEx, new MatchEvaluator(match => LinkEvaluator(match, PrefixLinks)),
                     RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
 
-                var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+                var pipeline = new MarkdownPipelineBuilder().UseAutoIdentifiers(AutoIdentifierOptions.GitHub).UseAdvancedExtensions().Build();
                 var transform = Markdown.ToHtml(clean, pipeline);
 
                 return transform;
