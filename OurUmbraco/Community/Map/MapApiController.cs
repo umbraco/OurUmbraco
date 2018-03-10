@@ -33,7 +33,7 @@ namespace OurUmbraco.Community.Map
                 .And().Field("blocked", "0")
                 .And().Field("umbracoMemberApproved", "1")                
                 .And().Range("latitudeNumber", longSwLat, longNeLat, true, true)
-                .And().Range("longitudeNumber", longSwLat, longNeLat, true, true)
+                .And().Range("longitudeNumber", longSwLon, longNeLon, true, true)
                 .Not().Range("karma", 0, 70, true, true);
 
 
