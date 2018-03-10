@@ -25,13 +25,13 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <param name="optimized"></param>
         /// <param name="projectKarma"></param>
         /// <returns></returns>
-        public IListingItem GetListing(int id, bool optimized = false, int projectKarma = -1)
+        public IListingItem GetListing(int id, bool optimized = false)
         {
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var content = umbracoHelper.TypedContent(id);
 
             if (content != null)
-                return GetListing(content, optimized, projectKarma);
+                return GetListing(content, optimized);
 
             throw new NullReferenceException("Content is Null cannot find a node with the id:" + id);
         }
@@ -72,7 +72,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
         /// <param name="optimized">if set performs less DB interactions to increase speed.</param>
         /// <param name="projectKarma"></param>
         /// <returns></returns>
-        public IListingItem GetListing(IPublishedContent content, bool optimized = false, int projectKarma = -1)
+        public IListingItem GetListing(IPublishedContent content, bool optimized = false, int? projectKarma = null)
         {
             if (content == null) throw new ArgumentNullException("content");
 
@@ -84,7 +84,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             // TODO: N+1+1+1+1, etc...
             if (optimized == false)
             {
-                listingItem.Karma = projectKarma < 0 ? GetProjectKarma(content.Id) : projectKarma;
+                listingItem.Karma = projectKarma ?? GetProjectKarma(content.Id);
                 listingItem.Downloads = GetProjectDownloadCount(content.Id);
                 listingItem.DocumentationFile = GetMediaForProjectByType(content.Id, FileType.docs);
                 listingItem.ScreenShots = GetMediaForProjectByType(content.Id, FileType.screenshot);
@@ -283,7 +283,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             var listings = new List<IListingItem>();
             foreach (var contribItem in contribProjects)
             {
-                listings.Add(GetListing(contribItem.Id, optimized, -1));
+                listings.Add(GetListing(contribItem.Id, optimized));
             }
 
             return listings;
