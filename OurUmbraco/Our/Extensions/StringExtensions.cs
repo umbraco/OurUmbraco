@@ -32,10 +32,9 @@ namespace OurUmbraco.Our.Extensions
 
                 badges.Add(new Badge {Name = name, Link = "/community/most-valueable-people/", CssClass = "mvp" });
             }
-
-
+            
             foreach (var role in rolesWithoutMvp)
-                badges.Add(new Badge { Name = role, CssClass = role.ToLowerInvariant() });
+                badges.Add(new Badge { Name = role, CssClass = role.ToLowerInvariant(), Link = "/community/badges/" });
 
             return badges;
         }

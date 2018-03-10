@@ -7,22 +7,31 @@
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
+    var currentMemberIsAuthor = currentMember != null && topicAuthor != null && currentMember.Id == topicAuthor.Member.Id;
+    var memberIsAdmin = Model.MemberData != null && Model.MemberData.IsAdmin;
+    var canSeePost = Model.IsSpam == false || currentMemberIsAuthor || memberIsAdmin;
 
-    @* If author exists and question is either not spam or the viewer is a the author or an admin admin *@
-    if (topicAuthor != null && (Model.IsSpam == false || (currentMember != null && currentMember.Id == topicAuthor.Member.Id) || Model.MemberData != null && Model.MemberData.IsAdmin))
+    @* If author exists and question is either not spam or the viewer is a the author or an admin *@
+    if (topicAuthor != null && currentMember != null && canSeePost)
     {
         var badges = topicAuthor.Roles.GetBadges();
-        
+
         <li class="comment question" id="comment-@Model.Id" data-deeplink="@Model.Title" data-version="@Model.Version" data-cat="@Model.ParentId">
             <!-- Start of question -->
             <div class="meta">
                 <div class="profile">
-                    <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a> <span>
+                    <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a> 
+                    <span>
                         @if (topicAuthor.Member.ForumPosts() == 0 || topicAuthor.Member.ForumPosts() > 1)
-                        {@topicAuthor.Member.ForumPosts() <text>posts</text>}
-                    else
-                    {@topicAuthor.Member.ForumPosts() <text>post</text>}
-                    </span> <span>@topicAuthor.Member.Karma() karma points</span>
+                        {
+                            @topicAuthor.Member.ForumPosts() <text>posts</text>
+                        }
+                        else
+                        {
+                            @topicAuthor.Member.ForumPosts() <text>post</text>
+                        }
+                    </span>
+                    <span>@topicAuthor.Member.Karma() karma points</span>
 
                     @if (badges.Any())
                     {
@@ -35,13 +44,12 @@
                                 }
                                 else
                                 {
-                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
+                                    @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
                                     <span class="@badge.CssClass">@badge.Name</span>
                                 }
                             }
                         </span>
                     }
-
                 </div>
 
                 <div class="time" title="@(string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", Model.Created, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now)))">
@@ -91,11 +99,10 @@
                 </div>
 
                 <div class="body markdown-syntax">
-
-                    @if (Model.IsSpam)
+                    @if ((currentMemberIsAuthor || memberIsAdmin) && Model.IsSpam)
                     {
                         <div class="alert">
-                            @if (Model.MemberData != null && Model.MemberData.IsAdmin)
+                            @if (memberIsAdmin)
                             {
                                 <span>You can see this topic because you're a moderator of the forum.</span><br /><br />
                             }
@@ -124,7 +131,7 @@
                         </a>
                     }
 
-                    if (Model.MemberData.IsAdmin || Model.MemberData.Member.Id == topicAuthor.Member.Id)
+                    if (memberIsAdmin || currentMemberIsAuthor)
                     {
                         <a href="#" class="edit-post" data-id="@Model.Id" data-controller="topic">
                             <i class="icon-Edit"></i><span>Edit</span>
@@ -135,7 +142,7 @@
                         </a>
                     }
 
-                    if (Model.MemberData.IsAdmin)
+                    if (memberIsAdmin)
                     {
                         if (Model.IsSpam)
                         {

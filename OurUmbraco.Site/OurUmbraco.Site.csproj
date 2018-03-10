@@ -636,6 +636,7 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
     <Content Include="scripts\anchorjs\anchorjs.custom.js" />
+    <Content Include="scripts\forumsignalr.js" />
     <Content Include="scripts\forum\Markdown.App.js" />
     <Content Include="scripts\forum\Markdown.Converter.js" />
     <Content Include="scripts\forum\Markdown.Editor.js" />
