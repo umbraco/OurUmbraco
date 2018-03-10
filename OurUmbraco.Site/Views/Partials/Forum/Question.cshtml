@@ -12,7 +12,7 @@
     var canSeePost = Model.IsSpam == false || currentMemberIsAuthor || memberIsAdmin;
 
     @* If author exists and question is either not spam or the viewer is a the author or an admin *@
-    if (topicAuthor != null && currentMember != null && canSeePost)
+    if (topicAuthor != null && canSeePost)
     {
         var badges = topicAuthor.Roles.GetBadges();
 
@@ -71,7 +71,7 @@
                     <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                         @Model.Score
                     </div>
-                    @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                    @if (currentMember != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                     {
                         if (currentMember.Id != Model.MemberId)
                         {
@@ -118,7 +118,7 @@
             </div>
 
             <div class="actions">
-                @if (Model.MemberData != null)
+                @if (currentMember != null)
                 {
                     <a href="#" class="flag-thread" data-id="@Model.Id" data-member="@currentMember.Id">
                         <i class="icon-Flag"></i><span>Flag as spam</span>

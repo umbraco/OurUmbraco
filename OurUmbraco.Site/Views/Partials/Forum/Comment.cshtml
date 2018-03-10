@@ -14,7 +14,7 @@
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin *@
-@if (commentAuthor != null && currentMember != null && canSeePost)
+@if (commentAuthor != null && canSeePost)
 {
     var badges = commentAuthor.Roles.GetBadges();
 
@@ -82,7 +82,7 @@
                 <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                     @Model.Score
                 </div>
-                @if (Model.MemberData != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
+                @if (currentMember != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersComment"))
                 {
                     if (currentMember.Id != Model.MemberId)
                     {
@@ -111,7 +111,7 @@
             </div>
         </div>
         <div class="actions">
-            @if (Model.MemberData != null)
+            @if (currentMember != null)
             {
                 <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id">
                     <i class="icon-Flag"></i><span>Flag as spam</span>
