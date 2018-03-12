@@ -82,7 +82,6 @@
                         $("div.replybutton").insertAfter($("#comment-" + data.id));
                     } else {
                         var allComments = $("li[data-parent='" + data.parent + "']");
-                        debugger;
                         if (allComments.length > 0) {
                             var lastComment = 0;
                             for (var i = 0; i < allComments.length; i++) {
