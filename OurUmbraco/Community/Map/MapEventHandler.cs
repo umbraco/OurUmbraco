@@ -2,6 +2,7 @@
 using Lucene.Net.Documents;
 using System;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using UmbracoExamine;
 
 namespace OurUmbraco.Community.Map
@@ -56,19 +57,34 @@ namespace OurUmbraco.Community.Map
         private static void SetLocationAsDoubleField(Examine.LuceneEngine.DocumentWritingEventArgs e)
         {
             //Get existing field - some members may not have a valueset - so check in case
+            //Oddly some members only have one field set?!
+            if (e.Fields.ContainsKey("latitude") == false || e.Fields.ContainsKey("longitude") == false)
+            {
+                return;
+            }
+            
             var existingLatField = e.Document.GetField("latitude");
             var existingLonField = e.Document.GetField("longitude");
 
+            //More sanity checking
             if (existingLatField != null && existingLonField != null)
             {
-                var latitude = Convert.ToDouble(existingLatField.StringValue());
-                var longitude = Convert.ToDouble(existingLonField.StringValue());
+                try
+                {
+                    var latitude = Convert.ToDouble(existingLatField.StringValue());
+                    var longitude = Convert.ToDouble(existingLonField.StringValue());
 
-                var latNumnber = new NumericField("latitudeNumber", Field.Store.YES, true).SetDoubleValue(latitude);
-                var lonNumnber = new NumericField("longitudeNumber", Field.Store.YES, true).SetDoubleValue(longitude);
-                
-                e.Document.Add(latNumnber);
-                e.Document.Add(lonNumnber);
+                    var latNumnber = new NumericField("latitudeNumber", Field.Store.YES, true).SetDoubleValue(latitude);
+                    var lonNumnber = new NumericField("longitudeNumber", Field.Store.YES, true).SetDoubleValue(longitude);
+
+                    e.Document.Add(latNumnber);
+                    e.Document.Add(lonNumnber);
+                }
+                catch (Exception ex)
+                {
+                    var message = $"Unable to cast lat or lon to a double. Attempted to convert Lat:'{existingLatField.StringValue()}' Lon:'{existingLonField.StringValue()}' for Member ID: '{e.NodeId}'";
+                    LogHelper.Error<MapEventHandler>(message, ex);
+                }
             }
         }
 
