@@ -30,8 +30,7 @@ namespace OurUmbraco.Community.Karma
                             if (searchResult == null)
                                 continue;
 
-                            int totalKarma;
-                            if (int.TryParse(searchResult.Fields["reputationTotal"], out totalKarma))
+                            if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
                                 person.TotalKarma = totalKarma;
                         }
                     }
@@ -62,8 +61,33 @@ namespace OurUmbraco.Community.Karma
                             if (searchResult == null)
                                 continue;
 
-                            int totalKarma;
-                            if (int.TryParse(searchResult.Fields["reputationTotal"], out totalKarma))
+                            if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
+                                person.TotalKarma = totalKarma;
+                        }
+                    }
+
+                    return karmaYear;
+
+                }, TimeSpan.FromHours(24));
+
+            var karmaThisYearStatistics = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<PeopleData>("OurKarmaThisYearStatistics",
+                () =>
+                {
+                    var karmaYear = Our.Api.StatisticsController.GetPeopleData(
+                        new DateTime(DateTime.Now.Year - 1, 5, 1),
+                        new DateTime(DateTime.Now.Year, 5, 1));
+
+                    foreach (var period in karmaYear.MostActiveDateRange)
+                    {
+                        foreach (var person in period.MostActive)
+                        {
+                            var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
+                            var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
+                            var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
+                            if (searchResult == null)
+                                continue;
+
+                            if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
                                 person.TotalKarma = totalKarma;
                         }
                     }
@@ -76,7 +100,8 @@ namespace OurUmbraco.Community.Karma
             var karmaStatistics = new KarmaStatistics
             {
                 KarmaRecent = karmaRecentStatistics,
-                KarmaYear = karmaYearStatistics
+                KarmaLastYear = karmaYearStatistics,
+                KarmaCurrentYear = karmaThisYearStatistics
             };
 
             return karmaStatistics;
@@ -84,7 +109,7 @@ namespace OurUmbraco.Community.Karma
 
         private static DateTime GetLastWeekStartDate()
         {
-            DateTime date = DateTime.Now.AddDays(-7);
+            var date = DateTime.Now.AddDays(-7);
             while (date.DayOfWeek != DayOfWeek.Monday)
                 date = date.AddDays(-1);
 
