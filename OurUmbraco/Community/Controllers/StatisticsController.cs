@@ -204,7 +204,7 @@ namespace OurUmbraco.Community.Controllers
     {
         public PeopleData KarmaRecent { get; set; }
         public PeopleData KarmaLastYear { get; set; }
-        public PeopleData KarmaCurrentYear { get; set; }
+        public PeopleData KarmaThisYear { get; set; }
     }
 
     public class GroupedTopicData

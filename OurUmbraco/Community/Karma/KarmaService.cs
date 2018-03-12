@@ -39,13 +39,14 @@ namespace OurUmbraco.Community.Karma
 
                 }, TimeSpan.FromMinutes(15));
 
-            var karmaYearStatistics = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<PeopleData>("OurYearKarmaStatistics",
+            var karmaLastYearStatistics = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<PeopleData>("OurLastYearKarmaStatistics",
                 () =>
                 {
                     // Yearly karma counts from May 1st until May 1st each year. If the date in this year is before May 1st, shift back an extra year
-                    var yearShift = 0;
+                    var yearShift = 1;
                     if (DateTime.Now >= new DateTime(DateTime.Now.Year, 5, 1))
-                        yearShift = 1;
+                        yearShift = 0;
+
 
                     var karmaYear = Our.Api.StatisticsController.GetPeopleData(
                         new DateTime(DateTime.Now.Year - 1 - yearShift, 5, 1),
@@ -100,8 +101,8 @@ namespace OurUmbraco.Community.Karma
             var karmaStatistics = new KarmaStatistics
             {
                 KarmaRecent = karmaRecentStatistics,
-                KarmaLastYear = karmaYearStatistics,
-                KarmaCurrentYear = karmaThisYearStatistics
+                KarmaLastYear = karmaLastYearStatistics,
+                KarmaThisYear = karmaThisYearStatistics
             };
 
             return karmaStatistics;
