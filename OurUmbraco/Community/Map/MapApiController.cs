@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Examine;
+using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
@@ -35,12 +35,12 @@ namespace OurUmbraco.Community.Map
                 .And().Field("umbracoMemberApproved", "1")
                 .And().Range("latitudeNumber", longSwLat, longNeLat, true, true)
                 .And().Range("longitudeNumber", longSwLon, longNeLon, true, true)
-                .Not().Range("karma", 0, 70, true, true)
-                .And().OrderByDescending(new SortableField("karma", SortType.Int)); // Y U NO SORT
-
-
-            var results = memberSearcher.Search(query.Compile());
+                .Not().Range(LuceneIndexer.SortedFieldNamePrefix + "karma", 0, 70, true, true) //The raw field  in the index has the magic prefix
+                .And().OrderByDescending(new SortableField("karma", SortType.Int)) //When you use a sortable field - you need to not include the magic string prefix - as Examine adds it in
+                .Compile();
             
+            var results = memberSearcher.Search(query);
+
             //Pluck the fields we need from the Examine index fields
             //For our much simpler model to send back as the JSON response
             var members = results.Select(result => new MemberLocation
@@ -50,7 +50,7 @@ namespace OurUmbraco.Community.Map
                 Avatar = result.Fields["avatar"],
                 Lat = result.Fields["latitude"],
                 Lon = result.Fields["longitude"],
-                Karma = Convert.ToInt32(result.Fields["karma"])
+                Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]) //Have to access the value as the raw field name with the magic string prefix
             })
             .ToList();
             

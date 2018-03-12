@@ -1,6 +1,7 @@
 ﻿using Examine;
 using Lucene.Net.Documents;
 using System;
+using Examine.LuceneEngine.Providers;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using UmbracoExamine;
@@ -37,8 +38,8 @@ namespace OurUmbraco.Community.Map
             var existingField = e.Document.GetField("reputationCurrent");
             if (existingField != null)
             {
-                //Add new field that is numeric
-                var karmaField = new NumericField("karma", Field.Store.YES, true);
+                //Add new field that is numeric & prefix with the magic '__Sort_' string
+                var karmaField = new NumericField(LuceneIndexer.SortedFieldNamePrefix + "karma", Field.Store.YES, true);
 
                 //Get the existing value that is stored on the vanilla property that stores as strings
                 var existingValue = existingField.StringValue();
