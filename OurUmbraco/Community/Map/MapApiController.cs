@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Mvc;
 using Examine;
+using Examine.LuceneEngine.SearchCriteria;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
 
@@ -31,14 +32,15 @@ namespace OurUmbraco.Community.Map
             //Find all active members - where a lat & lon is set (with new NodeGathering field to index)
             var query = searchCritera.Field("hasLocationSet", "1")
                 .And().Field("blocked", "0")
-                .And().Field("umbracoMemberApproved", "1")                
+                .And().Field("umbracoMemberApproved", "1")
                 .And().Range("latitudeNumber", longSwLat, longNeLat, true, true)
                 .And().Range("longitudeNumber", longSwLon, longNeLon, true, true)
-                .Not().Range("karma", 0, 70, true, true);
+                .Not().Range("karma", 0, 70, true, true)
+                .And().OrderByDescending(new SortableField("karma", SortType.Int)); // Y U NO SORT
 
 
             var results = memberSearcher.Search(query.Compile());
-
+            
             //Pluck the fields we need from the Examine index fields
             //For our much simpler model to send back as the JSON response
             var members = results.Select(result => new MemberLocation
