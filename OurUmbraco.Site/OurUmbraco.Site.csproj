@@ -126,6 +126,9 @@
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Markdig, Version=0.14.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.14.9\lib\net40\Markdig.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownSharp, Version=1.14.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdown.1.14.7\lib\net45\MarkdownSharp.dll</HintPath>
       <Private>True</Private>
@@ -512,6 +515,7 @@
     <Content Include="config\uVersion.config">
       <SubType>Designer</SubType>
     </Content>
+    <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
     <Content Include="css\img\select2.png" />
@@ -634,6 +638,7 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
     <Content Include="scripts\anchorjs\anchorjs.custom.js" />
+    <Content Include="scripts\forumsignalr.js" />
     <Content Include="scripts\forum\Markdown.App.js" />
     <Content Include="scripts\forum\Markdown.Converter.js" />
     <Content Include="scripts\forum\Markdown.Editor.js" />
@@ -4353,6 +4358,16 @@
     <Content Include="Views\CommunityHub.cshtml" />
     <Content Include="Views\Partials\Community\Hub.cshtml" />
     <Content Include="Views\Partials\Community\HubScripts.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
     <Content Include="Views\Partials\Videos\Home.cshtml" />
     <Content Include="Views\CommunityBlogs.cshtml" />
@@ -4371,12 +4386,14 @@
     <Content Include="Views\Videos.cshtml" />
     <Content Include="Views\ProjectGroup.cshtml" />
     <Content Include="Views\ProjectsTags.cshtml" />
+    <Content Include="Views\CommunityVideos.cshtml" />
     <Content Include="Views\Partials\Community\Gitter.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
+    <Content Include="Views\Partials\Videos\Home.cshtml" />
+    <Content Include="Views\Partials\Community\Videos.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />

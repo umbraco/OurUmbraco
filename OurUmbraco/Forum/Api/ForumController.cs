@@ -41,47 +41,48 @@ namespace OurUmbraco.Forum.Api
         [HttpPost]
         public ExpandoObject Comment(CommentSaveModel model)
         {
-            dynamic o = new ExpandoObject();
-            var currentMemberId = Members.GetCurrentMemberId();
+            dynamic expandoObject = new ExpandoObject();
+            var currentMember = Members.GetCurrentMember();
 
-            var c = new Comment();
-            c.Body = model.Body;
-            c.MemberId = currentMemberId;
-            c.Created = DateTime.Now;
-            c.ParentCommentId = model.Parent;
-            c.TopicId = model.Topic;
-            c.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || c.DetectSpam();
-            CommentService.Save(c);
-            if (c.IsSpam)
-                SpamChecker.SendSlackSpamReport(c.Body, c.TopicId, "comment", c.MemberId);
-
-            o.id = c.Id;
-            o.body = c.Body.Sanitize().ToString();
-            o.topicId = c.TopicId;
-            o.authorId = c.MemberId;
-            o.created = c.Created.ConvertToRelativeTime();
-            var author = Members.GetById(currentMemberId);
-            o.authorKarma = author.Karma();
-            o.authorName = author.Name;
-            o.roles = author.GetRoles().GetBadges();
-            o.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
-            o.parent = model.Parent;
-            o.isSpam = c.IsSpam;
-            if (!c.IsSpam)
+            var comment = new Comment
             {
-                SignalRcommentSaved(o);
-            }
-            return o;
+                Body = model.Body,
+                MemberId = currentMember.Id,
+                Created = DateTime.Now,
+                ParentCommentId = model.Parent,
+                TopicId = model.Topic
+            };
+
+            comment.IsSpam = currentMember.GetPropertyValue<bool>("blocked") || comment.DetectSpam();
+            CommentService.Save(comment);
+            if (comment.IsSpam)
+                SpamChecker.SendSlackSpamReport(comment.Body, comment.TopicId, "comment", comment.MemberId);
+
+            expandoObject.id = comment.Id;
+            expandoObject.body = comment.Body.Sanitize().ToString();
+            expandoObject.topicId = comment.TopicId;
+            expandoObject.authorId = comment.MemberId;
+            expandoObject.created = comment.Created.ConvertToRelativeTime();
+            expandoObject.authorKarma = currentMember.Karma();
+            expandoObject.authorName = currentMember.Name;
+            expandoObject.roles = currentMember.GetRoles().GetBadges();
+            expandoObject.cssClass = model.Parent > 0 ? "level-2" : string.Empty;
+            expandoObject.parent = model.Parent;
+            expandoObject.isSpam = comment.IsSpam;
+
+            SignalRcommentSaved(expandoObject);
+
+            return expandoObject;
         }
 
-        private void SignalRcommentSaved(dynamic o)
+        private void SignalRcommentSaved(dynamic expandoObject)
         {
             var root = Url.Content("~/");
             using (var hubConnection = new HubConnection(root + "/signalr"))
             {
                 var conProxy = hubConnection.CreateHubProxy("forumPostHub");
                 hubConnection.Start().Wait();
-                conProxy.Invoke("SomeonePosted", o).Wait();
+                conProxy.Invoke("SomeonePosted", expandoObject).Wait();
             }
         }
 

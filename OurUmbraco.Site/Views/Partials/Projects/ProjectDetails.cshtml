@@ -47,6 +47,7 @@
     var licenseUrl = project.GetPropertyValue<string>("licenseUrl");
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
     var projectLive = project.GetPropertyValue<bool>("projectLive");
+    var isRetired = project.GetPropertyValue<bool>("isRetired");
 }
 
 @if (projectLive)
@@ -67,6 +68,26 @@
                                 <a href="#" id="projectVote" data-id="@project.Id">@pluralize(totalVotes, "vote", "votes")</a>
                             }
                         </div>
+
+                        @if (isRetired)
+                        {
+                            <div class="package-retired">
+                                <h3>This project is marked as retired</h3>
+
+                                @{
+                                    var retiredMessage = project.GetPropertyValue<string>("retiredMessage");
+
+                                    if (!string.IsNullOrWhiteSpace(retiredMessage))
+                                    {
+                                        <p>@Html.Raw(retiredMessage)</p>
+                                    }
+                                    else
+                                    {
+                                        <p>This package has been flagged as retired by the project owner. Continue to use at your own risk</p>
+                                    }
+                                }
+                            </div>
+                        }
 
                         <div class="package-detail-description">
                             <h1>@project.Name</h1>
@@ -224,8 +245,6 @@
 
                         </div>
 
-
-
                         <div class="package-forum-activity">
                             @{
                                 var forums = CurrentPage.Children.Where("Visible");
@@ -233,8 +252,6 @@
                             @if (forums.Any())
                             {
                                 <h3>Forums</h3>
-
-
 
                                 foreach (var forum in forums)
                                 {
@@ -384,7 +401,7 @@
                             </ul>
                         </div>
 
-                        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl))
+                        @if (!string.IsNullOrEmpty(supportUrl) || !string.IsNullOrEmpty(sourceUrl) || !string.IsNullOrEmpty(websiteUrl) || !string.IsNullOrEmpty(demoUrl))
                         {
                             <div class="package-compatibility-information">
                                 <h3>External resources</h3>
@@ -393,19 +410,25 @@
                                     @if (!string.IsNullOrEmpty(sourceUrl))
                                     {
                                         <li>
-                                            <a href="@sourceUrl">Source code</a>
+                                            <a href="@sourceUrl" rel="nofollow">Source code</a>
                                         </li>
                                     }
                                     @if (!string.IsNullOrEmpty(websiteUrl))
                                     {
                                         <li>
-                                            <a href="@websiteUrl">Project website</a>
+                                            <a href="@websiteUrl" rel="nofollow">Project website</a>
                                         </li>
                                     }
                                     @if (!string.IsNullOrEmpty(supportUrl))
                                     {
                                         <li>
-                                            <a href="@supportUrl">Issue tracker</a>
+                                            <a href="@supportUrl" rel="nofollow">Issue tracker</a>
+                                        </li>
+                                    }
+                                    @if (!string.IsNullOrEmpty(demoUrl))
+                                    {
+                                        <li>
+                                            <a href="@demoUrl" rel="nofollow">Demonstration</a>
                                         </li>
                                     }
                                 </ul>

@@ -15,7 +15,7 @@
         repo.UpdateVimeoVideos("umbraco");
     }
 
-    var allVideos = repo.GetVimeoVideosFromDisk("umbraco");
+    var allVideos = repo.GetVimeoVideosFromDisk("umbraco").Where(x => x.HasTags).ToArray();
     var categories = repo.GroupVideosByCategoryAndYear(allVideos);
 
     string baseUrl = Request.RawUrl.Split('?')[0];

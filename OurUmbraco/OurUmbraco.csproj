@@ -120,6 +120,9 @@
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Markdig, Version=0.14.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Markdig.0.14.9\lib\net40\Markdig.dll</HintPath>
+    </Reference>
     <Reference Include="MarkdownDeep, Version=1.5.4615.26275, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
       <Private>True</Private>
@@ -246,6 +249,9 @@
     </Reference>
     <Reference Include="Skybrud.Social.Core, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Core.1.0.4\lib\net45\Skybrud.Social.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.Google, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Google.1.0.0-beta004\lib\net45\Skybrud.Social.Google.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
@@ -432,6 +438,9 @@
     <Compile Include="Community\People\Models\PeopleKarmaResult.cs" />
     <Compile Include="Community\People\PeopleService.cs" />
     <Compile Include="Community\Twitter\TwitterService.cs" />
+    <Compile Include="Community\Videos\CommunityVideosConstants.cs" />
+    <Compile Include="Community\Videos\CommunityVideosService.cs" />
+    <Compile Include="Community\Videos\YouTubePlayList.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />

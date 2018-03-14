@@ -22,6 +22,9 @@ namespace OurUmbraco.Community.BlogPosts {
 
         public int MemberId { get; private set; }
 
+        // Blog has no category info and posts things unrelated to Umbraco, check there's related keywords in the title
+        public bool CheckTitles { get; private set; }
+
         public bool HasLogoUrl {
             get { return !String.IsNullOrWhiteSpace(LogoUrl); }
         }
@@ -38,6 +41,7 @@ namespace OurUmbraco.Community.BlogPosts {
             RssUrl = obj.GetString("rss");
             LogoUrl = obj.GetString("logo");
             MemberId = obj.GetInt32("memberId");
+            CheckTitles = obj.GetBoolean("checkTitles");
             Encoding = Encoding.UTF8;
         }
 

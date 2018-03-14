@@ -1,40 +1,30 @@
 ﻿@using System.Globalization
 @using OurUmbraco.Community.Karma
 @using OurUmbraco.Community.People.Models
+@using OurUmbraco.Forum.Extensions
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-    var combinedList = new List<PeopleKarmaResult>();
 
     var karmaService = new KarmaService();
     var karmaStatistics = karmaService.GetKarmaStatistics();
 
-    foreach (var karmaResult in karmaStatistics.KarmaYear.MostActiveDateRange)
-    {
-        foreach (var person in karmaResult.MostActive)
-        {
-            var existing = combinedList.FirstOrDefault(p => p.MemberId == person.MemberId);
-            if (existing != null)
-            {
-                existing.TotalPointsInPeriod = existing.TotalPointsInPeriod + person.TotalPointsInPeriod;
-                existing.Performed = existing.Performed + person.Performed;
-                existing.Received = existing.Received + person.Received;
-            }
-            else
-            {
-                combinedList.Add(person);
-            }
-        }
-    }
     var currentInfo = DateTimeFormatInfo.CurrentInfo;
     var cal = currentInfo.Calendar;
     var currentWeekNumber = cal.GetWeekOfYear(DateTime.Now, currentInfo.CalendarWeekRule, currentInfo.FirstDayOfWeek);
+
+    var currentMember = Members.GetCurrentMember();
+    var memberIsHq = false;
+    if (currentMember != null)
+    {
+        memberIsHq = currentMember.IsHq();
+    }
 }
 
 <style type="text/css">
     .contrib-count {
-        right: 6px!important;
-        left: 6px!important;
+        right: 6px !important;
+        left: 6px !important;
     }
 </style>
 
@@ -75,11 +65,38 @@
     </div>
 }
 
-<div style="width: 100%; display: block; clear: both;">
-    <p style="font-weight: bold;">Leaderboard for @karmaStatistics.KarmaYear.MostActiveDateRange.First().Year - the year results are tallied up on May 1st each year.</p>
+@{
+    var peopleDataByWeeksLastYear = karmaStatistics.KarmaLastYear.MostActiveDateRange.OrderBy(x => x.Year).ThenBy(x => x.WeekNumber).ToList();
 
+    var lastYearlist = new List<PeopleKarmaResult>();
+    var startDateLastYear = peopleDataByWeeksLastYear.First();
+    var endDateLastYear = peopleDataByWeeksLastYear.Last();
+    foreach (var karmaResult in karmaStatistics.KarmaLastYear.MostActiveDateRange)
+    {
+        foreach (var person in karmaResult.MostActive)
+        {
+            var existing = lastYearlist.FirstOrDefault(p => p.MemberId == person.MemberId);
+            if (existing != null)
+            {
+                existing.TotalPointsInPeriod = existing.TotalPointsInPeriod + person.TotalPointsInPeriod;
+                existing.Performed = existing.Performed + person.Performed;
+                existing.Received = existing.Received + person.Received;
+            }
+            else
+            {
+                lastYearlist.Add(person);
+            }
+        }
+    }
+}
+<div style="width: 100%; display: block; clear: both;">
+    <p style="font-weight: bold;">Leaderboard for @startDateLastYear.Year until @endDateLastYear.Year  - the year results are tallied up on May 1st each year.</p>
+
+    <!--
+     From week @startDateLastYear.WeekNumber, @startDateLastYear.Year until week @endDateLastYear.WeekNumber, @endDateLastYear.Year
+    -->
     <div class="flex flex-wrap github-contributor-list forum-thread">
-        @foreach (var person in combinedList.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
+        @foreach (var person in lastYearlist.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
         {
             var member = umbracoHelper.TypedMember(person.MemberId);
 
@@ -106,6 +123,67 @@
         }
     </div>
 </div>
+
+@if (memberIsHq)
+{
+    var peopleDataByWeeksThisYear = karmaStatistics.KarmaThisYear.MostActiveDateRange.OrderBy(x => x.Year).ThenBy(x => x.WeekNumber).ToList();
+
+    var thisYearList = new List<PeopleKarmaResult>();
+    var startDateThisYear = peopleDataByWeeksThisYear.First();
+    var endDateThisYear = peopleDataByWeeksThisYear.Last();
+    foreach (var karmaResult in peopleDataByWeeksThisYear)
+    {
+        foreach (var person in karmaResult.MostActive)
+        {
+            var existing = thisYearList.FirstOrDefault(p => p.MemberId == person.MemberId);
+            if (existing != null)
+            {
+                existing.TotalPointsInPeriod = existing.TotalPointsInPeriod + person.TotalPointsInPeriod;
+                existing.Performed = existing.Performed + person.Performed;
+                existing.Received = existing.Received + person.Received;
+            }
+            else
+            {
+                thisYearList.Add(person);
+            }
+        }
+    }
+
+    <div style="width: 100%; display: block; clear: both;">
+        <p style="color: red; font-weight: bold">Only visible for HQ, we don't share until May 1st each year</p>
+        <p style="font-weight: bold;">Leaderboard for THIS YEAR, from May 1st @karmaStatistics.KarmaThisYear.MostActiveDateRange.First().Year until today.</p>
+
+        <!-- From week @startDateThisYear.WeekNumber, @startDateThisYear.Year until week @endDateThisYear.WeekNumber, @endDateThisYear.Year -->
+
+        <div class="flex flex-wrap github-contributor-list forum-thread" style="border: 2px solid red">
+            @foreach (var person in thisYearList.OrderByDescending(p => p.TotalPointsInPeriod).Take(15))
+            {
+                var member = umbracoHelper.TypedMember(person.MemberId);
+
+                <div class="contributor">
+                    <a href="/member/@person.MemberId" title="@person.MemberName">
+                        <div class="avatar">
+                            <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x, @GetAvatarUrl(member, 336) 3x" />
+                            <span class="contrib-count" title="Total: @person.TotalKarma">
+                                @person.TotalPointsInPeriod
+                            </span>
+                            <div class="counts">
+                                <div>
+                                    Performed<br />
+                                    <strong>@person.Performed</strong>
+                                </div>
+                                <div>
+                                    Received<br />
+                                    <strong>@person.Received</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            }
+        </div>
+    </div>
+}
 
 @functions
 {

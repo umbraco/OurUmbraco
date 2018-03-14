@@ -116,6 +116,19 @@ namespace OurUmbraco.Community.BlogPosts
                             }
                         }
 
+                        // Blog has no category info and posts things unrelated to Umbraco, check there's related keywords in the title
+                        if (blog.CheckTitles)
+                        {
+                            var includeItem = false;
+                            foreach (var approvedCategory in approvedCategories)
+                                if (title.ToLowerInvariant().Contains(approvedCategory.ToLowerInvariant()))
+                                    includeItem = true;
+
+                            // Blog post seems unrelated to Umbraco, skip it
+                            if(includeItem == false)
+                                continue;
+                        }
+
                         var blogPost = new BlogRssItem
                         {
                             Channel = rssChannel,
