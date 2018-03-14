@@ -42,8 +42,8 @@ namespace OurUmbraco.Community.Map
                 Id = result.Id,
                 Name = result.Fields["nodeName"],
                 Avatar = GetAvatar(result),
-                Lat = result.Fields["latitude"],
-                Lon = result.Fields["longitude"],
+                Lat = GetLatitude(result),
+                Lon = GetLongitude(result),
                 Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]), //Have to access the value as the raw field name with the magic string prefix
                 Twitter = GetTwitter(result),
                 GitHub = GetGitHub(result)
@@ -59,6 +59,32 @@ namespace OurUmbraco.Community.Map
             }
             
             return members;
+        }
+
+        /// <summary>
+        /// https://gizmodo.com/how-precise-is-one-degree-of-longitude-or-latitude-1631241162
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private string GetLatitude(SearchResult result)
+        {
+            var lat = result.Fields["latitude"];
+            var latAsDouble = Double.Parse(lat);
+            var latRounded = Math.Round(latAsDouble, 4);
+            return latRounded.ToString();
+        }
+
+        /// <summary>
+        /// https://gizmodo.com/how-precise-is-one-degree-of-longitude-or-latitude-1631241162
+        /// </summary>
+        /// <param name="result"></param>
+        /// <returns></returns>
+        private string GetLongitude(SearchResult result)
+        {
+            var lon = result.Fields["longitude"];
+            var lonAsDouble = Double.Parse(lon);
+            var lonRounded = Math.Round(lonAsDouble, 4);
+            return lonRounded.ToString();
         }
 
         private string GetGitHub(SearchResult result)
