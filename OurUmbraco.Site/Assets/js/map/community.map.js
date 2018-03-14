@@ -71,7 +71,19 @@
             //Will group it under the same lat/lon
             //Maybe if we are at max zoom level & have results - list them all
             //The zoom level service requires a lat/lon - get the map center lat/lon
-            console.log('zoom level', map.getZoom());
+            var zoomLevel = map.getZoom();
+            if (zoomLevel > 18) {
+
+                var innerTemplate = $('#member-item-template').html();
+                var outerTemplate = $('#members-template').html();
+
+                var multiHtml = Mustache.render(outerTemplate, data, {
+                    member: innerTemplate
+                });
+
+                $("#member-list").html(multiHtml);
+            }
+
         });
 
     });

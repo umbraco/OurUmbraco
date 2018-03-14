@@ -17,6 +17,8 @@
 
 <h1>Map</h1>
 <div id="map"></div>
+<div id="member-list" style="margin-top: 25px;"></div>
+
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"></script>
 
 <script id="map-marker-template" type="x-tmpl-mustache">
@@ -48,14 +50,36 @@
 
 <script id="members-template" type="x-tmpl-mustache">
     <h3>There are quite a few people at this location</h3>
-    <div class="map-members">
-        {{#members}}
-        {{>.}}
-        {{/members}}
+    <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:space-between;">
+        {{ #. }}
+        {{ >member }}
+        {{ /. }}
     </div>    
 </script>
 
 <script id="member-item-template" type="x-tmpl-mustache">
-    Hello {{ name }}!
+    <div style="border:1px solid grey; display:flex; padding:5px; flex-grow: 1; flex-shrink: 0; flex-basis: 40%; margin-right:5px; margin-bottom:5px; align-items:center;">
+        <img src="{{Avatar}}" title="{{Name}}" style="margin-right:5px; border-radius:50%;" />
+        
+        <div>
+            <a href="/member/{{Id}}">{{Name}}</a>
+            <em>Karma: {{Karma}}</em>
+
+            <div class="social-links">
+                {{#Twitter}}
+                <a href="https://twitter.com/{{Twitter}}" title="See {{Name}}'s profile on Twitter" target="_blank" rel="noopener">
+                    <i class="icon-twitter" aria-hidden="true"></i>
+                    <span>{{Twitter}}</span>
+                </a>
+                {{/Twitter}}
+                {{#GitHub}}
+                <a href="https://github.com/{{Github}}" title="See {{Name}}'s profile on GitHub" target="_blank" rel="noopener">
+                    <i class="icon-github" aria-hidden="true"></i>
+                    <span>{{GitHub}}</span>
+                </a>
+                {{/GitHub}}
+            </div>
+        </div>
+    </div>
 </script>
 
