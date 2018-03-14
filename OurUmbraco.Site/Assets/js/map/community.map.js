@@ -30,6 +30,9 @@
         
         var url = "/umbraco/api/mapapi/GetAllMemberLocations?swLat=" + sw.lat() + "&swLon=" + sw.lng() + "&neLat=" + ne.lat() + "&neLon=" + ne.lng();
 
+        //Map Marker mustache HTML template
+        var template = $('#map-marker-template').html();
+
         $.getJSON(url, function (data) {
 
             var markers = data.map(function (item) {
@@ -43,7 +46,7 @@
                 });
 
                 //Only render the HTML content - when you click the marker
-                var html = "<a href='/member/" + item.Id + "' style='display:flex; align-items:center;'><img src='" + item.Avatar + "' title='" + item.Name + "' style='margin-right:5px;'/>" + item.Name + "</a>";
+                var html = Mustache.render(template, item);
 
                 marker.addListener('click', function () {
                     infowindow.setContent(html);
@@ -60,6 +63,15 @@
                     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
                 });
 
+
+            //If the zoom level greater than 18
+            //Server finds exact matches on lat & lon & returns bool 'SomeoneElseIsHere' in JSON payload
+            //This way we can show only people who are under same pin
+            //HOWEVER there is a case lat/lon no exact but insanely close & even at max zoom the cluster
+            //Will group it under the same lat/lon
+            //Maybe if we are at max zoom level & have results - list them all
+            //The zoom level service requires a lat/lon - get the map center lat/lon
+            console.log('zoom level', map.getZoom());
         });
 
     });

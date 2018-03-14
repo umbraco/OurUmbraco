@@ -12,12 +12,6 @@ namespace OurUmbraco.Community.Map
 {
     public class MapApiController : UmbracoApiController
     {
-        //swLat= 44.255278708039896
-        //neLat= 51.599464320768725
-
-        //swLon= -142.07023127555988
-        //neLon= -124.49210627555988
-
         [HttpGet]
         public List<MemberLocation> GetAllMemberLocations(string swLat, string swLon, string neLat, string neLon)
         {           
@@ -47,15 +41,43 @@ namespace OurUmbraco.Community.Map
             {
                 Id = result.Id,
                 Name = result.Fields["nodeName"],
-                Avatar = result.Fields["avatar"],
+                Avatar = GetAvatar(result),
                 Lat = result.Fields["latitude"],
                 Lon = result.Fields["longitude"],
-                Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]) //Have to access the value as the raw field name with the magic string prefix
+                Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]), //Have to access the value as the raw field name with the magic string prefix
+                Twitter = GetTwitter(result),
+                GitHub = GetGitHub(result)
             })
             .ToList();
+
+            //Loop over list and try to find members that have the exact same lat & lon
+            //Mark them as a 'someoneElseIsHere' to true
+            foreach (var member in members)
+            {
+                //Check if a member exist with same lat & lon & exclude itself from the lookup
+                member.SomeoneElseIsHere = members.Exists(x => x.Lat == member.Lat && x.Lon == member.Lon && x.Id != member.Id);
+            }
             
             return members;
         }
 
+        private string GetGitHub(SearchResult result)
+        {
+            //Verify if we have a record/field for it (not all members set this)
+            return result.Fields.ContainsKey("github") ? result.Fields["github"].Replace("@", "") : null;
+        }
+
+        private string GetTwitter(SearchResult result)
+        {
+            //Verify if we have a record/field for it (not all members set this)
+            return result.Fields.ContainsKey("twitter") ? result.Fields["twitter"].Replace("@", "") : null;
+        }
+
+        private string GetAvatar(SearchResult result)
+        {
+            var email = result.Fields["email"];
+            var name = result.Fields["nodeName"];
+            return Our.Utils.GetGravatar(email, 50, name, true);
+        }
     }
 }

@@ -13,5 +13,11 @@
         public string Avatar { get; set; }
 
         public int Karma {  get; set; }
+
+        public string GitHub { get; set; }
+
+        public string Twitter { get; set; }
+
+        public bool SomeoneElseIsHere { get; set; }
     }
 }
