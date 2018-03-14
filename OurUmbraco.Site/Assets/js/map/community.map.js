@@ -63,16 +63,8 @@
                     imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
                 });
 
-
-            //If the zoom level greater than 18
-            //Server finds exact matches on lat & lon & returns bool 'SomeoneElseIsHere' in JSON payload
-            //This way we can show only people who are under same pin
-            //HOWEVER there is a case lat/lon no exact but insanely close & even at max zoom the cluster
-            //Will group it under the same lat/lon
-            //Maybe if we are at max zoom level & have results - list them all
-            //The zoom level service requires a lat/lon - get the map center lat/lon
             var zoomLevel = map.getZoom();
-            if (zoomLevel > 18) {
+            if (zoomLevel > 15) {
 
                 var innerTemplate = $('#member-item-template').html();
                 var outerTemplate = $('#members-template').html();
