@@ -77,11 +77,16 @@
                 var innerTemplate = $('#member-item-template').html();
                 var outerTemplate = $('#members-template').html();
 
-                var multiHtml = Mustache.render(outerTemplate, data, {
-                    member: innerTemplate
-                });
+                var multiHtml = Mustache.render(outerTemplate,
+                    data,
+                    {
+                        member: innerTemplate
+                    });
 
                 $("#member-list").html(multiHtml);
+            } else {
+                //Ensure the member list is cleared out - when we zoom out we need to clear out our results
+                $("#member-list").html("");
             }
 
         });
