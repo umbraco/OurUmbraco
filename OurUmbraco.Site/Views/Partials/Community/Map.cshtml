@@ -23,10 +23,9 @@
     <div style="display:flex; align-items:center;">
         <img src="{{Avatar}}" title="{{Name}}" style="margin-right:5px; border-radius:50%;" />
         
-        <div style="">
-            <a href="/member/{{Id}}">
-                {{Name}}
-            </a>
+        <div>
+            <a href="/member/{{Id}}">{{Name}}</a>
+            <em>Karma: {{Karma}}</em>
 
             <div class="social-links">
                 {{#Twitter}}
@@ -35,12 +34,12 @@
                     <span>{{Twitter}}</span>
                 </a>
                 {{/Twitter}}
-                {{#Github}}
+                {{#GitHub}}
                 <a href="https://github.com/{{Github}}" title="See {{Name}}'s profile on GitHub" target="_blank" rel="noopener">
                     <i class="icon-github" aria-hidden="true"></i>
-                    <span>{{Github}}</span>
+                    <span>{{GitHub}}</span>
                 </a>
-                {{/Github}}
+                {{/GitHub}}
             </div>
         </div>
     </div>
