@@ -17,12 +17,7 @@
             center: userPosition,
             mapTypeId: 'roadmap'
         });
-
-    console.log('currentLat', currentLat);
-    console.log('currentLon', currentLon);
-    console.log('lat has val', (currentLat.length > 0));
-    console.log('lon has val', (currentLon.length > 0));
-
+    
     //Check we have something stored in hidden fields & valid numbers
     if ((currentLat.length > 0) || (currentLon.length > 0)) {
 

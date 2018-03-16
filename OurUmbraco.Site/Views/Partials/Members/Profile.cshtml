@@ -106,8 +106,8 @@
                 
                 <div>
                     <!--TODO: Decide if we display these (so user can see their saved data, or to set these as hidden fields -->
-                    <input id="Latitude" name="Latitude" type="text" disabled value="@Model.Latitude" />
-                    <input id="Longitude" name="Longitude" type="text" disabled value="@Model.Longitude" />
+                    @Html.HiddenFor(m => m.Latitude)
+                    @Html.HiddenFor(m => m.Longitude)
                 </div>
             </div>
 
