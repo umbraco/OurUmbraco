@@ -1,14 +1,20 @@
-﻿@using OurUmbraco.Our
+﻿@using ClientDependency.Core.Mvc
+@using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
 
 @inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
+
+    Html.RequiresJs("~/Assets/js/map/profile.map.js");
+
+    //Google Maps API Key
+    var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
 }
 
-
- <div id="update-avatar-dialog" class="community-dialog">
+<!-- Modal for file upload -->
+<div id="update-avatar-dialog" class="community-dialog">
     <div>
         <p><b>Upload avatar</b></p>
         <p class="invalid-file">The select file type is invalid. File must be gif, png, jpg, jpeg.</p>
@@ -19,84 +25,105 @@
     </div>
 </div>
 
-    <div class="profile-settings">
-        <strong>Change your profile</strong>
-        <div class="profile-settings-forms">
+<div class="profile-settings">
+    <strong>Change your profile</strong>
+    <div class="profile-settings-forms">
 
-            @using (Html.BeginUmbracoForm<ProfileController>("HandleSubmit"))
-            {
-                @Html.ValidationSummary()
-                @Html.AntiForgeryToken()
+        @using (Html.BeginUmbracoForm<ProfileController>("HandleSubmit"))
+        {
+            @Html.ValidationSummary()
+            @Html.AntiForgeryToken()
 
-                <div class="avatar" id="avatar">
-                    <label for="avatar">
-                        Avatar
-                    </label>
+            <div class="avatar" id="avatar">
+                <label for="avatar">
+                    Avatar
+                </label>
 
-                    <div class="avatar-image inked">
-                        @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
-                        <span>Change image</span>
-                    </div>
-                    @Html.HiddenFor(m => m.Avatar)
+                <div class="avatar-image inked">
+                    @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
+                    <span>Change image</span>
                 </div>
+                @Html.HiddenFor(m => m.Avatar)
+            </div>
 
-                <div class="profile-input" id="username">
-                    @Html.LabelFor(m => m.Name)
-                    @Html.TextBoxFor(m => m.Name)
-                </div>
+            <div class="profile-input" id="username">
+                @Html.LabelFor(m => m.Name)
+                @Html.TextBoxFor(m => m.Name)
+            </div>
 
-                <div class="profile-input" id="email">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email)
-                </div>
+            <div class="profile-input" id="email">
+                @Html.LabelFor(m => m.Email)
+                @Html.TextBoxFor(m => m.Email)
+            </div>
 
-                <div class="profile-input" id="password">
-                    @Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
-                </div>
+            <div class="profile-input" id="password">
+                @Html.LabelFor(m => m.Password)
+                @Html.PasswordFor(m => m.Password, new { @class = "password-input" })
+            </div>
 
-                <div class="profile-input confirm-password" id="repeat-password">
-                    @Html.LabelFor(m => m.RepeatPassword)
-                    @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
-                </div>
+            <div class="profile-input confirm-password" id="repeat-password">
+                @Html.LabelFor(m => m.RepeatPassword)
+                @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
+            </div>
 
-                <div class="profile-input" id="company">
-                    @Html.LabelFor(m => m.Company)
-                    @Html.TextBoxFor(m => m.Company)
-                </div>
+            <div class="profile-input" id="company">
+                @Html.LabelFor(m => m.Company)
+                @Html.TextBoxFor(m => m.Company)
+            </div>
 
-                <div class="profile-input" id="bio">
-                    @Html.LabelFor(m => m.Bio)
-                    @Html.TextAreaFor(m => m.Bio)
-                </div>
+            <div class="profile-input" id="bio">
+                @Html.LabelFor(m => m.Bio)
+                @Html.TextAreaFor(m => m.Bio)
+            </div>
 
-                <div class="profile-input" id="twitter-alias">
-                    @Html.LabelFor(m => m.TwitterAlias)
-                    @Html.TextBoxFor(m => m.TwitterAlias)
-                </div>
+            <div class="profile-input" id="twitter-alias">
+                @Html.LabelFor(m => m.TwitterAlias)
+                @Html.TextBoxFor(m => m.TwitterAlias)
+            </div>
 
-                <div class="profile-input" id="github-alias">
-                    @Html.LabelFor(m => m.GitHubUsername)
-                    @Html.TextBoxFor(m => m.GitHubUsername)
-                </div>
+            <div class="profile-input" id="github-alias">
+                @Html.LabelFor(m => m.GitHubUsername)
+                @Html.TextBoxFor(m => m.GitHubUsername)
+            </div>
 
-                <div class="profile-input" id="located-at">
-                    @Html.LabelFor(m => m.Location)
-                    @Html.TextBoxFor(m => m.Location)
-                </div>
-
-                <input class="button green" type="submit" value="Save changes">
+            <div>
+                <h3>Map</h3>
+                <p>
+                    This information is optional but allows you to share your rough location on a community map,
+                    in order to see the sense of scale of the Umbraco community and other members near by.
+                </p>
+                <p>
+                    <em>It is your responsibility</em> to share your location & we strongly recommend you do
+                    not place a map marker to an exact location to protect yourself.
+                </p>
+                    
+                <div id="profile-map" style="min-height: 500px;"></div>
                 
-                if (TempData["success"] != null)
-                {
-                    <small class="notification success">
-                        Changes saved
-                    </small>
-                }
+                <div>
+                    <span class="button" id="geolocate-me">Use my geo location</span>
+                    <span class="button red disabled" id="remove-me">Clear my location</span>
+                </div>
+                
+                <div>
+                    <!--TODO: Decide if we display these (so user can see their saved data, or to set these as hidden fields -->
+                    <input id="Latitude" name="Latitude" type="text" disabled value="@Model.Latitude" />
+                    <input id="Longitude" name="Longitude" type="text" disabled value="@Model.Longitude" />
+                </div>
+            </div>
 
+            <input class="button green" type="submit" value="Save changes">
+                
+            if (TempData["success"] != null)
+            {
+                <small class="notification success">
+                    Changes saved
+                </small>
             }
 
-        </div>
-    </div>
+        }
 
+    </div>
+</div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap" async defer></script>
 

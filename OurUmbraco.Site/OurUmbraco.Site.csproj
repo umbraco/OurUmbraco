@@ -459,6 +459,7 @@
     <Content Include="Assets\js\lib\svg4everybody.min.js" />
     <Content Include="Assets\js\lodash.min.js" />
     <Content Include="Assets\js\map\community.map.js" />
+    <Content Include="Assets\js\map\profile.map.js" />
     <Content Include="Assets\swipebox\css\swipebox.css" />
     <Content Include="Assets\swipebox\css\swipebox.min.css" />
     <Content Include="Assets\swipebox\img\icons.png" />
