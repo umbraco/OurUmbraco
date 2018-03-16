@@ -29,5 +29,9 @@ namespace OurUmbraco.Our.Models
 
         [Display(Name = "GitHub username")]
         public string GitHubUsername { get; set; }
+
+        public string Latitude { get; set; }
+
+        public string Longitude { get; set; }
     }
 }
