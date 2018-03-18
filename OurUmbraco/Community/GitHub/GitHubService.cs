@@ -198,9 +198,9 @@ namespace OurUmbraco.Community.GitHub
                 if (searchResults.Any())
                 {
                     var totalPulls = searchResults.Count();
+                    var openPulls = searchResults.Count(x => x.Fields["state"] != null && x.Fields["state"] == "open");
                     var acceptedPulls = searchResults.Count(x => x.Fields["mergedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["mergedAt"]) == false);
-                    var closedPulls = searchResults.Count(x => x.Fields["closedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["closedAt"]) == false);
-                    closedPulls = closedPulls - acceptedPulls;
+                    var closedPulls = totalPulls - openPulls - acceptedPulls;
 
                     var repositories = new List<string>();
                     foreach (var searchResult in searchResults)
@@ -211,6 +211,7 @@ namespace OurUmbraco.Community.GitHub
                     }
 
                     pullRequestMember.TotalPulls = totalPulls;
+                    pullRequestMember.OpenPulls = openPulls;
                     pullRequestMember.AcceptedPulls = acceptedPulls;
                     pullRequestMember.ClosedPulls = closedPulls;
                     pullRequestMember.Repositories = repositories;
@@ -425,6 +426,7 @@ namespace OurUmbraco.Community.GitHub
         public string Name { get; set; }
         public string GitHubUsername { get; set; }
         public int TotalPulls { get; set; }
+        public int OpenPulls { get; set; }
         public int AcceptedPulls { get; set; }
         public int ClosedPulls { get; set; }
         public List<string> Repositories { get; set; }
