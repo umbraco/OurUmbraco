@@ -49,6 +49,7 @@ namespace OurUmbraco.Our
             AddCommunityBlogs();
             AddCommunityStatistics();
             AddCommunityVideos();
+            AddCommunityCalendar();
             AddVideosPage();
             AddRetiredStatusToPackages();
         }
@@ -1184,6 +1185,29 @@ namespace OurUmbraco.Our
 
                 const string templateName = "CommunityVideos";
                 const string contentItemName = "Videos";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityCalendar()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityCalendar";
+                const string contentItemName = "Calendar";
                 CreateNewCommunityHubPage(templateName, contentItemName);
 
                 string[] lines = { "" };
