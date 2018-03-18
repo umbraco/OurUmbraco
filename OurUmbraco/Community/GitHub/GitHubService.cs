@@ -158,46 +158,67 @@ namespace OurUmbraco.Community.GitHub
             return pulls;
         }
 
-        public List<string> MatchPullsToMembers()
+        public List<PullRequestMember> MatchPullsToMembers()
         {
-            var matches = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<string>>("OurPullsMatchToMembers",
-                () =>
+            var searcher = ExamineManager.Instance.SearchProviderCollection["PullRequestSearcher"];
+            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+
+            criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
+            var searchResults = searcher.Search(criteria);
+            var contributors = searchResults
+                .Where(x => x.Fields["memberId"] != null && string.IsNullOrWhiteSpace(x.Fields["memberId"]) == false).ToList();
+
+            var members = new List<int>();
+            foreach (var match in contributors)
+            {
+                int.TryParse(match.Fields["memberId"], out var memberId);
+                if (members.Contains(memberId) == false)
+                    members.Add(memberId);
+            }
+
+            var pullRequestMembers = new List<PullRequestMember>();
+
+            foreach (var memberId in members)
+            {
+                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                var member = umbracoHelper.TypedMember(memberId);
+
+                var pullRequestMember = new PullRequestMember
                 {
-                    var pulls = new List<GithubPullRequestModel>();
+                    MemberId = member.Id,
+                    Name = member.Name,
+                    GitHubUsername = member.GetPropertyValue<string>("github"),
+                    Repositories = new List<string>()
+                };
 
-                    if (File.Exists(PullRequestsJsonPath))
+                criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+                criteria = (LuceneSearchCriteria)criteria.RawQuery($"memberId:{memberId}");
+                searchResults = searcher.Search(criteria);
+
+                if (searchResults.Any())
+                {
+                    var totalPulls = searchResults.Count();
+                    var acceptedPulls = searchResults.Count(x => x.Fields["mergedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["mergedAt"]) == false);
+                    var closedPulls = searchResults.Count(x => x.Fields["closedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["closedAt"]) == false);
+
+                    var repositories = new List<string>();
+                    foreach (var searchResult in searchResults)
                     {
-                        var content = File.ReadAllText(PullRequestsJsonPath);
-                        pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+                        var repository = searchResult.Fields["repository"];
+                        if (repositories.Contains(repository) == false)
+                            repositories.Add(repository);
                     }
 
-                    var results = new List<string>();
+                    pullRequestMember.TotalPulls = totalPulls;
+                    pullRequestMember.AcceptedPulls = acceptedPulls;
+                    pullRequestMember.ClosedPulls = closedPulls;
+                    pullRequestMember.Repositories = repositories;
+                }
 
-                    var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
-                    var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+                pullRequestMembers.Add(pullRequestMember);
+            }
 
-                    // TODO: Linq is inefficient. Find Lucene query to give all results which are not empty for the `github` field
-                    criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
-                    var searchResults = searcher.Search(criteria);
-                    var contributors = searchResults.Where(x => x.Fields["github"] != null && string.IsNullOrWhiteSpace(x.Fields["github"]) == false);
-
-                    foreach (var contributor in contributors)
-                    {
-                        var ourName = contributor.Fields["nodeName"];
-                        var ourId = contributor.Fields["id"];
-                        var githubUsername = contributor.Fields["github"];
-                        var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
-                        var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
-                        var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
-                        results.Add(string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.",
-                            ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count));
-                    }
-
-                    return results;
-
-                }, TimeSpan.FromMinutes(15));
-
-            return matches;
+            return pullRequestMembers;
         }
 
         /// <summary>
@@ -395,5 +416,16 @@ namespace OurUmbraco.Community.GitHub
         {
             sb.AppendLine(string.Format("{0:yyyy-MM-dd HH:mm:ss} {1}", DateTime.Now, str));
         }
+    }
+
+    public class PullRequestMember
+    {
+        public int MemberId { get; set; }
+        public string Name { get; set; }
+        public string GitHubUsername { get; set; }
+        public int TotalPulls { get; set; }
+        public int AcceptedPulls { get; set; }
+        public int ClosedPulls { get; set; }
+        public List<string> Repositories { get; set; }
     }
 }
