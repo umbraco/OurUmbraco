@@ -200,6 +200,7 @@ namespace OurUmbraco.Community.GitHub
                     var totalPulls = searchResults.Count();
                     var acceptedPulls = searchResults.Count(x => x.Fields["mergedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["mergedAt"]) == false);
                     var closedPulls = searchResults.Count(x => x.Fields["closedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["closedAt"]) == false);
+                    closedPulls = closedPulls - acceptedPulls;
 
                     var repositories = new List<string>();
                     foreach (var searchResult in searchResults)
