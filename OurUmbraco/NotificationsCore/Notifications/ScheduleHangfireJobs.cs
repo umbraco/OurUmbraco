@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Web.Hosting;
+using Examine;
 using Hangfire;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
@@ -101,7 +102,18 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var service = new CommunityVideosService();
             service.UpdateYouTubePlaylistVideos();
         }
-
+        
+        public void GetGitHubPullRequests()
+        {
+            RecurringJob.AddOrUpdate(() => UpdatePullRequests(), Cron.HourInterval(1));
+        }
+        
+        public void UpdatePullRequests()
+        {
+            var service = new GitHubService();
+            service.UpdateAllPullRequestsForRepository();
+            ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
+        }
     }
 
     public class ReminderTopic
