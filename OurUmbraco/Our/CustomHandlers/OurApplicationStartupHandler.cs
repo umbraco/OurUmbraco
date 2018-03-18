@@ -34,11 +34,12 @@ namespace OurUmbraco.Our.CustomHandlers
             var projectIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             projectIndexer.GatheringNodeData += ProjectNodeIndexDataService.ProjectIndexer_GatheringNodeData;
             projectIndexer.DocumentWriting += ProjectNodeIndexDataService.ProjectIndexer_DocumentWriting;
-
+            
             //handle errors for non-umbraco indexers
             ExamineManager.Instance.IndexProviderCollection["projectIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["ForumIndexer"].IndexingError += ExamineHelper.LogErrors;
+            ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].IndexingError += ExamineHelper.LogErrors;
         }
 
         /// <summary>

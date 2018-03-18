@@ -1,0 +1,49 @@
+﻿@using OurUmbraco.Our
+@using Skybrud.Essentials.Strings.Extensions
+@inherits UmbracoViewPage
+    
+@{
+
+    var featuresService = new UpcomingFeaturesService();
+    var allowed = featuresService.MemberHasAccessToFeature();
+
+}
+    
+<div class="sidebar-area">
+    <div class="sidebar-content">
+        <div class="content-wrapper">
+            @if (allowed)
+            {
+                <nav>
+                    <ul class="level-1">
+                        @foreach (var child in Model.AncestorOrSelf(2).Children)
+                        {
+
+                            var active = Model.Path.ToInt32Array().Contains(child.Id);
+                            var children = active ? child.Children.Where(x => x.IsVisible()).ToArray() : new IPublishedContent[0];
+
+                            <li class="@(active ? "active" : null)">
+                                <h3><a href="@child.Url">@child.Name</a>
+                                </h3>
+                                @if (children.Any())
+                                {
+                                    <ul>
+                                        @foreach (var child2 in children)
+                                        {
+
+                                            var active2 = Model.Path.ToInt32Array().Contains(child2.Id);
+
+                                            <li class="@(active2 ? "active" : null)">
+                                                <a href="@child2.Url"><h4>@child2.Name</h4></a>
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            }
+        </div><!-- .content-wrapper -->
+    </div><!-- .sidebar-content -->
+</div><!-- .sidebar-area -->

@@ -50,6 +50,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateCommunityBlogPosts();
             scheduler.UpdateCommunityVideos();
             scheduler.UpdateVimeoVideos();
+            scheduler.GetGitHubPullRequests();
         }
     }
 }

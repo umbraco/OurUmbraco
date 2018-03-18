@@ -78,7 +78,7 @@ namespace OurUmbraco.Community.Videos
         {
             string dir = IOHelper.MapPath("~/App_Data/TEMP/YouTube/");
             string path = dir + "Playlist_" + playlistId + "_Videos.json";
-            return JsonUtils.LoadJsonArray(path, YouTubeVideo.Parse);
+            return File.Exists(path) ? JsonUtils.LoadJsonArray(path, YouTubeVideo.Parse) : new YouTubeVideo[0];
         }
 
         public void UpdateYouTubePlaylistVideos()

@@ -568,7 +568,9 @@
     <Compile Include="Our\Controllers\AvatarController.cs" />
     <Compile Include="Our\Controllers\BreadcrumbController.cs" />
     <Compile Include="Our\Controllers\OurUmbracoController.cs" />
+    <Compile Include="Our\CustomHandlers\PullRequestIndexer.cs" />
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
+    <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
     <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
     <Compile Include="Our\Models\EditFileModel.cs" />
