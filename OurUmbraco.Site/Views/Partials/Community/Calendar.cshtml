@@ -1,0 +1,172 @@
+﻿@using OurUmbraco.Community.Calendar
+@using Skybrud.Essentials.Time
+
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+
+    // Get the calender items from the viewbag
+    var items = ViewBag.CalendarItems as CommunityCalendarItem[];
+
+    // ABORT! ABORT! ABORT!
+    if (items == null)
+    {
+        return;
+    }
+
+}
+
+<section class="community">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">Calendars</h1>
+                <p>
+                    Meetups, festivals and other other events in the Umbraco community.
+                </p>
+            </div>
+            <div class="col-md-12">
+                <small>Upcoming events</small>
+            </div>
+            <div class="col-md-12">
+                <div class="timeline">
+                    @foreach (var item in items.OrderBy(x => x.StartDate).ThenByDescending(x => x.EndDate))
+                    {
+                        <div class="timeline-row @(item.Type == CommunityCalendarItemType.Festival ? "--large" : null)">
+                            <div>
+                                <span></span>
+                                <div>
+                                    <h3>
+                                        @if (item.HasUrl)
+                                        {
+                                            <a href="@item.Url" target="_blank" rel="noopener">@item.Title</a>
+                                        }
+                                        else
+                                        {
+                                            @item.Title
+                                        }
+                                        @if (item.HasSubTitle)
+                                        {
+                                            <span class="--subtitle">(@item.SubTitle)</span>
+                                        }
+
+                                    </h3>
+                                    <div class="timeline-row-meta">
+                                        <div>
+                                            <span>@(item.StartDate.ToString("MMMM d") + TimeUtils.GetDaySuffix(item.StartDate.DateTime))</span>
+                                            @if (item.HasEndDate)
+                                            {
+                                                <span> - </span>
+                                                <span>@TimeUtils.GetDayNumberAndSuffix(item.EndDate.DateTime)</span>
+                                            }
+                                        </div>
+                                        @if (item.HasLocationText)
+                                        {
+                                            <div><span>@item.LocationText</span></div>
+                                        }
+                                    </div>
+                                    @if (item.HasDescription)
+                                    {
+                                        <div class="timeline-row-description">
+                                            @Html.Raw(item.Description)
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<style type="text/css">
+    
+    .timeline-row > div {
+        display: flex;
+        position: relative;
+        margin: 0 0 0 28px;
+        border-left: 3px solid #DAF0C9;
+        min-height: 100px;
+        padding-bottom: 40px;
+    }
+
+    .timeline-row > div:before {
+        display: block;
+        width: 20px;
+        height: 20px;
+        position: absolute;
+        left: calc(-8px - 3px);
+        top: 0;
+        background: #DAF0C9;
+        content: ' ';
+        border-radius: 50%;
+    }
+
+    .timeline-row.--large > div:before {
+                              width: 60px;
+                              height: 60px;
+                              left: calc(-28px - 3px);
+                          }
+
+    .timeline-row > div:after {
+        display: block;
+        width: 95px;
+        height: 1px;
+        position: absolute;
+        left: 0;
+        top: 10px;
+        background: #DAF0C9;
+        content: ' ';
+    }
+
+    .timeline-row.--large > div {
+                              min-height: 140px;
+                          }
+
+
+    .timeline-row.--large > div:after {
+                              height: 3px;
+                              top: 28px;
+                          }
+
+    .timeline-row > div > div {
+        margin-left: 110px;
+    }
+
+    .timeline-row.--large > div > div {
+                              margin-top: 18px;
+                          }
+
+    .timeline-row h3 {
+        font-size: 1.17em;
+        font-weight: bold;
+    }
+
+    .timeline-row h3 span.--subtitle {
+        font-size: 0.8em;
+        font-weight: normal;
+    }
+
+    .timeline-row-meta,
+    .timeline-row-date,
+    .timeline-row-location {
+        margin-top: 2px;
+        font-size: 0.75em;
+        display: flex;
+    }
+
+    .timeline-row-description {
+        margin-top: 10px;
+    }
+
+    .timeline-row-meta > div + div:before {
+        content: '—';
+        content: '•';
+        content: '–';
+        display: inline;
+        margin: 0 3px;
+    }
+
+</style>

@@ -1,4 +1,23 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+﻿@using OurUmbraco.Community.Calendar
+@using OurUmbraco.Our
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-	Layout = null;
+
+
+    Layout = "~/Views/CommunityHubPageLayout.cshtml";
+
+    var featuresService = new UpcomingFeaturesService();
+    var allowed = featuresService.MemberHasAccessToFeature();
+
+
+}
+
+@if (allowed)
+{
+
+    // We load the calendar items here was we need them in two partial views
+    var calendar = new CommunityCalendarService();
+    ViewBag.CalendarItems = calendar.GetUpcomingItems(); ;
+
+    @Html.Partial("~/Views/Partials/Community/Calendar.cshtml")
 }

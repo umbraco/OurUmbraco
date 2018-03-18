@@ -1,4 +1,7 @@
-﻿@using OurUmbraco.Our
+﻿@using OurUmbraco.Community.Calendar
+@using OurUmbraco.Our
+@using Skybrud.Essentials.Enums
+@using Skybrud.Essentials.Strings
 @using Skybrud.Essentials.Strings.Extensions
 @inherits UmbracoViewPage
     
@@ -19,13 +22,38 @@
                         @foreach (var child in Model.AncestorOrSelf(2).Children)
                         {
 
+                            string template = child.GetTemplateAlias();
+
                             var active = Model.Path.ToInt32Array().Contains(child.Id);
                             var children = active ? child.Children.Where(x => x.IsVisible()).ToArray() : new IPublishedContent[0];
 
                             <li class="@(active ? "active" : null)">
-                                <h3><a href="@child.Url">@child.Name</a>
-                                </h3>
-                                @if (children.Any())
+                                <h3><a href="@child.Url">@child.Name</a></h3>
+                                
+                                @if (template == "CommunityCalendar")
+                                {
+
+                                    var calendar = new CommunityCalendarService();
+
+                                    <ul>
+                                        @foreach (var type in calendar.GetTypes())
+                                        {
+
+                                            string name = StringUtils.ToPlural(type + "");
+                                            string alias = StringUtils.ToCamelCase(name);
+
+                                            var active2 = Request.QueryString["type"] == alias;
+
+                                            string url2 = child.Url + alias;
+
+                                            <li class="@(active2 ? "active" : null)">
+                                                <a href="@url2"><h4>@name</h4></a>
+                                            </li>
+                                        }
+                                    </ul>
+
+                                }
+                                else if (children.Any())
                                 {
                                     <ul>
                                         @foreach (var child2 in children)
