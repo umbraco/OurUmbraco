@@ -10,12 +10,12 @@
 <style>
     /* Always set the map height explicitly to define the size of the div
     * element that contains the map. */
-     #map {
-         min-height: 500px;
-     }
+    #map {
+        min-height: 500px;
+        min-width: 500px;
+    }
 </style>
 
-<h1>Map</h1>
 <div id="map"></div>
 <div id="member-list" style="margin-top: 25px;"></div>
 
@@ -49,7 +49,7 @@
 
 
 <script id="members-template" type="x-tmpl-mustache">
-    <h3>There are quite a few people at this location</h3>
+    <h3>People near this location</h3>
     <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:space-between;">
         {{ #. }}
         {{ >member }}

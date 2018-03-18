@@ -4,8 +4,8 @@
 @using File = System.IO.File
 @inherits OurUmbracoTemplatePage
 
+@Map()
 
-@Html.Partial("Community/Map")
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/playground" })
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/another-testing-room" })
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
@@ -69,6 +69,29 @@
                     </ul>
                 </div>
 
+            </div>
+        </div>
+    </section>
+}
+
+@helper Map()
+{
+    <section class="community">
+        <div class="container">
+            <div class="row">
+
+                <div class="col-md-12">
+                    <h1 class="text-center">Community members around you</h1>
+                    <p>
+                        Many people in the world have joined our lively community, have a look on the map below
+                    </p>
+                </div>
+                <div class="col-md-12">
+                    <small>Map</small>
+                </div>
+
+                  @Html.Partial("Community/Map")
+                
             </div>
         </div>
     </section>

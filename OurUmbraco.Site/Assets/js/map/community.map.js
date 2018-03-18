@@ -64,7 +64,7 @@
                 });
 
             var zoomLevel = map.getZoom();
-            if (zoomLevel > 15) {
+            if (zoomLevel > 10) {
 
                 var innerTemplate = $('#member-item-template').html();
                 var outerTemplate = $('#members-template').html();

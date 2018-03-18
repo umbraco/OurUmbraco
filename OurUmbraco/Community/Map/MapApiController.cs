@@ -70,7 +70,7 @@ namespace OurUmbraco.Community.Map
         {
             var lat = result.Fields["latitude"];
             var latAsDouble = Double.Parse(lat);
-            var latRounded = Math.Round(latAsDouble, 4);
+            var latRounded = Math.Round(latAsDouble, 3);
             return latRounded.ToString();
         }
 
@@ -83,7 +83,7 @@ namespace OurUmbraco.Community.Map
         {
             var lon = result.Fields["longitude"];
             var lonAsDouble = Double.Parse(lon);
-            var lonRounded = Math.Round(lonAsDouble, 4);
+            var lonRounded = Math.Round(lonAsDouble, 3);
             return lonRounded.ToString();
         }
 
