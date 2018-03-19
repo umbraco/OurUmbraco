@@ -1,10 +1,11 @@
 ﻿@using ClientDependency.Core.Mvc
 @{
-    Html.RequiresJs("~/assets/js/lib/markerclusterer.js");
-    Html.RequiresJs("~/assets/js/map/community.map.js");
-
     //Google Maps API Key
     var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+
+    Html.RequiresJs("~/assets/js/lib/markerclusterer.js", 5)
+        .RequiresJs("~/assets/js/map/community.map.js", 6)
+        .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 7);
 }
 
 <style>
@@ -19,7 +20,7 @@
 <div id="map"></div>
 <div id="member-list" style="margin-top: 25px;"></div>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"></script>
+<script async defer src=""></script>
 
 <script id="map-marker-template" type="x-tmpl-mustache">
     <div style="display:flex; align-items:center;">

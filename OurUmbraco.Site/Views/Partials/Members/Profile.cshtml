@@ -7,10 +7,12 @@
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
 
-    Html.RequiresJs("~/Assets/js/map/profile.map.js");
-
     //Google Maps API Key
     var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+
+    Html.RequiresJs("~/Assets/js/map/profile.map.js", 5)
+        .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 6);
+    
 }
 
 <!-- Modal for file upload -->
@@ -124,6 +126,4 @@
 
     </div>
 </div>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap" async defer></script>
 
