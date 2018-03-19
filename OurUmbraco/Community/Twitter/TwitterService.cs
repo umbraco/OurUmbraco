@@ -32,16 +32,18 @@ namespace OurUmbraco.Community.Twitter
                         () =>
                         {
                             Auth.SetUserCredentials(ConfigurationManager.AppSettings["twitterConsumerKey"],
-                                ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                                ConfigurationManager.AppSettings["twitterUserAccessToken"],
-                                ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
+                                    ConfigurationManager.AppSettings["twitterConsumerSecret"],
+                                    ConfigurationManager.AppSettings["twitterUserAccessToken"],
+                                    ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
+
                             Tweetinvi.User.GetAuthenticatedUser();
 
                             var searchParameter = new SearchTweetsParameters("umbraco")
                             {
                                 SearchType = SearchResultType.Recent
                             };
-                            return Search.SearchTweets(searchParameter).ToArray();
+                            var results = Search.SearchTweets(searchParameter);
+                            return results == null ? new ITweet[]{} : results.ToArray();
 
                         }, TimeSpan.FromMinutes(2));
                 
