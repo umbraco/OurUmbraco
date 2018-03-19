@@ -6,6 +6,7 @@ using Hangfire;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Videos;
 using Umbraco.Core;
@@ -114,6 +115,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
             service.UpdateAllPullRequestsForRepository();
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
         }
+
+        public void RefreshKarmaStatistics()
+        {
+            var karmaService = new KarmaService();
+            RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
+        }
+        
     }
 
     public class ReminderTopic

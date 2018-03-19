@@ -7,7 +7,7 @@
     var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
 
     var karmaService = new KarmaService();
-    var karmaStatistics = karmaService.GetKarmaStatistics();
+    var karmaStatistics = karmaService.GetCachedKarmaStatistics();
 
     var currentInfo = DateTimeFormatInfo.CurrentInfo;
     var cal = currentInfo.Calendar;

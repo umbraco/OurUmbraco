@@ -51,6 +51,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateCommunityVideos();
             scheduler.UpdateVimeoVideos();
             scheduler.GetGitHubPullRequests();
+            scheduler.RefreshKarmaStatistics();
         }
     }
 }
