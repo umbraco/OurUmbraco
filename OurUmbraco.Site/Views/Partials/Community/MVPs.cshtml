@@ -2,45 +2,18 @@
 @using OurUmbraco.Our
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    var memberGroupService = UmbracoContext.Application.Services.MemberGroupService;
-    var memberService = UmbracoContext.Application.Services.MemberService;
-    var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP ")).OrderByDescending(x => x.Name.Split('-')[0]).ThenBy(x => (x.Name + '-').Split('-')[1]);
-
-    var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
-
-}
-
-@functions {
-
-    public string GetGroupDescription(string name)
+    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+    var ourMvps = (IOrderedEnumerable<IMemberGroup>)cache.GetCacheItem("OurMvpList", () =>
     {
+        var memberGroupService = UmbracoContext.Current.Application.Services.MemberGroupService;
+        var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP "))
+            .OrderByDescending(x => x.Name.Split('-')[0]).ThenBy(x => (x.Name + '-').Split('-')[1]);
+        return allMemberGroups;
 
-        if (name.Contains("Community Contributors"))
-        {
-            return "Awarded for organizing festivals, meetups and similar in the Umbraco community.";
-        }
+    }, TimeSpan.FromHours(48));
 
-        if (name.Contains("Core Contributors"))
-        {
-            return "Awarded for contributions to the Umbraco core.";
-        }
-
-        if (name.Contains("Forum Participation"))
-        {
-            return "";
-        }
-
-        Match m1 = Regex.Match(name, "^MVP ([0-9] {4})$");
-
-        if (m1.Success)
-        {
-            return "Awarded among the 20th most active members on Our Umbraco.";
-        }
-
-        return "";
-
-    }
-
+    var memberService = UmbracoContext.Application.Services.MemberService;
+    var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
 }
 
 <section class="community mvps">
@@ -61,8 +34,7 @@
             </div>
             <div class="col-md-12 flex" id="community-posts">
                 <table>
-                    
-                    @foreach (var memberGroup in allMemberGroups)
+                    @foreach (var memberGroup in ourMvps)
                     {
                         var members = memberService.GetMembersByGroup(memberGroup.Name).OrderBy(x => x.Name);
 
@@ -87,7 +59,6 @@
                         <tbody class="mvp-group">
                             @foreach (var member in members)
                             {
-
                                 var company = member.GetValue<string>("company");
                                 var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
                                 var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
@@ -104,7 +75,7 @@
                                         <small>@company</small>
                                     </td>
                                     <td class="col-twitter">
-                                        @if (String.IsNullOrWhiteSpace(twitter))
+                                        @if (string.IsNullOrWhiteSpace(twitter))
                                         {
                                             <em>N/A</em>
                                         }
@@ -116,7 +87,7 @@
                                         }
                                     </td>
                                     <td class="col-github">
-                                        @if (String.IsNullOrWhiteSpace(github))
+                                        @if (string.IsNullOrWhiteSpace(github))
                                         {
                                             <em>N/A</em>
                                         }
@@ -137,69 +108,100 @@
     </div>
 </section>
 
+@functions {
+    public string GetGroupDescription(string name)
+    {
+        if (name.Contains("Community Contributors"))
+        {
+            return "Awarded for organizing festivals, meetups and similar in the Umbraco community.";
+        }
+
+        if (name.Contains("Core Contributors"))
+        {
+            return "Awarded for contributions to the Umbraco core.";
+        }
+
+        if (name.Contains("Forum Participation"))
+        {
+            return "";
+        }
+
+        var match = Regex.Match(name, "^MVP ([0-9] {4})$");
+
+        return match.Success ? "Awarded among the 20th most active members on Our Umbraco." : string.Empty;
+    }
+}
+
 <style>
     .community.mvps {
     }
-    .community.mvps .mvp-group {
-        width: 100%;
-    }
-    .community.mvps .mvp-group h2 {
-        font-weight: bold;
-    }
-    .community.mvps table {
-        width: 100%;
-    }
-    .community.mvps .mvp-group .col-name {
-        width: 100%;
-    }
-    .community.mvps .mvp-group .col-name small {
-        display: block;
-        margin-top: 4px;
-        font-size: 12px;
-        font-weight: normal;
-        color: #000;
-    }
-    .community.mvps .mvp-group .col-twitter,
-    .community.mvps .mvp-group .col-github {
-        width: 150px;
-    }
-    .community.mvps table thead th {
-        padding: 5px 15px;
-        border-bottom: 1px solid #e5e8ea;
-    }
-    .community.mvps table tbody td {
-        padding: 15px;
-        border-bottom: 1px solid #e5e8ea;
-        vertical-align: middle;
-    }
 
-    .community.mvps .mvp-group-name h2 {
-        margin-top: 100px;
-        font-size: 26px;
-        font-weight: bold;
-    }
+        .community.mvps .mvp-group {
+            width: 100%;
+        }
 
-    .community.mvps .mvp-group-name div {
-        margin-top: 10px;
-    }
+            .community.mvps .mvp-group h2 {
+                font-weight: bold;
+            }
 
-    .community.mvps .mvp-group-name td {
-        padding-bottom: 30px;
-    }
+        .community.mvps table {
+            width: 100%;
+        }
 
-    .community.mvps .intro strong {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 18px;
-    }
-    
-    .community.mvps .intro div {
-        font-size: 16px;
-        line-height: 26px;
-    }
+        .community.mvps .mvp-group .col-name {
+            width: 100%;
+        }
 
-    .community.mvps .col-md-12.flex {
-        padding: 0;
-    }
+            .community.mvps .mvp-group .col-name small {
+                display: block;
+                margin-top: 4px;
+                font-size: 12px;
+                font-weight: normal;
+                color: #000;
+            }
 
+        .community.mvps .mvp-group .col-twitter,
+        .community.mvps .mvp-group .col-github {
+            width: 150px;
+        }
+
+        .community.mvps table thead th {
+            padding: 5px 15px;
+            border-bottom: 1px solid #e5e8ea;
+        }
+
+        .community.mvps table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e8ea;
+            vertical-align: middle;
+        }
+
+        .community.mvps .mvp-group-name h2 {
+            margin-top: 100px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .community.mvps .mvp-group-name div {
+            margin-top: 10px;
+        }
+
+        .community.mvps .mvp-group-name td {
+            padding-bottom: 30px;
+        }
+
+        .community.mvps .intro strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .community.mvps .intro div {
+            font-size: 16px;
+            line-height: 26px;
+        }
+
+        .community.mvps .col-md-12.flex {
+            padding: 0;
+        }
 </style>
