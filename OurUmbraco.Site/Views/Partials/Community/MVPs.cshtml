@@ -16,23 +16,7 @@
     var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
 }
 
-<section class="community mvps">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Most Valueable People</h1>
-                <p>The MVPs of the Umbraco Community</p>
-            </div>
-            <div class="intro">
-                <strong>What is an Umbraco MVP?</strong>
-                <div>
-                    Every year we honor the hardworking pillars of the Umbraco community - known as MVPs - or Most
-                    Valuable People. We are humbled by the amount of work that is being put into the project be it on
-                    the forums, pull-requests, packages, festivals, meetups and whatever this wonderful bunch of people
-                    get up to.
-                </div>
-            </div>
-            <div class="col-md-12 flex" id="community-posts">
+
                 <table>
                     @foreach (var memberGroup in ourMvps)
                     {
@@ -103,11 +87,6 @@
                         </tbody>
                     }
                 </table>
-            </div>
-        </div>
-    </div>
-</section>
-
 @functions {
     public string GetGroupDescription(string name)
     {

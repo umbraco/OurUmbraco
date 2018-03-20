@@ -9,5 +9,25 @@
 
 @if (allowed)
 {
-    @Html.Partial("~/Views/Partials/Community/Meetups.cshtml")
+    <section class="community">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>@Model.Content.Name</h1>
+                    <p>@(Model.Content.GetPropertyValue<string>("headline"))</p>
+                </div>
+                <div class="col-md-12">
+                    @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
+                    <p>&nbsp;</p>
+                </div>
+
+                <div class="col-md-12">
+                    <small>The first upcoming meetup for each meetup group are listed here</small>
+                </div>
+                <div class="col-md-12 flex" id="community-posts">
+                    @Html.Partial("~/Views/Partials/Community/Meetups.cshtml")
+                </div>
+            </div>
+        </div>
+    </section>
 }

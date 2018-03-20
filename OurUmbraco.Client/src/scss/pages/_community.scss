@@ -1,6 +1,6 @@
 .community-content {
 	h1 {
-		margin: 1em 0 10px;
+		margin: 0 0 10px;
 		font-size: 2.1rem;
 	}
 	
@@ -49,11 +49,7 @@
 			border-color: white;
 			@include box_shadow(2);
 		}
-
-		.row {
-			margin: 0;
-		}
-
+		
 		img {
 			border-radius: 50%;
 			width: 100%;
@@ -119,8 +115,16 @@
 		}	
 	}
 	
-	section.community {
+	section {
+		padding: 0;
+	}
 	
+	section.community {
+		
+		.container .row {
+			margin: 0;
+		}
+		
 		small {
 			font-size: .9rem;
 			color: darken($color-space, 20%);
@@ -145,7 +149,7 @@
 
 			+ p {
 				max-width: 700px;
-				margin: 1rem auto 3.5rem;
+				margin: 0 auto 3.5rem;
 				margin-bottom: 3rem;
 				padding: 0 10px;
 
