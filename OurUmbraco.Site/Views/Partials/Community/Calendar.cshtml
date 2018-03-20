@@ -4,11 +4,11 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
 
-    // Get the calender items from the viewbag
-    var items = ViewBag.CalendarItems as CommunityCalendarItem[];
+    // Get the calender model from the viewbag
+    CommunityCalendarRenderModel calendar = ViewBag.Calendar as CommunityCalendarRenderModel;
 
     // ABORT! ABORT! ABORT!
-    if (items == null)
+    if (calendar == null)
     {
         return;
     }
@@ -25,11 +25,11 @@
                 </p>
             </div>
             <div class="col-md-12">
-                <small>Upcoming events</small>
+                <small>@calendar.SubTitle</small>
             </div>
             <div class="col-md-12">
                 <div class="timeline">
-                    @foreach (var item in items.OrderBy(x => x.StartDate).ThenByDescending(x => x.EndDate))
+                    @foreach (var item in calendar.Items.OrderBy(x => x.StartDate).ThenByDescending(x => x.EndDate))
                     {
                         <div class="timeline-row @(item.Type == CommunityCalendarItemType.Festival ? "--large" : null)">
                             <div>

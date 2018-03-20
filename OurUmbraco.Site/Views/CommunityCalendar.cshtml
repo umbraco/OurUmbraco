@@ -17,7 +17,25 @@
 
     // We load the calendar items here was we need them in two partial views
     var calendar = new CommunityCalendarService();
-    ViewBag.CalendarItems = calendar.GetUpcomingItems(); ;
+
+    CommunityCalendarRenderModel model = new CommunityCalendarRenderModel();
+
+    int year;
+    if (Int32.TryParse(Request.QueryString["year"], out year) && year >= 2000)
+    {
+        model.SubTitle = "Events in " + year;
+        model.Items = calendar.GetItemsByYear(year);
+    }
+    else
+    {
+        model.SubTitle = "Upcoming events";
+        model.Items = calendar.GetUpcomingItems();
+    }
+
+
+
+    ViewBag.Calendar = model;
 
     @Html.Partial("~/Views/Partials/Community/Calendar.cshtml")
+
 }

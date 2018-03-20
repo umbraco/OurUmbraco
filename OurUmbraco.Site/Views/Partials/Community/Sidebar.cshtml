@@ -33,21 +33,22 @@
                                 @if (template == "CommunityCalendar")
                                 {
 
-                                    var calendar = new CommunityCalendarService();
+                                    // Get the calender items from the viewbag
+                                    var calendar = ViewBag.Calendar as CommunityCalendarRenderModel;
+                                    
+                                    // Get all present years in descending order
+                                    int[] years = calendar == null || calendar.Items == null ? new int[0] : calendar.Items.Select(x => x.StartDate.Year).Distinct().OrderByDescending(x => x).ToArray();
 
                                     <ul>
-                                        @foreach (var type in calendar.GetTypes())
+                                        @foreach (int year in years)
                                         {
 
-                                            string name = StringUtils.ToPlural(type + "");
-                                            string alias = StringUtils.ToCamelCase(name);
+                                            var active2 = Request.QueryString["year"] == year.ToString();
 
-                                            var active2 = Request.QueryString["type"] == alias;
-
-                                            string url2 = child.Url + alias;
+                                            string url2 = child.Url + year + "/";
 
                                             <li class="@(active2 ? "active" : null)">
-                                                <a href="@url2"><h4>@name</h4></a>
+                                                <a href="@url2"><h4>@year</h4></a>
                                             </li>
                                         }
                                     </ul>
