@@ -4400,7 +4400,8 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\Map.cshtml" />
-    <Content Include="Views\Partials\Community\Sidebar.cshtml" />    
+    <Content Include="Views\Partials\Community\Sidebar.cshtml" />
+    <Content Include="Views\CommunityBadges.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

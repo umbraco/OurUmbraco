@@ -30,7 +30,7 @@ namespace OurUmbraco.Our.Extensions
                 if (numberOfMvps > 1)
                     name = string.Format("{0} {1}x", name, numberOfMvps);
 
-                badges.Add(new Badge {Name = name, Link = "/community/most-valueable-people/", CssClass = "mvp" });
+                badges.Add(new Badge {Name = name, Link = "/community/most-valuable-people/", CssClass = "mvp" });
             }
             
             foreach (var role in rolesWithoutMvp)
