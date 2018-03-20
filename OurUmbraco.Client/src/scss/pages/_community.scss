@@ -4,6 +4,14 @@
 		font-size: 2.1rem;
 	}
 	
+	ul>li {
+		line-height: 1.5
+	}
+	
+	ul>li>ul {
+		margin-left: 20px;
+	}
+	
 	#community-posts {
 		flex-flow: row wrap;
 	}

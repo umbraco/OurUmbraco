@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Our.Models
+﻿@using OurUmbraco.Our
+@using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 @{
 
@@ -60,6 +61,7 @@
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()
+    @Gitter()
     @Meetups()
     @GitHubContributors()
     @TwitterSearch()
@@ -69,6 +71,7 @@ else
 {
     @Html.Partial("home/documentation")
     @ForumActivity()
+    @Gitter()
     @Meetups()
     @GitHubContributors()
     @TwitterSearch()
@@ -208,4 +211,14 @@ else
                 </div>
             </div>
         </section>
+}
+
+@helper Gitter()
+{
+    var featuresService = new UpcomingFeaturesService();
+    var allowed = featuresService.MemberHasAccessToFeature();
+    if (allowed)
+    {
+        @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
+    }
 }

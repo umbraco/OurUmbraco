@@ -1,7 +1,6 @@
 ﻿@using ClientDependency.Core.Mvc
 @model GitterSharp.Model.Room
 @{
-
     Html.RequiresJs("https://ajax.aspnetcdn.com/ajax/signalr/jquery.signalr-2.2.2.js");
     Html.RequiresJs("~/signalr/hubs");
 
@@ -24,14 +23,15 @@
 @* This is the main init render in the DOM *@
 <section class="gitter-chat">
     <div class="container">
-        <div>
-            <div class="col-md-12 room-info">
+        <div class="row">
+            <div class="col-md-5 room-info">
                 <h1 class="text-center">@roomName</h1>
                 <p>@roomTopic</p>
+                <p>
+                    <a class="button green" href="@roomUrl">Join the discussion on Gitter &rarr;</a>
+                </p>
             </div>
-        </div>
-        <div>
-            <div class="col-md-12">
+            <div class="col-md-7">
                 <div class="gitter-room" data-room="@roomId">
                     <ul class="umb-load-indicator animated -half-second">
                         <li class="umb-load-indicator__bubble"></li>
@@ -39,10 +39,6 @@
                         <li class="umb-load-indicator__bubble"></li>
                     </ul>
                 </div>
-
-                <p>
-                    <a class="button green" href="@roomUrl">Join the discussion in @roomName on Gitter &rarr;</a>
-                </p>
             </div>
         </div>
     </div>

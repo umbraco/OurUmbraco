@@ -1,4 +1,5 @@
-﻿using OurUmbraco.Forum.Extensions;
+﻿using System.Configuration;
+using OurUmbraco.Forum.Extensions;
 using Umbraco.Web;
 
 namespace OurUmbraco.Our
@@ -7,6 +8,10 @@ namespace OurUmbraco.Our
     {
         public bool MemberHasAccessToFeature()
         {
+            bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out var accessEnabled);
+            if (accessEnabled)
+                return true;
+
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var member = umbracoHelper.MembershipHelper.GetCurrentMember();
             var allowed = member != null && member.IsAdmin();
