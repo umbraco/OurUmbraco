@@ -38,23 +38,13 @@ namespace OurUmbraco.Community.Map
             //Pluck the fields we need from the Examine index fields
             //For our much simpler model to send back as the JSON response
             var members = results.Select(result => new MemberLocation
-            {
-                Id = result.Id,
-                Name = result.Fields["nodeName"],
+            {   
                 Avatar = GetAvatar(result),
                 Lat = GetLatitude(result),
                 Lon = GetLongitude(result)
             })
             .ToList();
 
-            //Loop over list and try to find members that have the exact same lat & lon
-            //Mark them as a 'someoneElseIsHere' to true
-            foreach (var member in members)
-            {
-                //Check if a member exist with same lat & lon & exclude itself from the lookup
-                member.SomeoneElseIsHere = members.Exists(x => x.Lat == member.Lat && x.Lon == member.Lon && x.Id != member.Id);
-            }
-            
             return members;
         }
 
