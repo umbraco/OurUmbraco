@@ -43,10 +43,7 @@ namespace OurUmbraco.Community.Map
                 Name = result.Fields["nodeName"],
                 Avatar = GetAvatar(result),
                 Lat = GetLatitude(result),
-                Lon = GetLongitude(result),
-                Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]), //Have to access the value as the raw field name with the magic string prefix
-                Twitter = GetTwitter(result),
-                GitHub = GetGitHub(result)
+                Lon = GetLongitude(result)
             })
             .ToList();
 
@@ -85,18 +82,6 @@ namespace OurUmbraco.Community.Map
             var lonAsDouble = Double.Parse(lon);
             var lonRounded = Math.Round(lonAsDouble, 3);
             return lonRounded.ToString();
-        }
-
-        private string GetGitHub(SearchResult result)
-        {
-            //Verify if we have a record/field for it (not all members set this)
-            return result.Fields.ContainsKey("github") ? result.Fields["github"].Replace("@", "") : null;
-        }
-
-        private string GetTwitter(SearchResult result)
-        {
-            //Verify if we have a record/field for it (not all members set this)
-            return result.Fields.ContainsKey("twitter") ? result.Fields["twitter"].Replace("@", "") : null;
         }
 
         private string GetAvatar(SearchResult result)
