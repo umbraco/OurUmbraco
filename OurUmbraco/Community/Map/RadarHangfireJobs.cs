@@ -83,34 +83,41 @@ namespace OurUmbraco.Community.Map
                     //TODO: Return a better excpetion type
                     var message = "We have hit the Google Rate API Limit - we will need to be re-run";
 
+                    context.SetTextColor(ConsoleTextColor.Red);
                     context.WriteLine(message);
+                    context.ResetTextColor();
+
                     throw new Exception(message);
                 }
 
                 //If we get more than one result back from Google - the first result is the best guess of the location (so use that)
                 var googleLocation = response.Body.Results.FirstOrDefault();
-
                 if (googleLocation != null)
                 {
                     newLat = googleLocation.Geometry.Location.Latitude.ToString();
                     newLon = googleLocation.Geometry.Location.Longitude.ToString();
                 }
+                else
+                {
+                    context.SetTextColor(ConsoleTextColor.Yellow);
+                    context.WriteLine($"Google can not find a location for Member ID '{result.Id}' with location '{memberFreeTextLocation}'");
+                    context.ResetTextColor();
 
-                //Get the member from it's ID
-                var memberId = result.Id;
-                var memberService = ApplicationContext.Current.Services.MemberService;
-                var member = memberService.GetById(memberId);
+                    //Get the member from it's ID
+                    var memberId = result.Id;
+                    var memberService = ApplicationContext.Current.Services.MemberService;
+                    var member = memberService.GetById(memberId);
 
-                if (member == null)
-                    continue;
+                    if (member == null)
+                        continue;
 
-                //Remove the old legacy value & use lat/lon
-                member.Properties["location"].Value = newLon;
-                member.Properties["latitude"].Value = newLat;
-                member.Properties["longitude"].Value = string.Empty;
+                    //Remove the old legacy value & use lat/lon
+                    member.Properties["location"].Value = newLon;
+                    member.Properties["latitude"].Value = newLat;
+                    member.Properties["longitude"].Value = string.Empty;
 
-                memberService.Save(member);
-
+                    memberService.Save(member);
+                }
             }
         }
     }
