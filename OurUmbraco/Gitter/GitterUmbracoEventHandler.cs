@@ -82,10 +82,20 @@ namespace OurUmbraco.Gitter
                     applicationContext.ApplicationCache.StaticCache.GetCacheItem<Room>("GitterRoom__" + roomName,
                         () =>
                         {
-                            return gitterService.GetRoomInfo(roomName).Result;
-
+                            try
+                            {
+                                return gitterService.GetRoomInfo(roomName).Result;
+                            }
+                            catch (Exception ex)
+                            {
+                                //Log & swallow - don't cause app not to boot up
+                                applicationContext.ProfilingLogger.Logger.Error<GitterUmbracoEventHandler>($"Cannot Get Gitter Room Info for {roomName}", ex);
+                                return null;
+                            }
                         });
 
+                if(room == null)
+                    continue;
 
                 //User presence
                 realtimeGitterService.SubscribeToUserPresence(room.Id)
