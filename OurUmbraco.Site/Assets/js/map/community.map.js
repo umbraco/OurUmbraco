@@ -60,7 +60,8 @@
             var markerCluster = new MarkerClusterer(map,
                 markers,
                 {
-                    imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m'
+                    imagePath: '/assets/js/map/m',
+                    sizes: [50, 60, 70, 80, 100]
                 });
 
             var zoomLevel = map.getZoom();
