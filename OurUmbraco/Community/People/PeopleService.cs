@@ -105,7 +105,8 @@ namespace OurUmbraco.Community.People
                         var members = memberService.GetMembersByGroup(memberGroup.Name).ToList();
 
                         var yearString = memberGroup.Name.Split(' ')[1];
-                        var category = memberGroup.Name.Replace($"{memberGroup.Name.Split(' ')[0]} {yearString} - ", string.Empty);
+                        var category = memberGroup.Name.Replace($"{memberGroup.Name.Split(' ')[0]} {yearString}", string.Empty);
+                        category = category.TrimStart(" - ");
 
                         int.TryParse(yearString, out var year);
                         var yearExists = mvpsPerYear.FirstOrDefault(x => x.Year == year);

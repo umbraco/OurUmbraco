@@ -32,7 +32,11 @@
                 </td>
                 <td class="col-name">
                     <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
-                    <small>@member.Company</small> <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
+                    <small>@member.Company</small><br />
+                    @if (string.IsNullOrWhiteSpace(member.Category.Trim()) == false)
+                    {
+                        <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
+                    }
                 </td>
                 <td class="col-twitter">
                     @if (string.IsNullOrWhiteSpace(member.Twitter))
