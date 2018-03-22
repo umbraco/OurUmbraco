@@ -9,7 +9,7 @@ namespace OurUmbraco.Gitter
 {
     public class GitterService
     {
-        private GitterApiService _gitterApi;
+        private readonly GitterApiService _gitterApi;
 
         public GitterService()
         {
@@ -30,6 +30,5 @@ namespace OurUmbraco.Gitter
             //Otherwise open for abuse?
             return _gitterApi.GetRoomAsync(roomName);
         }
-        
     }
 }

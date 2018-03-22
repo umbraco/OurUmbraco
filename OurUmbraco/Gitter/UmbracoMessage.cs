@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using OurUmbraco.Community.People;
+using OurUmbraco.Forum.Extensions;
 using Message = GitterSharp.Model.Message;
 
 namespace OurUmbraco.Gitter
@@ -13,17 +15,29 @@ namespace OurUmbraco.Gitter
             {
                 if (EditedDate.HasValue)
                 {
-                    var editedDate = EditedDate.Value.ToString("D");
-
-                    //Return the edited date
-                    return $"Edited at {editedDate}";
+                    return EditedDate.Value.ConvertToRelativeTime();
                 }
 
                 //Even with a deletion - we get a blank date sent to us in payload
-                var createdDate = SentDate.ToString("D");
+                return SentDate.ConvertToRelativeTime();
+            }
+        }
 
-                //Return the edited dates
-                return $"Sent at {createdDate}";
+        [JsonProperty("fullFriendlyDate")]
+        public string FullDate
+        {
+            get
+            {
+                if (EditedDate.HasValue)
+                {
+                    var editedDate = string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC", EditedDate.Value);
+                    return editedDate;
+                }
+
+                var sentDate = string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC", SentDate);
+
+                //Even with a deletion - we get a blank date sent to us in payload
+                return sentDate;
             }
         }
 

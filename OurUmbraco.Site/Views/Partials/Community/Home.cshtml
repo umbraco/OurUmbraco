@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Our
+﻿@using System.Configuration
+@using OurUmbraco.Our
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 @{
@@ -214,11 +215,14 @@ else
 }
 
 @helper Gitter()
-{
-    var featuresService = new UpcomingFeaturesService();
-    var allowed = featuresService.MemberHasAccessToFeature();
-    if (allowed)
     {
-        @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS" })
-    }
+        var featuresService = new UpcomingFeaturesService();
+        var allowed = featuresService.MemberHasAccessToFeature();
+
+        bool unhideGitter;
+        bool.TryParse(ConfigurationManager.AppSettings["UnhideGitter"], out unhideGitter);
+        if (unhideGitter || allowed)
+        {
+            @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS", viewName = "GitterHome.cshtml" })
+        }
 }
