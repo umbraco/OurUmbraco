@@ -13,13 +13,15 @@ namespace OurUmbraco.Gitter
         {
             get
             {
+                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+
                 if (EditedDate.HasValue)
                 {
-                    return EditedDate.Value.ConvertToRelativeTime();
+                    return EditedDate.Value.Add(utcOffset).ConvertToRelativeTime();
                 }
 
                 //Even with a deletion - we get a blank date sent to us in payload
-                return SentDate.ConvertToRelativeTime();
+                return SentDate.Add(utcOffset).ConvertToRelativeTime();
             }
         }
 
@@ -28,13 +30,14 @@ namespace OurUmbraco.Gitter
         {
             get
             {
+                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
                 if (EditedDate.HasValue)
                 {
-                    var editedDate = string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC", EditedDate.Value);
+                    var editedDate = string.Format($"{EditedDate.Value:ddd, dd MMM yyyy} {EditedDate.Value:HH:mm:ss} UTC+{utcOffset}");
                     return editedDate;
                 }
 
-                var sentDate = string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC", SentDate);
+                var sentDate = string.Format($"{SentDate:ddd, dd MMM yyyy} {SentDate:HH:mm:ss} UTC+{utcOffset}");
 
                 //Even with a deletion - we get a blank date sent to us in payload
                 return sentDate;
