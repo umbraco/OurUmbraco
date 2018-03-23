@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading;
 using System.Web.Configuration;
 using Examine;
 using Examine.LuceneEngine.Providers;
@@ -52,6 +53,13 @@ namespace OurUmbraco.Community.Map
             if (results.Any() == false)
                 return;
 
+            var apiKey = WebConfigurationManager.AppSettings["GoogleServerKey"];
+            var google = GoogleService.CreateFromAccessToken(apiKey);
+
+            context.SetTextColor(ConsoleTextColor.Yellow);
+            context.WriteLine($"Talking to Google with API Key '{apiKey}'");
+            context.ResetTextColor();
+
             var progressBar = context.WriteProgressBar();
 
             foreach (var result in results.WithProgress(progressBar, results.TotalItemCount))
@@ -69,19 +77,23 @@ namespace OurUmbraco.Community.Map
                 //Rate's 50 request's per second
                 //Max 2500 a day
                 //So this needs to be re-run several times over several days
-
-                var google = GoogleService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GoogleServerKey"]);
+                
                 var options = new GeocodingGetGeocodeOptions
                 {
                     Address = memberFreeTextLocation
                 };
 
                 var response = google.Geocoding.Geocode(options);
+                context.WriteLine($"Google API Response '{response.Body.Status}'");
 
-                if (response.Body.Status == "OVER_QUERY_LIMIT")
+                //REQUEST_DENIED
+                //OVER_QUERY_LIMIT
+                //OK
+                //ZERO_RESULTS
+                if (response.Body.Status == "OVER_QUERY_LIMIT" || response.Body.Status == "REQUEST_DENIED")
                 {
                     //TODO: Return a better excpetion type
-                    var message = "We have hit the Google Rate API Limit - we will need to be re-run";
+                    var message = "We have hit the Google Rate API Limit or have been denied API access - we will need to be re-run";
 
                     context.SetTextColor(ConsoleTextColor.Red);
                     context.WriteLine(message);
@@ -94,30 +106,39 @@ namespace OurUmbraco.Community.Map
                 var googleLocation = response.Body.Results.FirstOrDefault();
                 if (googleLocation != null)
                 {
+                    
+
                     newLat = googleLocation.Geometry.Location.Latitude.ToString();
                     newLon = googleLocation.Geometry.Location.Longitude.ToString();
+
+                    context.SetTextColor(ConsoleTextColor.Green);
+                    context.WriteLine($"Found {memberFreeTextLocation} as Latitude '{newLat}' Longtitude '{newLon}'");
+                    context.ResetTextColor();
                 }
                 else
                 {
                     context.SetTextColor(ConsoleTextColor.Yellow);
                     context.WriteLine($"Google can not find a location for Member ID '{result.Id}' with location '{memberFreeTextLocation}'");
                     context.ResetTextColor();
-
-                    //Get the member from it's ID
-                    var memberId = result.Id;
-                    var memberService = ApplicationContext.Current.Services.MemberService;
-                    var member = memberService.GetById(memberId);
-
-                    if (member == null)
-                        continue;
-
-                    //Remove the old legacy value & use lat/lon
-                    member.Properties["location"].Value = newLon;
-                    member.Properties["latitude"].Value = newLat;
-                    member.Properties["longitude"].Value = string.Empty;
-
-                    memberService.Save(member);
                 }
+
+                //Get the member from it's ID
+                var memberId = result.Id;
+                var memberService = ApplicationContext.Current.Services.MemberService;
+                var member = memberService.GetById(memberId);
+
+                if (member == null)
+                    continue;
+
+                //Remove the old legacy value & use lat/lon
+                member.Properties["location"].Value = newLon;
+                member.Properties["latitude"].Value = newLat;
+                member.Properties["longitude"].Value = string.Empty;
+
+                //memberService.Save(member);
+
+                //Wait a bit of time (so we don't hit the rate limit) ?
+                Thread.Sleep(3000);
             }
         }
     }
