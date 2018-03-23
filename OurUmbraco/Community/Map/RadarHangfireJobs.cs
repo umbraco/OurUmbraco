@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Web.Configuration;
@@ -7,8 +8,7 @@ using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
 using Hangfire.Server;
 using Hangfire.Console;
-using Skybrud.Social.Google.Common;
-using Skybrud.Social.Google.Geocoding.Options;
+using RestSharp;
 using Umbraco.Core;
 using UmbracoExamine;
 
@@ -54,12 +54,8 @@ namespace OurUmbraco.Community.Map
                 return;
 
             var apiKey = WebConfigurationManager.AppSettings["GoogleServerKey"];
-            var google = GoogleService.CreateFromAccessToken(apiKey);
-
-            context.SetTextColor(ConsoleTextColor.Yellow);
-            context.WriteLine($"Talking to Google with API Key '{apiKey}'");
-            context.ResetTextColor();
-
+            var client = new RestClient("https://maps.googleapis.com");
+            
             var progressBar = context.WriteProgressBar();
 
             foreach (var result in results.WithProgress(progressBar, results.TotalItemCount))
@@ -73,24 +69,19 @@ namespace OurUmbraco.Community.Map
                 var newLat = string.Empty;
                 var newLon = string.Empty;
 
-                //Query Google API
-                //Rate's 50 request's per second
-                //Max 2500 a day
-                //So this needs to be re-run several times over several days
-                
-                var options = new GeocodingGetGeocodeOptions
-                {
-                    Address = memberFreeTextLocation
-                };
+                //Adds querystring param to the HTTP GET request to Google API
+                var request = new RestRequest("maps/api/geocode/json", Method.GET);
+                request.AddParameter("key", apiKey);
+                request.AddParameter("address", memberFreeTextLocation);
 
-                var response = google.Geocoding.Geocode(options);
-                context.WriteLine($"Google API Response '{response.Body.Status}'");
+                var response = client.Execute<GoogleMapResult>(request);
+
 
                 //REQUEST_DENIED
                 //OVER_QUERY_LIMIT
                 //OK
                 //ZERO_RESULTS
-                if (response.Body.Status == "OVER_QUERY_LIMIT" || response.Body.Status == "REQUEST_DENIED")
+                if (response.Data.status == "OVER_QUERY_LIMIT" || response.Data.status == "REQUEST_DENIED")
                 {
                     //TODO: Return a better excpetion type
                     var message = "We have hit the Google Rate API Limit or have been denied API access - we will need to be re-run";
@@ -103,13 +94,11 @@ namespace OurUmbraco.Community.Map
                 }
 
                 //If we get more than one result back from Google - the first result is the best guess of the location (so use that)
-                var googleLocation = response.Body.Results.FirstOrDefault();
+                var googleLocation = response.Data.results.FirstOrDefault();
                 if (googleLocation != null)
                 {
-                    
-
-                    newLat = googleLocation.Geometry.Location.Latitude.ToString();
-                    newLon = googleLocation.Geometry.Location.Longitude.ToString();
+                    newLat = googleLocation.geometry.location.lat.ToString();
+                    newLon = googleLocation.geometry.location.lng.ToString();
 
                     context.SetTextColor(ConsoleTextColor.Green);
                     context.WriteLine($"Found {memberFreeTextLocation} as Latitude '{newLat}' Longtitude '{newLon}'");
@@ -129,17 +118,48 @@ namespace OurUmbraco.Community.Map
 
                 if (member == null)
                     continue;
+                
+                //Super paranoid checks to ensure the member doesn't have values already set for lat/lon
+                var currentLat = member.Properties["latitude"].Value?.ToString();
+                var currentLon = member.Properties["longitude"].Value?.ToString();
+                
+                if (string.IsNullOrEmpty(currentLat)|| string.IsNullOrEmpty(currentLon))
+                {
+                    //Remove the old legacy value & use lat/lon
+                    member.Properties["location"].Value = string.Empty;
 
-                //Remove the old legacy value & use lat/lon
-                member.Properties["location"].Value = newLon;
-                member.Properties["latitude"].Value = newLat;
-                member.Properties["longitude"].Value = string.Empty;
+                    member.Properties["latitude"].Value = newLat;
+                    member.Properties["longitude"].Value = newLon;
 
-                //memberService.Save(member);
+                    memberService.Save(member);
+                }
 
                 //Wait a bit of time (so we don't hit the rate limit) ?
-                Thread.Sleep(3000);
+                Thread.Sleep(1500);
             }
         }
+    }
+
+    //Partial C# classes from the JSON to map to
+    public class GoogleMapResult
+    {
+        public List<Result> results { get; set; }
+        public string status { get; set; }
+    }
+
+    public class Result
+    {
+        public Geometry geometry { get; set; }
+    }
+
+    public class Geometry
+    {
+        public Location location { get; set; }
+    }
+
+    public class Location
+    {
+        public double lat { get; set; }
+        public double lng { get; set; }
     }
 }
