@@ -6,6 +6,7 @@ using System.Web.Configuration;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
+using Hangfire;
 using Hangfire.Server;
 using Hangfire.Console;
 using RestSharp;
@@ -23,10 +24,11 @@ namespace OurUmbraco.Community.Map
         /// </summary>
         public void FindSignals()
         {
-            //Fire once & forget - 
-            Hangfire.BackgroundJob.Enqueue(() => AmplifySignal(null));
+            //Run daily at midnight UTC - As Google's 2500 API limit resets daily
+            RecurringJob.AddOrUpdate(() => AmplifySignal(null), Cron.Daily);
         }
 
+        [AutomaticRetry(Attempts = 0)]
         public void AmplifySignal(PerformContext context)
         {
             //Use Examine to query members with more than 70 karma points
