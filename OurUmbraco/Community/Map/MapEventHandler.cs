@@ -91,11 +91,17 @@ namespace OurUmbraco.Community.Map
 
         private void MapEventHandler_GatheringNodeData(object sender, IndexingNodeDataEventArgs e)
         {
+            AddsHasLocationSetField(e);
+            AddsHasLocationTextFieldSet(e);
+        }
+
+        private static void AddsHasLocationSetField(IndexingNodeDataEventArgs e)
+        {
             //Even though the index is the internal members one
             //Lets be certain that the indextype is member
             if (e.IndexType != IndexTypes.Member)
                 return;
-            
+
             var hasLocationSet = false;
 
             //Check if the fields
@@ -109,10 +115,9 @@ namespace OurUmbraco.Community.Map
                     //We can then search for this field - to find all members who has lat & lon set
                     hasLocationSet = true;
                 }
-
             }
 
-            var valueToStore = hasLocationSet ? "1" : "0";  
+            var valueToStore = hasLocationSet ? "1" : "0";
 
             //Check if the field exists already or not (to add or update)
             if (e.Fields.ContainsKey(hasLocationIndexField))
@@ -125,7 +130,42 @@ namespace OurUmbraco.Community.Map
                 //Add/push it in
                 e.Fields.Add(hasLocationIndexField, valueToStore);
             }
+        }
 
+        private static void AddsHasLocationTextFieldSet(IndexingNodeDataEventArgs e)
+        {
+            //Even though the index is the internal members one
+            //Lets be certain that the indextype is member
+            if (e.IndexType != IndexTypes.Member)
+                return;
+
+            var hasLocationTextFieldSet = false;
+
+            //Check if the fields
+            if (e.Fields.ContainsKey("location"))
+            {
+                //Next check its not null/empty value
+                if (string.IsNullOrEmpty(e.Fields["location"]) == false)
+                {
+                    //We add this field into the index
+                    //We can then search for this field - to find all members who has lat & lon set
+                    hasLocationTextFieldSet = true;
+                }
+            }
+
+            var valueToStore = hasLocationTextFieldSet ? "1" : "0";
+
+            //Check if the field exists already or not (to add or update)
+            if (e.Fields.ContainsKey(hasLocationIndexField))
+            {
+                //Update it
+                e.Fields["hasLocationTextFieldSet"] = valueToStore;
+            }
+            else
+            {
+                //Add/push it in
+                e.Fields.Add("hasLocationTextFieldSet", valueToStore);
+            }
         }
     }
 }

@@ -1,14 +1,15 @@
-﻿@using ClientDependency.Core.Mvc
+﻿@using System.Configuration
+@using ClientDependency.Core.Mvc
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
 
-@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
+@inherits UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
 
     //Google Maps API Key
-    var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
 
     Html.RequiresJs("~/Assets/js/map/profile.map.js", 5)
         .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 6);
