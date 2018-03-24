@@ -3,6 +3,7 @@ using System.Text;
 using System.Web.Hosting;
 using Examine;
 using Hangfire;
+using Hangfire.Server;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
@@ -62,7 +63,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateCommunityBlogPosts()
         {
-            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(null), Cron.HourInterval(1));
         }
 
         public void UpdateVimeoVideos()
@@ -76,7 +77,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             vimeoVideoService.UpdateVimeoVideos("umbraco");
         }
 
-        public void UpdateBlogPostsJsonFile()
+        public void UpdateBlogPostsJsonFile(PerformContext context)
         {
             // Initialize a new service
             var service = new BlogPostsService();
@@ -85,7 +86,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
 
             // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(context), Formatting.Indented);
 
             // Save the JSON to disk
             System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
