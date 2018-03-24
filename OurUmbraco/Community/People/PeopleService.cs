@@ -3,9 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
+using OurUmbraco.Community.Models;
 using OurUmbraco.Community.People.Models;
+using OurUmbraco.Our;
 using Umbraco.Core;
+using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace OurUmbraco.Community.People
 {
@@ -83,6 +88,80 @@ namespace OurUmbraco.Community.People
             var searchResults = searcher.Search(criteria);
             var searchResult = searchResults.FirstOrDefault();
             return searchResult?.Id;
+        }
+
+        public List<MvpsPerYear> GetMvps()
+        {
+            var memberService = UmbracoContext.Current.Application.Services.MemberService;
+            var ourMvps = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<MvpsPerYear>>("OurMvpsPerYear",
+                () =>
+                {
+                    var memberGroupService = UmbracoContext.Current.Application.Services.MemberGroupService;
+                    var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP "));
+
+                    var mvpsPerYear = new List<MvpsPerYear>();
+                    foreach (var memberGroup in allMemberGroups)
+                    {
+                        var members = memberService.GetMembersByGroup(memberGroup.Name).ToList();
+
+                        var yearString = memberGroup.Name.Split(' ')[1];
+                        var category = memberGroup.Name.Replace($"{memberGroup.Name.Split(' ')[0]} {yearString}", string.Empty);
+                        category = category.TrimStart(" - ");
+
+                        int.TryParse(yearString, out var year);
+                        var yearExists = mvpsPerYear.FirstOrDefault(x => x.Year == year);
+                        if (yearExists != null)
+                        {
+                            foreach (var member in members)
+                            {
+                                var mvpMember = PopulateMemberData(member, category);
+                                yearExists.Members.Add(mvpMember);
+                            }
+                        }
+                        else
+                        {
+                            var yearMembers = new MvpsPerYear
+                            {
+                                Year = year,
+                                Members = new List<MvpMember>()
+                            };
+
+                            foreach (var member in members)
+                            {
+                                var mvpMember = PopulateMemberData(member, category);
+                                yearMembers.Members.Add(mvpMember);
+                            }
+                            mvpsPerYear.Add(yearMembers);
+                        }
+                    }
+
+                    return mvpsPerYear;
+
+                }, TimeSpan.FromHours(48));
+            
+            return ourMvps;
+        }
+
+        private static MvpMember PopulateMemberData(IMember member, string category)
+        {
+            var membershipHelper = new MembershipHelper(UmbracoContext.Current);
+            var m = membershipHelper.GetById(member.Id);
+
+            var company = member.GetValue<string>("company");
+            var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
+            var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
+
+            var mvpMember = new MvpMember
+            {
+                Id = member.Id,
+                Name = member.Name,
+                Avatar = Utils.GetMemberAvatar(m, 48),
+                Company = company,
+                Twitter = twitter,
+                GitHub = github,
+                Category = category
+            };
+            return mvpMember;
         }
     }
 }

@@ -1,115 +1,72 @@
-@using System.Text.RegularExpressions
-@using OurUmbraco.Our
+@using OurUmbraco.Community.People
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    var cache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
-    var ourMvps = (IOrderedEnumerable<IMemberGroup>)cache.GetCacheItem("OurMvpList", () =>
-    {
-        var memberGroupService = UmbracoContext.Current.Application.Services.MemberGroupService;
-        var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP "))
-            .OrderByDescending(x => x.Name.Split('-')[0]).ThenBy(x => (x.Name + '-').Split('-')[1]);
-        return allMemberGroups;
-
-    }, TimeSpan.FromHours(48));
-
-    var memberService = UmbracoContext.Application.Services.MemberService;
-    var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
+    var peopleService = new PeopleService();
+    var ourMvps = peopleService.GetMvps();
 }
 
-
-                <table>
-                    @foreach (var memberGroup in ourMvps)
+<table>
+    @foreach (var mvpGroup in ourMvps.OrderByDescending(m => m.Year))
+    {
+        <thead class="mvp-group-name">
+        <tr>
+            <td colspan="4">
+                <h2>@mvpGroup.Year</h2>
+            </td>
+        </tr>
+        </thead>
+        <thead>
+        <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Twitter</th>
+            <th>GitHub</th>
+        </tr>
+        </thead>
+        <tbody class="mvp-group">
+        @foreach (var member in mvpGroup.Members.OrderBy(m => m.Name))
+        {
+            <tr>
+                <td>
+                    @Html.Raw(member.Avatar)
+                </td>
+                <td class="col-name">
+                    <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
+                    <small>@member.Company</small><br />
+                    @if (string.IsNullOrWhiteSpace(member.Category.Trim()) == false)
                     {
-                        var members = memberService.GetMembersByGroup(memberGroup.Name).OrderBy(x => x.Name);
-
-                        var description = GetGroupDescription(memberGroup.Name);
-
-                        <thead class="mvp-group-name">
-                            <tr>
-                                <td colspan="4">
-                                    <h2>@memberGroup.Name</h2>
-                                    <div>@description</div>
-                                </td>
-                            </tr>
-                        </thead>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Name</th>
-                                <th>Twitter</th>
-                                <th>GitHub</th>
-                            </tr>
-                        </thead>
-                        <tbody class="mvp-group">
-                            @foreach (var member in members)
-                            {
-                                var company = member.GetValue<string>("company");
-                                var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
-                                var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
-
-                                // Hacky as we need IPublishedContent to render the avatar
-                                var m = membershipHelper.GetById(member.Id);
-
-                                <tr>
-                                    <td>
-                                        @Html.Raw(Utils.GetMemberAvatar(m, 48))
-                                    </td>
-                                    <td class="col-name">
-                                        <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
-                                        <small>@company</small>
-                                    </td>
-                                    <td class="col-twitter">
-                                        @if (string.IsNullOrWhiteSpace(twitter))
-                                        {
-                                            <em>N/A</em>
-                                        }
-                                        else
-                                        {
-                                            <a href="https://twitter.com/@(twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
-                                                @@@(twitter)
-                                            </a>
-                                        }
-                                    </td>
-                                    <td class="col-github">
-                                        @if (string.IsNullOrWhiteSpace(github))
-                                        {
-                                            <em>N/A</em>
-                                        }
-                                        else
-                                        {
-                                            <a href="https://github.com/@(github)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
-                                                @@@(github)
-                                            </a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
+                        <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
                     }
-                </table>
-@functions {
-    public string GetGroupDescription(string name)
-    {
-        if (name.Contains("Community Contributors"))
-        {
-            return "Awarded for organizing festivals, meetups and similar in the Umbraco community.";
+                </td>
+                <td class="col-twitter">
+                    @if (string.IsNullOrWhiteSpace(member.Twitter))
+                    {
+                        <em>N/A</em>
+                    }
+                    else
+                    {
+                        <a href="https://twitter.com/@(member.Twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
+                            @@@(member.Twitter)
+                        </a>
+                    }
+                </td>
+                <td class="col-github">
+                    @if (string.IsNullOrWhiteSpace(member.GitHub))
+                    {
+                        <em>N/A</em>
+                    }
+                    else
+                    {
+                        <a href="https://github.com/@(member.GitHub)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
+                            @@@(member.GitHub)
+                        </a>
+                    }
+                </td>
+            </tr>
         }
-
-        if (name.Contains("Core Contributors"))
-        {
-            return "Awarded for contributions to the Umbraco core.";
-        }
-
-        if (name.Contains("Forum Participation"))
-        {
-            return "";
-        }
-
-        var match = Regex.Match(name, "^MVP ([0-9] {4})$");
-
-        return match.Success ? "Awarded among the 20th most active members on Our Umbraco." : string.Empty;
+        </tbody>
     }
-}
+</table>
 
 <style>
     .community.mvps {
@@ -132,7 +89,7 @@
         }
 
             .community.mvps .mvp-group .col-name small {
-                display: block;
+                display: inline-block;
                 margin-top: 4px;
                 font-size: 12px;
                 font-weight: normal;
