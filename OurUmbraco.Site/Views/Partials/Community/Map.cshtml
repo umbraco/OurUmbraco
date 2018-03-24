@@ -1,7 +1,8 @@
-﻿@using ClientDependency.Core.Mvc
+﻿@using System.Configuration
+@using ClientDependency.Core.Mvc
 @{
     //Google Maps API Key
-    var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
 
     Html.RequiresJs("~/assets/js/lib/markerclusterer.js", 5)
         .RequiresJs("~/assets/js/map/community.map.js", 6)

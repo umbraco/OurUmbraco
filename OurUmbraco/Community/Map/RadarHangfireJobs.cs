@@ -42,8 +42,8 @@ namespace OurUmbraco.Community.Map
                 .And().Field("hasLocationTextFieldSet", "1")
                 .And().Field("blocked", "0")
                 .And().Field("umbracoMemberApproved", "1")
-                .Not().Range(LuceneIndexer.SortedFieldNamePrefix + "karma", 0, 70, true, true) //The raw field  in the index has the magic prefix
-                .And().OrderByDescending(new SortableField("karma", SortType.Int)) //When you use a sortable field - you need to not include the magic string prefix - as Examine adds it in
+                .Not().Range(LuceneIndexer.SortedFieldNamePrefix + "reputationTotal", 0, 70, true, true) //The raw field  in the index has the magic prefix
+                .And().OrderByDescending(new SortableField("reputationTotal", SortType.Int)) //When you use a sortable field - you need to not include the magic string prefix - as Examine adds it in
                 .Compile();
 
             var results = memberSearcher.Search(query);
