@@ -33,11 +33,11 @@ namespace OurUmbraco.Gitter
                 var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
                 if (EditedDate.HasValue)
                 {
-                    var editedDate = string.Format($"{EditedDate.Value:ddd, dd MMM yyyy} {EditedDate.Value:HH:mm:ss} UTC+{utcOffset}");
+                    var editedDate = string.Format($"{EditedDate.Value.Add(utcOffset):ddd, dd MMM yyyy} {EditedDate.Value.Add(utcOffset):HH:mm:ss} UTC+{utcOffset}");
                     return editedDate;
                 }
 
-                var sentDate = string.Format($"{SentDate:ddd, dd MMM yyyy} {SentDate:HH:mm:ss} UTC+{utcOffset}");
+                var sentDate = string.Format($"{SentDate.Add(utcOffset):ddd, dd MMM yyyy} {SentDate.Add(utcOffset):HH:mm:ss} UTC+{utcOffset}");
 
                 //Even with a deletion - we get a blank date sent to us in payload
                 return sentDate;
