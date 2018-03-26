@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
-using OurUmbraco.Community.Models;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Our;
 using Umbraco.Core;
@@ -142,6 +141,37 @@ namespace OurUmbraco.Community.People
             return ourMvps;
         }
 
+        public List<BadgeMember> GetMembersInRole(string role)
+        {
+            var currentApplication = UmbracoContext.Current.Application;
+            var memberService = currentApplication.Services.MemberService;
+
+            var ourMembersInRole = currentApplication.ApplicationCache.RuntimeCache.GetCacheItem<List<BadgeMember>>("OurMembersInRole" + role,
+                () =>
+                {
+                    var memberGroupService = currentApplication.Services.MemberGroupService;
+                    var memberGroup = memberGroupService
+                        .GetAll()
+                        .FirstOrDefault(x => string.Equals(x.Name, role, StringComparison.InvariantCultureIgnoreCase));
+                    if (memberGroup == null)
+                        return null;
+
+                    var badgeMembers = new List<BadgeMember>();
+                    var members = memberService.GetMembersByGroup(memberGroup.Name).ToList();
+                    
+                            foreach (var member in members)
+                            {
+                                var badgeMember = PopulateBadgeMemberData(member);
+                                badgeMembers.Add(badgeMember);
+                            }
+
+                    return badgeMembers;
+
+                }, TimeSpan.FromHours(24));
+            
+            return ourMembersInRole;
+        }
+
         private static MvpMember PopulateMemberData(IMember member, string category)
         {
             var membershipHelper = new MembershipHelper(UmbracoContext.Current);
@@ -162,6 +192,28 @@ namespace OurUmbraco.Community.People
                 Category = category
             };
             return mvpMember;
+        }
+
+        private static BadgeMember PopulateBadgeMemberData(IMember member)
+        {
+            var membershipHelper = new MembershipHelper(UmbracoContext.Current);
+            var m = membershipHelper.GetById(member.Id);
+
+            var company = member.GetValue<string>("company");
+            var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
+            var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
+
+            var badgeMember = new BadgeMember
+            {
+                Id = member.Id,
+                Name = member.Name,
+                Avatar = Utils.GetMemberAvatar(m, 48),
+                Company = company,
+                Twitter = twitter,
+                GitHub = github
+            };
+
+            return badgeMember;
         }
     }
 }

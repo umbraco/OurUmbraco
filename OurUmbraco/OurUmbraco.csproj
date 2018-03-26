@@ -439,6 +439,8 @@
     <Compile Include="Community\GitHub\Models\GitHubContributorsModel.cs" />
     <Compile Include="Community\GitHub\Models\IGitHubContributorsModel.cs" />
     <Compile Include="Community\Models\TweetsModel.cs" />
+    <Compile Include="Community\People\Models\BadgeMember.cs" />
+    <Compile Include="Community\People\Models\BadgeGroup.cs" />
     <Compile Include="Community\People\Models\MvpMember.cs" />
     <Compile Include="Community\People\Models\MvpsPerYear.cs" />
     <Compile Include="Community\People\Models\PeopleKarmaResult.cs" />

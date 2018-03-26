@@ -1,26 +1,194 @@
-﻿@using OurUmbraco.Our
+﻿@using OurUmbraco.Community.People
+@using OurUmbraco.Community.People.Models
+@using OurUmbraco.Our
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/CommunityHubPageLayout.cshtml";
 
     var featuresService = new UpcomingFeaturesService();
     var allowed = featuresService.MemberHasAccessToFeature();
+
+    var peopleService = new PeopleService();
+    var badgeGroups = new List<BadgeGroup>();
+
+    var contributors = peopleService.GetMembersInRole("CoreContrib");
+    var contributorsGroup = new BadgeGroup
+    {
+        Name = "C-Trib",
+        Description = "Contributor to one of our open source projects: Umbraco CMS, Umbraco Documentation, Our Umbraco, etc.",
+        Members = new List<BadgeMember>()
+    };
+    contributorsGroup.Members = contributors;
+    badgeGroups.Add(contributorsGroup);
+
+    var admins = peopleService.GetMembersInRole("admin");
+    var adminsGroup = new BadgeGroup
+    {
+        Name = "Admin",
+        Description = "Administrator on the forum, admins have access to moderation tools on the forum",
+        Members = new List<BadgeMember>()
+    };
+    adminsGroup.Members = admins;
+    badgeGroups.Add(adminsGroup);
+
+    var hqMembers = peopleService.GetMembersInRole("HQ");
+    var hqMembersGroup = new BadgeGroup
+    {
+        Name = "HQ",
+        Description = "Members who work at Umbraco headquarters, the company behind Umbraco",
+        Members = new List<BadgeMember>()
+    };
+    hqMembersGroup.Members = hqMembers;
+    badgeGroups.Add(hqMembersGroup);
+
 }
 
 @if (allowed)
 {
-    <section class="community">
+    <section class="community mvps">
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
                     <h1>@Model.Content.Name</h1>
                     <p>@(Model.Content.GetPropertyValue<string>("headline"))</p>
                 </div>
-                <div class="col-md-12">
+                <div class="intro">
                     @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
                     <p>&nbsp;</p>
+                </div>
+                <div class="col-md-12 flex" id="community-posts">
+                    <table>
+                        @foreach (var badgeGroup in badgeGroups)
+                        {
+                            <thead class="mvp-group-name">
+                                <tr>
+                                    <td colspan="4" id="@badgeGroup.Name.ToLowerInvariant()">
+                                        <h2>@badgeGroup.Name</h2>
+                                        <p>@badgeGroup.Description</p>
+                                    </td>
+                                </tr>
+                            </thead>
+                            <thead>
+                                <tr>
+                                    <th></th>
+                                    <th>Name</th>
+                                    <th>Twitter</th>
+                                    <th>GitHub</th>
+                                </tr>
+                            </thead>
+                            <tbody class="mvp-group">
+                                @foreach (var member in badgeGroup.Members.OrderBy(x => x.Name))
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.Raw(member.Avatar)
+                                        </td>
+                                        <td class="col-name">
+                                            <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
+                                            <small>@member.Company</small><br />
+                                        </td>
+                                        <td class="col-twitter">
+                                            @if (string.IsNullOrWhiteSpace(member.Twitter))
+                                            {
+                                                <em>N/A</em>
+                                            }
+                                            else
+                                            {
+                                                <a href="https://twitter.com/@(member.Twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
+                                                    @@@(member.Twitter)
+                                                </a>
+                                            }
+                                        </td>
+                                        <td class="col-github">
+                                            @if (string.IsNullOrWhiteSpace(member.GitHub))
+                                            {
+                                                <em>N/A</em>
+                                            }
+                                            else
+                                            {
+                                                <a href="https://github.com/@(member.GitHub)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
+                                                    @@@(member.GitHub)
+                                                </a>
+                                            }
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        }
+                    </table>
                 </div>
             </div>
         </div>
     </section>
 }
+
+<style>
+    .community.mvps .mvp-group {
+        width: 100%;
+    }
+
+    .community.mvps .mvp-group h2 {
+        font-weight: bold;
+    }
+
+    .community.mvps table {
+        width: 100%;
+    }
+
+    .community.mvps .mvp-group .col-name {
+        width: 100%;
+    }
+
+    .community.mvps .mvp-group .col-name small {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 12px;
+        font-weight: normal;
+        color: #000;
+    }
+
+    .community.mvps .mvp-group .col-twitter,
+    .community.mvps .mvp-group .col-github {
+        width: 150px;
+    }
+
+    .community.mvps table thead th {
+        padding: 5px 15px;
+        border-bottom: 1px solid #e5e8ea;
+    }
+
+    .community.mvps table tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #e5e8ea;
+        vertical-align: middle;
+    }
+
+    .community.mvps .mvp-group-name h2 {
+        margin-top: 100px;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    .community.mvps .mvp-group-name div {
+        margin-top: 10px;
+    }
+
+    .community.mvps .mvp-group-name td {
+        padding-bottom: 30px;
+    }
+
+    .community.mvps .intro strong {
+        display: block;
+        margin-bottom: 5px;
+        font-size: 18px;
+    }
+
+    .community.mvps .intro div {
+        font-size: 16px;
+        line-height: 26px;
+    }
+
+    .community.mvps .col-md-12.flex {
+        padding: 0;
+    }
+</style>
