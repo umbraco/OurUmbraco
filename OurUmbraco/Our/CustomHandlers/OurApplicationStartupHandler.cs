@@ -31,28 +31,12 @@ namespace OurUmbraco.Our.CustomHandlers
             if (string.IsNullOrWhiteSpace(e.QueryString))
                 return;
 
-            // Don't support alpha whatsoever
             var isGif = e.Context.Request.Path.EndsWith(".gif", StringComparison.CurrentCultureIgnoreCase);
             if (isGif == false)
                 return;
 
-            const string parameterName = "animationProcessMode";
-            var containsAnimationProcessMode = false;
-
-            var queryCollection = HttpUtility.ParseQueryString(e.QueryString);
-            foreach (var key in queryCollection.AllKeys)
-            {
-                if (string.Equals(key, parameterName, StringComparison.InvariantCultureIgnoreCase) == false)
-                    continue;
-
-                queryCollection.Set(key, "first");
-                containsAnimationProcessMode = true;
-            }
-
-            if (containsAnimationProcessMode)
-                return;
-
-            e.QueryString = $"{e.QueryString}&animationProcessMode=first";
+            // Don't support processing gifs
+            e.QueryString = "";
         }
 
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
