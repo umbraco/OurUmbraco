@@ -171,6 +171,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
+                        <p><a href="/privacy-policy">Privacy Policy</a> - <a href="/terms-of-service">Terms Of Service</a> - <a href="/code-of-conduct">Code Of Conduct</a></p>
+                        <p>&nbsp;</p>
                         Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
                         @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
                         {
@@ -178,7 +180,8 @@
                         }
                         else
                         {
-                            <text>This site is running</text> <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
+                            <text>This site is running</text>
+                            <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
                         }
                     </div>
                 </div>
