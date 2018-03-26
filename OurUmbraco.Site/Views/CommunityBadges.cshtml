@@ -54,6 +54,12 @@
                 </div>
                 <div class="intro">
                     @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
+                    @foreach (var badgeGroup in badgeGroups)
+                    {
+                        <p><strong><a href="#@badgeGroup.Name.ToLowerInvariant()">@badgeGroup.Name</a></strong> @badgeGroup.Description</p>
+                        <p>&nbsp;</p>
+                    }
+                    <p>Below is a listing of who has earned these various badges.</p>
                     <p>&nbsp;</p>
                 </div>
                 <div class="col-md-12 flex" id="community-posts">
