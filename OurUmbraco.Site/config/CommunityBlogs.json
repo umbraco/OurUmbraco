@@ -233,6 +233,15 @@
       "rss": "https://thecogworks.com/blog/rss?category=umbraco",
       "logo": "https://pbs.twimg.com/profile_images/892329860680601600/yGSwtpdM_400x400.jpg",
       "memberId": null
+    },
+    {
+      "id": "{345597EE-CA65-4588-A6CC-8EA3012A25BB}",
+      "checkTitles": false,
+      "title": "Aaron Powell - LINQ to fail",
+      "url": "https://www.aaron-powell.com/#blog",
+      "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
+      "logo": "https://www.aaron-powell.com/images/logo.png",
+      "memberId": 3497
     }
   ]
 }
