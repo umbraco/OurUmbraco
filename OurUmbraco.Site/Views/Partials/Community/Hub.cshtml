@@ -4,6 +4,27 @@
 @using File = System.IO.File
 @inherits OurUmbracoTemplatePage
 
+<style type="text/css">
+    .note {
+        border: 1px solid #6bafff;
+        background: #b8d9ff;
+        color: #00499e;
+        padding: 20px;
+        width: 100%;
+        top: 100px;
+        bottom: auto;
+        margin-bottom: 30px;
+        border-radius: 4px;
+    }
+</style>
+<div class="note">
+    <div class="message text-center">
+        <p>
+            Welcome to the new community hub. <a href="https://umbraco.com/blog/putting-the-community-back-into-the-community/?utm_source=Our&utm_campaign=Our_Community_Launch">Read all about this new area here.</a>
+        </p>
+    </div>
+</div>
+
 @Map()
 @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-Community", viewName = "GitterCommunity.cshtml" })
 
@@ -74,7 +95,6 @@
         <section class="community">
             <div class="container">
                 <div class="row">
-
                     <div class="col-md-12">
                         <h1 class="text-center">Community members around you</h1>
                         <p>
