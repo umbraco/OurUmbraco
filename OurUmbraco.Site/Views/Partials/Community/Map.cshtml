@@ -30,7 +30,7 @@
 
 <script id="members-template" type="x-tmpl-mustache">
     <h3>People near this location</h3>
-    <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:space-between;">
+    <div style="margin-top:5px; margin-bottom: 20px; display:flex; flex-direction:row; flex-wrap:wrap; justify-content:flex-start;">
         {{ #. }}
         {{ >member }}
         {{ /. }}
@@ -38,8 +38,8 @@
 </script>
 
 <script id="member-item-template" type="x-tmpl-mustache">
-    <div style="display:flex; padding:5px; flex-grow: 1; flex-shrink: 0; align-items:center;">
-        <img src="{{Avatar}}" style="border-radius:50%;" />
+    <div style="display:flex; padding:5px; flex: 0 1 auto; align-items:center;">
+        <img src="{{Avatar}}" style="border-radius:50%; max-height:50px;" />
     </div>
 </script>
 
