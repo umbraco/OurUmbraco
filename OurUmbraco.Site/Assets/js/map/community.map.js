@@ -3,7 +3,8 @@
     var map = new google.maps.Map(document.getElementById('map'),
         {
             zoom: 5,
-            center: { lat: 51.4472452, lng: 2.8123371 }
+            center: { lat: 51.4472452, lng: 2.8123371 },
+            maxZoom: 17
         });
 
     // Try HTML5 geolocation.
