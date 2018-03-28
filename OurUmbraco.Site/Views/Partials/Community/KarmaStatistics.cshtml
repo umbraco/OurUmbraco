@@ -193,7 +193,7 @@
         var hasAvatar = member.HasValue("avatar");
         if (hasAvatar)
         {
-            var avatarPath = member.GetPropertyValue("avatar").ToString();
+            var avatarPath = member.GetPropertyValue("avatar").ToString().Replace(" ", "%20");
             if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
             {
                 url = avatarPath.Replace("http://", "https://");
