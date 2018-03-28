@@ -76,9 +76,22 @@ namespace OurUmbraco.Community.Map
 
         private string GetAvatar(SearchResult result)
         {
+            var avatarPath = string.Empty;
+            if (result.Fields.ContainsKey("avatar"))
+            {
+                avatarPath = result.Fields["avatar"];
+                if (avatarPath.StartsWith("http://"))
+                {
+                    avatarPath = avatarPath.Replace("http://", "https://");
+                }
+            }
+            
             var email = result.Fields["email"];
             var name = result.Fields["nodeName"];
-            return Our.Utils.GetGravatar(email, 50, name, true);
+
+            return string.IsNullOrWhiteSpace(avatarPath) == false
+                ? Our.Utils.GetLocalAvatar(avatarPath, 50, name, true)
+                : Our.Utils.GetGravatar(email, 50, name, true);
         }
     }
 }
