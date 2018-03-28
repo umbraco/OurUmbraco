@@ -9,7 +9,7 @@
 
     // Try HTML5 geolocation.
     if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (position) {            
+        navigator.geolocation.getCurrentPosition(function (position) {
             var pos = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
@@ -25,16 +25,21 @@
         });
     }
 
+    var markerClusterer;
+
     google.maps.event.addListener(map, 'idle', () => {
         const sw = map.getBounds().getSouthWest();
         const ne = map.getBounds().getNorthEast();
-        
+
         var url = "/umbraco/api/mapapi/GetAllMemberLocations?swLat=" + sw.lat() + "&swLon=" + sw.lng() + "&neLat=" + ne.lat() + "&neLon=" + ne.lng();
 
         //Map Marker mustache HTML template
         var template = $('#map-marker-template').html();
 
         $.getJSON(url, function (data) {
+            if (markerClusterer) {
+                markerClusterer.clearMarkers();
+            }
 
             var markers = data.map(function (item) {
                 var latlng = new google.maps.LatLng(item.Lat, item.Lon);
@@ -58,7 +63,7 @@
             });
 
             // Add a marker clusterer to manage the markers.
-            var markerCluster = new MarkerClusterer(map,
+            markerClusterer = new MarkerClusterer(map,
                 markers,
                 {
                     imagePath: '/assets/js/map/m',
