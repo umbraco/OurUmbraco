@@ -5,7 +5,7 @@
 @{
     var service = new BlogPostsService();
 
-    var items = service.GetCachedBlogPosts(30, 4).ToArray();
+    var items = service.GetCachedBlogPosts(60, 4).ToArray();
 
     if (items.Length == 0)
     {
