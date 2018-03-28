@@ -316,14 +316,20 @@ namespace OurUmbraco.Our
 
         public static string GetGravatar(string email, int size, string memberName, bool getRawUrl = false)
         {
-            var emailId = email.ToLower();
-            var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+            var hash = GetEmailHashForGravatar(email);
 
             var url = string.Format("https://www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro", hash, size);
 
             return !getRawUrl
                 ? string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, memberName)
                 : url;
+        }
+
+        public static string GetEmailHashForGravatar(string email)
+        {
+            var emailId = email.ToLower();
+            var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
+            return hash;
         }
 
         public static string GetLocalAvatar(string imgPath, int minSize, string memberName, bool getRawUrl = false)

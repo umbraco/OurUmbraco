@@ -89,9 +89,15 @@ namespace OurUmbraco.Community.Map
             var email = result.Fields["email"];
             var name = result.Fields["nodeName"];
 
-            return string.IsNullOrWhiteSpace(avatarPath) == false
+            var avatar = string.IsNullOrWhiteSpace(avatarPath) == false
                 ? Our.Utils.GetLocalAvatar(avatarPath, 50, name, true)
-                : Our.Utils.GetGravatar(email, 50, name, true);
+                : Our.Utils.GetEmailHashForGravatar(email);
+
+            avatar = avatar.Replace("https://www.gravatar.com/avatar/", string.Empty);
+
+            return avatar.Contains("?") 
+                ? avatar.Substring(0, avatar.IndexOf("?", StringComparison.Ordinal))
+                : avatar;
         }
     }
 }
