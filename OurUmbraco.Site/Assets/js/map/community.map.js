@@ -41,7 +41,19 @@
                 markerClusterer.clearMarkers();
             }
 
-            var markers = data.map(function (item) {
+            var enrichedData = [];
+            for (var i = 0; i < data.length; i++) {
+                var enrichedDataItem = data[i];
+                if (enrichedDataItem.Avatar.startsWith("/") === false) {
+                    enrichedDataItem.Avatar = "https://www.gravatar.com/avatar/" + enrichedDataItem.Avatar + "?s=50&d=mm&r=g&d=retro";
+                } else {
+                    enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop";
+                }
+
+                enrichedData.push(enrichedDataItem);
+            }
+
+            var markers = enrichedData.map(function (item) {
                 var latlng = new google.maps.LatLng(item.Lat, item.Lon);
                 var marker = new google.maps.Marker({
                     position: latlng
@@ -75,19 +87,7 @@
 
                 var innerTemplate = $('#member-item-template').html();
                 var outerTemplate = $('#members-template').html();
-
-                var enrichedData = [];
-                for (var i = 0; i < data.length; i++) {
-                    var enrichedDataItem = data[i];
-                    if (enrichedDataItem.Avatar.startsWith("/") === false) {
-                        enrichedDataItem.Avatar = "https://www.gravatar.com/avatar/" + enrichedDataItem.Avatar + "?s=50&d=mm&r=g&d=retro";
-                    } else {
-                        enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop";
-                    }
-
-                    enrichedData.push(enrichedDataItem);
-                }
-
+                
                 var multiHtml = Mustache.render(outerTemplate,
                     enrichedData,
                     {
