@@ -55,6 +55,9 @@ namespace OurUmbraco.Our.CustomHandlers
 
         private void UpdateProjectExamineIndex(IPublishedContent content, int downloads)
         {
+            if (content == null)
+                return;
+
             var simpleDataSet = new SimpleDataSet
             {
                 NodeDefinition = new IndexedNode(),
