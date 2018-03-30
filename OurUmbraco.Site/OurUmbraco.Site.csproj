@@ -510,6 +510,7 @@
     <Content Include="config\restExtensions.config" />
     <Content Include="config\Skinning.config" />
     <Content Include="config\splashes\worker.png" />
+    <Content Include="config\authwhitelist.txt" />
     <Content Include="config\trees.config" />
     <Content Include="config\UmbracoHelp.config" />
     <Content Include="config\umbracoSettings.config">
