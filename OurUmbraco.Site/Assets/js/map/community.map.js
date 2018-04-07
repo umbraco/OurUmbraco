@@ -44,7 +44,7 @@
             var enrichedData = [];
             for (var i = 0; i < data.length; i++) {
                 var enrichedDataItem = data[i];
-                enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=cropup&scale=true";
+                enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop&upscale=true";
                 enrichedData.push(enrichedDataItem);
             }
 

@@ -48,7 +48,7 @@ namespace OurUmbraco.Community.People
                 return avatarPath;
 
             var identiconGenerator = GetIdenticonGenerator();
-            using (var output = identiconGenerator.Create(hash)) 
+            using (var output = identiconGenerator.Create(hash))
                 output.Save(savePath, ImageFormat.Png);
 
             return avatarPath;
@@ -84,7 +84,7 @@ namespace OurUmbraco.Community.People
                 if (hasAvatar)
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
-                    if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
+                    if (IsLocalPath(avatarPath) == false)
                         // Profiles with an avatar previously set to gravatar.com will get a new avatar
                         return string.Empty;
 
@@ -108,10 +108,9 @@ namespace OurUmbraco.Community.People
 
             try
             {
-                if (memberAvatarPath.StartsWith("http://") || memberAvatarPath.StartsWith("https://"))
-                    return null;
-
-                return Image.FromFile(memberAvatarPath);
+                return IsLocalPath(memberAvatarPath) 
+                    ? Image.FromFile(memberAvatarPath) 
+                    : null;
             }
             catch (Exception ex)
             {
@@ -208,6 +207,23 @@ namespace OurUmbraco.Community.People
                 cleanImagePath = $"/{cleanImagePath}";
 
             return cleanImagePath;
+        }
+
+        // From: https://stackoverflow.com/a/42260733/5018
+        internal static bool IsLocalPath(string path)
+        {
+            Uri uri;
+            try
+            {
+                uri = new Uri(path);
+            }
+            catch (Exception ex)
+            {
+                // It's not a URI, so assume it's something local
+                return true;
+            }
+
+            return uri.IsFile;
         }
     }
 }
