@@ -1375,18 +1375,6 @@
     <Content Include="umbraco\plugins\tinymce3\insertLink.aspx" />
     <Content Include="umbraco\plugins\tinymce3\insertMacro.aspx" />
     <Content Include="umbraco\plugins\tinymce3\tinymce3tinymceCompress.aspx" />
-    <Content Include="umbraco\preview\editors\background.html" />
-    <Content Include="umbraco\preview\editors\border.html" />
-    <Content Include="umbraco\preview\editors\color.html" />
-    <Content Include="umbraco\preview\editors\googlefontpicker.html" />
-    <Content Include="umbraco\preview\editors\gridRow.html" />
-    <Content Include="umbraco\preview\editors\layout.html" />
-    <Content Include="umbraco\preview\editors\margin.html" />
-    <Content Include="umbraco\preview\editors\padding.html" />
-    <Content Include="umbraco\preview\editors\radius.html" />
-    <Content Include="umbraco\preview\editors\shadow.html" />
-    <Content Include="umbraco\preview\editors\slider.html" />
-    <Content Include="umbraco\preview\index.html" />
     <Content Include="umbraco\scripting\templates\cshtml\Breadcrumb.cshtml" />
     <Content Include="umbraco\scripting\templates\cshtml\Navigation.cshtml" />
     <Content Include="umbraco\scripting\templates\cshtml\SiteMap.cshtml" />
@@ -4424,6 +4412,7 @@
     <Folder Include="App_Data\migrations\" />
     <Folder Include="css\img\Cached\" />
     <Folder Include="umbraco\lib\datetimepicker\langs\" />
+    <Folder Include="umbraco\preview\" />
     <Folder Include="umbraco\Views\directives\" />
   </ItemGroup>
   <ItemGroup>
