@@ -9,6 +9,7 @@ using System.Web.Hosting;
 using Devcorner.NIdenticon;
 using Devcorner.NIdenticon.BrushGenerators;
 using OurUmbraco.Our;
+using OurUmbraco.Our.Extensions;
 using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
@@ -84,7 +85,7 @@ namespace OurUmbraco.Community.People
                 if (hasAvatar)
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
-                    if (IsLocalPath(avatarPath) == false)
+                    if (avatarPath.IsLocalPath() == false)
                         // Profiles with an avatar previously set to gravatar.com will get a new avatar
                         return string.Empty;
 
@@ -108,7 +109,7 @@ namespace OurUmbraco.Community.People
 
             try
             {
-                return IsLocalPath(memberAvatarPath) 
+                return memberAvatarPath.IsLocalPath()
                     ? Image.FromFile(memberAvatarPath) 
                     : null;
             }
@@ -207,23 +208,6 @@ namespace OurUmbraco.Community.People
                 cleanImagePath = $"/{cleanImagePath}";
 
             return cleanImagePath;
-        }
-
-        // From: https://stackoverflow.com/a/42260733/5018
-        internal static bool IsLocalPath(string path)
-        {
-            Uri uri;
-            try
-            {
-                uri = new Uri(path);
-            }
-            catch (Exception ex)
-            {
-                // It's not a URI, so assume it's something local
-                return true;
-            }
-
-            return uri.IsFile;
         }
     }
 }

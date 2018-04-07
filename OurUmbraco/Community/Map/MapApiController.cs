@@ -7,6 +7,7 @@ using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
 using OurUmbraco.Community.People;
 using OurUmbraco.Our;
+using OurUmbraco.Our.Extensions;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
@@ -54,8 +55,9 @@ namespace OurUmbraco.Community.Map
 
         private string GetMemberAvatar(SearchResult result)
         {
-            if (string.IsNullOrWhiteSpace(result["avatar"]) == false)
-                return result["avatar"];
+            var memberAvatarResult = result["avatar"];
+            if (string.IsNullOrWhiteSpace(memberAvatarResult) == false && memberAvatarResult.IsLocalPath())
+                return memberAvatarResult;
             
             var avatarService = new AvatarService();
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
