@@ -85,7 +85,8 @@ namespace OurUmbraco.Community.People
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
                     if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
-                        return avatarPath.Replace("http://", "https://");
+                        // Profiles with an avatar previously set to gravatar.com will get a new avatar
+                        return string.Empty;
 
                     var path = HostingEnvironment.MapPath(avatarPath);
                     if (System.IO.File.Exists(path))
