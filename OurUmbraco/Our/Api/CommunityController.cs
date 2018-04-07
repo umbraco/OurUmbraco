@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Drawing;
 using System.Dynamic;
-using System.Globalization;
 using System.IO;
 using System.Net.Http;
 using System.Web;
@@ -9,112 +7,14 @@ using System.Web.Http;
 using Newtonsoft.Json;
 using OurUmbraco.Our.Businesslogic;
 using umbraco.BusinessLogic;
-using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
-using File = System.IO.File;
 
 namespace OurUmbraco.Our.Api
 {
     [Authorize]
     public class CommunityController : UmbracoApiController
     {
-        public static string SetAvatar(int memberId, string service)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
-            var member = memberShipHelper.GetById(memberId);
-
-            switch (service)
-            {
-                case "twitter":
-                    if (string.IsNullOrWhiteSpace(member.GetPropertyValue<string>("twitter")) == false)
-                    {
-                        var twitData = Twitter.Profile(member.GetPropertyValue<string>("twitter"));
-                        if (twitData.MoveNext())
-                        {
-                            var imgUrl = twitData.Current.SelectSingleNode("//profile_image_url").Value;
-                            return SaveUrlAsBuddyIcon(imgUrl, member.Id);
-                        }
-                    }
-                    break;
-                case "gravatar":
-                    var gravatarUrl = string.Format("https://www.gravatar.com/avatar/{0}?s=48&d=monsterid",
-                        umbraco.library.md5(member.GetPropertyValue<string>("email")));
-                    return SaveUrlAsBuddyIcon(gravatarUrl, member.Id);
-            }
-
-            return string.Empty;
-        }
-
-        [HttpGet]
-        public string SetServiceAsBuddyIcon(string service)
-        {
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
-            var id = memberShipHelper.GetCurrentMemberId();
-            return SetAvatar(id, service);
-        }
-
-        private static string SaveUrlAsBuddyIcon(string url, int memberId)
-        {
-            var file = memberId.ToString(CultureInfo.InvariantCulture);
-            var avatar = string.Format("/media/avatar/{0}.jpg", file);
-            var path = HttpContext.Current.Server.MapPath(avatar);
-
-            if (File.Exists(path))
-                File.Delete(path);
-
-            var webClient = new System.Net.WebClient();
-            webClient.DownloadFile(url, path);
-
-            var memberService = ApplicationContext.Current.Services.MemberService;
-            var member = memberService.GetById(memberId);
-
-            member.SetValue("avatar", avatar);
-
-            return avatar;
-        }
-
-        [HttpGet]
-        public string SaveWebCamImage(string memberGuid)
-        {
-            var url = HttpContext.Current.Request["AvatarUrl"];
-            if (string.IsNullOrEmpty(url) == false)
-                return "true";
-
-            var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
-            var member = memberShipHelper.GetCurrentMember();
-            if (member == null)
-                return "error";
-
-            var imageBytes = HttpContext.Current.Request.BinaryRead(HttpContext.Current.Request.ContentLength);
-            var file = member.Id.ToString(CultureInfo.InvariantCulture);
-            var avatar = string.Format("/media/avatar/{0}.jpg", file);
-            var path = HttpContext.Current.Server.MapPath(avatar);
-
-            using (var ms = new MemoryStream(imageBytes, 0, imageBytes.Length))
-            {
-                ms.Write(imageBytes, 0, imageBytes.Length);
-
-                var newImage = Image.FromStream(ms, true).GetThumbnailImage(64, 48, ThumbnailCallback, new IntPtr());
-
-                if (File.Exists(path))
-                    File.Delete(path);
-
-                newImage.Save(path, System.Drawing.Imaging.ImageFormat.Jpeg);
-            }
-
-            var memberService = ApplicationContext.Current.Services.MemberService;
-            var m = memberService.GetById(member.Id);
-            m.SetValue("avatar", avatar);
-
-            return avatar;
-        }
-
-        private bool ThumbnailCallback()
-        {
-            return true;
-        }
-
         [HttpGet]
         public void AddTag(int nodeId, string group, string tag)
         {

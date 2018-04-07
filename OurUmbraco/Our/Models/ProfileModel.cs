@@ -6,6 +6,8 @@ namespace OurUmbraco.Our.Models
     {
         public string Avatar { get; set; }
 
+        public string AvatarHtml { get; set; }
+
         [Required]
         public string Name { get; set; }
 

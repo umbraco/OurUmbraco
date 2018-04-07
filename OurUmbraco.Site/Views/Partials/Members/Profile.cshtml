@@ -43,7 +43,7 @@
                 </label>
 
                 <div class="avatar-image inked">
-                    @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
+                    @Html.Raw(Model.AvatarHtml)
                     <span>Change image</span>
                 </div>
                 @Html.HiddenFor(m => m.Avatar)

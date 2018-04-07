@@ -5,6 +5,10 @@ using System.Web.Mvc;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
+using OurUmbraco.Community.People;
+using OurUmbraco.Our;
+using Umbraco.Core.Models;
+using Umbraco.Web;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
 
@@ -39,13 +43,24 @@ namespace OurUmbraco.Community.Map
             //For our much simpler model to send back as the JSON response
             var members = results.Select(result => new MemberLocation
             {   
-                Avatar = GetAvatar(result),
+                Avatar = GetMemberAvatar(result),
                 Lat = GetLatitude(result),
                 Lon = GetLongitude(result)
             })
             .ToList();
 
             return members;
+        }
+
+        private string GetMemberAvatar(SearchResult result)
+        {
+            if (string.IsNullOrWhiteSpace(result["avatar"]) == false)
+                return result["avatar"];
+            
+            var avatarService = new AvatarService();
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var avatar = avatarService.GetMemberAvatar(umbracoHelper.TypedMember(result.Id));
+            return avatar;
         }
 
         /// <summary>
@@ -72,32 +87,6 @@ namespace OurUmbraco.Community.Map
             var lonAsDouble = Double.Parse(lon);
             var lonRounded = Math.Round(lonAsDouble, 3);
             return lonRounded.ToString();
-        }
-
-        private string GetAvatar(SearchResult result)
-        {
-            var avatarPath = string.Empty;
-            if (result.Fields.ContainsKey("avatar"))
-            {
-                avatarPath = result.Fields["avatar"];
-                if (avatarPath.StartsWith("http://"))
-                {
-                    avatarPath = avatarPath.Replace("http://", "https://");
-                }
-            }
-            
-            var email = result.Fields["email"];
-            var name = result.Fields["nodeName"];
-
-            var avatar = string.IsNullOrWhiteSpace(avatarPath) == false
-                ? Our.Utils.GetLocalAvatar(avatarPath, 50, name, true)
-                : Our.Utils.GetEmailHashForGravatar(email);
-
-            avatar = avatar.Replace("https://www.gravatar.com/avatar/", string.Empty);
-
-            return avatar.Contains("?") 
-                ? avatar.Substring(0, avatar.IndexOf("?", StringComparison.Ordinal))
-                : avatar;
         }
     }
 }

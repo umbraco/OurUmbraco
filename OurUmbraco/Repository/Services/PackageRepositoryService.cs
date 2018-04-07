@@ -8,6 +8,7 @@ using Examine;
 using Examine.LuceneEngine;
 using Examine.SearchCriteria;
 using Lucene.Net.Documents;
+using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
@@ -404,12 +405,14 @@ namespace OurUmbraco.Repository.Services
         private PackageOwnerInfo GetPackageOwnerInfo(int ownerId, bool openForCollab, int contentId)
         {
             var owner = MembershipHelper.GetById(ownerId);
-
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetMemberAvatar(owner);
+            var avatar = $"{avatarPath}?width=200&height=200&mode=crop&upscale=true";
             var ownerInfo = new PackageOwnerInfo
             {
                 Karma = owner.Karma(),
                 Owner = owner.Name,
-                OwnerAvatar = Utils.GetMemberAvatar(owner, 200, true)
+                OwnerAvatar = avatar
             };
 
             if (openForCollab)

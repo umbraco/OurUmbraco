@@ -1,4 +1,5 @@
 ﻿using System.Web.Http;
+using OurUmbraco.Community.People;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Controllers
@@ -9,7 +10,8 @@ namespace OurUmbraco.Our.Controllers
         public string GetMemberAvatar(int memberId, int size = 75)
         {
             var member = Members.GetById(memberId);
-            return Utils.GetMemberAvatar(member, size);
+            var avatarService = new AvatarService();
+            return avatarService.GetImgWithSrcSet(member, member.Name, size);
         }
     }
 }

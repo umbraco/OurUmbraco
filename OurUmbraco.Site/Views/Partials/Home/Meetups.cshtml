@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.Models
+@using OurUmbraco.Community.People
 @using Skybrud.Essentials.Locations
 @using Skybrud.Essentials.Locations.Extensions
 @using Skybrud.Essentials.Security
@@ -18,7 +19,6 @@
             member.GetPropertyValue<double>("longitude")
         );
     }
-
 }
 
 @foreach (MeetupItem item in Model.Items) {
@@ -42,11 +42,14 @@
         }
         else
         {
-            string fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+            var fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
+            var img = avatarService.GetImgWithSrcSet(avatarPath, item.Group.Name, 100);
+
             <div class="avatar">
-                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
-            </div>
-            
+                @Html.Raw(img)
+            </div>   
         }
         <div class="meta">
             <div class="forum-thread-text">

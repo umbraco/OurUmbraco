@@ -181,11 +181,14 @@ namespace OurUmbraco.Community.People
             var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
             var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
 
+            var avatarService = new AvatarService();
+            var avatarHtml = avatarService.GetImgWithSrcSet(m, m.Name, 48);
+
             var mvpMember = new MvpMember
             {
                 Id = member.Id,
                 Name = member.Name,
-                Avatar = Utils.GetMemberAvatar(m, 48),
+                Avatar = avatarHtml,
                 Company = company,
                 Twitter = twitter,
                 GitHub = github,
@@ -203,11 +206,14 @@ namespace OurUmbraco.Community.People
             var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
             var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
 
+            var avatarService = new AvatarService();
+            var avatarHtml = avatarService.GetImgWithSrcSet(m, m.Name, 48);
+
             var badgeMember = new BadgeMember
             {
                 Id = member.Id,
                 Name = member.Name,
-                Avatar = Utils.GetMemberAvatar(m, 48),
+                Avatar = avatarHtml,
                 Company = company,
                 Twitter = twitter,
                 GitHub = github

@@ -1,4 +1,5 @@
 ﻿@inherits UmbracoViewPage<Topic>
+@using OurUmbraco.Community.People
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
 @using OurUmbraco.Our.Extensions
@@ -75,7 +76,10 @@
             <div class="comment-inner">
                 @if (topicAuthor != null)
                 {
-                    <a href="/member/@topicAuthor.Member.Id" class="photo">@Html.Raw(OurUmbraco.Our.Utils.GetMemberAvatar(topicAuthor.Member, 75))</a>
+                    var avatarService = new AvatarService();
+                    var img = avatarService.GetImgWithSrcSet(topicAuthor.Member, topicAuthor.Member.Name, 75);
+
+                    <a href="/member/@topicAuthor.Member.Id" class="photo">@Html.Raw(img)</a>
                     <div class="highfive highfive-question">
                         @{
                             var html = "High fives from:<br />";

@@ -41,19 +41,7 @@
                 markerClusterer.clearMarkers();
             }
 
-            var enrichedData = [];
-            for (var i = 0; i < data.length; i++) {
-                var enrichedDataItem = data[i];
-                if (enrichedDataItem.Avatar.startsWith("/") === false) {
-                    enrichedDataItem.Avatar = "https://www.gravatar.com/avatar/" + enrichedDataItem.Avatar + "?s=50&d=mm&r=g&d=retro";
-                } else {
-                    enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop";
-                }
-
-                enrichedData.push(enrichedDataItem);
-            }
-
-            var markers = enrichedData.map(function (item) {
+            var markers = data.map(function (item) {
                 var latlng = new google.maps.LatLng(item.Lat, item.Lon);
                 var marker = new google.maps.Marker({
                     position: latlng
@@ -89,7 +77,7 @@
                 var outerTemplate = $('#members-template').html();
                 
                 var multiHtml = Mustache.render(outerTemplate,
-                    enrichedData,
+                    data,
                     {
                         member: innerTemplate
                     });

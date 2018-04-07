@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Community.People
 @using Skybrud.Essentials.Security
 
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
@@ -24,9 +25,12 @@
         }
         else
         {
-            var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
+            var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id + "");
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
+            var img = avatarService.GetImgWithSrcSet(avatarPath, item.Blog.Title, 100);
             <div class="avatar">
-                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
+                @Html.Raw(img)
             </div>
         }
         <div class="meta">
