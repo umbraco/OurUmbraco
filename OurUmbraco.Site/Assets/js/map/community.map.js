@@ -41,7 +41,14 @@
                 markerClusterer.clearMarkers();
             }
 
-            var markers = data.map(function (item) {
+            var enrichedData = [];
+            for (var i = 0; i < data.length; i++) {
+                var enrichedDataItem = data[i];
+                enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=cropup&scale=true";
+                enrichedData.push(enrichedDataItem);
+            }
+
+            var markers = enrichedData.map(function (item) {
                 var latlng = new google.maps.LatLng(item.Lat, item.Lon);
                 var marker = new google.maps.Marker({
                     position: latlng
@@ -77,7 +84,7 @@
                 var outerTemplate = $('#members-template').html();
                 
                 var multiHtml = Mustache.render(outerTemplate,
-                    data,
+                    enrichedData,
                     {
                         member: innerTemplate
                     });
