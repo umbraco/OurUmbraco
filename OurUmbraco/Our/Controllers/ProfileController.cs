@@ -1,4 +1,6 @@
-﻿using System.Web.Mvc;
+﻿using System.Web.Hosting;
+using System.Web.Mvc;
+using OurUmbraco.Community.People;
 using OurUmbraco.Our.Models;
 using Umbraco.Web.Mvc;
 
@@ -9,19 +11,29 @@ namespace OurUmbraco.Our.Controllers
         [ChildActionOnly]
         public ActionResult Render()
         {
-            var ms = Services.MemberService;
-            var mem = ms.GetById(Members.GetCurrentMemberId());
-            var m = new ProfileModel();
-            m.Name = mem.Name;
-            m.Email = mem.Email;
-            m.Bio = mem.GetValue<string>("profileText");
-            m.Location = mem.GetValue<string>("location");
-            m.Company = mem.GetValue<string>("company");
-            m.TwitterAlias = mem.GetValue<string>("twitter");
-            m.Avatar = mem.GetValue<string>("avatar");
-            m.GitHubUsername = mem.GetValue<string>("github");
+            var memberService = Services.MemberService;
+            var member = memberService.GetById(Members.GetCurrentMemberId());
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetMemberAvatar(member);
+            var avatarHtml = avatarService.GetImgWithSrcSet(avatarPath, member.Name, 100);
 
-            return PartialView("~/Views/Partials/Members/Profile.cshtml", m);
+            var profileModel = new ProfileModel
+            {
+                Name = member.Name,
+                Email = member.Email,
+                Bio = member.GetValue<string>("profileText"),
+                Location = member.GetValue<string>("location"),
+                Company = member.GetValue<string>("company"),
+                TwitterAlias = member.GetValue<string>("twitter"),
+                Avatar = avatarPath,
+                AvatarHtml = avatarHtml,
+                GitHubUsername = member.GetValue<string>("github"),
+
+                Latitude = member.GetValue<string>("latitude"), //TODO: Parse/cleanup bad data - auto remove it for user & resave the member?
+                Longitude = member.GetValue<string>("longitude")
+            };
+
+            return PartialView("~/Views/Partials/Members/Profile.cshtml", profileModel);
         }
 
         [HttpPost]
@@ -56,23 +68,30 @@ namespace OurUmbraco.Our.Controllers
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
-            mem.SetValue("avatar", model.Avatar);
             mem.SetValue("github", model.GitHubUsername);
-            ms.Save(mem);
-
-            var avatarImage = Utils.GetMemberAvatarImage(Members.GetById(mem.Id));
+            
+            // Assume it's valid lat/lon data posted - as its a hidden field that a Google Map will update the lat & lon of hidden fields when marker moved
+            mem.SetValue("latitude", model.Latitude); 
+            mem.SetValue("longitude", model.Longitude);
+            
+            var avatarService = new AvatarService();
+            var avatarImage = avatarService.GetMemberAvatarImage(HostingEnvironment.MapPath($"~{model.Avatar}"));
             if (avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400))
             {
+                // Save the rest of the data, but not the new avatar yet as it's too small
+                ms.Save(mem);
                 ModelState.AddModelError("Avatar", "Please upload an avatar that is at least 400x400 pixels");
                 return CurrentUmbracoPage();
             }
 
-            if(!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)
-                ms.SavePassword(mem, model.Password);
-            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + memberPreviousUserName);
-                
-            TempData["success"] = true;
+            mem.SetValue("avatar", model.Avatar);
+            ms.Save(mem);
 
+            if (!string.IsNullOrEmpty(model.Password) && !string.IsNullOrEmpty(model.RepeatPassword) && model.Password == model.RepeatPassword)
+                ms.SavePassword(mem, model.Password);
+
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + memberPreviousUserName);
+            TempData["success"] = true;
 
             return RedirectToCurrentUmbracoPage();
         }

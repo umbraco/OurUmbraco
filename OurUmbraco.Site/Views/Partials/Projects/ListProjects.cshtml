@@ -129,6 +129,9 @@
         if (orderedVersions.Length == 1)
             return orderedVersions.First() + "+";
 
+        if(orderedVersions.Min() == orderedVersions.Max())
+            return orderedVersions.Min() + "+";
+
         return orderedVersions.Min() + " - " + orderedVersions.Max();
     }
 }

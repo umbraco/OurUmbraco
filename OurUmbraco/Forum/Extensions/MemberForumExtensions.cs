@@ -1,7 +1,9 @@
 ﻿using System.Linq;
 using System.Web.Security;
+using OurUmbraco.MarketPlace.Extensions;
 using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Web.PublishedCache;
 using Umbraco.Web.Security;
 
 namespace OurUmbraco.Forum.Extensions
@@ -71,6 +73,25 @@ namespace OurUmbraco.Forum.Extensions
         public static bool IsHq(this IPublishedContent helper)
         {
             return Roles.IsUserInRole("HQ");
+        }
+
+        public static bool IsSpam(this IPublishedContent member)
+        {
+            if (member.GetPropertyValue<bool>("blocked"))
+                return true;
+
+            // Members with over 71 karma are trusted automatically
+            if (member.Karma() >= 71)
+                return false;
+
+            var typedMember = (MemberPublishedContent) member;
+            if (typedMember == null)
+                // Member is not logged in, don't bother
+                return false;
+
+            var roles = Roles.GetRolesForUser(typedMember.UserName);
+            var isSpam = roles.Contains("potentialspam") || roles.Contains("newaccount");
+            return isSpam;
         }
     }
 }

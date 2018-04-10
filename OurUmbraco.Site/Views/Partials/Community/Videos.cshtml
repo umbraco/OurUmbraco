@@ -1,23 +1,11 @@
-﻿@using System.Text.RegularExpressions
-@using OurUmbraco.Community.Videos
+﻿@using OurUmbraco.Community.Videos
 @using Skybrud.Essentials.Strings
 @using Skybrud.Social.Google.YouTube.Models.Videos
 
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-
     var service = new CommunityVideosService();
-
-    YouTubeVideo[] videos;
-    try
-    {
-        videos = service.LoadYouTubePlaylistVideos(CommunityVideosConstants.Playlists.UmbraCoffeePlaylistId);
-    }
-    catch (Exception)
-    {
-        videos = new YouTubeVideo[0];
-    }
-
+    var videos = service.LoadYouTubePlaylistVideos();
 }
 
 <section class="community">
@@ -39,7 +27,6 @@
                     </div>
                     @foreach (var video in videos.OrderByDescending(x => x.Snippet.PublishedAt))
                     {
-
                         // Not that pretty...
                         List<YouTubeVideoThumbnail> thumbnails = new List<YouTubeVideoThumbnail>();
                         if (video.Snippet.Thumbnails.HasDefault) { thumbnails.Add(video.Snippet.Thumbnails.Default); }
@@ -99,13 +86,6 @@
         </div>
     </div>
 </section>
-
-<style>
-    .videos-thumbnail-background {
-        background-size: cover;
-    }
-</style>
-
 
 <script>
 

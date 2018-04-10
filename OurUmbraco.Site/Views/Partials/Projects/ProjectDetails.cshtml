@@ -5,7 +5,7 @@
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
 @using System.Text.RegularExpressions;
-@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.Community.People
 
 @{
     var project = Model.Content;
@@ -48,6 +48,9 @@
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
     var projectLive = project.GetPropertyValue<bool>("projectLive");
     var isRetired = project.GetPropertyValue<bool>("isRetired");
+    
+    var avatarService = new AvatarService();
+    var img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
 }
 
 @if (projectLive)
@@ -323,7 +326,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="package-creator-information">
-                                        @Html.Raw(Utils.GetMemberAvatar(owner, 100))
+                                        @Html.Raw(img)
                                         <div class="text">
                                             <h3>
                                                 <a href="/member/@owner.Id">
@@ -333,8 +336,8 @@
                                             <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
                                             @if (currentMember != null && (currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
-                                                <br />
-                                                <br />
+                                                <br/>
+                                                <br/>
                                                 <a href="/member/profile/projects/details?projectId=@project.Id">Edit project</a>
                                             }
                                         </div>

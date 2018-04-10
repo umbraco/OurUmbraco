@@ -5,7 +5,6 @@ using System.Net.Mail;
 using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
-using OurUmbraco.Our.usercontrols;
 using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Web.Models;
@@ -176,5 +175,11 @@ namespace OurUmbraco.Our.Controllers
 
             return Redirect("/");
         }
+    }
+
+    internal class DuplicateMember
+    {
+        public int MemberId { get; set; }
+        public int TotalKarma { get; set; }
     }
 }

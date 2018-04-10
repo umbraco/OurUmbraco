@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.Meetup
+@using OurUmbraco.Community.People
 @using Skybrud.Essentials.Locations
 @using Skybrud.Essentials.Locations.Extensions
 @using Skybrud.Essentials.Security
@@ -18,67 +19,54 @@
     var meetups = meetupService.GetUpcomingMeetups().Items;
 }
 
-<section class="community">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Meetups</h1>
-                <p>
-                    Upcoming meetups organized by the Umbraco community.
-                </p>
-            </div>
-            <div class="col-md-12">
-                <small>The first upcoming meetup for each meetup group are listed here</small>
-            </div>
-            <div class="col-md-12 flex" id="community-posts">
-                @foreach (var item in meetups)
-                {
-                    double distance = -1;
+@foreach (var item in meetups)
+{
+    double distance = -1;
 
-                    if (memberLocation != null)
-                    {
-                        distance = item.Event.HasVenue ? memberLocation.GetDistance(item.Event.Venue) : memberLocation.GetDistance(item.Group);
-                    }
+    if (memberLocation != null)
+    {
+        distance = item.Event.HasVenue ? memberLocation.GetDistance(item.Event.Venue) : memberLocation.GetDistance(item.Group);
+    }
 
-                    <a href="@item.Event.Link" class="community-post">
-                        @if (item.Group.GroupPhoto != null)
-                        {
-                            <div class="avatar">
-                                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
-                            </div>
-                        }
-                        else
-                        {
-                            var fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
-                            <div class="avatar">
-                                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
-                            </div>
+    <a href="@item.Event.Link" class="community-post">
+        @if (item.Group.GroupPhoto != null)
+        {
+            <div class="avatar">
+                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
+            </div>
+        }
+        else
+        {
+            var fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
+            var img = avatarService.GetImgWithSrcSet(avatarPath, item.Group.Name, 100);
+            <div class="avatar">
+                @Html.Raw(img)
+            </div>
             
-                        }
-                        <div class="meta">
-                            <div class="forum-thread-text">
-                                @if (distance >= 0 && distance <= 50000)
-                                {
-                                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @string.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
-                                }
-                                <h3>@item.Event.Name</h3>
-                                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
-                            </div>
-                        </div>
-                    </a>
-                }
-
-                @if (meetups.Length % 2 == 1)
+        }
+        <div class="meta">
+            <div class="forum-thread-text">
+                @if (distance >= 0 && distance <= 50000)
                 {
-                    // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
-                    <div class="forum-thread" style="visibility: hidden;"></div>
+                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @string.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
                 }
-
-                @if (meetups.Any() == false)
-                {
-                    <h2>Could not load upcoming meetups.</h2>
-                }
+                <h3>@item.Event.Name</h3>
+                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
             </div>
         </div>
-    </div>
-</section>
+    </a>
+}
+
+@if (meetups.Length % 2 == 1)
+{
+    // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
+    <div class="forum-thread" style="visibility: hidden;"></div>
+}
+
+@if (meetups.Any() == false)
+{
+    <h2>Could not load upcoming meetups.</h2>
+}
+          

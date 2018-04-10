@@ -6,6 +6,8 @@ using System.Net;
 using System.Text;
 using System.Web.Hosting;
 using System.Xml.Linq;
+using Hangfire.Console;
+using Hangfire.Server;
 using Newtonsoft.Json;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Json.Extensions;
@@ -44,16 +46,19 @@ namespace OurUmbraco.Community.BlogPosts
             }
         }
 
-        public BlogRssItem[] GetBlogPosts()
+        public BlogRssItem[] GetBlogPosts(PerformContext context)
         {
             var posts = new List<BlogRssItem>();
 
-            foreach (var blog in GetBlogs())
+            var progressBar = context.WriteProgressBar();
+            var blogs = GetBlogs();
+
+            foreach (var blog in blogs.WithProgress(progressBar, blogs.Length))
             {
                 try
                 {
                     string raw;
-                    
+                    context.WriteLine($"Processing blog {blog.Title}");
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
@@ -79,8 +84,9 @@ namespace OurUmbraco.Community.BlogPosts
                         Title = channelTitle,
                         Link = channelLink
                     };
-                    
-                    foreach (var item in channel.GetElements("item"))
+
+                    var items = channel.GetElements("item");
+                    foreach (var item in items)
                     {
                         var title = item.GetElementValue("title");
                         var link = (string.IsNullOrEmpty(item.GetElementValue("link"))
@@ -111,7 +117,9 @@ namespace OurUmbraco.Community.BlogPosts
                             if (includeItem == false)
                             {
                                 var allCategories = string.Join(",", categories.Select(i => i.Value));
-                                LogHelper.Info<BlogPostsService>(string.Format("Not including post titled {0} because it was not in an approved category. The categories it was found in: {1}. [{2}]", title, allCategories, link));
+                                context.SetTextColor(ConsoleTextColor.Red);
+                                context.WriteLine($"Not including post titled {title} because it was not in an approved category. The categories it was found in: {allCategories}. [{link}]");
+                                context.ResetTextColor();
                                 continue;
                             }
                         }
@@ -144,7 +152,9 @@ namespace OurUmbraco.Community.BlogPosts
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Error<BlogPostsService>("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.SetTextColor(ConsoleTextColor.Red);
+                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.ResetTextColor();
                 }
             }
 
@@ -228,7 +238,7 @@ namespace OurUmbraco.Community.BlogPosts
             var service = new BlogPostsService();
 
             // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Formatting.Indented);
 
             // Save the JSON to disk
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);

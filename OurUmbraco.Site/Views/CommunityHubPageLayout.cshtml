@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Our
+﻿@using System.Configuration
+@using OurUmbraco.Our
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
@@ -10,6 +11,9 @@
 
     var featuresService = new UpcomingFeaturesService();
     var allowed = featuresService.MemberHasAccessToFeature();
+
+    var unhide = false;
+    bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out unhide);
 }
 
 <style>
@@ -33,37 +37,7 @@
 <div class="has-sidebar">
     <div class="page-content">
         <div id="overlay" class="overlay"></div>
-        <div class="sidebar-area">
-            <div class="sidebar-content">
-                <div class="content-wrapper">
-                    @if (allowed)
-                    {
-                        <nav>
-                            <ul class="level-1">
-                                @if (Model.Content.Level == 2)
-                                {
-                                    foreach (var child in Model.Content.Children)
-                                    {
-                                        <li class="">
-                                            <h3><a href="@child.Url">@child.Name</a></h3>
-                                        </li>
-                                    }
-                                }
-                                @if (Model.Content.Level == 3)
-                                {
-                                    foreach (var child in Model.Content.Parent.Children)
-                                    {
-                                        <li class="">
-                                            <h3><a href="@child.Url">@child.Name</a></h3>
-                                        </li>
-                                    }
-                                }
-                            </ul>
-                        </nav>
-                    }
-                </div><!-- .content-wrapper -->
-            </div><!-- .sidebar-content -->
-        </div><!-- .sidebar-area -->
+        @Html.Partial("~/Views/Partials/Community/Sidebar.cshtml")
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
@@ -72,7 +46,7 @@
                         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                     }
                     <div class="community-content">
-                        @if (allowed)
+                        @if (allowed && unhide == false)
                         {
                             <h1 style="color: red;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
                         }

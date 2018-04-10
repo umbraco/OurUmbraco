@@ -69,7 +69,7 @@
       "title": "Umbraco HQ",
       "url": "https://umbraco.com/blog",
       "rss": "https://umbraco.com/blog/rss-feed/",
-      "logo": "https://umbraco.com/media/1542/100px_transparent.png",
+      "logo": "https://our.umbraco.org/media/7514503/umbraco_logo_turquoise_transparent.png",
       "memberId": null
     },
     {
@@ -149,8 +149,8 @@
       "checkTitles": false,
       "title": "codeshare.co.uk Blog",
       "url": "https://codeshare.co.uk/",
-      "rss": "https://codeshare.co.uk/feed/",
-      "logo": "https://codeshare.co.uk/img/logo.gif",
+      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
+      "logo": "https://codeshare.co.uk/media/1371/logo.png",
       "memberId": 126488
     },
     {
@@ -224,6 +224,24 @@
       "rss": "https://www.perplex.nl/rss/en/blog/umbraco",
       "logo": "https://scontent-bru2-1.xx.fbcdn.net/v/t1.0-1/p200x200/18301933_1704816986200741_8275590260623615358_n.jpg?oh=8e0135ffe88177980a0c6651a289e216&oe=5B1D527F",
       "memberId": null
+    },
+    {
+      "id": "91766318-8FA5-4F26-B876-EC991DEAF0CF",
+      "checkTitles": false,
+      "title": "The Cogworks' Blog",
+      "url": "https://thecogworks.com/blog/",
+      "rss": "https://thecogworks.com/blog/rss?category=umbraco",
+      "logo": "https://pbs.twimg.com/profile_images/892329860680601600/yGSwtpdM_400x400.jpg",
+      "memberId": null
+    },
+    {
+      "id": "{345597EE-CA65-4588-A6CC-8EA3012A25BB}",
+      "checkTitles": false,
+      "title": "Aaron Powell - LINQ to fail",
+      "url": "https://www.aaron-powell.com/#blog",
+      "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
+      "logo": "https://www.aaron-powell.com/images/logo.png",
+      "memberId": 3497
     }
   ]
 }

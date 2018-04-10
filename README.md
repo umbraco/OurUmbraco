@@ -44,10 +44,3 @@ And then each time you want to get the changes:
 Yes, this is a scary command line operation, don't you love it?! :-D
 
 (More info on how this works: http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
-
-## Issues
-If you're creating a pull request, make sure that it's backed by an issue on the tracker: http://issues.umbraco.org/issues?q=project%3A+our.umbraco.org  
-
-Mention the issue number in your pull request so we can merge it in more easily. 
-
-Even if you're not planning on sending a pull request, you can always create an issue on the tracker if it doesn't exist yet, it helps other find ways to contribute.

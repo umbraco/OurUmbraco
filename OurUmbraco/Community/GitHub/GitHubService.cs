@@ -12,11 +12,9 @@ using Examine.LuceneEngine.SearchCriteria;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
-using OurUmbraco.Our.Api;
 using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
-using Umbraco.Core;
 using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
@@ -32,6 +30,9 @@ namespace OurUmbraco.Community.GitHub
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
         public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
 
+        private static readonly object Lock = new object();
+        public static bool IsLocked { get; set; }
+
         /// <summary>
         /// Gets a list of the repositories that should be included in the list of contributors.
         /// </summary>
@@ -42,54 +43,75 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco-CMS",
                 "UmbracoDocs",
                 "OurUmbraco",
-                "Umbraco.Deploy.Contrib",
                 "Umbraco.Courier.Contrib",
+                "Umbraco.Deploy.Contrib",
                 "Umbraco.Deploy.ValueConnectors"
             };
         }
 
-        public List<GithubPullRequestModel> UpdateAllPullRequestsForRepository(string repository, bool sortByUpdated)
-        {
-            var pulls = new List<GithubPullRequestModel>();
-            if (File.Exists(PullRequestsJsonPath))
-            {
-                var content = File.ReadAllText(PullRequestsJsonPath);
-                pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
-            }
-
-            var stopImport = false;
-            for (var i = 0; i < int.MaxValue; i++)
-            {
-                if (stopImport)
-                    break;
-
-                pulls = GetPulls(repository: repository, page: i, pulls: pulls, sortByUpdated: sortByUpdated, stopImport: out stopImport);
-                Thread.Sleep(2000);
-            }
-
-            // Save the JSON to disk
-            var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
-            File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
-
-            return pulls;
-        }
-
-        private List<GithubPullRequestModel> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls, bool sortByUpdated, out bool stopImport)
+        public void UpdateAllPullRequestsForRepository()
         {
             var enabledSetting = ConfigurationManager.AppSettings["GithubPullsImportEnabled"];
             var enabled = string.Equals(enabledSetting, "true", StringComparison.InvariantCultureIgnoreCase);
             if (enabled == false)
             {
-                stopImport = true;
-                return pulls;
+                LogHelper.Info<GitHubService>("GithubPullsImportEnabled is disabled in web.config, returning without attempting imports");
+                IsLocked = false;
+                return;
             }
 
-            // Initialize the request
-            var client = new RestClient(GitHubApiClient);
+            if (IsLocked)
+                return;
 
-            var resource = string.Format("/repos/{0}/{1}/pulls?state=all&page={2}", RepositoryOwner, repository, page);
-            if (sortByUpdated)
-                resource = string.Format("{0}&sort=updated&direction=desc", resource);
+            lock (Lock)
+            {
+                IsLocked = true;
+                
+                foreach (var repository in GetRepositories())
+                {
+                    var pulls = GetExistingPullsFromDisk();
+
+                    var stopImport = false;
+                    // GitHub paging starts at 1, not 0, so we'll start couting at 1 as well
+                    for (var i = 1; i < int.MaxValue; i++)
+                    {
+                        if (stopImport)
+                            break;
+
+                        pulls = GetPulls(repository: repository, page: i, pulls: pulls, stopImport: out stopImport);
+                        Thread.Sleep(1000);
+                    }
+                    
+                    // Save the JSON to disk
+                    var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
+                    File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
+                }
+
+                IsLocked = false;
+            }
+        }
+
+        private List<GithubPullRequestModel> GetExistingPullsFromDisk()
+        {
+            var pulls = new List<GithubPullRequestModel>();
+            if (File.Exists(PullRequestsJsonPath) == false)
+                return pulls;
+
+            var content = File.ReadAllText(PullRequestsJsonPath);
+            pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+
+            return pulls;
+        }
+
+        private List<GithubPullRequestModel> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls, out bool stopImport)
+        {
+            // Initialize the request
+            var username = ConfigurationManager.AppSettings["GitHubUsername"];
+            var password = ConfigurationManager.AppSettings["GitHubPassword"];
+            var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
+
+            var resource = $"/repos/{RepositoryOwner}/{repository}/pulls?state=all&page={page}&sort=updated&direction=desc";
+            LogHelper.Info<GitHubService>($"Getting PR data from {resource}");
 
             var request = new RestRequest(resource, Method.GET);
             client.UserAgent = UserAgent;
@@ -99,79 +121,106 @@ namespace OurUmbraco.Community.GitHub
 
             stopImport = false;
 
-            if (result.Data == null)
+            if (result.Data.Count == 0)
             {
+                LogHelper.Info<GitHubService>("No records returned from the API, setting stopImport to true");
                 stopImport = true;
-                return null;
+                return pulls;
             }
 
             foreach (var pull in result.Data)
             {
                 var existing = pulls.FirstOrDefault(x => x.Id == pull.Id);
-                if (existing != null && existing.UpdatedAt != pull.UpdatedAt)
+
+                var isFound = existing != null;
+                var isUpdated = isFound && existing.UpdatedAt != pull.UpdatedAt;
+
+                if (isFound)
                 {
-                    existing.ClosedAt = pull.ClosedAt;
-                    existing.MergedAt = pull.MergedAt;
-                    existing.State = pull.State;
-                    existing.Title = pull.Title;
-                    existing.UpdatedAt = pull.UpdatedAt;
+                    if (isUpdated)
+                    {
+                        // It's been updated, remove it, so we can replace with the latest version
+                        pulls.Remove(existing);
+                    }
+                    else
+                    {
+                        // We've already imported this one, stop going down the list
+                        LogHelper.Info<GitHubService>("We've already imported this PR, so we'll stop importing here");
+                        stopImport = true;
+                        break;
+                    }
                 }
-                else if (existing != null && existing.UpdatedAt == pull.UpdatedAt)
-                {
-                    // we've already imported these, stop going down the list
-                    stopImport = true;
-                    break;
-                }
-                else
-                {
-                    pull.Repository = repository;
-                    pulls.Add(pull);
-                }
+
+                pull.Repository = repository;
+                pulls.Add(pull);
             }
 
             return pulls;
         }
 
-        public List<string> MatchPullsToMembers()
+        public List<PullRequestMember> MatchPullsToMembers()
         {
-            var matches = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<string>>("OurPullsMatchToMembers",
-                () =>
+            var searcher = ExamineManager.Instance.SearchProviderCollection["PullRequestSearcher"];
+            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+
+            criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
+            var searchResults = searcher.Search(criteria);
+            var contributors = searchResults
+                .Where(x => x.Fields["memberId"] != null && string.IsNullOrWhiteSpace(x.Fields["memberId"]) == false).ToList();
+
+            var members = new List<int>();
+            foreach (var match in contributors)
+            {
+                int.TryParse(match.Fields["memberId"], out var memberId);
+                if (members.Contains(memberId) == false)
+                    members.Add(memberId);
+            }
+
+            var pullRequestMembers = new List<PullRequestMember>();
+
+            foreach (var memberId in members)
+            {
+                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+                var member = umbracoHelper.TypedMember(memberId);
+
+                var pullRequestMember = new PullRequestMember
                 {
-                    var pulls = new List<GithubPullRequestModel>();
+                    MemberId = member.Id,
+                    Name = member.Name,
+                    GitHubUsername = member.GetPropertyValue<string>("github"),
+                    Repositories = new List<string>()
+                };
 
-                    if (File.Exists(PullRequestsJsonPath))
+                criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+                criteria = (LuceneSearchCriteria)criteria.RawQuery($"memberId:{memberId}");
+                searchResults = searcher.Search(criteria);
+
+                if (searchResults.Any())
+                {
+                    var totalPulls = searchResults.Count();
+                    var openPulls = searchResults.Count(x => x.Fields["state"] != null && x.Fields["state"] == "open");
+                    var acceptedPulls = searchResults.Count(x => x.Fields["mergedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["mergedAt"]) == false);
+                    var closedPulls = totalPulls - openPulls - acceptedPulls;
+
+                    var repositories = new List<string>();
+                    foreach (var searchResult in searchResults)
                     {
-                        var content = File.ReadAllText(PullRequestsJsonPath);
-                        pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+                        var repository = searchResult.Fields["repository"];
+                        if (repositories.Contains(repository) == false)
+                            repositories.Add(repository);
                     }
 
-                    var results = new List<string>();
+                    pullRequestMember.TotalPulls = totalPulls;
+                    pullRequestMember.OpenPulls = openPulls;
+                    pullRequestMember.AcceptedPulls = acceptedPulls;
+                    pullRequestMember.ClosedPulls = closedPulls;
+                    pullRequestMember.Repositories = repositories;
+                }
 
-                    var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
-                    var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
+                pullRequestMembers.Add(pullRequestMember);
+            }
 
-                    // TODO: Linq is inefficient. Find Lucene query to give all results which are not empty for the `github` field
-                    criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
-                    var searchResults = searcher.Search(criteria);
-                    var contributors = searchResults.Where(x => x.Fields["github"] != null && string.IsNullOrWhiteSpace(x.Fields["github"]) == false);
-
-                    foreach (var contributor in contributors)
-                    {
-                        var ourName = contributor.Fields["nodeName"];
-                        var ourId = contributor.Fields["id"];
-                        var githubUsername = contributor.Fields["github"];
-                        var totalPulls = pulls.Where(x => x.User.Login == githubUsername).ToList();
-                        var acceptedPulls = totalPulls.Where(x => x.MergedAt != null).ToList();
-                        var closedPulls = totalPulls.Where(x => x.MergedAt == null && x.ClosedAt != null).ToList();
-                        results.Add(string.Format("<a href=\"/member/{0}\">{1}</a> (<a href=\"https://github.com/{2}\">{2}</a> on GitHub) has sent {3} PRs of which {4} have been accepted and {5} have been closed without merging.",
-                            ourId, ourName, githubUsername, totalPulls.Count, acceptedPulls.Count, closedPulls.Count));
-                    }
-
-                    return results;
-
-                }, TimeSpan.FromMinutes(15));
-
-            return matches;
+            return pullRequestMembers;
         }
 
         /// <summary>
@@ -369,5 +418,17 @@ namespace OurUmbraco.Community.GitHub
         {
             sb.AppendLine(string.Format("{0:yyyy-MM-dd HH:mm:ss} {1}", DateTime.Now, str));
         }
+    }
+
+    public class PullRequestMember
+    {
+        public int MemberId { get; set; }
+        public string Name { get; set; }
+        public string GitHubUsername { get; set; }
+        public int TotalPulls { get; set; }
+        public int OpenPulls { get; set; }
+        public int AcceptedPulls { get; set; }
+        public int ClosedPulls { get; set; }
+        public List<string> Repositories { get; set; }
     }
 }

@@ -4,9 +4,11 @@ using System.Linq;
 using System.Net;
 using System.Web.Hosting;
 using System.Web.Mvc;
+using OurUmbraco.Community.People;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.usercontrols;
 using reCAPTCHA.MVC;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -150,34 +152,11 @@ namespace OurUmbraco.Our.Controllers
             return Redirect(redirectPage);
         }
 
-        private static string GetAvatarPath(IMembershipUser member)
+        private static string GetAvatarPath(IMember member)
         {
-            var url = "https://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
-
-            try
-            {
-                var avatarFileName = "/media/avatar/" + member.Id + ".jpg";
-                var path = HostingEnvironment.MapPath(avatarFileName);
-
-                if (path != null)
-                {
-                    if (System.IO.File.Exists(path))
-                        System.IO.File.Delete(path);
-
-                    using (var webClient = new WebClient())
-                    {
-                        webClient.DownloadFile(url, path);
-                    }
-
-                    return avatarFileName;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<Signup>("Could not save gravatar locally", ex);
-            }
-
-            return url;
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetMemberAvatar(member);
+            return avatarPath.Contains("?") ? avatarPath.Substring(0, avatarPath.IndexOf("?", StringComparison.Ordinal)) : avatarPath;
         }
     }
 }

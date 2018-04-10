@@ -156,7 +156,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
         public IEnumerable<Topic> GetAllTopics(bool unsolved = false, bool noreplies = false)
         {
             var sql = @"SELECT * FROM forumTopics WHERE isSpam=0";
-            
+
             if (unsolved)
                 if (sql.Contains("WHERE"))
                     sql = sql + " AND answer = 0";
@@ -168,7 +168,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
                     sql = sql + " AND replies = 0";
                 else
                     sql = sql + " WHERE replies = 0";
-            
+
             return _databaseContext.Database.Fetch<Topic>(sql);
         }
 
@@ -186,7 +186,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
 ";
             const string sqlix = sql1 + "WHERE isSpam=0";
             const string sqlic = sql1 + "WHERE isSpam=0 AND forumTopics.parentId=@category";
-            
+
             var sql = (category > 0 ? sqlic : sqlix);
 
             if (unsolved)
@@ -200,7 +200,7 @@ LEFT OUTER JOIN umbracoNode u2 ON (forumTopics.memberId = u2.id AND u2.nodeObjec
                     sql = sql + " AND replies = 0";
                 else
                     sql = sql + " WHERE replies = 0";
-            
+
             if (sql.Contains("WHERE"))
                 sql = sql + " AND (forumTopics.Created BETWEEN '" + fromDate.ToString("yyyy-MM-dd") + "' AND '" + toDate.ToString("yyyy-MM-dd") + "')";
             else
@@ -424,13 +424,10 @@ WHERE forumTopics.id=@id
             var topic = (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
             {
                 var contextId = context.Items["topicID"] as string;
-                if (contextId != null)
-                {
-                    int topicId;
-                    if (int.TryParse(contextId, out topicId))
-                        return QueryById(topicId);
-                }
-                return null;
+                if (contextId == null)
+                    return null;
+
+                return int.TryParse(contextId, out var topicId) ? QueryById(topicId) : null;
             });
 
             if (topic == null)
@@ -461,16 +458,16 @@ WHERE forumTopics.id=@id
                 ? currentMember
                 : umbracoHelper.TypedMember(topic.MemberId);
 
-            if (topic.TopicAuthor == null)
-                return topic;
-
             topic.TopicMembers = new List<TopicMember>();
-            var author = new TopicMember
+            if (topic.TopicAuthor != null)
             {
-                Member = topic.TopicAuthor,
-                Roles = topicAuthorIsCurrentMember ? memberData.Roles : topic.TopicAuthor.GetRoles()
-            };
-            topic.TopicMembers.Add(author);
+                var author = new TopicMember
+                {
+                    Member = topic.TopicAuthor,
+                    Roles = topicAuthorIsCurrentMember ? memberData.Roles : topic.TopicAuthor.GetRoles()
+                };
+                topic.TopicMembers.Add(author);
+            }
 
             foreach (var comment in topic.Comments)
             {
@@ -490,7 +487,7 @@ WHERE forumTopics.id=@id
                         continue;
 
                     var commenterRoles = commentMember.GetRoles();
-                    var commentAuthor = new TopicMember {Member = commentMember, Roles = commenterRoles};
+                    var commentAuthor = new TopicMember { Member = commentMember, Roles = commenterRoles };
                     topic.TopicMembers.Add(commentAuthor);
                 }
             }

@@ -106,9 +106,7 @@ namespace OurUmbraco.Our.Controllers
 
             // only set memberId when saving for the first time, else collaborators will cause it to switch the owner of the package
             if (model.Id == 0)
-            {
                 project.VendorId = Members.GetCurrentMemberId();
-            }
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
 

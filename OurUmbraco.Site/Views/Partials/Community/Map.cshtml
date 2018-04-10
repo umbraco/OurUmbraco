@@ -1,0 +1,45 @@
+﻿@using System.Configuration
+@using ClientDependency.Core.Mvc
+@{
+    //Google Maps API Key
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
+
+    Html.RequiresJs("~/assets/js/lib/markerclusterer.js", 5)
+        .RequiresJs("~/assets/js/map/community.map.js", 6)
+        .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 7);
+}
+
+<style>
+    /* Always set the map height explicitly to define the size of the div
+    * element that contains the map. */
+    #map {
+        min-height: 500px;
+        min-width: 300px;
+    }
+</style>
+
+<div id="map"></div>
+<div id="member-list" style="margin-top: 25px;"></div>
+
+<script id="map-marker-template" type="x-tmpl-mustache">
+    <div style="display:flex; align-items:center;">
+        <img src="{{Avatar}}" style="margin-right:5px; border-radius:50%;" />
+    </div>
+</script>
+
+
+<script id="members-template" type="x-tmpl-mustache">
+    <h3>People near this location</h3>
+    <div style="margin-top:5px; margin-bottom: 20px; display:flex; flex-direction:row; flex-wrap:wrap; justify-content:flex-start;">
+        {{ #. }}
+        {{ >member }}
+        {{ /. }}
+    </div>    
+</script>
+
+<script id="member-item-template" type="x-tmpl-mustache">
+    <div style="display:flex; padding:5px; flex: 0 1 auto; align-items:center;">
+        <img src="{{Avatar}}" style="border-radius:50%; max-height:50px;" />
+    </div>
+</script>
+

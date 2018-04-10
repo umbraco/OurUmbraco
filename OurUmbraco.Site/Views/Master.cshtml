@@ -8,7 +8,7 @@
         model.Level > 2 && model.AncestorOrSelf(3).Id == 1057
             ? "profile has-sidebar"
             : model.DocumentTypeAlias.ToLower().Replace(" ", "-") + "-page";
-    
+
     var memberIsBlocked = MemberData != null && MemberData.IsBlocked;
 
 
@@ -30,7 +30,6 @@
     Html.RequiresJs("~/assets/js/community.js");
     Html.RequiresJs("~/assets/js/app.min.js");
     Html.RequiresJs("~/assets/js/editor.min.js");
-
 }<!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
@@ -95,7 +94,7 @@
     @Html.RenderCssHere()
     @RenderSection("HeadCssScripts", false)
 
-    <script>
+    <script type="text/javascript">
         (function (i, s, o, g, r, a, m) {
             i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
                 (i[r].q = i[r].q || []).push(arguments)
@@ -104,11 +103,27 @@
         })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
 
         ga('create', 'UA-120590-4', 'auto');
+        ga('set', 'anonymizeIp', true);
+
         ga('send', 'pageview');
+        (function (w, d, s, l, i) {
+            w[l] = w[l] || []; w[l].push({
+                'gtm.start':
+                    new Date().getTime(), event: 'gtm.js'
+            }); var f = d.getElementsByTagName(s)[0],
+                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
+                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
+        })(window, document, 'script', 'dataLayer', 'GTM-NQ556HD');
     </script>
 </head>
 
 <body class="@bodyCss">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ556HD"
+                height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
     @Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
     <div class="wrapper">
@@ -156,6 +171,8 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
+                        <p><a href="/privacy-policy">Privacy Policy</a> - <a href="/terms-of-service">Terms Of Service</a> - <a href="/code-of-conduct">Code Of Conduct</a></p>
+                        <p>&nbsp;</p>
                         Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
                         @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
                         {
@@ -163,7 +180,8 @@
                         }
                         else
                         {
-                            <text>This site is running</text> <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
+                            <text>This site is running</text>
+                            <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
                         }
                     </div>
                 </div>

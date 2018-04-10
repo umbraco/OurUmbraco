@@ -6,6 +6,8 @@ namespace OurUmbraco.Our.Models
     {
         public string Avatar { get; set; }
 
+        public string AvatarHtml { get; set; }
+
         [Required]
         public string Name { get; set; }
 
@@ -29,5 +31,9 @@ namespace OurUmbraco.Our.Models
 
         [Display(Name = "GitHub username")]
         public string GitHubUsername { get; set; }
+
+        public string Latitude { get; set; }
+
+        public string Longitude { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -20,24 +21,51 @@ namespace OurUmbraco.Our.Extensions
 
         public static List<Badge> GetBadges(this IEnumerable<string> roles)
         {
-            var badges = new List<Badge>();
-            var rolesWithoutMvp = roles.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
-            var numberOfMvps = roles.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
+            var rolesList = roles.ToList();
+            var rolesWithoutMvp = rolesList.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
+            var numberOfMvps = rolesList.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
 
+            var badges = new List<Badge>();
             if (numberOfMvps != 0)
             {
                 var name = "MVP";
                 if (numberOfMvps > 1)
-                    name = string.Format("{0} {1}x", name, numberOfMvps);
+                    name = $"{name} {numberOfMvps}x";
 
-                badges.Add(new Badge {Name = name, Link = "/community/most-valueable-people/", CssClass = "mvp" });
+                badges.Add(new Badge
+                {
+                    Name = name,
+                    Link = "/community/most-valuable-people/",
+                    CssClass = "mvp"
+                });
             }
-
-
+            
             foreach (var role in rolesWithoutMvp)
-                badges.Add(new Badge { Name = role, CssClass = role.ToLowerInvariant() });
+                badges.Add(new Badge
+                {
+                    Name = role,
+                    CssClass = role.ToLowerInvariant(),
+                    Link = $"/community/badges/#{role.ToLowerInvariant()}"
+                });
 
             return badges;
+        }
+        
+        // From: https://stackoverflow.com/a/42260733/5018
+        internal static bool IsLocalPath(this string path)
+        {
+            Uri uri;
+            try
+            {
+                uri = new Uri(path);
+            }
+            catch (Exception ex)
+            {
+                // It's not a URI, so assume it's something local
+                return true;
+            }
+
+            return uri.IsFile;
         }
     }
 

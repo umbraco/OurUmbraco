@@ -2,8 +2,10 @@ using System;
 using System.Configuration;
 using System.Web.Configuration;
 using Hangfire;
+using Hangfire.Console;
 using Hangfire.SqlServer;
 using Microsoft.Owin;
+using OurUmbraco.Community.Map;
 using OurUmbraco.NotificationsCore.Notifications;
 using OurUmbraco.Our.GoogleOAuth;
 using Owin;
@@ -37,11 +39,14 @@ namespace OurUmbraco.Our.GoogleOAuth
             // Configure hangfire
             var options = new SqlServerStorageOptions { PrepareSchemaIfNecessary = true };
             var connectionString = Umbraco.Core.ApplicationContext.Current.DatabaseContext.ConnectionString;
-            GlobalConfiguration.Configuration.UseSqlServerStorage(connectionString, options);
+            GlobalConfiguration.Configuration
+                .UseSqlServerStorage(connectionString, options)
+                .UseConsole();
+
             var dashboardOptions = new DashboardOptions { Authorization = new[] { new UmbracoAuthorizationFilter() } };
             app.UseHangfireDashboard("/hangfire", dashboardOptions);
             app.UseHangfireServer();
-
+            
             // Schedule jobs
             var scheduler = new ScheduleHangfireJobs();
             scheduler.MarkAsSolvedReminder();
@@ -50,6 +55,12 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateCommunityBlogPosts();
             scheduler.UpdateCommunityVideos();
             scheduler.UpdateVimeoVideos();
+            scheduler.GetGitHubPullRequests();
+            scheduler.RefreshKarmaStatistics();
+
+            //Hangfire jobs for Google Maps aka Radar
+            var radarScheduler = new RadarHangfireJobs();
+            radarScheduler.FindSignals();
         }
     }
 }

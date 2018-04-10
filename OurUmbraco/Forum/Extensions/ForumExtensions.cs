@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Web;
-using System.Web.Security;
 using Ganss.XSS;
 using HtmlAgilityPack;
 using MarkdownSharp;
 using OurUmbraco.Forum.AntiSpam;
-using OurUmbraco.Forum.Library;
 using OurUmbraco.Forum.Models;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -62,6 +59,18 @@ namespace OurUmbraco.Forum.Extensions
             var md = new Markdown();
             html = md.Transform(html);
 
+            // Add links to URLs that aren't "properly" linked in a markdown way
+            var regex = new Regex(@"(^|\s|>|;)(https?|ftp)(:\/\/[-A-Z0-9+&@#\/%?=~_|\[\]\(\)!:,\.;]*[-A-Z0-9+&@#\/%=~_|\[\]])($|\W)", RegexOptions.IgnoreCase | RegexOptions.Compiled);
+
+            var linkedHtml = regex.Replace(html, "$1<a href=\"$2$3\">$2$3</a>$4").Replace("href=\"www", "href=\"http://www");
+
+            var scriptRegex = new Regex("<script.*?</script>", RegexOptions.Singleline | RegexOptions.IgnoreCase);
+            var scriptRegexMatches = scriptRegex.Matches(linkedHtml);
+            for (var i = 0; i < scriptRegexMatches.Count; i++)
+                linkedHtml = linkedHtml.Replace(scriptRegexMatches[i].Value, $"<pre>{HttpContext.Current.Server.HtmlEncode(scriptRegexMatches[i].Value)}</pre>");
+
+            html = linkedHtml;
+
             // Linkify images if they are shown as resized versions (only relevant for new Markdown comments)
             var doc = new HtmlDocument();
             doc.LoadHtml(html);
@@ -101,7 +110,7 @@ namespace OurUmbraco.Forum.Extensions
                             {
                                 link.Attributes.Remove("rel");
                             }
-                            link.Attributes.Add("rel", "nofollow");
+                            link.Attributes.Add("rel", "noopener");
                         }
                     }
                 }

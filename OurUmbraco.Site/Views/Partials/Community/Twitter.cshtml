@@ -7,41 +7,23 @@
     var tweets = twitterService.GetTweets(30, false).Tweets;
 }
 
-<section class="community">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Twitter Activity</h1>
-                <p>
-                    Recent activity on twitter, where people are talking about Umbraco.
-                </p>
-            </div>
-            <div class="col-md-12">
-                <small>Recent tweets</small>
-            </div>
+@foreach (var tweet in tweets)
+{
+    <a href="@tweet.Url" class="community-post">
 
-            <div class="col-md-12 flex" id="community-posts">
-                @foreach (var tweet in tweets)
-                {
-                    <a href="@tweet.Url" class="community-post">
+        <div class="avatar">
+            <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
+        </div>
 
-                        <div class="avatar">
-                            <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
-                        </div>
-
-                        <div class="meta">
-                            <div class="forum-thread-text">
-                                <h3>@tweet.Text</h3>
-                                <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
-                            </div>
-                        </div>
-                    </a>
-                }
-
-                <div class="col-md-12 goto-forum">
-                    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
-                </div>
+        <div class="meta">
+            <div class="forum-thread-text">
+                <h3>@tweet.Text</h3>
+                <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
             </div>
         </div>
-    </div>
-</section>
+    </a>
+}
+
+<div class="col-md-12 goto-forum">
+    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+</div>
