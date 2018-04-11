@@ -110,7 +110,7 @@ namespace OurUmbraco.Community.People
             try
             {
                 return memberAvatarPath.IsLocalPath()
-                    ? Image.FromFile(memberAvatarPath) 
+                    ? Image.FromFile(memberAvatarPath.Replace("%20", " ")) 
                     : null;
             }
             catch (Exception ex)
