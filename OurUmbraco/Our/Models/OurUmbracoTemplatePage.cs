@@ -37,9 +37,9 @@ namespace OurUmbraco.Our.Models
                 {
                     var member = membershipHelper.GetCurrentMember();
 
-                    var memberAvatarPath = member.GetPropertyValue<string>("avatar");
-                    memberAvatarPath = HostingEnvironment.MapPath($"~{memberAvatarPath}");
                     var avatarService = new AvatarService();
+                    var memberAvatarPath = avatarService.GetMemberAvatar(member);
+                    memberAvatarPath = HostingEnvironment.MapPath($"~{memberAvatarPath}");
                     var avatarImage = avatarService.GetMemberAvatarImage(memberAvatarPath);
 
                     var roles = member.GetRoles();
