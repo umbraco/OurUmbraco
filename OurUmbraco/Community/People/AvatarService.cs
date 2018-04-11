@@ -123,6 +123,9 @@ namespace OurUmbraco.Community.People
 
         internal string GenerateIdenticon(IPublishedContent memberContent)
         {
+            if (memberContent == null)
+                return string.Empty;
+
             var memberPublishedContent = (MemberPublishedContent)memberContent;
             var emailHash = CreateMd5Hash(memberPublishedContent.Email);
 
