@@ -42,7 +42,7 @@
       "title": "Lars-Erik's blog",
       "url": "http://blog.aabech.no/",
       "rss": "http://blog.aabech.no/rss",
-      "logo": "http://blog.aabech.no/media/1002/umbarcelonajpeg.jpg?mode=max&rnd=131284736200000000",
+      "logo": "https://pbs.twimg.com/profile_images/490060327241797632/MvB5bnIm_400x400.jpeg",
       "memberId": 30373
     },
     {
@@ -86,7 +86,7 @@
       "checkTitles": false,
       "title": "Shazwazza",
       "url": "https://shazwazza.com/",
-      "rss": "http://feeds.feedburner.com/Shazwazza",
+      "rss": "https://feeds.feedburner.com/Shazwazza",
       "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg",
       "memberId": 1767
     },
@@ -105,7 +105,7 @@
       "title": "Skrift",
       "url": "http://skrift.io/",
       "rss": "http://skrift.io/articles/rss",
-      "logo": "http://skrift.io/css/images/logoRetina-black.png",
+      "logo": "https://pbs.twimg.com/profile_images/826839762216513536/zsGRhwaW_400x400.jpg",
       "memberId": null
     },
     {
@@ -202,9 +202,9 @@
       "id": "7DF2AE1C-26C6-4BCB-A688-2346CBFAA042",
       "checkTitles": false,
       "title": "ProWorks",
-      "url": "http://www.proworks.com/blog",
-      "rss": "http://www.proworks.com/blog/rss",
-      "logo": "http://www.proworks.com/images/PWlogo.png",
+      "url": "https://www.proworks.com/blog",
+      "rss": "https://www.proworks.com/blog/rss",
+      "logo": "https://www.proworks.com/images/PWlogo.png",
       "memberId": null
     },
     {
@@ -242,6 +242,15 @@
       "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
       "logo": "https://www.aaron-powell.com/images/logo.png",
       "memberId": 3497
+    },
+    {
+      "id": "{9A00F003-F0A9-413C-8C13-7D3A6ED51887}",
+      "checkTitles": false,
+      "title": "Peter Stokes Blog",
+      "url": "https://pstokes.co.uk/",
+      "rss": "https://pstokes.co.uk/rss",
+      "logo": "https://pstokes.co.uk/media/1017/img_2254-3.jpg",
+      "memberId": 146507
     }
   ]
 }
