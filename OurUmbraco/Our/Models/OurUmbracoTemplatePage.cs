@@ -27,7 +27,7 @@ namespace OurUmbraco.Our.Models
         {
             var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
 
-            if (membershipHelper.IsLoggedIn() == false)
+            if (membershipHelper.GetCurrentLoginStatus().IsLoggedIn == false)
                 return null;
 
             var userName = membershipHelper.CurrentUserName;
