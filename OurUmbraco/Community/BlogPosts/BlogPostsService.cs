@@ -58,10 +58,12 @@ namespace OurUmbraco.Community.BlogPosts
                 try
                 {
                     string raw;
+                    const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3393.4 Safari/537.36";
                     context.WriteLine($"Processing blog {blog.Title}");
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
+                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
                         wc.Encoding = blog.Encoding;
 
                         // Download the raw XML
@@ -117,7 +119,7 @@ namespace OurUmbraco.Community.BlogPosts
                             if (includeItem == false)
                             {
                                 var allCategories = string.Join(",", categories.Select(i => i.Value));
-                                context.SetTextColor(ConsoleTextColor.Red);
+                                context.SetTextColor(ConsoleTextColor.DarkYellow);
                                 context.WriteLine($"Not including post titled {title} because it was not in an approved category. The categories it was found in: {allCategories}. [{link}]");
                                 context.ResetTextColor();
                                 continue;
@@ -133,7 +135,7 @@ namespace OurUmbraco.Community.BlogPosts
                                     includeItem = true;
 
                             // Blog post seems unrelated to Umbraco, skip it
-                            if(includeItem == false)
+                            if (includeItem == false)
                                 continue;
                         }
 
@@ -149,6 +151,19 @@ namespace OurUmbraco.Community.BlogPosts
                         posts.Add(blogPost);
                     }
 
+                    // Get the avatar locally so that we can use ImageProcessor and serve it over https
+                    using (var wc = new WebClient())
+                    {
+                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
+                        var baseLogoPath = HostingEnvironment.MapPath("~/media/blogs/");
+                        if (Directory.Exists(baseLogoPath) == false)
+                            Directory.CreateDirectory(baseLogoPath);
+                        
+                        var logoExtension = GetFileExtension(blog.LogoUrl);
+                        var logoPath = baseLogoPath + blog.Id + logoExtension;
+                        
+                        wc.DownloadFile(blog.LogoUrl, logoPath);
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -160,7 +175,20 @@ namespace OurUmbraco.Community.BlogPosts
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
-        
+
+        private static string GetFileExtension(string blogLogoUrl)
+        {
+            var extension = ".png";
+            var url = blogLogoUrl;
+            if (url.Contains("?"))
+                url = blogLogoUrl.Substring(0, blogLogoUrl.IndexOf("?", StringComparison.Ordinal));
+
+            var lastUrlSlug = url.Substring(url.LastIndexOf("/", StringComparison.Ordinal));
+            if (lastUrlSlug.Contains("."))
+                extension = lastUrlSlug.Substring(lastUrlSlug.LastIndexOf(".", StringComparison.Ordinal));
+            return extension;
+        }
+
         private static string RemoveLeadingCharacters(string inString)
         {
             if (inString == null)
@@ -212,9 +240,10 @@ namespace OurUmbraco.Community.BlogPosts
 
                 foreach (var item in JsonUtils.LoadJsonArray(JsonFile).Select(token => token.ToObject<BlogRssItem>()))
                 {
-                    BlogInfo blog;
-                    if (blogs.TryGetValue(item.Channel.Id, out blog) == false)
+                    if (blogs.TryGetValue(item.Channel.Id, out var blog) == false)
                         continue;
+
+                    blog.LogoUrl = $"/media/blogs/{blog.Id}{GetFileExtension(blog.LogoUrl)}";
                     blogPosts.Add(new BlogCachedRssItem(blog, item));
                 }
 
