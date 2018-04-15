@@ -55,6 +55,15 @@ namespace OurUmbraco.Community.People
             return avatarPath;
         }
 
+        public string GetRemoteAvatarUrl(string url, int size)
+        {
+            if (string.IsNullOrEmpty(url))
+                return string.Empty;
+
+            var host = url.TrimStart("http://").TrimStart("https://");
+            return $"/remote.axd?https://{host}?width={size}&upscale=true";
+        }
+
         public string GetImgWithSrcSet(string avatarPath, string altText, int minSize, string cacheBuster = "")
         {
             var cleanImagePath = GetCleanImagePath(avatarPath);
