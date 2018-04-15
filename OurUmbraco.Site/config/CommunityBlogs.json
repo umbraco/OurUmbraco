@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
+      "checkTitles": false,
+      "title": "codeshare.co.uk Blog",
+      "url": "https://codeshare.co.uk/",
+      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
+      "logo": "https://codeshare.co.uk/media/1371/logo.png",
+      "memberId": 126488
+    },
+    {
       "id": "8331444E-D061-4833-889D-4304515CD74D",
       "checkTitles": false,
       "title": "Offroadcode Journal",
@@ -73,7 +82,7 @@
       "memberId": null
     },
     {
-      "id": "c50e6041-bc06-4d2e-9a08-e21e6a8cf23c",
+      "id": "C50E6041-BC06-4D2E-9A08-E21E6A8CF23C",
       "checkTitles": false,
       "title": "Creative Web Specialist",
       "url": "https://creativewebspecialist.co.uk",
@@ -82,7 +91,7 @@
       "memberId": 1175
     },
     {
-      "id": "feef823f-84e7-4fba-af14-a70d1f6b2dfc",
+      "id": "FEEF823F-84E7-4FBA-AF14-A70D1F6B2DFC",
       "checkTitles": false,
       "title": "Shazwazza",
       "url": "https://shazwazza.com/",
@@ -91,7 +100,7 @@
       "memberId": 1767
     },
     {
-      "id": "76e06586-1220-44b2-a475-bffc2c03499d",
+      "id": "76E06586-1220-44B2-A475-BFFC2C03499D",
       "checkTitles": false,
       "title": "Lee Kelleher",
       "url": "https://leekelleher.com/",
@@ -145,15 +154,6 @@
       "memberId": 6724
     },
     {
-      "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
-      "checkTitles": false,
-      "title": "codeshare.co.uk Blog",
-      "url": "https://codeshare.co.uk/",
-      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
-      "logo": "https://codeshare.co.uk/media/1371/logo.png",
-      "memberId": 126488
-    },
-    {
       "id": "27A50A0B-376B-451E-B203-8366DA22F511",
       "checkTitles": false,
       "title": "Dave on Umbraco",
@@ -181,7 +181,7 @@
       "memberId": 1201
     },
     {
-      "id": "12f4440a-c87b-4450-964a-d4ea50fae18c",
+      "id": "12F4440A-C87B-4450-964A-D4EA50FAE18C",
       "checkTitles": false,
       "title": "Anders Bjerner",
       "url": "http://www.bjerner.dk/blog/",
@@ -235,7 +235,7 @@
       "memberId": null
     },
     {
-      "id": "{345597EE-CA65-4588-A6CC-8EA3012A25BB}",
+      "id": "345597EE-CA65-4588-A6CC-8EA3012A25BB",
       "checkTitles": false,
       "title": "Aaron Powell - LINQ to fail",
       "url": "https://www.aaron-powell.com/#blog",
@@ -244,7 +244,7 @@
       "memberId": 3497
     },
     {
-      "id": "{9A00F003-F0A9-413C-8C13-7D3A6ED51887}",
+      "id": "9A00F003-F0A9-413C-8C13-7D3A6ED51887",
       "checkTitles": false,
       "title": "Peter Stokes Blog",
       "url": "https://pstokes.co.uk/",
