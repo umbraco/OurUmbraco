@@ -32,40 +32,11 @@
     Html.RequiresJs("~/assets/js/community.js");
     Html.RequiresJs("~/assets/js/app.min.js");
     Html.RequiresJs("~/assets/js/editor.min.js");
-
-    if (cookiesAllowed == false)
-    {
-        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
-        <script>
-            window.addEventListener("load",
-                function () {
-                    window.cookieconsent.initialise({
-                        "palette": {
-                            "popup": {
-                                "background": "#252e39"
-                            },
-                            "button": {
-                                "background": "#14a7d0"
-                            }
-                        },
-                        "position": "bottom-left",
-                        "type": "opt-in",
-                        "content": {
-                            "href": "https://our.umbraco.org/privacy-policy/",
-                            "dismiss": "No cookies for me please"
-                        }
-                    });
-                });
-        </script>
-    }
 }<!doctype html>
 <!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
 <!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
 <!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
-<!--[if gt IE 8]><!-->
-<html class="no-js" lang="en">
-<!--<![endif]-->
+<!--[if gt IE 8]><!--><html class="no-js" lang="en"><!--<![endif]-->
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
@@ -123,6 +94,32 @@
     @Html.RenderCssHere()
     @RenderSection("HeadCssScripts", false)
 
+	<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+	<script>
+		window.addEventListener("load",
+			function () {
+				window.cookieconsent.initialise({
+					"palette": {
+						"popup": {
+							"background": "#252e39"
+						},
+						"button": {
+							"background": "#14a7d0"
+						}
+					},
+					"position": "bottom-left",
+					"type": "opt-in",
+					"content": {
+						"message": "This website uses cookies to gather some anonymous statistics, is that okay with you?",
+						"dismiss": "No thanks",
+						"allow": "Sure, go ahead.",
+						"href": "https://our.umbraco.org/privacy-policy/"
+					}
+				});
+			});
+	</script>	
+	
     @if (cookiesAllowed)
     {
         <!-- Global site tag (gtag.js) - Google Analytics -->
