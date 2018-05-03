@@ -794,6 +794,7 @@
       <DependentUpon>repository.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Search\BlogItemSearchResult.cs" />
     <Compile Include="SignalRHubs\ForumPostHub.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
