@@ -587,6 +587,7 @@
     <Compile Include="Our\Controllers\OurUmbracoController.cs" />
     <Compile Include="Our\CustomHandlers\PullRequestIndexer.cs" />
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
+    <Compile Include="Our\Examine\BlogItemsIndexDataService.cs" />
     <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
     <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
