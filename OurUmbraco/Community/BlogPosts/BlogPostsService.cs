@@ -82,7 +82,7 @@ namespace OurUmbraco.Community.BlogPosts
 
                     var rssChannel = new BlogRssChannel
                     {
-                        Id = blog.Id,
+                        Id = blog.Id.ToString(),
                         Title = channelTitle,
                         Link = channelLink
                     };
@@ -232,7 +232,7 @@ namespace OurUmbraco.Community.BlogPosts
             if (File.Exists(JsonFile) == false)
                 return new BlogCachedRssItem[0];
 
-            var blogs = GetBlogs().ToDictionary(x => x.Id);
+            var blogs = GetBlogs().ToDictionary(x => x.Id.ToString());
 
             try
             {
