@@ -14,6 +14,7 @@ using Skybrud.Essentials.Json.Extensions;
 using Skybrud.Essentials.Xml.Extensions;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Persistence;
 
 namespace OurUmbraco.Community.BlogPosts
 {
@@ -21,6 +22,14 @@ namespace OurUmbraco.Community.BlogPosts
     public class BlogPostsService
     {
         private static readonly string JsonFile = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
+
+        protected UmbracoDatabase Database { get; private set; }
+
+        public BlogPostsService()
+        {
+            Database = ApplicationContext.Current.DatabaseContext.Database;
+        }
+
 
         public BlogInfo[] GetBlogs()
         {
@@ -259,6 +268,16 @@ namespace OurUmbraco.Community.BlogPosts
                 LogHelper.Error<BlogPostsService>("Unable to load blog posts from JSON file", ex);
                 return new BlogCachedRssItem[0];
             }
+        }
+        
+        public BlogDatabaseItem[] GetAllBlogItemsFromDatabase()
+        {
+
+            // Get a list of all existing blog items and add them to a dictionary
+            Sql sqæl = new Sql().Select("*").From(BlogDatabaseItem.TableName);
+
+            return Database.Fetch<BlogDatabaseItem>(sqæl).ToArray();
+
         }
 
         public void UpdateBlogPostsJsonFile()
