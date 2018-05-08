@@ -584,6 +584,7 @@
     <Compile Include="Our\Controllers\AvatarController.cs" />
     <Compile Include="Our\Controllers\BreadcrumbController.cs" />
     <Compile Include="Our\Controllers\OurUmbracoController.cs" />
+    <Compile Include="Our\Controllers\ResetPasswordController.cs" />
     <Compile Include="Our\CustomHandlers\PullRequestIndexer.cs" />
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
     <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
@@ -637,6 +638,7 @@
     <Compile Include="Our\Models\ProfileNotificationModel.cs" />
     <Compile Include="Our\Models\ProjectCompleteModel.cs" />
     <Compile Include="Our\Models\ProjectDetails.cs" />
+    <Compile Include="Our\Models\PasswordResetModel.cs" />
     <Compile Include="Our\Models\RegisterModel.cs" />
     <Compile Include="Our\Models\SearchResultContentModel.cs" />
     <Compile Include="Our\Models\SearchResultModel.cs" />
@@ -648,6 +650,7 @@
     <Compile Include="Our\Scheduling\Scheduler.cs" />
     <Compile Include="Our\Scheduling\YouTrackSync.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
+    <Compile Include="Our\SecureHasher.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
       <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>

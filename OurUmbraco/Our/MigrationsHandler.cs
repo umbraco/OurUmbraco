@@ -52,6 +52,7 @@ namespace OurUmbraco.Our
             AddCommunityBadges();
             AddVideosPage();
             AddRetiredStatusToPackages();
+            AddPasswordResetTokenToMembers();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1369,6 +1370,84 @@ namespace OurUmbraco.Our
                     var textboxPropertyType = new PropertyType(textbox, textboxTypeAlias) { Name = "Retired Message" };
                     projectContentType.AddPropertyType(textboxPropertyType, projectContentTypeAlias);
                     contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddPasswordResetTokenToMembers()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                var memberTypeService = ApplicationContext.Current.Services.MemberTypeService;
+
+                var memberTypeAlias = "member";
+                var memberType = memberTypeService.Get(memberTypeAlias);
+
+                const string passwordResetAlias = "passwordResetToken";
+                const string expiryDateAlias = "passwordResetTokenExpiryDate";
+
+                var saveRequired = false;
+                if (memberType.PropertyTypeExists(passwordResetAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, passwordResetAlias) { Name = "Password reset token" };
+                    memberType.AddPropertyType(textboxPropertyType, memberTypeAlias);
+                    saveRequired = true;
+                }
+
+                if (memberType.PropertyTypeExists(expiryDateAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, expiryDateAlias) { Name = "Password reset token expiry date" };
+                    memberType.AddPropertyType(textboxPropertyType, memberTypeAlias);
+                    saveRequired = true;
+                }
+
+                if(saveRequired)
+                    memberTypeService.Save(memberType);
+                
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                const string macroAlias = "MembersResetPassword";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "Members Reset Password",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Members/ResetPassword.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
+                var memberNode = rootNode.Children().FirstOrDefault(x => string.Equals(x.Name, "Member", StringComparison.InvariantCultureIgnoreCase));
+
+                var resetPasswordPageName = "Reset Password";
+                if (memberNode != null && memberNode.Children().Any(x => x.Name == resetPasswordPageName) == false)
+                {
+                    var content = contentService.CreateContent(resetPasswordPageName, memberNode.Id, "Textpage");
+                    content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
+                    contentService.SaveAndPublishWithStatus(content);
                 }
 
                 string[] lines = { "" };
