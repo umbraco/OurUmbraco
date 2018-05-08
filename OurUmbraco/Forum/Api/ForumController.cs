@@ -527,18 +527,6 @@ namespace OurUmbraco.Forum.Api
         {
             var post = string.Format("Topic or comment deleted by admin {0}\n", adminName);
             post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
-
-            if (memberId != 0)
-            {
-                var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
-
-                if (member != null)
-                {
-                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
-                    post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
-                }
-            }
-
             return post;
         }
 
@@ -546,18 +534,6 @@ namespace OurUmbraco.Forum.Api
         {
             var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked/approved*", adminName);
             post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
-
-            if (memberId != 0)
-            {
-                var member = ApplicationContext.Current.Services.MemberService.GetById(memberId);
-
-                if (member != null)
-                {
-                    var querystring = string.Format("api?ip={0}&email={1}&f=json", Utils.GetIpAddress(), HttpUtility.UrlEncode(member.Email));
-                    post = post + string.Format("Check the StopForumSpam rating: http://api.stopforumspam.org/{0}", querystring);
-                }
-            }
-
             return post;
         }
 
