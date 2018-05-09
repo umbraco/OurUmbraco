@@ -15,5 +15,9 @@ namespace OurUmbraco.Our.Models
         [MinLength(8, ErrorMessage = "Password must be at least 8 characters")]
         [DisplayName("New password*")]
         public string NewPassword { get; set; }
+
+        public string Error { get; set; }
+
+        public bool Success { get; set; }
     }
 }
