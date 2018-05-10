@@ -77,7 +77,7 @@ namespace OurUmbraco.Community.BlogPosts
 
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
-                        raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+                        raw = BlogRssUtils.RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
                     }
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
@@ -105,7 +105,7 @@ namespace OurUmbraco.Community.BlogPosts
                             : item.GetElementValue("link"))
                                 .Trim();
 
-                        var pubDate = GetPublishDate(item);
+                        var pubDate = BlogRssUtils.GetPublishDate(item);
                         if (pubDate == default(DateTimeOffset))
                             continue;
 
@@ -168,7 +168,7 @@ namespace OurUmbraco.Community.BlogPosts
                         if (Directory.Exists(baseLogoPath) == false)
                             Directory.CreateDirectory(baseLogoPath);
                         
-                        var logoExtension = GetFileExtension(blog.LogoUrl);
+                        var logoExtension = BlogRssUtils.GetFileExtension(blog.LogoUrl);
                         var logoPath = baseLogoPath + blog.Id + logoExtension;
                         
                         wc.DownloadFile(blog.LogoUrl, logoPath);
@@ -184,57 +184,7 @@ namespace OurUmbraco.Community.BlogPosts
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
-
-        private static string GetFileExtension(string blogLogoUrl)
-        {
-            var extension = ".png";
-            var url = blogLogoUrl;
-            if (url.Contains("?"))
-                url = blogLogoUrl.Substring(0, blogLogoUrl.IndexOf("?", StringComparison.Ordinal));
-
-            var lastUrlSlug = url.Substring(url.LastIndexOf("/", StringComparison.Ordinal));
-            if (lastUrlSlug.Contains("."))
-                extension = lastUrlSlug.Substring(lastUrlSlug.LastIndexOf(".", StringComparison.Ordinal));
-            return extension;
-        }
-
-        private static string RemoveLeadingCharacters(string inString)
-        {
-            if (inString == null)
-                return null;
-
-            var substringStart = 0;
-            for (var i = substringStart; i < inString.Length; i++)
-            {
-                var character = inString[i];
-                if (character != '<')
-                    continue;
-
-                // As soon as we find the XML opening tag, break and return the rest of the string, else XElement.Parse fails
-                substringStart = i;
-                break;
-            }
-
-            return inString.Substring(substringStart);
-        }
-
-        private static DateTimeOffset GetPublishDate(XElement item)
-        {
-            var publishDate = item.GetElementValue("pubDate");
-            DateTimeOffset pubDate;
-            try
-            {
-                pubDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(publishDate);
-            }
-            catch (Exception e)
-            {
-                // special dateformat, try normal C# date parser
-            }
-
-            DateTimeOffset.TryParse(publishDate, out pubDate);
-            return pubDate;
-        }
-
+        
         public BlogCachedRssItem[] GetCachedBlogPosts(int take, int numberOfPostsPerBlog)
         {
             // Return an empty array as the file doesn't exist
@@ -252,7 +202,7 @@ namespace OurUmbraco.Community.BlogPosts
                     if (blogs.TryGetValue(item.Channel.Id, out var blog) == false)
                         continue;
 
-                    blog.LogoUrl = $"/media/blogs/{blog.Id}{GetFileExtension(blog.LogoUrl)}";
+                    blog.LogoUrl = $"/media/blogs/{blog.Id}{BlogRssUtils.GetFileExtension(blog.LogoUrl)}";
                     blogPosts.Add(new BlogCachedRssItem(blog, item));
                 }
 
