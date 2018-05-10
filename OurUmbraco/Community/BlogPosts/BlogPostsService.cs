@@ -77,7 +77,7 @@ namespace OurUmbraco.Community.BlogPosts
 
                         // Download the raw XML
                         raw = wc.DownloadString(blog.RssUrl);
-                        raw = BlogRssUtils.RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+                        raw = BlogUtils.RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
                     }
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
@@ -105,7 +105,7 @@ namespace OurUmbraco.Community.BlogPosts
                             : item.GetElementValue("link"))
                                 .Trim();
 
-                        var pubDate = BlogRssUtils.GetPublishDate(item);
+                        var pubDate = BlogUtils.GetPublishDate(item);
                         if (pubDate == default(DateTimeOffset))
                             continue;
 
@@ -168,7 +168,7 @@ namespace OurUmbraco.Community.BlogPosts
                         if (Directory.Exists(baseLogoPath) == false)
                             Directory.CreateDirectory(baseLogoPath);
                         
-                        var logoExtension = BlogRssUtils.GetFileExtension(blog.LogoUrl);
+                        var logoExtension = BlogUtils.GetFileExtension(blog.LogoUrl);
                         var logoPath = baseLogoPath + blog.Id + logoExtension;
                         
                         wc.DownloadFile(blog.LogoUrl, logoPath);
@@ -202,7 +202,7 @@ namespace OurUmbraco.Community.BlogPosts
                     if (blogs.TryGetValue(item.Channel.Id, out var blog) == false)
                         continue;
 
-                    blog.LogoUrl = $"/media/blogs/{blog.Id}{BlogRssUtils.GetFileExtension(blog.LogoUrl)}";
+                    blog.LogoUrl = $"/media/blogs/{blog.Id}{BlogUtils.GetFileExtension(blog.LogoUrl)}";
                     blogPosts.Add(new BlogCachedRssItem(blog, item));
                 }
 
