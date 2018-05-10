@@ -80,6 +80,9 @@ namespace OurUmbraco.Community.BlogPosts
                         if (pubDate == default(DateTimeOffset))
                             continue;
 
+                        string description = item.GetElementValue("description");
+                        if (String.IsNullOrWhiteSpace(description)) description = null;
+
                         var approvedCategories = new List<string> { "umbraco", "codegarden", "articulate", "examine" };
                         var categories = item.GetElements("category");
                         if (categories.Any())
@@ -126,7 +129,8 @@ namespace OurUmbraco.Community.BlogPosts
                             // some sites store the link in the <guid/> element
                             Guid = guid,
                             Link = link,
-                            PublishedDate = pubDate
+                            PublishedDate = pubDate,
+                            Description = description
                         };
 
                         posts.Add(blogPost);
