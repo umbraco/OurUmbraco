@@ -127,7 +127,7 @@ namespace OurUmbraco.Community.BlogPosts
 
         }
 
-        public BlogDatabaseItem[] GetAllBlogItemsFromDatabase()
+        public BlogDatabaseItem[] GetBlogPosts()
         {
 
             // Get a list of all existing blog items and add them to a dictionary

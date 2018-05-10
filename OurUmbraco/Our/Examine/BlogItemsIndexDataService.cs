@@ -16,7 +16,7 @@ namespace OurUmbraco.Our.Examine
         {
             var service = new BlogPostsService();
 
-            var items = service.GetAllBlogItemsFromDatabase();
+            var items = service.GetBlogPosts();
 
             foreach (var item in items)
             {
