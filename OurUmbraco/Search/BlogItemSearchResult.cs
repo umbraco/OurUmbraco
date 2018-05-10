@@ -25,6 +25,9 @@ namespace OurUmbraco.Search {
             // Parse the JSON from the search result
             Item = JsonUtils.ParseJsonObject<BlogRssItem>(rawData);
 
+            // Change the logo URL to the downloaded version
+            Blog.LogoUrl = $"/media/blogs/{Blog.Id}{BlogUtils.GetFileExtension(Blog.LogoUrl)}";
+
         }
 
     }
