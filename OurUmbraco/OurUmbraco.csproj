@@ -422,6 +422,7 @@
     <Compile Include="Community\BlogPosts\BlogInfo.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsCache.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
+    <Compile Include="Community\BlogPosts\BlogPostsWebClient.cs" />
     <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
     <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogUtils.cs" />

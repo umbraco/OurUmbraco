@@ -9,11 +9,10 @@ using System.Xml.Linq;
 using Hangfire.Console;
 using Hangfire.Server;
 using Newtonsoft.Json;
-using Skybrud.Essentials.Json;
-using Skybrud.Essentials.Json.Extensions;
+using OurUmbraco.Our.Examine;
 using Skybrud.Essentials.Xml.Extensions;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
+using Umbraco.Core.IO;
 using Umbraco.Core.Persistence;
 
 namespace OurUmbraco.Community.BlogPosts
@@ -23,10 +22,13 @@ namespace OurUmbraco.Community.BlogPosts
     {
         
         private BlogPostsCache _cache;
+        private BlogPostsWebClient _webClient;
 
         protected UmbracoDatabase Database { get; private set; }
 
         protected BlogPostsCache Cache => _cache ?? (_cache = new BlogPostsCache());
+
+        protected BlogPostsWebClient WebClient => _webClient ?? (_webClient = new BlogPostsWebClient());
 
         public BlogPostsService()
         {
@@ -39,137 +41,92 @@ namespace OurUmbraco.Community.BlogPosts
             return Cache.GetBlogs();
         }
 
-        public BlogRssItem[] GetBlogPosts(PerformContext context)
-        {
-            var posts = new List<BlogRssItem>();
 
-            var progressBar = context.WriteProgressBar();
+        public void UpdateBlogPosts(PerformContext context)
+        {
+
+            // Get an array of all blogs listed in the config file
             var blogs = GetBlogs();
 
-            foreach (var blog in blogs.WithProgress(progressBar, blogs.Length))
+            context.WriteLine("Loaded " + blogs.Length + " blogs from config file");
+
+            // Get a list of all existing blog items and add them to a dictionary
+            var sqæl = new Sql().Select("*").From(BlogDatabaseItem.TableName);
+            var all = Database.Fetch<BlogDatabaseItem>(sqæl).ToDictionary(x => x.UniqueId);
+
+            // Get the most recent items of the blogs that we know about
+            BlogRssItem[] items = WebClient.GetBlogPosts(blogs, context);
+
+            context.WriteLine("Fetched " + items.Length + " items from teh interwebz");
+            context.WriteLine();
+
+            // Iterate through the posts from the current RSS feeds
+            foreach (var post in items)
             {
-                try
+
+                // Get the ID of the blog
+                string blogId = post.Channel.Id;
+
+                // Calculate a unique ID for the item and the blog
+                string itemUniqueId = Skybrud.Essentials.Security.SecurityUtils.GetMd5Hash(blogId + post.Guid);
+
+                BlogDatabaseItem db;
+
+                if (all.TryGetValue(itemUniqueId, out db))
                 {
-                    string raw;
-                    const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3393.4 Safari/537.36";
-                    context.WriteLine($"Processing blog {blog.Title}");
-                    // Initialize a new web client (with the encoding specified for the blog)
-                    using (var wc = new WebClient())
-                    {
-                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-                        wc.Encoding = blog.Encoding;
 
-                        // Download the raw XML
-                        raw = wc.DownloadString(blog.RssUrl);
-                        raw = BlogUtils.RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+                    // TODO: can we use the ICanBeDirty interface here?
+                    bool isDirty = false;
+
+                    DateTime published = post.PublishedDate.ToUniversalTime().DateTime;
+                    string dataRaw = db.DataRaw;
+
+                    isDirty |= db.PublishedDate != published;
+                    isDirty |= db.Title != post.Title;
+
+                    db.PublishedDate = published;
+                    db.Title = post.Title;
+                    db.Data = post;
+
+                    isDirty |= db.DataRaw != dataRaw;
+
+                    if (isDirty)
+                    {
+                        Update(db);
+                        all[db.UniqueId] = db;
                     }
-                    // Parse the XML into a new instance of XElement
-                    var feed = XElement.Parse(raw);
 
-                    var channel = feed.Element("channel");
-                    var channelTitle = channel.GetElementValue("title");
-                    var channelLink = channel.GetElementValue("link");
-                    var channelDescription = channel.GetElementValue("description");
-                    var channelLastBuildDate = channel.GetElementValue("lastBuildDate");
-                    var channelLangauge = channel.GetElementValue("language");
+                }
+                else
+                {
 
-                    var rssChannel = new BlogRssChannel
+                    db = new BlogDatabaseItem
                     {
-                        Id = blog.Id.ToString(),
-                        Title = channelTitle,
-                        Link = channelLink
+                        UniqueId = itemUniqueId,
+                        BlogId = blogId,
+                        PublishedDate = post.PublishedDate.ToUniversalTime().DateTime,
+                        Title = post.Title,
+                        Data = post
                     };
 
-                    var items = channel.GetElements("item");
-                    foreach (var item in items)
-                    {
-                        var title = item.GetElementValue("title");
-                        var link = (string.IsNullOrEmpty(item.GetElementValue("link"))
-                            ? item.GetElementValue("guid")
-                            : item.GetElementValue("link"))
-                                .Trim();
+                    Insert(db);
+                    all[db.UniqueId] = db;
 
-                        var pubDate = BlogUtils.GetPublishDate(item);
-                        if (pubDate == default(DateTimeOffset))
-                            continue;
-
-                        var approvedCategories = new List<string> { "umbraco", "codegarden", "articulate", "examine" };
-                        var categories = item.GetElements("category");
-                        if (categories.Any())
-                        {
-                            var includeItem = title.ToLowerInvariant().ContainsAny(approvedCategories);
-                            foreach (var category in categories)
-                            {
-                                // no need to check more if the item is already approved
-                                if (includeItem)
-                                    continue;
-
-                                foreach (var approvedCategory in approvedCategories)
-                                    if (category.Value.ToLowerInvariant().Contains(approvedCategory.ToLowerInvariant()))
-                                        includeItem = true;
-                            }
-
-                            if (includeItem == false)
-                            {
-                                var allCategories = string.Join(",", categories.Select(i => i.Value));
-                                context.SetTextColor(ConsoleTextColor.DarkYellow);
-                                context.WriteLine($"Not including post titled {title} because it was not in an approved category. The categories it was found in: {allCategories}. [{link}]");
-                                context.ResetTextColor();
-                                continue;
-                            }
-                        }
-
-                        // Blog has no category info and posts things unrelated to Umbraco, check there's related keywords in the title
-                        if (blog.CheckTitles)
-                        {
-                            var includeItem = false;
-                            foreach (var approvedCategory in approvedCategories)
-                                if (title.ToLowerInvariant().Contains(approvedCategory.ToLowerInvariant()))
-                                    includeItem = true;
-
-                            // Blog post seems unrelated to Umbraco, skip it
-                            if (includeItem == false)
-                                continue;
-                        }
-
-                        var blogPost = new BlogRssItem
-                        {
-                            Channel = rssChannel,
-                            Title = title,
-                            // some sites store the link in the <guid/> element 
-                            Link = link,
-                            PublishedDate = pubDate
-                        };
-
-                        posts.Add(blogPost);
-                    }
-
-                    // Get the avatar locally so that we can use ImageProcessor and serve it over https
-                    using (var wc = new WebClient())
-                    {
-                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-                        var baseLogoPath = HostingEnvironment.MapPath("~/media/blogs/");
-                        if (Directory.Exists(baseLogoPath) == false)
-                            Directory.CreateDirectory(baseLogoPath);
-                        
-                        var logoExtension = BlogUtils.GetFileExtension(blog.LogoUrl);
-                        var logoPath = baseLogoPath + blog.Id + logoExtension;
-                        
-                        wc.DownloadFile(blog.LogoUrl, logoPath);
-                    }
                 }
-                catch (Exception ex)
-                {
-                    context.SetTextColor(ConsoleTextColor.Red);
-                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl, ex);
-                    context.ResetTextColor();
-                }
+
             }
 
-            return posts.OrderByDescending(x => x.PublishedDate).ToArray();
+            // Determine the path to the JSON file
+            var jsonPath = IOHelper.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
+
+            // Generate the raw JSON
+            var rawJson = JsonConvert.SerializeObject(all.Values.Select(x => x.Data).OrderByDescending(x => x.PublishedDate), Formatting.Indented);
+
+            // Save the JSON to disk
+            File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
+
         }
-        
-        
+
         public BlogDatabaseItem[] GetAllBlogItemsFromDatabase()
         {
 
@@ -178,6 +135,26 @@ namespace OurUmbraco.Community.BlogPosts
 
             return Database.Fetch<BlogDatabaseItem>(sqæl).ToArray();
 
+        }
+
+        /// <summary>
+        /// Inserts the specified <paramref name="item"/> to the database and adds it to the Examine index.
+        /// </summary>
+        /// <param name="item">The item to be added.</param>
+        public void Insert(BlogDatabaseItem item)
+        {
+            Database.Insert(item);
+            BlogItemsIndexDataService.ReIndex(item);
+        }
+
+        /// <summary>
+        /// Updates the specified <paramref name="item"/> in the database and updates it in the Examine index.
+        /// </summary>
+        /// <param name="item">The item to be updated.</param>
+        public void Update(BlogDatabaseItem item)
+        {
+            Database.Update(item);
+            BlogItemsIndexDataService.ReIndex(item);
         }
 
     }

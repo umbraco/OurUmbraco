@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Community.BlogPosts;
-using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -21,23 +18,30 @@ namespace OurUmbraco.Our.Examine
 
             var items = service.GetAllBlogItemsFromDatabase();
 
-            int i = 0;
-
             foreach (var item in items)
             {
-                i++;
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                simpleDataSet = MapBlogItemToSimpleDataIndexItem(item, simpleDataSet, i, indexType);
+                simpleDataSet = MapBlogItemToSimpleDataIndexItem(item, simpleDataSet, indexType);
                 yield return simpleDataSet;
             }
 
         }
-
-
-        public static SimpleDataSet MapBlogItemToSimpleDataIndexItem(BlogDatabaseItem item, SimpleDataSet simpleDataSet, int index, string indexType)
+        public static void ReIndex(BlogDatabaseItem item)
         {
 
-            simpleDataSet.NodeDefinition.NodeId = index;
+            var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
+
+            var examineNode = MapBlogItemToSimpleDataIndexItem(item, simpleDataSet, "blogItems").RowData.ToExamineXml(item.Id, "blogItems");
+
+            ExamineManager.Instance.IndexProviderCollection["BlogItemsIndexer"].ReIndexNode(examineNode, "blogItems");
+
+        }
+
+
+        public static SimpleDataSet MapBlogItemToSimpleDataIndexItem(BlogDatabaseItem item, SimpleDataSet simpleDataSet, string indexType)
+        {
+
+            simpleDataSet.NodeDefinition.NodeId = item.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
 
             simpleDataSet.RowData.Add("body", String.Empty);

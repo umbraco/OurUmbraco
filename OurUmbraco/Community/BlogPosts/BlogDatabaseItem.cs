@@ -8,7 +8,7 @@ namespace OurUmbraco.Community.BlogPosts
 {
 
     [TableName(TableName)]
-    [PrimaryKey(PrimaryKey, autoIncrement = false)]
+    [PrimaryKey(PrimaryKey, autoIncrement = true)]
     [ExplicitColumns]
     public class BlogDatabaseItem
     {
@@ -20,8 +20,11 @@ namespace OurUmbraco.Community.BlogPosts
         private BlogRssItem _data;
 
         [Column(PrimaryKey)]
-        [PrimaryKeyColumn(AutoIncrement = false)]
-        public string Id { get; set; }
+        [PrimaryKeyColumn(AutoIncrement = true)]
+        public int Id { get; set; }
+
+        [Column("UniqueId")]
+        public string UniqueId { get; set; }
 
         [Column("BlogId")]
         public string BlogId { get; set; }
