@@ -5,7 +5,8 @@ using Skybrud.Essentials.Xml.Extensions;
 
 namespace OurUmbraco.Community.BlogPosts {
     
-    public class BlogUtils {
+    public class BlogUtils
+    {
 
         public static DateTimeOffset ParseRfc822DateTime(string str) {
 
