@@ -22,6 +22,7 @@ namespace OurUmbraco.Community.BlogPosts {
         [JsonProperty("description")]
         public string Description { get; set; }
 
+        [JsonIgnore]
         public bool HasDescription
         {
             get { return !String.IsNullOrWhiteSpace(Description); }
