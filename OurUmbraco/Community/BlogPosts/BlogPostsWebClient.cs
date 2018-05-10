@@ -71,6 +71,11 @@ namespace OurUmbraco.Community.BlogPosts
                                 : item.GetElementValue("link"))
                             .Trim();
 
+                        var guid = (string.IsNullOrEmpty(item.GetElementValue("guid"))
+                                ? item.GetElementValue("link")
+                                : item.GetElementValue("guid"))
+                            .Trim();
+
                         var pubDate = BlogUtils.GetPublishDate(item);
                         if (pubDate == default(DateTimeOffset))
                             continue;
@@ -118,7 +123,8 @@ namespace OurUmbraco.Community.BlogPosts
                         {
                             Channel = rssChannel,
                             Title = title,
-                            // some sites store the link in the <guid/> element 
+                            // some sites store the link in the <guid/> element
+                            Guid = guid,
                             Link = link,
                             PublishedDate = pubDate
                         };
