@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Examine;
+using OurUmbraco.Search;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Json.Extensions;
 using Umbraco.Core.IO;
@@ -12,6 +14,8 @@ namespace OurUmbraco.Community.BlogPosts
 
     public class BlogPostsCache
     {
+
+        public const string SearcherName = "BlogItemsSearcher";
 
         public static readonly string BlogsJsonFile = IOHelper.MapPath("~/config/CommunityBlogs.json");
 
@@ -44,6 +48,7 @@ namespace OurUmbraco.Community.BlogPosts
                 return new BlogInfo[0];
             }
         }
+
         public BlogCachedRssItem[] GetCachedBlogPosts(int take, int numberOfPostsPerBlog)
         {
             
@@ -78,6 +83,60 @@ namespace OurUmbraco.Community.BlogPosts
                 return new BlogCachedRssItem[0];
             }
 
+        }
+
+
+
+        public BlogItemSearchResult[] GetBlogPosts(BlogInfo blog)
+        {
+            if (blog == null) throw new ArgumentNullException(nameof(blog));
+            int total;
+            return GetBlogPosts(blog, Int32.MaxValue, out total);
+        }
+
+        public BlogItemSearchResult[] GetBlogPosts(BlogInfo blog, int max)
+        {
+            if (blog == null) throw new ArgumentNullException(nameof(blog));
+            int total;
+            return GetBlogPosts(blog, max, out total);
+        }
+
+        public BlogItemSearchResult[] GetBlogPosts(BlogInfo blog, int max, out int total)
+        {
+
+            if (blog == null) throw new ArgumentNullException(nameof(blog));
+
+            total = -1;
+
+            try
+            {
+
+                // Get a reference to the searcher
+                var searcher = ExamineManager.Instance.SearchProviderCollection[SearcherName];
+
+                // Create a new search criteria and set our query
+                var criteria = searcher.CreateSearchCriteria();
+                criteria = criteria.RawQuery($"blogId:{blog.Id}");
+
+                // Make the search in Examine
+                var results = searcher.Search(criteria);
+                total = results.TotalItemCount;
+
+                return results.OrderByDescending(GetCreateDate).Take(max).Select(x => new BlogItemSearchResult(x, blog)).ToArray();
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<BlogPostsCache>("Unable to load blog posts for blog with ID " + blog.Id, ex);
+                return new BlogItemSearchResult[0];
+            }
+
+        }
+
+        private string GetCreateDate(SearchResult result)
+        {
+            string value;
+            return result.Fields.TryGetValue("createDate", out value) ? value : String.Empty;
         }
 
     }
