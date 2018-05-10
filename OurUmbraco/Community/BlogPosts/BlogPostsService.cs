@@ -21,9 +21,12 @@ namespace OurUmbraco.Community.BlogPosts
 
     public class BlogPostsService
     {
-        private static readonly string JsonFile = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
+        
+        private BlogPostsCache _cache;
 
         protected UmbracoDatabase Database { get; private set; }
+
+        protected BlogPostsCache Cache => _cache ?? (_cache = new BlogPostsCache());
 
         public BlogPostsService()
         {
@@ -33,26 +36,7 @@ namespace OurUmbraco.Community.BlogPosts
 
         public BlogInfo[] GetBlogs()
         {
-
-            // Determine the path to the config file
-            var configPath = HostingEnvironment.MapPath("~/config/CommunityBlogs.json");
-            if (File.Exists(configPath) == false)
-            {
-                LogHelper.Warn<BlogPostsService>("Config file was not found: " + configPath);
-                return new BlogInfo[0];
-            }
-
-            // Attempt to load information about each blog
-            try
-            {
-                var root = JsonUtils.LoadJsonObject(configPath);
-                return root.GetArrayItems("blogs", BlogInfo.Parse);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<BlogPostsService>("Unable to parse config file", ex);
-                return new BlogInfo[0];
-            }
+            return Cache.GetBlogs();
         }
 
         public BlogRssItem[] GetBlogPosts(PerformContext context)
@@ -185,40 +169,6 @@ namespace OurUmbraco.Community.BlogPosts
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
         
-        public BlogCachedRssItem[] GetCachedBlogPosts(int take, int numberOfPostsPerBlog)
-        {
-            // Return an empty array as the file doesn't exist
-            if (File.Exists(JsonFile) == false)
-                return new BlogCachedRssItem[0];
-
-            var blogs = GetBlogs().ToDictionary(x => x.Id.ToString());
-
-            try
-            {
-                var blogPosts = new List<BlogCachedRssItem>();
-
-                foreach (var item in JsonUtils.LoadJsonArray(JsonFile).Select(token => token.ToObject<BlogRssItem>()))
-                {
-                    if (blogs.TryGetValue(item.Channel.Id, out var blog) == false)
-                        continue;
-
-                    blog.LogoUrl = $"/media/blogs/{blog.Id}{BlogUtils.GetFileExtension(blog.LogoUrl)}";
-                    blogPosts.Add(new BlogCachedRssItem(blog, item));
-                }
-
-                var filteredBlogPosts = new List<BlogCachedRssItem>();
-                foreach (var item in blogPosts)
-                    if (filteredBlogPosts.Count(b => b.Blog.Id == item.Blog.Id) < numberOfPostsPerBlog)
-                        filteredBlogPosts.Add(item);
-
-                return filteredBlogPosts.Take(take).OrderByDescending(x => x.PublishedDate).ToArray();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<BlogPostsService>("Unable to load blog posts from JSON file", ex);
-                return new BlogCachedRssItem[0];
-            }
-        }
         
         public BlogDatabaseItem[] GetAllBlogItemsFromDatabase()
         {
@@ -230,16 +180,6 @@ namespace OurUmbraco.Community.BlogPosts
 
         }
 
-        public void UpdateBlogPostsJsonFile()
-        {
-            // Initialize a new service
-            var service = new BlogPostsService();
-
-            // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Formatting.Indented);
-
-            // Save the JSON to disk
-            File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);
-        }
     }
+
 }
