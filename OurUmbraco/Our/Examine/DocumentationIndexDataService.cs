@@ -19,7 +19,9 @@ namespace OurUmbraco.Our.Examine
 
             var directory = new DirectoryInfo(fullPath);
 
-            var files = config.Recursive ? directory.GetFiles(config.SupportedFileTypes, SearchOption.AllDirectories) : directory.GetFiles(config.SupportedFileTypes);
+            var files = config.Recursive 
+                ? directory.GetFiles(config.SupportedFileTypes, SearchOption.AllDirectories) 
+                : directory.GetFiles(config.SupportedFileTypes);
 
             var i = 0; //unique id for each doc
 
@@ -28,6 +30,7 @@ namespace OurUmbraco.Our.Examine
                 i++;
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
                 simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
+
                 yield return simpleDataSet;
             }
         }

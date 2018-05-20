@@ -86,6 +86,9 @@ namespace OurUmbraco.Our.Examine
                 //do an exact phrase match with boost
                 sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
 
+                // SEARCH YAML stuff
+                sb.AppendFormat("tags:\"{0}\"^20000", Term);
+
                 if (deduped.Count > 20)
                 {
                     //truncate, we don't want to search on all of these individually
