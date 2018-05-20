@@ -7,6 +7,9 @@ using System.Web.Http;
 using Umbraco.Web.WebApi;
 using Umbraco.Core;
 using OurUmbraco.HighFiveFeed.Models;
+using OurUmbraco.Community.People.Models;
+using OurUmbraco.Community.People;
+using Newtonsoft.Json;
 
 namespace OurUmbraco.HighFiveFeed.API
 {
@@ -38,6 +41,17 @@ namespace OurUmbraco.HighFiveFeed.API
             categories.Add(new HighFiveCategory(1, "A Package"));
             categories.Add(new HighFiveCategory(2, "A Talk"));
             return categories;
+        }
+
+        public string GetUmbracians(string name)
+        {
+            var peopleService = new PeopleService();
+
+            var people = peopleService.GetPeopleByName(name);
+
+            var jsonResult = JsonConvert.SerializeObject(people);
+
+            return jsonResult;
         }
     }
 }
