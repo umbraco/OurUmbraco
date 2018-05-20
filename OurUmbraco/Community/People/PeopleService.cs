@@ -245,7 +245,7 @@ namespace OurUmbraco.Community.People
             if (name.Contains(" "))
             {
                 string[] terms = name.Split(' ');
-                var examineQuery = criteria.GroupedOr(new List<string> { MemberNameField }, terms);
+                var examineQuery = criteria.GroupedAnd(new List<string> { MemberNameField }, terms);
                 results = memberSearcher.Search(examineQuery.Compile());
             }
             else

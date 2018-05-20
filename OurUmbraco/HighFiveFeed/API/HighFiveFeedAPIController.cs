@@ -9,7 +9,6 @@ using Umbraco.Core;
 using OurUmbraco.HighFiveFeed.Models;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Community.People;
-using Newtonsoft.Json;
 
 namespace OurUmbraco.HighFiveFeed.API
 {
@@ -43,15 +42,13 @@ namespace OurUmbraco.HighFiveFeed.API
             return categories;
         }
 
-        public string GetUmbracians(string name)
+        public List<Person> GetUmbracians(string name)
         {
             var peopleService = new PeopleService();
 
             var people = peopleService.GetPeopleByName(name);
 
-            var jsonResult = JsonConvert.SerializeObject(people);
-
-            return jsonResult;
+            return people;
         }
     }
 }
