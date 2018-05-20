@@ -81,7 +81,7 @@ else
 
 @helper HighFiveActivity()
     {
-        <section class="high-five">
+        <section class="high-five" data-high-five>
             <div class="container">
                 <div class="row">
 
@@ -114,16 +114,19 @@ else
                             -->
                         </form>
                     </div>
-                    <!--                    <div class="col-md-12 flex" id="high-five-activity">
-                                            <h2>Loading latest community activity...</h2>
-                                            <ul class="umb-load-indicator animated -half-second">
-                                                <li class="umb-load-indicator__bubble"></li>
-                                                <li class="umb-load-indicator__bubble"></li>
-                                                <li class="umb-load-indicator__bubble"></li>
-                                            </ul>
-                                            <a class="button green" href="/forum">All Activity &rarr;</a>
-                                        </div>
-                    -->
+                    <div class="col-md-12" id="high-five-activity">
+                        <h2 class="text-center">Latest Community Activity</h2>
+                        <ul class="high-five-activity-list"></ul>
+                        <!--<h2>Loading latest community activity...</h2>
+                        
+                        <ul class="umb-load-indicator animated -half-second">
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                            <li class="umb-load-indicator__bubble"></li>
+                        </ul>
+                        <a class="button green" href="/forum">All Activity &rarr;</a>
+                        -->
+                    </div>
 
                 </div>
             </div>
