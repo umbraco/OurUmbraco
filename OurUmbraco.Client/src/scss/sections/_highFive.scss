@@ -1,0 +1,72 @@
+﻿section.high-five {
+    background: rgba($color-space, .11);
+    background-size: 100%;
+    background-position: center bottom;
+    background-repeat: no-repeat;
+    position: relative;
+
+    h3 {
+        margin: 1rem auto 3.5rem;
+        margin-bottom: 3rem;
+        line-height: 1.5;
+        padding: 0 10px;
+        font-size: 1.4rem;
+        color: darken($color-space, 15%);
+        text-align: center;
+    }
+
+    h1 {
+        font-size: 1.8rem;
+        text-align: center;
+        position: relative;
+        z-index: 30;
+        //margin-bottom: 3.5rem; // Remove me when text is ready under this
+        @media (min-width: $md) {
+            font-size: 2.4rem;
+        }
+
+        + p {
+            max-width: 700px;
+            margin: 1rem auto 3.5rem;
+            margin-bottom: 3rem;
+            line-height: 1.5;
+            padding: 0 10px;
+            font-size: 1rem;
+            color: darken($color-space, 15%);
+            text-align: center;
+
+            @media (min-width: $md) {
+                padding: 0;
+                font-size: 1.2rem;
+            }
+        }
+    }
+
+    input[type=text], select {
+        border: 0;
+        padding: 3px;
+        border-bottom: 2px solid #ccc;
+        background: none;
+        font-size: 1.4rem;
+        max-width: 200px;
+    }
+
+    button {
+        font-size: 0.8em;
+        padding: 10px 20px;
+    }
+
+    button img {
+        width: 20px;
+        height: 20px;
+        margin-right: 8px;
+        -webkit-filter: invert(100%);
+        filter: invert(100%);
+    }
+
+    .flex {
+        display: flex;
+        flex-flow: row wrap;
+        justify-content: space-between;
+    }
+}

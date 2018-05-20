@@ -61,6 +61,7 @@
 
 @if (Members.IsLoggedIn())
 {
+    @HighFiveActivity()
     @ForumActivity()
     @Gitter()
     @Meetups()
@@ -76,6 +77,87 @@ else
     @Meetups()
     @GitHubContributors()
     @TwitterSearch()
+}
+
+@helper HighFiveActivity()
+    {
+        <section class="high-five">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h1 class="text-center">Community Activity</h1>
+                    </div>
+                    <div class="col-md-12">
+                        <form id="high-five-form">
+                            <h3>
+                                High Five <input type="text" id="high-five-mention" class="high-five-field" />
+                                for <select class="high-five-field" id="high-five-task">
+                                    <option value="" disabled selected>...</option>
+                                    <option>Advice</option>
+                                    <option>Blog Post</option>
+                                    <option>Meetup</option>
+                                    <option>Package</option>
+                                    <option>Skrift Article</option>
+                                    <option>Talk</option>
+                                    <option>Tutorial</option>
+                                    <option>Video</option>
+                                </select> at
+                                <input type="text" id="high-five-url" placeholder="https://skrift.io" class="high-five-field" />
+                                <button id="high-five-submit" class="button green high-five-submit" value="High Five">
+                                    <img src="/assets/images/highfive.svg" alt="high five"> Send
+                                </button>
+                            </h3>
+                            <!--                            <p>
+                                                            <a class="button green high-five" href="/forum">High Five</a>
+                                                        </p>
+                            -->
+                        </form>
+                    </div>
+                    <!--                    <div class="col-md-12 flex" id="high-five-activity">
+                                            <h2>Loading latest community activity...</h2>
+                                            <ul class="umb-load-indicator animated -half-second">
+                                                <li class="umb-load-indicator__bubble"></li>
+                                                <li class="umb-load-indicator__bubble"></li>
+                                                <li class="umb-load-indicator__bubble"></li>
+                                            </ul>
+                                            <a class="button green" href="/forum">All Activity &rarr;</a>
+                                        </div>
+                    -->
+
+                </div>
+            </div>
+        </section>
+        <script type="text/javascript">
+            var placeholderNames = [
+                "Marcin Zajkowski",
+                "Callum Whyte",
+                "Anders Bjerner",
+                "Emma Garland",
+                "Lars - Erik Aabech",
+                "Matt Brailsford",
+                "Carole Rennie Logan",
+                "Emma Burstow",
+                "Lee Kelleher",
+                "Jeffrey Schoemaker",
+                "Erica Quessenberry",
+                "Kyle Weems",
+                "Mike Masey",
+                "Niels Hartvig",
+                "Jeavon Leopold",
+                "Damiaan Peeters",
+                "Marc Goodson",
+                "Mads Rasmussen",
+                "Shannon Deminick",
+                "Stéphane Gay",
+                "Sebastiaan Janssen",
+                "Jacob Midtgaard - Olesen",
+                "Ilham Boulghallat"];   
+
+            $(document).ready(function () {
+                printPhrases(shuffle(placeholderNames), $('#high-five-mention'));
+            });
+        </script>
 }
 
 @helper ForumActivity()
