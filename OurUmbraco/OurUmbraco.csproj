@@ -411,6 +411,9 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="YamlDotNet, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.4.3.1\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
     <Reference Include="YouTrackSharp, Version=2.0.11.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>
       <Private>True</Private>
@@ -825,6 +828,7 @@
   <ItemGroup>
     <None Include="Forum\setuptables.sql" />
     <None Include="app.config" />
+    <Compile Include="Our\Examine\ExamineHelper.YamlMetaData.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>
