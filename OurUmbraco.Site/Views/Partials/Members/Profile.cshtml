@@ -28,8 +28,32 @@
     </div>
 </div>
 
+
 <div class="profile-settings">
-    <strong>Change your profile</strong>
+    <h3>Linked accounts</h3>
+    <div class="linked-accounts">
+        @if (String.IsNullOrWhiteSpace(Model.GitHubUsername))
+        {
+            using (Html.BeginUmbracoForm<ProfileController>("LinkGitHub"))
+            {
+                @Html.AntiForgeryToken()
+                <input class="button profile" type="submit" value="Link with GitHub">
+            }
+        }
+        else
+        {
+            using (Html.BeginUmbracoForm<ProfileController>("UnlinkGitHub"))
+            {
+                @Html.AntiForgeryToken()
+                <input class="button profile" type="submit" value="Unlink GitHub">
+            }
+        }
+    </div>
+
+</div>
+
+<div class="profile-settings">
+    <h3>Change your profile</h3>
     <div class="profile-settings-forms">
 
         @using (Html.BeginUmbracoForm<ProfileController>("HandleSubmit"))
@@ -84,11 +108,6 @@
                 @Html.TextBoxFor(m => m.TwitterAlias)
             </div>
 
-            <div class="profile-input" id="github-alias">
-                @Html.LabelFor(m => m.GitHubUsername)
-                @Html.TextBoxFor(m => m.GitHubUsername)
-            </div>
-
             <div>
                 <h3 style="font-weight: bold; margin-top: 6px; margin-bottom: 6px;">Location</h3>
                 <p>
@@ -123,3 +142,23 @@
     </div>
 </div>
 
+<style>
+
+    .profile-settings h3 {
+        margin-bottom: 10px;
+        font-size: 2.1rem;
+    }
+
+    .profile-settings + .profile-settings {
+        margin-top: 75px;
+    }
+
+    .profile-settings .linked-accounts  {
+        display: flex;
+    }
+
+    .profile-settings .linked-accounts > form {
+        margin-right: 10px;
+    }
+
+</style>

@@ -1,7 +1,19 @@
-﻿using System.Web.Hosting;
+﻿using System;
+using System.Text;
+using System.Web.Configuration;
+using System.Web.Hosting;
 using System.Web.Mvc;
+using Examine;
+using Examine.Providers;
+using Examine.SearchCriteria;
 using OurUmbraco.Community.People;
 using OurUmbraco.Our.Models;
+using Skybrud.Social.GitHub.OAuth;
+using Skybrud.Social.GitHub.Responses.Authentication;
+using Skybrud.Social.GitHub.Responses.Users;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.Controllers
@@ -38,6 +50,145 @@ namespace OurUmbraco.Our.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        public ActionResult LinkGitHub() {
+
+            string rootUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+
+            GitHubOAuthClient client = new GitHubOAuthClient();
+            client.ClientId = WebConfigurationManager.AppSettings["GitHubClientId"];
+            client.ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"];
+            client.RedirectUri = rootUrl + "/umbraco/surface/Profile/LinkGitHub";
+
+            // Set the state (a unique/random value)
+            string state = Guid.NewGuid().ToString();
+            Session["GitHub_" + state] = "Unicorn rainbows";
+
+            // Construct the authorization URL
+            string authorizatioUrl = client.GetAuthorizationUrl(state);
+
+            // Redirect the user to the OAuth dialog
+            return Redirect(authorizatioUrl);
+
+        }
+
+        [HttpGet]
+        public ActionResult LinkGitHub(string state, string code = null)
+        {
+
+            IPublishedContent profilePage = Umbraco.TypedContent(1057);
+            if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+
+            // Initialize the OAuth client
+            GitHubOAuthClient client = new GitHubOAuthClient
+            {
+                ClientId = WebConfigurationManager.AppSettings["GitHubClientId"],
+                ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"]
+            };
+
+            // Validate state - Step 1
+            if (String.IsNullOrWhiteSpace(state))
+            {
+                LogHelper.Info<ProfileController>("No OAuth state specified in the query string.");
+                return GetErrorResult("No state specified in the query string.");
+            }
+
+            // Validate state - Step 2
+            string session = Session["GitHub_" + state] as string;
+            if (String.IsNullOrWhiteSpace(session))
+            {
+                LogHelper.Info<ProfileController>("Failed finding OAuth session item. Most likely the session expired.");
+                return GetErrorResult("Session expired?");
+            }
+
+            // Remove the state from the session
+            Session.Remove("GitHub_" + state);
+
+            // Exchange the auth code for an access token
+            GitHubTokenResponse accessTokenResponse;
+            try
+            {
+                accessTokenResponse = client.GetAccessTokenFromAuthorizationCode(code);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProfileController>("Unable to retrieve access token from GitHub API", ex);
+                return GetErrorResult("Oh noes! An error happened.");
+            }
+
+            // Initialize a new service instance from the retrieved access token
+            var service = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(accessTokenResponse.Body.AccessToken);
+
+            // Get some information about the authenticated GitHub user
+            GitHubGetUserResponse userResponse;
+            try
+            {
+                userResponse = service.User.GetUser();
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProfileController>("Unable to get user information from the GitHub API", ex);
+                return GetErrorResult("Oh noes! An error happened.");
+            }
+
+            // Get the GitHub username from the API response
+            string githubUsername = userResponse.Body.Login;
+
+            // Get the member of the current ID (for comparision and lookup)
+            int memberId = Members.GetCurrentMemberId();
+
+            // Get a reference to the member searcher
+            BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+
+            // Initialize new search criteria for the GitHub username
+            ISearchCriteria criteria = searcher.CreateSearchCriteria();
+            criteria = criteria.RawQuery($"github:{githubUsername}");
+
+            // Check if there are other members with the same GitHub username
+            foreach (var result in searcher.Search(criteria))
+            {
+                if (result.Id != memberId)
+                {
+                    LogHelper.Info<ProfileController>("Failed setting GitHub username for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
+                    return GetErrorResult("Another member already exists with the same GitHub username.");
+                }
+            }
+
+            // Get the member from the member service
+            var ms = ApplicationContext.Services.MemberService;
+            var mem = ms.GetById(memberId);
+
+            // Update the "github" property and save the value
+            mem.SetValue("github", userResponse.Body.Login);
+            ms.Save(mem);
+
+            // Clear the runtime cache for the member
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
+
+            // Redirect the member back to the profile page
+            return RedirectToUmbracoPage(1057);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UnlinkGitHub()
+        {
+
+            var ms = Services.MemberService;
+            var mem = ms.GetById(Members.GetCurrentMemberId());
+            mem.SetValue("github", "");
+            ms.Save(mem);
+
+            var memberPreviousUserName = mem.Username;
+
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + memberPreviousUserName);
+
+            return RedirectToCurrentUmbracoPage();
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult HandleSubmit(ProfileModel model)
         {
             if (!ModelState.IsValid)
@@ -68,7 +219,6 @@ namespace OurUmbraco.Our.Controllers
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
             mem.SetValue("twitter",model.TwitterAlias);
-            mem.SetValue("github", model.GitHubUsername);
             
             // Assume it's valid lat/lon data posted - as its a hidden field that a Google Map will update the lat & lon of hidden fields when marker moved
             mem.SetValue("latitude", model.Latitude); 
@@ -95,5 +245,23 @@ namespace OurUmbraco.Our.Controllers
 
             return RedirectToCurrentUmbracoPage();
         }
+
+        private ActionResult GetErrorResult(string message)
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("<style> body { margin: 10px; font-family: sans-serif; } </style>");
+            sb.AppendLine(message);
+            sb.AppendLine("<p><a href=\"/member/profile/\">Return to your profile</a></p>");
+
+
+            ContentResult result = new ContentResult();
+            result.ContentType = "text/html";
+            result.Content = sb.ToString();
+            return result;
+
+        }
+
     }
 }
