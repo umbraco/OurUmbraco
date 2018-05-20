@@ -8,7 +8,7 @@ namespace OurUmbraco.HighFiveFeed.Models
 {
     public class HighFiveCategory
     {
-
+        public HighFiveCategory() { }
         public HighFiveCategory(int id, string text)
         {
             Id = id;
