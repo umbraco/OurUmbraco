@@ -589,6 +589,7 @@
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
     <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
     <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
+    <Compile Include="Our\Extensions\UrlExtensions.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
     <Compile Include="Our\Models\EditFileModel.cs" />
     <Compile Include="Our\Models\EditProjectModel.cs" />
