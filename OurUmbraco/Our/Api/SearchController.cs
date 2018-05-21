@@ -63,7 +63,7 @@ namespace OurUmbraco.Our.Api
             // track search
             var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
             ga.SendSearchQuery(term, "docs");
-
+            
             var searcher = new OurSearcher(term, nodeTypeAlias: "documentation", majorDocsVersion: version);
             var searchResult = searcher.Search("documentationSearcher");
             return searchResult;
