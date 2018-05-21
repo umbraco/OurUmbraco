@@ -17,12 +17,12 @@
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
                         HighFives.getCategories(function(response) {
-                            var categories = JSON.parse(response);
+                            var categories = typeof response == 'string' ? JSON.parse(response) : response;
 
                             HighFives.buildCategoryDropdown(categories);
                             HighFives.getRecentHighFiveActivity(0, function(response) {
-                                var activity = JSON.parse(response);
-                                HighFives.list = activity.HighFives;
+                                var activity = typeof response == 'string' ? JSON.parse(response): response;
+                                HighFives.list = HighFives.addComplimentsToList(activity.HighFives);
                                 HighFives.buildActivityList(HighFives.list);
                                 HighFives.checkForNewHighFivesPeriodically(30);
                             });
@@ -30,6 +30,13 @@
                     });
                 }
             });
+        },
+
+        addComplimentsToList: function (list) {
+            for (var i = 0; i < list.length; i++) {
+                list[i].To = HighFives.getRandomCompliment() + ' ' + list[i].To;
+            }
+            return list;
         },
 
         addToPlaceholder: function (toAdd, el) {
@@ -65,6 +72,11 @@
                 if (HighFives.isFormValid()) {
                     HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), function() {
                         HighFives.resetForm();
+                        HighFives.getRecentHighFiveActivity(0, function(response) {
+                            var activity = typeof response == 'string' ? JSON.parse(response): response;
+                            HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 10);
+                            HighFives.buildActivityList(HighFives.list);
+                        });                        
                     });
                 }
             });
@@ -83,7 +95,7 @@
                     'srcset="' + highFive.ToAvatarUrl + '?v=test&amp;width=200&amp;height=200&amp;mode=crop&amp;upscale=true 2x, ' + 
                     highFive.ToAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.To + '"></div>' + 
                     '<div class="meta"><div class="high-five-text">' + 
-                    '<h3 class="high-five-header">Lovely ' + highFive.To + '</h3>' + 
+                    '<h3 class="high-five-header">' + highFive.To + '</h3>' + 
                     '<p>' + highFive.From + ' High Fived you for <a href="' + highFive.Url + '">' + highFive.Type + '</a>' + /*, 2 minutes ago*/ '</p>' + 
                     '</div></div></li>';
                 }
@@ -120,8 +132,8 @@
         checkForNewHighFivesPeriodically: function (seconds) {
             window.setTimeout(function() {
                 HighFives.getRecentHighFiveActivity(0, function(response) {
-                    var feed = JSON.parse(response);
-                    HighFives.list = HighFives.unionBy(HighFives.list, feed.HighFives).slice(0, 10);
+                    var feed = typeof response == 'string' ? JSON.parse(response) : response;
+                    HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(feed.HighFives)).slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -162,6 +174,24 @@
                     });
                 }
             }
+        },
+
+        getRandomCompliment: function() {
+            var compliments = [
+                'Lovely',
+                'Woohoo!',
+                '#h5yr!',
+                'Go',
+                'Awesome!',
+                'Rockstar',
+                'Yass!',
+                'Most excellent',
+                'Excellent!',
+                'Supertak!',
+                'Cheers!'
+            ];
+            var rnd = Math.floor(Math.random() * compliments.length);
+            return compliments[rnd];  
         },
 
         // getRandomUmbracians - Get a random list of Umbracians to use for placeholder.
@@ -320,18 +350,18 @@
         },
         getHighFiveFeed: function() {
             return {
-                count: 100,
-                pageCount: 10,
-                currentPage: 0,
-                highFives: [
+                Count: 100,
+                PageCount: 10,
+                CurrentPage: 0,
+                HighFives: [
                     {
-                    id: '123',
-                    from: 'Name of High Fiver',
-                    to: 'Name of High Fivee',
-                    fromAvatarUrl: '/avatar_of_high_fiver.jpg',
-                    toAvatarUrl: '/avatar_of_high_fivee.jpg',
-                    type: 'Blog post',
-                    url: 'http://optional.url.for.high.five.com'
+                    Id: '123',
+                    From: 'Name of High Fiver',
+                    To: 'Name of High Fivee',
+                    FromAvatarUrl: '/avatar_of_high_fiver.jpg',
+                    ToAvatarUrl: '/avatar_of_high_fivee.jpg',
+                    Type: 'Blog post',
+                    Url: 'http://optional.url.for.high.five.com'
                     }
                 ]
             };
