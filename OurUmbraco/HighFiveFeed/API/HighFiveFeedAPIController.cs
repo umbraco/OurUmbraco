@@ -97,7 +97,7 @@ namespace OurUmbraco.HighFiveFeed.API
 
         private string GetActionType(int actionId)
         {
-            return "";
+            return Categories.Where(x => x.Id == actionId).FirstOrDefault().CategoryText;
         }
 
         public string GetCategories()
