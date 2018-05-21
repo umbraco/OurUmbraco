@@ -188,7 +188,22 @@
                 'Most excellent',
                 'Excellent!',
                 'Supertak!',
-                'Cheers!'
+                'Cheers!',
+                'Wow!',
+                'Yahoo!',
+                'Yee haw!',
+                'Boo ya!',
+                'Hoorah!',
+                'Huzzah!',
+                'Tada!',
+                'Yippee!',
+                'Squeee!',
+                'Yowza!',
+                'Damn Skippy!',
+                'Hells yeah!',
+                'Bingo!',
+                'KAPOW!',
+                'Bravo!'
             ];
             var rnd = Math.floor(Math.random() * compliments.length);
             return compliments[rnd];  
