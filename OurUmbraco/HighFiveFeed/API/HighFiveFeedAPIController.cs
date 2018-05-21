@@ -44,7 +44,6 @@ namespace OurUmbraco.HighFiveFeed.API
         {
             var dbContext = ApplicationContext.Current.DatabaseContext;
             var sql = new Sql().Select("*").From("highFivePosts");
-            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x=>x.Id);
             var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x=>x.CreatedDate);
             var avatarService = new AvatarService();
             var response = new HighFiveFeedResponse();
@@ -56,13 +55,6 @@ namespace OurUmbraco.HighFiveFeed.API
                 var fromAvatar = avatarService.GetMemberAvatar(toMember);
                 var highFive = new HighFiveResponse()
                 {
-                    url = dbEntry.Link,
-                    type = dbEntry.ActionId.ToString(),
-                    from = fromMember.Name,
-                    fromAvatarUrl = fromAvatar,
-                    to = toMember.Name,
-                    toAvatarUrl = toAvatar,
-                    Id = dbEntry.Id
                     Url = dbEntry.Link,
                     Type = dbEntry.ActionId.ToString(),
                     From = fromMember.Name,

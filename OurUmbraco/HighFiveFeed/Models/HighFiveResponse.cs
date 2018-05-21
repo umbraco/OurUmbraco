@@ -9,12 +9,6 @@ namespace OurUmbraco.HighFiveFeed.Models
     public class HighFiveResponse
     {
         public int Id { get; set; }
-        public string from{ get; set; }
-        public string to { get; set; }
-        public string fromAvatarUrl { get; set; }
-        public string toAvatarUrl { get; set; }
-        public string type { get; set; }
-        public string url { get; set; }
         public string From{ get; set; }
         public string To { get; set; }
         public string FromAvatarUrl { get; set; }
