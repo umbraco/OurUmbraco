@@ -4,12 +4,18 @@
 <div class="markdown-spacer"></div>
 <div id="markdown-editor" class="markdown-editor">
     <div class="container">
+
         <div class="row reply-to">
             <div class="col-sm-6">
                 <p>Write your reply to: <a class="reply-name" href=""></a></p>
             </div>
             <div class="col-sm-6">
                 <p id="writing-notification"></p>
+            </div>
+        </div>
+        <div class="row create-topic">
+            <div class="col-sm-6">
+                <a href="#"><span class="markdown-close">Finish me later</span></a>
             </div>
         </div>
 
@@ -68,21 +74,21 @@
             </div>
         </div>
         <div class="row input-row">
-            <div id="input-container" class="col-md-6">
+            <div id="input-container" class="col-md-8">
                 <label>Ask your question</label>
                 <textarea name="" id="wmd-input" cols="30" rows="10" class="wmd-input markdown-control"></textarea>
             </div>
-            <div id="preview-container" class="col-md-6">
-                <label>Preview</label>
-                <div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
-            </div>
+            @*<div id="preview-container" class="col-md-6">
+                    <label>Preview</label>
+                    <div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
+                </div>*@
         </div>
         <div class="row">
             <div class="col-xs-8">
                 <input class="button tiny markdown-control" type="button" value="Post reply" id="topic-submit">
                 <div id="posting"><div class="loader"></div></div>
             </div>
-            <div class="col-xs-4 visible-xs visible-sm">
+            <div class="col-xs-4 ">
                 <button id="mobile-preview" class="markdown-control">
                     <i class="icon-Eye"></i> <span>Preview</span>
                 </button>

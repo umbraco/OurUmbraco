@@ -271,10 +271,10 @@
 
 
 	.markdown-close {
-		position: absolute;
+        position: fixed;
 		right: 1.5rem;
 		top: 2rem;
-		font-size: 28px;
+		font-size: 15px;
 		cursor: pointer;
 		opacity: .6;
 		@include transition(opacity, .3s);
