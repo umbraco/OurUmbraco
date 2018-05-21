@@ -92,18 +92,11 @@ else
                         <form id="high-five-form">
                             <h3>
                                 High Five <input type="text" id="high-five-mention" class="high-five-field" />
-                                for <select class="high-five-field" id="high-five-task">
-                                    <option value="" disabled selected>...</option>
-                                    <option>Advice</option>
-                                    <option>Blog Post</option>
-                                    <option>Meetup</option>
-                                    <option>Package</option>
-                                    <option>Skrift Article</option>
-                                    <option>Talk</option>
-                                    <option>Tutorial</option>
-                                    <option>Video</option>
-                                </select> at
-                                <input type="text" id="high-five-url" placeholder="https://skrift.io" class="high-five-field" />
+                               for <select class="high-five-field" id="high-five-task">
+                               <option value="" disabled selected>...</option>
+                               </select> at
+                               <input type="text" id="high-five-url" placeholder="https://skrift.io" class="high-five-field" />
+                               <ul class="suggestions-list"></ul>
                                 <button id="high-five-submit" class="button green high-five-submit" value="High Five">
                                     <img src="/assets/images/highfive.svg" alt="high five"> Send
                                 </button>
@@ -131,37 +124,7 @@ else
                 </div>
             </div>
         </section>
-        <script type="text/javascript">
-            var placeholderNames = [
-                "Marcin Zajkowski",
-                "Callum Whyte",
-                "Anders Bjerner",
-                "Emma Garland",
-                "Lars - Erik Aabech",
-                "Matt Brailsford",
-                "Carole Rennie Logan",
-                "Emma Burstow",
-                "Lee Kelleher",
-                "Jeffrey Schoemaker",
-                "Erica Quessenberry",
-                "Kyle Weems",
-                "Mike Masey",
-                "Niels Hartvig",
-                "Jeavon Leopold",
-                "Damiaan Peeters",
-                "Marc Goodson",
-                "Mads Rasmussen",
-                "Shannon Deminick",
-                "Stéphane Gay",
-                "Sebastiaan Janssen",
-                "Jacob Midtgaard - Olesen",
-                "Ilham Boulghallat"];   
-
-            $(document).ready(function () {
-                printPhrases(shuffle(placeholderNames), $('#high-five-mention'));
-            });
-        </script>
-}
+    }
 
 @helper ForumActivity()
     {
