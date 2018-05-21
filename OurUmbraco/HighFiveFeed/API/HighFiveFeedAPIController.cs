@@ -75,5 +75,14 @@ namespace OurUmbraco.HighFiveFeed.API
 
             return people;
         }
+
+        public List<Person> GetRandomUmbracians()
+        {
+            var peopleService = new PeopleService();
+
+            var people = peopleService.GetRandomPeople();
+
+            return people;
+        }
     }
 }
