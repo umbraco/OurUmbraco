@@ -7,6 +7,7 @@ using System.Net;
 using System.Net.Mail;
 using System.Web;
 using System.Web.Security;
+using OurUmbraco.Emails;
 using OurUmbraco.Forum.Extensions;
 using RestSharp;
 using RestSharp.Deserializers;
@@ -116,14 +117,22 @@ namespace OurUmbraco.Forum.Library
         {
             try
             {
-                var subject = "Activate your account on our.umbraco.org";
-                var body =
-                    string.Format("Hi {0},<br /><br /> Thanks for signing up for the Umbraco community site. In order to be able to log in please click on the link below to activate your account: <br /><a href=\"https://our.umbraco.org/member/activate/?id={1}\">https://our.umbraco.org/member/activate/?id={1}</a><br /><br />Best regards,<br />The Umbraco Community robot.", member.Name, member.ProviderUserKey);
+                const string subject = "Activate your account on our.umbraco.org";
+
+                var heading =
+                    "<h1 style='color: #392F54; font-family: sans-serif; font-weight: bold; line-height: 1.4; font-size: 24px; text-align: left; text-transform: capitalize; margin: 0 0 30px;' align='left'>" +
+                        $"Hi {member.Name}," +
+                    "</h1>";
+
+                var content =
+                    "<p style='color: #392F54; font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0 0 15px;'>" +
+                        $"Thanks for signing up for the Umbraco community site. In order to be able to log in please click on the link below to activate your account: <br /><a href='https://our.umbraco.org/member/activate/?id={member.ProviderUserKey}'>https://our.umbraco.org/member/activate/?id={member.ProviderUserKey}</a>" +
+                    "</p>";
 
                 var mailMessage = new MailMessage
                 {
                     Subject = subject,
-                    Body = body,
+                    Body = EmailsConstants.EmailTemplates.ActivationEmail.Replace("%0%", $"{heading}{content}"),
                     IsBodyHtml = true
                 };
 
@@ -158,8 +167,7 @@ namespace OurUmbraco.Forum.Library
 
                 try
                 {
-                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                    var response = client.Encoding.GetString(data);
+                    client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
                 }
                 catch (Exception ex)
                 {
