@@ -55,12 +55,20 @@
                     }
                 </td>
                 <td>
-                    Linking with your GitHub account will show a link on your Our Umbraco profile to your GitHub
-                    profile. You will then also be able to link to your Our Umbraco profile using your GitHub username
-                    - eg. like <code>/members/username</code>.<br />
-                    <br />
-                    If you have contributed to Umbraco on GitHub, we will also use your GitHub username to link and
-                    acknowledge these contributions on Our Umbraco. 
+                    @if (Model.HasGitHubUsername)
+                    {
+                        <p class="linked">Linked with GitHub: <span>@Model.GitHubUsername</span></p>
+                    }
+                    <p>
+                        Linking with your GitHub account will show a link on your Our Umbraco profile to your GitHub
+                        profile. You will then also be able to link to your Our Umbraco profile using your GitHub username
+                        - eg. like <code>/members/username</code>.
+                    </p>
+                    <p>
+                        If you have contributed to Umbraco on GitHub, we will also use your GitHub username to link and
+                        acknowledge these contributions on Our Umbraco.
+                    </p>
+
                 </td>
             </tr>
             <tr>
@@ -83,7 +91,12 @@
                     }
                 </td>
                 <td>
-                    Linking with your Twitter account will show a link on your Our Umbraco profile to your Twitter profile.
+
+                    @if (Model.HasTwitterAlias)
+                    {
+                        <p class="linked">Linked with Twitter: <span>@Model.TwitterAlias</span></p>
+                    }
+                    <p>Linking with your Twitter account will show a link on your Our Umbraco profile to your Twitter profile.</p>
                 </td>
             </tr>
         </table>
@@ -189,7 +202,7 @@
 <style>
 
     .profile-settings h3 {
-        margin-bottom: 10px;
+        margin-bottom: 20px;
         font-size: 2.1rem;
     }
 
@@ -220,6 +233,19 @@
         background: #F5FBF1;
         color: #333;
         font-size: 14px;
+    }
+
+    .profile-settings .linked-accounts p.linked {
+        color: #008800;
+        font-weight: bold;
+    }
+
+    .profile-settings .linked-accounts p.linked span {
+        text-decoration: underline;
+    }
+
+    .profile-settings .linked-accounts p + p {
+        margin-top: 10px;
     }
 
 </style>

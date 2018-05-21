@@ -29,6 +29,8 @@ namespace OurUmbraco.Our.Models
         [Display(Name = "Twitter alias")]
         public string TwitterAlias { get; set; }
 
+        public bool HasTwitterAlias => !string.IsNullOrWhiteSpace(TwitterAlias);
+
         public string Location { get; set; }
 
         [Display(Name = "GitHub username")]
