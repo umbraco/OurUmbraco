@@ -230,6 +230,7 @@ namespace OurUmbraco.Community.People
         {
 
             List<Person> people = new List<Person>();
+            List<string> searchTerms = new List<string> { MemberNameField };
 
             if (name.Length < 3)
             {
@@ -240,19 +241,19 @@ namespace OurUmbraco.Community.People
 
             var criteria = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
 
-            ISearchResults results;
+            var examineQuery = criteria.Field("blocked", 0.ToString());
 
-            if (name.Contains(" "))
+            var q_split = name.Split(' ');
+            examineQuery.And().GroupedAnd(searchTerms, q_split.First().MultipleCharacterWildcard());
+            foreach (var term in q_split.Skip(1))
             {
-                string[] terms = name.Split(' ');
-                var examineQuery = criteria.GroupedAnd(new List<string> { MemberNameField }, terms);
-                results = memberSearcher.Search(examineQuery.Compile());
+                examineQuery.And().GroupedAnd(searchTerms, term.MultipleCharacterWildcard());
             }
-            else
-            {
-                var examineQuery = criteria.Field(MemberNameField, name.MultipleCharacterWildcard());
-                results = memberSearcher.Search(examineQuery.Compile());
-            }
+
+
+            examineQuery.And().OrderByDescending(MemberNameField);
+
+            var results = memberSearcher.Search(examineQuery.Compile());
 
 
             if (results.TotalItemCount > 0)
@@ -270,6 +271,56 @@ namespace OurUmbraco.Community.People
             }
 
             return people;
+        }
+
+        public List<Person> GetRandomPeople()
+        {
+            List<Person> people = new List<Person>();
+
+            var memberSearcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+
+            var criteria = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
+
+            var examineQuery = criteria.Field("blocked", 0.ToString());
+            criteria.Range("updateDate", DateTime.MinValue, DateTime.MaxValue);
+
+            var results = memberSearcher.Search(examineQuery.Compile());
+
+
+            if (results.TotalItemCount > 0)
+            {
+                var memberService = ApplicationContext.Current.Services.MemberService;
+
+                int[] memberIds = GetRandomIds(results);
+
+                var peopleResults = memberService.GetAllMembers(memberIds);
+
+                foreach (var person in peopleResults)
+                {
+                    people.Add(new Person(person));
+                }
+            }
+
+            return people;
+        }
+
+        private int[] GetRandomIds(ISearchResults results)
+        {
+            var resultsList = results.ToList();
+            var totalIndexes = results.TotalItemCount > 9 ? 9 : results.TotalItemCount;
+            int[] indexes = new int[totalIndexes + 1];
+
+            int rand = 0;
+
+            for (int i = 0; i < totalIndexes + 1; i++)
+            {
+                Random r = rand == 0 ? new Random() : new Random(rand);
+                int rInt = r.Next(0, results.TotalItemCount);
+                rand = rInt;
+                indexes[i] = resultsList[rInt].Id;
+            }
+
+            return indexes;
         }
     }
 }

@@ -43,10 +43,12 @@
     // HighFives - JS functionality for the high fives module.
     var HighFives = {
         list: [],
+        suggestions: [],
         // init - Starts the high fives app functionality.
         init: function() {
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
+                    HighFives.bindOnMentionChange();
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
                     HighFives.getCategories(function(response) {
                         HighFives.buildCategoryDropdown(response);
@@ -64,6 +66,12 @@
             el.attr('placeholder', el.attr('placeholder') + toAdd);
             // Delay between symbols "typing"
             return new Promise(resolve => setTimeout(resolve, 100));
+        },
+
+        bindOnMentionChange: function () {
+            jQuery('#high-five-mention').keyup(function(e) {
+                HighFives.getMember(e.target.value);
+            });
         },
 
         // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
@@ -88,6 +96,18 @@
 
                     list.innerHTML += template(highFiveObject);
                 }
+            }
+        },
+
+        buildSuggestionsList: function () {
+            var suggestions = HighFives.suggestions;
+            var list = document.querySelector("#high-five-form .suggestions-list");
+            list.innerHTML = '';
+            for (var i = 0; i < suggestions.length; i++) {
+                var suggestion = suggestions[i];
+                list.innerHTML += '<li>' + 
+                '<button type="button" data-id="' +  suggestion.MemberId + '">' + suggestion.Username + 
+                '</button></li>';
             }
         },
 
@@ -125,6 +145,20 @@
                 onSuccess(ApiMock.getCategories());
             } else {
                 jQuery.get('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
+            }
+        },
+
+        getMember: function(member) {
+            if (member.length > 2) {
+                if (useMockApi) {
+                    HighFives.suggestions = ApiMock.getUmbracians();
+                    HighFives.buildSuggestionsList();
+                } else {
+                    jquery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
+                        HighFives.suggestions = umbracians;
+                        HighFives.buildSuggestionsList();
+                    });
+                }
             }
         },
 
@@ -197,6 +231,8 @@
         }
     };
 
+    var memberSearch = _.debounce(HighFives.getMember, 300);
+
     var ApiMock = {
         getCategories: function() {
             return [
@@ -228,6 +264,22 @@
                     }
                 ]
             };
+        },
+        getUmbracians: function() {
+            return [
+                {
+                    MemberId: '123',
+                    Username: 'Fred Johnson',
+                },
+                {
+                    MemberId: '124',
+                    Username: 'Fred Samson',
+                },
+                {
+                    MemberId: '125',
+                    Username: 'Fredina Hartvig'
+                }
+            ];
         }
     };
 
