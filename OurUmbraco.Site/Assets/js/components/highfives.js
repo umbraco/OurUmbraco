@@ -26,6 +26,18 @@
         "Ilham Boulghallat"
     ];
 
+    var compliments = [
+        "Awesome",
+        "Great job",
+        "Well done",
+        "Kudos",
+        "Nice",
+        "Woohooo",
+        "You Rock",
+        "Lovely",
+        "Genius",
+    "Thank you"]
+
     var useMockApi = true;
 
     // HighFives - JS functionality for the high fives module.
@@ -58,15 +70,23 @@
         buildActivityList: function () {
             var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
+                var template = _.template($("script.high-five-template").html());
                 var list = document.querySelector("#high-five-activity .high-five-activity-list");
                 list.innerHTML = '';
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
-                    list.innerHTML += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
-                    '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to +  '</span>' + 
-                    ' for a <span class="type">' + highFive.type + '</span>' + 
-                    ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') + 
-                    '.</li>';
+
+                    var highFiveObject = {
+                        avatar: "/media/avatar/144494.png",
+                        compliment: compliments[Math.floor(Math.random() * compliments.length)],
+                        name: placeholderNames[Math.floor(Math.random() * placeholderNames.length)],
+                        highFiver: placeholderNames[Math.floor(Math.random() * placeholderNames.length)],
+                        url: highFive.url,
+                        type: highFive.type,
+                        timestamp: "2 minutes ago"
+                    };
+
+                    list.innerHTML += template(highFiveObject);
                 }
             }
         },

@@ -5,7 +5,7 @@
     background-repeat: no-repeat;
     position: relative;
 
-    h3 {
+    h2 {
         margin: 1rem auto 3.5rem;
         margin-bottom: 3rem;
         line-height: 1.5;
@@ -68,5 +68,130 @@
         display: flex;
         flex-flow: row wrap;
         justify-content: space-between;
+    }
+
+
+    .high-five-item {
+        flex: 0 0 100%;
+        display: flex;
+        overflow: hidden;
+
+        @media (min-width: $md) {
+            flex: 1 0 49%;
+
+            &:nth-child(odd) {
+                margin-right: 2%;
+            }
+        }
+
+        .avatar {
+            flex: 0 0 23%;
+            margin-right: 20px;
+
+
+            @media (min-width: $md) {
+                flex: 0 0 15%;
+            }
+
+            img {
+                width: 100%;
+                max-width: 112px;
+                height: auto;
+            }
+        }
+
+
+
+        .meta {
+            display: flex;
+            flex-direction: column;
+            flex: 1 0 75%;
+            overflow: hidden;
+            padding: 0 10px 0 0;
+
+            @media (min-width: $md) {
+                flex: 1 0 83%;
+            }
+        }
+
+
+
+        .category {
+            margin: .5rem 0 0;
+            max-width: 95%;
+
+            span {
+                font-size: .75rem;
+            }
+        }
+    }
+}
+
+
+.high-five-item {
+    background: #fff;
+    padding: 25px;
+    margin-bottom: 30px;
+    border: 1px solid darken(#f6f6f6, 5%);
+    transition: box-shadow .2s ease, border-color .2s ease;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+        border-color: white;
+        @include box_shadow(2);
+    }
+
+    .row {
+        margin: 0;
+    }
+
+    img {
+        border-radius: 50%;
+        width: 100%;
+        max-width: 112px;
+        height: auto;
+
+        .package-forum-activity & {
+            border-radius: 0;
+        }
+
+        @media (min-width: $md) {
+            width: 58px;
+        }
+
+
+    }
+
+    .high-five-header {
+        margin-bottom: 2px;
+        font-weight: normal;
+        color: #000;
+        line-height: 1.3;
+        font-size: 1rem;
+
+        @media (min-width: $md) {
+            font-size: 1.1rem;
+        }
+    }
+
+    p {
+        margin: 0;
+        text-align: left;
+        font-size: .9rem;
+        color: $color-space;
+    }
+
+    small {
+        font-size: .8rem;
+    }
+
+    .col-xs-2 {
+        padding: 0 .1rem;
+
+        @media (min-width: $md) {
+            padding: 0 .3rem;
+        }
     }
 }

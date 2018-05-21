@@ -30,7 +30,23 @@
         catch (errGitHub) {
             console.log("Couldn't load latest GitHub contributor activity", errGitHub.message);
         }
-        
+
     });
-</script> 
+</script>
 <script type="text/javascript" src="/assets/js/components/highfives.js"></script>
+<script type="text/template" class="high-five-template">
+    <div class="high-five-item">
+        <div class="avatar">
+            <img src="{{avatar}}?v=test&width=100&height=100&mode=crop&upscale=true" srcset="{{avatar}}?v=test&width=200&height=200&mode=crop&upscale=true 2x, {{avatar}}?v=test&width=300&height=300&mode=crop&upscale=true 3x" alt="{{name}}" />
+        </div>
+
+        <div class="meta">
+            <div class="high-five-text">
+                <h3 class="high-five-header">{{compliment}} {{name}}</h3>
+                <p>
+                    {{highFiver}} High Fived you for <a href="{{url}}">{{type}}</a>, {{timestamp}}
+                </p>
+            </div>
+        </div>
+</script>
+</div>
