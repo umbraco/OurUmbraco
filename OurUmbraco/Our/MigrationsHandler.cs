@@ -4,10 +4,12 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
+using OurUmbraco.Community.BlogPosts;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
+using Umbraco.Core.Persistence;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -53,6 +55,7 @@ namespace OurUmbraco.Our
             AddVideosPage();
             AddRetiredStatusToPackages();
             AddPasswordResetTokenToMembers();
+            AddDatabaseTableCommunityBlogItems();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1172,7 +1175,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-        
+
         private void AddCommunityVideos()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1246,7 +1249,7 @@ namespace OurUmbraco.Our
 
                     var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
-                    var allowedTemplates = new List<ITemplate> {template};
+                    var allowedTemplates = new List<ITemplate> { template };
                     allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
                     hubPageContentType.AllowedTemplates = allowedTemplates;
                     contentTypeService.Save(hubPageContentType);
@@ -1266,8 +1269,8 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
-		
-		private void AddVideosPage()
+
+        private void AddVideosPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -1419,9 +1422,9 @@ namespace OurUmbraco.Our
                     saveRequired = true;
                 }
 
-                if(saveRequired)
+                if (saveRequired)
                     memberTypeService.Save(memberType);
-                
+
                 var macroService = ApplicationContext.Current.Services.MacroService;
                 const string macroAlias = "MembersResetPassword";
                 if (macroService.GetByAlias(macroAlias) == null)
@@ -1449,6 +1452,35 @@ namespace OurUmbraco.Our
                     content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
                     contentService.SaveAndPublishWithStatus(content);
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddDatabaseTableCommunityBlogItems()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                var database = ApplicationContext.Current.DatabaseContext.Database;
+                var dbContext = ApplicationContext.Current.DatabaseContext;
+                var databaseSchemaHelper = new DatabaseSchemaHelper(database, LoggerResolver.Current.Logger, dbContext.SqlSyntax);
+
+                if (databaseSchemaHelper.TableExist(BlogDatabaseItem.TableName) == false)
+                    databaseSchemaHelper.CreateTable<BlogDatabaseItem>();
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
