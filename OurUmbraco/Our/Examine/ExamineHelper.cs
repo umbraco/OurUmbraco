@@ -143,7 +143,7 @@ namespace OurUmbraco.Our.Examine
         private static IEnumerable<int> CalculateMajorVersions(YamlMetaData yamlMetaData)
         {
             // Try to find out which major versions are supported
-            var currentDocVersion = int.Parse(ConfigurationManager.AppSettings["Documentation:CurrentMajorVersion"]);
+            var currentDocVersion = int.Parse(ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]);
             var semverCurrent = new Semver.SemVersion(currentDocVersion);
             bool hasFrom = Semver.SemVersion.TryParse(yamlMetaData.VersionFrom, out Semver.SemVersion semverFrom);
             bool hasTo = Semver.SemVersion.TryParse(yamlMetaData.VersionTo, out Semver.SemVersion semverTo);

@@ -66,7 +66,7 @@ namespace OurUmbraco.Our.Controllers
                 // This is needed as we added new membership after upgrading so IsApproved is 
                 // currently empty. First time a member gets saved now (login also saves the member)
                 // IsApproved would turn false (default value of bool) so we want to prevent that
-                if (memberToLogin.CreateDate < DateTime.Parse("2015-07-23") && memberToLogin.Properties.Contains(Constants.Conventions.Member.IsApproved) && memberToLogin.IsApproved == false)
+                if (memberToLogin.CreateDate < DateTime.Parse("2015-07-23") && memberToLogin.Properties.Contains(global::Umbraco.Core.Constants.Conventions.Member.IsApproved) && memberToLogin.IsApproved == false)
                 {
                     memberToLogin.IsApproved = true;
                     memberService.Save(memberToLogin, false);
@@ -126,7 +126,7 @@ namespace OurUmbraco.Our.Controllers
             // This is needed as we added new membership after upgrading so IsApproved is 
             // currently empty. First time a member gets saved now (login also saves the member)
             // IsApproved would turn false (default value of bool) so we want to prevent that
-            if (m.Properties.Contains(Constants.Conventions.Member.IsApproved) && m.IsApproved == false)
+            if (m.Properties.Contains(global::Umbraco.Core.Constants.Conventions.Member.IsApproved) && m.IsApproved == false)
             {
                 m.IsApproved = true;
                 memberService.Save(m, false);
