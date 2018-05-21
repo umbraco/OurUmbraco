@@ -20,17 +20,20 @@ namespace OurUmbraco.Our.Examine
     {
 
         public string Term { get; private set; }
+        public int? MajorDocsVersion { get; set; }
         public string NodeTypeAlias { get; set; }
         public string OrderBy { get; set; }
         public int MaxResults { get; set; }
         public IEnumerable<SearchFilters> Filters { get; set; }
         
         public OurSearcher(string term, string nodeTypeAlias = null, 
+            int? majorDocsVersion = null,
             string orderBy = null, 
             int maxResults = 20, 
             IEnumerable<SearchFilters> filters = null)
         {
             Term = term.MakeSearchQuerySafe();
+            MajorDocsVersion = majorDocsVersion;
             NodeTypeAlias = nodeTypeAlias;
             OrderBy = orderBy;
          
@@ -87,7 +90,13 @@ namespace OurUmbraco.Our.Examine
                 sb.AppendFormat("nodeName:\"{0}\"^20000 body:\"{0}\"^5000 ", Term);
 
                 // SEARCH YAML stuff
-                sb.AppendFormat("tags:\"{0}\"^20000", Term);
+                sb.AppendFormat("tags:\"{0}\"^20000 ", Term);
+
+                // add mandatory majorVersion is parameter is supplied
+                if (MajorDocsVersion != null)
+                {
+                    sb.AppendFormat("+majorVersion:{0} ", MajorDocsVersion);
+                }
 
                 if (deduped.Count > 20)
                 {
