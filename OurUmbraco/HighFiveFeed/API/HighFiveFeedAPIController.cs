@@ -18,35 +18,30 @@ namespace OurUmbraco.HighFiveFeed.API
 {
     public class HighFiveFeedAPIController : UmbracoApiController
     {
-        private readonly DatabaseContext _dbContext;
-
-        public HighFiveFeedAPIController(DatabaseContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
-
         public HighFiveFeedAPIController() { }
 
-       [HttpGet]
+        //this will be for authorized members only
+       [HttpPost]
         public void SubmitHighFive(int fromUserId, int toUserId, string action, String url)
         {
             var memberService = ApplicationContext.Current.Services.MemberService;
             var member = memberService.GetById(fromUserId);
 
-
+            var dbContext= ApplicationContext.Current.DatabaseContext;
             var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
             highFive.FromMemberId = fromUserId;
             highFive.ToMemberId = toUserId;
             highFive.ActionId = action;
             highFive.Link = url;
 
-            _dbContext.Database.Insert(highFive);
+            dbContext.Database.Insert(highFive);
         }
         [HttpGet]
         public List<OurUmbraco.HighFiveFeed.Models.HighFiveFeed> GetHighFiveFeed()
         {
+            var dbContext = ApplicationContext.Current.DatabaseContext;
             var sql = new Sql().Select("*").From("highFivePosts");
-            var result = _dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql);
+            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql);
             return result;
 
         }
