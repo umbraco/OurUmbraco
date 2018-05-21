@@ -16,10 +16,13 @@
                     HighFives.bindOnSubmitForm();
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
-                        HighFives.getCategories(function(categories) {
+                        HighFives.getCategories(function(response) {
+                            var categories = JSON.parse(response);
+
                             HighFives.buildCategoryDropdown(categories);
-                            HighFives.getRecentHighFiveActivity(0, function(activity) {
-                                HighFives.list = activity.highFives;
+                            HighFives.getRecentHighFiveActivity(0, function(response) {
+                                var activity = JSON.parse(response);
+                                HighFives.list = activity.HighFives;
                                 HighFives.buildActivityList(HighFives.list);
                                 HighFives.checkForNewHighFivesPeriodically(30);
                             });
@@ -76,12 +79,12 @@
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
                     list.innerHTML += '<li class="high-five-item">' + 
-                    '<div class="avatar"><img src="' + highFive.toAvatarUrl + '?v=test&amp;width=100&amp;height=100&amp;mode=crop&amp;upscale=true" ' +
-                    'srcset="' + highFive.toAvatarUrl + '?v=test&amp;width=200&amp;height=200&amp;mode=crop&amp;upscale=true 2x, ' + 
-                    highFive.toAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.to + '"></div>' + 
+                    '<div class="avatar"><img src="' + highFive.ToAvatarUrl + '?v=test&amp;width=100&amp;height=100&amp;mode=crop&amp;upscale=true" ' +
+                    'srcset="' + highFive.ToAvatarUrl + '?v=test&amp;width=200&amp;height=200&amp;mode=crop&amp;upscale=true 2x, ' + 
+                    highFive.ToAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.To + '"></div>' + 
                     '<div class="meta"><div class="high-five-text">' + 
-                    '<h3 class="high-five-header">Lovely ' + highFive.to + '</h3>' + 
-                    '<p>' + highFive.from + ' High Fived you for <a href="' + highFive.url + '">' + highFive.type + '</a>' + /*, 2 minutes ago*/ '</p>' + 
+                    '<h3 class="high-five-header">Lovely ' + highFive.To + '</h3>' + 
+                    '<p>' + highFive.From + ' High Fived you for <a href="' + highFive.Url + '">' + highFive.Type + '</a>' + /*, 2 minutes ago*/ '</p>' + 
                     '</div></div></li>';
                 }
             }
@@ -117,7 +120,8 @@
         checkForNewHighFivesPeriodically: function (seconds) {
             window.setTimeout(function() {
                 HighFives.getRecentHighFiveActivity(0, function(response) {
-                    HighFives.list = _.unionBy(HighFives.list, response.highFives, 'id').slice(0, 10);
+                    var feed = JSON.parse(response);
+                    HighFives.list = HighFives.unionBy(HighFives.list, feed.HighFives).slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -142,7 +146,7 @@
             if (useMockApi) {
                 onSuccess(ApiMock.getCategories());
             } else {
-                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
+                jQuery.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
             }
         },
 
@@ -152,7 +156,7 @@
                     HighFives.suggestions = ApiMock.getUmbracians();
                     HighFives.buildSuggestionsList();
                 } else {
-                    jquery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
+                    jQuery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
                         HighFives.suggestions = umbracians;
                         HighFives.buildSuggestionsList();
                     });
@@ -257,7 +261,7 @@
             if (useMockApi) {
                 onSuccess(ApiMock.submitHighFive());
             } else {
-                jQuery.get('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
+                jQuery.post('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
             }
         },
   
@@ -278,6 +282,23 @@
             }
     
             return array;
+        },
+
+        unionBy: function(oldArray, newArray) {
+            for (var n = 0; n < newArray.length; n++) {
+                var itemToAdd = newArray[n];
+                var isUnique = true;
+                for (var o = 0; o < oldArray.length; o++) {
+                    var oldItem = oldArray[o];
+                    if (oldItem.id === itemToAdd.id) {
+                        isUnique = false;
+                    }
+                }
+                if (isUnique) {
+                    oldArray.unshift(itemToAdd);
+                }
+            }
+            return oldArray;
         }
     };
 
