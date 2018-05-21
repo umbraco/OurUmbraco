@@ -28,22 +28,19 @@
 
     var useMockApi = true;
 
-    /**
-     * @var HighFives - JS functionality for the high fives module.
-     */
+    // HighFives - JS functionality for the high fives module.
     var HighFives = {
-        /**
-         * @method init
-         * @returns {void}
-         */
+        list: [],
+        // init - Starts the high fives app functionality.
         init: function() {
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
                     HighFives.getRecentHighFiveActivity(0, function(response) {
-                        console.info('response', response);
-                        HighFives.buildActivityList(response.highFives);
-                    })
+                        HighFives.list = response.highFives;
+                        HighFives.buildActivityList(HighFives.list);
+                        HighFives.checkForNewHighFivesPeriodically(30);
+                    });
                 }
             });
         },
@@ -54,50 +51,51 @@
             return new Promise(resolve => setTimeout(resolve, 100));
         },
 
-        buildActivityList: function (highFives) {
+        // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
+        buildActivityList: function () {
+            var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
-                var list = document.querySelector("#high-five-activity .high-five-activity-list");
-                list.innerHTML = '';
+                var list = jQuery("#high-five-activity .high-five-activity-list");
+                list.empty();
+                var items = [];
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
-                    list.innerHTML += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
+                    items += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
                     '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to +  '</span>' + 
                     ' for a <span class="type">' + highFive.type + '</span>' + 
                     ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') + 
                     '.</li>';
                 }
+                list.append(items);
             }
+        },
+
+        // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
+        checkForNewHighFivesPeriodically: function (seconds) {
+            window.setTimeout(function() {
+                HighFives.getRecentHighFiveActivity(0, function(response) {
+                    HighFives.list = _.union(HighFives.list, response.highFives).slice(0, 10);
+                    HighFives.buildActivityList(HighFives.list);
+                    HighFives.checkForNewHighFivesPeriodically(30);
+                });
+            }, (seconds * 1000));
         },
 
         clearPlaceholder: function (el) {
             el.attr("placeholder", "");
         },
 
-        /**
-         * @method getRecentHighFiveActivity - Gets the most recent high fives
-         * from the API.
-         * @param {number=} page
-         * @param {function=} onSuccess
-         * @param {function=} onError
-         * @returns {void}
-         */
-        getRecentHighFiveActivity: function(page, onSuccess, onError) {
-            if (typeof page === 'undefined') {
-                page = 0;
-            }
+        // @method getRecentHighFiveActivity - Gets the most recent high fives via API.
+        getRecentHighFiveActivity: function(page, onSuccess) {
+            page = typeof page === 'undefined' ? 0 : page;
             if (useMockApi) {
                 onSuccess(ApiMock.getHighFiveFeed());
             } else {
-                orcAjax.get('/umbraco/api/HighFiveFeedAPI/GetHighFiveFeed?page=' + page, onSuccess(response), function(error) {
-                    console.error(error);
-                });
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetHighFiveFeed?page=' + page, onSuccess);
             }
         },
 
-        /**
-         * @method doesHaveHighFive
-         * @returns {boolean}
-         */
+        // doesHaveHighFive - returns true if highFive element exists
         doesHaveHighFive: function() {
             var highFive = document.querySelector('section[data-high-five]');
             if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
@@ -153,111 +151,6 @@
             }
     
             return array;
-        }
-    };
-
-    /**
-     * @class orcAjax
-     * @description A basic AJAX handler. Learn more at https://github.com/Offroadcode/ORC-AJAX
-     * @author Offroadcode Limited (http://offroadcode.com)
-     */
-    var orcAjax = {
-        request: false,
-        /**
-         * @method get
-         * @param {string} url
-         * @param {function=string} onSuccess
-         * @param {function=string} onError
-         * @param {boolean} shouldLogResponse
-         * @returns {void}
-         * @description Sends an AJAX GET request to the url provided. The response is 
-         * provided to either the onSuccess or onError callback, depending on the status.
-         */
-        get: function(url, onSuccess, onError, shouldLogResponse) {
-            orcAjax.request = new XMLHttpRequest();
-            orcAjax.request.onreadystatechange = function (e) {
-                if (e.target) {
-                    var reply = e.target;
-                    var DONE = 4; // readyState 4 means the request is done.
-                    var OK = 200; // status 200 is a successful return.
-                    if (reply.readyState === DONE) {
-                        if (reply.status === OK) {
-                                var response = false;
-                                if (reply.responseType === 'json') {
-                                    response = reply.response;
-                                } else {
-                                    response = JSON.parse(reply.responseText);
-                                }
-                                if (shouldLogResponse) {
-                                    console.log('Success: orcAjax.get(' + url + ') response:', response);
-                                }
-                                if (onSuccess) {
-                                    onSuccess(response);
-                                }
-                        } else {
-                            if (shouldLogResponse) {
-                                console.log('Error: orcAjax.get(' + url + '):', reply.status);
-                            }
-                            if (onError) {
-                                onError(reply);
-                            }
-                        }
-                    }
-
-                }
-            }
-            orcAjax.request.open('GET', url, true);
-            orcAjax.request.responseType = 'json';
-            orcAjax.request.send();
-        },
-        /**
-         * @method post
-         * @param {string} url
-         * @param {JSON} data - the data to submit in JSON format.
-         * @param {function=string} onSuccess
-         * @param {function=string} onError
-         * @param {boolean} shouldLogResponse
-         * @returns {void}
-         * @description Sends an AJAX POST request to the url provided. The response is 
-         * provided to either the onSuccess or onError callback, depending on the status.
-         */    
-        post: function(url, data, onSuccess, onError, shouldLogResponse) {
-            orcAjax.request = new XMLHttpRequest();
-            orcAjax.request.onreadystatechange = function (e) {
-                if (e.target) {
-                    var reply = e.target;
-                    var DONE = 4; // readyState 4 means the request is done.
-                    var OK = 200; // status 200 is a successful return.
-                    if (reply.readyState === DONE) {
-                        if (reply.status === OK) {
-                                var response = false;
-                                if (reply.responseType === 'json') {
-                                    response = reply.response;
-                                } else {
-                                    response = JSON.parse(reply.responseText);
-                                }
-                                if (shouldLogResponse) {
-                                    console.log('Success: orcAjax.get(' + url + ') response:', response);
-                                }
-                                if (onSuccess) {
-                                    onSuccess(response);
-                                }
-                        } else {
-                            if (shouldLogResponse) {
-                                console.log('Error: orcAjax.get(' + url + '):', reply.status);
-                            }
-                            if (onError) {
-                                onError(reply);
-                            }
-                        }
-                    }
-
-                }
-            }
-            orcAjax.request.open('POST', url, true);
-            orcAjax.request.setRequestHeader("Content-type", "application/json");
-            orcAjax.request.responseType = 'json';
-            orcAjax.request.send(JSON.stringify(data));                
         }
     };
 
