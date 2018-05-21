@@ -112,6 +112,12 @@ namespace OurUmbraco.HighFiveFeed.API
 
             var people = peopleService.GetPeopleByName(name);
 
+            var currentMember = Members.GetCurrentMember();
+            if (currentMember != null && currentMember.Id != 0)
+            {
+                return people.Where(p => p.MemberId != currentMember.Id).ToList();
+            }
+
             return people;
         }
 
@@ -120,6 +126,12 @@ namespace OurUmbraco.HighFiveFeed.API
             var peopleService = new PeopleService();
 
             var people = peopleService.GetRandomPeople();
+
+            var currentMember = Members.GetCurrentMember();
+            if (currentMember != null && currentMember.Id != 0)
+            {
+                return people.Where(p => p.MemberId != currentMember.Id).ToList();
+            }
 
             return people;
         }
