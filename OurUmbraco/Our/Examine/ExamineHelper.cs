@@ -9,6 +9,7 @@ using Umbraco.Core;
 using Umbraco.Core.Logging;
 using System.Text;
 using YamlDotNet.Serialization;
+using OurUmbraco.Documentation.Busineslogic;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -131,7 +132,7 @@ namespace OurUmbraco.Our.Examine
         {
             var startId = path.IndexOf("Documentation", StringComparison.Ordinal);
             var partPath = path.Substring(startId, path.Length - startId);
-            var url = "/" + partPath.Replace("\\", "/").Replace(".md", "");
+            var url = "/" + partPath.Replace("\\", "/").Replace(".md", "").DotToUnderscore();
             return url;
         }
 
