@@ -250,7 +250,6 @@ namespace OurUmbraco.Community.People
                 examineQuery.And().GroupedAnd(searchTerms, term.MultipleCharacterWildcard());
             }
 
-
             examineQuery.And().OrderByDescending(MemberNameField);
 
             var results = memberSearcher.Search(examineQuery.Compile());
@@ -280,7 +279,6 @@ namespace OurUmbraco.Community.People
             var memberSearcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
 
             var criteria = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
-
             var examineQuery = criteria.Field("blocked", 0.ToString());
             criteria.Range("updateDate", DateTime.MinValue, DateTime.MaxValue);
 
