@@ -13,6 +13,7 @@
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.bindOnMentionChange();
                     HighFives.bindOnMemberSelect();
+                    HighFives.bindOnSubmitForm();
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
                         HighFives.getCategories(function(categories) {
@@ -53,6 +54,17 @@
                 HighFives.selectMember(HighFives.selectedMember);
             });
             // unbind from previous versions just in case
+        },
+
+        bindOnSubmitForm: function() {
+            jQuery('#high-five-form').submit(function(e) {
+                e.preventDefault();
+                if (HighFives.isFormValid()) {
+                    HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), function() {
+                        HighFives.resetForm();
+                    });
+                }
+            });
         },
 
         // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
@@ -116,6 +128,15 @@
             el.attr("placeholder", "");
         },
 
+        // doesHaveHighFive - returns true if highFive element exists
+        doesHaveHighFive: function() {
+            var highFive = document.querySelector('section[data-high-five]');
+            if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
+                return true;
+            }
+            return false;
+        },        
+
         // getCategories - Get the categories for the high fives.
         getCategories: function(onSuccess) {
             if (useMockApi) {
@@ -158,11 +179,13 @@
             }
         },
 
-        // doesHaveHighFive - returns true if highFive element exists
-        doesHaveHighFive: function() {
-            var highFive = document.querySelector('section[data-high-five]');
-            if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
-                return true;
+        isFormValid: function() {
+            if (HighFives.selectedMember) {
+                if (jQuery('#high-five-url').val() !== '') {
+                    if (typeof jQuery('#high-five-task').val() !== 'object') {
+                        return true;
+                    }
+                }
             }
             return false;
         },
@@ -197,6 +220,14 @@
             );
         },
 
+        resetForm: function () {
+            HighFives.selectedMember = false;
+            HighFives.suggestions = [];
+            jQuery('#high-five-url').val('');
+            jQuery('#high-five-mention').val('');
+            HighFives.buildSuggestionsList();
+        },
+
         // selectMember
         selectMember: function (member) {
             var list = document.querySelector("#high-five-form .suggestions-list");
@@ -218,6 +249,15 @@
                         HighFives.selectMember(HighFives.selectedMember);
                     }
                 }
+            }
+        },
+
+        // submitHighFive
+        submitHighFive: function(to, action, url, onSuccess) {
+            if (useMockApi) {
+                onSuccess(ApiMock.submitHighFive());
+            } else {
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
             }
         },
   
@@ -317,6 +357,9 @@
                 {MemberId: '0022', Username: "Jacob Midtgaard - Olesen"},
                 {MemberId: '0023', Username: "Ilham Boulghallat"}
             ]
+        },
+        submitHighFive: function() {
+            return {};
         }
     };
 
