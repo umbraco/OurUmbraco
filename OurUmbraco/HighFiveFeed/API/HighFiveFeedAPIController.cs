@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 using Umbraco.Web.WebApi;
 using Umbraco.Core;
 using OurUmbraco.HighFiveFeed.Models;
+<<<<<<< HEAD
 using System.Web.Mvc;
 using Newtonsoft.Json;
 using System.Net.Http;
 using Newtonsoft.Json.Serialization;
 using Umbraco.Core.Persistence;
 
+=======
+>>>>>>> 03f85a8b89320d3fa07d44a57a5130336884ca7c
 namespace OurUmbraco.HighFiveFeed.API
 {
     public class HighFiveFeedAPIController : UmbracoApiController

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
+using Examine.Providers;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Our;
 using Umbraco.Core;
@@ -10,6 +11,7 @@ using Umbraco.Core.Cache;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Security;
+using UmbracoExamine;
 
 namespace OurUmbraco.Community.People
 {
@@ -220,6 +222,54 @@ namespace OurUmbraco.Community.People
             };
 
             return badgeMember;
+        }
+
+        private const string MemberNameField = "nodeName";
+
+        public List<Person> GetPeopleByName(string name)
+        {
+
+            List<Person> people = new List<Person>();
+
+            if(name.Length < 3)
+            {
+                return people;
+            }
+
+            var memberSearcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+
+            var criteria = memberSearcher.CreateSearchCriteria(IndexTypes.Member);
+
+            ISearchResults results;
+
+            if (name.Contains(" "))
+            {
+                string[] terms = name.Split(' ');
+                var examineQuery = criteria.GroupedAnd(new List<string> { MemberNameField }, terms);
+                results = memberSearcher.Search(examineQuery.Compile());
+            }
+            else
+            {
+                var examineQuery = criteria.Field(MemberNameField, name.MultipleCharacterWildcard());
+                results = memberSearcher.Search(examineQuery.Compile());
+            }
+
+
+            if (results.TotalItemCount > 0)
+            {
+                var memberService = ApplicationContext.Current.Services.MemberService;
+
+                int[] memberIds = results.Select(x => x.Id).ToArray();
+
+                var peopleResults = memberService.GetAllMembers(memberIds);
+
+                foreach(var person in peopleResults)
+                {
+                    people.Add(new Person(person));
+                }
+            }
+
+            return people;
         }
     }
 }

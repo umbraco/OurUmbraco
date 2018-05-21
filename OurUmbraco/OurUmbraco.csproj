@@ -451,6 +451,7 @@
     <Compile Include="Community\People\Models\MvpMember.cs" />
     <Compile Include="Community\People\Models\MvpsPerYear.cs" />
     <Compile Include="Community\People\Models\PeopleKarmaResult.cs" />
+    <Compile Include="Community\People\Models\Person.cs" />
     <Compile Include="Community\People\PeopleService.cs" />
     <Compile Include="Community\Twitter\TwitterService.cs" />
     <Compile Include="Community\Videos\CommunityVideosConstants.cs" />
