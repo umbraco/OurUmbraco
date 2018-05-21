@@ -1,8 +1,8 @@
 .search-big {
-    display: inline-block;
     position: relative;
     width: 100%;
     margin-bottom: 20px;
+    display: flex;
 
     div {
         display: inline-block;
@@ -10,10 +10,6 @@
 
     div.textSearch {
         width: 80%;
-    }
-
-    div.versionSearch {
-        width: 15%;
     }
 
     input {
@@ -63,12 +59,13 @@
         padding: 20px 10px 20px 10px;
         outline: none;
         display: block;
-        width: 100%;
+        flex: 0 0 80px;
         font-size: 1.3rem;
         min-height: 60px;
         font-family: $font-family;
         z-index: 20;
         position: relative;
+        margin-left: 10px;
 
         &:focus {
             border-color: $color-our;
