@@ -4,6 +4,7 @@ using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
+using System;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -23,8 +24,8 @@ namespace OurUmbraco.Our.Examine
 
             var directory = new DirectoryInfo(fullPath);
 
-            var files = config.Recursive 
-                ? directory.GetFiles(config.SupportedFileTypes, SearchOption.AllDirectories) 
+            var files = config.Recursive
+                ? directory.GetFiles(config.SupportedFileTypes, SearchOption.AllDirectories)
                 : directory.GetFiles(config.SupportedFileTypes);
 
             var i = 0; //unique id for each doc
@@ -33,11 +34,22 @@ namespace OurUmbraco.Our.Examine
             {
                 i++;
                 var simpleDataSet = new SimpleDataSet { NodeDefinition = new IndexedNode(), RowData = new Dictionary<string, string>() };
-                simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
 
+                try
+                {
+                    simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
+                }
+                catch (Exception ex)
+                {
+                    Umbraco.Core.Logging.LogHelper.Error<DocumentationIndexDataService>(
+                        $"Indexing docs - could not parse document {file.FullName}", ex);
+                    if (System.Diagnostics.Debugger.IsAttached) System.Diagnostics.Debugger.Break();
+                }
                 yield return simpleDataSet;
-            }
 
+            }
+            Umbraco.Core.Logging.LogHelper.Info<DocumentationIndexDataService>(
+                        $"Indexed documentation files: {0}", () => files.Length);
         }
 
 
