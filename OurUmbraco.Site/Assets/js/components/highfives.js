@@ -1,4 +1,4 @@
-(function() {
+(function () {
 
     var placeholderNames = [
         "Marcin Zajkowski",
@@ -32,16 +32,58 @@
     var HighFives = {
         list: [],
         // init - Starts the high fives app functionality.
-        init: function() {
+        init: function () {
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
-                    HighFives.getRecentHighFiveActivity(0, function(response) {
+                    HighFives.initTypeAhead();
+                    HighFives.getRecentHighFiveActivity(0, function (response) {
                         HighFives.list = response.highFives;
                         HighFives.buildActivityList(HighFives.list);
                         HighFives.checkForNewHighFivesPeriodically(30);
                     });
                 }
+            });
+        },
+
+        initTypeAhead: function () {
+            $("#high-five-mention").keyup(function () {
+                memberSearch($("#high-five-mention").val());
+            })
+        },
+
+        showMentions: function(members) {
+            var template = _.template(
+                $("script.member-search-template").html()
+            );
+
+            $('#high-five-mentions').addClass('open');
+            $('#high-five-mentions ul').empty();
+
+            _.each(members, function (member) {
+                var itemData = { icon: 'blah.gif', name: member.Username, username: 'blahblah', id: member.MemberId };
+                $('#high-five-mentions ul').append(
+                    template(itemData)
+                );
+            });
+        },
+
+        getMember: function(member) {
+            if (member.length > 2) {
+                $.getJSON('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (data) {
+                    HighFives.showMentions(data);
+                });
+            }
+        },
+
+        getHighFiveCategories: function() {
+            $.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', function (data) {
+                _.each(data, function (category) {
+                    $('#high-five-task')
+                        .append($("<option></option>")
+                            .attr("value", key)
+                            .text(value));
+                });
             });
         },
 
@@ -55,26 +97,24 @@
         buildActivityList: function () {
             var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
-                var list = jQuery("#high-five-activity .high-five-activity-list");
-                list.empty();
-                var items = [];
+                var list = document.querySelector("#high-five-activity .high-five-activity-list");
+                list.innerHTML = '';
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
-                    items += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
+                    list.innerHTML += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
                     '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to +  '</span>' + 
                     ' for a <span class="type">' + highFive.type + '</span>' + 
                     ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') + 
                     '.</li>';
                 }
-                list.append(items);
             }
         },
 
         // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
         checkForNewHighFivesPeriodically: function (seconds) {
-            window.setTimeout(function() {
-                HighFives.getRecentHighFiveActivity(0, function(response) {
-                    HighFives.list = _.union(HighFives.list, response.highFives).slice(0, 10);
+            window.setTimeout(function () {
+                HighFives.getRecentHighFiveActivity(0, function (response) {
+                    HighFives.list = _.unionBy(HighFives.list, response.highFives, 'id').slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -86,7 +126,7 @@
         },
 
         // @method getRecentHighFiveActivity - Gets the most recent high fives via API.
-        getRecentHighFiveActivity: function(page, onSuccess) {
+        getRecentHighFiveActivity: function (page, onSuccess) {
             page = typeof page === 'undefined' ? 0 : page;
             if (useMockApi) {
                 onSuccess(ApiMock.getHighFiveFeed());
@@ -96,14 +136,14 @@
         },
 
         // doesHaveHighFive - returns true if highFive element exists
-        doesHaveHighFive: function() {
+        doesHaveHighFive: function () {
             var highFive = document.querySelector('section[data-high-five]');
             if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
                 return true;
             }
             return false;
         },
-        
+
         printPhrase: function (phrase, el) {
             return new Promise(resolve => {
                 // Clear placeholder before typing next phrase
@@ -123,7 +163,7 @@
                 );
             });
         },
-        
+
         printPhrases: function (phrases, el) {
             // For each phrase
             // wait for phrase to be typed
@@ -133,42 +173,42 @@
                 Promise.resolve()
             );
         },
-  
-        shuffle: function(array) {
+
+        shuffle: function (array) {
             var currentIndex = array.length, temporaryValue, randomIndex;
 
             // While there remain elements to shuffle...
             while (0 !== currentIndex) {
-    
+
                 // Pick a remaining element...
                 randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex -= 1;
-    
+
                 // And swap it with the current element.
                 temporaryValue = array[currentIndex];
                 array[currentIndex] = array[randomIndex];
                 array[randomIndex] = temporaryValue;
             }
-    
+
             return array;
         }
     };
 
     var ApiMock = {
-        getHighFiveFeed: function() {
+        getHighFiveFeed: function () {
             return {
                 count: 100,
                 pageCount: 10,
                 currentPage: 0,
                 highFives: [
                     {
-                    id: '123',
-                    from: 'Name of High Fiver',
-                    to: 'Name of High Fivee',
-                    fromAvatarUrl: '/avatar_of_high_fiver.jpg',
-                    toAvatarUrl: '/avatar_of_high_fivee.jpg',
-                    type: 'Blog post',
-                    url: 'http://optional.url.for.high.five.com'
+                        id: '123',
+                        from: 'Name of High Fiver',
+                        to: 'Name of High Fivee',
+                        fromAvatarUrl: '/avatar_of_high_fiver.jpg',
+                        toAvatarUrl: '/avatar_of_high_fivee.jpg',
+                        type: 'Blog post',
+                        url: 'http://optional.url.for.high.five.com'
                     }
                 ]
             };
@@ -177,5 +217,5 @@
 
     // Init
     HighFives.init();
-
+    var memberSearch = _.debounce(HighFives.getMember, 300);
 })();

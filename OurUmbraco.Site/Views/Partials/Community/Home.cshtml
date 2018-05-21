@@ -108,6 +108,12 @@ else
                                     <img src="/assets/images/highfive.svg" alt="high five"> Send
                                 </button>
                             </h3>
+
+                            <div id="high-five-mentions">
+                                <ul>
+                                </ul>
+                            </div>
+
                             <!--                            <p>
                                                             <a class="button green high-five" href="/forum">High Five</a>
                                                         </p>
@@ -131,35 +137,15 @@ else
                 </div>
             </div>
         </section>
-        <script type="text/javascript">
-            var placeholderNames = [
-                "Marcin Zajkowski",
-                "Callum Whyte",
-                "Anders Bjerner",
-                "Emma Garland",
-                "Lars - Erik Aabech",
-                "Matt Brailsford",
-                "Carole Rennie Logan",
-                "Emma Burstow",
-                "Lee Kelleher",
-                "Jeffrey Schoemaker",
-                "Erica Quessenberry",
-                "Kyle Weems",
-                "Mike Masey",
-                "Niels Hartvig",
-                "Jeavon Leopold",
-                "Damiaan Peeters",
-                "Marc Goodson",
-                "Mads Rasmussen",
-                "Shannon Deminick",
-                "Stéphane Gay",
-                "Sebastiaan Janssen",
-                "Jacob Midtgaard - Olesen",
-                "Ilham Boulghallat"];   
-
-            $(document).ready(function () {
-                printPhrases(shuffle(placeholderNames), $('#high-five-mention'));
-            });
+        <script type="text/template" class="member-search-template">
+            <li>
+                <div class="type-icon">
+                    <i class="{{ icon }}"></i>
+                </div>
+                <div class="type-name">
+                    {{ name }} ({{ username }})
+                </div>
+            </li>
         </script>
 }
 

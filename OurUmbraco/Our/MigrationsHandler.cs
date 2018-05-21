@@ -53,7 +53,6 @@ namespace OurUmbraco.Our
             AddVideosPage();
             AddRetiredStatusToPackages();
             AddPasswordResetTokenToMembers();
-            AddHighFiveTable();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1173,7 +1172,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-        
+
         private void AddCommunityVideos()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1247,7 +1246,7 @@ namespace OurUmbraco.Our
 
                     var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
-                    var allowedTemplates = new List<ITemplate> {template};
+                    var allowedTemplates = new List<ITemplate> { template };
                     allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
                     hubPageContentType.AllowedTemplates = allowedTemplates;
                     contentTypeService.Save(hubPageContentType);
@@ -1267,8 +1266,8 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
-		
-		private void AddVideosPage()
+
+        private void AddVideosPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -1420,9 +1419,9 @@ namespace OurUmbraco.Our
                     saveRequired = true;
                 }
 
-                if(saveRequired)
+                if (saveRequired)
                     memberTypeService.Save(memberType);
-                
+
                 var macroService = ApplicationContext.Current.Services.MacroService;
                 const string macroAlias = "MembersResetPassword";
                 if (macroService.GetByAlias(macroAlias) == null)
@@ -1474,7 +1473,7 @@ namespace OurUmbraco.Our
                 }
                 //locic
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                db.Execute("CREATE TABLE [dbo].[highFivePosts]([Id][int] NULL,[FromMemberId] [int] NULL,[ToMemberId] [int] NULL,[ActionId] [varchar] (50) NULL,[Link][nvarchar](max) NULL,[Count] [int] NULL) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY]");
+                db.Execute("CREATE TABLE [dbo].[highFivePosts]([Id][int] NULL,[FromMemberId] [int] NULL,[ToMemberId] [int] NULL,[ActionId] [varchar] (50) NULL,[Link][nvarchar](max) NULL,[Count] [int] NULL) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY] GO");
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
