@@ -25,6 +25,14 @@ All users and members use the same password: Not_A_Real_Password
 
 To log in, try `root` / `Not_A_Real_Password` for the backoffice and `member423@non-existing-mail-provider.none` / `Not_A_Real_Password` for the frontend.
 
+You will need to set requireSSL in the Web.Config to **false** to login to the frontend.
+
+```
+<authentication mode="Forms">
+    <forms requireSSL="false" name="yourAuthCookie" loginUrl="login.aspx" protection="All" path="/" slidingExpiration="true" timeout="525600" />
+</authentication>
+```
+
 ## Projects Area
 If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco
 
