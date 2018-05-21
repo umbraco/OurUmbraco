@@ -15,33 +15,34 @@
 
         <div class="row create-topic">
             <div class="col-sm-6">
+
                 <input id="topic-title" class="markdown-control" name="topic-title" type="text" placeholder="Enter topic title">
             </div>
 
-            @if (CurrentPage.Parent.DocumentTypeAlias != "Project")
-            {
-                var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
-                var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
+            @*@if (CurrentPage.Parent.DocumentTypeAlias != "Project")
+                {
+                    var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
+                    var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
 
-                <div class="col-sm-3 col-xs-6">
-                    <select name="topic-category" id="topic-category" class="markdown-control">
-                        @if (categoriesIncludeCurrentPage)
-                        {
-                            <option value="" disabled="">Choose a category</option>
-                        }
-                        else
-                        {
-                            <option value="" selected="" disabled="">Choose a category</option>
-                        }
-                        @foreach (var cat in categories)
-                        {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
-                        }
-                    </select>
-                </div>
-            }
+                    <div class="col-sm-3 col-xs-6">
+                        <select name="topic-category" id="topic-category" class="markdown-control">
+                            @if (categoriesIncludeCurrentPage)
+                            {
+                                <option value="" disabled="">Choose a category</option>
+                            }
+                            else
+                            {
+                                <option value="" selected="" disabled="">Choose a category</option>
+                            }
+                            @foreach (var cat in categories)
+                            {
+                                <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                }*@
 
-            <div class="col-sm-3 col-xs-6">
+            <div class="col-sm-6 col-xs-6">
                 <select name="topic-version" id="topic-version" class="markdown-control">
                     <option value="Choose a version" selected="" disabled="">Choose version</option>
                     <option value="7">Umbraco v7</option>
@@ -49,6 +50,7 @@
                     <option value="4">Umbraco v4</option>
                 </select>
             </div>
+
 
             @if (CurrentPage.Parent.DocumentTypeAlias == "Project")
             {
@@ -87,7 +89,8 @@
             </div>
         </div>
     </div>
-    <span class="markdown-close icon-Page-down"></span>
+
+
     <div class="draft">Draft</div>
 </div>
 
@@ -152,7 +155,7 @@
             <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
                 <i class="icon-Reply-arrow"></i><span>Reply</span>
             </a>
-            
+
             <a href="#" class="edit-post" data-id="{{id}}" data-topic="{{topicId}}" data-controller="comment">
                 <i class="icon-Edit"></i><span>Edit</span>
             </a>
