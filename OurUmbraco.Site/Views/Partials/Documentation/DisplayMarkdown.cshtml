@@ -79,6 +79,27 @@
     }
 
     var markdown = ml.DoTransformation();
+    bool hasAltVersions = true; // method to determine if alternate versions exist for these docs
+    var altVersions = new string[] {"v6.0.0", "v7.2.1","v8.3.1"};// method to determine which alternate versions exist of this page
+    // do we want to indicate future versions in a different colour, or am I making this toooo complicated
 }
 
+<aside>
+    <div class="info-box docs-version-panel">
+        <dl>
+            <dt>Applies to</dt>
+            <dd>v8.0.0</dd>
+            @if (hasAltVersions)
+            {
+                <dt>Alternate Versions</dt>
+                foreach (var version in altVersions)
+                {
+                    <dd><a href='@("index-" + version)'>@version</a></dd>
+                }
+            }
+        </dl>
+    </div>
+
+
+</aside>
 @Html.Raw(markdown)
