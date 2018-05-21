@@ -20,24 +20,43 @@ namespace OurUmbraco.HighFiveFeed.API
 {
     public class HighFiveFeedAPIController : UmbracoApiController
     {
-        public HighFiveFeedAPIController() { }
+        public List<HighFiveCategory> Categories;
+        public HighFiveFeedAPIController()
+        {
+            Categories = new List<HighFiveCategory>();
+            Categories.Add(new HighFiveCategory(1, "A Package"));
+            Categories.Add(new HighFiveCategory(2, "A Talk"));
+            Categories.Add(new HighFiveCategory(3, "A Blog Post"));
+            Categories.Add(new HighFiveCategory(4, "A Meetup"));
+            Categories.Add(new HighFiveCategory(5, "A Skrift Article"));
+            Categories.Add(new HighFiveCategory(6, "A Tutorial"));
+            Categories.Add(new HighFiveCategory(7, "Advice"));
+            Categories.Add(new HighFiveCategory(8, "A Video"));
+            Categories.Add(new HighFiveCategory(9, "A PR"));
+        }
 
         //this will be for authorized members only
         [HttpPost]
-        public void SubmitHighFive(int fromUserId, int toUserId, int action, String url)
+        public void SubmitHighFive(int toUserId, int action, String url)
         {
+
             var memberService = ApplicationContext.Current.Services.MemberService;
-            var member = memberService.GetById(fromUserId);
 
-            var dbContext = ApplicationContext.Current.DatabaseContext;
-            var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
-            highFive.FromMemberId = fromUserId;
-            highFive.ToMemberId = toUserId;
-            highFive.ActionId = action;
-            highFive.Link = url;
-            highFive.CreatedDate = DateTime.Now;
+            var currentMember = Members.GetCurrentMember();
+            if (currentMember != null && currentMember.Id != 0)
+            {
+                var fromUserId = currentMember.Id;
 
-            dbContext.Database.Insert(highFive);
+                var dbContext = ApplicationContext.Current.DatabaseContext;
+                var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
+                highFive.FromMemberId = fromUserId;
+                highFive.ToMemberId = toUserId;
+                highFive.ActionId = action;
+                highFive.Link = url;
+                highFive.CreatedDate = DateTime.Now;
+
+                dbContext.Database.Insert(highFive);
+            }
         }
         [HttpGet]
         public string GetHighFiveFeed()
@@ -53,10 +72,11 @@ namespace OurUmbraco.HighFiveFeed.API
                 var fromMember = Members.GetById(dbEntry.FromMemberId);
                 var toAvatar = avatarService.GetMemberAvatar(toMember);
                 var fromAvatar = avatarService.GetMemberAvatar(toMember);
+                var type = GetActionType(dbEntry.ActionId);
                 var highFive = new HighFiveResponse()
                 {
                     Url = dbEntry.Link,
-                    Type = dbEntry.ActionId.ToString(),
+                    Type = type,
                     From = fromMember.Name,
                     FromAvatarUrl = fromAvatar,
                     To = toMember.Name,
@@ -75,25 +95,16 @@ namespace OurUmbraco.HighFiveFeed.API
 
         }
 
+        private string GetActionType(int actionId)
+        {
+            return "";
+        }
 
         public string GetCategories()
         {
-            var categories = new List<HighFiveCategory>();
-            categories.Add(new HighFiveCategory(1, "A Package"));
-            categories.Add(new HighFiveCategory(2, "A Talk"));
-            categories.Add(new HighFiveCategory(3, "A Blog Post"));
-            categories.Add(new HighFiveCategory(4, "A Meetup"));
-            categories.Add(new HighFiveCategory(5, "A Skrift Article"));
-            categories.Add(new HighFiveCategory(6, "A Tutorial"));
-            categories.Add(new HighFiveCategory(7, "Advice"));
-            categories.Add(new HighFiveCategory(8, "A Video"));
-            categories.Add(new HighFiveCategory(9, "A PR"));
-            var rawJson = JsonConvert.SerializeObject(categories, Formatting.Indented);
-
-
+            
+            var rawJson = JsonConvert.SerializeObject(Categories, Formatting.Indented);
             return rawJson;
-
-
         }
 
         public List<Person> GetUmbracians(string name)
