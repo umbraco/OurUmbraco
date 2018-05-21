@@ -28,17 +28,20 @@
 
     var useMockApi = true;
 
-    /**
-     * @var HighFives - JS functionality for the high fives module.
-     */
+    // HighFives - JS functionality for the high fives module.
     var HighFives = {
         list: [],
+<<<<<<< HEAD
 
         /**
          * @method init
          * @returns {void}
          */
         init: function () {
+=======
+        // init - Starts the high fives app functionality.
+        init: function() {
+>>>>>>> 0afb1e83e3892ff94935c733b7f2275472a5d855
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
@@ -99,37 +102,45 @@
             return new Promise(resolve => setTimeout(resolve, 100));
         },
 
-        /**
-         * @method buildActivityList - Builds a list of list items that represent 
-         * the activity list and adds them to an activity list for users to view.
-         * @param {JSON[]} highFives - a list of highFive items.
-         * @returns {void}
-         */
-        buildActivityList: function (highFives) {
+        // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
+        buildActivityList: function () {
+            var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
-                var list = document.querySelector("#high-five-activity .high-five-activity-list");
-                list.innerHTML = '';
+                var list = jQuery("#high-five-activity .high-five-activity-list");
+                list.empty();
+                var items = [];
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
+<<<<<<< HEAD
                     list.innerHTML += '<li><span class="from">' + highFive.from + '</span> has highfived ' +
                         '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to + '</span>' +
                         ' for a <span class="type">' + highFive.type + '</span>' +
                         ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') +
                         '.</li>';
+=======
+                    items += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
+                    '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to +  '</span>' + 
+                    ' for a <span class="type">' + highFive.type + '</span>' + 
+                    ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') + 
+                    '.</li>';
+>>>>>>> 0afb1e83e3892ff94935c733b7f2275472a5d855
                 }
+                list.append(items);
             }
         },
 
-        /**
-         * @method checkForNewHighFivesPeriodically
-         * @param {number} seconds
-         * @returns {void}
-         */
+        // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
         checkForNewHighFivesPeriodically: function (seconds) {
+<<<<<<< HEAD
             window.setTimeout(function () {
                 HighFives.getRecentHighFiveActivity(0, function (response) {
                     HighFives.list = HighFives.combineUniqueHighFives(HighFives.list, response.highFives);
                     HighFives.list = HighFives.list.slice(0, 10);
+=======
+            window.setTimeout(function() {
+                HighFives.getRecentHighFiveActivity(0, function(response) {
+                    HighFives.list = _.union(HighFives.list, response.highFives).slice(0, 10);
+>>>>>>> 0afb1e83e3892ff94935c733b7f2275472a5d855
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -140,6 +151,7 @@
             el.attr("placeholder", "");
         },
 
+<<<<<<< HEAD
         /**
          * @method combineUniqueHighFives
          * @param {JSON[]} original
@@ -189,6 +201,20 @@
          * @returns {boolean}
          */
         doesHaveHighFive: function () {
+=======
+        // @method getRecentHighFiveActivity - Gets the most recent high fives via API.
+        getRecentHighFiveActivity: function(page, onSuccess) {
+            page = typeof page === 'undefined' ? 0 : page;
+            if (useMockApi) {
+                onSuccess(ApiMock.getHighFiveFeed());
+            } else {
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetHighFiveFeed?page=' + page, onSuccess);
+            }
+        },
+
+        // doesHaveHighFive - returns true if highFive element exists
+        doesHaveHighFive: function() {
+>>>>>>> 0afb1e83e3892ff94935c733b7f2275472a5d855
             var highFive = document.querySelector('section[data-high-five]');
             if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
                 return true;
@@ -246,6 +272,7 @@
         }
     };
 
+<<<<<<< HEAD
     /**
      * @class orcAjax
      * @description A basic AJAX handler. Learn more at https://github.com/Offroadcode/ORC-AJAX
@@ -351,6 +378,8 @@
         }
     };
 
+=======
+>>>>>>> 0afb1e83e3892ff94935c733b7f2275472a5d855
     var ApiMock = {
         getHighFiveFeed: function () {
             return {
