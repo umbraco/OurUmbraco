@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.BlogPosts
+@using Skybrud.Essentials.Strings
 @inherits UmbracoViewPage<OurUmbraco.Search.BlogItemSearchResult>
     
 @{
@@ -23,7 +24,8 @@
             <span class="type-datetime">Published: @Model.Item.PublishedDate.ToString("MMMM dd, yyyy")</span>
             @if (Model.Item.HasDescription)
             {
-                <div class="type-description">@Umbraco.Truncate(Model.Item.Description, 300)</div>
+                var description = StringUtils.StripHtml(Model.Item.Description);
+                <div class="type-description">@Umbraco.Truncate(description, 300)</div>
             }
         </div>
     </a>

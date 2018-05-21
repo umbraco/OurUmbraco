@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Examine;
 using Examine.LuceneEngine;
 using OurUmbraco.Community.BlogPosts;
+using Skybrud.Essentials.Strings;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -43,8 +44,8 @@ namespace OurUmbraco.Our.Examine
 
             simpleDataSet.NodeDefinition.NodeId = item.Id;
             simpleDataSet.NodeDefinition.Type = indexType;
-
-            simpleDataSet.RowData.Add("body", String.Empty);
+            
+            simpleDataSet.RowData.Add("body", StringUtils.StripHtml(item.Data.Description));
             simpleDataSet.RowData.Add("nodeName", ExamineHelper.RemoveSpecialCharacters(item.Title));
             simpleDataSet.RowData.Add("nodeTypeAlias", "blogItem");
 
