@@ -682,6 +682,7 @@
     <None Include="scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="scripts\jquery-1.6.4.js" />
     <Content Include="scripts\jquery-1.6.4.min.js" />
+    <Content Include="scripts\jquery-1.9.1.min.js" />
     <Content Include="scripts\jquery.signalR-2.2.3.js" />
     <Content Include="scripts\jquery.signalR-2.2.3.min.js" />
     <Content Include="scripts\jquery.tooltipster.min.js" />
