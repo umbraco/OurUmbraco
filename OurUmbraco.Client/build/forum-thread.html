@@ -220,11 +220,11 @@
 						<i class="icon-Delete-key"></i><span>Delete thread</span>
 					</button>
 
-					<button class="follow button following">
+					<button class="follow button following" onclick="ga('send', 'event', 'Forum', 'Unfollow topic', '');">
 						<i class="icon-Bookmark"></i><span>Following</span>
 					</button>
 
-					<button class="follow button transparent">
+					<button class="follow button transparent" onclick="ga('send', 'event', 'Forum', 'Follow topic', '');">
 						<i class="icon-Bookmark"></i><span>Follow</span>
 					</button>
 				</div>
@@ -1044,7 +1044,7 @@ namespace TestProject.Controllers
 			</ul>
 
 			<div class="replybutton">
-				<a href="#" class="button green large reply">Reply to topic</a>
+                <a href="#" class="button green large reply">Reply to question</a>
 			</div>
 
 			<div class="replybutton notloggedin">
@@ -1137,7 +1137,7 @@ namespace TestProject.Controllers
 	        </div>
 	        <div class="row">
 	            <div class="col-xs-8">
-	                <input class="button markdown-control" type="button" value="Post topic" id="topic-submit">
+	                <input class="button markdown-control" type="button" value="Ask your question" id="topic-submit" onclick="ga('send', 'event', 'Forum overview', 'Post topic', 'Post topic');">
 	                <div id="posting"><div class="loader"></div></div>
 	            </div>
 	            <div class="col-xs-4 visible-xs visible-sm">

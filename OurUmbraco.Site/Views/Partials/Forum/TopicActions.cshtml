@@ -11,7 +11,7 @@
             </a>
         }
             
-        <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
+        <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic" onclick="ga('send', 'event', 'Forum', @Html.Raw(Model.Subscribed ? "'Unfollow'" : "'Follow'"), '');">
             <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
         </a>
     }
