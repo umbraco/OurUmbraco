@@ -1,1 +1,37 @@
-﻿<script type="text/javascript" src="/assets/js/components/highfives.js"></script>
+﻿<script type="text/javascript">
+
+    function loadAllGitHubContributors() {
+        $('#github-contributors .github-contributor-list').addClass('all');
+    }
+
+    $(document).ready(function() {
+        try {
+            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
+        } catch (errTwitter) {
+            console.log("Couldn't load Twitter feed", errTwitter.message);
+        }
+
+        try {
+            $("#meetups").load("@Url.Action("GetEvents", "Meetups")");
+        }
+        catch (errMeetups) {
+            console.log("Couldn't load meetups", errMeetups.message);
+        }
+
+        try {
+            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new {numberOfTopics = 6})");
+        } catch (errForum) {
+            console.log("Couldn't load latest forum activity", errForum.message);
+        }
+
+        try {
+            $("#github-contributors").load("@Url.Action("GitHubGetContributorsResult", "GitHubContributor")");
+        }
+        catch (errGitHub) {
+            console.log("Couldn't load latest GitHub contributor activity", errGitHub.message);
+        }
+        
+    });
+</script> 
+
+<script type="text/javascript" src="/assets/js/components/highfives.js"></script>
