@@ -16,9 +16,12 @@
                     HighFives.bindOnSubmitForm();
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
-                        HighFives.getCategories(function(categories) {
+                        HighFives.getCategories(function(response) {
+                            var categories = JSON.parse(response);
+
                             HighFives.buildCategoryDropdown(categories);
-                            HighFives.getRecentHighFiveActivity(0, function(activity) {
+                            HighFives.getRecentHighFiveActivity(0, function(response) {
+                                var activity = JSON.parse(response);
                                 HighFives.list = activity.highFives;
                                 HighFives.buildActivityList(HighFives.list);
                                 HighFives.checkForNewHighFivesPeriodically(30);
@@ -142,7 +145,7 @@
             if (useMockApi) {
                 onSuccess(ApiMock.getCategories());
             } else {
-                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
+                jQuery.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
             }
         },
 
@@ -152,7 +155,7 @@
                     HighFives.suggestions = ApiMock.getUmbracians();
                     HighFives.buildSuggestionsList();
                 } else {
-                    jquery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
+                    jQuery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
                         HighFives.suggestions = umbracians;
                         HighFives.buildSuggestionsList();
                     });
@@ -257,7 +260,7 @@
             if (useMockApi) {
                 onSuccess(ApiMock.submitHighFive());
             } else {
-                jQuery.get('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
+                jQuery.post('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
             }
         },
   
