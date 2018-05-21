@@ -11,6 +11,9 @@ using OurUmbraco.Our.Models;
 using Skybrud.Social.GitHub.OAuth;
 using Skybrud.Social.GitHub.Responses.Authentication;
 using Skybrud.Social.GitHub.Responses.Users;
+using Skybrud.Social.OAuth.Models;
+using Skybrud.Social.OAuth.Responses;
+using Skybrud.Social.Twitter.OAuth;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -31,6 +34,7 @@ namespace OurUmbraco.Our.Controllers
 
             var profileModel = new ProfileModel
             {
+                Id = member.Id,
                 Name = member.Name,
                 Email = member.Email,
                 Bio = member.GetValue<string>("profileText"),
@@ -158,7 +162,98 @@ namespace OurUmbraco.Our.Controllers
             var mem = ms.GetById(memberId);
 
             // Update the "github" property and save the value
-            mem.SetValue("github", userResponse.Body.Login);
+            mem.SetValue("github", githubUsername);
+            ms.Save(mem);
+
+            // Clear the runtime cache for the member
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
+
+            // Redirect the member back to the profile page
+            return RedirectToUmbracoPage(1057);
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LinkTwitter()
+        {
+
+            string rootUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+
+            TwitterOAuthClient client = new TwitterOAuthClient();
+            client.ConsumerKey = WebConfigurationManager.AppSettings["twitterConsumerKey"];
+            client.ConsumerSecret = WebConfigurationManager.AppSettings["twitterConsumerSecret"];
+            client.Callback = rootUrl + "/umbraco/surface/Profile/LinkTwitter";
+            
+            // Make the request to the Twitter API to get a request token
+            SocialOAuthRequestTokenResponse response = client.GetRequestToken();
+
+            // Get the request token from the response body
+            TwitterOAuthRequestToken requestToken = (TwitterOAuthRequestToken) response.Body;
+
+            // Save the token information to the session so we can grab it later
+            Session[requestToken.Token] = requestToken;
+
+            // Redirect the user to the authentication page at Twitter.com
+            return Redirect(requestToken.AuthorizeUrl);
+
+        }
+
+
+        [HttpGet]
+        public ActionResult LinkTwitter(string oauth_token, string oauth_verifier)
+        {
+
+            IPublishedContent profilePage = Umbraco.TypedContent(1057);
+            if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+
+            // Initialize the OAuth client
+            TwitterOAuthClient client = new TwitterOAuthClient();
+            client.ConsumerKey = WebConfigurationManager.AppSettings["twitterConsumerKey"];
+            client.ConsumerSecret = WebConfigurationManager.AppSettings["twitterConsumerSecret"];
+
+            // Grab the request token from the session
+            SocialOAuthRequestToken requestToken = Session[oauth_token] as SocialOAuthRequestToken;
+
+            // Update the OAuth client with information from the request token
+            client.Token = requestToken.Token;
+            client.TokenSecret = requestToken.TokenSecret;
+
+            // Make the request to the Twitter API to get the access token
+            SocialOAuthAccessTokenResponse response = client.GetAccessToken(oauth_verifier);
+
+            // Get the access token from the response body
+            TwitterOAuthAccessToken accessToken = (TwitterOAuthAccessToken) response.Body;
+
+            // get the access token from the response
+            string screenName = accessToken.ScreenName;
+            
+            // Get the member of the current ID (for comparision and lookup)
+            int memberId = Members.GetCurrentMemberId();
+
+            // Get a reference to the member searcher
+            BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+
+            // Initialize new search criteria for the Twitter screen name
+            ISearchCriteria criteria = searcher.CreateSearchCriteria();
+            criteria = criteria.RawQuery($"twitter:{screenName}");
+
+            // Check if there are other members with the same Twitter screen name
+            foreach (var result in searcher.Search(criteria))
+            {
+                if (result.Id != memberId)
+                {
+                    LogHelper.Info<ProfileController>("Failed setting Twitter screen name for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
+                    return GetErrorResult("Another member already exists with the same Twitter screen name.");
+                }
+            }
+
+            // Get the member from the member service
+            var ms = ApplicationContext.Services.MemberService;
+            var mem = ms.GetById(memberId);
+
+            // Update the "twitter" property and save the value
+            mem.SetValue("twitter", screenName);
             ms.Save(mem);
 
             // Clear the runtime cache for the member
@@ -177,6 +272,25 @@ namespace OurUmbraco.Our.Controllers
             var ms = Services.MemberService;
             var mem = ms.GetById(Members.GetCurrentMemberId());
             mem.SetValue("github", "");
+            ms.Save(mem);
+
+            var memberPreviousUserName = mem.Username;
+
+            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + memberPreviousUserName);
+
+            return RedirectToCurrentUmbracoPage();
+
+        }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UnlinkTwitter()
+        {
+
+            var ms = Services.MemberService;
+            var mem = ms.GetById(Members.GetCurrentMemberId());
+            mem.SetValue("twitter", "");
             ms.Save(mem);
 
             var memberPreviousUserName = mem.Username;
@@ -218,7 +332,6 @@ namespace OurUmbraco.Our.Controllers
             mem.SetValue("profileText",model.Bio);
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
-            mem.SetValue("twitter",model.TwitterAlias);
             
             // Assume it's valid lat/lon data posted - as its a hidden field that a Google Map will update the lat & lon of hidden fields when marker moved
             mem.SetValue("latitude", model.Latitude); 

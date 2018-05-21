@@ -1,7 +1,9 @@
 ﻿@using System.Configuration
+@using System.Web.Configuration
 @using ClientDependency.Core.Mvc
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
+@using OurUmbraco.Our.Extensions
 
 @inherits UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
 @{
@@ -32,24 +34,60 @@
 <div class="profile-settings">
     <h3>Linked accounts</h3>
     <div class="linked-accounts">
-        @if (String.IsNullOrWhiteSpace(Model.GitHubUsername))
-        {
-            using (Html.BeginUmbracoForm<ProfileController>("LinkGitHub"))
-            {
-                @Html.AntiForgeryToken()
-                <input class="button profile" type="submit" value="Link with GitHub">
-            }
-        }
-        else
-        {
-            using (Html.BeginUmbracoForm<ProfileController>("UnlinkGitHub"))
-            {
-                @Html.AntiForgeryToken()
-                <input class="button profile" type="submit" value="Unlink GitHub">
-            }
-        }
+        <table>
+            <tr>
+                <td>
+                    @if (String.IsNullOrWhiteSpace(Model.GitHubUsername))
+                    {
+                        using (Html.BeginUmbracoForm<ProfileController>("LinkGitHub"))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input class="button" type="submit" value="Link with GitHub">
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginUmbracoForm<ProfileController>("UnlinkGitHub"))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input class="button red" type="submit" value="Unlink GitHub">
+                        }
+                    }
+                </td>
+                <td>
+                    Linking with your GitHub account will show a link on your Our Umbraco profile to your GitHub
+                    profile. You will then also be able to link to your Our Umbraco profile using your GitHub username
+                    - eg. like <code>/members/username</code>.<br />
+                    <br />
+                    If your have contributed to Umbraco on GitHub, we will also use your GitHub username to link and
+                    acknowledge these contributions on Our Umbraco. 
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @if (String.IsNullOrWhiteSpace(Model.TwitterAlias))
+                    {
+                        using (Html.BeginUmbracoForm<ProfileController>("LinkTwitter"))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input class="button" type="submit" value="Link with Twitter">
+                        }
+                    }
+                    else
+                    {
+                        using (Html.BeginUmbracoForm<ProfileController>("UnlinkTwitter"))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input class="button red" type="submit" value="Unlink Twitter">
+                        }
+                    }
+                </td>
+                <td>
+                    Linking with your Twitter account will show a link on your Our Umbraco profile to your Twitter profile.
+                </td>
+            </tr>
+        </table>
     </div>
-
 </div>
 
 <div class="profile-settings">
@@ -73,6 +111,17 @@
                 @Html.HiddenFor(m => m.Avatar)
             </div>
 
+            <div class="profile-input">
+                <label>ID</label>
+                <input type="text" value="@Model.Id" readonly />
+            </div>
+
+            <div class="profile-input">
+                <label>URL</label>
+                <input type="text" value="@Url.GetProfileUrlWithDomain(Model)" readonly />
+                
+            </div>
+
             <div class="profile-input" id="username">
                 @Html.LabelFor(m => m.Name)
                 @Html.TextBoxFor(m => m.Name)
@@ -90,7 +139,7 @@
 
             <div class="profile-input confirm-password" id="repeat-password">
                 @Html.LabelFor(m => m.RepeatPassword)
-                @Html.PasswordFor(m => m.RepeatPassword, new {@class = "password-input"})
+                @Html.PasswordFor(m => m.RepeatPassword, new { @class = "password-input" })
             </div>
 
             <div class="profile-input" id="company">
@@ -101,11 +150,6 @@
             <div class="profile-input" id="bio">
                 @Html.LabelFor(m => m.Bio)
                 @Html.TextAreaFor(m => m.Bio)
-            </div>
-
-            <div class="profile-input" id="twitter-alias">
-                @Html.LabelFor(m => m.TwitterAlias)
-                @Html.TextBoxFor(m => m.TwitterAlias)
             </div>
 
             <div>
@@ -129,7 +173,7 @@
             </div>
 
             <input class="button green" type="submit" value="Save changes">
-                
+
             if (TempData["success"] != null)
             {
                 <small class="notification success">
@@ -159,6 +203,23 @@
 
     .profile-settings .linked-accounts > form {
         margin-right: 10px;
+    }
+
+    .profile-settings .linked-accounts input.button {
+        width: 160px;
+        padding: 8px;
+    }
+
+    .profile-settings .linked-accounts td + td {
+        padding: 0 0 50px 20px;
+        vertical-align: top;
+        line-height: 20px;
+    }
+
+    .profile-settings .linked-accounts code {
+        background: #F5FBF1;
+        color: #333;
+        font-size: 14px;
     }
 
 </style>
