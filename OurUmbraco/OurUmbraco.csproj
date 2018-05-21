@@ -420,10 +420,13 @@
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogInfo.cs" />
+    <Compile Include="Community\BlogPosts\BlogPostsCache.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
+    <Compile Include="Community\BlogPosts\BlogPostsWebClient.cs" />
     <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
     <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
-    <Compile Include="Community\BlogPosts\BlogRssUtils.cs" />
+    <Compile Include="Community\BlogPosts\BlogUtils.cs" />
+    <Compile Include="Community\BlogPosts\BlogDatabaseItem.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
@@ -587,6 +590,7 @@
     <Compile Include="Our\Controllers\ResetPasswordController.cs" />
     <Compile Include="Our\CustomHandlers\PullRequestIndexer.cs" />
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
+    <Compile Include="Our\Examine\BlogItemsIndexDataService.cs" />
     <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
     <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
@@ -795,6 +799,7 @@
       <DependentUpon>repository.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="Search\BlogItemSearchResult.cs" />
     <Compile Include="SignalRHubs\ForumPostHub.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />

@@ -1,0 +1,30 @@
+﻿@using OurUmbraco.Community.BlogPosts
+@inherits UmbracoViewPage<OurUmbraco.Search.BlogItemSearchResult>
+    
+@{
+
+    if (Model.Blog == null)
+    {
+        return;
+    }
+
+}
+
+<li>
+    <a href="@Model.Item.Link" target="_blank" rel="noopener">
+        <div class="type-icon">
+            <i class="icon-Rss"></i>
+        </div>
+        <div class="type-context">
+            <div class="type-name">
+                @Model.Item.Title
+                <span style="color: #445255; font-size: 14px;">(via @Model.Blog.Title)</span>
+            </div>
+            <span class="type-datetime">Published: @Model.Item.PublishedDate.ToString("MMMM dd, yyyy")</span>
+            @if (Model.Item.HasDescription)
+            {
+                <div class="type-description">@Umbraco.Truncate(Model.Item.Description, 300)</div>
+            }
+        </div>
+    </a>
+</li>

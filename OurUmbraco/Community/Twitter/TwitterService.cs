@@ -42,7 +42,7 @@ namespace OurUmbraco.Community.Twitter
                             {
                                 SearchType = SearchResultType.Recent
                             };
-                            var results = Search.SearchTweets(searchParameter);
+                            var results = Tweetinvi.Search.SearchTweets(searchParameter);
                             return results == null ? new ITweet[]{} : results.ToArray();
 
                         }, TimeSpan.FromMinutes(2));
