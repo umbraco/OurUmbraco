@@ -120,7 +120,7 @@
         checkForNewHighFivesPeriodically: function (seconds) {
             window.setTimeout(function() {
                 HighFives.getRecentHighFiveActivity(0, function(response) {
-                    HighFives.list = _.unionBy(HighFives.list, response.highFives, 'id').slice(0, 10);
+                    HighFives.list = HighFives.unionBy(HighFives.list, response.highFives).slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -281,6 +281,23 @@
             }
     
             return array;
+        },
+
+        unionBy: function(oldArray, newArray) {
+            for (var n = 0; n < newArray.length; n++) {
+                var itemToAdd = newArray[n];
+                var isUnique = true;
+                for (var o = 0; o < oldArray.length; o++) {
+                    var oldItem = oldArray[o];
+                    if (oldItem.id === itemToAdd.id) {
+                        isUnique = false;
+                    }
+                }
+                if (isUnique) {
+                    oldArray.unshift(itemToAdd);
+                }
+            }
+            return oldArray;
         }
     };
 
