@@ -271,8 +271,8 @@
 
 
 	.markdown-close {
-        position: fixed;
-		right: 1.5rem;
+        position: relative;
+		left: 1.5rem;
 		top: 2rem;
 		font-size: 15px;
 		cursor: pointer;
