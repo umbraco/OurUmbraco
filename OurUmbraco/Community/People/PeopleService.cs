@@ -310,11 +310,13 @@ namespace OurUmbraco.Community.People
             var totalIndexes = results.TotalItemCount > 9 ? 9 : results.TotalItemCount;
             int[] indexes = new int[totalIndexes + 1];
 
-            for(int i = 0; i < totalIndexes; i++)
-            {
-                Random r = new Random();
-                int rInt = r.Next(0, results.TotalItemCount);
+            int rand = 0;
 
+            for(int i = 0; i < totalIndexes + 1; i++)
+            {
+                Random r = rand == 0 ? new Random() : new Random(rand);
+                int rInt = r.Next(0, results.TotalItemCount);
+                rand = rInt;
                 indexes[i] = resultsList[rInt].Id;
             }
 
