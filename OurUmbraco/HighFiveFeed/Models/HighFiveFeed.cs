@@ -18,7 +18,7 @@ namespace OurUmbraco.HighFiveFeed.Models
             public int ToMemberId { get; set; }
 
             [Column("actionId")]
-            public int ActionId { get; set; }
+            public string ActionId { get; set; }
 
             [Column("link")]
             public string Link { get; set; }

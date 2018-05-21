@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.Http;
 using Umbraco.Web.WebApi;
 using Umbraco.Core;
 using OurUmbraco.HighFiveFeed.Models;
+using System.Web.Mvc;
+using Newtonsoft.Json;
+using System.Net.Http;
+using Newtonsoft.Json.Serialization;
+using Umbraco.Core.Persistence;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Community.People;
 
@@ -16,9 +20,15 @@ namespace OurUmbraco.HighFiveFeed.API
     {
         private readonly DatabaseContext _dbContext;
 
+        public HighFiveFeedAPIController(DatabaseContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
-        [HttpGet]
-        public void SubmitHighFive(int fromUserId, int toUserId, int action, String url)
+        public HighFiveFeedAPIController() { }
+
+       [HttpGet]
+        public void SubmitHighFive(int fromUserId, int toUserId, string action, String url)
         {
             var memberService = ApplicationContext.Current.Services.MemberService;
             var member = memberService.GetById(fromUserId);
@@ -32,14 +42,34 @@ namespace OurUmbraco.HighFiveFeed.API
 
             _dbContext.Database.Insert(highFive);
         }
-
-        public List<HighFiveCategory> GetCategories()
+        [HttpGet]
+        public List<OurUmbraco.HighFiveFeed.Models.HighFiveFeed> GetHighFiveFeed()
         {
-            //refactor to a service
+            var sql = new Sql().Select("*").From("highFivePosts");
+            var result = _dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql);
+            return result;
+
+        }
+
+
+        public string GetCategories()
+        {
             var categories = new List<HighFiveCategory>();
             categories.Add(new HighFiveCategory(1, "A Package"));
             categories.Add(new HighFiveCategory(2, "A Talk"));
-            return categories;
+            categories.Add(new HighFiveCategory(3, "A Blog Post"));
+            categories.Add(new HighFiveCategory(4, "A Meetup"));
+            categories.Add(new HighFiveCategory(5, "A Skrift Article"));
+            categories.Add(new HighFiveCategory(6, "A Tutorial"));
+            categories.Add(new HighFiveCategory(7, "Advice"));
+            categories.Add(new HighFiveCategory(8, "A Video"));
+            categories.Add(new HighFiveCategory(9, "A PR"));
+            var rawJson = JsonConvert.SerializeObject(categories, Formatting.Indented);
+
+
+            return rawJson;
+
+           
         }
 
         public List<Person> GetUmbracians(string name)

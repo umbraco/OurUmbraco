@@ -1472,6 +1472,8 @@ namespace OurUmbraco.Our
                     return;
                 }
                 //locic
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+                db.Execute("CREATE TABLE [dbo].[highFivePosts]([Id][int] NULL,[FromMemberId] [int] NULL,[ToMemberId] [int] NULL,[ActionId] [varchar] (50) NULL,[Link][nvarchar](max) NULL,[Count] [int] NULL) ON[PRIMARY] TEXTIMAGE_ON[PRIMARY] GO");
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
