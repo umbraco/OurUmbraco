@@ -22,7 +22,7 @@ namespace OurUmbraco.HighFiveFeed.API
 
         //this will be for authorized members only
        [HttpPost]
-        public void SubmitHighFive(int fromUserId, int toUserId, string action, String url)
+        public void SubmitHighFive(int fromUserId, int toUserId, int action, String url)
         {
             var memberService = ApplicationContext.Current.Services.MemberService;
             var member = memberService.GetById(fromUserId);
@@ -31,7 +31,7 @@ namespace OurUmbraco.HighFiveFeed.API
             var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
             highFive.FromMemberId = fromUserId;
             highFive.ToMemberId = toUserId;
-            highFive.ActionId = action;
+            highFive.ActionId = action.ToString();
             highFive.Link = url;
 
             dbContext.Database.Insert(highFive);
