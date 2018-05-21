@@ -1,6 +1,5 @@
 ﻿@model ReadOnlyTopic
 @using System.Web.Mvc.Html
-@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
 @using Umbraco.Core.Logging
 
@@ -46,6 +45,15 @@
         @Html.Raw(Model.MainNotification)
     </div>
 }
+
+<!-- OUTDATED THREAD? -->
+@if ((DateTime.UtcNow - Model.Created.ToUniversalTime()).TotalDays > 365 * 2)
+{
+    <div class="alertbar__yellow" style="margin-bottom: 20px;">
+        Heads up! Please be aware that this thread was <strong>created more than 2 years ago</strong> and it's possible that it's outdated.
+    </div>
+}
+<!-- OUTDATED THREAD END -->
 
 <ul class="comments">
     @{
