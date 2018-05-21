@@ -13,6 +13,8 @@ using Newtonsoft.Json.Serialization;
 using Umbraco.Core.Persistence;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Community.People;
+using OurUmbraco.Forum.Services;
+using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.HighFiveFeed.API
 {
@@ -37,12 +39,37 @@ namespace OurUmbraco.HighFiveFeed.API
             dbContext.Database.Insert(highFive);
         }
         [HttpGet]
-        public List<OurUmbraco.HighFiveFeed.Models.HighFiveFeed> GetHighFiveFeed()
+        public string GetHighFiveFeed()
         {
             var dbContext = ApplicationContext.Current.DatabaseContext;
             var sql = new Sql().Select("*").From("highFivePosts");
-            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql);
-            return result;
+            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x=>x.Id);
+            var avatarService = new AvatarService();
+            var response = new HighFiveFeedResponse();
+            foreach (var dbEntry in result.Take(10))
+            {
+                var toMember = Members.GetById(dbEntry.ToMemberId);
+                var fromMember = Members.GetById(dbEntry.FromMemberId);
+                var toAvatar = avatarService.GetMemberAvatar(toMember);
+                var fromAvatar = avatarService.GetMemberAvatar(toMember);
+                var highFive = new HighFiveResponse()
+                {
+                    url = dbEntry.Link,
+                    type = dbEntry.ActionId.ToString(),
+                    from = fromMember.Name,
+                    fromAvatarUrl = fromAvatar,
+                    to = toMember.Name,
+                    toAvatarUrl = toAvatar,
+                    Id = dbEntry.Id
+
+
+                };
+                response.HighFives.Add(highFive);
+            }
+            var rawJson = JsonConvert.SerializeObject(response, Formatting.Indented);
+
+
+            return rawJson;
 
         }
 

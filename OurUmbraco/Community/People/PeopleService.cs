@@ -139,7 +139,7 @@ namespace OurUmbraco.Community.People
                     return mvpsPerYear;
 
                 }, TimeSpan.FromHours(48));
-            
+
             return ourMvps;
         }
 
@@ -160,17 +160,17 @@ namespace OurUmbraco.Community.People
 
                     var badgeMembers = new List<BadgeMember>();
                     var members = memberService.GetMembersByGroup(memberGroup.Name).ToList();
-                    
-                            foreach (var member in members)
-                            {
-                                var badgeMember = PopulateBadgeMemberData(member);
-                                badgeMembers.Add(badgeMember);
-                            }
+
+                    foreach (var member in members)
+                    {
+                        var badgeMember = PopulateBadgeMemberData(member);
+                        badgeMembers.Add(badgeMember);
+                    }
 
                     return badgeMembers;
 
                 }, TimeSpan.FromHours(24));
-            
+
             return ourMembersInRole;
         }
 
@@ -264,7 +264,7 @@ namespace OurUmbraco.Community.People
 
                 var peopleResults = memberService.GetAllMembers(memberIds);
 
-                foreach(var person in peopleResults)
+                foreach (var person in peopleResults)
                 {
                     people.Add(new Person(person));
                 }
@@ -310,11 +310,13 @@ namespace OurUmbraco.Community.People
             var totalIndexes = results.TotalItemCount > 9 ? 9 : results.TotalItemCount;
             int[] indexes = new int[totalIndexes + 1];
 
-            for(int i = 0; i < totalIndexes; i++)
-            {
-                Random r = new Random();
-                int rInt = r.Next(0, results.TotalItemCount);
+            int rand = 0;
 
+            for (int i = 0; i < totalIndexes + 1; i++)
+            {
+                Random r = rand == 0 ? new Random() : new Random(rand);
+                int rInt = r.Next(0, results.TotalItemCount);
+                rand = rInt;
                 indexes[i] = resultsList[rInt].Id;
             }
 
