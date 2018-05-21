@@ -777,6 +777,7 @@
     <Compile Include="Repository\Controllers\PackageRepositoryController.cs" />
     <Compile Include="Repository\Controllers\PackageSortOrder.cs" />
     <Compile Include="Repository\Models\Category.cs" />
+    <Compile Include="Repository\Models\DocumentationVersion.cs" />
     <Compile Include="Repository\Models\ExternalSource.cs" />
     <Compile Include="Repository\Models\PackageDetails.cs" />
     <Compile Include="Repository\Models\Package.cs" />
@@ -786,6 +787,7 @@
     <Compile Include="Repository\Models\PackageOwnerInfo.cs" />
     <Compile Include="Repository\Models\PackageVersionSupport.cs" />
     <Compile Include="Repository\Models\PagedPackages.cs" />
+    <Compile Include="Repository\Services\DocumentationVersionService.cs" />
     <Compile Include="Repository\Services\PackageRepositoryService.cs" />
     <Compile Include="Repository\Project.cs" />
     <Compile Include="Repository\Projects.cs" />
