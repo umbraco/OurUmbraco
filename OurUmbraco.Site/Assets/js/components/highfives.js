@@ -1,31 +1,5 @@
 (function() {
 
-    var placeholderNames = [
-        "Marcin Zajkowski",
-        "Callum Whyte",
-        "Anders Bjerner",
-        "Emma Garland",
-        "Lars - Erik Aabech",
-        "Matt Brailsford",
-        "Carole Rennie Logan",
-        "Emma Burstow",
-        "Lee Kelleher",
-        "Jeffrey Schoemaker",
-        "Erica Quessenberry",
-        "Kyle Weems",
-        "Mike Masey",
-        "Niels Hartvig",
-        "Jeavon Leopold",
-        "Damiaan Peeters",
-        "Marc Goodson",
-        "Mads Rasmussen",
-        "Shannon Deminick",
-        "Stéphane Gay",
-        "Sebastiaan Janssen",
-        "Jacob Midtgaard - Olesen",
-        "Ilham Boulghallat"
-    ];
-
     var useMockApi = true;
 
     // HighFives - JS functionality for the high fives module.
@@ -39,13 +13,15 @@
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.bindOnMentionChange();
                     HighFives.bindOnMemberSelect();
-                    HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
-                    HighFives.getCategories(function(response) {
-                        HighFives.buildCategoryDropdown(response);
-                        HighFives.getRecentHighFiveActivity(0, function(response) {
-                            HighFives.list = response.highFives;
-                            HighFives.buildActivityList(HighFives.list);
-                            HighFives.checkForNewHighFivesPeriodically(30);
+                    HighFives.getRandomUmbracians(function(people) {
+                        HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
+                        HighFives.getCategories(function(categories) {
+                            HighFives.buildCategoryDropdown(categories);
+                            HighFives.getRecentHighFiveActivity(0, function(activity) {
+                                HighFives.list = activity.highFives;
+                                HighFives.buildActivityList(HighFives.list);
+                                HighFives.checkForNewHighFivesPeriodically(30);
+                            });
                         });
                     });
                 }
@@ -160,6 +136,15 @@
                         HighFives.buildSuggestionsList();
                     });
                 }
+            }
+        },
+
+        // getRandomUmbracians - Get a random list of Umbracians to use for placeholder.
+        getRandomUmbracians: function(onSuccess) {
+            if (useMockApi) {
+                onSuccess(ApiMock.getRandomUmbracians());
+            } else {
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/getRandomUmbracians', onSuccess);
             }
         },
 
@@ -305,6 +290,33 @@
                     Username: 'Fredina Hartvig'
                 }
             ];
+        },
+        getRandomUmbracians: function() {
+            return [
+                {MemberId: '0001', Username: "Marcin Zajkowski"},
+                {MemberId: '0002', Username: "Callum Whyte"},
+                {MemberId: '0003', Username: "Anders Bjerner"},
+                {MemberId: '0004', Username: "Emma Garland"},
+                {MemberId: '0005', Username: "Lars - Erik Aabech"},
+                {MemberId: '0006', Username: "Matt Brailsford"},
+                {MemberId: '0007', Username: "Carole Rennie Logan"},
+                {MemberId: '0008', Username: "Emma Burstow"},
+                {MemberId: '0009', Username: "Lee Kelleher"},
+                {MemberId: '0010', Username: "Jeffrey Schoemaker"},
+                {MemberId: '0011', Username: "Erica Quessenberry"},
+                {MemberId: '0012', Username: "Kyle Weems"},
+                {MemberId: '0013', Username: "Mike Masey"},
+                {MemberId: '0014', Username: "Niels Hartvig"},
+                {MemberId: '0015', Username: "Jeavon Leopold"},
+                {MemberId: '0016', Username: "Damiaan Peeters"},
+                {MemberId: '0017', Username: "Marc Goodson"},
+                {MemberId: '0018', Username: "Mads Rasmussen"},
+                {MemberId: '0019', Username: "Shannon Deminick"},
+                {MemberId: '0020', Username: "Stéphane Gay"},
+                {MemberId: '0021', Username: "Sebastiaan Janssen"},
+                {MemberId: '0022', Username: "Jacob Midtgaard - Olesen"},
+                {MemberId: '0023', Username: "Ilham Boulghallat"}
+            ]
         }
     };
 
