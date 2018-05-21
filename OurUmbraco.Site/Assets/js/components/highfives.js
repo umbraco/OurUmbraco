@@ -97,18 +97,16 @@
         buildActivityList: function () {
             var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
-                var list = jQuery("#high-five-activity .high-five-activity-list");
-                list.empty();
-                var items = [];
+                var list = document.querySelector("#high-five-activity .high-five-activity-list");
+                list.innerHTML = '';
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
-                    items += '<li><span class="from">' + highFive.from + '</span> has highfived ' +
-                        '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to + '</span>' +
-                        ' for a <span class="type">' + highFive.type + '</span>' +
-                        ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') +
-                        '.</li>';
+                    list.innerHTML += '<li><span class="from">' + highFive.from + '</span> has highfived ' + 
+                    '<img class="avatar" src="' + highFive.toAvatarUrl + '" /><span class="to">' + highFive.to +  '</span>' + 
+                    ' for a <span class="type">' + highFive.type + '</span>' + 
+                    ((highFive.url && highFive.url !== '') ? ' at <a href="' + highFive.url + '" target="_blank">' + highFive.url + '</a>' : '') + 
+                    '.</li>';
                 }
-                list.append(items);
             }
         },
 
@@ -116,7 +114,7 @@
         checkForNewHighFivesPeriodically: function (seconds) {
             window.setTimeout(function () {
                 HighFives.getRecentHighFiveActivity(0, function (response) {
-                    HighFives.list = _.union(HighFives.list, response.highFives).slice(0, 10);
+                    HighFives.list = _.unionBy(HighFives.list, response.highFives, 'id').slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
