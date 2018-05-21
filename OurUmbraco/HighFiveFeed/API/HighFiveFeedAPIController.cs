@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -21,13 +21,13 @@ namespace OurUmbraco.HighFiveFeed.API
         public HighFiveFeedAPIController() { }
 
         //this will be for authorized members only
-       [HttpPost]
-        public void SubmitHighFive(int fromUserId, int toUserId, string action, String url)
+        [HttpPost]
+        public void SubmitHighFive(int fromUserId, int toUserId, int action, String url)
         {
             var memberService = ApplicationContext.Current.Services.MemberService;
             var member = memberService.GetById(fromUserId);
 
-            var dbContext= ApplicationContext.Current.DatabaseContext;
+            var dbContext = ApplicationContext.Current.DatabaseContext;
             var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
             highFive.FromMemberId = fromUserId;
             highFive.ToMemberId = toUserId;
@@ -64,7 +64,7 @@ namespace OurUmbraco.HighFiveFeed.API
 
             return rawJson;
 
-           
+
         }
 
         public List<Person> GetUmbracians(string name)
@@ -77,4 +77,3 @@ namespace OurUmbraco.HighFiveFeed.API
         }
     }
 }
-
