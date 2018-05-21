@@ -78,6 +78,7 @@ namespace OurUmbraco.Our.Controllers
                 }
                 else
                 {
+                    LogHelper.Warn<ResetPasswordController>($"ResetPassword - Can't find member in the MemberShip Provider {model.Email}");
                     ModelState.AddModelError("", "Can't reset your password with the provided information");
                     return CurrentUmbracoPage();
                 }
@@ -97,13 +98,30 @@ namespace OurUmbraco.Our.Controllers
                 var memberService = ApplicationContext.Current.Services.MemberService;
                 var member = memberService.GetByEmail(model.Email);
                 if (member == null)
+                {
+                    LogHelper.Warn<ResetPasswordController>($"VerifyResetData - Can\'t find member in the MemberService {model.Email}");
                     return null;
+                }
 
-                if (member.GetValue<DateTime>("passwordResetTokenExpiryDate") < DateTime.Now)
+                var expiryDateTimeString = member.GetValue<string>("passwordResetTokenExpiryDate");
+                var datetimeParseSuccess = DateTime.TryParse(expiryDateTimeString, out var expiryDateTime);
+                if (datetimeParseSuccess == false)
+                {
+                    LogHelper.Warn<ResetPasswordController>($"VerifyResetData - Could not parse date/time {expiryDateTimeString}");
                     return null;
+                }
+
+                if (expiryDateTime < DateTime.Now)
+                {
+                    LogHelper.Warn<ResetPasswordController>($"VerifyResetData - Token expired at {expiryDateTime}, it is now {DateTime.Now}");
+                    return null;
+                }
 
                 var hashedToken = member.GetValue<string>("passwordResetToken");
                 var verifyToken = SecureHasher.Verify(model.Token, hashedToken);
+                
+                if(verifyToken == false)
+                    LogHelper.Warn<ResetPasswordController>($"VerifyResetData - VerifyToken failed, token value recieved: {model.Token}, hashed token: {hashedToken}");
 
                 return verifyToken ? member : null;
             }

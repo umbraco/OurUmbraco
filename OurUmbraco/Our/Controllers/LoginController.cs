@@ -134,7 +134,7 @@ namespace OurUmbraco.Our.Controllers
 
             var resetToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var hashCode = SecureHasher.Hash(resetToken);
-            var expiryDate = DateTime.Now.AddDays(1);
+            var expiryDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
 
             m.SetValue("passwordResetToken", hashCode);
             m.SetValue("passwordResetTokenExpiryDate", expiryDate.ToString(CultureInfo.InvariantCulture));
