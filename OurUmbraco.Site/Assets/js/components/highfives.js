@@ -37,7 +37,6 @@
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
                     HighFives.getCategories(function(response) {
-                        console.info(response);
                         HighFives.buildCategoryDropdown(response);
                         HighFives.getRecentHighFiveActivity(0, function(response) {
                             HighFives.list = response.highFives;
