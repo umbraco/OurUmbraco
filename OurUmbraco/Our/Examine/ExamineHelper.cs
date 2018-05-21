@@ -48,7 +48,11 @@ namespace OurUmbraco.Our.Examine
             lines.AddRange(File.ReadAllLines(file.FullName));
 
             // don't parse empty files
-            if (lines.Count == 0) { return simpleDataSet; }
+            if (lines.Count == 0)
+            {
+                Umbraco.Core.Logging.LogHelper.Info(typeof(ExamineHelper), "Skipping file {0}", () => file.FullName);
+                return simpleDataSet;
+            }
 
             // remove first empty lines
             while (string.IsNullOrWhiteSpace(lines.ElementAt(0)))
@@ -62,7 +66,7 @@ namespace OurUmbraco.Our.Examine
             bool hasYaml = lines.ElementAt(0) == "---";
             int secondYamlMarker = 0;
 
-            if (hasYaml)    
+            if (hasYaml)
             {
                 // Find the "next" triple dash starting from the second line
                 secondYamlMarker = lines.IndexOf("---", 1);
@@ -73,7 +77,7 @@ namespace OurUmbraco.Our.Examine
             if (secondYamlMarker > 0)
             {
                 var yamlInput = new StringBuilder();
-                for (int i = 0; i < secondYamlMarker; i++)
+                for (int i = 1; i < secondYamlMarker; i++)
                 {
                     yamlInput.AppendLine(lines.ElementAt(i));
                 };
