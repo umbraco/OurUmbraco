@@ -32,6 +32,7 @@
      * @var HighFives - JS functionality for the high fives module.
      */
     var HighFives = {
+        list: [],
         /**
          * @method init
          * @returns {void}
@@ -41,9 +42,10 @@
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
                     HighFives.getRecentHighFiveActivity(0, function(response) {
-                        console.info('response', response);
-                        HighFives.buildActivityList(response.highFives);
-                    })
+                        HighFives.list = response.highFives;
+                        HighFives.buildActivityList(HighFives.list );
+                        HighFives.checkForNewHighFivesPeriodically(30);
+                    });
                 }
             });
         },
@@ -54,6 +56,12 @@
             return new Promise(resolve => setTimeout(resolve, 100));
         },
 
+        /**
+         * @method buildActivityList - Builds a list of list items that represent 
+         * the activity list and adds them to an activity list for users to view.
+         * @param {JSON[]} highFives - a list of highFive items.
+         * @returns {void}
+         */
         buildActivityList: function (highFives) {
             if (highFives && highFives.length > 0) {
                 var list = document.querySelector("#high-five-activity .high-five-activity-list");
@@ -69,8 +77,47 @@
             }
         },
 
+        /**
+         * @method checkForNewHighFivesPeriodically
+         * @param {number} seconds
+         * @returns {void}
+         */
+        checkForNewHighFivesPeriodically: function (seconds) {
+            window.setTimeout(function() {
+                HighFives.getRecentHighFiveActivity(0, function(response) {
+                    HighFives.list = HighFives.combineUniqueHighFives(HighFives.list, response.highFives);
+                    HighFives.list = HighFives.list.slice(0, 10);
+                    HighFives.buildActivityList(HighFives.list);
+                    HighFives.checkForNewHighFivesPeriodically(30);
+                });
+            }, (seconds * 1000));
+        },
+
         clearPlaceholder: function (el) {
             el.attr("placeholder", "");
+        },
+
+        /**
+         * @method combineUniqueHighFives
+         * @param {JSON[]} original
+         * @param {JSON[]} additional
+         * @returns {JSON[]}
+         */
+        combineUniqueHighFives: function(original, additional) {
+            for (var a = 0; a < additional.length; a++) {
+                var add = additional[a];
+                var isUnique = true;
+                for (var o = 0; o < original.length; o++) {
+                    var orig = original[o];
+                    if (orig.id === add.id) {
+                        isUnique = false;
+                    }
+                }
+                if (isUnique) {
+                    original.unshift(add);
+                }
+            }
+            return original;
         },
 
         /**
