@@ -9,24 +9,43 @@ namespace OurUmbraco.HighFiveFeed.Models
         public class HighFiveFeed
         {
             [Column("id")]
-            public int Id { get; set; }
+    [TableName("highFivePosts")]
+    [PrimaryKey("id", autoIncrement = false)]
+    [ExplicitColumns]
+    public class HighFiveFeed
+    {
+        [Column("id")]
+        public int Id { get; set; }
 
             [Column("fromMemberId")]
             public int FromMemberId { get; set; }
+        [Column("fromMemberId")]
+        public int FromMemberId { get; set; }
 
             [Column("toMemberId")]
             public int ToMemberId { get; set; }
+        [Column("toMemberId")]
+        public int ToMemberId { get; set; }
 
             [Column("actionId")]
             public int ActionId { get; set; }
+        [Column("actionId")]
+        public int ActionId { get; set; }
 
             [Column("link")]
             public string Link { get; set; }
+        [Column("link")]
+        public string Link { get; set; }
 
             [Column("count")]
             public int Count { get; set; }
+        [Column("count")]
+        public int Count { get; set; }
 
 
         }
+        [Column("createdDate")]
+        public DateTime CreatedDate { get; set; }
     }
+}
 
