@@ -22,7 +22,7 @@ namespace OurUmbraco.Our.Controllers
             if (q.Contains("999999.9'") || q.Contains("0x393133353134353632392e39"))
                 q = string.Empty;
 
-            var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
+            var umbracoPage = this.CurrentPage;
 
             var nodeTypeAlias = cat;
             
@@ -42,8 +42,7 @@ namespace OurUmbraco.Our.Controllers
                 searchFilters.Filters.Add(new SearchFilter("parentId", fid));
                 filters.Add(searchFilters);
 
-                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-                var forum = umbracoHelper.ContentQuery.TypedContent(fid);
+                var forum = Umbraco.ContentQuery.TypedContent(fid);
                 var parentForum = forum.Parent;
                 forumName = forum.Name + " - " + parentForum.Name;
             }
