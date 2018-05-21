@@ -31,12 +31,14 @@
     // HighFives - JS functionality for the high fives module.
     var HighFives = {
         list: [],
+        selectedMember: false,
         suggestions: [],
         // init - Starts the high fives app functionality.
         init: function() {
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.bindOnMentionChange();
+                    HighFives.bindOnMemberSelect();
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
                     HighFives.getCategories(function(response) {
                         HighFives.buildCategoryDropdown(response);
@@ -58,8 +60,23 @@
 
         bindOnMentionChange: function () {
             jQuery('#high-five-mention').keyup(function(e) {
+                HighFives.selectedMember = false;
                 HighFives.getMember(e.target.value);
+                HighFives.selectMemberIfMatches(e.target.value);
             });
+        },
+
+        bindOnMemberSelect: function() {
+            jQuery('#high-five-form .suggestions-list button').unbind('click');
+            jQuery('#high-five-form .suggestions-list button').click(function(e) {
+                var id = e.target.getAttribute('data-id');
+                HighFives.selectedMember = {
+                    id: e.target.getAttribute('data-id'),
+                    name: e.target.innerHTML
+                };
+                HighFives.selectMember(HighFives.selectedMember);
+            });
+            // unbind from previous versions just in case
         },
 
         // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
@@ -89,6 +106,7 @@
                 '<button type="button" data-id="' +  suggestion.MemberId + '">' + suggestion.Username + 
                 '</button></li>';
             }
+            HighFives.bindOnMemberSelect();
         },
 
         // buildCategoryDropdown - Builds a list of options for the category dropdown.
@@ -189,6 +207,30 @@
                 (promise, phrase) => promise.then(_ => HighFives.printPhrase(phrase, el)),
                 Promise.resolve()
             );
+        },
+
+        // selectMember
+        selectMember: function (member) {
+            var list = document.querySelector("#high-five-form .suggestions-list");
+            list.innerHTML = '';
+            jQuery('#high-five-mention').val(member.name);
+        },
+
+        // selectMemberIfMatches - If the `value` matches the name of a user in the suggestions list, select them.
+        selectMemberIfMatches: function(value) {
+            var suggestions = HighFives.suggestions;
+            if (suggestions && suggestions.length > 0) {
+                for (var i = 0; i < suggestions.length; i++) {
+                    var suggestion = suggestions[i];
+                    if (suggestion.Username.toLowerCase() == value.toLowerCase()) {
+                        HighFives.selectedMember = {
+                            id: suggestion.MemberId,
+                            name: suggestion.Username
+                        };
+                        HighFives.selectMember(HighFives.selectedMember);
+                    }
+                }
+            }
         },
   
         shuffle: function(array) {
