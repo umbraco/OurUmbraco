@@ -1,4 +1,4 @@
-(function () {
+(function() {
 
     var placeholderNames = [
         "Marcin Zajkowski",
@@ -31,59 +31,22 @@
     // HighFives - JS functionality for the high fives module.
     var HighFives = {
         list: [],
+        suggestions: [],
         // init - Starts the high fives app functionality.
-        init: function () {
+        init: function() {
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
+                    HighFives.bindOnMentionChange();
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
-                    HighFives.initTypeAhead();
-                    HighFives.getRecentHighFiveActivity(0, function (response) {
-                        HighFives.list = response.highFives;
-                        HighFives.buildActivityList(HighFives.list);
-                        HighFives.checkForNewHighFivesPeriodically(30);
+                    HighFives.getCategories(function(response) {
+                        HighFives.buildCategoryDropdown(response);
+                        HighFives.getRecentHighFiveActivity(0, function(response) {
+                            HighFives.list = response.highFives;
+                            HighFives.buildActivityList(HighFives.list);
+                            HighFives.checkForNewHighFivesPeriodically(30);
+                        });
                     });
                 }
-            });
-        },
-
-        initTypeAhead: function () {
-            $("#high-five-mention").keyup(function () {
-                memberSearch($("#high-five-mention").val());
-            })
-        },
-
-        showMentions: function(members) {
-            var template = _.template(
-                $("script.member-search-template").html()
-            );
-
-            $('#high-five-mentions').addClass('open');
-            $('#high-five-mentions ul').empty();
-
-            _.each(members, function (member) {
-                var itemData = { icon: 'blah.gif', name: member.Username, username: 'blahblah', id: member.MemberId };
-                $('#high-five-mentions ul').append(
-                    template(itemData)
-                );
-            });
-        },
-
-        getMember: function(member) {
-            if (member.length > 2) {
-                $.getJSON('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (data) {
-                    HighFives.showMentions(data);
-                });
-            }
-        },
-
-        getHighFiveCategories: function() {
-            $.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', function (data) {
-                _.each(data, function (category) {
-                    $('#high-five-task')
-                        .append($("<option></option>")
-                            .attr("value", key)
-                            .text(value));
-                });
             });
         },
 
@@ -91,6 +54,12 @@
             el.attr('placeholder', el.attr('placeholder') + toAdd);
             // Delay between symbols "typing"
             return new Promise(resolve => setTimeout(resolve, 100));
+        },
+
+        bindOnMentionChange: function () {
+            jQuery('#high-five-mention').keyup(function(e) {
+                HighFives.getMember(e.target.value);
+            });
         },
 
         // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
@@ -110,10 +79,35 @@
             }
         },
 
+        buildSuggestionsList: function () {
+            var suggestions = HighFives.suggestions;
+            var list = document.querySelector("#high-five-form .suggestions-list");
+            list.innerHTML = '';
+            for (var i = 0; i < suggestions.length; i++) {
+                var suggestion = suggestions[i];
+                list.innerHTML += '<li>' + 
+                '<button type="button" data-id="' +  suggestion.MemberId + '">' + suggestion.Username + 
+                '</button></li>';
+            }
+        },
+
+        // buildCategoryDropdown - Builds a list of options for the category dropdown.
+        buildCategoryDropdown: function(categories) {
+            if (categories && categories.length > 0) {
+                var dropdown = jQuery('#high-five-task');
+                var options = '<option value="" disabled selected>...</option>';
+                for (var i = 0; i < categories.length; i++) {
+                    var category = categories[i];
+                    options += '<option value="' + category.Id + '">' + category.CategoryText + '</option>';
+                }
+                dropdown.html(options);
+            }
+        },
+
         // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
         checkForNewHighFivesPeriodically: function (seconds) {
-            window.setTimeout(function () {
-                HighFives.getRecentHighFiveActivity(0, function (response) {
+            window.setTimeout(function() {
+                HighFives.getRecentHighFiveActivity(0, function(response) {
                     HighFives.list = _.unionBy(HighFives.list, response.highFives, 'id').slice(0, 10);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
@@ -125,8 +119,31 @@
             el.attr("placeholder", "");
         },
 
-        // @method getRecentHighFiveActivity - Gets the most recent high fives via API.
-        getRecentHighFiveActivity: function (page, onSuccess) {
+        // getCategories - Get the categories for the high fives.
+        getCategories: function(onSuccess) {
+            if (useMockApi) {
+                onSuccess(ApiMock.getCategories());
+            } else {
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
+            }
+        },
+
+        getMember: function(member) {
+            if (member.length > 2) {
+                if (useMockApi) {
+                    HighFives.suggestions = ApiMock.getUmbracians();
+                    HighFives.buildSuggestionsList();
+                } else {
+                    jquery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
+                        HighFives.suggestions = umbracians;
+                        HighFives.buildSuggestionsList();
+                    });
+                }
+            }
+        },
+
+        // getRecentHighFiveActivity - Gets the most recent high fives via API.
+        getRecentHighFiveActivity: function(page, onSuccess) {
             page = typeof page === 'undefined' ? 0 : page;
             if (useMockApi) {
                 onSuccess(ApiMock.getHighFiveFeed());
@@ -136,14 +153,14 @@
         },
 
         // doesHaveHighFive - returns true if highFive element exists
-        doesHaveHighFive: function () {
+        doesHaveHighFive: function() {
             var highFive = document.querySelector('section[data-high-five]');
             if (highFive && typeof highFive !== 'null' && typeof highFive !== 'undefined') {
                 return true;
             }
             return false;
         },
-
+        
         printPhrase: function (phrase, el) {
             return new Promise(resolve => {
                 // Clear placeholder before typing next phrase
@@ -163,7 +180,7 @@
                 );
             });
         },
-
+        
         printPhrases: function (phrases, el) {
             // For each phrase
             // wait for phrase to be typed
@@ -173,49 +190,80 @@
                 Promise.resolve()
             );
         },
-
-        shuffle: function (array) {
+  
+        shuffle: function(array) {
             var currentIndex = array.length, temporaryValue, randomIndex;
 
             // While there remain elements to shuffle...
             while (0 !== currentIndex) {
-
+    
                 // Pick a remaining element...
                 randomIndex = Math.floor(Math.random() * currentIndex);
                 currentIndex -= 1;
-
+    
                 // And swap it with the current element.
                 temporaryValue = array[currentIndex];
                 array[currentIndex] = array[randomIndex];
                 array[randomIndex] = temporaryValue;
             }
-
+    
             return array;
         }
     };
 
+    var memberSearch = _.debounce(HighFives.getMember, 300);
+
     var ApiMock = {
-        getHighFiveFeed: function () {
+        getCategories: function() {
+            return [
+                { "Id": 1, "CategoryText": "A Package" }, 
+                { "Id": 2, "CategoryText": "A Talk" }, 
+                { "Id": 3, "CategoryText": "A Blog Post" }, 
+                { "Id": 4, "CategoryText": "A Meetup" }, 
+                { "Id": 5, "CategoryText": "A Skrift Article" }, 
+                { "Id": 6, "CategoryText": "A Tutorial" }, 
+                { "Id": 7, "CategoryText": "Advice" }, 
+                { "Id": 8, "CategoryText": "A Video" }, 
+                { "Id": 9, "CategoryText": "A PR" } 
+            ];
+        },
+        getHighFiveFeed: function() {
             return {
                 count: 100,
                 pageCount: 10,
                 currentPage: 0,
                 highFives: [
                     {
-                        id: '123',
-                        from: 'Name of High Fiver',
-                        to: 'Name of High Fivee',
-                        fromAvatarUrl: '/avatar_of_high_fiver.jpg',
-                        toAvatarUrl: '/avatar_of_high_fivee.jpg',
-                        type: 'Blog post',
-                        url: 'http://optional.url.for.high.five.com'
+                    id: '123',
+                    from: 'Name of High Fiver',
+                    to: 'Name of High Fivee',
+                    fromAvatarUrl: '/avatar_of_high_fiver.jpg',
+                    toAvatarUrl: '/avatar_of_high_fivee.jpg',
+                    type: 'Blog post',
+                    url: 'http://optional.url.for.high.five.com'
                     }
                 ]
             };
+        },
+        getUmbracians: function() {
+            return [
+                {
+                    MemberId: '123',
+                    Username: 'Fred Johnson',
+                },
+                {
+                    MemberId: '124',
+                    Username: 'Fred Samson',
+                },
+                {
+                    MemberId: '125',
+                    Username: 'Fredina Hartvig'
+                }
+            ];
         }
     };
 
     // Init
     HighFives.init();
-    var memberSearch = _.debounce(HighFives.getMember, 300);
+
 })();
