@@ -138,6 +138,8 @@ var projectSearch = _.debounce(function (ev) {
 var docsSearch = _.debounce(function (ev) {
 
     var term = this.value;
+    var version = $('.version-search-select').find(":selected").val();
+
     var defaultListing = $('.docs-default-listing');
     var searchListing = $('.docs-search-listing');
 
@@ -159,7 +161,7 @@ var docsSearch = _.debounce(function (ev) {
         $.ajax({
             dataType: "json",
             url: url,
-            data: { term: term },
+            data: { term: term, version: version },
             success: function (response) {
 
                 //toggle and empty box
