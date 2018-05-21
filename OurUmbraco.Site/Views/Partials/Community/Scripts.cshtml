@@ -4,114 +4,7 @@
         $('#github-contributors .github-contributor-list').addClass('all');
     }
 
-
-    // from https://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array
-
-    function shuffle(array) {
-        var currentIndex = array.length, temporaryValue, randomIndex;
-
-        // While there remain elements to shuffle...
-        while (0 !== currentIndex) {
-
-            // Pick a remaining element...
-            randomIndex = Math.floor(Math.random() * currentIndex);
-            currentIndex -= 1;
-
-            // And swap it with the current element.
-            temporaryValue = array[currentIndex];
-            array[currentIndex] = array[randomIndex];
-            array[randomIndex] = temporaryValue;
-        }
-
-        return array;
-    }
-
-    /* Auto-suggest member search */
-    var memberSearch =
-        _.debounce(getMember, 400);
-
-    function getMember(member) {
-        if (member.length > 2) {
-            $.getJSON('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (data) {
-                showMentions(data);
-            });
-        }
-    }
-
-    function showMentions(members) {
-        var template = _.template(
-            $("script.member-search-template").html()
-        );
-
-        $('#high-five-mentions').addClass('open');
-        $('#high-five-mentions ul').empty();
-
-        _.each(members, function (member) {
-            var itemData = { icon: 'blah.gif', name: member.Username, username: 'blahblah', id: member.MemberId};
-            $('#high-five-mentions ul').append(
-                template(itemData)
-            );
-        });
-    }
-
-    function getHighFiveCategories() {
-        $.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', function (data) {
-            _.each(data, function (category) {
-                $('#high-five-task')
-                    .append($("<option></option>")
-                        .attr("value", key)
-                        .text(value)); 
-            });
-        }
-
-    }
-
-    // from https://stackoverflow.com/questions/48815262/animate-placeholder-text-so-it-types-multiple-phrases
-
-    // Add something to given element placeholder
-    function addToPlaceholder(toAdd, el) {
-        el.attr('placeholder', el.attr('placeholder') + toAdd);
-        // Delay between symbols "typing"
-        return new Promise(resolve => setTimeout(resolve, 100));
-    }
-
-    // Cleare placeholder attribute in given element
-    function clearPlaceholder(el) {
-        el.attr("placeholder", "");
-    }
-
-    // Print one phrase
-    function printPhrase(phrase, el) {
-        return new Promise(resolve => {
-            // Clear placeholder before typing next phrase
-            clearPlaceholder(el);
-            let letters = phrase.split('');
-            // For each letter in phrase
-            letters.reduce(
-                (promise, letter, index) => promise.then(_ => {
-                    // Resolve promise when all letters are typed
-                    if (index === letters.length - 1) {
-                        // Delay before start next phrase "typing"
-                        setTimeout(resolve, 1000);
-                    }
-                    return addToPlaceholder(letter, el);
-                }),
-                Promise.resolve()
-            );
-        });
-    }
-
-    // Print given phrases to element
-    function printPhrases(phrases, el) {
-        // For each phrase
-        // wait for phrase to be typed
-        // before start typing next
-        phrases.reduce(
-            (promise, phrase) => promise.then(_ => printPhrase(phrase, el)),
-            Promise.resolve()
-        );
-    }
-
+    
     $(document).ready(function() {
         try {
             $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
@@ -141,3 +34,4 @@
         
     });
 </script> 
+<script type="text/javascript" src="/assets/js/components/highfives.js"></script>
