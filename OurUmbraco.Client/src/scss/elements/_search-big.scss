@@ -1,48 +1,77 @@
 .search-big {
-	display: inline-block;
-	position: relative;
-	width: 100%;
-	margin-bottom: 20px;
+    display: inline-block;
+    position: relative;
+    width: 100%;
+    margin-bottom: 20px;
 
-	input {
-		-webkit-appearance: none;
-		border-radius: 0;
+    div {
+        display: inline-block;
+    }
 
-		border: 1px solid darken(whitesmoke, 15%);
-		padding: 20px 10px 20px 10px;
-		outline: none;
-		display: block;
-		width: 100%;
-		font-size: 1.3rem;
-		min-height: 60px;
-		font-family: $font-family;
-		z-index: 20;
-		position: relative;
+    div.textSearch {
+        width: 80%;
+    }
 
-		& + label {
-			position: absolute;
-			z-index: 10;
-			transform: translate(0, -10px);
-			transition: transform .4s $cubicSearch, opacity .3s $cubicSearch;
-			opacity: 0;
-			color: #ccc;
-			font-size: .8rem;
-		}
+    div.versionSearch {
+        width: 15%;
+    }
 
-		&:valid + label {
-			opacity: 1;
-			top: 3px;
-			transform: translate(0, 0);
-		}
+    input {
+        -webkit-appearance: none;
+        border-radius: 0;
+        border: 1px solid darken(whitesmoke, 15%);
+        padding: 20px 10px 20px 10px;
+        outline: none;
+        display: block;
+        width: 100%;
+        font-size: 1.3rem;
+        min-height: 60px;
+        font-family: $font-family;
+        z-index: 20;
+        position: relative;
+
+        & + label {
+            position: absolute;
+            z-index: 10;
+            transform: translate(0, -10px);
+            transition: transform .4s $cubicSearch, opacity .3s $cubicSearch;
+            opacity: 0;
+            color: #ccc;
+            font-size: .8rem;
+        }
+
+        &:valid + label {
+            opacity: 1;
+            top: 3px;
+            transform: translate(0, 0);
+        }
 
 
-		&:focus + label {
-			color: #000;
-			transform: translate(0, -20px);
-		}
+        &:focus + label {
+            color: #000;
+            transform: translate(0, -20px);
+        }
 
-		&:focus {
-			border-color: $color-our;
-		}
-	}
+        &:focus {
+            border-color: $color-our;
+        }
+    }
+
+    select {
+        border-radius: 0;
+        border: 1px solid darken(whitesmoke, 15%);
+        padding: 20px 10px 20px 10px;
+        outline: none;
+        display: block;
+        width: 100%;
+        font-size: 1.3rem;
+        min-height: 60px;
+        font-family: $font-family;
+        z-index: 20;
+        position: relative;
+
+        &:focus {
+            border-color: $color-our;
+        }
+    }
 }
