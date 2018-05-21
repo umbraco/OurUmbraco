@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web.Mvc;
+using System.Web.Security;
 using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Web.Models;
@@ -161,6 +162,12 @@ namespace OurUmbraco.Our.Controllers
             }
 
             return Redirect(CurrentPage.Url + "?success=true");
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return Redirect("/");
         }
     }
 
