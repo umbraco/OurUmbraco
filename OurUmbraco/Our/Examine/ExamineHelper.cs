@@ -10,7 +10,6 @@ using Umbraco.Core.Logging;
 using System.Text;
 using YamlDotNet.Serialization;
 using OurUmbraco.Documentation.Busineslogic;
-using AngleSharp;
 using System.Configuration;
 
 namespace OurUmbraco.Our.Examine
@@ -45,7 +44,7 @@ namespace OurUmbraco.Our.Examine
             return simpleDataSet.RowData;
         }
 
-        public static SimpleDataSet MapFileToSimpleDataIndexItem(FileInfo file, SimpleDataSet simpleDataSet, int index, string indexType)
+        internal static SimpleDataSet MapFileToSimpleDataIndexItem(FileInfo file, SimpleDataSet simpleDataSet, int index, string indexType)
         {
             var lines = new List<string>();
             lines.AddRange(File.ReadAllLines(file.FullName));
@@ -110,8 +109,7 @@ namespace OurUmbraco.Our.Examine
             {
                 // Find the "next" triple dash starting from the second line
                 secondYamlMarker = lines.IndexOf("---", 1);
-
-
+                
                 // add all yaml together and parse YAML meta data
                 YamlMetaData yamlMetaData = new YamlMetaData();
                 if (secondYamlMarker > 0)
@@ -128,6 +126,7 @@ namespace OurUmbraco.Our.Examine
                         .Build();
                     yamlMetaData = deserializer.Deserialize<YamlMetaData>(yamlInput.ToString());
                 }
+
                 // Add Yaml stuff
                 simpleDataSet.RowData.Add("tags", yamlMetaData.Tags);
                 simpleDataSet.RowData.Add("versionFrom", yamlMetaData.VersionFrom);
@@ -136,14 +135,18 @@ namespace OurUmbraco.Our.Examine
                 var matchingMajorVersions = CalculateMajorVersions(yamlMetaData);
                 simpleDataSet.RowData.Add("majorVersion", string.Join(" ", matchingMajorVersions));
             }
-
+            else
+            {
+                // no YAML information, add the current version as majorVersion
+                simpleDataSet.RowData.Add("majorVersion", GetCurrentDocVersion().ToString());
+            }
             return secondYamlMarker;
         }
 
         private static IEnumerable<int> CalculateMajorVersions(YamlMetaData yamlMetaData)
         {
             // Try to find out which major versions are supported
-            var currentDocVersion = int.Parse(ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]);
+            var currentDocVersion = GetCurrentDocVersion();
             var semverCurrent = new Semver.SemVersion(currentDocVersion);
             bool hasFrom = Semver.SemVersion.TryParse(yamlMetaData.VersionFrom, out Semver.SemVersion semverFrom);
             bool hasTo = Semver.SemVersion.TryParse(yamlMetaData.VersionTo, out Semver.SemVersion semverTo);
@@ -157,6 +160,11 @@ namespace OurUmbraco.Our.Examine
             {
                 yield return i;
             }
+        }
+
+        private static int GetCurrentDocVersion()
+        {
+            return int.Parse(ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]);
         }
 
         private static string BuildUrl(string path)
