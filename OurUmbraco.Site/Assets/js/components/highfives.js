@@ -1,6 +1,6 @@
 (function() {
 
-    var useMockApi = true;
+    var useMockApi = false;
 
     // HighFives - JS functionality for the high fives module.
     var HighFives = {
