@@ -54,14 +54,35 @@ namespace OurUmbraco.Our.Examine
             if (NodeTypeAlias.IsNullOrWhiteSpace() && Term.IsNullOrWhiteSpace() && !Filters.Any())
                 return null;
 
-            if (string.IsNullOrEmpty(NodeTypeAlias) == false)
-            {
-                criteria.Field("nodeTypeAlias", NodeTypeAlias);
-            }
 
             var sb = new StringBuilder();
+
+            if (string.IsNullOrEmpty(NodeTypeAlias) == false)
+            {
+                sb.AppendFormat("+nodeTypeAlias: {0} ", NodeTypeAlias);
+            }
+            
+            // Three possiblities:
+            // * docs version (MajorDocsVersion) supplied, give current version and NEGATE OTHERS
+            // * no docs version (MajorDocsVersion) is not suplied, use it and NEGATE others
+            // * all versions are requests, this is currently not implemented
+            var currentMajorVersions = new string[] { "6", "7", "8" };
+
+            // add mandatory majorVersion is parameter is supplied
+            string versionToFilterBy =  MajorDocsVersion == null
+                ? ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]
+                : MajorDocsVersion.ToString();
+
+            //we filter by this version by excluding the other major versions in lucene so
+            var versionsToNegate = currentMajorVersions.Where(f => f != versionToFilterBy).ToArray<string>();
+            foreach (var versionToNegate in versionsToNegate)
+            {
+                sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
+            }
+            
             if (!string.IsNullOrEmpty(Term))
             {
+                sb.Append("+(");
                 // Cleanup the term so there are no errors
                 Term = Term
                     .Replace("\"", string.Empty)
@@ -120,19 +141,8 @@ namespace OurUmbraco.Our.Examine
                         sb.AppendFormat("nodeName:{0}~0.9^0.1 body:{0}~0.9^0.1 ", s);
                     }
                 }
-            }
+                sb.Append(")");
 
-
-            // array of current versions that are used in docs
-            int[] currentMajorVersions = new int[] { 6, 7, 8 };
-
-            // add mandatory majorVersion is parameter is supplied
-            int versionToFilterBy = MajorDocsVersion ?? int.Parse(ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]);
-
-            //we filter by this version by excluding the other major versions in lucene so
-            foreach (var versionToNegate in currentMajorVersions.Where(f => f != versionToFilterBy))
-            {
-                sb.AppendFormat(" -majorVersion:{0}", versionToNegate);
             }
 
             //nothing to process, return
