@@ -108,6 +108,12 @@ else
                                     <img src="/assets/images/highfive.svg" alt="high five"> Send
                                 </button>
                             </h3>
+
+                            <div id="high-five-mentions">
+                                <ul>
+                                </ul>
+                            </div>
+
                             <!--                            <p>
                                                             <a class="button green high-five" href="/forum">High Five</a>
                                                         </p>
@@ -128,6 +134,17 @@ else
                 </div>
             </div>
         </section>
+        <script type="text/template" class="member-search-template">
+            <li>
+                <div class="type-icon">
+                    <i class="{{ icon }}"></i>
+                </div>
+                <div class="type-name">
+                    {{ name }} ({{ username }})
+                </div>
+            </li>
+        </script>
+
         <script type="text/javascript">
             var placeholderNames = [
                 "Marcin Zajkowski",
@@ -152,10 +169,14 @@ else
                 "Stéphane Gay",
                 "Sebastiaan Janssen",
                 "Jacob Midtgaard - Olesen",
-                "Ilham Boulghallat"];   
+                "Ilham Boulghallat"];
 
             $(document).ready(function () {
                 printPhrases(shuffle(placeholderNames), $('#high-five-mention'));
+
+                $("#high-five-mention").keyup(function () {
+                    memberSearch($("#high-five-mention").val());
+                })
             });
         </script>
 }

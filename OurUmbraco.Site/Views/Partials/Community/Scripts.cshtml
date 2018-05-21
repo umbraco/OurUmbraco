@@ -26,6 +26,46 @@
         return array;
     }
 
+    /* Auto-suggest member search */
+    var memberSearch =
+        _.debounce(getMember, 400);
+
+    function getMember(member) {
+        if (member.length > 2) {
+            $.getJSON('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (data) {
+                showMentions(data);
+            });
+        }
+    }
+
+    function showMentions(members) {
+        var template = _.template(
+            $("script.member-search-template").html()
+        );
+
+        $('#high-five-mentions').addClass('open');
+        $('#high-five-mentions ul').empty();
+
+        _.each(members, function (member) {
+            var itemData = { icon: 'blah.gif', name: member.Username, username: 'blahblah', id: member.MemberId};
+            $('#high-five-mentions ul').append(
+                template(itemData)
+            );
+        });
+    }
+
+    function getHighFiveCategories() {
+        $.getJSON('/umbraco/api/HighFiveFeedAPI/GetCategories', function (data) {
+            _.each(data, function (category) {
+                $('#high-five-task')
+                    .append($("<option></option>")
+                        .attr("value", key)
+                        .text(value)); 
+            });
+        }
+
+    }
+
     // from https://stackoverflow.com/questions/48815262/animate-placeholder-text-so-it-types-multiple-phrases
 
     // Add something to given element placeholder
