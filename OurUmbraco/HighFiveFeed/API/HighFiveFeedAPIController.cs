@@ -46,7 +46,6 @@ namespace OurUmbraco.HighFiveFeed.API
             if (currentMember != null && currentMember.Id != 0)
             {
                 var fromUserId = currentMember.Id;
-
                 var dbContext = ApplicationContext.Current.DatabaseContext;
                 var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
                 highFive.FromMemberId = fromUserId;

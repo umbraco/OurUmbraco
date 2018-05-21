@@ -4,7 +4,7 @@ using Umbraco.Core.Persistence;
 namespace OurUmbraco.HighFiveFeed.Models
 {
     [TableName("highFivePosts")]
-    [PrimaryKey("id", autoIncrement = false)]
+    [PrimaryKey("id")]
     [ExplicitColumns]
     public class HighFiveFeed
     {
