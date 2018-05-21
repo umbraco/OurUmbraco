@@ -36,10 +36,14 @@
             $(document).ready(function () {
                 if (HighFives.doesHaveHighFive()) {
                     HighFives.printPhrases(HighFives.shuffle(placeholderNames), $('#high-five-mention'));
-                    HighFives.getRecentHighFiveActivity(0, function(response) {
-                        HighFives.list = response.highFives;
-                        HighFives.buildActivityList(HighFives.list);
-                        HighFives.checkForNewHighFivesPeriodically(30);
+                    HighFives.getCategories(function(response) {
+                        console.info(response);
+                        HighFives.buildCategoryDropdown(response);
+                        HighFives.getRecentHighFiveActivity(0, function(response) {
+                            HighFives.list = response.highFives;
+                            HighFives.buildActivityList(HighFives.list);
+                            HighFives.checkForNewHighFivesPeriodically(30);
+                        });
                     });
                 }
             });
@@ -68,6 +72,19 @@
             }
         },
 
+        // buildCategoryDropdown - Builds a list of options for the category dropdown.
+        buildCategoryDropdown: function(categories) {
+            if (categories && categories.length > 0) {
+                var dropdown = jQuery('#high-five-task');
+                var options = '<option value="" disabled selected>...</option>';
+                for (var i = 0; i < categories.length; i++) {
+                    var category = categories[i];
+                    options += '<option value="' + category.Id + '">' + category.CategoryText + '</option>';
+                }
+                dropdown.html(options);
+            }
+        },
+
         // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
         checkForNewHighFivesPeriodically: function (seconds) {
             window.setTimeout(function() {
@@ -83,7 +100,16 @@
             el.attr("placeholder", "");
         },
 
-        // @method getRecentHighFiveActivity - Gets the most recent high fives via API.
+        // getCategories - Get the categories for the high fives.
+        getCategories: function(onSuccess) {
+            if (useMockApi) {
+                onSuccess(ApiMock.getCategories());
+            } else {
+                jQuery.get('/umbraco/api/HighFiveFeedAPI/GetCategories', onSuccess);
+            }
+        },
+
+        // getRecentHighFiveActivity - Gets the most recent high fives via API.
         getRecentHighFiveActivity: function(page, onSuccess) {
             page = typeof page === 'undefined' ? 0 : page;
             if (useMockApi) {
@@ -153,6 +179,19 @@
     };
 
     var ApiMock = {
+        getCategories: function() {
+            return [
+                { "Id": 1, "CategoryText": "A Package" }, 
+                { "Id": 2, "CategoryText": "A Talk" }, 
+                { "Id": 3, "CategoryText": "A Blog Post" }, 
+                { "Id": 4, "CategoryText": "A Meetup" }, 
+                { "Id": 5, "CategoryText": "A Skrift Article" }, 
+                { "Id": 6, "CategoryText": "A Tutorial" }, 
+                { "Id": 7, "CategoryText": "Advice" }, 
+                { "Id": 8, "CategoryText": "A Video" }, 
+                { "Id": 9, "CategoryText": "A PR" } 
+            ];
+        },
         getHighFiveFeed: function() {
             return {
                 count: 100,
