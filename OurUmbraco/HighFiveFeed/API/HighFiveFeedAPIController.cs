@@ -14,6 +14,9 @@ using Newtonsoft.Json.Serialization;
 using Umbraco.Core.Persistence;
 
 =======
+using OurUmbraco.Community.People.Models;
+using OurUmbraco.Community.People;
+
 >>>>>>> 03f85a8b89320d3fa07d44a57a5130336884ca7c
 namespace OurUmbraco.HighFiveFeed.API
 {
@@ -71,6 +74,15 @@ namespace OurUmbraco.HighFiveFeed.API
             return rawJson;
 
            
+        }
+
+        public List<Person> GetUmbracians(string name)
+        {
+            var peopleService = new PeopleService();
+
+            var people = peopleService.GetPeopleByName(name);
+
+            return people;
         }
     }
 }
