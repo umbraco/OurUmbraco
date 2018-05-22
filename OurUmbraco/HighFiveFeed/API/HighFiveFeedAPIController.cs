@@ -71,11 +71,11 @@ namespace OurUmbraco.HighFiveFeed.API
                 var fromAvatar = "";
                 var toMember = Members.GetById(dbEntry.ToMemberId);
                 var fromMember = Members.GetById(dbEntry.FromMemberId);
-                if (!String.IsNullOrEmpty(toAvatar))
+                if (toMember != null)
                 {
                     toAvatar = avatarService.GetMemberAvatar(toMember);
                 }
-                if (!String.IsNullOrEmpty(fromAvatar))
+                if (fromMember !=null)
                 {
                     fromAvatar = avatarService.GetMemberAvatar(toMember);
                 }
