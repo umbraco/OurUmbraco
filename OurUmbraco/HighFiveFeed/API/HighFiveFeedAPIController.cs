@@ -67,10 +67,18 @@ namespace OurUmbraco.HighFiveFeed.API
             var response = new HighFiveFeedResponse();
             foreach (var dbEntry in result.Take(10))
             {
+                var toAvatar = "";
+                var fromAvatar = "";
                 var toMember = Members.GetById(dbEntry.ToMemberId);
                 var fromMember = Members.GetById(dbEntry.FromMemberId);
-                var toAvatar = avatarService.GetMemberAvatar(toMember);
-                var fromAvatar = avatarService.GetMemberAvatar(toMember);
+                if (!String.IsNullOrEmpty(toAvatar))
+                {
+                    toAvatar = avatarService.GetMemberAvatar(toMember);
+                }
+                if (!String.IsNullOrEmpty(fromAvatar))
+                {
+                    fromAvatar = avatarService.GetMemberAvatar(toMember);
+                }
                 var type = GetActionType(dbEntry.ActionId);
                 var highFive = new HighFiveResponse()
                 {
