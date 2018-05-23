@@ -70,19 +70,22 @@
         justify-content: space-between;
     }
 
-
-    .high-five-item {
-        flex: 0 0 100%;
-        display: flex;
-        overflow: hidden;
+    .high-five-activity-list {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-column-gap: 20px;
 
         @media (min-width: $md) {
-            flex: 1 0 49%;
-
-            &:nth-child(odd) {
-                margin-right: 2%;
-            }
+            grid-template-columns: 1fr 1fr 1fr;
         }
+    }
+
+    
+
+    .high-five-item {
+        // flex: 0 0 100%;
+        display: flex;
+        overflow: hidden;
 
         .avatar {
             flex: 0 0 23%;
@@ -127,11 +130,36 @@
     }
 }
 
+#high-five-form {
+    position: relative;
+}
+
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 21.7%;
+    list-style: none;
+    z-index: 10;
+
+    button {
+        background: #a3db78;
+        border: 0;
+        min-width: 200px;
+        text-align: left;
+
+        transition: .2s ease-in-out;
+
+        &:hover {
+            background-color: #2EB369;
+            color: #FFFFFF;
+        }
+    }
+}
 
 .high-five-item {
     background: #fff;
     padding: 25px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     border: 1px solid darken(#f6f6f6, 5%);
     transition: box-shadow .2s ease, border-color .2s ease;
     text-decoration: none;

@@ -37,7 +37,7 @@ namespace OurUmbraco.HighFiveFeed.API
 
         //this will be for authorized members only
         [HttpPost]
-        public void SubmitHighFive(int toUserId, int action, String url)
+        public bool SubmitHighFive(int toUserId, int action, String url)
         {
 
             var memberService = ApplicationContext.Current.Services.MemberService;
@@ -55,8 +55,12 @@ namespace OurUmbraco.HighFiveFeed.API
                 highFive.CreatedDate = DateTime.Now;
 
                 dbContext.Database.Insert(highFive);
+                return true;
             }
+
+            return false;
         }
+
         [HttpGet]
         public string GetHighFiveFeed()
         {
@@ -77,7 +81,7 @@ namespace OurUmbraco.HighFiveFeed.API
                 }
                 if (fromMember !=null)
                 {
-                    fromAvatar = avatarService.GetMemberAvatar(toMember);
+                    fromAvatar = avatarService.GetMemberAvatar(fromMember);
                 }
                 var type = GetActionType(dbEntry.ActionId);
                 var highFive = new HighFiveResponse()

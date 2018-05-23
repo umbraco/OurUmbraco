@@ -72,11 +72,14 @@
                 if (HighFives.isFormValid()) {
                     HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), function() {
                         HighFives.resetForm();
-                        HighFives.getRecentHighFiveActivity(0, function(response) {
-                            var activity = typeof response == 'string' ? JSON.parse(response): response;
-                            HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 10);
-                            HighFives.buildActivityList(HighFives.list);
-                        });                        
+
+                        setTimeout(function() {
+                            HighFives.getRecentHighFiveActivity(0, function(response) {
+                                var activity = typeof response == 'string' ? JSON.parse(response): response;
+                                HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 10);
+                                HighFives.buildActivityList(HighFives.list);
+                            });   
+                        }, 1500);                     
                     });
                 }
             });
