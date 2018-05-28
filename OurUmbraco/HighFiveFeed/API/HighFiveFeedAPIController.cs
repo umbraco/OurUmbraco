@@ -15,24 +15,18 @@ using OurUmbraco.Community.People.Models;
 using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Services;
 using Umbraco.Web.Mvc;
+using OurUmbraco.HighFiveFeed.Services;
 
 namespace OurUmbraco.HighFiveFeed.API
 {
     public class HighFiveFeedAPIController : UmbracoApiController
     {
-        public List<HighFiveCategory> Categories;
+
+        public HighFiveFeedService _highFiveService;
+
         public HighFiveFeedAPIController()
         {
-            Categories = new List<HighFiveCategory>();
-            Categories.Add(new HighFiveCategory(1, "A Package"));
-            Categories.Add(new HighFiveCategory(2, "A Talk"));
-            Categories.Add(new HighFiveCategory(3, "A Blog Post"));
-            Categories.Add(new HighFiveCategory(4, "A Meetup"));
-            Categories.Add(new HighFiveCategory(5, "A Skrift Article"));
-            Categories.Add(new HighFiveCategory(6, "A Tutorial"));
-            Categories.Add(new HighFiveCategory(7, "Advice"));
-            Categories.Add(new HighFiveCategory(8, "A Video"));
-            Categories.Add(new HighFiveCategory(9, "A PR"));
+            _highFiveService = new HighFiveFeedService();
         }
 
         //this will be for authorized members only
@@ -64,41 +58,7 @@ namespace OurUmbraco.HighFiveFeed.API
         [HttpGet]
         public string GetHighFiveFeed()
         {
-            var dbContext = ApplicationContext.Current.DatabaseContext;
-            var sql = new Sql().Select("*").From("highFivePosts");
-            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x=>x.CreatedDate);
-            var avatarService = new AvatarService();
-            var response = new HighFiveFeedResponse();
-            foreach (var dbEntry in result.Take(10))
-            {
-                var toAvatar = "";
-                var fromAvatar = "";
-                var toMember = Members.GetById(dbEntry.ToMemberId);
-                var fromMember = Members.GetById(dbEntry.FromMemberId);
-                if (toMember != null)
-                {
-                    toAvatar = avatarService.GetMemberAvatar(toMember);
-                }
-                if (fromMember !=null)
-                {
-                    fromAvatar = avatarService.GetMemberAvatar(fromMember);
-                }
-                var type = GetActionType(dbEntry.ActionId);
-                var highFive = new HighFiveResponse()
-                {
-                    Url = dbEntry.Link,
-                    Type = type,
-                    From = fromMember.Name,
-                    FromAvatarUrl = fromAvatar,
-                    To = toMember.Name,
-                    ToAvatarUrl = toAvatar,
-                    Id = dbEntry.Id,
-                    CreatedDate = dbEntry.CreatedDate
-
-
-                };
-                response.HighFives.Add(highFive);
-            }
+            var response = _highFiveService.GetHighFiveFeed();
             var rawJson = JsonConvert.SerializeObject(response, Formatting.Indented);
 
 
@@ -106,14 +66,10 @@ namespace OurUmbraco.HighFiveFeed.API
 
         }
 
-        private string GetActionType(int actionId)
-        {
-            return Categories.Where(x => x.Id == actionId).FirstOrDefault().CategoryText;
-        }
-
+       
         public string GetCategories()
         {
-            
+            var Categories = _highFiveService.GetCategories();
             var rawJson = JsonConvert.SerializeObject(Categories, Formatting.Indented);
             return rawJson;
         }

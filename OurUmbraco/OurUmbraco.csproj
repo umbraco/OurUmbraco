@@ -522,6 +522,7 @@
     <Compile Include="HighFiveFeed\Models\HighFiveFeed.cs" />
     <Compile Include="HighFiveFeed\Models\HighFiveFeedResponse.cs" />
     <Compile Include="HighFiveFeed\Models\HighFiveResponse.cs" />
+    <Compile Include="HighFiveFeed\Services\HighFiveFeedService.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStep.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStepCollection.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\StepDefinitions\Complete.cs" />
