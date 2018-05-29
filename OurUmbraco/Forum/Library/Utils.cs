@@ -1,16 +1,13 @@
 ﻿using System;
 using System.Collections.Specialized;
 using System.Configuration;
-using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Web;
-using System.Web.Security;
 using OurUmbraco.Emails;
+using OurUmbraco.Emails.Models;
 using OurUmbraco.Forum.Extensions;
-using RestSharp;
-using RestSharp.Deserializers;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
@@ -118,25 +115,17 @@ namespace OurUmbraco.Forum.Library
             try
             {
                 const string subject = "Activate your account on our.umbraco.org";
-
-                var heading =
-                    "<h1 style='color: #392F54; font-family: sans-serif; font-weight: bold; line-height: 1.4; font-size: 24px; text-align: left; text-transform: capitalize; margin: 0 0 30px;' align='left'>" +
-                        $"Hi {member.Name}," +
-                    "</h1>";
-
-                var content =
-                    "<p style='color: #392F54; font-family: sans-serif; font-size: 14px; font-weight: normal; margin: 0 0 15px;'>" +
-                        $"Thanks for signing up for the Umbraco community site. In order to be able to log in please click on the link below to activate your account: <br /><a href='https://our.umbraco.org/member/activate/?id={member.ProviderUserKey}'>https://our.umbraco.org/member/activate/?id={member.ProviderUserKey}</a>" +
-                    "</p>";
+                
+                var body = EmailsUtils.Mvc.RenderPartial("Partials/Emails/ActivationEmailTemplate.cshtml", 
+                    new ActivationEmailModel(member));
 
                 var mailMessage = new MailMessage
                 {
                     Subject = subject,
-                    Body = EmailsConstants.EmailTemplates.ActivationEmail.Replace("%0%", $"{heading}{content}"),
+                    Body = body.ToString(),
                     IsBodyHtml = true
                 };
-
-                 
+                
                 mailMessage.To.Add(member.Email);
 
                 mailMessage.From = new MailAddress("robot@umbraco.org");
