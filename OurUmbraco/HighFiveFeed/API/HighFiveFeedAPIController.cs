@@ -29,13 +29,13 @@ namespace OurUmbraco.HighFiveFeed.API
             _highFiveService = new HighFiveFeedService();
         }
 
-        //this will be for authorized members only
+        [Authorize]
         [HttpPost]
         public bool SubmitHighFive(int toUserId, int action, String url)
         {
 
             var memberService = ApplicationContext.Current.Services.MemberService;
-
+            //you need to be logged in!
             var currentMember = Members.GetCurrentMember();
             if (currentMember != null && currentMember.Id != 0)
             {

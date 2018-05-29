@@ -32,6 +32,47 @@ namespace OurUmbraco.HighFiveFeed.Services
             Categories.Add(new HighFiveCategory(9, "A PR"));
         }
 
+        public HighFiveFeedResponse GetHighFiveFeedForMember(int memberId)
+        {
+            var Members = ApplicationContext.Current.Services.MemberService;
+            var dbContext = ApplicationContext.Current.DatabaseContext;
+            var sql = new Sql().Select("*").From("highFivePosts").Where<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(x=>x.ToMemberId== memberId);
+            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x => x.CreatedDate);
+            var avatarService = new AvatarService();
+            var response = new HighFiveFeedResponse();
+            foreach (var dbEntry in result.Take(10))
+            {
+                var toAvatar = "";
+                var fromAvatar = "";
+                var toMember = Members.GetById(dbEntry.ToMemberId);
+                var fromMember = Members.GetById(dbEntry.FromMemberId);
+                if (toMember != null)
+                {
+                    toAvatar = avatarService.GetMemberAvatar(toMember);
+                }
+                if (fromMember != null)
+                {
+                    fromAvatar = avatarService.GetMemberAvatar(fromMember);
+                }
+                var type = GetActionType(dbEntry.ActionId);
+                var highFive = new HighFiveResponse()
+                {
+                    Url = dbEntry.Link,
+                    Type = type,
+                    From = fromMember.Name,
+                    FromAvatarUrl = fromAvatar,
+                    To = toMember.Name,
+                    ToAvatarUrl = toAvatar,
+                    Id = dbEntry.Id,
+                    CreatedDate = dbEntry.CreatedDate
+
+
+                };
+                response.HighFives.Add(highFive);
+            }
+            return response;
+        }
+
         public HighFiveFeedResponse GetHighFiveFeed()
         {
             var Members = ApplicationContext.Current.Services.MemberService;

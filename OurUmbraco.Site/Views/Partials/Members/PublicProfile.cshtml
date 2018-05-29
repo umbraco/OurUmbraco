@@ -6,6 +6,7 @@
 @using OurUmbraco.MarketPlace.NodeListing
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Extensions
+@using OurUmbraco.HighFiveFeed.Services
 @{
     var memberId = Request["id"];
     int id = 0;
@@ -19,6 +20,8 @@
     }
     else
     {
+        var highFiveService = new HighFiveFeedService();
+        var highFives = highFiveService.GetHighFiveFeedForMember(member.Id);
         var ts = new TopicService(ApplicationContext.DatabaseContext);
 
         var topics = ts.GetLatestTopicsForMember(member.Id);
@@ -38,14 +41,14 @@
                 contribProjects.Add(Umbraco.TypedContent(contribPackageId));
             }
         }
-        
+
         var reputationCurrent = member.GetPropertyValue<int>("reputationCurrent");
 
         var nodeListingProvider = new NodeListingProvider();
         var votedProjects = nodeListingProvider.GetVotedProjectsForMember(member.Id);
 
         var rolesForUser = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
-        
+
         var avatarService = new AvatarService();
         var avatarPath = avatarService.GetMemberAvatar(member);
         var img = avatarService.GetImgWithSrcSet(avatarPath, member.Name, 125);
@@ -120,206 +123,237 @@
                                     {
                                         <span> works at <span>@member.GetPropertyValue("company")</span></span>
                                     }
-                                    and has <em class="posts">@member.GetPropertyValue("forumPosts")</em> @if (member.ForumPosts() == 0 || member.ForumPosts() > 1){<text>posts</text>}else{<text>post</text>} and <em class="karma-points">@member.GetPropertyValue("reputationCurrent")</em> <span></span> karma points
-                                </small>
-                            </div>
-                            <div class="member-bio">
-                                <p>@member.GetPropertyValue("profileText")</p>
-                            </div>
+                                    and has <em class="posts">@member.GetPropertyValue("forumPosts")</em> @if (member.ForumPosts() == 0 || member.ForumPosts() > 1)
+                                    {<text>posts</text>}
+                                else
+                                {<text>post</text>} and <em class="karma-points">@member.GetPropertyValue("reputationCurrent")</em> <span></span> karma points
+                            </small>
+                        </div>
+                        <div class="member-bio">
+                            <p>@member.GetPropertyValue("profileText")</p>
                         </div>
                     </div>
-                    <div class="row">
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="package-forum-activity">
+                            <h3>Activity</h3>
+                            @foreach (var topic in topics)
+                            {
+                                var cat = Umbraco.TypedContent(topic.ParentId);
+                                // if cat == null then it's been hidden/unpublished (example: v5 forum)
+                                // if this is the case: don't show forum post in list
+                                if (cat != null)
+                                {
+                                    var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
+                                    var memImg = avatarService.GetImgWithSrcSet(mem, mem.Name, 75);
+
+                                    <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
+                                        <div class="row flex-center">
+                                            <div class="col-xs-2">
+                                                @Html.Raw(memImg)
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@topic.Title</h3>
+                                                    <p>Reply by @mem.Name @topic.Updated.ConvertToRelativeTime()</p>
+                                                </div>
+
+                                                <div class="category frontend"><span class="cat">@cat.Name</span></div>
+                                            </div>
+
+                                        </div>
+                                    </a>
+                                }
+                            }
+                            <a class="goto" href="/forum">Go to forum &rarr;</a>
+                        </div>
+                    </div>
+                </div>
+                @if (highFives.HighFives.ToList().Any())
+                {
+                    <div class="row" id="created">
                         <div class="col-md-12">
                             <div class="package-forum-activity">
-                                <h3>Activity</h3>
-                                @foreach (var topic in topics)
+                                <h3>High Five Feed</h3>
+                                @foreach (var highFive in highFives.HighFives.ToList().OrderByDescending(x => x.CreatedDate))
                                 {
-                                    var cat = Umbraco.TypedContent(topic.ParentId);
-                                    // if cat == null then it's been hidden/unpublished (example: v5 forum)
-                                    // if this is the case: don't show forum post in list
-                                    if (cat != null)
-                                    {
-                                        var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
-                                        var memImg = avatarService.GetImgWithSrcSet(mem, mem.Name, 75);
+                                <div class="high-five-item">
+                                    <div class="avatar">
+                                        <img src="@highFive.FromAvatarUrl?v=test&width=100&height=100&mode=crop&upscale=true" srcset="@highFive.FromAvatarUrl?v=test&width=200&height=200&mode=crop&upscale=true 2x, @highFive.FromAvatarUrl?v=test&width=300&height=300&mode=crop&upscale=true 3x" alt="@highFive.From" />
+                                    </div>
 
-                                        <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
-                                            <div class="row flex-center">
-                                                <div class="col-xs-2">
-                                                    @Html.Raw(memImg)
-                                                </div>
-                                                <div class="col-xs-10">
-                                                    <div class="forum-thread-text">
-                                                        <h3>@topic.Title</h3>
-                                                        <p>Reply by @mem.Name @topic.Updated.ConvertToRelativeTime()</p>
-                                                    </div>
-
-                                                    <div class="category frontend"><span class="cat">@cat.Name</span></div>
-                                                </div>
-
-                                            </div>
-                                        </a>
+                                    <div class="meta">
+                                        <div class="high-five-text">
+                                            <h3 class="high-five-header">High Five @highFive.To!!</h3>
+                                            <p>
+                                                @highFive.From High Fived you for <a href="@highFive.Url">@highFive.Type</a>, @highFive.CreatedDate.ToShortDateString()
+                                            </p>
+                                        </div>
+                                    </div>
+                                    </div>
                                     }
+                                </div>
+                        </div>
+                    </div>
+                }
+
+                @if (projects.Any())
+                {
+                    <div class="row" id="created">
+                        <div class="col-md-12">
+                            <div class="package-forum-activity">
+                                <h3>Packages created</h3>
+                                @foreach (var project in projects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
+                                {
+                                    <a href="@project.Url" class="forum-thread">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@project.Name</h3>
+                                                    <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </a>
                                 }
-                                <a class="goto" href="/forum">Go to forum &rarr;</a>
                             </div>
                         </div>
                     </div>
-                    @if (projects.Any())
-                    {
-                        <div class="row" id="created">
-                            <div class="col-md-12">
-                                <div class="package-forum-activity">
-                                    <h3>Packages created</h3>
-                                    @foreach (var project in projects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
-                                    {
-                                        <a href="@project.Url" class="forum-thread">
-                                            <div class="row">
-                                                <div class="col-xs-2">
-                                                    @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
-                                                    {
-                                                        <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
-                                                    }
-                                                </div>
-                                                <div class="col-xs-10">
-                                                    <div class="forum-thread-text">
-                                                        <h3>@project.Name</h3>
-                                                        <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
-                                                    </div>
-                                                </div>
-                                               </div>
-                                        </a>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                    @if (contribProjects.Any())
-                    {
-                        <div class="row" id="contributed">
-                            <div class="col-md-12">
-                                <div class="package-forum-activity">
-                                    <h3>Packages contributed to</h3>
-                                    @foreach (var project in contribProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
-                                    {
-                                        <a href="@project.Url" class="forum-thread">
-                                            <div class="row">
-                                                <div class="col-xs-2">
-                                                    @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
-                                                    {
-                                                        <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
-                                                    }
-                                                </div>
-                                                <div class="col-xs-10">
-                                                    <div class="forum-thread-text">
-                                                        <h3>@project.Name</h3>
-                                                        <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
-                                                    </div>
+                }
+                @if (contribProjects.Any())
+                {
+                    <div class="row" id="contributed">
+                        <div class="col-md-12">
+                            <div class="package-forum-activity">
+                                <h3>Packages contributed to</h3>
+                                @foreach (var project in contribProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
+                                {
+                                    <a href="@project.Url" class="forum-thread">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@project.Name</h3>
+                                                    <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
                                                 </div>
                                             </div>
-                                        </a>
-                                    }
-                                </div>
+                                        </div>
+                                    </a>
+                                }
                             </div>
                         </div>
-                    }
+                    </div>
+                }
 
-                    @if (votedProjects.Any())
-                    {
-                        <div class="row" id="voted">
-                            <div class="col-md-12">
-                                <div class="package-forum-activity">
-                                    <h3>Packages voted up</h3>
-                                    @foreach (var project in votedProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.UpdateDate))
-                                    {
-                                        <a href="@project.Url" class="forum-thread">
-                                            <div class="row">
-                                                <div class="col-xs-2">
-                                                    @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
-                                                    {
-                                                        <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
-                                                    }
-                                                    else
-                                                    {
-                                                        <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
-                                                    }
-                                                </div>
-                                                <div class="col-xs-10">
-                                                    <div class="forum-thread-text">
-                                                        <h3>@project.Name</h3>
-                                                        <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
-                                                        <p><strong>Updated: </strong>@project.UpdateDate.ToLongDateString()</p>
-                                                    </div>
+                @if (votedProjects.Any())
+                {
+                    <div class="row" id="voted">
+                        <div class="col-md-12">
+                            <div class="package-forum-activity">
+                                <h3>Packages voted up</h3>
+                                @foreach (var project in votedProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.UpdateDate))
+                                {
+                                    <a href="@project.Url" class="forum-thread">
+                                        <div class="row">
+                                            <div class="col-xs-2">
+                                                @if (string.IsNullOrWhiteSpace(project.GetPropertyValue<string>("defaultScreenshotPath").Trim()))
+                                                {
+                                                    <i class="icon-Box" style="font-size: 30px; padding-top: 5px; display: inline-block; color: black;"></i>
+                                                }
+                                                else
+                                                {
+                                                    <img src="@Utils.GetScreenshotPath(project.GetPropertyValue<string>("defaultScreenshotPath"))?width=100&height=100&mode=crop" alt="@project.Name">
+                                                }
+                                            </div>
+                                            <div class="col-xs-10">
+                                                <div class="forum-thread-text">
+                                                    <h3>@project.Name</h3>
+                                                    <p>@Umbraco.StripHtml(Umbraco.Truncate(project.GetPropertyValue<string>("description"), 120))</p>
+                                                    <p><strong>Updated: </strong>@project.UpdateDate.ToLongDateString()</p>
                                                 </div>
                                             </div>
-                                        </a>
-                                    }
-                                </div>
+                                        </div>
+                                    </a>
+                                }
                             </div>
                         </div>
-                    }
-                </div>
+                    </div>
+                }
             </div>
         </div>
-        <!-- .public-member -->
-        if (MemberData != null && MemberData.IsAdmin)
-        {
-            var allTopics = ts.GetLatestTopicsForMember(member.Id, false, 1000);
+    </div>
+    <!-- .public-member -->
+    if (MemberData != null && MemberData.IsAdmin)
+    {
+        var allTopics = ts.GetLatestTopicsForMember(member.Id, false, 1000);
 
-            <div style="border: 1px solid orange; padding: 4px;">
-                <p>Moderator Tools (also known as "with great power comes great responsibility"):</p><br />
-                @if (member.GetPropertyValue<bool>("blocked") == false)
+        <div style="border: 1px solid orange; padding: 4px;">
+            <p>Moderator Tools (also known as "with great power comes great responsibility"):</p><br />
+            @if (member.GetPropertyValue<bool>("blocked") == false)
+            {
+                <a href="#" class="block-member" style="color: red" rel="@member.Id">Block this member</a><br />
+            }
+            else
+            {
+                <a href="#" class="unblock-member" style="color: green" rel="@member.Id">Unblock this member</a><br />
+                <strong class="member-blocked">Member is blocked</strong><br />
+            }
+            <br /><br />
+            @if (reputationCurrent < 71 || rolesForUser.Contains("potentialspam") || rolesForUser.Contains("newaccount"))
+            {
+                <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member (careful now! if you approve this member, EVERYTHING that they posted and is marked as spam will be marked as ham.. )</a><br />
+            }
+            <br /><br />
+            <p><strong>All threads this member was involved in (created or commented)</strong></p>
+            <ul style="margin-left: 20px;">
+                @foreach (var topic in allTopics)
                 {
-                    <a href="#" class="block-member" style="color: red" rel="@member.Id">Block this member</a><br />
+                    <li><a href="@topic.GetUrl()" style="@(topic.IsSpam ? "color: orange;" : "")">@(topic.IsSpam ? "IS MARKED AS SPAM: " : "")@topic.Title</a></li>
                 }
-                else
-                {
-                    <a href="#" class="unblock-member" style="color: green" rel="@member.Id">Unblock this member</a><br />
-                    <strong class="member-blocked">Member is blocked</strong><br />
-                }
-                <br /><br />
-                @if (reputationCurrent < 71 || rolesForUser.Contains("potentialspam") || rolesForUser.Contains("newaccount"))
-                {
-                    <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member (careful now! if you approve this member, EVERYTHING that they posted and is marked as spam will be marked as ham.. )</a><br />
-                }
-				<br /><br />
-                <p><strong>All threads this member was involved in (created or commented)</strong></p>
-                <ul style="margin-left: 20px;">
-                    @foreach (var topic in allTopics)
-                    {
-                        <li><a href="@topic.GetUrl()" style="@(topic.IsSpam ? "color: orange;" : "")">@(topic.IsSpam ? "IS MARKED AS SPAM: " : "")@topic.Title</a></li>
-                    }
-                </ul>
-            </div>
-        }
-        <br /><br />
-        var currentMember = MemberData != null ? MemberData.Member : null; 
-        if (currentMember != null && currentMember.IsHq())
-        {
-            <div style="border: 1px solid red; padding: 4px;">
-                <p>HQ Tools (also known as "with great power comes great responsibility"):</p><br />
-                @{
-                    if (rolesForUser.Contains("potentialspam"))
-                    {
-                        <span>Member is in role "potentialspam"</span><br />
-                    }
-                    if (rolesForUser.Contains("newaccount"))
-                    {
-                        <span>Member is in role "newaccount"</span><br />
-                    }
-                }
-                <br/><br/>
-                <a href="#" class="delete-member-plus" style="color: red" rel="@member.Id">Delete this member including all their topics and comments</a><br />
-            </div>
-        }
+            </ul>
+        </div>
     }
+    <br /><br />
+    var currentMember = MemberData != null ? MemberData.Member : null;
+    if (currentMember != null && currentMember.IsHq())
+    {
+        <div style="border: 1px solid red; padding: 4px;">
+            <p>HQ Tools (also known as "with great power comes great responsibility"):</p><br />
+            @{
+                if (rolesForUser.Contains("potentialspam"))
+                {
+                    <span>Member is in role "potentialspam"</span><br />
+                }
+                if (rolesForUser.Contains("newaccount"))
+                {
+                    <span>Member is in role "newaccount"</span><br />
+                }
+            }
+            <br /><br />
+            <a href="#" class="delete-member-plus" style="color: red" rel="@member.Id">Delete this member including all their topics and comments</a><br />
+        </div>
+    }
+}
 }
 
 <script type="text/javascript" src="/scripts/powers/uPowers.js"></script>
