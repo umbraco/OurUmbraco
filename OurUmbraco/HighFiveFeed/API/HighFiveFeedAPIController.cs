@@ -16,6 +16,8 @@ using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Services;
 using Umbraco.Web.Mvc;
 using OurUmbraco.HighFiveFeed.Services;
+using HtmlAgilityPack;
+using System.Text.RegularExpressions;
 
 namespace OurUmbraco.HighFiveFeed.API
 {
@@ -31,9 +33,9 @@ namespace OurUmbraco.HighFiveFeed.API
 
         [Authorize]
         [HttpPost]
-        public bool SubmitHighFive(int toUserId, int action, String url)
+        public bool SubmitHighFive(int toUserId, int action, String url, String linkTitle="")
         {
-
+           
             var memberService = ApplicationContext.Current.Services.MemberService;
             //you need to be logged in!
             var currentMember = Members.GetCurrentMember();
@@ -47,7 +49,7 @@ namespace OurUmbraco.HighFiveFeed.API
                 highFive.ActionId = action;
                 highFive.Link = url;
                 highFive.CreatedDate = DateTime.Now;
-
+                highFive.LinkTitle = linkTitle;
                 dbContext.Database.Insert(highFive);
                 return true;
             }
@@ -102,6 +104,14 @@ namespace OurUmbraco.HighFiveFeed.API
             }
 
             return people;
+        }
+
+        public string GetTitleTag(string url)
+        {
+            var webGet = new HtmlWeb();
+            var document = webGet.Load(url);
+            var title = document.DocumentNode.SelectSingleNode("html/head/title").InnerText;
+            return title;
         }
     }
 }

@@ -455,6 +455,7 @@
     <Content Include="Assets\images\tools.png" />
     <Content Include="Assets\js\app.min.js" />
     <Content Include="Assets\js\community.js" />
+    <Content Include="Assets\js\components\highfives.js" />
     <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
     <Content Include="Assets\js\gitter\gitter.signalr.init.js" />
@@ -4438,7 +4439,7 @@
     <VisualStudio>
       <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
         <WebProjectProperties>
-          <UseIIS>True</UseIIS>
+          <UseIIS>False</UseIIS>
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>24292</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>

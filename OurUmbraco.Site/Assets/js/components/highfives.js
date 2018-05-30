@@ -14,6 +14,7 @@
                     HighFives.bindOnMentionChange();
                     HighFives.bindOnMemberSelect();
                     HighFives.bindOnSubmitForm();
+                    HighFives.bindOnLinkChange();
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
                         HighFives.getCategories(function(response) {
@@ -52,7 +53,12 @@
                 HighFives.selectMemberIfMatches(e.target.value);
             });
         },
-
+        bindOnLinkChange: function () {
+            jQuery('#high-five-url').keyup(function (e) {
+                HighFives.getUrlTitle(e.target.value);
+                HighFives.preview = false;
+            });
+        },
         bindOnMemberSelect: function() {
             jQuery('#high-five-form .suggestions-list button').unbind('click');
             jQuery('#high-five-form .suggestions-list button').click(function(e) {
@@ -70,7 +76,7 @@
             jQuery('#high-five-form').submit(function(e) {
                 e.preventDefault();
                 if (HighFives.isFormValid()) {
-                    HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), function() {
+                    HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), HighFives.linkTitle, function () {
                         HighFives.resetForm();
 
                         setTimeout(function() {
@@ -99,7 +105,7 @@
                     highFive.ToAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.To + '"></div>' + 
                     '<div class="meta"><div class="high-five-text">' + 
                     '<h3 class="high-five-header">' + highFive.To + '</h3>' + 
-                    '<p>' + highFive.From + ' High Fived you for <a href="' + highFive.Url + '">' + highFive.Type + '</a>' + /*, 2 minutes ago*/ '</p>' + 
+                    '<p>' + highFive.From + ' High Fived you for ' + highFive.Type +' : <a href="' + highFive.Url + '">' + highFive.LinkTitle + '</a>' + /*, 2 minutes ago*/ '</p>' + 
                     '</div></div></li>';
                 }
             }
@@ -116,6 +122,10 @@
                 '</button></li>';
             }
             HighFives.bindOnMemberSelect();
+        },
+        buildPreview: function ()
+        {
+            var preview = HighFives.preview;
         },
 
         // buildCategoryDropdown - Builds a list of options for the category dropdown.
@@ -178,7 +188,17 @@
                 }
             }
         },
-
+        getUrlTitle: function (url) {
+            if (url.length > 10) {
+                
+                jQuery.get('/Umbraco/Api/highFiveFeedApi/GetTitleTag?url=' + url, function (title) {
+                    HighFives.linkTitle = title;
+                    HighFives.preview.linkTitle = title;
+                        HighFives.buildPreview();
+                    });
+                
+            }
+        },
         getRandomCompliment: function() {
             var compliments = [
                 'Lovely',
@@ -305,11 +325,11 @@
         },
 
         // submitHighFive
-        submitHighFive: function(to, action, url, onSuccess) {
+        submitHighFive: function(to, action, url, linkTitle, onSuccess) {
             if (useMockApi) {
                 onSuccess(ApiMock.submitHighFive());
             } else {
-                jQuery.post('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url, onSuccess);   
+                jQuery.post('/umbraco/api/HighFiveFeedAPI/SubmitHighFive?toUserId=' + to + '&action=' + action + '&url=' + url + '&linkTitle=' + linkTitle, onSuccess);   
             }
         },
   
@@ -351,6 +371,7 @@
     };
 
     var memberSearch = _.debounce(HighFives.getMember, 300);
+    var titleSearch = _.debounce(HighFives.getUrlTitle, 300);
 
     var ApiMock = {
         getCategories: function() {

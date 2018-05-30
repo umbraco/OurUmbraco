@@ -16,6 +16,7 @@ namespace OurUmbraco.HighFiveFeed.Models
         public string Type { get; set; }
         public string Url { get; set; }
         public DateTime CreatedDate { get; set; }
+        public string LinkTitle { get; set; }
 
     }
 }

@@ -64,6 +64,7 @@ namespace OurUmbraco.HighFiveFeed.Services
                     To = toMember.Name,
                     ToAvatarUrl = toAvatar,
                     Id = dbEntry.Id,
+                    LinkTitle = dbEntry.LinkTitle,
                     CreatedDate = dbEntry.CreatedDate
 
 
@@ -106,6 +107,7 @@ namespace OurUmbraco.HighFiveFeed.Services
                     To = toMember.Name,
                     ToAvatarUrl = toAvatar,
                     Id = dbEntry.Id,
+                    LinkTitle = dbEntry.LinkTitle,
                     CreatedDate = dbEntry.CreatedDate
 
 

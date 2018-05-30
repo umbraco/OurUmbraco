@@ -23,6 +23,9 @@ namespace OurUmbraco.HighFiveFeed.Models
         [Column("link")]
         public string Link { get; set; }
 
+        [Column("linkTitle")]
+        public string LinkTitle { get; set; }
+
         [Column("count")]
         public int Count { get; set; }
 
