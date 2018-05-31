@@ -95,16 +95,16 @@
         buildActivityList: function () {
             var highFives = HighFives.list;
             if (highFives && highFives.length > 0) {
-                var list = document.querySelector("#high-five-activity .high-five-activity-list");
+                var list = document.querySelector("#high-five-activity .high-five__activity-list");
                 list.innerHTML = '';
                 for (var i = 0; i < highFives.length; i++) {
                     var highFive = highFives[i];
-                    list.innerHTML += '<li class="high-five-item">' + 
-                    '<div class="avatar"><img src="' + highFive.ToAvatarUrl + '?v=test&amp;width=100&amp;height=100&amp;mode=crop&amp;upscale=true" ' +
+                    list.innerHTML += '<li class="high-five-panel">' + 
+                    '<div class="high-five-panel__avatar"><img src="' + highFive.ToAvatarUrl + '?v=test&amp;width=100&amp;height=100&amp;mode=crop&amp;upscale=true" ' +
                     'srcset="' + highFive.ToAvatarUrl + '?v=test&amp;width=200&amp;height=200&amp;mode=crop&amp;upscale=true 2x, ' + 
                     highFive.ToAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.To + '"></div>' + 
-                    '<div class="meta"><div class="high-five-text">' + 
-                    '<h3 class="high-five-header">' + highFive.To + '</h3>' + 
+                    '<div class="high-five-panel__meta"><div class="high-five-panel__text">' + 
+                    '<h3 class="high-five-panel__header">' + highFive.To + '</h3>' + 
                     '<p>' + highFive.From + ' High Fived you for ' + highFive.Type +' : <a href="' + highFive.Url + '">' + highFive.LinkTitle + '</a>' + /*, 2 minutes ago*/ '</p>' + 
                     '</div></div></li>';
                 }
@@ -112,6 +112,7 @@
         },
 
         buildSuggestionsList: function () {
+            console.log("builds")
             var suggestions = HighFives.suggestions;
             var list = document.querySelector("#high-five-form .suggestions-list");
             list.innerHTML = '';
@@ -123,6 +124,14 @@
             }
             HighFives.bindOnMemberSelect();
         },
+
+        clearSuggestionsList: function () {
+            console.log("clear")
+            jQuery('#high-five-form .suggestions-list button').unbind('click');
+            var list = document.querySelector("#high-five-form .suggestions-list");
+            list.innerHTML = '';
+        },
+
         buildPreview: function ()
         {
             var preview = HighFives.preview;
@@ -182,10 +191,13 @@
                     HighFives.buildSuggestionsList();
                 } else {
                     jQuery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
+                        console.log(umbracians);
                         HighFives.suggestions = umbracians;
                         HighFives.buildSuggestionsList();
                     });
                 }
+            } else {
+                HighFives.clearSuggestionsList();
             }
         },
         getUrlTitle: function (url) {

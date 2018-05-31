@@ -91,20 +91,26 @@ else
                     <div class="col-md-12">
                         <form id="high-five-form">
                             <h2>
-                                High Five <input type="text" id="high-five-mention" class="high-five-field" required />
-                                for <select class="high-five-field" id="high-five-task" required>
+                                High Five 
+                                
+                                <span class="high-five__member-search">
+                                    <input type="text" id="high-five-mention" class="high-five__field" required autocomplete="off" />
+                                    <ul class="suggestions-list"></ul>
+                                </span>
+
+
+                                for <select class="high-five__field" id="high-five-task" required>
                                     <option value="" disabled selected>...</option>
                                 </select> at
-                                <input type="text" id="high-five-url" placeholder="https://skrift.io" class="high-five-field" required />
-                                <button id="high-five-submit" class="button green high-five-submit" value="High Five" type="submit">
+                                <input type="text" id="high-five-url" placeholder="https://skrift.io" class="high-five__field" required />
+                                <button id="high-five-submit" class="button green high-five__submit" value="High Five" type="submit">
                                     <img src="/assets/images/highfive.svg" alt="high five"> Send
                                 </button>
                             </h2>
-                            <ul class="suggestions-list"></ul>
                         </form>
                     </div>
                     <div class="col-md-12  flex" id="high-five-activity">
-                       <ul class="high-five-activity-list"></ul>
+                       <ul class="high-five__activity-list"></ul>
                        <!--<h2>Loading latest community activity...</h2>
                        
                        <ul class="umb-load-indicator animated -half-second">
