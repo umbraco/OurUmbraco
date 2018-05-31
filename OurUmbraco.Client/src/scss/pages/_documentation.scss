@@ -24,16 +24,11 @@
     #github-link {
         line-height: 1rem;
         vertical-align: middle;
-        transition: border-color .1s $easeExpo, color .1s $easeExpo;
         
         i{
             margin-right: 5px;
         }
-        
-        &:hover {
-            border-color: black;
-        }
-        
+
         @media (min-width:$md) {
             float: right;
         }
