@@ -98,7 +98,7 @@
         @supports (display: grid) {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            grid-column-gap: 20px;
+            grid-gap: 20px;
             margin-left: 0;
 
             .high-five-panel {

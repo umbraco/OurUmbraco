@@ -23,7 +23,7 @@
                             HighFives.buildCategoryDropdown(categories);
                             HighFives.getRecentHighFiveActivity(0, function(response) {
                                 var activity = typeof response == 'string' ? JSON.parse(response): response;
-                                HighFives.list = HighFives.addComplimentsToList(activity.HighFives);
+                                HighFives.list = HighFives.addComplimentsToList(activity.HighFives.slice(0, 6));
                                 HighFives.buildActivityList(HighFives.list);
                                 HighFives.checkForNewHighFivesPeriodically(30);
                             });
@@ -79,13 +79,12 @@
                     HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), HighFives.linkTitle, function () {
                         HighFives.resetForm();
 
-                        setTimeout(function() {
-                            HighFives.getRecentHighFiveActivity(0, function(response) {
-                                var activity = typeof response == 'string' ? JSON.parse(response): response;
-                                HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 10);
-                                HighFives.buildActivityList(HighFives.list);
-                            });   
-                        }, 1500);                     
+                        HighFives.getRecentHighFiveActivity(0, function(response) {
+                            var activity = typeof response == 'string' ? JSON.parse(response): response;
+                            // HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 6);
+                            HighFives.list = HighFives.addComplimentsToList(activity.HighFives).slice(0, 6);
+                            HighFives.buildActivityList(HighFives.list);
+                        });   
                     });
                 }
             });
@@ -94,6 +93,7 @@
         // buildActivityList - Builds a list of list items that represent the activity list and adds them to an activity list for users to view.
         buildActivityList: function () {
             var highFives = HighFives.list;
+
             if (highFives && highFives.length > 0) {
                 var list = document.querySelector("#high-five-activity .high-five__activity-list");
                 list.innerHTML = '';
@@ -108,11 +108,11 @@
                     '<p>' + highFive.From + ' High Fived you for ' + highFive.Type +' : <a href="' + highFive.Url + '">' + highFive.LinkTitle + '</a>' + /*, 2 minutes ago*/ '</p>' + 
                     '</div></div></li>';
                 }
+
             }
         },
 
         buildSuggestionsList: function () {
-            console.log("builds")
             var suggestions = HighFives.suggestions;
             var list = document.querySelector("#high-five-form .suggestions-list");
             list.innerHTML = '';
@@ -126,7 +126,6 @@
         },
 
         clearSuggestionsList: function () {
-            console.log("clear")
             jQuery('#high-five-form .suggestions-list button').unbind('click');
             var list = document.querySelector("#high-five-form .suggestions-list");
             list.innerHTML = '';
@@ -155,7 +154,8 @@
             window.setTimeout(function() {
                 HighFives.getRecentHighFiveActivity(0, function(response) {
                     var feed = typeof response == 'string' ? JSON.parse(response) : response;
-                    HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(feed.HighFives)).slice(0, 10);
+                    // HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(feed.HighFives)).slice(0, 6);
+                    HighFives.list = HighFives.addComplimentsToList(feed.HighFives).slice(0, 6);
                     HighFives.buildActivityList(HighFives.list);
                     HighFives.checkForNewHighFivesPeriodically(30);
                 });
@@ -191,7 +191,6 @@
                     HighFives.buildSuggestionsList();
                 } else {
                     jQuery.get('/Umbraco/Api/highFiveFeedApi/GetUmbracians?name=' + member, function (umbracians) {
-                        console.log(umbracians);
                         HighFives.suggestions = umbracians;
                         HighFives.buildSuggestionsList();
                     });
@@ -370,7 +369,7 @@
                 var isUnique = true;
                 for (var o = 0; o < oldArray.length; o++) {
                     var oldItem = oldArray[o];
-                    if (oldItem.id === itemToAdd.id) {
+                    if (oldItem.Id === itemToAdd.Id) {
                         isUnique = false;
                     }
                 }
