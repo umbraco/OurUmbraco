@@ -90,7 +90,7 @@
             else
             {
                 <option class="all" value="@categories.Id">All categories</option>
-                foreach (var tag in categories.Children)
+                foreach (var tag in categories.Children.OrderBy(x => x.Name.ToLower()))
                 {
                     if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
                     {
