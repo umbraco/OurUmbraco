@@ -27,10 +27,6 @@
 
             .search-big {
                 flex: 0 0 100%;
-
-                @media (min-width: $md) {
-                    flex: 0 0 70%;
-                }
             }
 
             .or {
@@ -173,59 +169,26 @@
                 }
             }
 
-            .category {
-                line-height: 1.3;
-            }
-
             &.solved {
                 background: rgba($color-our, .23);
                 border: 2px solid rgba($color-our, .66);
             }
 
-
-
-
             @media (min-width: $md) {
                 padding: 35px 15px;
-
-                &:hover {
-                    // background: rgba($color-space, .08);
-                }
-
-                &.solved {
-                    &:hover {
-                        // background: rgba($color-our, .30);
-                    }
-                }
             }
         }
-
-
 
         .topic {
             order: 2;
             margin: 10px 0;
 
             @media (min-width: $md) {
-                flex: 0 0 50%;
+                flex: 0 0 80%;
                 margin: 0 10% 0 0;
                 order: 1;
             }
         }
-
-
-
-        .category {
-            order: 1;
-
-            @media (min-width: $md) {
-                flex: 0 0 25%;
-                margin-right: 5%;
-                order: 2;
-            }
-        }
-
-
 
         .posts {
             order: 3;

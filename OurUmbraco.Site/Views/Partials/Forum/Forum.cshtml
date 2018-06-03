@@ -49,8 +49,6 @@
         TimeSpan.FromMinutes(1));
 
     var pages = (totalTopics / pageSize) + 1;
-
-    var categories = Model.Content.AncestorOrSelf(2);
 }
 @if (Model.Content.NewTopicsAllowed() == false || Model.Content.AncestorOrSelfIsArchived())
 {
@@ -74,31 +72,6 @@
     <div class="search-big">
         <input type="search" class="forum-search-input" required placeholder="Search for threads">
         <label for="search">Search for threads</label>
-    </div>
-
-    <div class="or">or</div>
-    <div class="sorting">
-        <select id="selectCategory" data-placeholder="Choose&hellip;">
-            <option class="category" selected disabled>Filter by category</option>
-            @if (categories.ContentType.Alias == "Projects")
-            {
-                foreach (var tag in CurrentPage.Parent.Children)
-                {
-                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
-                }
-            }
-            else
-            {
-                <option class="all" value="@categories.Id">All categories</option>
-                foreach (var tag in categories.Children)
-                {
-                    if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
-                    {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
-                    }
-                }
-            }
-        </select>
     </div>
 
     <div id="search-options" class="search-options">
@@ -131,7 +104,6 @@
     <div class="forum-head">
 
         <div class="topic">Topic</div>
-        <div class="category">Category</div>
         <div class="posts">Replies</div>
 
     </div>
@@ -159,9 +131,6 @@
                                 <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
                             }
                         </a>
-                    </div>
-                    <div class="category frontend">
-                        <a href="@forum.Url">@(Utils.GetForumName(forum))</a>
                     </div>
                     <div class="posts"><small>@topic.Replies</small> <span>replies</span></div>
                 </div>
