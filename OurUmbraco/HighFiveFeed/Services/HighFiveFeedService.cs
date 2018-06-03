@@ -74,16 +74,20 @@ namespace OurUmbraco.HighFiveFeed.Services
             return response;
         }
 
-        public HighFiveFeedResponse GetHighFiveFeed()
+        public HighFiveFeedResponse GetHighFiveFeed(int page = 1, int numberOfItems = 10)
         {
+          
+
             var Members = ApplicationContext.Current.Services.MemberService;
             var dbContext = ApplicationContext.Current.DatabaseContext;
-            var sql = new Sql().Select("*").From("highFivePosts");
-            var result = dbContext.Database.Fetch<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(sql).OrderByDescending(x => x.CreatedDate);
+            var sql = new Sql().Select("*").From<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>();
+            sql.OrderByDescending<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(x => x.CreatedDate);
+
+            var result = dbContext.Database.Page<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(page, numberOfItems, sql);
             var avatarService = new AvatarService();
             var response = new HighFiveFeedResponse();
 
-            foreach (var dbEntry in result.Take(10))
+            foreach (var dbEntry in result.Items)
             {
                 var toAvatar = "";
                 var fromAvatar = "";
