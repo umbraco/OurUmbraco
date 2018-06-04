@@ -90,6 +90,7 @@
             else
             {
                 <option class="all" value="@categories.Id">All categories</option>
+                @* Category sorting is done from the backoffice, the current order is based on what we expect to be most used *@
                 foreach (var tag in categories.Children)
                 {
                     if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
