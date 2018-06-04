@@ -39,16 +39,5 @@ If the projects area seems empty then that's because you need to rebuild the Exa
 ## Documentation area
 If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index.  This will automatically download the latest documentation from github.
 
-## Syncing your fork with the original repository
-To sync your fork with this original one, you'll have to add the upstream url once:
-
-	git remote add upstream git://github.com/umbraco/OurUmbraco.git
-
-And then each time you want to get the changes:
-
-	git fetch upstream
-	git rebase upstream/master
-
-Yes, this is a scary command line operation, don't you love it?! :-D
-
-(More info on how this works: http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
+## Contributing
+Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how you can get involved and help with the Umbraco community site.
