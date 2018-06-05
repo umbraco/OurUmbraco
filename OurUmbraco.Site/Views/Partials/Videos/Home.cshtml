@@ -139,6 +139,9 @@
                             </div>
                             @foreach (var video in videos)
                             {
+
+                                var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
+
                                 <div class="videos-item">
                                     <div class="videos-details">
                                         <a href="@video.Link" target="_blank" rel="noopener"><strong>@video.Name</strong></a>
@@ -177,12 +180,15 @@
                                             <div class="videos-description">@Html.Raw(html)</div>
                                         }
                                     </div>
-                                    <a href="@video.Link" class="videos-thumbnail" target="_blank" rel="noopener">
-                                        <div class="videos-thumbnail-overlay">
-                                            <i class="icon-Video"></i>
-                                        </div>
-                                        <div class="videos-thumbnail-background" style="background-image: url(/media/Vimeo/@(video.Id).jpg);"></div>
-                                    </a>
+                                    @if (thumbnail != null)
+                                    {
+                                        <a href="@video.Link" class="videos-thumbnail" target="_blank" rel="noopener">
+                                            <div class="videos-thumbnail-overlay">
+                                                <i class="icon-Video"></i>
+                                            </div>
+                                            <div class="videos-thumbnail-background" style="background-image: url(@thumbnail.Link);"></div>
+                                        </a>
+                                    }
                                 </div>
                             }
                         </div>
