@@ -263,7 +263,7 @@
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Vimeo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Vimeo.1.0.0-beta002\lib\net45\Skybrud.Social.Vimeo.dll</HintPath>
+      <HintPath>..\packages\Skybrud.Social.Vimeo.1.0.0-beta003\lib\net45\Skybrud.Social.Vimeo.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6684.15730, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.10.4\lib\net45\SQLCE4Umbraco.dll</HintPath>
