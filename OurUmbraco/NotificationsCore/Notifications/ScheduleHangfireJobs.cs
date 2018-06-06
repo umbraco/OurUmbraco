@@ -79,17 +79,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateBlogPostsJsonFile(PerformContext context)
         {
+
             // Initialize a new service
             var service = new BlogPostsService();
 
-            // Determine the path to the JSON file
-            var jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
+            // Update the local storage of blog posts
+            service.UpdateBlogPosts(context);
 
-            // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(context), Formatting.Indented);
-
-            // Save the JSON to disk
-            System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
         }
 
 

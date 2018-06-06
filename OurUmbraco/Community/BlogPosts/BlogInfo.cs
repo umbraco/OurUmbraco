@@ -10,7 +10,7 @@ namespace OurUmbraco.Community.BlogPosts {
     /// </summary>
     public class BlogInfo {
 
-        public string Id { get; private set; }
+        public Guid Id { get; private set; }
 
         public string Title { get; private set; }
 
@@ -35,7 +35,7 @@ namespace OurUmbraco.Community.BlogPosts {
         public Encoding Encoding { get; set; }
 
         private BlogInfo(JObject obj) {
-            Id = obj.GetString("id");
+            Id = obj.GetString("id", Guid.Parse);
             Title = obj.GetString("title");
             Url = obj.GetString("url");
             RssUrl = obj.GetString("rss");

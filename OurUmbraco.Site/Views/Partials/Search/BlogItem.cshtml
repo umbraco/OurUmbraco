@@ -1,0 +1,32 @@
+﻿@using OurUmbraco.Community.BlogPosts
+@using Skybrud.Essentials.Strings
+@inherits UmbracoViewPage<OurUmbraco.Search.BlogItemSearchResult>
+    
+@{
+
+    if (Model.Blog == null)
+    {
+        return;
+    }
+
+}
+
+<li>
+    <a href="@Model.Item.Link" target="_blank" rel="noopener">
+        <div class="type-icon">
+            <i class="icon-Rss"></i>
+        </div>
+        <div class="type-context">
+            <div class="type-name">
+                @Model.Item.Title
+                <span style="color: #445255; font-size: 14px;">(via @Model.Blog.Title)</span>
+            </div>
+            <span class="type-datetime">Published: @Model.Item.PublishedDate.ToString("MMMM dd, yyyy")</span>
+            @if (Model.Item.HasDescription)
+            {
+                var description = StringUtils.StripHtml(Model.Item.Description);
+                <div class="type-description">@Umbraco.Truncate(description, 300)</div>
+            }
+        </div>
+    </a>
+</li>

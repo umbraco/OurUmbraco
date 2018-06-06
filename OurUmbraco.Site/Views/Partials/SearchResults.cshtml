@@ -1,5 +1,14 @@
-﻿@using OurUmbraco.Our
+﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Our
+@using OurUmbraco.Search
+@using Skybrud.Essentials.Json
 @model OurUmbraco.Our.Models.SearchResultContentModel
+
+@{
+
+    BlogPostsService blogs = null;
+
+}
 
 <div class="plain">
     <!-- search OVERVIEW START -->
@@ -69,7 +78,24 @@
                 }
 
                 <ul class="search-all-results docs-search-listing">
-                    @foreach(var result in Model.Results.SearchResults) { 
+                    @foreach(var result in Model.Results.SearchResults) {
+
+                        string nodeTypeAlias = result["nodeTypeAlias"];
+                        
+                        if (nodeTypeAlias == "blogItem")
+                        {
+
+                            string rawData;
+                            if (result.Fields.TryGetValue("data", out rawData))
+                            {
+                                BlogInfo blog = (blogs = (blogs ?? new BlogPostsService())).GetBlogs().FirstOrDefault(x => x.Id.ToString() == result["blogId"]);
+                                @Html.Partial("~/Views/Partials/Search/BlogItem.cshtml", new BlogItemSearchResult(result, blog))
+                                continue;
+                            }
+
+                        }
+
+
                         <li class="@result.SolvedClass()">
                             <a href="@result.FullUrl()">
                                 <div class="type-icon">
