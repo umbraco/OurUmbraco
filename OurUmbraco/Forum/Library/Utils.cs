@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Collections.Specialized;
 using System.Configuration;
-using System.Globalization;
 using System.Linq;
-using System.Net;
 using System.Net.Mail;
 using System.Web;
-using System.Web.Security;
 using OurUmbraco.Forum.Extensions;
-using RestSharp;
-using RestSharp.Deserializers;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -109,62 +102,6 @@ namespace OurUmbraco.Forum.Library
             {
                 Log.Add(LogTypes.Error, new User(0), -1, string.Format("Error sending potential spam member notification: {0} {1} {2}",
                     ex.Message, ex.StackTrace, ex.InnerException));
-            }
-        }
-
-        public static void SendActivationMail(IMember member)
-        {
-            try
-            {
-                var subject = "Activate your account on our.umbraco.org";
-                var body =
-                    string.Format("Hi {0},<br /><br /> Thanks for signing up for the Umbraco community site. In order to be able to log in please click on the link below to activate your account: <br /><a href=\"https://our.umbraco.org/member/activate/?id={1}\">https://our.umbraco.org/member/activate/?id={1}</a><br /><br />Best regards,<br />The Umbraco Community robot.", member.Name, member.ProviderUserKey);
-
-                var mailMessage = new MailMessage
-                {
-                    Subject = subject,
-                    Body = body,
-                    IsBodyHtml = true
-                };
-
-                 
-                mailMessage.To.Add(member.Email);
-
-                mailMessage.From = new MailAddress("robot@umbraco.org");
-
-                var smtpClient = new SmtpClient();
-                smtpClient.Send(mailMessage);
-            }
-            catch (Exception ex)
-            {
-                var error = string.Format("*ERROR* sending activation mail for member {0} - {1} {2} {3}", member.Email, ex.Message, ex.StackTrace, ex.InnerException);
-                SendSlackNotification(error);
-                LogHelper.Error<Utils>(error, ex);
-            }
-        }
-
-        private static void SendSlackNotification(string body)
-        {
-            using (var client = new WebClient())
-            {
-                var values = new NameValueCollection
-                {
-                    {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
-                    {"token", ConfigurationManager.AppSettings["SlackToken"]},
-                    {"username", ConfigurationManager.AppSettings["SlackUsername"]},
-                    {"icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
-                    {"text", body}
-                };
-
-                try
-                {
-                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                    var response = client.Encoding.GetString(data);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<Utils>("Posting update to Slack failed", ex);
-                }
             }
         }
 
