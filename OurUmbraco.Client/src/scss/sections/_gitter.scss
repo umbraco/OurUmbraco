@@ -92,7 +92,15 @@
     .user {
         margin-bottom:5px;
         display: flex;
+        flex-wrap: wrap;
         align-items:baseline;
+        
+        .name, .username {
+            flex: 1 0 100%;
+            @media (min-width: $md) {
+                flex: 0 0 auto;
+            }
+        }
 
         .name {
             font-weight:bold;
@@ -106,6 +114,11 @@
 
         .date {
             font-size:0.8em;
+            margin-top:5px;
+
+            @media (min-width: $md) {
+                margin-top:0;
+            }
         }
     }
 }
