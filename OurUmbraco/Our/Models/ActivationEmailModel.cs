@@ -1,6 +1,6 @@
 ﻿using Umbraco.Core.Models;
 
-namespace OurUmbraco.Emails.Models
+namespace OurUmbraco.Our.Models
 {
     public class ActivationEmailModel
     {
