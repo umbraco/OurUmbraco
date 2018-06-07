@@ -472,6 +472,8 @@
     <Compile Include="Documentation\Models\Job.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Documentation\Controllers\DocfxController.cs" />
+    <Compile Include="Emails\EmailsUtils.cs" />
+    <Compile Include="Emails\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
     <Compile Include="Events\App_Startup\ControllerRouting.cs" />
     <Compile Include="Events\Library\Xslt.cs" />
