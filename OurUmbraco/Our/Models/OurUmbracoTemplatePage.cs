@@ -68,6 +68,7 @@ namespace OurUmbraco.Our.Models
                         NumberOfForumPosts = member.ForumPosts(),
                         Karma = member.Karma(),
                         TwitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty),
+                        GitHubUsername = member.GetPropertyValue<string>("github"),
                         IsAdmin = member.IsAdmin(),
                         Email = member.GetPropertyValue<string>("Email"),
                         IsBlocked = member.GetPropertyValue<bool>("blocked"),

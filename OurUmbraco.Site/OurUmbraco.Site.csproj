@@ -239,8 +239,15 @@
     <Reference Include="Skybrud.Social.Core, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Core.1.0.8\lib\net45\Skybrud.Social.Core.dll</HintPath>
     </Reference>
+    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Skybrud.Social.GitHub.dll</HintPath>
+    </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.Twitter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Twitter.1.0.0-beta006\lib\net45\Skybrud.Social.Twitter.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6684.15730, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.10.4\lib\net45\SQLCE4Umbraco.dll</HintPath>
@@ -434,6 +441,7 @@
     <Content Include="Assets\images\editor.png" />
     <Content Include="Assets\images\forum.gif" />
     <Content Include="Assets\images\forum.png" />
+    <Content Include="Assets\images\GitHub-Mark-32px.png" />
     <Content Include="Assets\images\highfive.svg" />
     <Content Include="Assets\images\icons.svg" />
     <Content Include="Assets\images\imagegen %281%29.png" />
