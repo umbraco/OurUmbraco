@@ -82,99 +82,110 @@ namespace OurUmbraco.Our.Controllers
         public ActionResult LinkGitHub(string state, string code = null)
         {
 
-            IPublishedContent profilePage = Umbraco.TypedContent(1057);
-            if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
-
-            // Initialize the OAuth client
-            GitHubOAuthClient client = new GitHubOAuthClient
-            {
-                ClientId = WebConfigurationManager.AppSettings["GitHubClientId"],
-                ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"]
-            };
-
-            // Validate state - Step 1
-            if (String.IsNullOrWhiteSpace(state))
-            {
-                LogHelper.Info<ProfileController>("No OAuth state specified in the query string.");
-                return GetErrorResult("No state specified in the query string.");
-            }
-
-            // Validate state - Step 2
-            string session = Session["GitHub_" + state] as string;
-            if (String.IsNullOrWhiteSpace(session))
-            {
-                LogHelper.Info<ProfileController>("Failed finding OAuth session item. Most likely the session expired.");
-                return GetErrorResult("Session expired? Please click the link below and try to link with your GitHub account again ;)");
-            }
-
-            // Remove the state from the session
-            Session.Remove("GitHub_" + state);
-
-            // Exchange the auth code for an access token
-            GitHubTokenResponse accessTokenResponse;
-            try
-            {
-                accessTokenResponse = client.GetAccessTokenFromAuthorizationCode(code);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<ProfileController>("Unable to retrieve access token from GitHub API", ex);
-                return GetErrorResult("Oh noes! An error happened.");
-            }
-
-            // Initialize a new service instance from the retrieved access token
-            var service = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(accessTokenResponse.Body.AccessToken);
-
-            // Get some information about the authenticated GitHub user
-            GitHubGetUserResponse userResponse;
-            try
-            {
-                userResponse = service.User.GetUser();
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<ProfileController>("Unable to get user information from the GitHub API", ex);
-                return GetErrorResult("Oh noes! An error happened.");
-            }
-
-            // Get the GitHub username from the API response
-            string githubUsername = userResponse.Body.Login;
-
-            // Get the member of the current ID (for comparision and lookup)
+            // Get the member of the current ID
             int memberId = Members.GetCurrentMemberId();
+            if (memberId <= 0) return GetErrorResult("Oh noes! An error happened.");
 
-            // Get a reference to the member searcher
-            BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
-
-            // Initialize new search criteria for the GitHub username
-            ISearchCriteria criteria = searcher.CreateSearchCriteria();
-            criteria = criteria.RawQuery($"github:{githubUsername}");
-
-            // Check if there are other members with the same GitHub username
-            foreach (var result in searcher.Search(criteria))
+            try
             {
-                if (result.Id != memberId)
+
+                IPublishedContent profilePage = Umbraco.TypedContent(1057);
+                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+
+                // Initialize the OAuth client
+                GitHubOAuthClient client = new GitHubOAuthClient
                 {
-                    LogHelper.Info<ProfileController>("Failed setting GitHub username for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
-                    return GetErrorResult("Another member already exists with the same GitHub username.");
+                    ClientId = WebConfigurationManager.AppSettings["GitHubClientId"],
+                    ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"]
+                };
+
+                // Validate state - Step 1
+                if (String.IsNullOrWhiteSpace(state))
+                {
+                    LogHelper.Info<ProfileController>("No OAuth state specified in the query string.");
+                    return GetErrorResult("No state specified in the query string.");
                 }
+
+                // Validate state - Step 2
+                string session = Session["GitHub_" + state] as string;
+                if (String.IsNullOrWhiteSpace(session))
+                {
+                    LogHelper.Info<ProfileController>("Failed finding OAuth session item. Most likely the session expired.");
+                    return GetErrorResult("Session expired? Please click the link below and try to link with your GitHub account again ;)");
+                }
+
+                // Remove the state from the session
+                Session.Remove("GitHub_" + state);
+
+                // Exchange the auth code for an access token
+                GitHubTokenResponse accessTokenResponse;
+                try
+                {
+                    accessTokenResponse = client.GetAccessTokenFromAuthorizationCode(code);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<ProfileController>("Unable to retrieve access token from GitHub API", ex);
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+
+                // Initialize a new service instance from the retrieved access token
+                var service = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(accessTokenResponse.Body.AccessToken);
+
+                // Get some information about the authenticated GitHub user
+                GitHubGetUserResponse userResponse;
+                try
+                {
+                    userResponse = service.User.GetUser();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<ProfileController>("Unable to get user information from the GitHub API", ex);
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+
+                // Get the GitHub username from the API response
+                string githubUsername = userResponse.Body.Login;
+
+                // Get a reference to the member searcher
+                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+
+                // Initialize new search criteria for the GitHub username
+                ISearchCriteria criteria = searcher.CreateSearchCriteria();
+                criteria = criteria.RawQuery($"github:{githubUsername}");
+
+                // Check if there are other members with the same GitHub username
+                foreach (var result in searcher.Search(criteria))
+                {
+                    if (result.Id != memberId)
+                    {
+                        LogHelper.Info<ProfileController>("Failed setting GitHub username for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
+                        return GetErrorResult("Another member already exists with the same GitHub username.");
+                    }
+                }
+
+                // Get the member from the member service
+                var ms = ApplicationContext.Services.MemberService;
+                var mem = ms.GetById(memberId);
+
+                // Update the "github" property and save the value
+                mem.SetValue("github", githubUsername);
+                mem.SetValue("githubId", userResponse.Body.Id);
+                mem.SetValue("githubData", userResponse.Body.JObject.ToString());
+                ms.Save(mem);
+
+                // Clear the runtime cache for the member
+                ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
+
+                // Redirect the member back to the profile page
+                return RedirectToUmbracoPage(1057);
+
             }
-
-            // Get the member from the member service
-            var ms = ApplicationContext.Services.MemberService;
-            var mem = ms.GetById(memberId);
-
-            // Update the "github" property and save the value
-            mem.SetValue("github", githubUsername);
-            mem.SetValue("githubId", userResponse.Body.Id);
-            mem.SetValue("githubData", userResponse.Body.JObject.ToString());
-            ms.Save(mem);
-
-            // Clear the runtime cache for the member
-            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
-
-            // Redirect the member back to the profile page
-            return RedirectToUmbracoPage(1057);
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProfileController>("Unable to link with GitHub user for member with ID " + memberId, ex);
+                return GetErrorResult("Oh noes! An error happened.");
+            }
 
         }
 
@@ -208,94 +219,105 @@ namespace OurUmbraco.Our.Controllers
         public ActionResult LinkTwitter(string oauth_token, string oauth_verifier)
         {
 
-            IPublishedContent profilePage = Umbraco.TypedContent(1057);
-            if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+            // Get the member of the current ID
+            int memberId = Members.GetCurrentMemberId();
+            if (memberId <= 0) return GetErrorResult("Oh noes! An error happened.");
 
-            // Initialize the OAuth client
-            TwitterOAuthClient client = new TwitterOAuthClient();
-            client.ConsumerKey = WebConfigurationManager.AppSettings["twitterConsumerKey"];
-            client.ConsumerSecret = WebConfigurationManager.AppSettings["twitterConsumerSecret"];
-
-            // Grab the request token from the session
-            SocialOAuthRequestToken requestToken = Session[oauth_token] as SocialOAuthRequestToken;
-            if (requestToken == null) return GetErrorResult("Session expired? Please click the link below and try to link with your Twitter account again ;)");
-
-            // Update the OAuth client with information from the request token
-            client.Token = requestToken.Token;
-            client.TokenSecret = requestToken.TokenSecret;
-
-            // Make the request to the Twitter API to get the access token
-            SocialOAuthAccessTokenResponse response = client.GetAccessToken(oauth_verifier);
-
-            // Get the access token from the response body
-            TwitterOAuthAccessToken accessToken = (TwitterOAuthAccessToken) response.Body;
-
-            // Update the OAuth client properties
-            client.Token = accessToken.Token;
-            client.TokenSecret = accessToken.TokenSecret;
-
-            // Initialize a new service instance from the OAUth client
-            var service = Skybrud.Social.Twitter.TwitterService.CreateFromOAuthClient(client);
-
-            // Get some information about the authenticated Twitter user
-            TwitterAccount user;
             try
             {
-                
-                // Initialize the options for the request (we don't need the status)
-                var options = new TwitterVerifyCrendetialsOptions
+
+                IPublishedContent profilePage = Umbraco.TypedContent(1057);
+                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+
+                // Initialize the OAuth client
+                TwitterOAuthClient client = new TwitterOAuthClient();
+                client.ConsumerKey = WebConfigurationManager.AppSettings["twitterConsumerKey"];
+                client.ConsumerSecret = WebConfigurationManager.AppSettings["twitterConsumerSecret"];
+
+                // Grab the request token from the session
+                SocialOAuthRequestToken requestToken = Session[oauth_token] as SocialOAuthRequestToken;
+                if (requestToken == null) return GetErrorResult("Session expired? Please click the link below and try to link with your Twitter account again ;)");
+
+                // Update the OAuth client with information from the request token
+                client.Token = requestToken.Token;
+                client.TokenSecret = requestToken.TokenSecret;
+
+                // Make the request to the Twitter API to get the access token
+                SocialOAuthAccessTokenResponse response = client.GetAccessToken(oauth_verifier);
+
+                // Get the access token from the response body
+                TwitterOAuthAccessToken accessToken = (TwitterOAuthAccessToken)response.Body;
+
+                // Update the OAuth client properties
+                client.Token = accessToken.Token;
+                client.TokenSecret = accessToken.TokenSecret;
+
+                // Initialize a new service instance from the OAUth client
+                var service = Skybrud.Social.Twitter.TwitterService.CreateFromOAuthClient(client);
+
+                // Get some information about the authenticated Twitter user
+                TwitterAccount user;
+                try
                 {
-                    SkipStatus = true
-                };
 
-                // Make the request to the Twitter API
-                var userResponse = service.Account.VerifyCredentials(options);
+                    // Initialize the options for the request (we don't need the status)
+                    var options = new TwitterVerifyCrendetialsOptions
+                    {
+                        SkipStatus = true
+                    };
 
-                // Update the "user" variable
-                user = userResponse.Body;
+                    // Make the request to the Twitter API
+                    var userResponse = service.Account.VerifyCredentials(options);
+
+                    // Update the "user" variable
+                    user = userResponse.Body;
+
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<ProfileController>("Unable to get user information from the Twitter API", ex);
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+
+                // Get a reference to the member searcher
+                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+
+                // Initialize new search criteria for the Twitter screen name
+                ISearchCriteria criteria = searcher.CreateSearchCriteria();
+                criteria = criteria.RawQuery($"twitter:{user.ScreenName}");
+
+                // Check if there are other members with the same Twitter screen name
+                foreach (var result in searcher.Search(criteria))
+                {
+                    if (result.Id != memberId)
+                    {
+                        LogHelper.Info<ProfileController>("Failed setting Twitter screen name for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
+                        return GetErrorResult("Another member already exists with the same Twitter screen name.");
+                    }
+                }
+
+                // Get the member from the member service
+                var ms = ApplicationContext.Services.MemberService;
+                var mem = ms.GetById(memberId);
+
+                // Update the "twitter" property and save the value
+                mem.SetValue("twitter", user.ScreenName);
+                mem.SetValue("twitterId", user.IdStr);
+                mem.SetValue("twitterData", user.JObject.ToString());
+                ms.Save(mem);
+
+                // Clear the runtime cache for the member
+                ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
+
+                // Redirect the member back to the profile page
+                return RedirectToUmbracoPage(1057);
 
             }
             catch (Exception ex)
             {
-                LogHelper.Error<ProfileController>("Unable to get user information from the Twitter API", ex);
+                LogHelper.Error<ProfileController>("Unable to link with Twitter user for member with ID " + memberId, ex);
                 return GetErrorResult("Oh noes! An error happened.");
             }
-
-            // Get the member of the current ID (for comparision and lookup)
-            int memberId = Members.GetCurrentMemberId();
-
-            // Get a reference to the member searcher
-            BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
-
-            // Initialize new search criteria for the Twitter screen name
-            ISearchCriteria criteria = searcher.CreateSearchCriteria();
-            criteria = criteria.RawQuery($"twitter:{user.ScreenName}");
-
-            // Check if there are other members with the same Twitter screen name
-            foreach (var result in searcher.Search(criteria))
-            {
-                if (result.Id != memberId)
-                {
-                    LogHelper.Info<ProfileController>("Failed setting Twitter screen name for user with ID " + memberId + ". Username is already used by member with ID " + result.Id + ".");
-                    return GetErrorResult("Another member already exists with the same Twitter screen name.");
-                }
-            }
-
-            // Get the member from the member service
-            var ms = ApplicationContext.Services.MemberService;
-            var mem = ms.GetById(memberId);
-
-            // Update the "twitter" property and save the value
-            mem.SetValue("twitter", user.ScreenName);
-            mem.SetValue("twitterId", user.IdStr);
-            mem.SetValue("twitterData", user.JObject.ToString());
-            ms.Save(mem);
-
-            // Clear the runtime cache for the member
-            ApplicationContext.ApplicationCache.RuntimeCache.ClearCacheItem("MemberData" + mem.Username);
-
-            // Redirect the member back to the profile page
-            return RedirectToUmbracoPage(1057);
 
         }
 
