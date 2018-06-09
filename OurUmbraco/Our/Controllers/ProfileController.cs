@@ -104,7 +104,7 @@ namespace OurUmbraco.Our.Controllers
             if (String.IsNullOrWhiteSpace(session))
             {
                 LogHelper.Info<ProfileController>("Failed finding OAuth session item. Most likely the session expired.");
-                return GetErrorResult("Session expired?");
+                return GetErrorResult("Session expired? Please click the link below and try to link with your GitHub account again ;)");
             }
 
             // Remove the state from the session
@@ -203,8 +203,7 @@ namespace OurUmbraco.Our.Controllers
             return Redirect(requestToken.AuthorizeUrl);
 
         }
-
-
+        
         [HttpGet]
         public ActionResult LinkTwitter(string oauth_token, string oauth_verifier)
         {
@@ -219,6 +218,7 @@ namespace OurUmbraco.Our.Controllers
 
             // Grab the request token from the session
             SocialOAuthRequestToken requestToken = Session[oauth_token] as SocialOAuthRequestToken;
+            if (requestToken == null) return GetErrorResult("Session expired? Please click the link below and try to link with your Twitter account again ;)");
 
             // Update the OAuth client with information from the request token
             client.Token = requestToken.Token;
