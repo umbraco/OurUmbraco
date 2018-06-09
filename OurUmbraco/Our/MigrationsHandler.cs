@@ -53,6 +53,8 @@ namespace OurUmbraco.Our
             AddVideosPage();
             AddRetiredStatusToPackages();
             AddPasswordResetTokenToMembers();
+            AddGitHubMemberProperties();
+            AddTwitterMemberProperties();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1458,5 +1460,176 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+        private void AddGitHubMemberProperties()
+        {
+
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                // Get references to the needed services
+                var dts = ApplicationContext.Current.Services.DataTypeService;
+                var mts = ApplicationContext.Current.Services.MemberTypeService;
+
+                // Attempt to find the "member" member type
+                var memberType = mts.Get("member");
+                if (memberType == null) throw new Exception("WTF? Unable to find member type with alias: member");
+
+                bool hasIdProperty = memberType.PropertyTypes.Any(x => x.Alias == "githubId");
+                bool hasDataProperty = memberType.PropertyTypes.Any(x => x.Alias == "githubData");
+
+                bool hasChanges = false;
+
+                if (!hasIdProperty)
+                {
+
+                    // Get the "Textstring" data type definition
+                    var dtd = dts.GetDataTypeDefinitionById(-88);
+
+                    // Initialize a new property type based on the data type
+                    var pt = new PropertyType(dtd, "githubId") { Name = "GitHub ID", Description = "The ID of the linked GitHub user." };
+
+                    // Add the property to the "Services" group/tab
+                    memberType.AddPropertyType(pt, "Services");
+
+                    // We do now
+                    hasChanges = true;
+
+                }
+
+                if (!hasDataProperty)
+                {
+
+                    // Just a random, but hardcoded GUID
+                    var dtdKey = new Guid("cd7b4e99-faff-46c6-affa-9c95178df336");
+
+                    // "JSON Preview"
+                    var dtd = dts.GetDataTypeDefinitionById(dtdKey);
+
+                    // Create the data type difinition if not found
+                    if (dtd == null)
+                    {
+                        dtd = new DataTypeDefinition(-1, "Our.JsonPreview");
+                        dtd.Key = dtdKey;
+                        dtd.Name = "GitHub user data";
+                        dts.Save(dtd);
+                    }
+
+                    // Initialize a new property type based on the data type
+                    var pt = new PropertyType(dtd, "githubData") { Name = "GitHub Data", Description = "The data of the linked GitHub user." };
+
+                    // Add the property to the "Services" group/tab
+                    memberType.AddPropertyType(pt, "Services");
+
+                    // We do now
+                    hasChanges = true;
+
+                }
+
+                // Save the member type if we have any changes for it
+                if (hasChanges) mts.Save(memberType);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+
+        }
+        private void AddTwitterMemberProperties()
+        {
+
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                // Get references to the needed services
+                var dts = ApplicationContext.Current.Services.DataTypeService;
+                var mts = ApplicationContext.Current.Services.MemberTypeService;
+
+                // Attempt to find the "member" member type
+                var memberType = mts.Get("member");
+                if (memberType == null) throw new Exception("WTF? Unable to find member type with alias: member");
+
+                bool hasIdProperty = memberType.PropertyTypes.Any(x => x.Alias == "twitterId");
+                bool hasDataProperty = memberType.PropertyTypes.Any(x => x.Alias == "TwitterData");
+
+                bool hasChanges = false;
+
+                if (!hasIdProperty)
+                {
+
+                    // Get the "Textstring" data type definition
+                    var dtd = dts.GetDataTypeDefinitionById(-88);
+
+                    // Initialize a new property type based on the data type
+                    var pt = new PropertyType(dtd, "twitterId") { Name = "Twitter ID", Description = "The ID of the linked Twitter user." };
+
+                    // Add the property to the "Services" group/tab
+                    memberType.AddPropertyType(pt, "Services");
+
+                    // We do now
+                    hasChanges = true;
+
+                }
+
+                if (!hasDataProperty)
+                {
+
+                    // Just a random, but hardcoded GUID
+                    var dtdKey = new Guid("24a673ff-d198-4931-8112-67e20cb6e948");
+
+                    // "JSON Preview"
+                    var dtd = dts.GetDataTypeDefinitionById(dtdKey);
+
+                    // Create the data type difinition if not found
+                    if (dtd == null)
+                    {
+                        dtd = new DataTypeDefinition(-1, "Our.JsonPreview");
+                        dtd.Key = dtdKey;
+                        dtd.Name = "Twitter user data";
+                        dts.Save(dtd);
+                    }
+
+                    // Initialize a new property type based on the data type
+                    var pt = new PropertyType(dtd, "twitterData") { Name = "Twitter Data", Description = "The data of the linked Twitter user." };
+
+                    // Add the property to the "Services" group/tab
+                    memberType.AddPropertyType(pt, "Services");
+
+                    // We do now
+                    hasChanges = true;
+
+                }
+
+                // Save the member type if we have any changes for it
+                if (hasChanges) mts.Save(memberType);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+
+        }
+
     }
+
 }
