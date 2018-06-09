@@ -15,6 +15,13 @@
                     HighFives.bindOnMemberSelect();
                     HighFives.bindOnSubmitForm();
                     HighFives.bindOnLinkChange();
+                    HighFives.preview = {};
+                    HighFives.preview.ToName = "";
+                    HighFives.preview.ToAvatarUrl = "";
+                    HighFives.preview.Category = "";
+                    HighFives.preview.Link = "";
+                    HighFives.preview.LinkTitle = "";
+                    HighFives.getCurrentMember();
                     HighFives.getRandomUmbracians(function(people) {
                         HighFives.printPhrases(HighFives.shuffle(_.map(people, 'Username')), $('#high-five-mention'));
                         HighFives.getCategories(function(response) {
@@ -56,7 +63,7 @@
         bindOnLinkChange: function () {
             jQuery('#high-five-url').keyup(function (e) {
                 HighFives.getUrlTitle(e.target.value);
-                HighFives.preview = false;
+                
             });
         },
         bindOnMemberSelect: function() {
@@ -72,13 +79,21 @@
             // unbind from previous versions just in case
         },
 
+        bindOnCategorySelect: function () {
+
+            var categorySeleted = jQuery('#high-five-task option:selected').text();
+            HighFives.preview.Category = categorySeleted;
+            HighFives.addPreviewBlock();
+            
+        },
+
         bindOnSubmitForm: function() {
             jQuery('#high-five-form').submit(function(e) {
                 e.preventDefault();
                 if (HighFives.isFormValid()) {
                     HighFives.submitHighFive(HighFives.selectedMember.id, jQuery('#high-five-task').val(), jQuery('#high-five-url').val(), HighFives.linkTitle, function () {
                         HighFives.resetForm();
-
+                        HighFives.clearPreviewBlock();
                         HighFives.getRecentHighFiveActivity(0, function(response) {
                             var activity = typeof response == 'string' ? JSON.parse(response): response;
                             // HighFives.list = HighFives.unionBy(HighFives.list, HighFives.addComplimentsToList(activity.HighFives)).slice(0, 6);
@@ -111,7 +126,28 @@
 
             }
         },
+        addPreviewBlock: function () {
+            var list = document.querySelector("#high-five-activity .high-five__activity-preview");
+            list.innerHTML = '';
 
+            HighFives.preview.ToAvatarUrl = "/media/avatar/70690.png";
+
+            var highFive = HighFives.preview;
+                list.innerHTML += '<p>Preview of your High Five: </p> <li class="high-five-panel">' +
+                    '<div class="high-five-panel__avatar"><img src="' + highFive.ToAvatarUrl + '?v=test&amp;width=100&amp;height=100&amp;mode=crop&amp;upscale=true" ' +
+                    'srcset="' + highFive.ToAvatarUrl + '?v=test&amp;width=200&amp;height=200&amp;mode=crop&amp;upscale=true 2x, ' +
+                    highFive.ToAvatarUrl + '?v=test&amp;width=300&amp;height=300&amp;mode=crop&amp;upscale=true 3x" alt=' + highFive.ToName + '"></div>' +
+                    '<div class="high-five-panel__meta"><div class="high-five-panel__text">' +
+                    '<h3 class="high-five-panel__header">' + highFive.ToName + '</h3>' +
+                    '<p>' + highFive.FromMember + ' High Fived you for ' + highFive.Category + ' : <a href="' + highFive.Link + '">' + highFive.LinkTitle + '</a>' + /*, 2 minutes ago*/ '</p>' +
+                    '</div></div></li>';
+        },
+
+        clearPreviewBlock: function () {
+            var list = document.querySelector("#high-five-activity .high-five__activity-preview");
+            list.innerHTML = '';
+
+        },
         buildSuggestionsList: function () {
             var suggestions = HighFives.suggestions;
             var list = document.querySelector("#high-five-form .suggestions-list");
@@ -131,10 +167,7 @@
             list.innerHTML = '';
         },
 
-        buildPreview: function ()
-        {
-            var preview = HighFives.preview;
-        },
+        
 
         // buildCategoryDropdown - Builds a list of options for the category dropdown.
         buildCategoryDropdown: function(categories) {
@@ -147,6 +180,9 @@
                 }
                 dropdown.html(options);
             }
+            $("#high-five-task").change(function () {
+                HighFives.bindOnCategorySelect();
+            });
         },
 
         // checkForNewHighFivesPeriodically - Polls the API endpoint for new high fives periodically
@@ -204,12 +240,20 @@
                 
                 jQuery.get('/Umbraco/Api/highFiveFeedApi/GetTitleTag?url=' + url, function (title) {
                     HighFives.linkTitle = title;
-                    HighFives.preview.linkTitle = title;
-                        HighFives.buildPreview();
+                    HighFives.preview.LinkTitle = title;
+                    HighFives.preview.Link = url;
+                    HighFives.addPreviewBlock();
                     });
                 
             }
         },
+        getCurrentMember: function () {
+                jQuery.get('/Umbraco/Api/highFiveFeedApi/GetCurrentMember', function (member) {
+                    HighFives.currentMember = member;
+                    HighFives.preview.FromMember = HighFives.currentMember.Username;
+                });
+
+            },
         getRandomCompliment: function() {
             var compliments = [
                 'Lovely',
@@ -316,6 +360,8 @@
             var list = document.querySelector("#high-five-form .suggestions-list");
             list.innerHTML = '';
             jQuery('#high-five-mention').val(member.name);
+            HighFives.preview.ToName = member.name;
+            HighFives.addPreviewBlock();
         },
 
         // selectMemberIfMatches - If the `value` matches the name of a user in the suggestions list, select them.
@@ -330,6 +376,7 @@
                             name: suggestion.Username
                         };
                         HighFives.selectMember(HighFives.selectedMember);
+                       
                     }
                 }
             }

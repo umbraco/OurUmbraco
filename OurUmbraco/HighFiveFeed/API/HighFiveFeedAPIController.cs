@@ -68,7 +68,25 @@ namespace OurUmbraco.HighFiveFeed.API
 
         }
 
-       
+        [Authorize]
+        [HttpGet]
+        public Person GetCurrentMember()
+        {
+            var currentMember = Members.GetCurrentMember();
+            var memberService = ApplicationContext.Current.Services.MemberService;
+            
+            if (currentMember != null && currentMember.Id != 0)
+            {
+                var member = memberService.GetById(currentMember.Id);
+                //  var rawJson = JsonConvert.SerializeObject(currentMember, Formatting.Indented);
+                var returnItem = new Person(member);
+
+                return returnItem;
+             }
+            return null;
+        }
+
+
         public string GetCategories()
         {
             var Categories = _highFiveService.GetCategories();
