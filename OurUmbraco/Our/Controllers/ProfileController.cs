@@ -13,7 +13,10 @@ using Skybrud.Social.GitHub.Responses.Authentication;
 using Skybrud.Social.GitHub.Responses.Users;
 using Skybrud.Social.OAuth.Models;
 using Skybrud.Social.OAuth.Responses;
+using Skybrud.Social.Twitter.Models.Account;
 using Skybrud.Social.Twitter.OAuth;
+using Skybrud.Social.Twitter.Options.Account;
+using Skybrud.Social.Twitter.Responses.Account;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -163,6 +166,8 @@ namespace OurUmbraco.Our.Controllers
 
             // Update the "github" property and save the value
             mem.SetValue("github", githubUsername);
+            mem.SetValue("githubId", userResponse.Body.Id);
+            mem.SetValue("githubData", userResponse.Body.JObject.ToString());
             ms.Save(mem);
 
             // Clear the runtime cache for the member
@@ -184,7 +189,7 @@ namespace OurUmbraco.Our.Controllers
             client.ConsumerKey = WebConfigurationManager.AppSettings["twitterConsumerKey"];
             client.ConsumerSecret = WebConfigurationManager.AppSettings["twitterConsumerSecret"];
             client.Callback = rootUrl + "/umbraco/surface/Profile/LinkTwitter";
-            
+
             // Make the request to the Twitter API to get a request token
             SocialOAuthRequestTokenResponse response = client.GetRequestToken();
 
@@ -225,9 +230,37 @@ namespace OurUmbraco.Our.Controllers
             // Get the access token from the response body
             TwitterOAuthAccessToken accessToken = (TwitterOAuthAccessToken) response.Body;
 
-            // get the access token from the response
-            string screenName = accessToken.ScreenName;
-            
+            // Update the OAuth client properties
+            client.Token = accessToken.Token;
+            client.TokenSecret = accessToken.TokenSecret;
+
+            // Initialize a new service instance from the OAUth client
+            var service = Skybrud.Social.Twitter.TwitterService.CreateFromOAuthClient(client);
+
+            // Get some information about the authenticated Twitter user
+            TwitterAccount user;
+            try
+            {
+                
+                // Initialize the options for the request (we don't need the status)
+                var options = new TwitterVerifyCrendetialsOptions
+                {
+                    SkipStatus = true
+                };
+
+                // Make the request to the Twitter API
+                var userResponse = service.Account.VerifyCredentials(options);
+
+                // Update the "user" variable
+                user = userResponse.Body;
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ProfileController>("Unable to get user information from the Twitter API", ex);
+                return GetErrorResult("Oh noes! An error happened.");
+            }
+
             // Get the member of the current ID (for comparision and lookup)
             int memberId = Members.GetCurrentMemberId();
 
@@ -236,7 +269,7 @@ namespace OurUmbraco.Our.Controllers
 
             // Initialize new search criteria for the Twitter screen name
             ISearchCriteria criteria = searcher.CreateSearchCriteria();
-            criteria = criteria.RawQuery($"twitter:{screenName}");
+            criteria = criteria.RawQuery($"twitter:{user.ScreenName}");
 
             // Check if there are other members with the same Twitter screen name
             foreach (var result in searcher.Search(criteria))
@@ -253,7 +286,9 @@ namespace OurUmbraco.Our.Controllers
             var mem = ms.GetById(memberId);
 
             // Update the "twitter" property and save the value
-            mem.SetValue("twitter", screenName);
+            mem.SetValue("twitter", user.ScreenName);
+            mem.SetValue("twitterId", user.IdStr);
+            mem.SetValue("twitterData", user.JObject.ToString());
             ms.Save(mem);
 
             // Clear the runtime cache for the member
