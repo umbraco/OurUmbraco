@@ -137,8 +137,9 @@ namespace OurUmbraco.HighFiveFeed.API
 
         public string GetTitleTag(string url)
         {
+            var uri = new UriBuilder(url).Uri.AbsoluteUri;
             var webGet = new HtmlWeb();
-            var document = webGet.Load(url);
+            var document = webGet.Load(uri.ToString());
             var title = document.DocumentNode.SelectSingleNode("html/head/title").InnerText;
             return title;
         }
