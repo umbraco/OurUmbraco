@@ -93,7 +93,18 @@ namespace OurUmbraco.HighFiveFeed.API
             var rawJson = JsonConvert.SerializeObject(Categories, Formatting.Indented);
             return rawJson;
         }
+        public string GetMemberAvatar(int memberId)
+        {
+            var member = Members.GetById(memberId);
 
+            if (member != null)
+            {
+                var avatarService = new AvatarService();
+                var avatar = avatarService.GetMemberAvatar(member);
+                return avatar;
+            }
+            return null;
+        }
         public List<Person> GetUmbracians(string name)
         {
             var peopleService = new PeopleService();

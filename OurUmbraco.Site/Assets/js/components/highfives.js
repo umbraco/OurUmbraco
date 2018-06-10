@@ -129,8 +129,7 @@
         addPreviewBlock: function () {
             var list = document.querySelector("#high-five-activity .high-five__activity-preview");
             list.innerHTML = '';
-
-            HighFives.preview.ToAvatarUrl = "/media/avatar/70690.png";
+            
 
             var highFive = HighFives.preview;
                 list.innerHTML += '<p>Preview of your High Five: </p> <li class="high-five-panel">' +
@@ -361,7 +360,13 @@
             list.innerHTML = '';
             jQuery('#high-five-mention').val(member.name);
             HighFives.preview.ToName = member.name;
-            HighFives.addPreviewBlock();
+            var avatar = jQuery.get('/Umbraco/Api/highFiveFeedApi/GetMemberAvatar?memberId=' + member.id, function (memberAvatar) {
+                HighFives.preview.ToAvatarUrl = memberAvatar;
+                HighFives.addPreviewBlock();
+            });
+            
+
+
         },
 
         // selectMemberIfMatches - If the `value` matches the name of a user in the suggestions list, select them.
