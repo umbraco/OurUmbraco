@@ -93,7 +93,7 @@
             .high-five-panel {
                 width: calc(33.33% - 20px);
             }
-        }        
+        }
 
         @supports (display: grid) {
             display: grid;
@@ -106,13 +106,54 @@
                 margin-left: 0;
                 width: auto;
             }
-            
+
             @media (min-width: $md) {
                 grid-template-columns: 1fr 1fr 1fr;
 
                 .high-five-panel {
                     width: auto;
-                }                
+                }
+            }
+        }
+    }
+
+    &__activity-preview {
+        display: flex;
+        flex-wrap: wrap;
+        margin-left: -20px;
+
+        .high-five-panel {
+            width: calc(50% - 20px);
+            margin-left: 20px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: $md) {
+            .high-five-panel {
+                width: calc(33.33% - 20px);
+            }
+        }
+
+        @supports (display: grid) {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-gap: 20px;
+            margin-left: 0;
+
+
+            .high-five-panel {
+                margin-top: 0;
+                margin-left: 0;
+                width: auto;
+            }
+
+            @media (min-width: $md) {
+                grid-template-columns: 1fr 1fr 1fr;
+
+                .high-five-panel {
+                    width: auto;
+                }
             }
         }
     }
