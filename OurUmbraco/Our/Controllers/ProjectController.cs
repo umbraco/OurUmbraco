@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.ListingItem;
 using OurUmbraco.MarketPlace.NodeListing;
@@ -65,8 +66,12 @@ namespace OurUmbraco.Our.Controllers
                 var nodeListingProvider = new NodeListingProvider();
                 project = (PublishedContentListingItem)nodeListingProvider.GetListing(projectId);
 
-                var memberId = Members.GetCurrentMemberId();
-                if ((project.VendorId == memberId) == false && Utils.IsProjectContributor(memberId, projectId) == false)
+                var member = Members.GetCurrentMember();
+                if (member.IsHq())
+                    return project;
+
+                // If the member is not the owner of the project and not a contributor then they can not edit.
+                if (project.VendorId != member.Id && Utils.IsProjectContributor(member.Id, projectId) == false)
                 {
                     //TODO: Ummm... this is a child action/partial view - you cannot redirect from here
                     Response.Redirect("/member/profile/projects/", true);
