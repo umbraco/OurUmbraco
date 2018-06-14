@@ -34,3 +34,4 @@ umbLeeds
 Barcelona-Umbraco-Meetup
 Belgian-Umbraco-User-Group
 Umbraco-Meetup-RheinMain
+BUUG-Brisbane-Umbraco-Unicorns-Group
