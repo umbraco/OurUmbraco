@@ -35,3 +35,4 @@ Barcelona-Umbraco-Meetup
 Belgian-Umbraco-User-Group
 Umbraco-Meetup-RheinMain
 Umbraco-User-Group-Sweden
+Surrey-Umbraco-Meetup

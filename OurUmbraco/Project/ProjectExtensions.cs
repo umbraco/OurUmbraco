@@ -33,26 +33,33 @@ namespace OurUmbraco.Project
                 .Replace("v", "")
                 .Replace(".x", "")
                 .Trim(',');
-            if (!version.Contains(".") && version.Length > 0 && version.Length <= 3)
+            if (!version.Contains(".") && version.Length > 0)
             {
                 //if there's no . then it stored the strange way like in uVersion.config
-
-                //pad it out to 3 digits
-                version = version.PadRight(3, '0');
-                int o;
-                if (int.TryParse(version, out o))
+                var uVersion = UVersion.GetAllVersions().FirstOrDefault(x => x.Key == $"v{version}");
+                
+                if (uVersion != null)
                 {
-                    //if it ends with '0', that means it's a X.X.X version
-                    // if it does not end with '0', that means that the last 2 digits are the
-                    // Minor part of the version
-                    version = version.EndsWith("0")
-                        ? string.Format("{0}.{1}.{2}", version[0], version[1], 0)
-                        : string.Format("{0}.{1}.{2}", version[0], version.Substring(1), 0);
+                    version = uVersion.Name.Replace(".x", "");
+                }
+                else
+                {
+                    //pad it out to 3 digits
+                    int o;
+                    version = version.PadRight(3, '0');
+                    if (int.TryParse(version, out o))
+                    {
+                        //if it ends with '0', that means it's a X.X.X version
+                        // if it does not end with '0', that means that the last 2 digits are the
+                        // Minor part of the version
+                        version = version.EndsWith("0")
+                            ? string.Format("{0}.{1}.{2}", version[0], version[1], 0)
+                            : string.Format("{0}.{1}.{2}", version[0], version.Substring(1), 0);
+                    }
                 }
             }
 
-            System.Version result;
-            if (!System.Version.TryParse(version, out result))
+            if (!System.Version.TryParse(version, out var result))
                 return null;
 
             if (!reduceToConfigured)
@@ -62,16 +69,12 @@ namespace OurUmbraco.Project
             // This is so that search results are actually returned. Example, if running 7.4.3 but the latest configured minor is 7.4.0, then
             // no search results are returned because nothing would be tagged as compatible with 7.4.3, only 7.4.0
 
-            //get all Version's configured order by latest
-            var all = UVersion.GetAllAsVersions().ToArray();
+            // get all Version's configured order by latest
+            var allAsVersion = UVersion.GetAllAsVersions().ToArray();
             //search for the latest compatible version to search on
-            foreach (var v in all)
-            {
+            foreach (var v in allAsVersion)
                 if (result > v)
-                {
                     return v;
-                }
-            }
 
             //we couldn't find anything, 
             //this will occur if the passed in version is not greater than any configured versions, in this case we have no choice 
