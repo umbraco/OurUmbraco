@@ -237,9 +237,22 @@ namespace OurUmbraco.Repository.Services
 
             var packageDetails = new PackageDetails(package)
             {
-                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(2)).ToArray(),
+                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => {
+                    //ensure the version has consistent parts (major.minor.build)
+                    var version = x.Build >= 0 ? x : new System.Version(x.Major, x.Minor, 0);
+                    return version.ToString(3);
+                }).ToArray(),
                 Compatibility = GetPackageCompatibility(content),
-                StrictFileVersions = strictPackageFileVersions.Select(x => new PackageFileVersion {PackageVersion = x.PackageVersion.ToString(2), MinUmbracoVersion = x.MinUmbracoVersion.ToString(2), FileId = x.FileId}).ToList(),
+                StrictFileVersions = strictPackageFileVersions.Select(x => new PackageFileVersion
+                {
+                    PackageVersion = x.PackageVersion.Build >= 0 
+                        ? x.PackageVersion.ToString(3) 
+                        : new System.Version(x.PackageVersion.Major, x.PackageVersion.Minor, 0).ToString(3),
+                    MinUmbracoVersion = x.MinUmbracoVersion.Build >= 0 
+                        ? x.MinUmbracoVersion.ToString(3) 
+                        : new System.Version(x.MinUmbracoVersion.Major, x.MinUmbracoVersion.Minor, 0).ToString(3),
+                    FileId = x.FileId
+                }).ToList(),
                 NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
                 LicenseName = content.GetPropertyValue<string>("licenseName"),
                 LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
