@@ -428,6 +428,7 @@
     <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
     <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogRssUtils.cs" />
+    <Compile Include="Community\Controllers\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
