@@ -5,25 +5,12 @@
     background-repeat: no-repeat;
     position: relative;
 
-    h2 {
-        margin: 1rem auto 3.5rem;
-        margin-bottom: 3rem;
-        line-height: 2.5;
-        padding: 0;
-        font-size: 1.4rem;
-        color: darken($color-space, 15%);
-        text-align: center;
-    }
-
     h1 {
         font-size: 1.8rem;
         text-align: center;
         position: relative;
         z-index: 30;
         //margin-bottom: 3.5rem; // Remove me when text is ready under this
-        @media (min-width: $md) {
-            font-size: 2.4rem;
-        }
 
         + p {
             max-width: 700px;
@@ -34,21 +21,36 @@
             font-size: 1rem;
             color: darken($color-space, 15%);
             text-align: center;
-
-            @media (min-width: $md) {
-                padding: 0;
-                font-size: 1.2rem;
-            }
         }
     }
+    
+    h2 {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: center;
+        margin: 1rem auto 3.5rem;
+        margin-bottom: 3rem;
+        line-height: 2.5;
+        padding: 0;
+        font-size: 1rem;
+        color: darken($color-space, 15%);
+        text-align: center;
+    }
 
-    input[type=text], select {
+    input, select {
         border: 0;
         padding: 3px;
         border-bottom: 2px solid #ccc;
         background: none;
-        font-size: 1.4rem;
+        font-size: 1rem;
         max-width: 200px;
+        margin-left: .7em;
+        margin-right: .7em;
+
+        [data-whatintent="mouse"] &:focus {
+            outline: none;
+        }
     }
 
     button {
@@ -81,18 +83,17 @@
     &__activity-list {
         display: flex;
         flex-wrap: wrap;
+        width: 100%;
         margin-left: -20px;
+        
+        &--preview {
+            margin-bottom: 20px;
+        }
 
         .high-five-panel {
             width: calc(50% - 20px);
             margin-left: 20px;
             margin-top: 20px;
-        }
-
-        @media (min-width: $md) {
-            .high-five-panel {
-                width: calc(33.33% - 20px);
-            }
         }
 
         @supports (display: grid) {
@@ -105,50 +106,31 @@
                 margin-top: 0;
                 margin-left: 0;
                 width: auto;
-            }
-
-            @media (min-width: $md) {
-                grid-template-columns: 1fr 1fr 1fr;
-
-                .high-five-panel {
-                    width: auto;
-                }
             }
         }
     }
 
-    &__activity-preview {
-        display: flex;
-        flex-wrap: wrap;
-        margin-left: -20px;
+    @media (min-width: $md) {
+        h1 {
+            font-size: 2.4rem;
 
-        .high-five-panel {
-            width: calc(50% - 20px);
-            margin-left: 20px;
-            margin-top: 20px;
-            margin-bottom: 20px;
+            + p {
+                padding: 0;
+                font-size: 1.2rem;
+            }
         }
 
-        @media (min-width: $md) {
+        h2,
+        input, select {
+            font-size: 1.4rem;
+        }
+
+        &__activity-list {
             .high-five-panel {
                 width: calc(33.33% - 20px);
             }
-        }
 
-        @supports (display: grid) {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-gap: 20px;
-            margin-left: 0;
-
-
-            .high-five-panel {
-                margin-top: 0;
-                margin-left: 0;
-                width: auto;
-            }
-
-            @media (min-width: $md) {
+            @supports (display: grid) {
                 grid-template-columns: 1fr 1fr 1fr;
 
                 .high-five-panel {
@@ -160,12 +142,12 @@
 }
 
 .high-five-panel {
+    display: flex;
     background: #fff;
     padding: 15px;
     border: 1px solid darken(#f6f6f6, 5%);
     transition: box-shadow .2s ease, border-color .2s ease;
     text-decoration: none;
-    display: flex;
     overflow: hidden;
 
     &:hover {
@@ -236,7 +218,7 @@
 .suggestions-list {
     position: absolute;
     top: calc(100% + 7px);
-    left: 0;
+    left: .7em;
     list-style: none;
     z-index: 10;
 

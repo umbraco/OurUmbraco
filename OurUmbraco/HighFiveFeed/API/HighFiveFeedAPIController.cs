@@ -43,7 +43,7 @@ namespace OurUmbraco.HighFiveFeed.API
             {
                 var fromUserId = currentMember.Id;
                 var dbContext = ApplicationContext.Current.DatabaseContext;
-                var highFive = new OurUmbraco.HighFiveFeed.Models.HighFiveFeed();
+                var highFive = new Models.HighFiveFeed();
                 highFive.FromMemberId = fromUserId;
                 highFive.ToMemberId = toUserId;
                 highFive.ActionId = action;
@@ -140,8 +140,8 @@ namespace OurUmbraco.HighFiveFeed.API
             var uri = new UriBuilder(url).Uri.AbsoluteUri;
             var webGet = new HtmlWeb();
             var document = webGet.Load(uri.ToString());
-            var title = document.DocumentNode.SelectSingleNode("html/head/title").InnerText;
-            return title;
+            var titleNode = document.DocumentNode.SelectSingleNode("html/head/title");
+            return titleNode == null ? url : titleNode.InnerText;
         }
     }
 }

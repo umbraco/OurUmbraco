@@ -1,17 +1,9 @@
 ﻿using OurUmbraco.Community.People;
 using OurUmbraco.HighFiveFeed.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Umbraco.Core;
-using OurUmbraco.Community.People.Models;
-using OurUmbraco.Forum.Services;
-using Umbraco.Web.Mvc;
-using OurUmbraco.HighFiveFeed.Services;
 using Umbraco.Core.Persistence;
-using Umbraco.Core.Services;
 
 namespace OurUmbraco.HighFiveFeed.Services
 {
@@ -36,7 +28,7 @@ namespace OurUmbraco.HighFiveFeed.Services
         {
             var Members = ApplicationContext.Current.Services.MemberService;
             var dbContext = ApplicationContext.Current.DatabaseContext;
-            var sql = new Sql().Select("*").From("highFivePosts").Where<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(x=>x.ToMemberId== memberId);
+            var sql = new Sql().Select("*").From("highFivePosts").Where<Models.HighFiveFeed>(x=>x.ToMemberId== memberId);
             sql.OrderByDescending<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(x => x.CreatedDate);
             var result = dbContext.Database.Page<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(1, 5, sql);
             var avatarService = new AvatarService();
@@ -58,14 +50,14 @@ namespace OurUmbraco.HighFiveFeed.Services
                 var type = GetActionType(dbEntry.ActionId);
                 var highFive = new HighFiveResponse()
                 {
-                    Url = dbEntry.Link,
-                    Type = type,
+                    Category = type,
                     From = fromMember.Name,
                     FromAvatarUrl = fromAvatar,
                     To = toMember.Name,
                     ToAvatarUrl = toAvatar,
                     Id = dbEntry.Id,
-                    LinkTitle = dbEntry.LinkTitle,
+                    LinkUrl = dbEntry.Link,
+                    LinkTitle = string.IsNullOrWhiteSpace(dbEntry.LinkTitle) ? dbEntry.Link : dbEntry.LinkTitle,
                     CreatedDate = dbEntry.CreatedDate
 
 
@@ -105,14 +97,14 @@ namespace OurUmbraco.HighFiveFeed.Services
                 var type = GetActionType(dbEntry.ActionId);
                 var highFive = new HighFiveResponse()
                 {
-                    Url = dbEntry.Link,
-                    Type = type,
+                    Category = type,
                     From = fromMember.Name,
                     FromAvatarUrl = fromAvatar,
                     To = toMember.Name,
                     ToAvatarUrl = toAvatar,
                     Id = dbEntry.Id,
-                    LinkTitle = dbEntry.LinkTitle,
+                    LinkUrl = dbEntry.Link,
+                    LinkTitle = string.IsNullOrWhiteSpace(dbEntry.LinkTitle) ? dbEntry.Link : dbEntry.LinkTitle,
                     CreatedDate = dbEntry.CreatedDate
 
 
