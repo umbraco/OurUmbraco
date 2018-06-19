@@ -2267,13 +2267,18 @@
     });
     (function () {
         'use strict';
-        function CompositionsOverlay($scope) {
+        function CompositionsOverlay($scope, $location) {
             var vm = this;
             vm.isSelected = isSelected;
+            vm.openContentType = openContentType;
             function isSelected(alias) {
                 if ($scope.model.contentType.compositeContentTypes.indexOf(alias) !== -1) {
                     return true;
                 }
+            }
+            function openContentType(contentType, section) {
+                var url = (section === 'documentType' ? '/settings/documenttypes/edit/' : '/settings/mediaTypes/edit/') + contentType.id;
+                $location.path(url);
             }
         }
         angular.module('umbraco').controller('Umbraco.Overlays.CompositionsOverlay', CompositionsOverlay);
@@ -3401,12 +3406,12 @@
                         return f.path.indexOf($scope.startNodeId) !== -1;
                     });
                 });
-                mediaTypeHelper.getAllowedImagetypes(folder.id).then(function (types) {
-                    $scope.acceptedMediatypes = types;
-                });
             } else {
                 $scope.path = [];
             }
+            mediaTypeHelper.getAllowedImagetypes(folder.id).then(function (types) {
+                $scope.acceptedMediatypes = types;
+            });
             $scope.lockedFolder = folder.id === -1 && $scope.model.startNodeIsVirtual;
             $scope.currentFolder = folder;
             localStorageService.set('umbLastOpenedMediaNodeId', folder.id);
@@ -3559,6 +3564,11 @@
                             {
                                 alias: 'umbracoHeight',
                                 value: mediaItem.metaData.umbracoHeight.Value
+                            },
+                            {
+                                alias: 'umbracoFile',
+                                editor: mediaItem.metaData.umbracoFile.PropertyEditorAlias,
+                                value: mediaItem.metaData.umbracoFile.Value
                             }
                         ];
                     }
@@ -6420,6 +6430,7 @@
         $scope.preValues = [];
         if ($routeParams.create) {
             $scope.page.loading = true;
+            $scope.showIdentifier = false;
             //we are creating so get an empty data type item
             dataTypeResource.getScaffold($routeParams.id).then(function (data) {
                 $scope.preValuesLoaded = true;
@@ -6434,6 +6445,7 @@
         }
         function loadDataType() {
             $scope.page.loading = true;
+            $scope.showIdentifier = true;
             //we are editing so get the content item from the server
             dataTypeResource.getById($routeParams.id).then(function (data) {
                 $scope.preValuesLoaded = true;
@@ -6594,6 +6606,213 @@
             $scope.dialogTreeEventHandler.unbind('treeNodeSelect', nodeSelectHandler);
         });
     });
+    /**
+ * @ngdoc controller
+ * @name Umbraco.Editors.Dictionary.CreateController
+ * @function
+ * 
+ * @description
+ * The controller for creating dictionary items
+ */
+    function DictionaryCreateController($scope, $location, dictionaryResource, navigationService, notificationsService, formHelper, appState) {
+        var vm = this;
+        vm.itemKey = '';
+        function createItem() {
+            var node = $scope.dialogOptions.currentNode;
+            dictionaryResource.create(node.id, vm.itemKey).then(function (data) {
+                navigationService.hideMenu();
+                // set new item as active in tree
+                var currPath = node.path ? node.path : '-1';
+                navigationService.syncTree({
+                    tree: 'dictionary',
+                    path: currPath + ',' + data,
+                    forceReload: true,
+                    activate: true
+                });
+                // reset form state
+                formHelper.resetForm({ scope: $scope });
+                // navigate to edit view
+                var currentSection = appState.getSectionState('currentSection');
+                $location.path('/' + currentSection + '/dictionary/edit/' + data);
+            }, function (err) {
+                if (err.data && err.data.message) {
+                    notificationsService.error(err.data.message);
+                    navigationService.hideMenu();
+                }
+            });
+        }
+        vm.createItem = createItem;
+    }
+    angular.module('umbraco').controller('Umbraco.Editors.Dictionary.CreateController', DictionaryCreateController);
+    /**
+ * @ngdoc controller
+ * @name Umbraco.Editors.Dictionary.DeleteController
+ * @function
+ * 
+ * @description
+ * The controller for deleting dictionary items
+ */
+    function DictionaryDeleteController($scope, $location, dictionaryResource, treeService, navigationService, appState) {
+        var vm = this;
+        function cancel() {
+            navigationService.hideDialog();
+        }
+        function performDelete() {
+            // stop from firing again on double-click
+            if ($scope.busy) {
+                return false;
+            }
+            //mark it for deletion (used in the UI)
+            $scope.currentNode.loading = true;
+            $scope.busy = true;
+            dictionaryResource.deleteById($scope.currentNode.id).then(function () {
+                $scope.currentNode.loading = false;
+                // get the parent id 
+                var parentId = $scope.currentNode.parentId;
+                treeService.removeNode($scope.currentNode);
+                navigationService.hideMenu();
+                var currentSection = appState.getSectionState('currentSection');
+                if (parentId !== '-1') {
+                    // set the view of the parent item
+                    $location.path('/' + currentSection + '/dictionary/edit/' + parentId);
+                } else {
+                    // we have no parent, so redirect to section
+                    $location.path('/' + currentSection + '/');
+                }
+            });
+        }
+        vm.cancel = cancel;
+        vm.performDelete = performDelete;
+    }
+    angular.module('umbraco').controller('Umbraco.Editors.Dictionary.DeleteController', DictionaryDeleteController);
+    /**
+ * @ngdoc controller
+ * @name Umbraco.Editors.Dictionary.EditController
+ * @function
+ * 
+ * @description
+ * The controller for editing dictionary items
+ */
+    function DictionaryEditController($scope, $routeParams, dictionaryResource, treeService, navigationService, appState, editorState, contentEditingHelper, formHelper, notificationsService, localizationService) {
+        var vm = this;
+        //setup scope vars
+        vm.nameDirty = false;
+        vm.page = {};
+        vm.page.loading = false;
+        vm.page.nameLocked = false;
+        vm.page.menu = {};
+        vm.page.menu.currentSection = appState.getSectionState('currentSection');
+        vm.page.menu.currentNode = null;
+        vm.description = '';
+        function loadDictionary() {
+            vm.page.loading = true;
+            //we are editing so get the content item from the server
+            dictionaryResource.getById($routeParams.id).then(function (data) {
+                bindDictionary(data);
+                vm.page.loading = false;
+            });
+        }
+        function createTranslationProperty(translation) {
+            return {
+                alias: translation.isoCode,
+                label: translation.displayName,
+                hideLabel: false
+            };
+        }
+        function bindDictionary(data) {
+            localizationService.localize('dictionaryItem_description').then(function (value) {
+                vm.description = value.replace('%0%', data.name);
+            });
+            // create data for  umb-property displaying
+            for (var i = 0; i < data.translations.length; i++) {
+                data.translations[i].property = createTranslationProperty(data.translations[i]);
+            }
+            contentEditingHelper.handleSuccessfulSave({
+                scope: $scope,
+                savedContent: data
+            });
+            // set content
+            vm.content = data;
+            //share state
+            editorState.set(vm.content);
+            navigationService.syncTree({
+                tree: 'dictionary',
+                path: data.path,
+                forceReload: true
+            }).then(function (syncArgs) {
+                vm.page.menu.currentNode = syncArgs.node;
+            });
+        }
+        function onInit() {
+            loadDictionary();
+        }
+        function saveDictionary() {
+            if (formHelper.submitForm({
+                    scope: $scope,
+                    statusMessage: 'Saving...'
+                })) {
+                vm.page.saveButtonState = 'busy';
+                dictionaryResource.save(vm.content, vm.nameDirty).then(function (data) {
+                    formHelper.resetForm({
+                        scope: $scope,
+                        notifications: data.notifications
+                    });
+                    bindDictionary(data);
+                    vm.page.saveButtonState = 'success';
+                }, function (err) {
+                    contentEditingHelper.handleSaveError({
+                        redirectOnFailure: false,
+                        err: err
+                    });
+                    notificationsService.error(err.data.message);
+                    vm.page.saveButtonState = 'error';
+                });
+            }
+        }
+        vm.save = saveDictionary;
+        $scope.$watch('vm.content.name', function (newVal, oldVal) {
+            //when the value changes, we need to set the name dirty
+            if (newVal && newVal !== oldVal && typeof oldVal !== 'undefined') {
+                vm.nameDirty = true;
+            }
+        });
+        onInit();
+    }
+    angular.module('umbraco').controller('Umbraco.Editors.Dictionary.EditController', DictionaryEditController);
+    /**
+ * @ngdoc controller
+ * @name Umbraco.Editors.Dictionary.ListController
+ * @function
+ * 
+ * @description
+ * The controller for listting dictionary items
+ */
+    function DictionaryListController($scope, $location, dictionaryResource, localizationService, appState) {
+        var vm = this;
+        vm.title = 'Dictionary overview';
+        vm.loading = false;
+        vm.items = [];
+        function loadList() {
+            vm.loading = true;
+            dictionaryResource.getList().then(function (data) {
+                vm.items = data;
+                vm.loading = false;
+            });
+        }
+        function clickItem(id) {
+            var currentSection = appState.getSectionState('currentSection');
+            $location.path('/' + currentSection + '/dictionary/edit/' + id);
+        }
+        vm.clickItem = clickItem;
+        function onInit() {
+            localizationService.localize('dictionaryItem_overviewTitle').then(function (value) {
+                vm.title = value;
+            });
+            loadList();
+        }
+        onInit();
+    }
+    angular.module('umbraco').controller('Umbraco.Editors.Dictionary.ListController', DictionaryListController);
     angular.module('umbraco').controller('Umbraco.Editors.DocumentTypes.CopyController', function ($scope, contentTypeResource, treeService, navigationService, notificationsService, appState, eventsService) {
         var dialogOptions = $scope.dialogOptions;
         $scope.dialogTreeEventHandler = $({});
@@ -10114,7 +10333,25 @@
         angular.module('umbraco').controller('Umbraco.Editors.PartialViews.EditController', PartialViewsEditController);
     }());
     angular.module('umbraco').controller('Umbraco.PrevalueEditors.BooleanController', function ($scope) {
-        $scope.htmlId = 'bool-' + String.CreateGuid();
+        function updateToggleValue() {
+            $scope.toggleValue = false;
+            if ($scope.model && $scope.model.value && ($scope.model.value.toString() === '1' || angular.lowercase($scope.model.value) === 'true')) {
+                $scope.toggleValue = true;
+            }
+        }
+        if ($scope.model.value === null) {
+            $scope.model.value = '0';
+        }
+        updateToggleValue();
+        $scope.toggle = function () {
+            if ($scope.model.value === 1 || $scope.model.value === '1') {
+                $scope.model.value = '0';
+                updateToggleValue();
+                return;
+            }
+            $scope.model.value = '1';
+            updateToggleValue();
+        };
     });
     function imageFilePickerController($scope) {
         $scope.add = function () {
@@ -10500,13 +10737,20 @@
             }
         }
         setupViewModel();
-        $scope.$watch('renderModel.value', function (newVal) {
-            $scope.model.value = newVal === true ? '1' : '0';
-        });
         //here we declare a special method which will be called whenever the value has changed from the server
         //this is instead of doing a watch on the model.value = faster
         $scope.model.onValueChanged = function (newVal, oldVal) {
             //update the display val again if it has changed from the server
+            setupViewModel();
+        };
+        // Update the value when the toggle is clicked
+        $scope.toggle = function () {
+            if ($scope.renderModel.value) {
+                $scope.model.value = '0';
+                setupViewModel();
+                return;
+            }
+            $scope.model.value = '1';
             setupViewModel();
         };
     }
@@ -12004,7 +12248,7 @@
     }());
     angular.module('umbraco').controller('Umbraco.PropertyEditors.Grid.TextStringController', function ($scope, $rootScope, $timeout, dialogService) {
     });
-    angular.module('umbraco').controller('Umbraco.PropertyEditors.GridController', function ($scope, $http, assetsService, localizationService, $rootScope, dialogService, gridService, mediaResource, imageHelper, $timeout, umbRequestHelper, angularHelper) {
+    angular.module('umbraco').controller('Umbraco.PropertyEditors.GridController', function ($scope, $http, assetsService, localizationService, $rootScope, dialogService, gridService, mediaResource, imageHelper, $timeout, umbRequestHelper, angularHelper, $element, eventsService) {
         // Grid status variables
         var placeHolder = '';
         var currentForm = angularHelper.getCurrentForm($scope);
@@ -12274,6 +12518,11 @@
             }
             currentForm.$setDirty();
             $scope.showRowConfigurations = false;
+            eventsService.emit('grid.rowAdded', {
+                scope: $scope,
+                element: $element,
+                row: row
+            });
         };
         $scope.removeRow = function (section, $index) {
             if (section.rows.length > 0) {
@@ -12475,6 +12724,12 @@
             //populate control
             $scope.initControl(newControl, index + 1);
             cell.controls.push(newControl);
+            eventsService.emit('grid.itemAdded', {
+                scope: $scope,
+                element: $element,
+                cell: cell,
+                item: newControl
+            });
         };
         $scope.addTinyMce = function (cell) {
             var rte = $scope.getEditor('rte');
@@ -12699,7 +12954,15 @@
             // *********************************************
             // Init grid
             // *********************************************
+            eventsService.emit('grid.initializing', {
+                scope: $scope,
+                element: $element
+            });
             $scope.initContent();
+            eventsService.emit('grid.initialized', {
+                scope: $scope,
+                element: $element
+            });
         });
         //Clean the grid value before submitting to the server, we don't need
         // all of that grid configuration in the value to be stored!! All of that
@@ -17035,7 +17298,11 @@
                 // filter out the current template and the selected master template
                 angular.forEach(vm.templates, function (template) {
                     if (template.alias !== vm.template.alias && template.alias !== vm.template.masterTemplateAlias) {
-                        availableMasterTemplates.push(template);
+                        var templatePathArray = template.path.split(',');
+                        // filter descendant templates of current template
+                        if (templatePathArray.indexOf(String(vm.template.id)) === -1) {
+                            availableMasterTemplates.push(template);
+                        }
                     }
                 });
                 vm.masterTemplateOverlay = {
