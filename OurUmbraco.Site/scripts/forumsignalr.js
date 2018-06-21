@@ -73,6 +73,7 @@
                 data.canHaveChildren = true;
                 data.isLoggedIn = memberId > 0;
                 data.isCommentOwner = data.authorId === memberId;
+                data.canManageComment = isMemberAdmim || data.isCommentOwner;
 
                 if (data.isSpam === false || data.isCommentOwner) {
                     var template = $("#comment-template").html();
