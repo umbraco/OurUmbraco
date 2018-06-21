@@ -71,6 +71,7 @@
                 $("#reply-is-coming").fadeOut();
 
                 data.canHaveChildren = true;
+                data.isLoggedIn = memberId > 0;
                 data.isCommentOwner = data.authorId === memberId;
 
                 if (data.isSpam === false || data.isCommentOwner) {
