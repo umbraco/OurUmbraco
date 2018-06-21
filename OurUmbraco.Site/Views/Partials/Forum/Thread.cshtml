@@ -154,6 +154,6 @@ else
     var isMemberAdmin = memberData != null ? memberData.IsAdmin : false;
 }
 <script type="text/javascript">
-    startNotifier(@memberId, '@memberName', @Model.Id, @isMemberAdmin);
+    startNotifier(@memberId, '@memberName', @Model.Id, @isMemberAdmin.ToString().ToLower());
 </script>
 <!-- End of SignalR-->
