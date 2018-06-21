@@ -1,4 +1,4 @@
-﻿function startNotifier(memberId, memberName, modelId) {
+﻿function startNotifier(memberId, memberName, modelId, isMemberAdmin) {
     var lastActivity = null;
 
     // if it's been long since last activity, we'll remove the "working on reply" box
