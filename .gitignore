@@ -67,3 +67,7 @@ OurUmbraco.Site/App_Data/NotificationTest/
 build/tools/node*
 wwwcache/
 build/toolsnode.js.*/
+
+OurUmbraco\.Client/package-lock\.json
+
+OurUmbraco\.Client/package\.json

@@ -3,40 +3,57 @@
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 @{
-
+    var featuresService = new UpcomingFeaturesService();
+    var userIsLoggedIn = featuresService.MemberHasAccessToFeature();
     var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
+
 }
 <!-- Search start -->
 <section id="search-all" class="search-all">
+    <div class="search-text">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <strong>The friendliest CMS community on the planet</strong>
+                    <p>our.umbraco.org is the central hub for the friendly umbraco community. Search for documentation, get help and guidance from seasoned experts, download and collaborate on plugins and extensions.</p>
+                </div>
+            </div>
 
-    <div class="search-all-form">
-        <div class="search-fieldset">
-            <input class="search-input" type="search" placeholder="Search..">
-            <input class="search-submit" type="submit" value="&#xe085;">
-        </div>
-        <span class="search-all-close"></span>
-    </div>
+            <div class="search-all-form">
+                <div class="search-fieldset">
+                    <input class="search-input" type="search" placeholder="Find an answer">
+                    <input class="search-submit" type="submit" value="&#xe085;">
+                </div>
+                <span class="search-all-close"></span>
+            </div>
 
-    <div class="search-all-results equalizer">
-        <ul></ul>
-    </div>
+            <div class="search-all-results equalizer">
+                <ul></ul>
+            </div>
 
-    @if (MemberData == null)
-    {
-        <div class="search-text">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-6 col-md-offset-3">
-                        <strong>The friendliest CMS community on the planet</strong>
-                        <p>our.umbraco.org is the central hub for the friendly umbraco community. Search for documentation, get help and guidance from seasoned experts, download and collaborate on plugins and extensions.</p>
-                    </div>
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    @if (userIsLoggedIn != null)
+                    {
+                        <a href="/forum/#" data-controller="topic">
+                                Ask a question
+                            </a>
+
+                    }
+                    else
+                    {
+                        <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))">
+                            Ask a question
+                        </a>
+                    }
                 </div>
             </div>
         </div>
-    }
+    </div>
+
 
 </section>
 <!-- Search end -->
@@ -59,24 +76,14 @@
     @Html.Raw(homeNotificationText)
 }
 
-@if (Members.IsLoggedIn())
-{
-    @ForumActivity()
-    @Gitter()
-    @Meetups()
-    @GitHubContributors()
-    @TwitterSearch()
-    @Html.Partial("home/documentation")
-}
-else
-{
-    @Html.Partial("home/documentation")
-    @ForumActivity()
-    @Gitter()
-    @Meetups()
-    @GitHubContributors()
-    @TwitterSearch()
-}
+
+@Html.Partial("home/documentation")
+@ForumActivity()
+@Gitter()
+@Meetups()
+@GitHubContributors()
+@TwitterSearch()
+
 
 @helper ForumActivity()
     {

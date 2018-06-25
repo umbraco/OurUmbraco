@@ -4,6 +4,7 @@
 <div class="markdown-spacer"></div>
 <div id="markdown-editor" class="markdown-editor">
     <div class="container">
+
         <div class="row reply-to">
             <div class="col-sm-6">
                 <p>Write your reply to: <a class="reply-name" href=""></a></p>
@@ -12,36 +13,45 @@
                 <p id="writing-notification"></p>
             </div>
         </div>
+        <div class="row create-topic">
+
+                <div class="row">
+                    <a href="#"><span class="markdown-close -align-right">Finish me later</span></a>
+                </div>
+                
+         
+        </div>
 
         <div class="row create-topic">
             <div class="col-sm-6">
+
                 <input id="topic-title" class="markdown-control" name="topic-title" type="text" placeholder="Enter topic title">
             </div>
 
-            @if (CurrentPage.Parent.DocumentTypeAlias != "Project")
-            {
-                var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
-                var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
+            @*@if (CurrentPage.Parent.DocumentTypeAlias != "Project")
+                {
+                    var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
+                    var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
 
-                <div class="col-sm-3 col-xs-6">
-                    <select name="topic-category" id="topic-category" class="markdown-control">
-                        @if (categoriesIncludeCurrentPage)
-                        {
-                            <option value="" disabled="">Choose a category</option>
-                        }
-                        else
-                        {
-                            <option value="" selected="" disabled="">Choose a category</option>
-                        }
-                        @foreach (var cat in categories)
-                        {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
-                        }
-                    </select>
-                </div>
-            }
+                    <div class="col-sm-3 col-xs-6">
+                        <select name="topic-category" id="topic-category" class="markdown-control">
+                            @if (categoriesIncludeCurrentPage)
+                            {
+                                <option value="" disabled="">Choose a category</option>
+                            }
+                            else
+                            {
+                                <option value="" selected="" disabled="">Choose a category</option>
+                            }
+                            @foreach (var cat in categories)
+                            {
+                                <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                }*@
 
-            <div class="col-sm-3 col-xs-6">
+            <div class="col-sm-6 col-xs-6">
                 <select name="topic-version" id="topic-version" class="markdown-control">
                     <option value="Choose a version" selected="" disabled="">Choose version</option>
                     <option value="8">Umbraco v8</option>
@@ -50,6 +60,7 @@
                     <option value="4">Umbraco v4</option>
                 </select>
             </div>
+
 
             @if (CurrentPage.Parent.DocumentTypeAlias == "Project")
             {
@@ -67,28 +78,28 @@
             </div>
         </div>
         <div class="row input-row">
-            <div id="input-container" class="col-md-6">
-                <label>Editor</label>
+            <div id="input-container" class="col-sm-12">
+                <label>Ask your question</label>
                 <textarea name="" id="wmd-input" cols="30" rows="10" class="wmd-input markdown-control"></textarea>
             </div>
-            <div id="preview-container" class="col-md-6">
-                <label>Preview</label>
-                <div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
-            </div>
+            @*<div id="preview-container" class="col-md-6">
+                    <label>Preview</label>
+                    <div id="wmd-preview" class="wmd-panel wmd-preview markdown-syntax"></div>
+                </div>*@
         </div>
         <div class="row">
             <div class="col-xs-8">
                 <input class="button tiny markdown-control" type="button" value="Post my reply" id="topic-submit" onclick="ga('send', 'event', 'Forum question', 'Click', 'Answering a question');">
                 <div id="posting"><div class="loader"></div></div>
             </div>
-            <div class="col-xs-4 visible-xs visible-sm">
+            <div class="col-xs-4 ">
                 <button id="mobile-preview" class="markdown-control">
                     <i class="icon-Eye"></i> <span>Preview</span>
                 </button>
             </div>
         </div>
     </div>
-    <span class="markdown-close icon-Page-down"></span>
+
     <div class="draft">Draft</div>
 </div>
 
