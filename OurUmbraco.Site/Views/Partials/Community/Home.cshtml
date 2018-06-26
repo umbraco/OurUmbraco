@@ -59,10 +59,6 @@
     @Html.Raw(homeNotificationText)
 }
 
-@{
-    Html.RenderPartial("~/Views/Partials/Community/PullRequestStatistics.cshtml");
-}
-
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()

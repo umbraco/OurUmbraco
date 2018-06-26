@@ -4406,7 +4406,6 @@
     <Content Include="Views\Partials\Members\ResetPassword.cshtml" />
     <Content Include="Views\Partials\Emails\EmailTemplateMaster.cshtml" />
     <Content Include="Views\Partials\Emails\ActivationEmailTemplate.cshtml" />
-    <Content Include="Views\Partials\Community\PullRequestStatistics.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

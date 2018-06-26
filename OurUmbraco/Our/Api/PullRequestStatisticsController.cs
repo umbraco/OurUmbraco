@@ -7,9 +7,9 @@ using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
 using Umbraco.Web.WebApi;
 
-namespace OurUmbraco.Community.Controllers
+namespace OurUmbraco.Our.Api
 {
-    public class PullRequestStatisticsController : UmbracoApiController
+    public class PullRequestStatisticsController : UmbracoAuthorizedApiController
     {
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
         public readonly string HqMembers = HostingEnvironment.MapPath("~/config/githubhq.txt");

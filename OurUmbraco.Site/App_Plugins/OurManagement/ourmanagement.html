@@ -1,11 +1,174 @@
-﻿<div class="ourManagementDashboard" ng-controller="ourManagementController">
+﻿<div class="ourManagementDashboard" ng-controller="ourManagementController as vm">
     <h3>Documentation</h3>
     <button ng-click="downloadDocumentation()">
         Download documentation
     </button>
+    <p>
+        {{vm.docsMessage}}<br />
+        <umb-load-indicator ng-if="vm.docsLoading"></umb-load-indicator>
+    </p>
 
     <h3>YouTrack</h3>
     <button ng-click="downloadYoutrackData()">
         Download YouTrack data
     </button>
+    <p>
+        {{vm.youTrackMessage}}<br />
+        <umb-load-indicator ng-if="vm.youTrackLoading"></umb-load-indicator>
+    </p>
+
+    <h3>PR Statistics</h3>
+    <button ng-click="getPullRequestStatisticsCms()">
+        Get CMS PR statistics data
+    </button>
+    <br />
+
+    <div ng-if="vm.prStatsCms.length > 0">
+        <p>Total number of unique outside contributors: {{vm.totalNumberOfContributorsCms}}</p>
+
+        <table>
+            <tr>
+                <th>&nbsp;</th>
+                <th ng-repeat="stat in vm.prStatsCms">{{stat.MonthYear}}</th>
+            </tr>
+            <tr>
+                <td>Number of PRs created</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberCreated}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs merged</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberMerged}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs closed without merging</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberClosed}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs not merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberNotMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total number of open PRs</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.TotalNumberOpen}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of new contributors</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberOfNewContributors}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of active contributors in the past year</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberOfActiveContributorsInPastYear}}
+                </td>
+            </tr>
+            <tr>
+                <td>Average number of hours to close PRs</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.AveragePullRequestClosingTimeInHours}}
+                </td>
+            </tr>
+        </table>
+
+        <p>&nbsp;</p>
+    </div>
+
+    <button ng-click="getPullRequestStatisticsDocs()">
+        Get Documentation PR statistics data
+    </button>
+    <br />
+    <div ng-if="vm.prStatsDocs.length > 0">
+        <p>Total number of unique outside contributors: {{vm.totalNumberOfContributorsDocs}}</p>
+
+        <table>
+            <tr>
+                <th>&nbsp;</th>
+                <th ng-repeat="stat in vm.prStatsDocs">{{stat.MonthYear}}</th>
+            </tr>
+            <tr>
+                <td>Number of PRs created</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberCreated}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs merged</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberMerged}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs closed without merging</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberClosed}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs not merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberNotMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total number of open PRs</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.TotalNumberOpen}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of new contributors</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberOfNewContributors}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of active contributors in the past year</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberOfActiveContributorsInPastYear}}
+                </td>
+            </tr>
+            <tr>
+                <td>Average number of hours to close PRs</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.AveragePullRequestClosingTimeInHours}}
+                </td>
+            </tr>
+        </table>
+
+        <p>&nbsp;</p>
+    </div>
 </div>
+
+<style>
+    table, th, td, tr {
+        border: 1px solid black;
+    }
+    .umb-load-indicator {
+        display: inline-block;
+        left: 43px;
+        margin-top: 24px;
+    }
+</style>
