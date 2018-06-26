@@ -18,7 +18,7 @@ namespace OurUmbraco.Community.BlogPosts {
 
         public string RssUrl { get; private set; }
 
-        public string LogoUrl { get; private set; }
+        public string LogoUrl { get; internal set; }
 
         public int MemberId { get; private set; }
 

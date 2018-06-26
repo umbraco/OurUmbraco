@@ -3,9 +3,11 @@ using System.Text;
 using System.Web.Hosting;
 using Examine;
 using Hangfire;
+using Hangfire.Server;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Videos;
 using Umbraco.Core;
@@ -61,7 +63,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateCommunityBlogPosts()
         {
-            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(null), Cron.HourInterval(1));
         }
 
         public void UpdateVimeoVideos()
@@ -75,7 +77,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             vimeoVideoService.UpdateVimeoVideos("umbraco");
         }
 
-        public void UpdateBlogPostsJsonFile()
+        public void UpdateBlogPostsJsonFile(PerformContext context)
         {
             // Initialize a new service
             var service = new BlogPostsService();
@@ -84,7 +86,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
 
             // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(context), Formatting.Indented);
 
             // Save the JSON to disk
             System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
@@ -114,6 +116,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
             service.UpdateAllPullRequestsForRepository();
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
         }
+
+        public void RefreshKarmaStatistics()
+        {
+            var karmaService = new KarmaService();
+            RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
+        }
+        
     }
 
     public class ReminderTopic

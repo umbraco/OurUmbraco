@@ -9,5 +9,21 @@
 
 @if (allowed)
 {
-    @Html.Partial("~/Views/Partials/Community/MVPs.cshtml")
+    <section class="community mvps">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>@Model.Content.Name</h1>
+                    <p>@(Model.Content.GetPropertyValue<string>("headline"))</p>
+                </div>
+                <div class="intro">
+                    @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
+                    <p>&nbsp;</p>
+                </div>
+                <div class="col-md-12 flex" id="community-posts">
+                    @Html.Partial("~/Views/Partials/Community/MVPs.cshtml")
+                </div>
+            </div>
+        </div>
+    </section>
 }

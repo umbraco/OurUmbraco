@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using OurUmbraco.Community.People;
+using OurUmbraco.Forum.Extensions;
 using Message = GitterSharp.Model.Message;
 
 namespace OurUmbraco.Gitter
@@ -11,19 +13,34 @@ namespace OurUmbraco.Gitter
         {
             get
             {
+                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+
                 if (EditedDate.HasValue)
                 {
-                    var editedDate = EditedDate.Value.ToString("D");
-
-                    //Return the edited date
-                    return $"Edited at {editedDate}";
+                    return EditedDate.Value.Add(utcOffset).ConvertToRelativeTime();
                 }
 
                 //Even with a deletion - we get a blank date sent to us in payload
-                var createdDate = SentDate.ToString("D");
+                return SentDate.Add(utcOffset).ConvertToRelativeTime();
+            }
+        }
 
-                //Return the edited dates
-                return $"Sent at {createdDate}";
+        [JsonProperty("fullFriendlyDate")]
+        public string FullDate
+        {
+            get
+            {
+                var utcOffset = TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now);
+                if (EditedDate.HasValue)
+                {
+                    var editedDate = string.Format($"{EditedDate.Value.Add(utcOffset):ddd, dd MMM yyyy} {EditedDate.Value.Add(utcOffset):HH:mm:ss} UTC+{utcOffset}");
+                    return editedDate;
+                }
+
+                var sentDate = string.Format($"{SentDate.Add(utcOffset):ddd, dd MMM yyyy} {SentDate.Add(utcOffset):HH:mm:ss} UTC+{utcOffset}");
+
+                //Even with a deletion - we get a blank date sent to us in payload
+                return sentDate;
             }
         }
 

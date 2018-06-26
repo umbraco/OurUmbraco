@@ -68,20 +68,23 @@ namespace OurUmbraco.Our.Examine
                 NodeDefinition = new IndexedNode { NodeId = pullRequest.Id, Type = indexType }
             };
 
-            simpleDataSet.RowData.Add("repository", pullRequest.Repository);
-            simpleDataSet.RowData.Add("state", pullRequest.State);
-            simpleDataSet.RowData.Add("title", pullRequest.Title);
+            simpleDataSet.RowData.Add("repository", pullRequest.Repository ?? string.Empty);
+            simpleDataSet.RowData.Add("state", pullRequest.State ?? string.Empty);
+            simpleDataSet.RowData.Add("title", pullRequest.Title ?? string.Empty);
             simpleDataSet.RowData.Add("createdAt", pullRequest.CreatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty);
             simpleDataSet.RowData.Add("updatedAt", pullRequest.UpdatedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty);
             simpleDataSet.RowData.Add("closedAt", pullRequest.ClosedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty);
             simpleDataSet.RowData.Add("mergedAt", pullRequest.MergedAt?.ToString("yyyy-MM-dd HH:mm:ss") ?? string.Empty);
-            simpleDataSet.RowData.Add("userId", pullRequest.User.Id.ToString());
-            simpleDataSet.RowData.Add("userLogin", pullRequest.User.Login);
+            simpleDataSet.RowData.Add("userId", pullRequest.User?.Id.ToString() ?? string.Empty);
+            simpleDataSet.RowData.Add("userLogin", pullRequest.User?.Login ?? string.Empty);
 
-            var contributor = contributors.FirstOrDefault(x =>
-                string.Equals(x.Fields["github"], pullRequest.User.Login, StringComparison.InvariantCultureIgnoreCase));
-            if (contributor != null)
-                simpleDataSet.RowData.Add("memberId", contributor.Id.ToString());
+            if (pullRequest.User != null)
+            {
+                var contributor = contributors.FirstOrDefault(x => string.Equals(x.Fields["github"],
+                    pullRequest.User.Login, StringComparison.InvariantCultureIgnoreCase));
+                if (contributor != null)
+                    simpleDataSet.RowData.Add("memberId", contributor.Id.ToString());
+            }
 
             return simpleDataSet;
         }

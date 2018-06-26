@@ -1,205 +1,157 @@
-@using System.Text.RegularExpressions
-@using OurUmbraco.Our
+@using OurUmbraco.Community.People
+@using OurUmbraco.Community.People.Models
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    var memberGroupService = UmbracoContext.Application.Services.MemberGroupService;
-    var memberService = UmbracoContext.Application.Services.MemberService;
-    var allMemberGroups = memberGroupService.GetAll().Where(x => x.Name.StartsWith("MVP ")).OrderByDescending(x => x.Name.Split('-')[0]).ThenBy(x => (x.Name + '-').Split('-')[1]);
-
-    var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
-
+    var peopleService = new PeopleService();
+    var ourMvps = peopleService.GetMvps();
 }
 
-@functions {
-
-    public string GetGroupDescription(string name)
+<table>
+    @foreach (var mvpGroup in ourMvps.OrderByDescending(m => m.Year))
     {
-
-        if (name.Contains("Community Contributors"))
+        @RenderYearMvps(mvpGroup)
+        if (mvpGroup.Members.Any(m => m.IsMvpRenewal))
         {
-            return "Awarded for organizing festivals, meetups and similar in the Umbraco community.";
+            @RenderYearMvps(mvpGroup, true)
         }
-
-        if (name.Contains("Core Contributors"))
-        {
-            return "Awarded for contributions to the Umbraco core.";
-        }
-
-        if (name.Contains("Forum Participation"))
-        {
-            return "";
-        }
-
-        Match m1 = Regex.Match(name, "^MVP ([0-9] {4})$");
-
-        if (m1.Success)
-        {
-            return "Awarded among the 20th most active members on Our Umbraco.";
-        }
-
-        return "";
-
     }
+</table>
 
+@helper RenderYearMvps(MvpsPerYear mvpGroup, bool isRenewalList = false)
+{
+    <thead class="mvp-group-name">
+    <tr>
+        <td colspan="4">
+            <h2>@mvpGroup.Year @(isRenewalList ? "Renewals" : null)</h2>
+        </td>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Twitter</th>
+        <th>GitHub</th>
+    </tr>
+    </thead>
+    <tbody class="mvp-group">
+        @RenderMembersList(mvpGroup, isRenewalList)
+    </tbody>
 }
 
-<section class="community mvps">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-12">
-                <h1 class="text-center">Most Valueable People</h1>
-                <p>The MVPs of the Umbraco Community</p>
-            </div>
-            <div class="intro">
-                <strong>What is an Umbraco MVP?</strong>
-                <div>
-                    Every year we honor the hardworking pillars of the Umbraco community - known as MVPs - or Most
-                    Valuable People. We are humbled by the amount of work that is being put into the project be it on
-                    the forums, pull-requests, packages, festivals, meetups and whatever this wonderful bunch of people
-                    get up to.
-                </div>
-            </div>
-            <div class="col-md-12 flex" id="community-posts">
-                <table>
-                    
-                    @foreach (var memberGroup in allMemberGroups)
-                    {
-                        var members = memberService.GetMembersByGroup(memberGroup.Name).OrderBy(x => x.Name);
-
-                        var description = GetGroupDescription(memberGroup.Name);
-
-                        <thead class="mvp-group-name">
-                            <tr>
-                                <td colspan="4">
-                                    <h2>@memberGroup.Name</h2>
-                                    <div>@description</div>
-                                </td>
-                            </tr>
-                        </thead>
-                        <thead>
-                            <tr>
-                                <th></th>
-                                <th>Name</th>
-                                <th>Twitter</th>
-                                <th>GitHub</th>
-                            </tr>
-                        </thead>
-                        <tbody class="mvp-group">
-                            @foreach (var member in members)
-                            {
-
-                                var company = member.GetValue<string>("company");
-                                var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
-                                var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
-
-                                // Hacky as we need IPublishedContent to render the avatar
-                                var m = membershipHelper.GetById(member.Id);
-
-                                <tr>
-                                    <td>
-                                        @Html.Raw(Utils.GetMemberAvatar(m, 48))
-                                    </td>
-                                    <td class="col-name">
-                                        <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
-                                        <small>@company</small>
-                                    </td>
-                                    <td class="col-twitter">
-                                        @if (String.IsNullOrWhiteSpace(twitter))
-                                        {
-                                            <em>N/A</em>
-                                        }
-                                        else
-                                        {
-                                            <a href="https://twitter.com/@(twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
-                                                @@@(twitter)
-                                            </a>
-                                        }
-                                    </td>
-                                    <td class="col-github">
-                                        @if (String.IsNullOrWhiteSpace(github))
-                                        {
-                                            <em>N/A</em>
-                                        }
-                                        else
-                                        {
-                                            <a href="https://github.com/@(github)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
-                                                @@@(github)
-                                            </a>
-                                        }
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    }
-                </table>
-            </div>
-        </div>
-    </div>
-</section>
+@helper RenderMembersList(MvpsPerYear mvpGroup, bool isRenewalList) {
+    foreach (var member in mvpGroup.Members.OrderBy(m => m.Name).Where(m => m.IsMvpRenewal == isRenewalList))
+    {
+        <tr>
+            <td>
+                @Html.Raw(member.Avatar)
+            </td>
+            <td class="col-name">
+                <a href="/member/@member.Id"><strong>@member.Name</strong></a><br/>
+                <small>@member.Company</small><br/>
+                @if (string.IsNullOrWhiteSpace(member.Category.Trim()) == false)
+                {
+                    <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
+                }
+            </td>
+            <td class="col-twitter">
+                @if (string.IsNullOrWhiteSpace(member.Twitter))
+                {
+                    <em>N/A</em>
+                }
+                else
+                {
+                    <a href="https://twitter.com/@( member.Twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
+                        @@@( member.Twitter)
+                    </a>
+                }
+            </td>
+            <td class="col-github">
+                @if (string.IsNullOrWhiteSpace(member.GitHub))
+                {
+                    <em>N/A</em>
+                }
+                else
+                {
+                    <a href="https://github.com/@( member.GitHub)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
+                        @@@( member.GitHub)
+                    </a>
+                }
+            </td>
+        </tr>
+    }
+}
 
 <style>
     .community.mvps {
     }
-    .community.mvps .mvp-group {
-        width: 100%;
-    }
-    .community.mvps .mvp-group h2 {
-        font-weight: bold;
-    }
-    .community.mvps table {
-        width: 100%;
-    }
-    .community.mvps .mvp-group .col-name {
-        width: 100%;
-    }
-    .community.mvps .mvp-group .col-name small {
-        display: block;
-        margin-top: 4px;
-        font-size: 12px;
-        font-weight: normal;
-        color: #000;
-    }
-    .community.mvps .mvp-group .col-twitter,
-    .community.mvps .mvp-group .col-github {
-        width: 150px;
-    }
-    .community.mvps table thead th {
-        padding: 5px 15px;
-        border-bottom: 1px solid #e5e8ea;
-    }
-    .community.mvps table tbody td {
-        padding: 15px;
-        border-bottom: 1px solid #e5e8ea;
-        vertical-align: middle;
-    }
 
-    .community.mvps .mvp-group-name h2 {
-        margin-top: 100px;
-        font-size: 26px;
-        font-weight: bold;
-    }
+        .community.mvps .mvp-group {
+            width: 100%;
+        }
 
-    .community.mvps .mvp-group-name div {
-        margin-top: 10px;
-    }
+            .community.mvps .mvp-group h2 {
+                font-weight: bold;
+            }
 
-    .community.mvps .mvp-group-name td {
-        padding-bottom: 30px;
-    }
+        .community.mvps table {
+            width: 100%;
+        }
 
-    .community.mvps .intro strong {
-        display: block;
-        margin-bottom: 5px;
-        font-size: 18px;
-    }
-    
-    .community.mvps .intro div {
-        font-size: 16px;
-        line-height: 26px;
-    }
+        .community.mvps .mvp-group .col-name {
+            width: 100%;
+        }
 
-    .community.mvps .col-md-12.flex {
-        padding: 0;
-    }
+            .community.mvps .mvp-group .col-name small {
+                display: inline-block;
+                margin-top: 4px;
+                font-size: 12px;
+                font-weight: normal;
+                color: #000;
+            }
 
+        .community.mvps .mvp-group .col-twitter,
+        .community.mvps .mvp-group .col-github {
+            width: 150px;
+        }
+
+        .community.mvps table thead th {
+            padding: 5px 15px;
+            border-bottom: 1px solid #e5e8ea;
+        }
+
+        .community.mvps table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid #e5e8ea;
+            vertical-align: middle;
+        }
+
+        .community.mvps .mvp-group-name h2 {
+            margin-top: 100px;
+            font-size: 26px;
+            font-weight: bold;
+        }
+
+        .community.mvps .mvp-group-name div {
+            margin-top: 10px;
+        }
+
+        .community.mvps .mvp-group-name td {
+            padding-bottom: 30px;
+        }
+
+        .community.mvps .intro strong {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 18px;
+        }
+
+        .community.mvps .intro div {
+            font-size: 16px;
+            line-height: 26px;
+        }
+
+        .community.mvps .col-md-12.flex {
+            padding: 0;
+        }
 </style>

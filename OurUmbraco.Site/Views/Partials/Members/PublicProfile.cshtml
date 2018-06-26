@@ -1,5 +1,6 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @using System.Configuration
+@using OurUmbraco.Community.People
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
 @using OurUmbraco.MarketPlace.NodeListing
@@ -44,6 +45,10 @@
         var votedProjects = nodeListingProvider.GetVotedProjectsForMember(member.Id);
 
         var rolesForUser = Roles.GetRolesForUser(member.GetPropertyValue<string>("UserName"));
+        
+        var avatarService = new AvatarService();
+        var avatarPath = avatarService.GetMemberAvatar(member);
+        var img = avatarService.GetImgWithSrcSet(avatarPath, member.Name, 125);
 
         <div class="public-member">
             <div class="row">
@@ -51,7 +56,8 @@
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="member-details">
-                                @Html.Raw(Utils.GetMemberAvatar(member, 125))
+
+                                @Html.Raw(img)
                                 <div class="text">
                                     <h3>@member.Name</h3>
                                     @if (member.HasValue("twitter") || member.HasValue("github"))
@@ -93,8 +99,7 @@
                                             }
                                             else
                                             {
-                                                @*<span class="badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>*@
-                                                <span class="@badge.CssClass">@badge.Name</span>
+                                                <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
                                             }
                                         }
                                     </span>
@@ -135,11 +140,12 @@
                                     if (cat != null)
                                     {
                                         var mem = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
+                                        var memImg = avatarService.GetImgWithSrcSet(mem, mem.Name, 75);
 
                                         <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer != 0 ? "solved" : null)">
                                             <div class="row flex-center">
                                                 <div class="col-xs-2">
-                                                    @Html.Raw(Utils.GetMemberAvatar(mem, 75))
+                                                    @Html.Raw(memImg)
                                                 </div>
                                                 <div class="col-xs-10">
                                                     <div class="forum-thread-text">

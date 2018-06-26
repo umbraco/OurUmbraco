@@ -207,13 +207,13 @@ body.quickmenu {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-
+        flex-wrap:wrap;
 		text-decoration: none;
 
 		&-text {
 			margin-top: 0;
 			margin-right: 5%;
-			flex: 1 0 60%;
+			flex: 1 0 100%;
 
 			h3 {
 				font-size: .9rem;
@@ -224,8 +224,8 @@ body.quickmenu {
 		.cat {
 			flex: 1 0 30%;
 			font-size: .8rem;
-			margin: 0;
-			max-width: 120px;
+			margin: 10px 0 0 0;
+			max-width: 100%;
 		}
 
 		&.solved {

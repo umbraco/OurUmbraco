@@ -127,7 +127,10 @@
             return "n/a";
 
         if (orderedVersions.Length == 1)
-            return orderedVersions.First() + "+";
+            return orderedVersions.First().ToString();
+
+        if(orderedVersions.Min() == orderedVersions.Max())
+            return orderedVersions.Min().ToString();
 
         return orderedVersions.Min() + " - " + orderedVersions.Max();
     }

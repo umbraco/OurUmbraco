@@ -1,10 +1,12 @@
-﻿@using ClientDependency.Core.Mvc
+﻿@using System.Configuration
+@using ClientDependency.Core.Mvc
 @{
-    Html.RequiresJs("~/assets/js/lib/markerclusterer.js");
-    Html.RequiresJs("~/assets/js/map/community.map.js");
-
     //Google Maps API Key
-    var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
+
+    Html.RequiresJs("~/assets/js/lib/markerclusterer.js", 5)
+        .RequiresJs("~/assets/js/map/community.map.js", 6)
+        .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 7);
 }
 
 <style>
@@ -12,45 +14,23 @@
     * element that contains the map. */
     #map {
         min-height: 500px;
-        min-width: 500px;
+        min-width: 300px;
     }
 </style>
 
 <div id="map"></div>
 <div id="member-list" style="margin-top: 25px;"></div>
 
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap"></script>
-
 <script id="map-marker-template" type="x-tmpl-mustache">
     <div style="display:flex; align-items:center;">
-        <img src="{{Avatar}}" title="{{Name}}" style="margin-right:5px; border-radius:50%;" />
-        
-        <div>
-            <a href="/member/{{Id}}">{{Name}}</a>
-            <em>Karma: {{Karma}}</em>
-
-            <div class="social-links">
-                {{#Twitter}}
-                <a href="https://twitter.com/{{Twitter}}" title="See {{Name}}'s profile on Twitter" target="_blank" rel="noopener">
-                    <i class="icon-twitter" aria-hidden="true"></i>
-                    <span>{{Twitter}}</span>
-                </a>
-                {{/Twitter}}
-                {{#GitHub}}
-                <a href="https://github.com/{{Github}}" title="See {{Name}}'s profile on GitHub" target="_blank" rel="noopener">
-                    <i class="icon-github" aria-hidden="true"></i>
-                    <span>{{GitHub}}</span>
-                </a>
-                {{/GitHub}}
-            </div>
-        </div>
+        <img src="{{Avatar}}" style="margin-right:5px; border-radius:50%;" />
     </div>
 </script>
 
 
 <script id="members-template" type="x-tmpl-mustache">
     <h3>People near this location</h3>
-    <div style="display:flex; flex-direction:row; flex-wrap:wrap; justify-content:space-between;">
+    <div style="margin-top:5px; margin-bottom: 20px; display:flex; flex-direction:row; flex-wrap:wrap; justify-content:flex-start;">
         {{ #. }}
         {{ >member }}
         {{ /. }}
@@ -58,28 +38,8 @@
 </script>
 
 <script id="member-item-template" type="x-tmpl-mustache">
-    <div style="border:1px solid grey; display:flex; padding:5px; flex-grow: 1; flex-shrink: 0; flex-basis: 40%; margin-right:5px; margin-bottom:5px; align-items:center;">
-        <img src="{{Avatar}}" title="{{Name}}" style="margin-right:5px; border-radius:50%;" />
-        
-        <div>
-            <a href="/member/{{Id}}">{{Name}}</a>
-            <em>Karma: {{Karma}}</em>
-
-            <div class="social-links">
-                {{#Twitter}}
-                <a href="https://twitter.com/{{Twitter}}" title="See {{Name}}'s profile on Twitter" target="_blank" rel="noopener">
-                    <i class="icon-twitter" aria-hidden="true"></i>
-                    <span>{{Twitter}}</span>
-                </a>
-                {{/Twitter}}
-                {{#GitHub}}
-                <a href="https://github.com/{{Github}}" title="See {{Name}}'s profile on GitHub" target="_blank" rel="noopener">
-                    <i class="icon-github" aria-hidden="true"></i>
-                    <span>{{GitHub}}</span>
-                </a>
-                {{/GitHub}}
-            </div>
-        </div>
+    <div style="display:flex; padding:5px; flex: 0 1 auto; align-items:center;">
+        <img src="{{Avatar}}" style="border-radius:50%; max-height:50px;" />
     </div>
 </script>
 

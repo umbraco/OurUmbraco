@@ -1,0 +1,13 @@
+﻿@inherits UmbracoViewPage<OurUmbraco.Our.Models.ActivationEmailModel>
+
+@{
+    Layout = "EmailTemplateMaster.cshtml";
+}
+
+Hi @Model.Name,<br />
+<br />
+Thanks for signing up for the Umbraco community site. In order to be able to log in please click on the link below to activate your account:<br />
+<a href="@Model.ActivationUrl">@Model.ActivationUrl</a><br />
+<br />
+Best regards,<br />
+The Umbraco Community robot.

@@ -31,9 +31,6 @@
     Html.RequiresJs("~/assets/js/app.min.js");
     Html.RequiresJs("~/assets/js/editor.min.js");
 }<!doctype html>
-<!--[if lt IE 7]> <html class="no-js ie6 oldie" lang="en"> <![endif]-->
-<!--[if IE 7]>    <html class="no-js ie7 oldie" lang="en"> <![endif]-->
-<!--[if IE 8]>    <html class="no-js ie8 oldie" lang="en"> <![endif]-->
 <!--[if gt IE 8]><!-->
 <html class="no-js" lang="en">
 <!--<![endif]-->
@@ -42,12 +39,12 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="//our.umbraco.org/rss/projects" />
-    <link rel="alternate" type="application/rss+xml" title="Package updates" href="//our.umbraco.org/rss/projectsupdate" />
-    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.org/rss/activetopics" />
+    <link rel="alternate" type="application/rss+xml" title="Latest packages" href="//our.umbraco.com/rss/projects" />
+    <link rel="alternate" type="application/rss+xml" title="Package updates" href="//our.umbraco.com/rss/projectsupdate" />
+    <link rel="alternate" type="application/rss+xml" title="Active forum topics" href="//our.umbraco.com/rss/activetopics" />
     <link rel="alternate" type="application/rss+xml" title="Community blogs" href="//pipes.yahoo.com/pipes/pipe.run?_id=8llM7pvk3RGFfPy4pgt1Yg&_render=rss" />
 
-    <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.org" href="/scripts/OpenSearch.xml">
+    <link rel="search" type="application/opensearchdescription+xml" title="our.umbraco.com" href="/scripts/OpenSearch.xml">
 
     <!-- Application name -->
     <meta name="application-name" content="Our Umbraco" />
@@ -79,50 +76,30 @@
             }
         }
 
-        @Model.Content.Name - our.umbraco.org
+        @Model.Content.Name - our.umbraco.com
     </title>
     <meta name="description" content="">
-    <meta name="author" content="">
-
-    <!--[if lt IE 9]>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.7.1/modernizr.min.js"></script>
-    <![endif]-->
-    <script type="text/javascript" src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript" src="/scripts/jquery-1.9.1.min.js"></script>
 
     @Html.Partial("~/Views/Partials/Community/JsValues.cshtml")
 
     @Html.RenderCssHere()
     @RenderSection("HeadCssScripts", false)
 
-    <script type="text/javascript">
-        (function (i, s, o, g, r, a, m) {
-            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
-                (i[r].q = i[r].q || []).push(arguments)
-            }, i[r].l = 1 * new Date(); a = s.createElement(o),
-                m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
-        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+    @*<!--
+            Google Analytics - script. AnonymizeIP + ForceSSL Implemented, so GDPR-safe
+            + Added a dimension to track whether someone is signed-in or not. By tracking this we could later analyze differences in behavior
+        -->*@
+    <script>
 
-        ga('create', 'UA-120590-4', 'auto');
-
+        (function (i, s, o, g, r, a, m) { i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () { (i[r].q = i[r].q || []).push(arguments) }, i[r].l = 1 * new Date(); a = s.createElement(o), m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m) })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga'); ga('create', 'UA-120590-4'); ga('set', 'forceSSL', true); ga('set', 'anonymizeIp', true); 
+        ga('set', 'dimension1', @Html.Raw(MemberData == null ? "'Not signed in'" : "'Signed in'"));
         ga('send', 'pageview');
-        (function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start':
-                    new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-NQ556HD');
+        
     </script>
 </head>
 
 <body class="@bodyCss">
-    <!-- Google Tag Manager (noscript) -->
-    <noscript>
-        <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NQ556HD"
-                height="0" width="0" style="display:none;visibility:hidden"></iframe>
-    </noscript>
-    <!-- End Google Tag Manager (noscript) -->
     @Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
     <div class="wrapper">
@@ -170,14 +147,17 @@
             <div class="container">
                 <div class="row">
                     <div class="col-xs-12">
-                        Our.umbraco.org is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
+                        <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
+                        <p>&nbsp;</p>
+                        Our.umbraco.com is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
                         @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
                         {
                             <text>This site is running Umbraco.</text>
                         }
                         else
                         {
-                            <text>This site is running</text> <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
+                            <text>This site is running</text>
+                            <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
                         }
                     </div>
                 </div>
@@ -191,6 +171,19 @@
 
     <script type="text/javascript">
         classOnScroll('header', 'sticky', 10);
+        $(document).on("click", "a[href^='http']", externalLinks);
+        @*
+        * Clickhandler for external links that do not contain the current hostname
+        * Sends its data to Univeral analytics or Google analytics, depending on the current configuration
+        *@
+        function externalLinks(e) {
+            var url = $(this).attr('href');
+            @* Detect if this is not the current hostname *@
+            if (url.indexOf(location.hostname) == -1) {
+                @* Send to Google *@
+                ga('send', 'event', 'Micro conversion', 'Clickout', url);
+            }
+        }
     </script>
 
     @RenderSection("EndScripts", false)

@@ -580,14 +580,12 @@
                     asset.state = 'loading';
                     LazyLoad.css(appendRnd(path), function () {
                         if (!scope) {
-                            asset.state = 'loaded';
-                            asset.deferred.resolve(true);
-                        } else {
-                            asset.state = 'loaded';
-                            angularHelper.safeApply(scope, function () {
-                                asset.deferred.resolve(true);
-                            });
+                            scope = $rootScope;
                         }
+                        asset.state = 'loaded';
+                        angularHelper.safeApply(scope, function () {
+                            asset.deferred.resolve(true);
+                        });
                     });
                 } else if (asset.state === 'loaded') {
                     asset.deferred.resolve(true);
@@ -618,14 +616,12 @@
                     asset.state = 'loading';
                     LazyLoad.js(appendRnd(path), function () {
                         if (!scope) {
-                            asset.state = 'loaded';
-                            asset.deferred.resolve(true);
-                        } else {
-                            asset.state = 'loaded';
-                            angularHelper.safeApply(scope, function () {
-                                asset.deferred.resolve(true);
-                            });
+                            scope = $rootScope;
                         }
+                        asset.state = 'loaded';
+                        angularHelper.safeApply(scope, function () {
+                            asset.deferred.resolve(true);
+                        });
                     });
                 } else if (asset.state === 'loaded') {
                     asset.deferred.resolve(true);
@@ -673,8 +669,7 @@
                             asset.state = 'loading';
                             assets.push(asset);
                         }
-                        //we need to always push to the promises collection to monitor correct
-                        //execution
+                        //we need to always push to the promises collection to monitor correct execution
                         promises.push(asset.deferred.promise);
                     }
                 });
@@ -690,8 +685,7 @@
                 function assetLoaded(asset) {
                     asset.state = 'loaded';
                     if (!scope) {
-                        asset.deferred.resolve(true);
-                        return;
+                        scope = $rootScope;
                     }
                     angularHelper.safeApply(scope, function () {
                         asset.deferred.resolve(true);
@@ -1032,10 +1026,11 @@
                             buttons.subButtons.push(createButtonDefinition(buttonOrder[i]));
                         }
                     }
-                    //if we are not creating, then we should add unpublish too,
+                    // if we are not creating, then we should add unpublish too,
                     // so long as it's already published and if the user has access to publish
+                    // and the user has access to unpublish (may have been removed via Event)
                     if (!args.create) {
-                        if (args.content.publishDate && _.contains(args.content.allowedActions, 'U')) {
+                        if (args.content.publishDate && _.contains(args.content.allowedActions, 'U') && _.contains(args.content.allowedActions, 'Z')) {
                             buttons.subButtons.push(createButtonDefinition('Z'));
                         }
                     }
@@ -3096,7 +3091,13 @@
                         collectedIcons = [];
                         var c = '.icon-';
                         for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-                            var classes = document.styleSheets[i].rules || document.styleSheets[i].cssRules;
+                            var classes = null;
+                            try {
+                                classes = document.styleSheets[i].rules || document.styleSheets[i].cssRules;
+                            } catch (e) {
+                                console.warn('Can\'t read the css rules of: ' + document.styleSheets[i].href, e);
+                                continue;
+                            }
                             if (classes !== null) {
                                 for (var x = 0; x < classes.length; x++) {
                                     var cur = classes[x];
@@ -3214,6 +3215,27 @@
         };
     }
     angular.module('umbraco.services').factory('imageHelper', imageHelper);
+    (function () {
+        'use strict';
+        function javascriptLibraryService($q, $http, umbRequestHelper) {
+            var existingLocales = [];
+            function getSupportedLocalesForMoment() {
+                var deferred = $q.defer();
+                if (existingLocales.length === 0) {
+                    umbRequestHelper.resourcePromise($http.get(umbRequestHelper.getApiUrl('backOfficeAssetsApiBaseUrl', 'GetSupportedMomentLocales')), 'Failed to get cultures').then(function (locales) {
+                        existingLocales = locales;
+                        deferred.resolve(existingLocales);
+                    });
+                } else {
+                    deferred.resolve(existingLocales);
+                }
+                return deferred.promise;
+            }
+            var service = { getSupportedLocalesForMoment: getSupportedLocalesForMoment };
+            return service;
+        }
+        angular.module('umbraco.services').factory('javascriptLibraryService', javascriptLibraryService);
+    }());
     // This service was based on OpenJS library available in BSD License
     // http://www.openjs.com/scripts/events/keyboard_shortcuts/index.php
     function keyboardService($window, $timeout) {
@@ -5219,8 +5241,10 @@
                     throw 'args.tree cannot be null';
                 }
                 if (mainTreeEventHandler) {
-                    //returns a promise
-                    return mainTreeEventHandler.syncTree(args);
+                    if (mainTreeEventHandler.syncTree) {
+                        //returns a promise,
+                        return mainTreeEventHandler.syncTree(args);
+                    }
                 }
                 //couldn't sync
                 return angularHelper.rejectedPromise();
@@ -8435,6 +8459,25 @@
                     }
                     return saveModel;
                 },
+                /** formats the display model used to display the dictionary to the model used to save the dictionary */
+                formatDictionaryPostData: function (dictionary, nameIsDirty) {
+                    var saveModel = {
+                        parentId: dictionary.parentId,
+                        id: dictionary.id,
+                        name: dictionary.name,
+                        nameIsDirty: nameIsDirty,
+                        translations: [],
+                        key: dictionary.key
+                    };
+                    for (var i = 0; i < dictionary.translations.length; i++) {
+                        saveModel.translations.push({
+                            isoCode: dictionary.translations[i].isoCode,
+                            languageId: dictionary.translations[i].languageId,
+                            translation: dictionary.translations[i].translation
+                        });
+                    }
+                    return saveModel;
+                },
                 /** formats the display model used to display the user to the model used to save the user */
                 formatUserPostData: function (displayModel) {
                     //create the save model from the display model
@@ -9045,7 +9088,7 @@
         };
     }
     angular.module('umbraco.services').factory('umbRequestHelper', umbRequestHelper);
-    angular.module('umbraco.services').factory('userService', function ($rootScope, eventsService, $q, $location, $log, securityRetryQueue, authResource, dialogService, $timeout, angularHelper, $http) {
+    angular.module('umbraco.services').factory('userService', function ($rootScope, eventsService, $q, $location, $log, securityRetryQueue, authResource, assetsService, dialogService, $timeout, angularHelper, $http, javascriptLibraryService) {
         var currentUser = null;
         var lastUserId = null;
         var loginDialog = null;
@@ -9076,10 +9119,10 @@
             }
         }
         /**
-    This methods will set the current user when it is resolved and
-    will then start the counter to count in-memory how many seconds they have
-    remaining on the auth session
-    */
+        This methods will set the current user when it is resolved and
+        will then start the counter to count in-memory how many seconds they have
+        remaining on the auth session
+        */
         function setCurrentUser(usr) {
             if (!usr.remainingAuthSeconds) {
                 throw 'The user object is invalid, the remainingAuthSeconds is required.';
@@ -9090,10 +9133,10 @@
             countdownUserTimeout();
         }
         /**
-    Method to count down the current user's timeout seconds,
-    this will continually count down their current remaining seconds every 5 seconds until
-    there are no more seconds remaining.
-    */
+        Method to count down the current user's timeout seconds,
+        this will continually count down their current remaining seconds every 5 seconds until
+        there are no more seconds remaining.
+        */
         function countdownUserTimeout() {
             $timeout(function () {
                 if (currentUser) {
@@ -9219,7 +9262,7 @@
                 return result;
             },
             /** Logs the user out
-       */
+             */
             logout: function () {
                 return authResource.performLogout().then(function (data) {
                     userAuthExpired();
@@ -9270,6 +9313,38 @@
                     deferred.resolve(currentUser);
                 }
                 return deferred.promise;
+            },
+            /** Loads the Moment.js Locale for the current user. */
+            loadMomentLocaleForCurrentUser: function () {
+                function loadLocales(currentUser, supportedLocales) {
+                    var locale = currentUser.locale.toLowerCase();
+                    if (locale !== 'en-us') {
+                        var localeUrls = [];
+                        if (supportedLocales.indexOf(locale + '.js') > -1) {
+                            localeUrls.push('lib/moment/' + locale + '.js');
+                        }
+                        if (locale.indexOf('-') > -1) {
+                            var majorLocale = locale.split('-')[0] + '.js';
+                            if (supportedLocales.indexOf(majorLocale) > -1) {
+                                localeUrls.push('lib/moment/' + majorLocale);
+                            }
+                        }
+                        return assetsService.load(localeUrls, $rootScope);
+                    } else {
+                        //return a noop promise
+                        var deferred = $q.defer();
+                        var promise = deferred.promise;
+                        deferred.resolve(true);
+                        return promise;
+                    }
+                }
+                var promises = {
+                    currentUser: this.getCurrentUser(),
+                    supportedLocales: javascriptLibraryService.getSupportedLocalesForMoment()
+                };
+                return $q.all(promises).then(function (values) {
+                    return loadLocales(values.currentUser, values.supportedLocales);
+                });
             },
             /** Called whenever a server request is made that contains a x-umb-user-seconds response header for which we can update the user's remaining timeout seconds */
             setUserTimeout: function (newTimeout) {

@@ -1324,6 +1324,7 @@ The tour object consist of two parts - The overall tour configuration and a list
     "group": "My Custom Group" // Used to group tours in the help drawer
     "groupOrder": 200 // Control the order of tour groups
     "allowDisable": // Adds a "Don't" show this tour again"-button to the intro step
+    "culture" : // From v7.11+. Specifies the culture of the tour (eg. en-US), if set the tour will only be shown to users with this culture set on their profile. If omitted or left empty the tour will be visible to all users
     "requiredSections":["content", "media", "mySection"] // Sections that the tour will access while running, if the user does not have access to the required tour sections, the tour will not load.   
     "steps": [] // tour steps - see next example
 }
@@ -1929,11 +1930,9 @@ Use this directive to render an umbraco button. The directive can be used to gen
         function ButtonDirective($timeout) {
             function link(scope, el, attr, ctrl) {
                 scope.style = null;
+                scope.innerState = 'init';
                 function activate() {
                     scope.blockElement = false;
-                    if (!scope.state) {
-                        scope.state = 'init';
-                    }
                     if (scope.buttonStyle) {
                         // make it possible to pass in multiple styles
                         if (scope.buttonStyle.startsWith('[') && scope.buttonStyle.endsWith(']')) {
@@ -1958,9 +1957,12 @@ Use this directive to render an umbraco button. The directive can be used to gen
                 }
                 activate();
                 var unbindStateWatcher = scope.$watch('state', function (newValue, oldValue) {
+                    if (newValue) {
+                        scope.innerState = newValue;
+                    }
                     if (newValue === 'success' || newValue === 'error') {
                         $timeout(function () {
-                            scope.state = 'init';
+                            scope.innerState = 'init';
                         }, 2000);
                     }
                 });
@@ -2270,6 +2272,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                     serverValidationManager.executeAndClearAllSubscriptions();
                     syncTreeNode($scope.content, data.path, true);
                     resetLastListPageNumber($scope.content);
+                    eventsService.emit('content.loaded', { content: $scope.content });
                     $scope.page.loading = false;
                 });
             }
@@ -2316,6 +2319,10 @@ Use this directive to render a button with a dropdown of alternative actions.
             function performSave(args) {
                 var deferred = $q.defer();
                 $scope.page.buttonGroupState = 'busy';
+                eventsService.emit('content.saving', {
+                    content: $scope.content,
+                    action: args.action
+                });
                 contentEditingHelper.contentEditorPerformSave({
                     statusMessage: args.statusMessage,
                     saveMethod: args.saveMethod,
@@ -2328,6 +2335,10 @@ Use this directive to render a button with a dropdown of alternative actions.
                     syncTreeNode($scope.content, data.path);
                     $scope.page.buttonGroupState = 'success';
                     deferred.resolve(data);
+                    eventsService.emit('content.saved', {
+                        content: $scope.content,
+                        action: args.action
+                    });
                 }, function (err) {
                     //error
                     if (err) {
@@ -2354,6 +2365,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                     init($scope.content);
                     resetLastListPageNumber($scope.content);
                     $scope.page.loading = false;
+                    eventsService.emit('content.newReady', { content: $scope.content });
                 });
             } else {
                 getNode();
@@ -2365,6 +2377,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                         skipValidation: true
                     })) {
                     $scope.page.buttonGroupState = 'busy';
+                    eventsService.emit('content.unpublishing', { content: $scope.content });
                     contentResource.unPublish($scope.content.id).then(function (data) {
                         formHelper.resetForm({
                             scope: $scope,
@@ -2378,7 +2391,9 @@ Use this directive to render a button with a dropdown of alternative actions.
                         init($scope.content);
                         syncTreeNode($scope.content, data.path);
                         $scope.page.buttonGroupState = 'success';
+                        eventsService.emit('content.unpublished', { content: $scope.content });
                     }, function (err) {
+                        formHelper.showNotifications(err.data);
                         $scope.page.buttonGroupState = 'error';
                     });
                 }
@@ -2524,6 +2539,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                 var evts = [];
                 var isInfoTab = false;
                 scope.publishStatus = {};
+                scope.disableTemplates = Umbraco.Sys.ServerVariables.features.disabledFeatures.disableTemplates;
                 function onInit() {
                     scope.allowOpen = true;
                     scope.datePickerConfig = {
@@ -2553,7 +2569,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                 };
                 scope.openDocumentType = function (documentType) {
                     var url = '/settings/documenttypes/edit/' + documentType.id;
-                    $location.path(url);
+                    $location.url(url);
                 };
                 scope.updateTemplate = function (templateAlias) {
                     // update template value
@@ -4760,6 +4776,12 @@ will override element type to textarea and add own attribute ngModel tied to jso
                                             }
                                         }
                                     }
+                                    if (val === 'true') {
+                                        tinyMceConfig.customConfig[i] = true;
+                                    }
+                                    if (val === 'false') {
+                                        tinyMceConfig.customConfig[i] = false;
+                                    }
                                 }
                                 angular.extend(baseLineConfigObj, tinyMceConfig.customConfig);
                             }
@@ -5755,7 +5777,6 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
 </pre>
 
 <h1>General Options</h1>
-Lorem ipsum dolor sit amet..
 <table>
     <thead>
         <tr>
@@ -5770,7 +5791,7 @@ Lorem ipsum dolor sit amet..
         <td>Set the title of the overlay.</td>
     </tr>
     <tr>
-        <td>model.subTitle</td>
+        <td>model.subtitle</td>
         <td>String</td>
         <td>Set the subtitle of the overlay.</td>
     </tr>
@@ -6160,10 +6181,12 @@ Opens an overlay to show a custom YSOD. </br>
                                     'BUTTON'
                                 ];
                                 var submitOnEnter = document.activeElement.hasAttribute('overlay-submit-on-enter');
+                                var submitOnEnterValue = submitOnEnter ? document.activeElement.getAttribute('overlay-submit-on-enter') : '';
                                 if (clickableElements.indexOf(activeElementType) === 0) {
                                     document.activeElement.click();
                                     event.preventDefault();
                                 } else if (activeElementType === 'TEXTAREA' && !submitOnEnter) {
+                                } else if (submitOnEnter && submitOnEnterValue === 'false') {
                                 } else {
                                     scope.$apply(function () {
                                         scope.submitForm(scope.model);
@@ -6634,28 +6657,7 @@ Opens an overlay to show a custom YSOD. </br>
                                 args.path = _.filter(args.path, function (item) {
                                     return item !== 'init' && item !== '-1';
                                 });
-                                //Once those are filtered we need to check if the current user has a special start node id,
-                                // if they do, then we're going to trim the start of the array for anything found from that start node
-                                // and previous so that the tree syncs properly. The tree syncs from the top down and if there are parts
-                                // of the tree's path in there that don't actually exist in the dom/model then syncing will not work.
-                                userService.getCurrentUser().then(function (userData) {
-                                    var startNodes = [];
-                                    for (var i = 0; i < userData.startContentIds; i++) {
-                                        startNodes.push(userData.startContentIds[i]);
-                                    }
-                                    for (var j = 0; j < userData.startMediaIds; j++) {
-                                        startNodes.push(userData.startMediaIds[j]);
-                                    }
-                                    _.each(startNodes, function (i) {
-                                        var found = _.find(args.path, function (p) {
-                                            return String(p) === String(i);
-                                        });
-                                        if (found) {
-                                            args.path = args.path.splice(_.indexOf(args.path, found));
-                                        }
-                                    });
-                                    loadPath(args.path, args.forceReload, args.activate);
-                                });
+                                loadPath(args.path, args.forceReload, args.activate);
                                 return deferred.promise;
                             };
                             /**
@@ -7366,7 +7368,7 @@ Opens an overlay to show a custom YSOD. </br>
                 assetsService.load([
                     'lib/ace-builds/src-min-noconflict/ace.js',
                     'lib/ace-builds/src-min-noconflict/ext-language_tools.js'
-                ]).then(function () {
+                ], scope).then(function () {
                     if (angular.isUndefined(window.ace)) {
                         throw new Error('ui-ace need ace to work... (o rly?)');
                     } else {
@@ -7980,7 +7982,7 @@ Use this directive to render a ui component for selecting child items to a paren
             function link(scope, element, attrs, ctrl) {
                 var clipboard;
                 var target = element[0];
-                assetsService.loadJs('lib/clipboard/clipboard.min.js').then(function () {
+                assetsService.loadJs('lib/clipboard/clipboard.min.js', scope).then(function () {
                     if (scope.umbClipboardTarget) {
                         target.setAttribute('data-clipboard-target', scope.umbClipboardTarget);
                     }
@@ -8029,14 +8031,53 @@ Use this directive to render a ui component for selecting child items to a paren
         angular.module('umbraco.directives').directive('umbClipboard', umbClipboardDirective);
     }());
     /**
- * @ngdoc directive
- * @name umbraco.directives.directive:umbConfirm
- * @function
- * @description
- * A confirmation dialog
- *
- * @restrict E
- */
+@ngdoc directive
+@name umbraco.directives.directive:umbConfirm
+@restrict E
+@scope
+
+@description
+A confirmation dialog
+
+
+<h3>Markup example</h3>
+<pre>
+	<div ng-controller="My.Controller as vm">
+
+       <umb-confirm caption="Title" on-confirm="vm.onConfirm()" on-cancel="vm.onCancel()"></umb-confirm>
+
+	</div>
+</pre>
+
+<h3>Controller example</h3>
+<pre>
+	(function () {
+		"use strict";
+
+		function Controller() {
+
+            var vm = this;
+
+            vm.onConfirm = function() {
+                alert('Confirm clicked');
+            };
+
+            vm.onCancel = function() {
+                alert('Cancel clicked');
+            }
+
+
+        }
+
+		angular.module("umbraco").controller("My.Controller", Controller);
+
+	})();
+</pre>
+
+@param {string} caption (<code>attribute</code>): The caption shown above the buttons
+@param {callback} on-confirm (<code>attribute</code>): The call back when the "OK" button is clicked. If not set the button will not be shown
+@param {callback} on-cancel (<code>atribute</code>): The call back when the "Cancel" button is clicked. If not set the button will not be shown
+**/
     function confirmDirective() {
         return {
             restrict: 'E',
@@ -8050,6 +8091,14 @@ Use this directive to render a ui component for selecting child items to a paren
                 caption: '@'
             },
             link: function (scope, element, attr, ctrl) {
+                scope.showCancel = false;
+                scope.showConfirm = false;
+                if (scope.onConfirm) {
+                    scope.showConfirm = true;
+                }
+                if (scope.onCancel) {
+                    scope.showCancel = true;
+                }
             }
         };
     }
@@ -8371,9 +8420,9 @@ Use this directive to render a date time picker
                     // check for transcluded content so we can hide the defualt markup
                     scope.hasTranscludedContent = element.find('.js-datePicker__transcluded-content')[0].children.length > 0;
                     // load css file for the date picker
-                    assetsService.loadCss('lib/datetimepicker/bootstrap-datetimepicker.min.css');
+                    assetsService.loadCss('lib/datetimepicker/bootstrap-datetimepicker.min.css', scope);
                     // load the js file for the date picker
-                    assetsService.loadJs('lib/datetimepicker/bootstrap-datetimepicker.js').then(function () {
+                    assetsService.loadJs('lib/datetimepicker/bootstrap-datetimepicker.js', scope).then(function () {
                         // init date picker
                         initDatePicker();
                     });
@@ -9240,7 +9289,9 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                             }
                         }
                     };
+                    //select which resource methods to use, eg document Type or Media Type versions
                     var availableContentTypeResource = scope.contentType === 'documentType' ? contentTypeResource.getAvailableCompositeContentTypes : mediaTypeResource.getAvailableCompositeContentTypes;
+                    var whereUsedContentTypeResource = scope.contentType === 'documentType' ? contentTypeResource.getWhereCompositionIsUsedInContentTypes : mediaTypeResource.getWhereCompositionIsUsedInContentTypes;
                     var countContentTypeResource = scope.contentType === 'documentType' ? contentTypeResource.getCount : mediaTypeResource.getCount;
                     //get the currently assigned property type aliases - ensure we pass these to the server side filer
                     var propAliasesExisting = _.filter(_.flatten(_.map(scope.model.groups, function (g) {
@@ -9254,6 +9305,13 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                         //get available composite types
                         availableContentTypeResource(scope.model.id, [], propAliasesExisting).then(function (result) {
                             setupAvailableContentTypesModel(result);
+                        }),
+                        //get where used document types
+                        whereUsedContentTypeResource(scope.model.id).then(function (whereUsed) {
+                            //pass to the dialog model the content type eg documentType or mediaType 
+                            scope.compositionsDialogModel.section = scope.contentType;
+                            //pass the list of 'where used' document types
+                            scope.compositionsDialogModel.whereCompositionUsed = whereUsed;
                         }),
                         //get content type count
                         countContentTypeResource().then(function (result) {
@@ -10734,11 +10792,15 @@ Use this directive to generate a thumbnail grid of media items.
 **/
     (function () {
         'use strict';
-        function NodePreviewDirective() {
+        function NodePreviewDirective(userService) {
             function link(scope, el, attr, ctrl) {
                 if (!scope.editLabelKey) {
                     scope.editLabelKey = 'general_edit';
                 }
+                userService.getCurrentUser().then(function (u) {
+                    var isAdmin = u.userGroups.indexOf('admin') !== -1;
+                    scope.alias = Umbraco.Sys.ServerVariables.isDebuggingEnabled === true || isAdmin ? scope.alias : null;
+                });
             }
             var directive = {
                 restrict: 'E',
@@ -10747,6 +10809,7 @@ Use this directive to generate a thumbnail grid of media items.
                 scope: {
                     icon: '=?',
                     name: '=',
+                    alias: '=?',
                     description: '=?',
                     permissions: '=?',
                     published: '=?',
@@ -12213,11 +12276,15 @@ Use this directive to render a user group preview, where you can see the permiss
             restrict: 'A',
             require: 'ngModel',
             link: function (scope, elm, attrs, ctrl) {
-                elm.focus(function () {
-                    scope.$watch(function () {
-                        ctrl.$pristine = false;
-                    });
-                });
+                var alwaysFalse = {
+                    get: function () {
+                        return false;
+                    },
+                    set: function () {
+                    }
+                };
+                Object.defineProperty(ctrl, '$pristine', alwaysFalse);
+                Object.defineProperty(ctrl, '$dirty', alwaysFalse);
             }
         };
     }

@@ -1,16 +1,19 @@
-﻿@using ClientDependency.Core.Mvc
+﻿@using System.Configuration
+@using ClientDependency.Core.Mvc
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Controllers
 
-@inherits Umbraco.Web.Mvc.UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
+@inherits UmbracoViewPage<OurUmbraco.Our.Models.ProfileModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
 
-    Html.RequiresJs("~/Assets/js/map/profile.map.js");
-
     //Google Maps API Key
-    var apiKey = "AIzaSyCyVUmjYOjblvpPIE9Qqhz1yjLp3HzKnC4";
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
+
+    Html.RequiresJs("~/Assets/js/map/profile.map.js", 5)
+        .RequiresJs("https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&callback=initMap", 6);
+    
 }
 
 <!-- Modal for file upload -->
@@ -40,7 +43,7 @@
                 </label>
 
                 <div class="avatar-image inked">
-                    @Html.Raw(Utils.GetLocalAvatar(Model.Avatar ?? "", 100, ""))
+                    @Html.Raw(Model.AvatarHtml)
                     <span>Change image</span>
                 </div>
                 @Html.HiddenFor(m => m.Avatar)
@@ -87,23 +90,18 @@
             </div>
 
             <div>
-                <h3>Map</h3>
+                <h3 style="font-weight: bold; margin-top: 6px; margin-bottom: 6px;">Location</h3>
                 <p>
-                    This information is optional but allows you to share your rough location on a community map,
-                    in order to see the sense of scale of the Umbraco community and other members near by.
+                    Share your rough location on the <a href="/community">community map</a>, featuring the sense of scale of the Umbraco community and other members near by. We recommend you do not place a map marker to an exact location.
                 </p>
-                <p>
-                    <em>It is your responsibility</em> to share your location & we strongly recommend you do
-                    not place a map marker to an exact location to protect yourself.
-                </p>
-                    
+
                 <div id="profile-map" style="min-height: 500px;"></div>
-                
+
                 <div>
                     <span class="button" id="geolocate-me">Use my geo location</span>
                     <span class="button red disabled" id="remove-me">Clear my location</span>
                 </div>
-                
+
                 <div>
                     <!--TODO: Decide if we display these (so user can see their saved data, or to set these as hidden fields -->
                     @Html.HiddenFor(m => m.Latitude)
@@ -124,6 +122,4 @@
 
     </div>
 </div>
-
-<script src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&callback=initMap" async defer></script>
 

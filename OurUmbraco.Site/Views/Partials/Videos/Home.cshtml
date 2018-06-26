@@ -1,4 +1,5 @@
-﻿@using System.Text.RegularExpressions
+﻿@using System.Configuration
+@using System.Text.RegularExpressions
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Videos
 @using Skybrud.Essentials.Strings
@@ -64,6 +65,8 @@
     // Count the total amount of videos matching the parameters
     int videosCount = videos.Count();
 
+    var unhide = false;
+    bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out unhide);
 }
 
 <div class="has-sidebar">
@@ -117,7 +120,10 @@
                         }
                     </ul>
                     <div class="community-content">
-                        <h1 style="color: red; margin-bottom: 20px;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
+                        @if (unhide == false)
+                        {
+                            <h1 style="color: red; margin-bottom: 20px;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
+                        }
                         <div class="videos-list">
                             <h1>Videos</h1>
                             <div class="videos-list-meta">
@@ -133,9 +139,6 @@
                             </div>
                             @foreach (var video in videos)
                             {
-
-                                var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
-
                                 <div class="videos-item">
                                     <div class="videos-details">
                                         <a href="@video.Link" target="_blank" rel="noopener"><strong>@video.Name</strong></a>
@@ -174,15 +177,12 @@
                                             <div class="videos-description">@Html.Raw(html)</div>
                                         }
                                     </div>
-                                    @if (thumbnail != null)
-                                    {
-                                        <a href="#" class="videos-thumbnail" onclick="playVimeoVideo(this, '@video.Id'); return false;">
-                                            <div class="videos-thumbnail-overlay">
-                                                <i class="icon-Video"></i>
-                                            </div>
-                                            <div class="videos-thumbnail-background" style="background-image: url(@thumbnail.Link);"></div>
-                                        </a>
-                                    }
+                                    <a href="@video.Link" class="videos-thumbnail" target="_blank" rel="noopener">
+                                        <div class="videos-thumbnail-overlay">
+                                            <i class="icon-Video"></i>
+                                        </div>
+                                        <div class="videos-thumbnail-background" style="background-image: url(/media/Vimeo/@(video.Id).jpg);"></div>
+                                    </a>
                                 </div>
                             }
                         </div>

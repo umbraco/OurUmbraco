@@ -3,7 +3,6 @@ using System.IO;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
-using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -15,9 +14,6 @@ namespace OurUmbraco.Our.Examine
 
         public IEnumerable<SimpleDataSet> GetAllData(string indexType)
         {
-            //Before getting all data, we need to make sure that the docs are available from GitHub
-            ZipDownloader.EnsureGitHubDocs();
-
             var config = DocumentationIndexConfig.Settings;
             var fullPath = HostingEnvironment.MapPath(config.DirectoryToIndex);
 
@@ -34,9 +30,6 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet = ExamineHelper.MapFileToSimpleDataIndexItem(file, simpleDataSet, i, indexType);
                 yield return simpleDataSet;
             }
-
         }
-
-
     }
 }

@@ -6,6 +6,8 @@ using System.Net;
 using System.Text;
 using System.Web.Hosting;
 using System.Xml.Linq;
+using Hangfire.Console;
+using Hangfire.Server;
 using Newtonsoft.Json;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Json.Extensions;
@@ -44,19 +46,24 @@ namespace OurUmbraco.Community.BlogPosts
             }
         }
 
-        public BlogRssItem[] GetBlogPosts()
+        public BlogRssItem[] GetBlogPosts(PerformContext context)
         {
             var posts = new List<BlogRssItem>();
 
-            foreach (var blog in GetBlogs())
+            var progressBar = context.WriteProgressBar();
+            var blogs = GetBlogs();
+
+            foreach (var blog in blogs.WithProgress(progressBar, blogs.Length))
             {
                 try
                 {
                     string raw;
-                    
+                    const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3393.4 Safari/537.36";
+                    context.WriteLine($"Processing blog {blog.Title}");
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
+                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
                         wc.Encoding = blog.Encoding;
 
                         // Download the raw XML
@@ -79,8 +86,9 @@ namespace OurUmbraco.Community.BlogPosts
                         Title = channelTitle,
                         Link = channelLink
                     };
-                    
-                    foreach (var item in channel.GetElements("item"))
+
+                    var items = channel.GetElements("item");
+                    foreach (var item in items)
                     {
                         var title = item.GetElementValue("title");
                         var link = (string.IsNullOrEmpty(item.GetElementValue("link"))
@@ -111,7 +119,9 @@ namespace OurUmbraco.Community.BlogPosts
                             if (includeItem == false)
                             {
                                 var allCategories = string.Join(",", categories.Select(i => i.Value));
-                                LogHelper.Info<BlogPostsService>(string.Format("Not including post titled {0} because it was not in an approved category. The categories it was found in: {1}. [{2}]", title, allCategories, link));
+                                context.SetTextColor(ConsoleTextColor.DarkYellow);
+                                context.WriteLine($"Not including post titled {title} because it was not in an approved category. The categories it was found in: {allCategories}. [{link}]");
+                                context.ResetTextColor();
                                 continue;
                             }
                         }
@@ -125,7 +135,7 @@ namespace OurUmbraco.Community.BlogPosts
                                     includeItem = true;
 
                             // Blog post seems unrelated to Umbraco, skip it
-                            if(includeItem == false)
+                            if (includeItem == false)
                                 continue;
                         }
 
@@ -141,16 +151,44 @@ namespace OurUmbraco.Community.BlogPosts
                         posts.Add(blogPost);
                     }
 
+                    // Get the avatar locally so that we can use ImageProcessor and serve it over https
+                    using (var wc = new WebClient())
+                    {
+                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
+                        var baseLogoPath = HostingEnvironment.MapPath("~/media/blogs/");
+                        if (Directory.Exists(baseLogoPath) == false)
+                            Directory.CreateDirectory(baseLogoPath);
+                        
+                        var logoExtension = GetFileExtension(blog.LogoUrl);
+                        var logoPath = baseLogoPath + blog.Id + logoExtension;
+                        
+                        wc.DownloadFile(blog.LogoUrl, logoPath);
+                    }
                 }
                 catch (Exception ex)
                 {
-                    LogHelper.Error<BlogPostsService>("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.SetTextColor(ConsoleTextColor.Red);
+                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.ResetTextColor();
                 }
             }
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
         }
-        
+
+        private static string GetFileExtension(string blogLogoUrl)
+        {
+            var extension = ".png";
+            var url = blogLogoUrl;
+            if (url.Contains("?"))
+                url = blogLogoUrl.Substring(0, blogLogoUrl.IndexOf("?", StringComparison.Ordinal));
+
+            var lastUrlSlug = url.Substring(url.LastIndexOf("/", StringComparison.Ordinal));
+            if (lastUrlSlug.Contains("."))
+                extension = lastUrlSlug.Substring(lastUrlSlug.LastIndexOf(".", StringComparison.Ordinal));
+            return extension;
+        }
+
         private static string RemoveLeadingCharacters(string inString)
         {
             if (inString == null)
@@ -202,9 +240,10 @@ namespace OurUmbraco.Community.BlogPosts
 
                 foreach (var item in JsonUtils.LoadJsonArray(JsonFile).Select(token => token.ToObject<BlogRssItem>()))
                 {
-                    BlogInfo blog;
-                    if (blogs.TryGetValue(item.Channel.Id, out blog) == false)
+                    if (blogs.TryGetValue(item.Channel.Id, out var blog) == false)
                         continue;
+
+                    blog.LogoUrl = $"/media/blogs/{blog.Id}{GetFileExtension(blog.LogoUrl)}";
                     blogPosts.Add(new BlogCachedRssItem(blog, item));
                 }
 
@@ -228,7 +267,7 @@ namespace OurUmbraco.Community.BlogPosts
             var service = new BlogPostsService();
 
             // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(), Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Formatting.Indented);
 
             // Save the JSON to disk
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);

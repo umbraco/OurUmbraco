@@ -5,6 +5,11 @@ using System.Web.Mvc;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.LuceneEngine.SearchCriteria;
+using OurUmbraco.Community.People;
+using OurUmbraco.Our;
+using OurUmbraco.Our.Extensions;
+using Umbraco.Core.Models;
+using Umbraco.Web;
 using Umbraco.Web.WebApi;
 using UmbracoExamine;
 
@@ -38,27 +43,26 @@ namespace OurUmbraco.Community.Map
             //Pluck the fields we need from the Examine index fields
             //For our much simpler model to send back as the JSON response
             var members = results.Select(result => new MemberLocation
-            {
-                Id = result.Id,
-                Name = result.Fields["nodeName"],
-                Avatar = GetAvatar(result),
+            {   
+                Avatar = GetMemberAvatar(result),
                 Lat = GetLatitude(result),
-                Lon = GetLongitude(result),
-                Karma = Convert.ToInt32(result.Fields[LuceneIndexer.SortedFieldNamePrefix + "karma"]), //Have to access the value as the raw field name with the magic string prefix
-                Twitter = GetTwitter(result),
-                GitHub = GetGitHub(result)
+                Lon = GetLongitude(result)
             })
             .ToList();
 
-            //Loop over list and try to find members that have the exact same lat & lon
-            //Mark them as a 'someoneElseIsHere' to true
-            foreach (var member in members)
-            {
-                //Check if a member exist with same lat & lon & exclude itself from the lookup
-                member.SomeoneElseIsHere = members.Exists(x => x.Lat == member.Lat && x.Lon == member.Lon && x.Id != member.Id);
-            }
-            
             return members;
+        }
+
+        private string GetMemberAvatar(SearchResult result)
+        {
+            var memberAvatarResult = result["avatar"];
+            if (string.IsNullOrWhiteSpace(memberAvatarResult) == false && memberAvatarResult.IsLocalPath())
+                return memberAvatarResult;
+            
+            var avatarService = new AvatarService();
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var avatar = avatarService.GetMemberAvatar(umbracoHelper.TypedMember(result.Id));
+            return avatar;
         }
 
         /// <summary>
@@ -85,25 +89,6 @@ namespace OurUmbraco.Community.Map
             var lonAsDouble = Double.Parse(lon);
             var lonRounded = Math.Round(lonAsDouble, 3);
             return lonRounded.ToString();
-        }
-
-        private string GetGitHub(SearchResult result)
-        {
-            //Verify if we have a record/field for it (not all members set this)
-            return result.Fields.ContainsKey("github") ? result.Fields["github"].Replace("@", "") : null;
-        }
-
-        private string GetTwitter(SearchResult result)
-        {
-            //Verify if we have a record/field for it (not all members set this)
-            return result.Fields.ContainsKey("twitter") ? result.Fields["twitter"].Replace("@", "") : null;
-        }
-
-        private string GetAvatar(SearchResult result)
-        {
-            var email = result.Fields["email"];
-            var name = result.Fields["nodeName"];
-            return Our.Utils.GetGravatar(email, 50, name, true);
         }
     }
 }
