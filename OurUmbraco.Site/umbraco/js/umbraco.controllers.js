@@ -3555,22 +3555,25 @@
                     mediaItem.thumbnail = mediaHelper.resolveFileFromEntity(mediaItem, true);
                     mediaItem.image = mediaHelper.resolveFileFromEntity(mediaItem, false);
                     // set properties to match a media object
-                    if (mediaItem.metaData && mediaItem.metaData.umbracoWidth && mediaItem.metaData.umbracoHeight) {
-                        mediaItem.properties = [
-                            {
+                    mediaItem.properties = [];
+                    if (mediaItem.metaData) {
+                        if (mediaItem.metaData.umbracoWidth && mediaItem.metaData.umbracoHeight) {
+                            mediaItem.properties.push({
                                 alias: 'umbracoWidth',
                                 value: mediaItem.metaData.umbracoWidth.Value
-                            },
-                            {
+                            });
+                            mediaItem.properties.push({
                                 alias: 'umbracoHeight',
                                 value: mediaItem.metaData.umbracoHeight.Value
-                            },
-                            {
+                            });
+                        }
+                        if (mediaItem.metaData.umbracoFile) {
+                            mediaItem.properties.push({
                                 alias: 'umbracoFile',
                                 editor: mediaItem.metaData.umbracoFile.PropertyEditorAlias,
                                 value: mediaItem.metaData.umbracoFile.Value
-                            }
-                        ];
+                            });
+                        }
                     }
                 });
                 // update images
@@ -10737,6 +10740,9 @@
             }
         }
         setupViewModel();
+        if ($scope.model && !$scope.model.value) {
+            $scope.model.value = $scope.renderModel.value === true ? '1' : '0';
+        }
         //here we declare a special method which will be called whenever the value has changed from the server
         //this is instead of doing a watch on the model.value = faster
         $scope.model.onValueChanged = function (newVal, oldVal) {
