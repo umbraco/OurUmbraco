@@ -1,9 +1,11 @@
+@using System.Configuration
 @using OurUmbraco.Our.Controllers
 @using reCAPTCHA.MVC
 @inherits UmbracoViewPage<OurUmbraco.Our.Models.RegisterModel>
 @{
     Html.EnableClientValidation(true);
     Html.EnableUnobtrusiveJavaScript(true);
+    var apiKey = ConfigurationManager.AppSettings["GoogleServerKey"];
 }
 
 <div class="profile-settings">
@@ -78,5 +80,5 @@
 </div>
 
 <script type="text/javascript" src="/scripts/register.js"></script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyASbfPWsRxZgSnmH2jaQlrWNE7VTV5QuwI&libraries=places&callback=initAutocomplete"></script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=@(apiKey)&libraries=places&callback=initAutocomplete"></script>
 <link rel="stylesheet" type="text/css" href="/css/register.css" />

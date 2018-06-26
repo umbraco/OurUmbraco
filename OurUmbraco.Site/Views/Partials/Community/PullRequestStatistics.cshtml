@@ -3,13 +3,16 @@
 
 @{
     var stats = new PullRequestStatisticsController();
-    var statistics = stats.GetGroupedPullRequestData(new DateTime(2017, 01, 01), new DateTime(2018, 12, 31));
+    var statistics = stats.GetGroupedPullRequestData(new DateTime(2010, 01, 01), new DateTime(2018, 12, 31));
 }
 <style>
     table, th, td, tr {
-         border: 1px solid black;
+        border: 1px solid black;
+        font-size: 6px;
     }
 </style>
+
+<p>Total number of unique outside contributors: @statistics.Last().TotalNumberOfContributors</p>
 
 <table>
     <th>&nbsp;</th>

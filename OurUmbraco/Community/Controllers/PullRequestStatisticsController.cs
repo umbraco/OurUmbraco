@@ -159,8 +159,10 @@ namespace OurUmbraco.Community.Controllers
                 }
 
                 pullRequestsInPeriod.NumberOfActiveContributorsInPastYear = activeContributors.Count;
-            }
 
+                pullRequestsInPeriod.TotalNumberOfContributors = firstPrs.Count;
+            }
+            
             return groupedPrs;
         }
 
@@ -199,7 +201,7 @@ namespace OurUmbraco.Community.Controllers
         public int NumberCreated { get; set; }
 
         /// <summary>
-        /// PR closed without merging
+        /// PR closed without merging in this period
         /// </summary>
         public int NumberClosed { get; set; }
 
@@ -210,16 +212,17 @@ namespace OurUmbraco.Community.Controllers
 
         /// <summary>
         /// PR Merged in this period that were created since January 2018
+        /// We stop in January since we weren't very good at maintaining this before 
         /// </summary>
         public int NumberMergedRecent { get; set; }
 
         /// <summary>
-        /// Number of PRs that were created in this period and merged within 30 days
+        /// Number of PRs that were created in this period and merged within 30 days after creating the PR
         /// </summary>
         public int NumberMergedInThirtyDays { get; set; }
 
         /// <summary>
-        /// Number of PRs that were created in this period and merged, but not merged within 30 days
+        /// Number of PRs that were created in this period and merged, but not merged within 30 days after creating the PR
         /// </summary>
         public int NumberNotMergedInThirtyDays { get; set; }
 
@@ -252,6 +255,11 @@ namespace OurUmbraco.Community.Controllers
         /// Average time in hours between create and merge date
         /// </summary>
         public int AveragePullRequestClosingTimeInHours { get; set; }
+
+        /// <summary>
+        /// All the contributors over all time who are not part of HQ
+        /// </summary>
+        public int TotalNumberOfContributors { get; set; }
     }
 
     public class FirstPr
