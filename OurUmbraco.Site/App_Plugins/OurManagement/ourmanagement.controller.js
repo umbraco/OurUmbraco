@@ -56,6 +56,49 @@
             });
     };
 
+    $scope.findMember = function (searchTerm) {
+        var getMemberSearchUrl = "backoffice/API/Members/SearchMembers/?searchTerm=" + searchTerm;
+        $http.get(getMemberSearchUrl)
+            .success(function (data) {
+                if (data.length === 0) {
+                    notificationsService.error("❌ No members found that match the search term(s).");
+                }
+                if (data.length === 1) {
+                    $scope.selectMember(data[0].Key, data[0].Name, data[0].Id);
+                } else {
+                    vm.memberSearchResults = data;
+                }
+            })
+            .error(function () {
+                vm.memberError = "❌ Problem with getting the member search results.";
+                notificationsService.error(vm.memberError);
+            });
+    };
+
+    $scope.selectMember = function (memberKey, memberName, memberId) {
+        vm.memberSearchResults = undefined;
+        vm.memberId = memberId;
+        vm.memberBackofficeUrl = "/umbraco/#/member/member/edit/" + memberKey;
+        vm.memberName = memberName;
+    };
+    
+    $scope.addContribBadgeToMember = function (memberId) {
+        var getMemberUrl = "backoffice/API/Members/AddContribBadgeToMember/?memberId=" + memberId;
+        $http.get(getMemberUrl)
+            .success(function (data) {
+                if (data === "true") {
+                    vm.addBadgeMessage = "✔ " + vm.memberName + " now has a contrib badge.";
+                    notificationsService.success(vm.addBadgeMessage);
+                } else {
+                    notificationsService.error("❌ Problem with adding contrib badge to the member.");
+                }
+            })
+            .error(function () {
+                vm.memberError = "❌ Problem with getting the member.";
+                notificationsService.error(vm.memberError);
+            });
+    };
+
     $scope.downloadYoutrackData = function () {
         vm.youTrackLoading = true;
         vm.youTrackMessage = "Downloading YouTrack data, hold on...";
