@@ -1,4 +1,4 @@
-﻿function startNotifier(memberId, memberName, modelId) {
+﻿function startNotifier(memberId, memberName, modelId, isMemberAdmin) {
     var lastActivity = null;
 
     // if it's been long since last activity, we'll remove the "working on reply" box
@@ -71,7 +71,9 @@
                 $("#reply-is-coming").fadeOut();
 
                 data.canHaveChildren = true;
+                data.isLoggedIn = memberId > 0;
                 data.isCommentOwner = data.authorId === memberId;
+                data.canManageComment = isMemberAdmin || data.isCommentOwner;
 
                 if (data.isSpam === false || data.isCommentOwner) {
                     var template = $("#comment-template").html();
