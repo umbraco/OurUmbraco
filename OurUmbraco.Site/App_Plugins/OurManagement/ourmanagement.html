@@ -27,7 +27,7 @@
     <p ng-if="vm.memberSearchResults">
         Choose a member from the search results:
         <ul>
-            <li ng-click="selectMember(member.Key, member.Name)" ng-repeat="member in vm.memberSearchResults">Select {{member.Name}} ({{member.Id}})</li>
+            <li ng-click="selectMember(member.Key, member.Name, member.Id)" ng-repeat="member in vm.memberSearchResults">Select {{member.Name}} ({{member.Id}})</li>
         </ul>
     </p>
 
