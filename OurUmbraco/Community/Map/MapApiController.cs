@@ -46,7 +46,8 @@ namespace OurUmbraco.Community.Map
             {   
                 Avatar = GetMemberAvatar(result),
                 Lat = GetLatitude(result),
-                Lon = GetLongitude(result)
+                Lon = GetLongitude(result),
+                Id = result.Id
             })
             .ToList();
 
