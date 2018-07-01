@@ -16,9 +16,10 @@ namespace OurUmbraco.Repository.Services
         public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri)
         {
             var alternativeDocs = new List<DocumentationVersion>();
-            //first off we have the path, do we need to strip the version number from the file name
-            string currentFileName = uri.Segments.LastOrDefault();
-            //does current filename include version number
+            // first off we have the path, do we need to strip the version number from the file name
+            var isFolder = uri.ToString().EndsWith("/");
+            string currentFileName = isFolder ? "index" : uri.Segments.LastOrDefault();
+            // does current filename include version number
             bool isCurrentDocumentationPage = !currentFileName.Contains("-v");//better way?
             List<string> pathParts = new List<string>();
 
@@ -37,26 +38,58 @@ namespace OurUmbraco.Repository.Services
             int positionToStripUpTo = isCurrentDocumentationPage ? currentFileName.LastIndexOf(".") : currentFileName.LastIndexOf("-v");
             if (positionToStripUpTo > -1)
             {
-                 baseFileName = currentFileName.Substring(0, positionToStripUpTo);
+                baseFileName = currentFileName.Substring(0, positionToStripUpTo);
+            }
+            else if (isFolder)
+            {
+                baseFileName = "index";
             }
 
-            string currentUrl = string.Join("",pathParts) + baseFileName;
+            string currentUrl = string.Join("", pathParts) + baseFileName;
 
             //Now we go off to examine, and search for all entries
             //with path beginning with currentFilePath
-         
+
             var searcher = ExamineManager.Instance.SearchProviderCollection["documentationSearcher"];
             var searchCriteria = searcher.CreateSearchCriteria();
-          
+
             //path beginning with current filename
             var query = searchCriteria.Field("__fullUrl", currentUrl.ToLowerInvariant().MultipleCharacterWildcard()).Compile();
             var searchResults = searcher.Search(query);
-            if (searchResults.Any())
+            if (searchResults.TotalItemCount > 1)
             {
-                alternativeDocs.AddRange(searchResults.Select(f=>new DocumentationVersion(){Url = f["url"],Version = f["versionFrom"]}));
+                var versionInfo = searchResults.Select(f =>
+                    new DocumentationVersion()
+                    {
+                        Url = f["url"],
+                        Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
+                        IsCurrentVersion = f["url"] == baseFileName
+                    });
+
+                alternativeDocs.AddRange(versionInfo);
             }
 
             return alternativeDocs;
+        }
+
+        private string CalculateVersionInfo(string from, string to)
+        {
+            if (string.IsNullOrWhiteSpace(from) && string.IsNullOrWhiteSpace(to))
+            {
+                return "current";
+            }
+            else if (string.IsNullOrWhiteSpace(from))
+            {
+                return "pre " + to;
+            }
+            else if (string.IsNullOrWhiteSpace(to))
+            {
+                return from + " +";
+            }
+            else
+            {
+                return from + " - " + to;
+            }
         }
     }
 }
