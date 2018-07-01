@@ -114,12 +114,14 @@ namespace OurUmbraco.Our.Examine
                 YamlMetaData yamlMetaData = new YamlMetaData();
                 if (secondYamlMarker > 0)
                 {
+                    // we found a second marker, so we have YAML data available
                     var yamlInput = new StringBuilder();
                     for (int i = 1; i < secondYamlMarker; i++)
                     {
                         yamlInput.AppendLine(lines.ElementAt(i));
                     };
 
+                    // Try to convert the YAML text to a strongly typed model using YamlDotNet
                     var deserializer = new DeserializerBuilder()
                         .WithNamingConvention(new YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention())
                         .IgnoreUnmatchedProperties()
@@ -127,8 +129,9 @@ namespace OurUmbraco.Our.Examine
                     yamlMetaData = deserializer.Deserialize<YamlMetaData>(yamlInput.ToString());
                 }
 
-                // Add Yaml stuff
+                // Add Yaml stuff to the LUCENE index
                 simpleDataSet.RowData.Add("tags", yamlMetaData.Tags);
+                simpleDataSet.RowData.Add("keywords", yamlMetaData.Keywords);
                 simpleDataSet.RowData.Add("versionFrom", yamlMetaData.VersionFrom);
                 simpleDataSet.RowData.Add("versionTo", yamlMetaData.VersionTo);
 
