@@ -99,6 +99,7 @@ namespace OurUmbraco.Our.Examine
 
                 // SEARCH YAML stuff
                 sb.AppendFormat("tags:\"{0}\"^20000 ", Term);
+                sb.AppendFormat("keywords:\"{0}\"^20000 ", Term);
 
                 // Now we need to split the phrase into individual terms so the query parser can understand
                 var split = Term.Split(new[] { " " }, StringSplitOptions.RemoveEmptyEntries);

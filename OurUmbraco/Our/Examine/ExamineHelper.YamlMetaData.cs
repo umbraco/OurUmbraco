@@ -14,6 +14,7 @@ namespace OurUmbraco.Our.Examine
         internal class YamlMetaData
         {
             public string VersionTo { get; internal set; }
+            public string Keywords { get; internal set; }
             public string Tags { get; internal set; }
             public string VersionFrom { get; internal set; }
         }
