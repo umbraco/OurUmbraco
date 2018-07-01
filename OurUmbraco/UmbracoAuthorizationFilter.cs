@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Linq;
+using System.Web;
 using Hangfire.Dashboard;
 using Umbraco.Core.Security;
 using Umbraco.Web;
@@ -17,7 +18,7 @@ namespace OurUmbraco
 
             var user = UmbracoContext.Current.Security.CurrentUser;
 
-            return user != null && user.UserType.Alias == "admin";
+            return user != null && user.Groups.Any(g => g.Alias == "admin");
         }
     }
 }

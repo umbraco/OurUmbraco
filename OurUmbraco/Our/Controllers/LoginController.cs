@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
 using System.Web.Mvc;
+using System.Web.Security;
 using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Web.Models;
@@ -134,7 +135,7 @@ namespace OurUmbraco.Our.Controllers
 
             var resetToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
             var hashCode = SecureHasher.Hash(resetToken);
-            var expiryDate = DateTime.Now.AddDays(1);
+            var expiryDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
 
             m.SetValue("passwordResetToken", hashCode);
             m.SetValue("passwordResetTokenExpiryDate", expiryDate.ToString(CultureInfo.InvariantCulture));
@@ -161,6 +162,12 @@ namespace OurUmbraco.Our.Controllers
             }
 
             return Redirect(CurrentPage.Url + "?success=true");
+        }
+
+        public ActionResult Logout()
+        {
+            FormsAuthentication.SignOut();
+            return Redirect("/");
         }
     }
 

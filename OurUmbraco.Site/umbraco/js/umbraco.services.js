@@ -1026,10 +1026,11 @@
                             buttons.subButtons.push(createButtonDefinition(buttonOrder[i]));
                         }
                     }
-                    //if we are not creating, then we should add unpublish too,
+                    // if we are not creating, then we should add unpublish too,
                     // so long as it's already published and if the user has access to publish
+                    // and the user has access to unpublish (may have been removed via Event)
                     if (!args.create) {
-                        if (args.content.publishDate && _.contains(args.content.allowedActions, 'U')) {
+                        if (args.content.publishDate && _.contains(args.content.allowedActions, 'U') && _.contains(args.content.allowedActions, 'Z')) {
                             buttons.subButtons.push(createButtonDefinition('Z'));
                         }
                     }
@@ -3090,7 +3091,13 @@
                         collectedIcons = [];
                         var c = '.icon-';
                         for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-                            var classes = document.styleSheets[i].rules || document.styleSheets[i].cssRules;
+                            var classes = null;
+                            try {
+                                classes = document.styleSheets[i].rules || document.styleSheets[i].cssRules;
+                            } catch (e) {
+                                console.warn('Can\'t read the css rules of: ' + document.styleSheets[i].href, e);
+                                continue;
+                            }
                             if (classes !== null) {
                                 for (var x = 0; x < classes.length; x++) {
                                     var cur = classes[x];
@@ -8448,6 +8455,25 @@
                         saveModel.preValues.push({
                             key: preValues[i].alias,
                             value: preValues[i].value
+                        });
+                    }
+                    return saveModel;
+                },
+                /** formats the display model used to display the dictionary to the model used to save the dictionary */
+                formatDictionaryPostData: function (dictionary, nameIsDirty) {
+                    var saveModel = {
+                        parentId: dictionary.parentId,
+                        id: dictionary.id,
+                        name: dictionary.name,
+                        nameIsDirty: nameIsDirty,
+                        translations: [],
+                        key: dictionary.key
+                    };
+                    for (var i = 0; i < dictionary.translations.length; i++) {
+                        saveModel.translations.push({
+                            isoCode: dictionary.translations[i].isoCode,
+                            languageId: dictionary.translations[i].languageId,
+                            translation: dictionary.translations[i].translation
                         });
                     }
                     return saveModel;

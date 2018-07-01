@@ -27,17 +27,8 @@
                     </div>
                     @foreach (var video in videos.OrderByDescending(x => x.Snippet.PublishedAt))
                     {
-                        // Not that pretty...
-                        List<YouTubeVideoThumbnail> thumbnails = new List<YouTubeVideoThumbnail>();
-                        if (video.Snippet.Thumbnails.HasDefault) { thumbnails.Add(video.Snippet.Thumbnails.Default); }
-                        if (video.Snippet.Thumbnails.HasStandard) { thumbnails.Add(video.Snippet.Thumbnails.Standard); }
-                        if (video.Snippet.Thumbnails.HasMedium) { thumbnails.Add(video.Snippet.Thumbnails.Medium); }
-                        if (video.Snippet.Thumbnails.HasHigh) { thumbnails.Add(video.Snippet.Thumbnails.High); }
-                        if (video.Snippet.Thumbnails.HasMaxRes) { thumbnails.Add(video.Snippet.Thumbnails.MaxRes); }
-                        var thumbnail = thumbnails.OrderBy(x => x.Width).FirstOrDefault(x => x.Width >= 350);
-
                         string videoUrl = "https://youtube.com/watch?v=" + video.Id;
-                        
+
                         <div class="videos-item">
                             <div class="videos-details">
                                 <a href="@videoUrl" target="_blank" rel="noopener"><strong>@video.Snippet.Title</strong></a>
@@ -70,15 +61,12 @@
                                     <div class="videos-description">@Html.Raw(html)</div>
                                 }
                             </div>
-                            @if (thumbnail != null)
-                            {
-                                <a href="#" class="videos-thumbnail" onclick="playYouTubeVideo(this, '@video.Id'); return false;">
-                                    <div class="videos-thumbnail-overlay">
-                                        <i class="icon-Video"></i>
-                                    </div>
-                                    <div class="videos-thumbnail-background" style="background-image: url(@thumbnail.Url);"></div>
-                                </a>
-                            }
+                            <a href="@videoUrl" class="videos-thumbnail" target="_blank" rel="noopener">
+                                <div class="videos-thumbnail-overlay">
+                                    <i class="icon-Video"></i>
+                                </div>
+                                <div class="videos-thumbnail-background" style="background-image: url(/media/YouTube/@(video.Id).jpg);"></div>
+                            </a>
                         </div>
                     }
                 </div>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Strings;
 using Skybrud.Social.Vimeo;
@@ -44,6 +45,25 @@ namespace OurUmbraco.Videos
 
                 // Append the videos of the response to the list
                 videos.AddRange(response.Body.Data);
+
+                // Download the thumnails for each video
+                foreach (var video in videos)
+                {
+                    var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
+
+                    const string mediaRoot = "~/media/Vimeo";
+                    var thumbnailFile = IOHelper.MapPath($"{mediaRoot}/{video.Id}.jpg");
+
+                    var mediaPath = IOHelper.MapPath(mediaRoot);
+                    if (Directory.Exists(mediaPath) == false)
+                        Directory.CreateDirectory(mediaPath);
+
+                    if (File.Exists(thumbnailFile))
+                        continue;
+
+                    using (var client = new WebClient())
+                        client.DownloadFile(thumbnail.Link, thumbnailFile);
+                }
 
                 // Break the loop if there are no further pages
                 if (response.Body.Paging.Next == null)

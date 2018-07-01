@@ -1,31 +1,6 @@
-@using OurUmbraco.Documentation.Busineslogic.GithubSourcePull
+@using OurUmbraco.Documentation
 @inherits umbraco.MacroEngines.DynamicNodeContext
 @{
-
-    if (string.IsNullOrEmpty(Request["id"]))
-    {
-        const string rootFolder = @"~\Documentation";
-        const string config = @"~\config\githubpull.config";
-        var rootFolderPath = HttpContext.Current.Server.MapPath(rootFolder);
-        var configPath = HttpContext.Current.Server.MapPath(config);
-
-        if (!Directory.Exists(rootFolderPath))
-        {
-            Directory.CreateDirectory(rootFolderPath);
-        }
-
-        var unzip = new ZipDownloader(rootFolderPath, configPath);
-        unzip.IsProjectDocumentation = true;
-        unzip.Run();
-    }
-    else
-    {
-        int id = 0;
-        if (int.TryParse(Request["id"], out id))
-        {
-            ZipDownloader zip = new ZipDownloader(id);
-            zip.Run();
-        }
-    }
-
+    var docsUpdater = new DocumentationUpdater();
+    docsUpdater.EnsureGitHubDocs();
 }

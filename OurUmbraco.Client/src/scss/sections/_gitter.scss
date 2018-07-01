@@ -7,6 +7,7 @@
 
     h1 {
 		font-size: 1.8rem;
+	margin-bottom: 1rem;
         text-align: left;
         @media (min-width: $md) {
 			font-size: 2.4rem;
@@ -15,7 +16,7 @@
 		+ p {
 			max-width: 700px;
 
-			margin-bottom: 3rem;
+			margin-bottom: 1.5rem;
 			padding:0;
 
 			font-size: 1rem;
@@ -23,6 +24,7 @@
 			text-align: left;
 
 			@media (min-width: $md) {
+				margin-bottom: 2rem;
 				padding: 0;
 				font-size: 1.2rem;
 			}
@@ -92,7 +94,15 @@
     .user {
         margin-bottom:5px;
         display: flex;
+        flex-wrap: wrap;
         align-items:baseline;
+        
+        .name, .username {
+            flex: 1 0 100%;
+            @media (min-width: $md) {
+                flex: 0 0 auto;
+            }
+        }
 
         .name {
             font-weight:bold;
@@ -106,6 +116,11 @@
 
         .date {
             font-size:0.8em;
+            margin-top:5px;
+
+            @media (min-width: $md) {
+                margin-top:0;
+            }
         }
     }
 }

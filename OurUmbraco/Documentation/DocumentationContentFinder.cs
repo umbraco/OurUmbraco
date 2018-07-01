@@ -141,10 +141,10 @@ namespace OurUmbraco.Documentation
 
     public class Github
     {
-        public static string MarkdownFileLink()
+        public static string MarkdownFileEditLink()
         {
             string branchName = "master";
-            string baseUrl = "https://github.com/umbraco/UmbracoDocs/blob/" + branchName;
+            string baseUrl = "https://github.com/umbraco/UmbracoDocs/edit/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
             

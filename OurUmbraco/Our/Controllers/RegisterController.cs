@@ -1,18 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Web.Hosting;
 using System.Web.Mvc;
 using OurUmbraco.Community.People;
 using OurUmbraco.Our.Models;
-using OurUmbraco.Our.usercontrols;
 using reCAPTCHA.MVC;
-using umbraco;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.Membership;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -112,7 +105,8 @@ namespace OurUmbraco.Our.Controllers
 
             Members.Login(model.Email, model.Password);
 
-            Forum.Library.Utils.SendActivationMail(member);
+            var emailService = new Services.EmailService();
+            emailService.SendActivationMail(member);
 
             memberService.AssignRole(member.Id, "notactivated");
             memberService.AssignRole(member.Id, "newaccount");

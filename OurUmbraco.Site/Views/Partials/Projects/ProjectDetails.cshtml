@@ -334,7 +334,7 @@
                                                 </a>
                                             </h3>
                                             <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
-                                            @if (currentMember != null && (currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
+                                            @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
                                                 <br/>
                                                 <br/>

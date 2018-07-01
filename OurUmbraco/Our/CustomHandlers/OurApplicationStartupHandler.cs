@@ -35,7 +35,6 @@ namespace OurUmbraco.Our.CustomHandlers
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             BindExamineEvents();
-            ZipDownloader.OnFinish += ZipDownloader_OnFinish;
             ImageProcessingModule.ValidatingRequest += ImageProcessingModule_ValidatingRequest;
         }
 
@@ -73,37 +72,6 @@ namespace OurUmbraco.Our.CustomHandlers
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["ForumIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].IndexingError += ExamineHelper.LogErrors;
-        }
-
-        private void DocumentationIndexer_DocumentWriting(object sender, global::Examine.LuceneEngine.DocumentWritingEventArgs e)
-        {
-            //When document is writing we need to inject a field into the index for the url with a double underscore prefix as this will make it able to be searched
-           //get url field
-            if (e.Fields.ContainsKey("url"))
-            {
-                var urlField = e.Fields["url"];
-
-                if (!String.IsNullOrEmpty(urlField))
-                {
-                    var field = new Field("__fullUrl", urlField.ToLowerInvariant(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES);
-                    e.Document.Add(field);
-
-                }
-            }
-        }
-
-        /// <summary>
-        /// Whenever the github zip downloader completes and docs index is rebuilt
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void ZipDownloader_OnFinish(object sender, FinishEventArgs e)
-        {
-            var indexer = ExamineManager.Instance.IndexProviderCollection[ExamineHelper.DocumentationIndexer];
-
-            //TODO: Fix this - we cannot "Rebuild" on a live site, because the entire index will be taken down/deleted and then recreated, if people
-            // are searching during this operation, YSODs will occur.
-            indexer.RebuildIndex();
         }
     }
 }
