@@ -3,6 +3,7 @@ using System.IO;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine;
+using System;
 
 namespace OurUmbraco.Our.Examine
 {
