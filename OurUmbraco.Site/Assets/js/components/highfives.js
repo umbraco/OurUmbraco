@@ -17,13 +17,7 @@
                     HighFives.bindOnMemberSelect();
                     HighFives.bindOnSubmitForm();
                     HighFives.bindOnLinkChange();
-                    HighFives.preview = {};
-                    HighFives.preview.To = "";
-                    HighFives.preview.ToAvatarUrl = "";
-                    HighFives.preview.Category = "";
-                    HighFives.preview.LinkUrl = "";
-                    HighFives.preview.LinkTitle = "";
-                    HighFives.previewNode = HighFives.createPreviewNode(),
+                    HighFives.defaultPreview();
                     HighFives.activityListNode = document.querySelector("#high-five-activity .high-five__activity-list");
                     HighFives.highFiveActivityNode = document.querySelector("#high-five-activity");
                     HighFives.getCurrentMember();
@@ -43,7 +37,17 @@
                 }
             });
         },
-
+        defaultPreview()
+        {
+            HighFives.preview = {};
+            HighFives.preview.To = "";
+            HighFives.preview.ToAvatarUrl = "";
+            HighFives.preview.Category = "";
+            HighFives.preview.LinkUrl = "";
+            HighFives.preview.LinkTitle = "";
+            HighFives.getCurrentMember();
+            HighFives.previewNode = HighFives.createPreviewNode();
+        },
         updateHighFiveList(newHighFives) {
             if(_.isEqual(HighFives.rawList, newHighFives) === false) {
                 HighFives.rawList = _.clone(newHighFives, true);
@@ -143,6 +147,7 @@
         },
         removePreviewNode: function () {
             HighFives.previewNode.remove();
+            HighFives.defaultPreview();
         },
         createHighFivePanelHtml(highFive) {
             return '<li class="high-five-panel">' + 
