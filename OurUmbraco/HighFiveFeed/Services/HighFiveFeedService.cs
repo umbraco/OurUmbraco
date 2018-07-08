@@ -24,10 +24,14 @@ namespace OurUmbraco.HighFiveFeed.Services
             Categories.Add(new HighFiveCategory(9, "A PR"));
         }
 
+        /*
+         Get the high five feed items for a provided member id.
+             */
         public HighFiveFeedResponse GetHighFiveFeedForMember(int memberId)
         {
             var Members = ApplicationContext.Current.Services.MemberService;
             var dbContext = ApplicationContext.Current.DatabaseContext;
+            //get 5 most recent posts for the given member.
             var sql = new Sql().Select("*").From("highFivePosts").Where<Models.HighFiveFeed>(x=>x.ToMemberId== memberId);
             sql.OrderByDescending<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(x => x.CreatedDate);
             var result = dbContext.Database.Page<OurUmbraco.HighFiveFeed.Models.HighFiveFeed>(1, 5, sql);
@@ -67,9 +71,13 @@ namespace OurUmbraco.HighFiveFeed.Services
             return response;
         }
 
+
+        /*
+         * Return the high five feed. 
+         * Defaults to 10 most recent items but done paging incase we want a paged list in future.
+         */
         public HighFiveFeedResponse GetHighFiveFeed(int page = 1, int numberOfItems = 10)
         {
-          
 
             var Members = ApplicationContext.Current.Services.MemberService;
             var dbContext = ApplicationContext.Current.DatabaseContext;

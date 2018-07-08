@@ -57,13 +57,14 @@ namespace OurUmbraco.HighFiveFeed.API
             return false;
         }
 
+        /*
+         * Return High Five feed.
+         */
         [HttpGet]
         public string GetHighFiveFeed()
         {
             var response = _highFiveService.GetHighFiveFeed();
             var rawJson = JsonConvert.SerializeObject(response, Formatting.Indented);
-
-
             return rawJson;
 
         }
@@ -93,6 +94,10 @@ namespace OurUmbraco.HighFiveFeed.API
             var rawJson = JsonConvert.SerializeObject(Categories, Formatting.Indented);
             return rawJson;
         }
+
+        /*
+         * Return avatar for a member id.
+         */
         public string GetMemberAvatar(int memberId)
         {
             var member = Members.GetById(memberId);
@@ -105,6 +110,9 @@ namespace OurUmbraco.HighFiveFeed.API
             }
             return null;
         }
+        /*
+         * Return a list of matching members for a given string.
+         */
         public List<Person> GetUmbracians(string name)
         {
             var peopleService = new PeopleService();
@@ -134,14 +142,29 @@ namespace OurUmbraco.HighFiveFeed.API
 
             return people;
         }
-
+        /*
+         * Returns the title tag of a provided URL.
+         */
         public string GetTitleTag(string url)
         {
+            //return the title of the page or just return the url if there isn't one.
             var uri = new UriBuilder(url).Uri.AbsoluteUri;
             var webGet = new HtmlWeb();
-            var document = webGet.Load(uri.ToString());
-            var titleNode = document.DocumentNode.SelectSingleNode("html/head/title");
-            return titleNode == null ? url : titleNode.InnerText;
+            try
+            {
+                var document = webGet.Load(uri.ToString());
+                var titleNode = document.DocumentNode.SelectSingleNode("html/head/title");
+                if (titleNode != null && !String.IsNullOrEmpty(titleNode.InnerHtml))
+                {
+                    return titleNode.InnerText;
+                }
+                return url;
+            }
+            catch (Exception e)
+            {
+                return url;
+            }
+            
         }
     }
 }
