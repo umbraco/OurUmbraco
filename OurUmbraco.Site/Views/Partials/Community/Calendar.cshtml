@@ -36,6 +36,10 @@
                                 <span></span>
                                 <div>
                                     <h3>
+                                        @if (item.HasIcon)
+                                        {
+                                            @Html.Raw(item.Icon)
+                                        }
                                         @if (item.HasUrl)
                                         {
                                             <a href="@item.Url" target="_blank" rel="noopener">@item.Title</a>
@@ -48,7 +52,6 @@
                                         {
                                             <span class="--subtitle">(@item.SubTitle)</span>
                                         }
-
                                     </h3>
                                     <div class="timeline-row-meta">
                                         <div>
@@ -169,4 +172,12 @@
         margin: 0 3px;
     }
 
+    .timeline-row p {
+        margin: 1em 0;
+    }
+
+    .timeline-row h3 img {
+        float: left;
+        margin-right: 6px;
+    }
 </style>

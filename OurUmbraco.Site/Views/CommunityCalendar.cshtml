@@ -8,7 +8,7 @@
 
     var featuresService = new UpcomingFeaturesService();
     var allowed = featuresService.MemberHasAccessToFeature();
-
+    var parentId = Model.Content.Id;
 
 }
 
@@ -24,12 +24,12 @@
     if (Int32.TryParse(Request.QueryString["year"], out year) && year >= 2000)
     {
         model.SubTitle = "Events in " + year;
-        model.Items = calendar.GetItemsByYear(year);
+        model.Items = calendar.GetItemsByYear(year, parentId);
     }
     else
     {
         model.SubTitle = "Upcoming events";
-        model.Items = calendar.GetUpcomingItems();
+        model.Items = calendar.GetUpcomingItems(parentId);
     }
 
 

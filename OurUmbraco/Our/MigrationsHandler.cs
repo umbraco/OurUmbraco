@@ -1316,6 +1316,10 @@ namespace OurUmbraco.Our
                     textboxPropertyType = new PropertyType(textbox, "url") { Name = "Url" };
                     contentType.AddPropertyType(textboxPropertyType, "Content");
                     
+                    var mediaPicker = new DataTypeDefinition("Umbraco.MediaPicker");
+                    var mediaPickerPropertyType = new PropertyType(mediaPicker, "icon") { Name = "Icon" };
+                    contentType.AddPropertyType(mediaPickerPropertyType, "Content");
+                    
                     contentTypeService.Save(contentType);
 
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
