@@ -1,13 +1,6 @@
-﻿@using OurUmbraco.Our
-@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
-
-    var featuresService = new UpcomingFeaturesService();
-    var allowed = featuresService.MemberHasAccessToFeature();
 }
 
-@if (allowed)
-{
-    @Html.Partial("~/Views/Partials/Videos/Home.cshtml")
-}
+@Html.Partial("~/Views/Partials/Videos/Home.cshtml")

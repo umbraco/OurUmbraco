@@ -2,26 +2,22 @@
 @using OurUmbraco.Our
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-
-
     Layout = "~/Views/CommunityHubPageLayout.cshtml";
 
     var featuresService = new UpcomingFeaturesService();
     var allowed = featuresService.MemberHasAccessToFeature();
     var parentId = Model.Content.Id;
-
 }
 
 @if (allowed)
 {
-
     // We load the calendar items here was we need them in two partial views
     var calendar = new CommunityCalendarService();
 
-    CommunityCalendarRenderModel model = new CommunityCalendarRenderModel();
+    var model = new CommunityCalendarRenderModel();
 
     int year;
-    if (Int32.TryParse(Request.QueryString["year"], out year) && year >= 2000)
+    if (int.TryParse(Request.QueryString["year"], out year) && year >= 2000)
     {
         model.SubTitle = "Events in " + year;
         model.Items = calendar.GetItemsByYear(year, parentId);
@@ -31,11 +27,8 @@
         model.SubTitle = "Upcoming events";
         model.Items = calendar.GetUpcomingItems(parentId);
     }
-
-
-
+    
     ViewBag.Calendar = model;
 
     @Html.Partial("~/Views/Partials/Community/Calendar.cshtml")
-
 }
