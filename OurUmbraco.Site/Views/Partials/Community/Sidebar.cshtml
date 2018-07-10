@@ -1,49 +1,60 @@
-﻿@using OurUmbraco.Our
+﻿@using OurUmbraco.Community.Calendar
 @using Skybrud.Essentials.Strings.Extensions
 @inherits UmbracoViewPage
-    
-@{
 
-    var featuresService = new UpcomingFeaturesService();
-    var allowed = featuresService.MemberHasAccessToFeature();
-
-}
-    
 <div class="sidebar-area">
     <div class="sidebar-content">
         <div class="content-wrapper">
-            @if (allowed)
-            {
-                <nav>
-                    <ul class="level-1">
-                        @foreach (var child in Model.AncestorOrSelf(2).Children)
-                        {
+            <nav>
+                <ul class="level-1">
+                    @foreach (var child in Model.AncestorOrSelf(2).Children.Where(x => x.IsVisible()))
+                    {
+                        var template = child.GetTemplateAlias();
 
-                            var active = Model.Path.ToInt32Array().Contains(child.Id);
-                            var children = active ? child.Children.Where(x => x.IsVisible()).ToArray() : new IPublishedContent[0];
+                        var active = Model.Path.ToInt32Array().Contains(child.Id);
+                        var children = active ? child.Children.Where(x => x.IsVisible()).ToArray() : new IPublishedContent[0];
 
-                            <li class="@(active ? "active" : null)">
-                                <h3><a href="@child.Url">@child.Name</a>
-                                </h3>
-                                @if (children.Any())
-                                {
-                                    <ul>
-                                        @foreach (var child2 in children)
-                                        {
+                        <li class="@(active ? "active" : null)">
+                            <h3><a href="@child.Url">@child.Name</a></h3>
 
-                                            var active2 = Model.Path.ToInt32Array().Contains(child2.Id);
+                            @if (template == "CommunityCalendar")
+                            {
+                                // Get the calender items from the viewbag
+                                var calendar = ViewBag.Calendar as CommunityCalendarRenderModel;
 
-                                            <li class="@(active2 ? "active" : null)">
-                                                <a href="@child2.Url"><h4>@child2.Name</h4></a>
-                                            </li>
-                                        }
-                                    </ul>
-                                }
-                            </li>
-                        }
-                    </ul>
-                </nav>
-            }
+                                // Get all present years in descending order
+                                var years = calendar == null || calendar.Items == null ? new int[0] : calendar.Items.Select(x => x.StartDate.Year).Distinct().OrderByDescending(x => x).ToArray();
+
+                                <ul>
+                                    @foreach (var year in years)
+                                    {
+                                        var active2 = Request.QueryString["year"] == year.ToString();
+
+                                        var url2 = child.Url + year + "/";
+
+                                        <li class="@(active2 ? "active" : null)">
+                                            <a href="@url2"><h4>@year</h4></a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                            else if (children.Any())
+                            {
+                                <ul>
+                                    @foreach (var child2 in children)
+                                    {
+                                        var active2 = Model.Path.ToInt32Array().Contains(child2.Id);
+
+                                        <li class="@(active2 ? "active" : null)">
+                                            <a href="@child2.Url"><h4>@child2.Name</h4></a>
+                                        </li>
+                                    }
+                                </ul>
+                            }
+                        </li>
+                    }
+                </ul>
+            </nav>
         </div><!-- .content-wrapper -->
     </div><!-- .sidebar-content -->
 </div><!-- .sidebar-area -->
