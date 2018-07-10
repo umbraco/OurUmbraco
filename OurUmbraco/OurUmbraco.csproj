@@ -428,7 +428,14 @@
     <Compile Include="Community\BlogPosts\BlogRssChannel.cs" />
     <Compile Include="Community\BlogPosts\BlogRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogRssUtils.cs" />
-    <Compile Include="Our\Api\MembersController.cs" />
+    <Compile Include="Community\Calendar\CommunityCalendarItem.cs" />
+    <Compile Include="Community\Calendar\CommunityCalendarItemType.cs" />
+    <Compile Include="Community\Calendar\CommunityCalendarRenderModel.cs" />
+    <Compile Include="Community\Calendar\CommunityCalendarService.cs" />
+    <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
+    <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
+    <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
+    <Compile Include="Our\Api\MembersController.cs" />    
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
