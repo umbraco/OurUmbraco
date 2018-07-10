@@ -3110,12 +3110,6 @@
     <Content Include="umbraco\tree.aspx" />
     <Content Include="umbraco\treeInit.aspx" />
     <Content Include="umbraco\umbraco.aspx" />
-    <Content Include="umbraco\users\EditUser.aspx" />
-    <Content Include="umbraco\users\EditUserType.aspx" />
-    <Content Include="umbraco\users\NodePermissions.ascx" />
-    <Content Include="umbraco\users\PermissionEditor.aspx" />
-    <Content Include="umbraco\users\PermissionsEditor.js" />
-    <Content Include="umbraco\users\PermissionsHandler.asmx" />
     <Content Include="umbraco\webservices\ajax.js" />
     <Content Include="umbraco\webservices\CacheRefresher.asmx" />
     <Content Include="umbraco\webservices\CheckForUpgrade.asmx" />
