@@ -132,7 +132,7 @@ namespace OurUmbraco.Our.Api
                 var currentYear = int.Parse(pullRequestsInPeriod.MonthYear.Substring(0, 4));
                 var currentMonth = int.Parse(pullRequestsInPeriod.MonthYear.Substring(4));
                 var lastDayInMonth = DateTime.DaysInMonth(currentYear, currentMonth);
-                var maxDateInPeriod = new DateTime(currentYear, currentMonth, lastDayInMonth);
+                var maxDateInPeriod = new DateTime(currentYear, currentMonth, lastDayInMonth, 23, 59, 59);
 
                 var openPrsForPeriod = new List<GithubPullRequestModel>();
 
@@ -144,7 +144,7 @@ namespace OurUmbraco.Our.Api
                         openPrsForPeriod.Add(pr);
                     else
                         // Was it closed (merged items also get set as closed) after the current period? Then it's stil open for this period.
-                    if (pr.ClosedAt != null && pr.ClosedAt >= maxDateInPeriod)
+                    if (pr.ClosedAt != null && pr.ClosedAt > maxDateInPeriod)
                         openPrsForPeriod.Add(pr);
                 }
                 pullRequestsInPeriod.TotalNumberOpen = openPrsForPeriod.Count;
