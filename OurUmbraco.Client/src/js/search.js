@@ -309,7 +309,7 @@ var globalSearch = _.debounce(function(ev) {
 		  			icon = "icon-Box";
 		  		}
 
-		  		var itemData = {icon: icon, name: item.Fields.nodeName, description: _.escape(item.Fields.body.substring(0, 100)), url: item.Fields.url};
+		  		var itemData = {icon: icon, name: item.Fields.nodeName, description:item.Fields.body.substring(0, 100), url: item.Fields.url};
 				$('.search-all ul').append( 
 					template( itemData )
 				);
