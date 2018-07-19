@@ -54,7 +54,7 @@
         <table>
             <tr>
                 <th>&nbsp;</th>
-                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsCms">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4, 2)}}</th>
+                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsCms">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4)}}</th>
             </tr>
             <tr>
                 <td>Number of PRs created</td>
@@ -125,7 +125,7 @@
         <table>
             <tr>
                 <th>&nbsp;</th>
-                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsDocs">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4, 2)}}</th>
+                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsDocs">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4)}}</th>
             </tr>
             <tr>
                 <td>Number of PRs created</td>
