@@ -183,6 +183,22 @@ namespace OurUmbraco.Documentation
             return docUrl;
         }
 
+        public static string GithubIssueString(string title = null)
+        {
+            string GithubIssueLink = "https://github.com/umbraco/UmbracoDocs/issues/new";
+
+            var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+
+            if (title != null)
+            {
+                GithubIssueLink = GithubIssueLink + "?title=" + title;
+            }
+
+            GithubIssueLink = GithubIssueLink + "?body=%0A%0A%0A***%0AThis%20is%20the%20page%20with%20issues:%20" + MarkdownFileEditLink();
+
+            return GithubIssueLink;
+        }
+
         /// <summary>
         /// Gets the exact case used on the file system for an existing file or directory.
         /// </summary>
