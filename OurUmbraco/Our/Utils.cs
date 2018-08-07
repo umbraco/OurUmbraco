@@ -1,15 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 using System.Web.Hosting;
 using System.Web.Security;
+using Devcorner.NIdenticon;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Web.PublishedCache;
 using Member = umbraco.cms.businesslogic.member.Member;
 using MemberGroup = umbraco.cms.businesslogic.member.MemberGroup;
 
@@ -228,43 +234,6 @@ namespace OurUmbraco.Our
             }
         }
 
-        public static string GetMemberAvatar(IPublishedContent member, int avatarSize, bool getRawUrl = false)
-        {
-            var memberAvatarPath = MemberAvatarPath(member);
-            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
-            {
-                return MemberAvatarPath(member) == string.Empty
-                    ? GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name, getRawUrl)
-                    : GetLocalAvatar(member.GetPropertyValue("avatar").ToString(), avatarSize, member.Name, getRawUrl);
-            }
-
-            return GetGravatar(member.GetPropertyValue("Email").ToString(), avatarSize, member.Name, getRawUrl);
-        }
-
-        private static string MemberAvatarPath(IPublishedContent member)
-        {
-            try
-            {
-                var hasAvatar = member.HasValue("avatar");
-                if (hasAvatar)
-                {
-                    var avatarPath = member.GetPropertyValue("avatar").ToString();
-                    if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
-                        return avatarPath.Replace("http://", "https://");
-
-                    var path = HostingEnvironment.MapPath(avatarPath);
-                    if (System.IO.File.Exists(path))
-                        return path;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<Utils>("Could not get MemberAvatarPath", ex);
-            }
-
-            return string.Empty;
-        }
-
         private static Random rnd = new Random();
 
         public static string GetScreenshotPath(string screenshot)
@@ -291,59 +260,6 @@ namespace OurUmbraco.Our
             }
 
             return "https://lorempixel.com/600/600/?" + rnd.Next();
-        }
-
-        public static Image GetMemberAvatarImage(IPublishedContent member)
-        {
-            var memberAvatarPath = MemberAvatarPath(member);
-            if (string.IsNullOrWhiteSpace(memberAvatarPath) == false)
-            {
-                try
-                {
-                    if (memberAvatarPath.StartsWith("http://") || memberAvatarPath.StartsWith("https://"))
-                        return null;
-
-                    return Image.FromFile(memberAvatarPath);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<Utils>(string.Format("Could not create Image object from {0}", memberAvatarPath), ex);
-                }
-            }
-
-            return null;
-        }
-
-        public static string GetGravatar(string email, int size, string memberName, bool getRawUrl = false)
-        {
-            var hash = GetEmailHashForGravatar(email);
-
-            var url = string.Format("https://www.gravatar.com/avatar/{0}?s={1}&d=mm&r=g&d=retro", hash, size);
-
-            return !getRawUrl
-                ? string.Format("<img src=\"{0}\" alt=\"{1}\" />", url, memberName)
-                : url;
-        }
-
-        public static string GetEmailHashForGravatar(string email)
-        {
-            var emailId = email.ToLower();
-            var hash = FormsAuthentication.HashPasswordForStoringInConfigFile(emailId, "MD5").ToLower();
-            return hash;
-        }
-
-        public static string GetLocalAvatar(string imgPath, int minSize, string memberName, bool getRawUrl = false)
-        {
-            var queryStringSeparator = imgPath.Contains("?") ? "&" : "?";
-            var celanImagePath = imgPath.Replace(" ", "%20");
-
-            var url = string.Format("{0}{1}width={2}&height={2}&mode=crop", 
-                celanImagePath, queryStringSeparator, minSize);
-
-            return !getRawUrl
-                ? string.Format("<img src=\"{0}{1}width={2}&height={2}&mode=crop\" srcset=\"{0}{1}width={3}&height={3}&mode=crop 2x, {0}{1}width={4}&height={4}&mode=crop 3x\" alt=\"{5}\" />", 
-                    celanImagePath, queryStringSeparator, minSize, (minSize * 2), (minSize * 3), memberName)
-                : url;
         }
     }
 

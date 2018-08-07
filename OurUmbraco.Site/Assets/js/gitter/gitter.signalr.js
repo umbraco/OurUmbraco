@@ -100,4 +100,48 @@
         var emjoiHtml = emojione.toImage(html);
         return emjoiHtml;
     }
+
+
+    function tryUpdateMentions() {
+        //Notifies us for all DOM changes made to the body
+        var somethingHasChanged = function (mutations) {
+
+            for (var j = 0; j < mutations.length; j++) {
+                var mutation = mutations[j];
+
+                if (mutation.addedNodes) {
+                    var jq = $(mutation.addedNodes);
+
+                    jq.find("span[data-link-type='mention']").each(function () {
+                        var element = $(this);
+                        var username = element.data('screen-name');
+
+                        var memberId = null;
+                        $.getJSON("/umbraco/api/gitterapi/GetMemberId?usernameToFind=" + username, function (data) {
+                            memberId = data;
+
+                            if (memberId) {
+                                element.html("<a href='/member/" + memberId + "'>@" + username + "</a>");
+                            }
+                        });
+                    });
+                }
+            }
+        };
+
+        var observer = new MutationObserver(somethingHasChanged);
+        var config = {
+            attributes: true,
+            childList: true,
+            characterData: true
+        };
+
+        var gitterRooms = document.getElementsByClassName('gitter-room');
+        for (var i = 0; i < gitterRooms.length; i++) {
+            observer.observe(gitterRooms[i], config);
+        }
+    }
+
+    tryUpdateMentions();
+
 });

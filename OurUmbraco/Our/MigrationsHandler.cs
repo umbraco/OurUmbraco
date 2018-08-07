@@ -8,6 +8,7 @@ using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
+using Umbraco.Core.PropertyEditors;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -50,8 +51,11 @@ namespace OurUmbraco.Our
             AddCommunityStatistics();
             AddCommunityVideos();
             AddCommunityBadges();
+            AddCommunityCalendar();
+            AddCommunityCalendarDocType();
             AddVideosPage();
             AddRetiredStatusToPackages();
+            AddPasswordResetTokenToMembers();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1171,7 +1175,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-        
+
         private void AddCommunityVideos()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1218,6 +1222,151 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void AddCommunityCalendar()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "CommunityCalendar";
+                const string contentItemName = "Calendar";
+                CreateNewCommunityHubPage(templateName, contentItemName);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityCalendarDocType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string docTypeAlias = "calendarItem";
+                const string templateName = "CalendarItem";
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var calendarItemContentType = contentTypeService.GetContentType(docTypeAlias);
+                if (calendarItemContentType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Calendar Item",
+                        Alias = docTypeAlias,
+                        Icon = "icon-calendar"
+                    };
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Content" });
+
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, "subTitle") { Name = "SubTitle" };
+                    contentType.AddPropertyType(textboxPropertyType, "Content");
+
+                    var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                    const string dataTypeName = "CalendarItemType";
+                    if (dataTypeService.GetDataTypeDefinitionByName(dataTypeName) == null)
+                    {
+                        var dataType = new DataTypeDefinition(-1, "Umbraco.DropDown") { Name = dataTypeName };
+                        dataTypeService.Save(dataType);
+                        var dataTypeDefinition = dataTypeService.GetDataTypeDefinitionByName(dataTypeName);
+                        var preValues = new Dictionary<string, PreValue>
+                        {
+                            { "Festival", new PreValue("Festival") },
+                            { "MeetUp", new PreValue("MeetUp") },
+                            { "Party", new PreValue("Party") },
+                            { "Other", new PreValue("Other") }
+                        };
+                        dataTypeService.SavePreValues(dataTypeDefinition, preValues);
+                    }
+
+                    var dropdown = dataTypeService.GetDataTypeDefinitionByName(dataTypeName);
+                    var dropdownPropertyType = new PropertyType(dropdown, "calendarItemType") { Name = "CalendarItemType" };
+                    contentType.AddPropertyType(dropdownPropertyType, "Content");
+
+                    var rte = new DataTypeDefinition("Umbraco.TinyMCEv3");
+                    var rtePropertyType = new PropertyType(rte, "bodyText") { Name = "Description" };
+                    contentType.AddPropertyType(rtePropertyType, "Content");
+
+                    var dateTime = new DataTypeDefinition("Umbraco.DateTime");
+                    var dateTimePropertyType = new PropertyType(dateTime, "start") { Name = "Start" };
+                    contentType.AddPropertyType(dateTimePropertyType, "Content");
+
+                    dateTime = new DataTypeDefinition("Umbraco.DateTime");
+                    dateTimePropertyType = new PropertyType(dateTime, "end") { Name = "End" };
+                    contentType.AddPropertyType(dateTimePropertyType, "Content");
+
+                    textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    textboxPropertyType = new PropertyType(textbox, "location") { Name = "Location" };
+                    contentType.AddPropertyType(textboxPropertyType, "Content");
+
+                    textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    textboxPropertyType = new PropertyType(textbox, "url") { Name = "Url" };
+                    contentType.AddPropertyType(textboxPropertyType, "Content");
+                    
+                    var mediaPicker = new DataTypeDefinition("Umbraco.MediaPicker");
+                    var mediaPickerPropertyType = new PropertyType(mediaPicker, "icon") { Name = "Icon" };
+                    contentType.AddPropertyType(mediaPickerPropertyType, "Content");
+                    
+                    contentTypeService.Save(contentType);
+
+                    var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
+                    var allowedContentTypes = hubPageContentType.AllowedContentTypes.ToList();
+                    var contentTypeId = contentTypeService.GetContentType(docTypeAlias).Id;
+                    var contentTypeSort = new ContentTypeSort(contentTypeId, 0);
+                    allowedContentTypes.Add(contentTypeSort);
+                    hubPageContentType.AllowedContentTypes = allowedContentTypes;
+                    contentTypeService.Save(hubPageContentType);
+                }
+
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                var templateContents = string.Empty;
+
+                var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                if (templateFile != null && File.Exists(templateFile))
+                    templateContents = File.ReadAllText(templateFile);
+
+                var templateCreateResult =
+                    ApplicationContext.Current.Services.FileService.CreateTemplateForContentType(docTypeAlias,
+                        templateName);
+
+                ITemplate template = null;
+                if (templateCreateResult.Success)
+                {
+                    template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                    var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                    template.SetMasterTemplate(masterTemplate);
+                    if (templateContents != string.Empty)
+                        template.Content = templateContents;
+                    ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+                    var docType = contentTypeService.GetContentType(docTypeAlias);
+                    var allowedTemplates = new List<ITemplate> { template };
+                    docType.AllowedTemplates = allowedTemplates;
+                    contentTypeService.Save(docType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
         private static void CreateNewCommunityHubPage(string templateName, string contentItemName)
         {
             var relativeTemplateLocation = string.Format("~/Views/{0}.cshtml", templateName);
@@ -1245,7 +1394,7 @@ namespace OurUmbraco.Our
 
                     var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
-                    var allowedTemplates = new List<ITemplate> {template};
+                    var allowedTemplates = new List<ITemplate> { template };
                     allowedTemplates.AddRange(hubPageContentType.AllowedTemplates);
                     hubPageContentType.AllowedTemplates = allowedTemplates;
                     contentTypeService.Save(hubPageContentType);
@@ -1265,8 +1414,8 @@ namespace OurUmbraco.Our
             var rootContent = contentService.GetRootContent().FirstOrDefault();
             return rootContent != null ? rootContent.Children().FirstOrDefault(x => x.Name == "Community") : null;
         }
-		
-		private void AddVideosPage()
+
+        private void AddVideosPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -1369,6 +1518,84 @@ namespace OurUmbraco.Our
                     var textboxPropertyType = new PropertyType(textbox, textboxTypeAlias) { Name = "Retired Message" };
                     projectContentType.AddPropertyType(textboxPropertyType, projectContentTypeAlias);
                     contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddPasswordResetTokenToMembers()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                var memberTypeService = ApplicationContext.Current.Services.MemberTypeService;
+
+                var memberTypeAlias = "member";
+                var memberType = memberTypeService.Get(memberTypeAlias);
+
+                const string passwordResetAlias = "passwordResetToken";
+                const string expiryDateAlias = "passwordResetTokenExpiryDate";
+
+                var saveRequired = false;
+                if (memberType.PropertyTypeExists(passwordResetAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, passwordResetAlias) { Name = "Password reset token" };
+                    memberType.AddPropertyType(textboxPropertyType, memberTypeAlias);
+                    saveRequired = true;
+                }
+
+                if (memberType.PropertyTypeExists(expiryDateAlias) == false)
+                {
+                    var textbox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textboxPropertyType = new PropertyType(textbox, expiryDateAlias) { Name = "Password reset token expiry date" };
+                    memberType.AddPropertyType(textboxPropertyType, memberTypeAlias);
+                    saveRequired = true;
+                }
+
+                if (saveRequired)
+                    memberTypeService.Save(memberType);
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                const string macroAlias = "MembersResetPassword";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "Members Reset Password",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Members/ResetPassword.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
+                var memberNode = rootNode.Children().FirstOrDefault(x => string.Equals(x.Name, "Member", StringComparison.InvariantCultureIgnoreCase));
+
+                var resetPasswordPageName = "Reset Password";
+                if (memberNode != null && memberNode.Children().Any(x => x.Name == resetPasswordPageName) == false)
+                {
+                    var content = contentService.CreateContent(resetPasswordPageName, memberNode.Id, "Textpage");
+                    content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
+                    contentService.SaveAndPublishWithStatus(content);
                 }
 
                 string[] lines = { "" };

@@ -2,14 +2,14 @@
 var print = (function () {
   'use strict';
 
-  var PluginManager = tinymce.util.Tools.resolve('tinymce.PluginManager');
+  var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
   var register = function (editor) {
     editor.addCommand('mcePrint', function () {
       editor.getWin().print();
     });
   };
-  var $_9ajm37icje5nvcl9 = { register: register };
+  var $_d7j6lciyjh8lpvi9 = { register: register };
 
   var register$1 = function (editor) {
     editor.addButton('print', {
@@ -22,11 +22,11 @@ var print = (function () {
       icon: 'print'
     });
   };
-  var $_ey1ci2idje5nvcla = { register: register$1 };
+  var $_39wejwizjh8lpvia = { register: register$1 };
 
-  PluginManager.add('print', function (editor) {
-    $_9ajm37icje5nvcl9.register(editor);
-    $_ey1ci2idje5nvcla.register(editor);
+  global.add('print', function (editor) {
+    $_d7j6lciyjh8lpvi9.register(editor);
+    $_39wejwizjh8lpvia.register(editor);
     editor.addShortcut('Meta+P', '', 'mcePrint');
   });
   function Plugin () {

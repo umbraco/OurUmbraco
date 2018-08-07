@@ -98,7 +98,9 @@
     if (Model.ForumNewTopicsAllowed)
     {
         <div class="replybutton">
-            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment"><i class="icon-Reply-arrow"></i>&nbsp;Reply to topic</a>
+            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment" onclick="ga('send', 'event', 'Forum question', 'Click', 'Reply (bottom of page)');">
+                <i class="icon-Reply-arrow"></i>&nbsp;Reply to question
+            </a>
         </div>
 
         <div class="utilities">
@@ -110,7 +112,7 @@
                     </a>
                 }
 
-                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
+                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic" onclick="ga('send', 'event', 'Forum', @Html.Raw(Model.Subscribed ? "'Follow'" : "'Unfollow'"), '');">
                     <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
                 </a>
 
@@ -149,8 +151,9 @@ else
     var memberData = Model.MemberData;
     var memberId = memberData != null ? memberData.Member.Id : 0;
     var memberName = memberData != null ? memberData.Member.Name : string.Empty;
+    var isMemberAdmin = memberData != null ? memberData.IsAdmin : false;
 }
 <script type="text/javascript">
-    startNotifier(@memberId, '@memberName', @Model.Id);
+    startNotifier(@memberId, '@memberName', @Model.Id, @isMemberAdmin.ToString().ToLower());
 </script>
 <!-- End of SignalR-->

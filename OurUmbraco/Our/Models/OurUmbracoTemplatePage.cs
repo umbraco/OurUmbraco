@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Web.Hosting;
+using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Services;
 using Umbraco.Core;
@@ -25,14 +27,20 @@ namespace OurUmbraco.Our.Models
         {
             var membershipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
 
-            if (membershipHelper.IsLoggedIn() == false) return null;
+            if (membershipHelper.GetCurrentLoginStatus().IsLoggedIn == false)
+                return null;
 
             var userName = membershipHelper.CurrentUserName;
+
             var memberData = ApplicationContext.Current.ApplicationCache.RuntimeCache
                 .GetCacheItem<MemberData>("MemberData" + userName, () =>
                 {
                     var member = membershipHelper.GetCurrentMember();
-                    var avatarImage = Utils.GetMemberAvatarImage(member);
+
+                    var avatarService = new AvatarService();
+                    var memberAvatarPath = avatarService.GetMemberAvatar(member);
+                    memberAvatarPath = HostingEnvironment.MapPath($"~{memberAvatarPath}");
+                    var avatarImage = avatarService.GetMemberAvatarImage(memberAvatarPath);
 
                     var roles = member.GetRoles();
 
@@ -41,9 +49,12 @@ namespace OurUmbraco.Our.Models
 
                     var newTosAccepted = true;
                     var tosAccepted = member.GetPropertyValue<DateTime>("tos");
-                    var newTosDate = new DateTime(2016, 09, 01);
+                    var newTosDate = new DateTime(2018, 03, 26);
                     if ((newTosDate - tosAccepted).TotalDays > 1)
                         newTosAccepted = false;
+
+                    var avatarPath = avatarService.GetMemberAvatar(member);
+                    var avatarHtml = avatarService.GetImgWithSrcSet(avatarPath, member.Name, 100);
 
                     var data = new MemberData
                     {
@@ -52,8 +63,8 @@ namespace OurUmbraco.Our.Models
                         AvatarImageTooSmall = avatarImage != null && (avatarImage.Width < 400 || avatarImage.Height < 400),
                         Roles = roles,
                         LatestTopics = latestTopics,
-                        AvatarHtml = Utils.GetMemberAvatar(member, 100),
-                        AvatarPath = member.Avatar(),
+                        AvatarHtml = avatarHtml,
+                        AvatarPath = avatarPath,
                         NumberOfForumPosts = member.ForumPosts(),
                         Karma = member.Karma(),
                         TwitterHandle = member.GetPropertyValue<string>("twitter").Replace("@", string.Empty),

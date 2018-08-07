@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
-using System.Text;
 using System.Web.Mvc;
 using System.Web.Security;
-using OurUmbraco.Our.usercontrols;
 using reCAPTCHA.MVC;
 using Umbraco.Core;
 using Umbraco.Web.Models;
@@ -134,17 +133,25 @@ namespace OurUmbraco.Our.Controllers
                 memberService.Save(m, false);
             }
 
-            var pass = RandomString(16, true);
-            memberService.SavePassword(m, pass);
+            var resetToken = Guid.NewGuid().ToString().Replace("-", string.Empty);
+            var hashCode = SecureHasher.Hash(resetToken);
+            var expiryDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd HH:mm:ss");
+
+            m.SetValue("passwordResetToken", hashCode);
+            m.SetValue("passwordResetTokenExpiryDate", expiryDate.ToString(CultureInfo.InvariantCulture));
+            memberService.Save(m);
+
+            var resetLink = "https://our.umbraco.org/member/reset-password/?token=" + resetToken + "&email=" + m.Email;
 
             var mail = "<p>Hi " + m.Name + "</p>";
-            mail = mail + "<p>This is your new password for your account on https://our.umbraco.org:</p>";
-            mail = mail + "<p><strong>" + pass + "</strong></p>";
+            mail = mail + "<p>Someone requested a password reset for your account on https://our.umbraco.org</p>";
+            mail = mail + "<p>If this wasn't you then you can ignore this email, otherwise, please click the following password reset link to continue:</p>";
+            mail = mail + "<p>Please go to <a href=\"" + resetLink + "\">" + resetLink + "</a> to reset your password.</p>";
             mail = mail + "<br/><br/><p>All the best<br/> <em>The email robot</em></p>";
 
             using (var mailMessage = new MailMessage())
             {
-                mailMessage.Subject = "Your password to our.umbraco.org";
+                mailMessage.Subject = "Password reset requested for our.umbraco.org";
                 mailMessage.Body = mail;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.To.Add(new MailAddress(m.Email));
@@ -157,24 +164,16 @@ namespace OurUmbraco.Our.Controllers
             return Redirect(CurrentPage.Url + "?success=true");
         }
 
-        private string RandomString(int size, bool lowerCase)
-        {
-            var builder = new StringBuilder();
-            var random = new Random();
-            for (var i = 0; i < size; i++)
-            {
-                var ch = Convert.ToChar(Convert.ToInt32(Math.Floor(26 * random.NextDouble() + 65)));
-                builder.Append(ch);
-            }
-
-            return lowerCase ? builder.ToString().ToLower() : builder.ToString();
-        }
-
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
-
             return Redirect("/");
         }
+    }
+
+    internal class DuplicateMember
+    {
+        public int MemberId { get; set; }
+        public int TotalKarma { get; set; }
     }
 }

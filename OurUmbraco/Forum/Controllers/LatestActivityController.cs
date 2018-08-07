@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Mvc;
+using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Services;
 using Umbraco.Web.Mvc;
 
@@ -20,9 +21,10 @@ namespace OurUmbraco.Forum.Controllers
                 if(category != null)
                     topic.CategoryName = category.Name;
 
+                var avatarService = new AvatarService();
                 var member = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
                 if (member != null)
-                    topic.LastReplyAuthorAvatar = Our.Utils.GetMemberAvatar(member, 100);
+                    topic.LastReplyAuthorAvatar = avatarService.GetMemberAvatar(member);
             }
 
             return PartialView("~/Views/Partials/Home/LatestForumActivity.cshtml", topics);

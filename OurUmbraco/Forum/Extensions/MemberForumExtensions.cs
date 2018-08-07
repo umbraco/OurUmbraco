@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Web.Security;
+using OurUmbraco.Community.People;
 using OurUmbraco.MarketPlace.Extensions;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -24,7 +25,8 @@ namespace OurUmbraco.Forum.Extensions
 
         public static string Avatar(this IPublishedContent member)
         {
-            return member.GetPropertyValue<string>("avatar");
+            var avatarService = new AvatarService();
+            return avatarService.GetMemberAvatar(member);
         }
         
         public static int Karma(this IMember member)

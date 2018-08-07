@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
@@ -48,6 +49,23 @@ namespace OurUmbraco.Our.Extensions
                 });
 
             return badges;
+        }
+        
+        // From: https://stackoverflow.com/a/42260733/5018
+        internal static bool IsLocalPath(this string path)
+        {
+            Uri uri;
+            try
+            {
+                uri = new Uri(path);
+            }
+            catch (Exception ex)
+            {
+                // It's not a URI, so assume it's something local
+                return true;
+            }
+
+            return uri.IsFile;
         }
     }
 

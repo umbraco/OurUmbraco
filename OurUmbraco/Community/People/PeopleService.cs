@@ -105,7 +105,6 @@ namespace OurUmbraco.Community.People
 
                         var yearString = memberGroup.Name.Split(' ')[1];
                         var category = memberGroup.Name.Replace($"{memberGroup.Name.Split(' ')[0]} {yearString}", string.Empty);
-                        category = category.TrimStart(" - ");
 
                         int.TryParse(yearString, out var year);
                         var yearExists = mvpsPerYear.FirstOrDefault(x => x.Year == year);
@@ -129,6 +128,7 @@ namespace OurUmbraco.Community.People
                             {
                                 var mvpMember = PopulateMemberData(member, category);
                                 yearMembers.Members.Add(mvpMember);
+
                             }
                             mvpsPerYear.Add(yearMembers);
                         }
@@ -181,15 +181,26 @@ namespace OurUmbraco.Community.People
             var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
             var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
 
+            var avatarService = new AvatarService();
+            var avatarHtml = avatarService.GetImgWithSrcSet(m, m.Name, 48);
+
+            var isMvpRenewal = false;
+            if (category.Contains("Renewal"))
+            {
+                isMvpRenewal = true;
+                category = category.Replace("Renewal", string.Empty);
+            }
+
             var mvpMember = new MvpMember
             {
                 Id = member.Id,
                 Name = member.Name,
-                Avatar = Utils.GetMemberAvatar(m, 48),
+                Avatar = avatarHtml,
                 Company = company,
                 Twitter = twitter,
                 GitHub = github,
-                Category = category
+                Category = category,
+                IsMvpRenewal = isMvpRenewal
             };
             return mvpMember;
         }
@@ -203,11 +214,14 @@ namespace OurUmbraco.Community.People
             var twitter = (member.GetValue<string>("twitter") ?? "").Trim().TrimStart('@');
             var github = (member.GetValue<string>("github") ?? "").Trim().TrimStart('@');
 
+            var avatarService = new AvatarService();
+            var avatarHtml = avatarService.GetImgWithSrcSet(m, m.Name, 48);
+
             var badgeMember = new BadgeMember
             {
                 Id = member.Id,
                 Name = member.Name,
-                Avatar = Utils.GetMemberAvatar(m, 48),
+                Avatar = avatarHtml,
                 Company = company,
                 Twitter = twitter,
                 GitHub = github

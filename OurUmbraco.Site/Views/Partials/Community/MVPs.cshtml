@@ -1,4 +1,5 @@
 @using OurUmbraco.Community.People
+@using OurUmbraco.Community.People.Models
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var peopleService = new PeopleService();
@@ -8,65 +9,78 @@
 <table>
     @foreach (var mvpGroup in ourMvps.OrderByDescending(m => m.Year))
     {
-        <thead class="mvp-group-name">
-        <tr>
-            <td colspan="4">
-                <h2>@mvpGroup.Year</h2>
-            </td>
-        </tr>
-        </thead>
-        <thead>
-        <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Twitter</th>
-            <th>GitHub</th>
-        </tr>
-        </thead>
-        <tbody class="mvp-group">
-        @foreach (var member in mvpGroup.Members.OrderBy(m => m.Name))
+        @RenderYearMvps(mvpGroup)
+        if (mvpGroup.Members.Any(m => m.IsMvpRenewal))
         {
-            <tr>
-                <td>
-                    @Html.Raw(member.Avatar)
-                </td>
-                <td class="col-name">
-                    <a href="/member/@member.Id"><strong>@member.Name</strong></a><br />
-                    <small>@member.Company</small><br />
-                    @if (string.IsNullOrWhiteSpace(member.Category.Trim()) == false)
-                    {
-                        <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
-                    }
-                </td>
-                <td class="col-twitter">
-                    @if (string.IsNullOrWhiteSpace(member.Twitter))
-                    {
-                        <em>N/A</em>
-                    }
-                    else
-                    {
-                        <a href="https://twitter.com/@(member.Twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
-                            @@@(member.Twitter)
-                        </a>
-                    }
-                </td>
-                <td class="col-github">
-                    @if (string.IsNullOrWhiteSpace(member.GitHub))
-                    {
-                        <em>N/A</em>
-                    }
-                    else
-                    {
-                        <a href="https://github.com/@(member.GitHub)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
-                            @@@(member.GitHub)
-                        </a>
-                    }
-                </td>
-            </tr>
+            @RenderYearMvps(mvpGroup, true)
         }
-        </tbody>
     }
 </table>
+
+@helper RenderYearMvps(MvpsPerYear mvpGroup, bool isRenewalList = false)
+{
+    <thead class="mvp-group-name">
+    <tr>
+        <td colspan="4">
+            <h2>@mvpGroup.Year @(isRenewalList ? "Renewals" : null)</h2>
+        </td>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+        <th></th>
+        <th>Name</th>
+        <th>Twitter</th>
+        <th>GitHub</th>
+    </tr>
+    </thead>
+    <tbody class="mvp-group">
+        @RenderMembersList(mvpGroup, isRenewalList)
+    </tbody>
+}
+
+@helper RenderMembersList(MvpsPerYear mvpGroup, bool isRenewalList) {
+    foreach (var member in mvpGroup.Members.OrderBy(m => m.Name).Where(m => m.IsMvpRenewal == isRenewalList))
+    {
+        <tr>
+            <td>
+                @Html.Raw(member.Avatar)
+            </td>
+            <td class="col-name">
+                <a href="/member/@member.Id"><strong>@member.Name</strong></a><br/>
+                <small>@member.Company</small><br/>
+                @if (string.IsNullOrWhiteSpace(member.Category.Trim()) == false)
+                {
+                    <span class="videos-tag" title="MVP category">@member.Category.ToLowerInvariant()</span>
+                }
+            </td>
+            <td class="col-twitter">
+                @if (string.IsNullOrWhiteSpace(member.Twitter))
+                {
+                    <em>N/A</em>
+                }
+                else
+                {
+                    <a href="https://twitter.com/@( member.Twitter)" title="See @member.Name's profile on Twitter" target="_blank" rel="noopener" class="link-secondary">
+                        @@@( member.Twitter)
+                    </a>
+                }
+            </td>
+            <td class="col-github">
+                @if (string.IsNullOrWhiteSpace(member.GitHub))
+                {
+                    <em>N/A</em>
+                }
+                else
+                {
+                    <a href="https://github.com/@( member.GitHub)" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener" class="link-secondary">
+                        @@@( member.GitHub)
+                    </a>
+                }
+            </td>
+        </tr>
+    }
+}
 
 <style>
     .community.mvps {

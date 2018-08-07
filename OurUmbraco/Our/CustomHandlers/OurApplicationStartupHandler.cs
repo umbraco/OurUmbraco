@@ -21,7 +21,6 @@ namespace OurUmbraco.Our.CustomHandlers
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             BindExamineEvents();
-            ZipDownloader.OnFinish += ZipDownloader_OnFinish;
             ImageProcessingModule.ValidatingRequest += ImageProcessingModule_ValidatingRequest;
         }
 
@@ -57,20 +56,6 @@ namespace OurUmbraco.Our.CustomHandlers
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["ForumIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].IndexingError += ExamineHelper.LogErrors;
-        }
-
-        /// <summary>
-        /// Whenever the github zip downloader completes and docs index is rebuilt
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void ZipDownloader_OnFinish(object sender, FinishEventArgs e)
-        {
-            var indexer = ExamineManager.Instance.IndexProviderCollection[ExamineHelper.DocumentationIndexer];
-
-            //TODO: Fix this - we cannot "Rebuild" on a live site, because the entire index will be taken down/deleted and then recreated, if people
-            // are searching during this operation, YSODs will occur.
-            indexer.RebuildIndex();
         }
     }
 }

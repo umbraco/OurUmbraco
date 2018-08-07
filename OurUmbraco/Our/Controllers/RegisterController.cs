@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Configuration;
 using System.Linq;
-using System.Net;
-using System.Web.Hosting;
 using System.Web.Mvc;
+using OurUmbraco.Community.People;
 using OurUmbraco.Our.Models;
-using OurUmbraco.Our.usercontrols;
 using reCAPTCHA.MVC;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.Membership;
 using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
@@ -33,10 +28,10 @@ namespace OurUmbraco.Our.Controllers
             var recaptcha = ModelState["ReCaptcha"];
             if (recaptcha != null && HttpContext.Request.IsLocal)
                 recaptcha.Errors.Clear();
-            
+
             if (!ModelState.IsValid || model.AgreeTerms == false)
             {
-                if(model.AgreeTerms == false)
+                if (model.AgreeTerms == false)
                     ModelState.AddModelError("AgreeTerms", "You can only continue if you agree to our terms and conditions.");
 
                 return CurrentUmbracoPage();
@@ -50,11 +45,6 @@ namespace OurUmbraco.Our.Controllers
                 return CurrentUmbracoPage();
             }
 
-            // If spammer then this will stop account creation
-            var spamResult = Forum.Library.Utils.CheckForSpam(model.Email, model.Name, true);
-            if (spamResult != null && spamResult.Blocked)
-                return Redirect("/");
-
             if (string.IsNullOrWhiteSpace(model.Flickr) == false || string.IsNullOrWhiteSpace(model.Bio) == false)
             {
                 //These fields are hidden, only a bot will know to fill them in
@@ -66,7 +56,7 @@ namespace OurUmbraco.Our.Controllers
             // we should really have ways to query for Core meta-data!
             const int maxEmailLength = 400;
             const int maxLoginNameLength = 200;
-            const int maxPasswordLength = 400; 
+            const int maxPasswordLength = 400;
             const int maxPropertyLength = 400;
 
             if (model.Email != null && model.Email.Length > maxEmailLength
@@ -115,18 +105,9 @@ namespace OurUmbraco.Our.Controllers
 
             Members.Login(model.Email, model.Password);
 
-            if (spamResult != null && spamResult.TotalScore >= int.Parse(ConfigurationManager.AppSettings["PotentialSpammerThreshold"]))
-            {
-                spamResult.MemberId = member.Id;
+            var emailService = new Services.EmailService();
+            emailService.SendActivationMail(member);
 
-                memberService.AssignRole(member.Id, "potentialspam");
-                Forum.Library.Utils.SendPotentialSpamMemberMail(spamResult);
-            }
-            else
-            {
-                Forum.Library.Utils.SendActivationMail(member);
-                Forum.Library.Utils.SendMemberSignupMail(member);
-            }
             memberService.AssignRole(member.Id, "notactivated");
             memberService.AssignRole(member.Id, "newaccount");
 
@@ -142,7 +123,7 @@ namespace OurUmbraco.Our.Controllers
                 if (pendingActivationPage != null)
                 {
                     var pendingActivationContentItem = umbracoHelper.TypedContent(pendingActivationPage.Id);
-                    if(pendingActivationContentItem != null)
+                    if (pendingActivationContentItem != null)
                         redirectPage = pendingActivationContentItem.Url;
                 }
             }
@@ -150,34 +131,11 @@ namespace OurUmbraco.Our.Controllers
             return Redirect(redirectPage);
         }
 
-        private static string GetAvatarPath(IMembershipUser member)
+        private static string GetAvatarPath(IMember member)
         {
-            var url = "https://www.gravatar.com/avatar/" + member.Email.ToMd5() + "?s=400&d=retro";
-
-            try
-            {
-                var avatarFileName = "/media/avatar/" + member.Id + ".jpg";
-                var path = HostingEnvironment.MapPath(avatarFileName);
-
-                if (path != null)
-                {
-                    if (System.IO.File.Exists(path))
-                        System.IO.File.Delete(path);
-
-                    using (var webClient = new WebClient())
-                    {
-                        webClient.DownloadFile(url, path);
-                    }
-
-                    return avatarFileName;
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<Signup>("Could not save gravatar locally", ex);
-            }
-
-            return url;
+            var avatarService = new AvatarService();
+            var avatarPath = avatarService.GetMemberAvatar(member);
+            return avatarPath.Contains("?") ? avatarPath.Substring(0, avatarPath.IndexOf("?", StringComparison.Ordinal)) : avatarPath;
         }
     }
 }

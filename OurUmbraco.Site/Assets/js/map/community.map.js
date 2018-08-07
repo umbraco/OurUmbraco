@@ -44,12 +44,7 @@
             var enrichedData = [];
             for (var i = 0; i < data.length; i++) {
                 var enrichedDataItem = data[i];
-                if (enrichedDataItem.Avatar.startsWith("/") === false) {
-                    enrichedDataItem.Avatar = "https://www.gravatar.com/avatar/" + enrichedDataItem.Avatar + "?s=50&d=mm&r=g&d=retro";
-                } else {
-                    enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop";
-                }
-
+                enrichedDataItem.Avatar = enrichedDataItem.Avatar + "?width=50&height=50&mode=crop&upscale=true";
                 enrichedData.push(enrichedDataItem);
             }
 

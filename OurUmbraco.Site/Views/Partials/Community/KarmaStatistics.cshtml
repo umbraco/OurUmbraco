@@ -1,5 +1,6 @@
 ﻿@using System.Globalization
 @using OurUmbraco.Community.Karma
+@using OurUmbraco.Community.People
 @using OurUmbraco.Community.People.Models
 @using OurUmbraco.Forum.Extensions
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
@@ -43,7 +44,7 @@
                 <div class="contributor">
                     <a href="/member/@person.MemberId" title="@person.MemberName">
                         <div class="avatar">
-                            <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x,@GetAvatarUrl(member, 336) 3x" />
+                            @Html.Raw(GetAvatarUrl(member, 112))
                             <span class="contrib-count" title="Total: @person.TotalKarma">
                                 @person.TotalPointsInPeriod
                             </span>
@@ -103,7 +104,7 @@
             <div class="contributor">
                 <a href="/member/@person.MemberId" title="@person.MemberName">
                     <div class="avatar">
-                        <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x, @GetAvatarUrl(member, 336) 3x" />
+                        @Html.Raw(GetAvatarUrl(member, 112))
                         <span class="contrib-count" title="Total: @person.TotalKarma">
                             @person.TotalPointsInPeriod
                         </span>
@@ -163,7 +164,7 @@
                 <div class="contributor">
                     <a href="/member/@person.MemberId" title="@person.MemberName">
                         <div class="avatar">
-                            <img alt="@person.MemberName" src="@GetAvatarUrl(member, 112)" srcset="@GetAvatarUrl(member, 224) 2x, @GetAvatarUrl(member, 336) 3x" />
+                            @Html.Raw(GetAvatarUrl(member, 112))
                             <span class="contrib-count" title="Total: @person.TotalKarma">
                                 @person.TotalPointsInPeriod
                             </span>
@@ -189,27 +190,9 @@
 {
     private string GetAvatarUrl(IPublishedContent member, int size)
     {
-        var url = string.Empty;
-        var hasAvatar = member.HasValue("avatar");
-        if (hasAvatar)
-        {
-            var avatarPath = member.GetPropertyValue("avatar").ToString().Replace(" ", "%20");
-            if (avatarPath.StartsWith("http://") || avatarPath.StartsWith("https://"))
-            {
-                url = avatarPath.Replace("http://", "https://");
-                return url;
-            }
-
-            url = avatarPath;
-
-            if (string.IsNullOrEmpty(url))
-            {
-                return string.Empty;
-            }
-
-            return string.Format("{0}?width={1}&height={1}&mode=crop&upscale=true", url, size);
-        }
-
-        return string.Empty;
+        
+        var avatarService = new AvatarService();
+        var avatarHtml = avatarService.GetImgWithSrcSet(member, member.Name, size);
+        return avatarHtml;
     }
 }

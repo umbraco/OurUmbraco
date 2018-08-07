@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web.Hosting;
 using Newtonsoft.Json;
 using Skybrud.Essentials.Json;
@@ -167,12 +168,49 @@ namespace OurUmbraco.Community.Videos
                     string path = dir + "Video_" + video.Id + ".json";
                     JsonUtils.SaveJsonObject(path, video);
 
-                }
+                    // Download the thumnails for each video
+                    var thumbnailUrl = GetThumbnail(video).Url;
 
+                    const string mediaRoot = "~/media/YouTube";
+                    var thumbnailFile = IOHelper.MapPath($"{mediaRoot}/{video.Id}.jpg");
+
+                    var mediaPath = IOHelper.MapPath(mediaRoot);
+                    if (Directory.Exists(mediaPath) == false)
+                        Directory.CreateDirectory(mediaPath);
+
+                    if (File.Exists(thumbnailFile))
+                        continue;
+
+                    using (var client = new WebClient())
+                        client.DownloadFile(thumbnailUrl, thumbnailFile);
+                }
             }
 
             // Load the videos from the individual files, and save them to a common file
             JsonUtils.SaveJsonArray(dir + "Playlist_" + playlistId + "_Videos.json", ids.Select(LoadYouTubeVideo).WhereNotNull());
+        }
+
+        private static YouTubeVideoThumbnail GetThumbnail(YouTubeVideo video)
+        {
+            var thumbnails = new List<YouTubeVideoThumbnail>();
+
+            if (video.Snippet.Thumbnails.HasDefault)
+                thumbnails.Add(video.Snippet.Thumbnails.Default);
+
+            if (video.Snippet.Thumbnails.HasStandard)
+                thumbnails.Add(video.Snippet.Thumbnails.Standard);
+
+            if (video.Snippet.Thumbnails.HasMedium)
+                thumbnails.Add(video.Snippet.Thumbnails.Medium);
+
+            if (video.Snippet.Thumbnails.HasHigh)
+                thumbnails.Add(video.Snippet.Thumbnails.High);
+
+            if (video.Snippet.Thumbnails.HasMaxRes)
+                thumbnails.Add(video.Snippet.Thumbnails.MaxRes);
+
+            var thumbnail = thumbnails.OrderBy(x => x.Width).FirstOrDefault(x => x.Width >= 350);
+            return thumbnail;
         }
     }
 }

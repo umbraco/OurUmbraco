@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Community.People
 @using Skybrud.Essentials.Security
 
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
@@ -11,6 +12,9 @@
     {
         return;
     }
+
+    var avatarService = new AvatarService();
+    string img;
 }
 
 @foreach (var item in items)
@@ -18,17 +22,20 @@
     <a href="@item.Link" target="_blank" rel="noopener" class="community-post">
         @if (item.Blog.HasLogoUrl)
         {
-            <div class="avatar">
-                <img src="@item.Blog.LogoUrl" />
-            </div>
+            var avatarPath = item.Blog.LogoUrl;
+            img = avatarService.GetImgWithSrcSet(avatarPath, item.Blog.Title, 100);
         }
         else
         {
-            var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id);
-            <div class="avatar">
-                <img src="https://www.gravatar.com/avatar/@fakeHash?s=100&d=mm&r=g&d=retro" alt="" />
-            </div>
+            var fakeHash = SecurityUtils.GetMd5Hash(item.Blog.Id + "");
+            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
+            img = avatarService.GetImgWithSrcSet(avatarPath, item.Blog.Title, 100);
         }
+        
+        <div class="avatar">
+            @Html.Raw(img.Replace("mode=crop", "mode=max"))
+        </div>
+
         <div class="meta">
             <div class="forum-thread-text">
                 <h3>@item.Title</h3>

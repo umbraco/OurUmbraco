@@ -73,9 +73,8 @@ namespace OurUmbraco.Our.Examine
             // so we have to do all of this parsing.
             var version = project.GetPropertyValue<string>("compatibleVersions") ?? string.Empty;
             var cleanedVersions = version.ToLower()
-                .Trim(',')
                 .Split(',')
-                .Select(x => x.GetFromUmbracoString(reduceToConfigured:false))               
+                .Select(x => x.Trim().GetFromUmbracoString(reduceToConfigured:false))
                 .Where(x => x != null);
 
             var cleanedCompatVersions = compatVersions
