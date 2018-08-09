@@ -15,6 +15,7 @@
     {
         linkToGithub = Github.MarkdownFileEditLink();
     }
+    var linkToGithubIssue = Github.GithubIssueString();
 }
 <div class="utilities">
     <ul id="breadcrumb">
@@ -38,7 +39,11 @@
     <div class="utility-actions">
         @if (string.IsNullOrWhiteSpace(linkToGithub) == false)
         {
-            <a href="@linkToGithub" id="github-link" class="button green tiny"><i class="icon-Edit"></i>Edit this page</a>
+            <a href="@linkToGithub" id="github-link" class="button green tiny" target="_blank"><i class="icon-Edit"></i>Edit this page</a>
+        }
+        @if (string.IsNullOrWhiteSpace(linkToGithubIssue) == false)
+        {
+            <a href="@linkToGithubIssue" id="github-issue-link" class="button green tiny" target="_blank"><i class="icon-Flag"></i>Report issue</a>
         }
     </div>
 </div>
