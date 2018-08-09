@@ -185,18 +185,19 @@ namespace OurUmbraco.Documentation
 
         public static string GithubIssueString(string title = null)
         {
-            string GithubIssueLink = "https://github.com/umbraco/UmbracoDocs/issues/new";
+            var githubIssueLink = "https://github.com/umbraco/UmbracoDocs/issues/new";
 
-            var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
+            var queryStringSeparator = "?";
 
             if (title != null)
             {
-                GithubIssueLink = GithubIssueLink + "?title=" + title;
+                githubIssueLink = githubIssueLink + "?title=" + Uri.EscapeDataString(title);
+                queryStringSeparator = "&";
             }
 
-            GithubIssueLink = GithubIssueLink + "?body=%0A%0A%0A***%0AThis%20is%20the%20page%20with%20issues:%20" + MarkdownFileEditLink();
+            githubIssueLink = $"{githubIssueLink}{queryStringSeparator}body={Uri.EscapeDataString($"\n\n\n***This is the page with issues: {MarkdownFileEditLink()}***")}";
 
-            return GithubIssueLink;
+            return githubIssueLink;
         }
 
         /// <summary>
