@@ -435,7 +435,8 @@
     <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
-    <Compile Include="Our\Api\MembersController.cs" />    
+    <Compile Include="Our\Api\MembersController.cs" />
+    <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
