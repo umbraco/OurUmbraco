@@ -9,6 +9,7 @@ using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
@@ -123,6 +124,18 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
         
+        public void GenerateReleasesCache(PerformContext context)
+        {
+            var releasesService = new ReleasesService();
+            RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
+        }
+        
+        public void UpdateGitHubIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            var repository = new Community.Models.Repository("umbraco-cms", "umbraco", "Umbraco-CMS", "Umbraco CMS");
+            RecurringJob.AddOrUpdate(() => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+        }
     }
 
     public class ReminderTopic

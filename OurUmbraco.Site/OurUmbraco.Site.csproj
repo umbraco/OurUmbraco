@@ -86,10 +86,6 @@
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EasyHttp, Version=1.6.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Examine, Version=0.1.89.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Examine.0.1.89\lib\net45\Examine.dll</HintPath>
     </Reference>
@@ -112,10 +108,6 @@
     </Reference>
     <Reference Include="interfaces, Version=1.0.6750.39762, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.11.1\lib\net45\interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
@@ -240,8 +232,11 @@
     <Reference Include="Skybrud.Essentials, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Essentials.1.1.5\lib\net45\Skybrud.Essentials.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social.Core, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Core.1.0.8\lib\net45\Skybrud.Social.Core.dll</HintPath>
+    <Reference Include="Skybrud.Social.Core, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Core.1.0.10\lib\net45\Skybrud.Social.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta003\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
@@ -383,10 +378,6 @@
     </Reference>
     <Reference Include="WebMatrix.WebData, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebPages.WebData.3.2.3\lib\net45\WebMatrix.WebData.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="YouTrackSharp">
-      <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
   </ItemGroup>
@@ -1678,7 +1669,6 @@
     <Content Include="umbraco_client\tinymce3\langs\en_us.js" />
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
     <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
-    <Content Include="usercontrols\dashboard\ForceYouTrackDownload.ascx" />
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
@@ -4401,7 +4391,7 @@
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Partials\Community\Map.cshtml" />
-    <Content Include="Views\Partials\Community\Sidebar.cshtml" /> 
+    <Content Include="Views\Partials\Community\Sidebar.cshtml" />
     <Content Include="Views\CommunityCalendar.cshtml" />
     <Content Include="Views\Partials\Community\Calendar.cshtml" />
     <None Include="web.Debug.config">

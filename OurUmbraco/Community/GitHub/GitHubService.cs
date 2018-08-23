@@ -6,18 +6,28 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Web.Configuration;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
+using Hangfire.Console;
+using Hangfire.Server;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
-using Umbraco.Core.Cache;
+using Skybrud.Social.GitHub.Exceptions;
+using Skybrud.Social.GitHub.Models.Issues;
+using Skybrud.Social.GitHub.Options;
+using Skybrud.Social.GitHub.Options.Issues;
+using Skybrud.Social.GitHub.Responses.Issues;
+using Skybrud.Social.Http;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
+using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
 
 namespace OurUmbraco.Community.GitHub
 {
@@ -66,7 +76,7 @@ namespace OurUmbraco.Community.GitHub
             lock (Lock)
             {
                 IsLocked = true;
-                
+
                 foreach (var repository in GetRepositories())
                 {
                     var pulls = GetExistingPullsFromDisk();
@@ -81,7 +91,7 @@ namespace OurUmbraco.Community.GitHub
                         pulls = GetPulls(repository: repository, page: i, pulls: pulls, stopImport: out stopImport);
                         Thread.Sleep(1000);
                     }
-                    
+
                     // Save the JSON to disk
                     var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
                     File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
@@ -232,7 +242,7 @@ namespace OurUmbraco.Community.GitHub
         {
             // Initialize the request
             var client = new RestClient(GitHubApiClient);
-            var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
+            var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
             client.UserAgent = UserAgent;
 
             // Make the request to the GitHub API
@@ -247,7 +257,7 @@ namespace OurUmbraco.Community.GitHub
         public IRestResponse<List<GitHubContributorModel>> GetAllRepoContributors(string repo)
         {
             var client = new RestClient(GitHubApiClient);
-            var request = new RestRequest(string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo), Method.GET);
+            var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
             client.UserAgent = UserAgent;
             var response = client.Execute<List<GitHubContributorModel>>(request);
             return response;
@@ -262,13 +272,13 @@ namespace OurUmbraco.Community.GitHub
             var configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
             if (!File.Exists(configPath))
             {
-                var message = string.Format("Config file was not found: {0}", configPath);
+                var message = $"Config file was not found: {configPath}";
                 LogHelper.Debug<GitHubService>(message);
                 throw new Exception(message);
             }
 
             // Parse the logins (usernames)
-            var login = System.IO.File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
+            var login = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
             // A dictionary for the response of each repository
             var responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();
@@ -281,12 +291,12 @@ namespace OurUmbraco.Community.GitHub
             // Iterate over the repositories
             foreach (var repo in GetRepositories())
             {
-                Log(stringBuilder, string.Format("-> Making request to {0}{1}", GitHubApiClient, string.Format("/repos/{0}/{1}/stats/contributors", RepositoryOwner, repo)));
+                Log(stringBuilder, $"-> Making request to {GitHubApiClient}/repos/{RepositoryOwner}/{repo}/stats/contributors");
 
                 // Make the request to the GitHub API
                 var response = GetRepositoryContributors(repo);
 
-                Log(stringBuilder, string.Format("  -> {0} -> {1}", (int)response.StatusCode, response.StatusCode));
+                Log(stringBuilder, $"  -> {(int)response.StatusCode} -> {response.StatusCode}");
 
                 switch (response.StatusCode)
                 {
@@ -297,7 +307,7 @@ namespace OurUmbraco.Community.GitHub
                         missing.Add(repo);
                         break;
                     default:
-                        var message = string.Format("Failed getting contributors for repository {0}: {1}\r\n\r\n{2}", repo, response.StatusCode, response.Content);
+                        var message = $"Failed getting contributors for repository {repo}: {response.StatusCode}\r\n\r\n{response.Content}";
                         Log(stringBuilder, message);
                         throw new Exception(message);
                 }
@@ -312,7 +322,7 @@ namespace OurUmbraco.Community.GitHub
                 // Wait for a few seconds so the GitHub cache hopefully has been populated
                 Thread.Sleep(5000);
 
-                Log(stringBuilder, string.Format("Attempt {0}", i));
+                Log(stringBuilder, $"Attempt {i}");
 
                 foreach (var repo in GetRepositories())
                 {
@@ -331,7 +341,7 @@ namespace OurUmbraco.Community.GitHub
                         case HttpStatusCode.Accepted:
                             break;
                         default:
-                            var message = string.Format("Failed getting contributors for repository {0}: {1}\r\n\r\n{2}", repo, response.StatusCode, response.Content);
+                            var message = $"Failed getting contributors for repository {repo}: {response.StatusCode}\r\n\r\n{response.Content}";
                             Log(stringBuilder, message);
                             throw new Exception(message);
                     }
@@ -341,7 +351,7 @@ namespace OurUmbraco.Community.GitHub
 
             if (missing.Count > 0)
             {
-                var message = string.Format("Unable to get contributors for one or more repositories:\r\n{0}", string.Join("\r\n", missing));
+                var message = $"Unable to get contributors for one or more repositories:\r\n{string.Join("\r\n", missing)}";
                 Log(stringBuilder, message);
                 throw new Exception(message);
             }
@@ -379,7 +389,7 @@ namespace OurUmbraco.Community.GitHub
                 .ThenByDescending(c => c.TotalDeletions)
                 .ToList();
 
-            return new GitHubContributorsResult(globalContributors, string.Format("{0}{1}", stringBuilder, string.Empty));
+            return new GitHubContributorsResult(globalContributors, $"{stringBuilder}{string.Empty}");
         }
 
         public GitHubContributorsResult UpdateOverallContributors(int maxAttempts = 3)
@@ -394,7 +404,7 @@ namespace OurUmbraco.Community.GitHub
             var rawJson = JsonConvert.SerializeObject(contributors, Formatting.Indented);
 
             // Save the JSON to disk
-            System.IO.File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
+            File.WriteAllText(JsonPath, rawJson, Encoding.UTF8);
 
             return result;
         }
@@ -416,7 +426,121 @@ namespace OurUmbraco.Community.GitHub
         /// <param name="str">The string to be added to <paramref name="sb"/>.</param>
         private void Log(StringBuilder sb, string str)
         {
-            sb.AppendLine(string.Format("{0:yyyy-MM-dd HH:mm:ss} {1}", DateTime.Now, str));
+            sb.AppendLine($"{DateTime.Now:yyyy-MM-dd HH:mm:ss} {str}");
+        }
+
+        private Skybrud.Social.GitHub.GitHubService _github;
+
+        public Skybrud.Social.GitHub.GitHubService GitHubApi => _github
+                ?? (_github = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GitHubAccessToken"]));
+
+        public void UpdateIssues(PerformContext context, Community.Models.Repository repository)
+        {
+            // Accept newer versions of the TLS protocol
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            try
+            {
+                var options = new GitHubGetRepositoryIssuesOptions
+                {
+                    Owner = repository.Owner,
+                    Repository = repository.Alias,
+                    Sort = GitHubIssueSortField.Updated,
+                    Direction = GitHubSortDirection.Descending,
+                    State = GitHubIssueState.All,
+                    PerPage = 100,
+                    Page = 1
+                };
+
+                while (true)
+                {
+                    var localCount = 0;
+
+                    // Make the initial request to the API
+                    context.WriteLine($"Fetching page issues for repo {repository.Alias} (page {options.Page})");
+                    GitHubGetIssuesResponse issuesResponse;
+                    try
+                    {
+                        issuesResponse = GitHubApi.Issues.GetIssues(options);
+                    }
+                    catch (GitHubHttpException ex)
+                    {
+                        throw new Exception($"Failed fetching page {options.Page}\r\n\r\n{ex.Response.Response.ResponseUri}", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Failed fetching page {options.Page}", ex);
+                    }
+
+                    foreach (var response in issuesResponse.Body)
+                    {
+                        // Local flag used later to determine whether new data was fetched for this issue
+                        var updated = false;
+
+                        var gitHubResponse = JsonConvert.DeserializeObject<GitHubResponse>(response.JObject.ToString());
+                        var responseIsIssue = gitHubResponse.pull_request == null;
+
+                        string issuesFile;
+                        string issuesCommentFile;
+                        string issuesCombinedFile;
+                        if (responseIsIssue)
+                        {
+                            issuesFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.json");
+                            issuesCommentFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.comments.json");
+                            issuesCombinedFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.combined.json");
+                        }
+                        else
+                        {
+                            issuesFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.json");
+                            issuesCommentFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.comments.json");
+                            issuesCombinedFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.combined.json");
+                        }
+
+                        // Make sure we have a directory
+                        Directory.CreateDirectory(Path.GetDirectoryName(issuesFile));
+                        
+                        JsonUtils.SaveJsonObject(issuesFile, response);
+
+                        // Fetch comments if the local JSON file is older than the last update time of the issue
+                        JArray comments;
+                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        {
+                            comments = JsonUtils.LoadJsonArray(issuesCommentFile);
+                        }
+                        else
+                        {
+                            context.WriteLine($"Fetching comments for issue {response.Number} {response.Title}");
+                            var issueCommentsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/comments");
+                            if (issueCommentsResponse.StatusCode != HttpStatusCode.OK)
+                                throw new Exception($"Failed fetching comments for issue #{response.Number} ({issueCommentsResponse.StatusCode})");
+
+                            comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
+                            JsonUtils.SaveJsonArray(issuesCommentFile, comments);
+
+                            updated = true;
+                        }
+
+                        // Save a JSON file with all the combined data we have for the issue
+                        response.JObject.Add("_comments", comments);
+                        JsonUtils.SaveJsonObject(issuesCombinedFile, response);
+
+                        if (updated) localCount++;
+                    }
+
+                    context.WriteLine($"Updated {localCount} issues on page {options.Page}");
+
+                    // Break the loop if not all issues on the page were updated
+                    if (localCount < options.PerPage) break;
+
+                    // Increment the page count
+                    options.Page++;
+                }
+            }
+            catch (Exception ex)
+            {
+                context.WriteLine("Error while fetching issues", ex);
+            }
         }
     }
 
@@ -430,5 +554,16 @@ namespace OurUmbraco.Community.GitHub
         public int AcceptedPulls { get; set; }
         public int ClosedPulls { get; set; }
         public List<string> Repositories { get; set; }
+    }
+
+
+    public class GitHubResponse
+    {
+        public Pull_Request pull_request { get; set; }
+    }
+
+    public class Pull_Request
+    {
+        public string url { get; set; }
     }
 }

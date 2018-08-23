@@ -1,7 +1,6 @@
 ﻿angular.module("umbraco").controller("ourManagementController", function ($scope, $http, notificationsService) {
     var vm = this;
     vm.docsLoading = false;
-    vm.youTrackLoading = false;
 
     $scope.getPullRequestStatisticsCms = function () {
         var prDataUrlCms = "backoffice/API/PullRequestStatistics/GetGroupedPullRequestData/?fromDate=2010-01-01&toDate=2030-01-01";
@@ -111,25 +110,6 @@
             .error(function () {
                 vm.memberError = "❌ Problem with getting the member.";
                 notificationsService.error(vm.memberError);
-            });
-    };
-
-    $scope.downloadYoutrackData = function () {
-        vm.youTrackLoading = true;
-        vm.youTrackMessage = "Downloading YouTrack data, hold on...";
-        notificationsService.success(vm.youTrackMessage);
-
-        var youtrackUrl = "backoffice/API/YouTrackApi/GetData";
-        $http.get(youtrackUrl)
-            .success(function () {
-                vm.youTrackLoading = false;
-                vm.youTrackMessage = "✔ YouTrack data all downloaded.";
-                notificationsService.success(vm.youTrackMessage);
-            })
-            .error(function () {
-                vm.youTrackLoading = false;
-                vm.youTrackMessage = "❌ Problem with the YouTrack data download.";
-                notificationsService.error(vm.youTrackMessage);
             });
     };
 });

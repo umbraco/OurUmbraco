@@ -71,10 +71,6 @@
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="EasyHttp, Version=1.6.29.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\EasyHttp.1.6.29.0\lib\net40\EasyHttp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Examine, Version=0.1.89.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Examine.0.1.89\lib\net45\Examine.dll</HintPath>
     </Reference>
@@ -109,10 +105,6 @@
     </Reference>
     <Reference Include="interfaces, Version=1.0.6750.39762, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.11.1\lib\net45\interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="JsonFx, Version=2.0.1209.2802, Culture=neutral, PublicKeyToken=315052dd637f8a52, processorArchitecture=MSIL">
-      <HintPath>..\packages\JsonFx.2.0.1209.2802\lib\net40\JsonFx.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
@@ -257,8 +249,11 @@
     <Reference Include="Skybrud.Essentials, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Essentials.1.1.5\lib\net45\Skybrud.Essentials.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social.Core, Version=1.0.8.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.Core.1.0.8\lib\net45\Skybrud.Social.Core.dll</HintPath>
+    <Reference Include="Skybrud.Social.Core, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Core.1.0.10\lib\net45\Skybrud.Social.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta003\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Google, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Google.1.0.0-beta004\lib\net45\Skybrud.Social.Google.dll</HintPath>
@@ -415,10 +410,6 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="YouTrackSharp, Version=2.0.11.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\YouTrackSharp.2.0.11.0\lib\net40\YouTrackSharp.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
@@ -435,6 +426,7 @@
     <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
+    <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
@@ -486,6 +478,7 @@
     <Compile Include="Documentation\Models\Job.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Documentation\Controllers\DocfxController.cs" />
+    <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
@@ -594,7 +587,6 @@
     <Compile Include="Community\GitHub\GitHubService.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Api\StatisticsController.cs" />
-    <Compile Include="Our\Api\YouTrackApiController.cs" />
     <Compile Include="Our\Businesslogic\GoogleAnalytics.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
     <Compile Include="Our\Controllers\AvatarController.cs" />
@@ -663,10 +655,9 @@
     <Compile Include="Our\Models\WikiFileModel.cs" />
     <Compile Include="Our\ProjectFileUploadHandler.cs" />
     <Compile Include="Our\Rest.cs" />
-    <Compile Include="Our\Scheduling\Scheduler.cs" />
-    <Compile Include="Our\Scheduling\YouTrackSync.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
     <Compile Include="Our\SecureHasher.cs" />
+    <Compile Include="Our\Services\ReleasesService.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
       <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>
@@ -775,20 +766,6 @@
     <Compile Include="Project\uVersion\UVersionConfig.cs" />
     <Compile Include="Project\uVersion\uVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Release\App_Start\ControllerRouting.cs" />
-    <Compile Include="Release\Controllers\NodeExtensions.cs" />
-    <Compile Include="Release\Download.cs" />
-    <Compile Include="Release\Extensions.cs" />
-    <Compile Include="Release\Import.cs" />
-    <Compile Include="Release\Models\AggregateView.cs" />
-    <Compile Include="Release\Models\Comment.cs" />
-    <Compile Include="Release\Models\Version.cs" />
-    <Compile Include="Release\Models\YouTrackComment.cs" />
-    <Compile Include="Release\Models\YouTrackField.cs" />
-    <Compile Include="Release\Models\YouTrackIssue.cs" />
-    <Compile Include="Release\Release.cs" />
-    <Compile Include="Release\Roadmap.cs" />
-    <Compile Include="Release\Versions.cs" />
     <Compile Include="Repository\Controllers\PackageRepositoryController.cs" />
     <Compile Include="Repository\Controllers\PackageSortOrder.cs" />
     <Compile Include="Repository\Models\Category.cs" />
