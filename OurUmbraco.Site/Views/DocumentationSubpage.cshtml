@@ -21,8 +21,15 @@
                         </div>
 
                         <div class="search-big">
-                            <input type="search" class="docs-search-input" required placeholder="Search for documentation">
-                            <label for="search">Search for documentation</label>
+                            <div class="textSearch">
+                                <input type="search" class="docs-search-input" required placeholder="Search for documentation">
+                                <label for="search">Search for documentation</label>
+                            </div>
+                                <select class="version-search-select">
+                                    <option value="8">v8</option>
+                                    <option value="7" selected="selected">v7</option>
+                                    <option value="6">v6</option>
+                                </select>
                         </div>
 
                         <ul class="search-all-results docs-search-listing"></ul>

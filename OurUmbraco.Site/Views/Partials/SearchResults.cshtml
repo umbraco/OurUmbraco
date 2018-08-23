@@ -27,11 +27,14 @@
                 </div>
             }
 
-            <div class="search-big">
-                <asp:TextBox runat="server" ID="SearchText"></asp:TextBox>
-                <label for="SearchText">Search</label>
-            </div>
-            
+            <form action="/search">
+                <div class="search-big">
+                    <input name="q" required value="@Model.Results.SearchTerm">
+                    <input type="hidden" name="cat" value="@Request.QueryString["cat"]" />
+                    <label for="search">Search</label>
+                </div>
+            </form>
+    
             @if(Request.QueryString["cat"] == "forum") {
                 <div id="search-options" class="search-options">
                     <label>Sort by</label>

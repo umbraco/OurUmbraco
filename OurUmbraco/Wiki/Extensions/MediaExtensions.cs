@@ -44,7 +44,7 @@ namespace OurUmbraco.Wiki.Extensions
 
             var extractor = new PackageExtraction();
             var filePath = IOHelper.MapPath(mediaFile.Path);
-            var packageXml = extractor.ReadTextFileFromArchive(filePath, Constants.Packaging.PackageXmlFileName);
+            var packageXml = extractor.ReadTextFileFromArchive(filePath, Umbraco.Core.Constants.Packaging.PackageXmlFileName);
             if (string.IsNullOrWhiteSpace(packageXml))
                 return;
 

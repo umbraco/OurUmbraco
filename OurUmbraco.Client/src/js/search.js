@@ -135,63 +135,65 @@ var projectSearch = _.debounce(function(ev) {
 }, 300);
 
 
-var docsSearch = _.debounce(function(ev) {
+var docsSearch = _.debounce(function (ev) {
 
-	var term = this.value;
-	var defaultListing = $('.docs-default-listing');
-	var searchListing = $('.docs-search-listing');
-	
-	if(term.length === 0){
-		defaultListing.show();
-		searchListing.empty();
-	}
-	
-	if(term.length > 3){
-		var url = "/umbraco/api/OurSearch/GetDocsSearchResults";
-		var template = _.template(
-            $( "script.search-item-docs" ).html()
+    var term = this.value;
+    var version = $('.version-search-select').find(":selected").val();
+
+    var defaultListing = $('.docs-default-listing');
+    var searchListing = $('.docs-search-listing');
+
+    if (term.length === 0) {
+        defaultListing.show();
+        searchListing.empty();
+    }
+
+    if (term.length > 1) {
+        var url = "/umbraco/api/OurSearch/GetDocsSearchResults";
+        var template = _.template(
+            $("script.search-item-docs").html()
         );
 
         //fade out existing searchresults
-		searchListing.addClass('fadeResultOut');
+        searchListing.addClass('fadeResultOut');
 
-		//get search from server
-		$.ajax({
-		  dataType: "json",
-		  url: url,
-		  data: {term: term},
-		  success: function(response){
+        //get search from server
+        $.ajax({
+            dataType: "json",
+            url: url,
+            data: { term: term, version: version },
+            success: function (response) {
 
-		  	//toggle and empty box
-		  	defaultListing.hide();
-		  	searchListing.empty();
+                //toggle and empty box
+                defaultListing.hide();
+                searchListing.empty();
 
-		  	//Fade in new search results
-		  	setTimeout(function(){
-		  		searchListing.removeClass('fadeResultOut');
-		  	}, 1000);
+                //Fade in new search results
+                setTimeout(function () {
+                    searchListing.removeClass('fadeResultOut');
+                }, 1000);
 
-		  	if(response.items.length === 0){
-		  		var linkhtml = '<li>No documentation found</li>';
-		  		searchListing.append(linkhtml);
-		  	}
+                if (response.items.length === 0) {
+                    var linkhtml = '<li>No documentation found</li>';
+                    searchListing.append(linkhtml);
+                }
 
-		  	//iterate
-		  	_.each(response.items, function(item){
-					var itemData = {	
-		  							name: item.Fields.nodeName, 
-		  							body: _.escape(item.Fields.body.substring(0, 150)), 
-		  							url: item.Fields.url
-		  						};
-				
-				searchListing.append( 
-					template( itemData )
-				);
-		  	});
+                //iterate
+                _.each(response.items, function (item) {
+                    var itemData = {
+                        name: item.Fields.nodeName,
+                        body: _.escape(item.Fields.body.substring(0, 150)),
+                        url: item.Fields.url
+                    };
 
-		  }
-		});
-	}
+                    searchListing.append(
+                        template(itemData)
+                    );
+                });
+
+            }
+        });
+    }
 }, 300);
 
 
