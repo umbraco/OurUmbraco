@@ -82,16 +82,19 @@ namespace OurUmbraco.Our.Extensions
         {
             switch (issueState.ToLowerInvariant().Replace(" ", "").Replace("'", ""))
             {
+                case "inbox":
+                case "backlog":
+                case "maturing":
                 case "submitted":
+                case "estimation":
+                case "sprint-backlog":
                     return "icon-Checkbox-dotted";
                 case "open":
                     return "icon-Checkbox-empty";
                 case "review":
-                    return "icon-Paper-plane-alt";
                 case "inprogress":
+                case "in-progress":
                     return "icon-Paper-plane-alt";
-                case "fixed":
-                    return "icon-Check";
                 case "duplicate":
                     return "icon-Multiple-windows";
                 case "cantreproduce":
@@ -104,6 +107,7 @@ namespace OurUmbraco.Our.Extensions
                     return "icon-Undo";
                 case "workaroundposted":
                     return "icon-Redo";
+                case "fixed":
                 case "resolved":
                     return "icon-Check";
                 default:
