@@ -478,6 +478,7 @@
     <Compile Include="Documentation\Models\Job.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Documentation\Controllers\DocfxController.cs" />
+    <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />

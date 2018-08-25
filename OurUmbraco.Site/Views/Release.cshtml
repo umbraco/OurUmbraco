@@ -163,7 +163,8 @@
                                     <span>@(release.PercentComplete)% complete</span>
                                     <span>@(100 - release.PercentComplete)% in progress</span>
                                 </h3>
-                                <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate</span></h3>
+
+                                <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
                             }
 
                             @if (Model.Content.HasValue("releaseNotes"))
