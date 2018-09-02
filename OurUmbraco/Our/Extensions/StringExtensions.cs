@@ -82,7 +82,6 @@ namespace OurUmbraco.Our.Extensions
         {
             switch (issueState.ToLowerInvariant().Replace(" ", "").Replace("'", ""))
             {
-                case "inbox":
                 case "backlog":
                 case "maturing":
                 case "submitted":

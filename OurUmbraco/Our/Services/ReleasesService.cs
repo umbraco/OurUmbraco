@@ -178,10 +178,20 @@ namespace OurUmbraco.Our.Services
                     }
 
                     var breaking = issue.labels.Any(x => x.name == "compatibility/breaking");
+
                     var stateLabel = issue.labels.FirstOrDefault(x => x.name.StartsWith("state/"));
+                    
+                    // default state
                     var state = "new";
+                    
                     if (stateLabel != null)
+                        // if there's a label with a state then use that as the state
                         state = stateLabel.name.Replace("state/", string.Empty);
+                    else if (issue.state == "closed" && issue.labels.Any(x => x.name.StartsWith("release")))
+                        // there is no state label applied
+                        // if the issue is closed and has a release label on it then we set it to fixed
+                        state = "fixed";
+
                     var typeLabel = issue.labels.FirstOrDefault(x => x.name.StartsWith("type/"));
                     var type = string.Empty;
                     if (typeLabel != null)
