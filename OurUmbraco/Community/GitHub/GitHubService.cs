@@ -57,8 +57,7 @@ namespace OurUmbraco.Community.GitHub
             var labels = new List<Label>
             {
                 new Label { Name = "type/bug" },
-                new Label { Name = "type/feature" },
-                new Label { Name = "type/spike" }
+                new Label { Name = "type/feature" }
             };
 
             return labels;
@@ -404,9 +403,10 @@ namespace OurUmbraco.Community.GitHub
             return labels;
         }
 
-        public List<RepositoryLabels> GetForAllRepositories()
+        public List<LabelReport> GetLabelReport()
         {
-            var allLabels = JsonConvert.DeserializeObject<List<RepositoryLabels>>($"{LabelsJsonPath}AllLabels.json");
+            var fileContents = File.ReadAllText($"{LabelsJsonPath}AllLabels.json");
+            var allLabels = JsonConvert.DeserializeObject<List<LabelReport>>(fileContents);
             return allLabels;
         }
 
@@ -427,7 +427,9 @@ namespace OurUmbraco.Community.GitHub
                     Repository = repository,
                     NonCompliantLabels = new List<NonCompliantLabel>(),
                     Categories = new List<Label>(),
-                    Projects = new List<Label>()
+                    Projects = new List<Label>(),
+                    RequiredLabels = new List<Label>(),
+                    RogueLabels = new List<Label>()
                 };
 
                 var requiredLabels = RequiredLabels();
@@ -461,6 +463,7 @@ namespace OurUmbraco.Community.GitHub
                             else
                             {
                                 requiredLabelsCount = requiredLabelsCount + 1;
+                                repositoryLabels.RequiredLabels.Add(label);
                             }
                         }
                         else
@@ -493,6 +496,7 @@ namespace OurUmbraco.Community.GitHub
                             LabelProblem = $"Rogue state label {label.Name} is not a known state"
                         };
                         rogueLabels.Add(rogueLabel);
+                        repositoryLabels.RogueLabels.Add(label);
                     }
 
                     if (label.Name.Contains("/") && label.Name.Contains(" ") == false &&
@@ -504,17 +508,23 @@ namespace OurUmbraco.Community.GitHub
                             LabelProblem = $"Rogue status label {label.Name} is not a known status"
                         };
                         rogueLabels.Add(rogueLabel);
+                        repositoryLabels.RogueLabels.Add(label);
                     }
 
                     if (label.Name.Contains("/") && label.Name.Contains(" ") == false &&
                         labelPrefix == "type" && TypeLabels().Any(x => x.Name == label.Name) == false)
                     {
-                        var rogueLabel = new NonCompliantLabel
+                        // Spike is not a required type, but also not a rogue one
+                        if (label.Name.EndsWith("/spike") == false)
                         {
-                            Label = label,
-                            LabelProblem = $"Rogue type label {label.Name} is not a known type"
-                        };
-                        rogueLabels.Add(rogueLabel);
+                            var rogueLabel = new NonCompliantLabel
+                            {
+                                Label = label,
+                                LabelProblem = $"Rogue type label {label.Name} is not a known type"
+                            };
+                            rogueLabels.Add(rogueLabel);
+                            repositoryLabels.RogueLabels.Add(label);
+                        }
                     }
 
                     if (rogueLabels.Any())
@@ -523,7 +533,7 @@ namespace OurUmbraco.Community.GitHub
                         // No need to check for color compliance now, the label is not supposed to be there
                         continue;
                     }
-                    
+
                     // Required labels have already been checked
                     if (requiredLabels.Any(x => x.Name == label.Name))
                         continue;
@@ -546,8 +556,9 @@ namespace OurUmbraco.Community.GitHub
 
                 repositoryLabels.Categories = labels.Where(x => x.Name.StartsWith("category") && x.Name.EndsWith("/breaking") == false).ToList();
                 repositoryLabels.Projects = labels.Where(x => x.Name.StartsWith("project")).ToList();
+
                 allLabels.Add(repositoryLabels);
-                
+
                 var rawJson = JsonConvert.SerializeObject(labels, Formatting.Indented);
 
                 // Save the JSON to disk
@@ -555,7 +566,7 @@ namespace OurUmbraco.Community.GitHub
                 File.WriteAllText($"{LabelsJsonPath}{repository}.json", rawJson, Encoding.UTF8);
             }
 
-            var allLabelsJson = JsonConvert.SerializeObject(allLabels, Formatting.Indented);
+            var allLabelsJson = JsonConvert.SerializeObject(allLabels);
             File.WriteAllText($"{LabelsJsonPath}AllLabels.json", allLabelsJson, Encoding.UTF8);
         }
 
@@ -914,5 +925,7 @@ namespace OurUmbraco.Community.GitHub
         public List<NonCompliantLabel> NonCompliantLabels { get; set; }
         public List<Label> Projects { get; set; }
         public List<Label> Categories { get; set; }
+        public List<Label> RequiredLabels { get; set; }
+        public List<Label> RogueLabels { get; set; }
     }
 }

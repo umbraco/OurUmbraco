@@ -51,6 +51,36 @@
             });
     };
 
+    $scope.getGitHubLabelReport = function () {
+        vm.gitHubLabelReport = [];
+        var ourLabelReportUrl = "backoffice/API/GitHub/GetLabelReport/";
+        notificationsService.success("Downloading label data, hold on...");
+
+        $http.get(ourLabelReportUrl)
+            .success(function (data) {
+                vm.gitHubLabelReport = data;
+                notificationsService.success("✔ Label data retrieved.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem retrieving label data");
+            });
+    };
+
+    $scope.getGitHubCategoriesProjects = function () {
+        vm.gitHubCategoriesProjects = [];
+        var ourCategoriesProjectsReportUrl = "backoffice/API/GitHub/GetGitHubCategoriesProjects/";
+        notificationsService.success("Downloading label data, hold on...");
+
+        $http.get(ourCategoriesProjectsReportUrl)
+            .success(function (data) {
+                vm.gitHubCategoriesProjects = data;
+                notificationsService.success("✔ Label data retrieved.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem retrieving label data");
+            });
+    };
+
     $scope.downloadDocumentation = function () {
         vm.docsLoading = false;
         vm.docsMessage = "Downloading documentation, hold on...";
