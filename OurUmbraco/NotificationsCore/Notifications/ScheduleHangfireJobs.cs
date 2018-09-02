@@ -136,6 +136,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var repository = new Community.Models.Repository("umbraco-cms", "umbraco", "Umbraco-CMS", "Umbraco CMS");
             RecurringJob.AddOrUpdate(() => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
         }
+
+        public void GetAllGitHubLabels(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+        }
     }
 
     public class ReminderTopic

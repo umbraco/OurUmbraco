@@ -20,11 +20,9 @@ using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
 using Skybrud.Social.GitHub.Exceptions;
-using Skybrud.Social.GitHub.Models.Issues;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
-using Skybrud.Social.Http;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
@@ -39,9 +37,145 @@ namespace OurUmbraco.Community.GitHub
 
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
         public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
+        public readonly string LabelsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GitHubLabels/");
 
         private static readonly object Lock = new object();
         public static bool IsLocked { get; set; }
+
+        public List<Label> RequiredLabels()
+        {
+            var labels = new List<Label>();
+            labels.AddRange(TypeLabels());
+            labels.AddRange(StatusLabels());
+            labels.AddRange(StateLabels());
+
+            return labels;
+        }
+
+        public List<Label> TypeLabels()
+        {
+            var labels = new List<Label>
+            {
+                new Label { Name = "type/bug" },
+                new Label { Name = "type/feature" },
+                new Label { Name = "type/spike" }
+            };
+
+            return labels;
+        }
+
+        public List<Label> StatusLabels()
+        {
+            var labels = new List<Label>
+            {
+                new Label { Name = "status/awaiting-feedback" },
+                new Label { Name = "status/blocked" },
+                new Label { Name = "status/idea" }
+            };
+
+            return labels;
+        }
+
+        public List<Label> StateLabels()
+        {
+            var labels = new List<Label>
+            {
+                new Label { Name = "state/backlog" },
+                new Label { Name = "state/estimation" },
+                new Label { Name = "state/in-progress" },
+                new Label { Name = "state/maturing" },
+                new Label { Name = "state/reopened" },
+                new Label { Name = "state/review" },
+                new Label { Name = "state/sprint-backlog" }
+            };
+
+            return labels;
+        }
+
+        public string RequiredLabelColor(string labelName, string color)
+        {
+            var labelPrefix = labelName.Split('/').FirstOrDefault();
+            if (labelPrefix == null)
+                return string.Empty;
+
+            switch (labelPrefix)
+            {
+                case "category":
+                    return "ffccf8";
+                case "community":
+                    return "b8d9ff";
+                case "partner":
+                    return "fdffe8";
+                case "release":
+                    return "daf0c9";
+                case "state":
+                    return "eaf0f7";
+                case "status":
+                    return "f9c5a4";
+                case "type":
+                    return "9644bf";
+                case "project":
+                    return "f9f9ca";
+                default:
+                    return string.Empty;
+            }
+        }
+
+        public string[] GetLabelRepositories()
+        {
+            return new[] {
+                // Community
+                "Issues.Community",
+                "OurUmbraco",
+                "The-Starter-Kit",
+                "UmbracoExamine.PDF",
+                "UmbracoIdentityExtensions",
+
+                // Core
+                "Umbraco.Private",
+                "Umbraco-Courier",
+                "Umbraco-Deploy",
+                "Forms",
+                "Legacy.Headless.Client.Net",
+                "Umbraco.Headless.Client.NodeJs",
+                "Umbraco.Headless",
+                "Umbraco.Headless.RestApi",
+                "Umbraco.Headless.Client.Net",
+                "Umbraco-Ecom",
+                "Umbraco-CMS",
+                "Umbraco.Forms.Issues",
+
+                // Cloud.Infrastructure
+                "Cloud.Infrastructure",
+                "Concorde.DevOps",
+                "InternalCloudDocumentation",
+
+                // Concorde
+                "Concorde",
+                "Umbraco.Courier.Contrib",
+                "Umbraco.Deploy.Contrib",
+                "Concorde.AutoUpgrader",
+                "Concorde.AzureAutomation",
+                "Concorde.BaselineChild.Service",
+                "Concorde.CleanupService",
+                "Concorde.CreatePreallocationBaseline",
+                "Concorde.Functions",
+                "Concorde.George",
+                "Concorde.KuduCourierSync",
+                "Concorde.Latch",
+                "Concorde.LiveEdit.Client",
+                "Concorde.Messaging",
+                "Concorde.Pack",
+                "Concorde.Preallocation.Service",
+                "Concorde.VisualStudio.Generator.Waasp",
+                "Concorde.Websites",
+                "ConcordePlatform",
+                "Umbraco-Cloud-",
+                "Umbraco.Cloud.Issues",
+                "Umbraco.Courier.Issues",
+                "Umbraco.Deploy.ValueConnectors"
+            };
+        }
 
         /// <summary>
         /// Gets a list of the repositories that should be included in the list of contributors.
@@ -247,6 +381,182 @@ namespace OurUmbraco.Community.GitHub
 
             // Make the request to the GitHub API
             return client.Execute<List<GitHubContributorModel>>(request);
+        }
+
+        /// <summary>
+        /// Gets a list of contributors (<see cref="GitHubContributorModel"/>) for a single GitHub repository.
+        /// </summary>
+        /// <param name="repo">The alias (slug) of the repository.</param>
+        /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
+        public List<Label> GetLabels(PerformContext context, string repo)
+        {
+            var client = GitHubApi.Client;
+            client.AccessToken = WebConfigurationManager.AppSettings["GitHubAccessToken"];
+            var labelsResponse = client.DoHttpGetRequest($"/repos/{RepositoryOwner.ToLowerInvariant()}/{repo}/labels");
+
+            if (labelsResponse.StatusCode != HttpStatusCode.OK)
+            {
+                context.WriteLine($"Failed getting labels for repository: {repo}", labelsResponse.Body);
+                return new List<Label>();
+            }
+
+            var labels = JsonConvert.DeserializeObject<List<Label>>(labelsResponse.Body);
+            return labels;
+        }
+
+        public List<RepositoryLabels> GetForAllRepositories()
+        {
+            var allLabels = JsonConvert.DeserializeObject<List<RepositoryLabels>>($"{LabelsJsonPath}AllLabels.json");
+            return allLabels;
+        }
+
+        public void DownloadAllLabels(PerformContext context)
+        {
+            var repos = GetLabelRepositories();
+            var progressBar = context.WriteProgressBar();
+
+            Directory.CreateDirectory(Path.GetDirectoryName(LabelsJsonPath));
+            context.WriteLine($"Found {repos.Count()} repositories");
+
+            var allLabels = new List<LabelReport>();
+            foreach (var repository in repos.WithProgress(progressBar))
+            {
+                var labels = GetLabels(context, repository);
+                var repositoryLabels = new LabelReport
+                {
+                    Repository = repository,
+                    NonCompliantLabels = new List<NonCompliantLabel>(),
+                    Categories = new List<Label>(),
+                    Projects = new List<Label>()
+                };
+
+                var requiredLabels = RequiredLabels();
+                var requiredLabelsCount = 0;
+                foreach (var label in labels)
+                {
+                    if (label.Name.Contains("/") == false || label.Name.Contains(" "))
+                    {
+                        var nonCompliantLabel = new NonCompliantLabel
+                        {
+                            Label = label,
+                            LabelProblem = "Contains space or missing a slash"
+                        };
+                        repositoryLabels.NonCompliantLabels.Add(nonCompliantLabel);
+                    }
+                    else
+                    {
+                        var foundRequiredLabel = requiredLabels.FirstOrDefault(x => x.Name == label.Name);
+                        if (foundRequiredLabel != null)
+                        {
+                            var labelShouldHaveColor = RequiredLabelColor(label.Name, label.Color);
+                            if (labelShouldHaveColor != string.Empty && labelShouldHaveColor != label.Color)
+                            {
+                                var nonCompliantLabel = new NonCompliantLabel
+                                {
+                                    Label = label,
+                                    LabelProblem = $"Wrong color '{label.Color}', should be '{labelShouldHaveColor}'"
+                                };
+                                repositoryLabels.NonCompliantLabels.Add(nonCompliantLabel);
+                            }
+                            else
+                            {
+                                requiredLabelsCount = requiredLabelsCount + 1;
+                            }
+                        }
+                        else
+                        {
+                            foundRequiredLabel = requiredLabels.FirstOrDefault(x => string.Equals(x.Name, label.Name, StringComparison.InvariantCultureIgnoreCase));
+                            if (foundRequiredLabel == null)
+                                continue;
+
+                            var nonCompliantLabel = new NonCompliantLabel
+                            {
+                                Label = label,
+                                LabelProblem = $"Wrong casing '{label.Name}', should be '{foundRequiredLabel.Name}'"
+                            };
+                            repositoryLabels.NonCompliantLabels.Add(nonCompliantLabel);
+                        }
+                    }
+                }
+
+                foreach (var label in labels)
+                {
+                    var labelPrefix = label.Name.Split('/').FirstOrDefault();
+
+                    var rogueLabels = new List<NonCompliantLabel>();
+                    if (label.Name.Contains("/") && label.Name.Contains(" ") == false &&
+                        labelPrefix == "state" && StateLabels().Any(x => x.Name == label.Name) == false)
+                    {
+                        var rogueLabel = new NonCompliantLabel
+                        {
+                            Label = label,
+                            LabelProblem = $"Rogue state label {label.Name} is not a known state"
+                        };
+                        rogueLabels.Add(rogueLabel);
+                    }
+
+                    if (label.Name.Contains("/") && label.Name.Contains(" ") == false &&
+                        labelPrefix == "status" && StatusLabels().Any(x => x.Name == label.Name) == false)
+                    {
+                        var rogueLabel = new NonCompliantLabel
+                        {
+                            Label = label,
+                            LabelProblem = $"Rogue status label {label.Name} is not a known status"
+                        };
+                        rogueLabels.Add(rogueLabel);
+                    }
+
+                    if (label.Name.Contains("/") && label.Name.Contains(" ") == false &&
+                        labelPrefix == "type" && TypeLabels().Any(x => x.Name == label.Name) == false)
+                    {
+                        var rogueLabel = new NonCompliantLabel
+                        {
+                            Label = label,
+                            LabelProblem = $"Rogue type label {label.Name} is not a known type"
+                        };
+                        rogueLabels.Add(rogueLabel);
+                    }
+
+                    if (rogueLabels.Any())
+                    {
+                        repositoryLabels.NonCompliantLabels.AddRange(rogueLabels);
+                        // No need to check for color compliance now, the label is not supposed to be there
+                        continue;
+                    }
+                    
+                    // Required labels have already been checked
+                    if (requiredLabels.Any(x => x.Name == label.Name))
+                        continue;
+
+                    // non-required label, check for color compliance
+                    var labelShouldHaveColor = RequiredLabelColor(label.Name, label.Color);
+                    if (labelShouldHaveColor == string.Empty || labelShouldHaveColor == label.Color)
+                        continue;
+
+                    var nonCompliantLabel = new NonCompliantLabel
+                    {
+                        Label = label,
+                        LabelProblem = $"Wrong color '{label.Color}', should be '{labelShouldHaveColor}'"
+                    };
+                    repositoryLabels.NonCompliantLabels.Add(nonCompliantLabel);
+                }
+
+                if (requiredLabels.Count == requiredLabelsCount)
+                    repositoryLabels.HasRequiredLabels = true;
+
+                repositoryLabels.Categories = labels.Where(x => x.Name.StartsWith("category") && x.Name.EndsWith("/breaking") == false).ToList();
+                repositoryLabels.Projects = labels.Where(x => x.Name.StartsWith("project")).ToList();
+                allLabels.Add(repositoryLabels);
+                
+                var rawJson = JsonConvert.SerializeObject(labels, Formatting.Indented);
+
+                // Save the JSON to disk
+                context.WriteLine($"Writing file {repository}.json");
+                File.WriteAllText($"{LabelsJsonPath}{repository}.json", rawJson, Encoding.UTF8);
+            }
+
+            var allLabelsJson = JsonConvert.SerializeObject(allLabels, Formatting.Indented);
+            File.WriteAllText($"{LabelsJsonPath}AllLabels.json", allLabelsJson, Encoding.UTF8);
         }
 
         /// <summary>
@@ -499,7 +809,7 @@ namespace OurUmbraco.Community.GitHub
 
                         // Make sure we have a directory
                         Directory.CreateDirectory(Path.GetDirectoryName(issuesFile));
-                        
+
                         JsonUtils.SaveJsonObject(issuesFile, response);
 
                         // Fetch comments if the local JSON file is older than the last update time of the issue
@@ -565,5 +875,44 @@ namespace OurUmbraco.Community.GitHub
     public class Pull_Request
     {
         public string url { get; set; }
+    }
+
+    public class RepositoryLabels
+    {
+        public string Repository { get; set; }
+        public List<Label> Labels { get; set; }
+        public bool HasRequiredLabels { get; set; }
+        public List<NonCompliantLabel> NonCompliantLabels { get; set; }
+    }
+
+    public class NonCompliantLabel
+    {
+        public Label Label { get; set; }
+        public string LabelProblem { get; set; }
+    }
+
+    public class Label
+    {
+        [JsonProperty("id")]
+        public int Id { get; set; }
+        [JsonProperty("node_id")]
+        public string NodeId { get; set; }
+        [JsonProperty("url")]
+        public string Url { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("color")]
+        public string Color { get; set; }
+        [JsonProperty("_default")]
+        public bool Default { get; set; }
+    }
+
+    public class LabelReport
+    {
+        public string Repository { get; set; }
+        public bool HasRequiredLabels { get; set; }
+        public List<NonCompliantLabel> NonCompliantLabels { get; set; }
+        public List<Label> Projects { get; set; }
+        public List<Label> Categories { get; set; }
     }
 }
