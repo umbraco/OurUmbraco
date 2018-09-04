@@ -166,6 +166,10 @@
 
                                 <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
                             }
+                            else
+                            {
+                                <h3>Released on <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
+                            }
 
                             @if (Model.Content.HasValue("releaseNotes"))
                             {
