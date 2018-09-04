@@ -479,6 +479,7 @@
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Documentation\Controllers\DocfxController.cs" />
     <Compile Include="Our\Api\GitHubController.cs" />
+    <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Our\Services\EmailService.cs" />

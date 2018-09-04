@@ -49,13 +49,15 @@ namespace OurUmbraco.Our.Services
                 release.TotalIssueCount = release.Issues.Count;
                 release.Bugs = release.Issues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
                 release.Features = release.Issues.Except(release.Bugs);
+
                 release.IssuesCompleted = release.Issues.Where(x => 
-                    x.State == "Duplicate"
-                    || x.State == "Fixed"
-                    || x.State == "Closed"
-                    || x.State == "Can't Reproduce"
-                    || x.State == "Obsolete"
-                    || x.State == "Workaround posted");
+                    x.State.ToLowerInvariant() == "duplicate"
+                    || x.State.ToLowerInvariant() == "fixed"
+                    || x.State.ToLowerInvariant() == "closed"
+                    || x.State.ToLowerInvariant() == "can't reproduce"
+                    || x.State.ToLowerInvariant() == "obsolete"
+                    || x.State.ToLowerInvariant() == "workaround posted");
+
                 release.PercentComplete = ReleasePercentComplete(release);
             }
 
@@ -77,6 +79,7 @@ namespace OurUmbraco.Our.Services
             var releasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
             var umbracoHelper = new UmbracoHelper(GetUmbracoContext());
             var releasesNode = umbracoHelper.TypedContent(releasesPageNodeId);
+
             var releaseNodes = releasesNode.Children.ToArray();
             context.WriteLine($"Found {releaseNodes.Length} releases");
 
