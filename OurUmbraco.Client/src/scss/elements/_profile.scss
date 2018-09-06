@@ -1,270 +1,279 @@
 .profile {
-	nav {
+    nav {
 
-		h3 {
-			&:hover {
-				opacity: .8;
-			}
-		}
+        h3 {
+            &:hover {
+                opacity: .8;
+            }
+        }
 
-		h4 {
-			opacity: .7;
-			margin: .5rem 0 .5rem;
-		}
-	}
+        h4 {
+            opacity: .7;
+            margin: .5rem 0 .5rem;
+        }
+    }
 
-	li {
-		h3 {
-			opacity: .5;
-		}
+    li {
+        h3 {
+            opacity: .5;
+        }
 
-		&.open, &.active {
-			h3, a {
-				opacity: 1;
-				color: #000 !important;
-			}
-		}
+        &.open, &.active {
+            h3, a {
+                opacity: 1;
+                color: #000 !important;
+            }
+        }
 
-		&.active > ul {
-			max-height: 100%;
-		}
-	}
+        &.active > ul {
+            max-height: 100%;
+        }
+    }
 
-	.profile-settings {
-		position: relative;
-		top: 30px;
+    .profile-settings {
+        position: relative;
+        top: 30px;
 
-		strong {
-			display: block;
-			margin: 3rem 0 1rem;
-		}
+        strong {
+            display: block;
+            margin: 3rem 0 1rem;
+        }
 
-		h1 {
-			font-size: 1.5rem;
-		}
+        h1 {
+            font-size: 1.5rem;
+        }
 
 
-		.button {
-			padding: 20px;
-			font-size: 1rem;
-			font-family: $font-family;
+        .button {
+            padding: 20px;
+            font-size: 1rem;
+            font-family: $font-family;
 
-			@media (min-width: $md) {
-				padding: 12px 20px;
-			}
-		}
-	}
+            @media (min-width: $md) {
+                padding: 12px 20px;
+            }
+        }
+    }
 
-	.profile-settings-forms {
-		margin-top: 30px;
+    .profile-settings-forms {
+        margin-top: 30px;
 
-		label {
-			font-weight: 600;
-		}
+        label {
+            font-weight: 600;
+        }
 
-		.button {
-			margin-top: 60px;
-			
-			@media (max-width: $md) {
-				width: 100%;
-			}
-		}
+        .button {
+            margin-top: 60px;
 
-		@include placeholder {
-		    color: $color-text;
-		    font-size: 1rem;
-		    font-family: $font-family;
-		}
+            @media (max-width: $md) {
+                width: 100%;
+            }
+        }
 
-		div.profile-input {
-			font-size: 1rem;
-			font-family: $font-family;
-			color: #000;
-			position: relative;
-		}
+        @include placeholder {
+            color: $color-text;
+            font-size: 1rem;
+            font-family: $font-family;
+        }
 
-		div.profile-input {
-			min-height: 30px;
+        div.profile-input {
+            font-size: 1rem;
+            font-family: $font-family;
+            color: #000;
+            position: relative;
+        }
 
-			& + div.profile-input {
-				margin-top: 20px;
-			}
+        div.profile-input {
+            min-height: 30px;
 
-			&#bio {
-				min-height: 200px;
-			}
+            & + div.profile-input {
+                margin-top: 20px;
+            }
 
-			input, textarea {
-				height: 30px;
-				line-height: 30px;
-				border: 1px solid transparent;
-				border-bottom-color: darken(whitesmoke, 6%);
-				width: auto;
-				min-width: 200px;
-				width: 140px;
-				display: inline-block;
-				padding: 4px 8px 4px 0;
+            &#bio {
+                min-height: 200px;
+            }
 
-				color: $color-text;
-				font-size: 1rem;
-				font-family: $font-family;
+            input, textarea {
+                height: 30px;
+                line-height: 30px;
+                border: 1px solid transparent;
+                border-bottom-color: darken(whitesmoke, 6%);
+                width: auto;
+                min-width: 200px;
+                width: 140px;
+                display: inline-block;
+                padding: 4px 8px 4px 0;
+                color: $color-text;
+                font-size: 1rem;
+                font-family: $font-family;
+                position: absolute;
+                top: -8px;
+                left: 150px;
 
-				position: absolute;
-				top: -8px;
-				left: 150px;
+                @media (min-width: $md) {
+                    width: 300px;
+                }
 
-				@media (min-width: $md) {
-					width: 300px;
-				}
+                @media (max-width: $xs) {
+                    width: 100%;
+                    position: static;
+                    display: block;
+                    min-width: 100%;
+                }
 
-				@include transition(all, .2s);
+                @include transition(all, .2s);
 
-				&:focus {
-					outline: none;
-					border-bottom-color: $color-our;
-					color: rgba(#000, 1);
-				}
-			}
+                &:focus {
+                    outline: none;
+                    border-bottom-color: $color-our;
+                    color: rgba(#000, 1);
+                }
+            }
 
-			textarea {
-				border: 1px solid darken(whitesmoke, 6%);
-				min-height: 200px;
-				left: 152px;
-				line-height: normal;
-				display: inline-block;
-				text-align: left;
-				overflow: hidden;
-				padding: 8px;
-				resize: none;
-				max-width: 100%;
-				font-size: .9rem;
-				width: 138px;
+            textarea {
+                border: 1px solid darken(whitesmoke, 6%);
+                min-height: 200px;
+                left: 152px;
+                line-height: normal;
+                display: inline-block;
+                text-align: left;
+                overflow: hidden;
+                padding: 8px;
+                resize: none;
+                max-width: 100%;
+                font-size: .9rem;
+                width: 138px;
 
-				@media (min-width: $md) {
-					width: 298px;
-				}
+                @media (min-width: $md) {
+                    width: 298px;
+                }
 
-				&:focus {
-					border-color: $color-our;
-				}
-			}
+                @media (max-width: $xs) {
+                    width: 100%;
+                }
 
-			input {
-				&:hover {
-					border-bottom-color: rgba($color-our, .78);
-					color: darken(#a6a6a6, 15%);
+                &:focus {
+                    border-color: $color-our;
+                }
+            }
 
-					&:focus {
-						color: #000;
-						border-bottom-color: rgba($color-our, 1);
-					} 
-				}
+            input {
+                &:hover {
+                    border-bottom-color: rgba($color-our, .78);
+                    color: darken(#a6a6a6, 15%);
 
-				&[type='password']{
-					letter-spacing: 1px;
-					font-size: 1.1rem;
-				}
-			}
+                    &:focus {
+                        color: #000;
+                        border-bottom-color: rgba($color-our, 1);
+                    }
+                }
 
-			textarea {
-				&:hover {
-					border-color: rgba($color-our, .78);
-					color: darken(#a6a6a6, 15%); 
+                &[type='password'] {
+                    letter-spacing: 1px;
+                    font-size: 1.1rem;
+                }
+            }
 
-					&:focus {
-						color: #000;
-						border-color: rgba($color-our, 1);
-					} 
-				}
-			}
+            textarea {
+                &:hover {
+                    border-color: rgba($color-our, .78);
+                    color: darken(#a6a6a6, 15%);
 
-			&.warning {
-				input, textarea {
-					border-bottom-color: $color-red;
-					color: $color-red;
-				}
+                    &:focus {
+                        color: #000;
+                        border-color: rgba($color-our, 1);
+                    }
+                }
+            }
 
-				textarea {
-					border-color: $color-red;
-				}
+            &.warning {
+                input, textarea {
+                    border-bottom-color: $color-red;
+                    color: $color-red;
+                }
 
-				label {
-					color: $color-red;
-				}
-			}
+                textarea {
+                    border-color: $color-red;
+                }
 
-			&.confirm-password {
-				display: none;
+                label {
+                    color: $color-red;
+                }
+            }
 
-				&.visible {
-					display: block;
-				}
-			}
-		}
+            &.confirm-password {
+                display: none;
 
-	
-		label {
-			&:after {
-				content:":";
-				display: inline-block;
-			}
-		}
+                &.visible {
+                    display: block;
+                }
+            }
+        }
 
-		.avatar {
-			margin: 0 0 50px;
-			position: relative;
-			overflow: hidden;
-			height: 98px;
-			line-height: 98px;
 
-			.ink {
-				background: rgba(#fff, .5);
-				overflow: hidden;
-			}
+        label {
+            &:after {
+                content: ":";
+                display: inline-block;
+            }
+        }
 
-			label {
-				float: left;
-			}
+        .avatar {
+            margin: 0 0 50px;
+            position: relative;
+            overflow: hidden;
+            height: 98px;
+            line-height: 98px;
 
-			.avatar-image {
-				position: absolute;
-				height: 98px;
-				width: 98px;
-				left: 100px;
-				user-select: none;
+            .ink {
+                background: rgba(#fff, .5);
+                overflow: hidden;
+            }
 
-				img {
-					border-radius:50%;
-					height: auto;
-					width:98px;
-				}
+            label {
+                float: left;
+            }
 
-				span {
-					opacity: 0;
-					border-radius:50%;
-					position: absolute;
-					height: 100%;
-					width: 100%;
-					top: 0;
-					left: 0;
-					background: rgba(#000, .58);
-					text-align: center;
-					line-height: 98px;
-					font-size: .85rem;
-					color: #fff;
-					@include transition(opacity, .2s);
-					user-select: none;
-				}
+            .avatar-image {
+                position: absolute;
+                height: 98px;
+                width: 98px;
+                left: 100px;
+                user-select: none;
 
-				&:hover {
-					span {
-						opacity: 1;
-						cursor: pointer;
-					}
-				}
-			}
-		}
-	}
+                img {
+                    border-radius: 50%;
+                    height: auto;
+                    width: 98px;
+                }
+
+                span {
+                    opacity: 0;
+                    border-radius: 50%;
+                    position: absolute;
+                    height: 100%;
+                    width: 100%;
+                    top: 0;
+                    left: 0;
+                    background: rgba(#000, .58);
+                    text-align: center;
+                    line-height: 98px;
+                    font-size: .85rem;
+                    color: #fff;
+                    @include transition(opacity, .2s);
+                    user-select: none;
+                }
+
+                &:hover {
+                    span {
+                        opacity: 1;
+                        cursor: pointer;
+                    }
+                }
+            }
+        }
+    }
 }
 
 
