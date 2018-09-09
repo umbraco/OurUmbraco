@@ -95,7 +95,7 @@
 }
 <div class="search-big">
     <input type="search" class="project-search-input" required placeholder="Search for projects">
-    <label for="search">Search projects</label>
+    <label for="search">Search packages</label>
 </div>
 @functions{
     public string GetField(IDictionary<string, string> fields, string field, string defaultVal = "")
@@ -135,7 +135,7 @@
         return orderedVersions.Min() + " - " + orderedVersions.Max();
     }
 }
-<h1>Browse @headline projects</h1>
+<h1>Browse @headline packages</h1>
 <script type="text/template" class="search-item-project">
     <div class="box">
         <div class="row">
