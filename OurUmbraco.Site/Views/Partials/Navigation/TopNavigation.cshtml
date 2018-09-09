@@ -2,9 +2,16 @@
 <ul>
     @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where("Visible"))
     {
-        <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
+    <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
+        @if (page.Name == "Contribute")
+        {
+            <a href="https://github.com/umbraco/Umbraco-CMS/blob/dev-v7/.github/CONTRIBUTING.md" target="_blank">@page.Name</a>
+        }
+        else
+        {
             <a href="@page.Url">@page.Name</a>
-        </li>
+        }
+    </li>
     }
 
     <li>
