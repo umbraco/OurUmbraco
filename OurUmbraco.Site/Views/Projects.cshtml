@@ -12,16 +12,16 @@
                         <li class="filter-orderBy">
                             <h3>Packages</h3>
                             <ul class="level-2">
-                                <li><h4><a href="?orderBy=updateDate">Updated packages</a></h4></li>
-                                <li><h4><a href="?orderBy=popularity">Popular packages</a></h4></li>
+                                <li class="param-updateDate"><h4><a href="?orderBy=updateDate">Updated packages</a></h4></li>
+                                <li class="param-popularity"><h4><a href="?orderBy=popularity">Popular packages</a></h4></li>
                             </ul>
                         </li>
                         <li class="filter-version">
                             <h3>By Version</h3>
                             <ul class="level-2">
-                                <li><h4><a href="?version=7">Version 7</a></h4></li>
-                                <li><h4><a href="?version=6">Version 6</a></h4></li>
-                                <li><h4><a href="?version=4">Version 4</a></h4></li>
+                                <li class="param-7"><h4><a href="?version=7">Version 7</a></h4></li>
+                                <li class="param-6"><h4><a href="?version=6">Version 6</a></h4></li>
+                                <li class="param-4"><h4><a href="?version=4">Version 4</a></h4></li>
                             </ul>
                         </li>
                         <li class="filter-category">
@@ -79,6 +79,12 @@
             // test if element exists
             if (filterElem.length) {
                 filterElem.addClass('active open');
+
+                var selectedMenuItem = filterElem.find('.param-' + decodeURIComponent(query[query[0]]).replace(' ', ''));
+
+                if (selectedMenuItem.length) {
+                    selectedMenuItem.addClass('active');
+                }
             }
         }
 
