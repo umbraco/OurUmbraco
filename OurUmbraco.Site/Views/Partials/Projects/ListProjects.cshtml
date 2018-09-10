@@ -13,7 +13,7 @@
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 20;
-    var headline = orderMode == "createDate" ? "latest" : "most popular";
+    var headline = orderMode == "updateDate" ? "latest" : "most popular";
     if (version != null)
     {
         headline = "version " + version;
