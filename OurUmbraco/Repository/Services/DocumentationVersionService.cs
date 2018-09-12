@@ -46,6 +46,8 @@ namespace OurUmbraco.Repository.Services
             }
 
             string currentUrl = string.Join("", pathParts) + baseFileName;
+            string currentPageUrl = (string.Join("", pathParts) + currentFileName).ToLowerInvariant();
+            
 
             //Now we go off to examine, and search for all entries
             //with path beginning with currentFilePath
@@ -63,7 +65,8 @@ namespace OurUmbraco.Repository.Services
                     {
                         Url = f["url"],
                         Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
-                        IsCurrentVersion = f["url"] == baseFileName
+                        IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
+                        IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl
                     });
 
                 alternativeDocs.AddRange(versionInfo);
