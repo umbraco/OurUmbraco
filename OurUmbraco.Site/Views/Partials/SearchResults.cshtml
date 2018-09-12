@@ -32,6 +32,11 @@
                     <input name="q" required value="@Model.Results.SearchTerm">
                     <input type="hidden" name="cat" value="@Request.QueryString["cat"]" />
                     <label for="search">Search</label>
+                    <select class="version-search-select" name="v">
+                        <option value="8" selected="@(Request.QueryString["v"] == "8"? "selected" : null)">v8</option>
+                        <option value="7" selected="@(Request.QueryString["v"] == "7"? "selected" : null)">v7</option>
+                        <option value="6" selected="@(Request.QueryString["v"] == "6"? "selected" : null)">v6</option>                        
+                    </select>
                 </div>
             </form>
     

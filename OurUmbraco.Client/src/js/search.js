@@ -23,6 +23,8 @@ function redirectToSearch(ev) {
 
         }
 
+        var version = $(".version-search-select").val();
+
         var filters = GetSearchFilters(categoryName);
 
         var newUri = "/search";
@@ -39,6 +41,8 @@ function redirectToSearch(ev) {
         newUri = updateQueryString("replies", filters.replies, newUri);
         newUri = updateQueryString("solved", filters.solved, newUri);
         newUri = updateQueryString("unsolved", filters.unsolved, newUri);
+
+                newUri = updateQueryString("v", version, newUri);
 
         window.location = newUri;
     }
