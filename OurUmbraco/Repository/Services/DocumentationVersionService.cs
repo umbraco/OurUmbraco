@@ -65,9 +65,13 @@ namespace OurUmbraco.Repository.Services
                     {
                         Url = f["url"],
                         Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
+                        VersionFrom = string.IsNullOrWhiteSpace( f["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionFrom"]),
+                        VersionTo = string.IsNullOrWhiteSpace(f["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionTo"]),
                         IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
                         IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl
-                    });
+                    })
+                    .OrderByDescending(v=> v.VersionFrom)
+                    .ThenBy(v=>v.VersionTo);
 
                 alternativeDocs.AddRange(versionInfo);
             }
