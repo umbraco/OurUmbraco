@@ -99,7 +99,7 @@
                 <dt>@*Alternate*@ Versions</dt>
                 @foreach (var version in altVersions)
                 {
-                    <dd>
+                    <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")"> 
                         @if (version.IsCurrentPage)
                         {
                             @(version.Version)

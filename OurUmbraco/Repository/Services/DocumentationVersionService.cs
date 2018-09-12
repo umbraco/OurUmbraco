@@ -89,6 +89,10 @@ namespace OurUmbraco.Repository.Services
             {
                 return from + " +";
             }
+            else if (to == from)
+            {
+                return from;
+            }
             else
             {
                 return from + " - " + to;
