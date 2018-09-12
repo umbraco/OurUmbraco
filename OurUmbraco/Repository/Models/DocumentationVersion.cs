@@ -12,5 +12,6 @@ namespace OurUmbraco.Repository.Models
         public string Version { get; set; }
         public string Url { get; set; }
         public bool IsCurrentVersion { get; set; }
+        public bool IsCurrentPage { get; internal set; }
     }
 }

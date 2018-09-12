@@ -100,13 +100,17 @@
                 @foreach (var version in altVersions)
                 {
                     <dd>
-                        @if (version.IsCurrentVersion)
+                        @if (version.IsCurrentPage)
                         {
                             @(version.Version)
                         }
                         else
                         {
                             <a href='@version.Url'>@(version.Version)</a>
+                        }
+                        @if (version.IsCurrentVersion)
+                        {
+                            @:(current)
                         }
                     </dd>
                 }
