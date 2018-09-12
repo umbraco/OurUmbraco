@@ -21,7 +21,9 @@ function redirectToSearch(ev){
 				        categoryName = ev.target.attributes.class.value;
 				    }
 
-				} 
+                } 
+
+                var version = $(".version-search-select").val();
 
 				var filters = GetSearchFilters(categoryName);
 				
@@ -31,14 +33,16 @@ function redirectToSearch(ev){
 					newUri = updateQueryString("cat", filters.category, newUri);
 				}
 				if(filters.category === "docs") {
-					newUri = updateQueryString("cat", "documentation", newUri);
+                    newUri = updateQueryString("cat", "documentation", newUri);
 				}
 				newUri = updateQueryString("fid", filters.forumId, newUri);
 				newUri = updateQueryString("order", filters.order, newUri);
 				newUri = updateQueryString("noreplies", filters.noreplies, newUri);
 				newUri = updateQueryString("replies", filters.replies, newUri);
 				newUri = updateQueryString("solved", filters.solved, newUri);
-				newUri = updateQueryString("unsolved", filters.unsolved, newUri);
+                newUri = updateQueryString("unsolved", filters.unsolved, newUri);
+
+                newUri = updateQueryString("v", version, newUri);
 					
 				window.location = newUri;
 			}
