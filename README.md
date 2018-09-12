@@ -11,7 +11,7 @@ If you're working on the frontend (the js/css/etc parts in `~/OurUmbraco.Client`
 
 ```
 npm install
-npm install -g install gulp -g
+npm install gulp -g
 gulp
 ```
 
