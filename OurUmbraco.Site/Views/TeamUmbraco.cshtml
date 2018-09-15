@@ -1,0 +1,282 @@
+﻿@using ClientDependency.Core.Mvc
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    Html.RequiresJs("~/Assets/amcharts/core.js");
+    Html.RequiresJs("~/Assets/amcharts/charts.js");
+    var fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
+    var toDate = DateTime.Now.AddMonths(1).ToString("yyyy-MM-01");
+}
+<script src="/Assets/amcharts/core.js"></script>
+<script src="/Assets/amcharts/charts.js"></script>
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
+    <h1>@Model.Content.Name</h1>
+    @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+    <p>&nbsp;</p>
+
+    <div style="width:1200px; clear: both;">
+        <div id="openPRs" style="float: left; height: 200px; width: 50%;"></div>
+        <div id="openPRs5" style="float: left; height: 200px; width: 50%;"></div>
+    </div>
+    
+    <div style="width:1200px; clear: both; ">
+        <div id="openPRs2" style="float: left; height: 200px; width: 33%;"></div>
+        <div id="openPRs3" style="float: left; height: 200px; width: 33%;"></div>
+        <div id="openPRs4" style="float: left; height: 200px; width: 33%;"></div>
+    </div>
+
+    <div id="groupedPrs" style="clear: both; width: 1200px; height: 500px;"></div>
+</div>
+
+<script>
+    httpGetAsync( "/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod", function(response) {
+        var currentData = JSON.parse(response);
+        var colorSet = new am4core.ColorSet();
+
+        var openPrsChart = am4core.create("openPRs", am4charts.GaugeChart); 
+        openPrsChart.innerRadius = -25;
+
+        var axisOpenPrs = openPrsChart.xAxes.push(new am4charts.ValueAxis());
+        axisOpenPrs.min = 0;
+        axisOpenPrs.max = 200;
+        axisOpenPrs.strictMinMax = true;
+        axisOpenPrs.renderer.grid.template.disabled = true;
+
+        var rangeOpenPrs = axisOpenPrs.axisRanges.create();
+        rangeOpenPrs.value = 0;
+        rangeOpenPrs.endValue = 200;
+        rangeOpenPrs.axisFill.fillOpacity = 1;
+        rangeOpenPrs.axisFill.fill = colorSet.getIndex(0);
+
+        var clockHandOpenPrs = new am4charts.ClockHand();
+        clockHandOpenPrs.hand.className = "RoundedRectangle";
+        clockHandOpenPrs.endWidth = 10;
+        clockHandOpenPrs.startWidth = 10;
+        clockHandOpenPrs.pin.radius = 10;
+        var handOpenPrs = openPrsChart.hands.push(clockHandOpenPrs);
+        handOpenPrs.showValue(currentData.TotalNumberOpen)
+
+        var labelOpenPrs = openPrsChart.radarContainer.createChild(am4core.Label);
+        labelOpenPrs.isMeasured = false;
+        labelOpenPrs.fontSize = 18;
+        labelOpenPrs.x = am4core.percent(50);
+        labelOpenPrs.y = am4core.percent(100);
+        labelOpenPrs.horizontalCenter = "middle";
+        labelOpenPrs.verticalCenter = "bottom";
+        labelOpenPrs.text = "Open: " + currentData.TotalNumberOpen;
+        labelOpenPrs.paddingBottom = -50;
+
+///
+        var createdPrsChart = am4core.create("openPRs2", am4charts.GaugeChart); 
+        createdPrsChart.innerRadius = -25;
+
+        var axisCreatedPrs = createdPrsChart.xAxes.push(new am4charts.ValueAxis());
+        axisCreatedPrs.min = 0;
+        axisCreatedPrs.max = 50;
+        axisCreatedPrs.strictMinMax = true;
+        axisCreatedPrs.renderer.grid.template.disabled = true;
+
+        var rangeCreatedPrs = axisCreatedPrs.axisRanges.create();
+        rangeCreatedPrs.value = 0;
+        rangeCreatedPrs.endValue = 50;
+        rangeCreatedPrs.axisFill.fillOpacity = 1;
+        rangeCreatedPrs.axisFill.fill = colorSet.getIndex(0);
+
+        var clockHandCreatedPrs = new am4charts.ClockHand();
+        clockHandCreatedPrs.hand.className = "RoundedRectangle";
+        clockHandCreatedPrs.endWidth = 10;
+        clockHandCreatedPrs.startWidth = 10;
+        clockHandCreatedPrs.pin.radius = 10;
+        var handCreatedPrs = createdPrsChart.hands.push(clockHandCreatedPrs);
+        handCreatedPrs.showValue(currentData.NumberCreated)
+
+        var labelCreatedPrs = createdPrsChart.radarContainer.createChild(am4core.Label);
+        labelCreatedPrs.isMeasured = false;
+        labelCreatedPrs.fontSize = 18;
+        labelCreatedPrs.x = am4core.percent(50);
+        labelCreatedPrs.y = am4core.percent(100);
+        labelCreatedPrs.horizontalCenter = "middle";
+        labelCreatedPrs.verticalCenter = "bottom";
+        labelCreatedPrs.text = "Created: " + currentData.NumberCreated;
+        labelCreatedPrs.paddingBottom = -50;
+
+///
+        var mergedPrsChart = am4core.create("openPRs3", am4charts.GaugeChart); 
+        mergedPrsChart.innerRadius = -25;
+
+        var axismergedPrs = mergedPrsChart.xAxes.push(new am4charts.ValueAxis());
+        axismergedPrs.min = 0;
+        axismergedPrs.max = 50;
+        axismergedPrs.strictMinMax = true;
+        axismergedPrs.renderer.grid.template.disabled = true;
+
+        var rangemergedPrs = axismergedPrs.axisRanges.create();
+        rangemergedPrs.value = 0;
+        rangemergedPrs.endValue = 50;
+        rangemergedPrs.axisFill.fillOpacity = 1;
+        rangemergedPrs.axisFill.fill = colorSet.getIndex(0);
+
+        var clockHandmergedPrs = new am4charts.ClockHand();
+        clockHandmergedPrs.hand.className = "RoundedRectangle";
+        clockHandmergedPrs.endWidth = 10;
+        clockHandmergedPrs.startWidth = 10;
+        clockHandmergedPrs.pin.radius = 10;
+        var handmergedPrs = mergedPrsChart.hands.push(clockHandmergedPrs);
+        handmergedPrs.showValue(currentData.NumberMerged)
+
+        var labelmergedPrs = mergedPrsChart.radarContainer.createChild(am4core.Label);
+        labelmergedPrs.isMeasured = false;
+        labelmergedPrs.fontSize = 18;
+        labelmergedPrs.x = am4core.percent(50);
+        labelmergedPrs.y = am4core.percent(100);
+        labelmergedPrs.horizontalCenter = "middle";
+        labelmergedPrs.verticalCenter = "bottom";
+        labelmergedPrs.text = "Merged: " + currentData.NumberMerged;
+        labelmergedPrs.paddingBottom = -50;
+
+///
+        var closedPrsChart = am4core.create("openPRs4", am4charts.GaugeChart); 
+        closedPrsChart.innerRadius = -25;
+
+        var axisclosedPrs = closedPrsChart.xAxes.push(new am4charts.ValueAxis());
+        axisclosedPrs.min = 0;
+        axisclosedPrs.max = 50;
+        axisclosedPrs.strictMinMax = true;
+        axisclosedPrs.renderer.grid.template.disabled = true;
+
+        var rangeclosedPrs = axisclosedPrs.axisRanges.create();
+        rangeclosedPrs.value = 0;
+        rangeclosedPrs.endValue = 50;
+        rangeclosedPrs.axisFill.fillOpacity = 1;
+        rangeclosedPrs.axisFill.fill = colorSet.getIndex(0);
+
+        var clockHandclosedPrs = new am4charts.ClockHand();
+        clockHandclosedPrs.hand.className = "RoundedRectangle";
+        clockHandclosedPrs.endWidth = 10;
+        clockHandclosedPrs.startWidth = 10;
+        clockHandclosedPrs.pin.radius = 10;
+        var handclosedPrs = closedPrsChart.hands.push(clockHandclosedPrs);
+        handclosedPrs.showValue(currentData.NumberClosed)
+
+        var labelclosedPrs = closedPrsChart.radarContainer.createChild(am4core.Label);
+        labelclosedPrs.isMeasured = false;
+        labelclosedPrs.fontSize = 18;
+        labelclosedPrs.x = am4core.percent(50);
+        labelclosedPrs.y = am4core.percent(100);
+        labelclosedPrs.horizontalCenter = "middle";
+        labelclosedPrs.verticalCenter = "bottom";
+        labelclosedPrs.text = "Closed: " + currentData.NumberClosed;
+        labelclosedPrs.paddingBottom = -50;
+
+///
+        var newContributorsChart = am4core.create("openPRs5", am4charts.GaugeChart); 
+        newContributorsChart.innerRadius = -25;
+
+        var axisnewContributors = newContributorsChart.xAxes.push(new am4charts.ValueAxis());
+        axisnewContributors.min = 0;
+        axisnewContributors.max = 10;
+        axisnewContributors.strictMinMax = true;
+        axisnewContributors.renderer.grid.template.disabled = true;
+
+        var rangenewContributors = axisnewContributors.axisRanges.create();
+        rangenewContributors.value = 0;
+        rangenewContributors.endValue = 10;
+        rangenewContributors.axisFill.fillOpacity = 1;
+        rangenewContributors.axisFill.fill = colorSet.getIndex(0);
+
+        var clockHandnewContributors = new am4charts.ClockHand();
+        clockHandnewContributors.hand.className = "RoundedRectangle";
+        clockHandnewContributors.endWidth = 10;
+        clockHandnewContributors.startWidth = 10;
+        clockHandnewContributors.pin.radius = 10;
+        var handnewContributors = newContributorsChart.hands.push(clockHandnewContributors);
+        handnewContributors.showValue(currentData.NumberOfNewContributors)
+
+        var labelnewContributors = newContributorsChart.radarContainer.createChild(am4core.Label);
+        labelnewContributors.isMeasured = false;
+        labelnewContributors.fontSize = 18;
+        labelnewContributors.x = am4core.percent(50);
+        labelnewContributors.y = am4core.percent(100);
+        labelnewContributors.horizontalCenter = "middle";
+        labelnewContributors.verticalCenter = "bottom";
+        labelnewContributors.text = "New contributors: " + currentData.NumberOfNewContributors;
+        labelnewContributors.paddingBottom = -50;        
+    });
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var groupedPrsChart = am4core.create("groupedPrs", am4charts.XYChart);
+    groupedPrsChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)";
+
+    groupedPrsChart.legend = new am4charts.Legend();
+    groupedPrsChart.colors.step = 2;
+
+    var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "MonthYear";
+    categoryAxis.renderer.grid.template.location = 0;
+
+    var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.min = 0;
+    valueAxis.renderer.minWidth = 35;
+
+    var prsMerged = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+    prsMerged.columns.template.width = am4core.percent(80);
+    prsMerged.columns.template.tooltipText = "{name}: {valueY.value}";
+    prsMerged.name = "PRs merged";
+    prsMerged.dataFields.categoryX = "MonthYear";
+    prsMerged.dataFields.valueY = "NumberMerged";
+    prsMerged.stacked = true;
+
+    var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+    prsClosed.columns.template.width = am4core.percent(80);
+    prsClosed.columns.template.tooltipText = "{name}: {valueY.value}";
+    prsClosed.name = "PRs closed";
+    prsClosed.dataFields.categoryX = "MonthYear";
+    prsClosed.dataFields.valueY = "NumberClosed";
+    prsClosed.stacked = true;
+
+    var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+    prsCreated.columns.template.width = am4core.percent(80);
+    prsCreated.columns.template.tooltipText = "{name}: {valueY.value}";
+    prsCreated.name = "PRs created";
+    prsCreated.dataFields.categoryX = "MonthYear";
+    prsCreated.dataFields.valueY = "NumberCreated";
+    prsCreated.stacked = false;
+
+    groupedPrsChart.scrollbarX = new am4core.Scrollbar();
+
+    function httpGetAsync(url, callback)
+    {
+        var xmlHttp = new XMLHttpRequest();
+        xmlHttp.onreadystatechange = function() { 
+            if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                callback(xmlHttp.responseText);
+        }
+        xmlHttp.open("GET", url, true); // true for asynchronous 
+        xmlHttp.send(null);
+    }
+
+    var time = new Date().getTime();
+    $(document.body).bind("mousemove keypress", function(e) {
+        time = new Date().getTime();
+    });
+
+    function refresh() {
+        // Refreshes every 20 seconds, set value 
+        // below to something other than 20000
+        // to vary the number of seconds
+        if(new Date().getTime() - time >= 20000) 
+            window.location.reload(true);
+        else 
+            setTimeout(refresh, 10000);
+    }
+
+    setTimeout(refresh, 10000);
+</script>

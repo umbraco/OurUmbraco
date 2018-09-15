@@ -429,6 +429,7 @@
     <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
+    <Compile Include="Our\Api\TeamUmbracoStatisticsController.cs" />
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
@@ -482,6 +483,8 @@
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Extensions\ListExtensions.cs" />
+    <Compile Include="Our\Models\FirstPullRequest.cs" />
+    <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />

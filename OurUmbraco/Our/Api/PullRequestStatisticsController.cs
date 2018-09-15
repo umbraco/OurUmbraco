@@ -5,6 +5,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
+using OurUmbraco.Our.Models;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -43,10 +44,10 @@ namespace OurUmbraco.Our.Api
                 .GroupBy(x => new { x.CreatedAt.Value.Year, x.CreatedAt.Value.Month })
                 .ToDictionary(x => x.Key, x => x.ToList());
 
-            var firstPrs = new List<FirstPr>();
+            var firstPrs = new List<FirstPullRequest>();
             foreach (var pr in pullsNonHq)
                 if (pr.MergedAt != null && firstPrs.Any(x => x.Username == pr.User.Login) == false)
-                    firstPrs.Add(new FirstPr { Username = pr.User.Login, Year = pr.MergedAt.Value.Year, Month = pr.MergedAt.Value.Month });
+                    firstPrs.Add(new FirstPullRequest { Username = pr.User.Login, Year = pr.MergedAt.Value.Year, Month = pr.MergedAt.Value.Month });
 
             var groupedPrs = new List<PullRequestsInPeriod>();
 
@@ -148,6 +149,13 @@ namespace OurUmbraco.Our.Api
                         openPrsForPeriod.Add(pr);
                 }
                 pullRequestsInPeriod.TotalNumberOpen = openPrsForPeriod.Count;
+                foreach (var githubPullRequestModel in openPrsForPeriod)
+                {
+                    if (githubPullRequestModel.CreatedAt > DateTime.Parse("2018-05-25") && githubPullRequestModel.MergedAt == null || githubPullRequestModel.MergedAt == DateTime.MinValue)
+                    {
+                        pullRequestsInPeriod.TotalNumberOpenAfterCodeGarden18 = pullRequestsInPeriod.TotalNumberOpenAfterCodeGarden18 + 1;
+                    }
+                }
 
                 var activeContributors = new List<string>();
                 foreach (var pr in pullsNonHq)
@@ -186,86 +194,5 @@ namespace OurUmbraco.Our.Api
             pullsNonHq = pullsNonHq.ToList();
             return pullsNonHq;
         }
-    }
-
-    public class PullRequestsInPeriod
-    {
-        /// <summary>
-        /// The year and month that this period covers
-        /// </summary>
-        public string MonthYear { get; set; }
-
-        /// <summary>
-        /// Total number of PRs received in this period
-        /// </summary>
-        public int NumberCreated { get; set; }
-
-        /// <summary>
-        /// PR closed without merging in this period
-        /// </summary>
-        public int NumberClosed { get; set; }
-
-        /// <summary>
-        /// PR Merged in this period
-        /// </summary>
-        public int NumberMerged { get; set; }
-
-        /// <summary>
-        /// PR Merged in this period that were created since January 2018
-        /// We stop in January since we weren't very good at maintaining this before 
-        /// </summary>
-        public int NumberMergedRecent { get; set; }
-
-        /// <summary>
-        /// Number of PRs that were created in this period and merged within 30 days after creating the PR
-        /// </summary>
-        public int NumberMergedInThirtyDays { get; set; }
-
-        /// <summary>
-        /// Number of PRs that were created in this period and merged, but not merged within 30 days after creating the PR
-        /// </summary>
-        public int NumberNotMergedInThirtyDays { get; set; }
-
-        /// <summary>
-        ///  Total number of pull requests still open per month 
-        /// </summary>
-        public int TotalNumberOpen { get; set; }
-
-        /// <summary>
-        /// First PR submitted in this period
-        /// </summary>
-        public int NumberOfNewContributors { get; set; }
-
-        /// <summary>
-        /// Usernames of the first time contributors
-        /// </summary>
-        public List<string> NewContributors { get; set; }
-
-        /// <summary>
-        /// All contributors that submitted a pull-request within the past year 
-        /// </summary>
-        public int NumberOfActiveContributorsInPastYear { get; set; }
-
-        /// <summary>
-        /// The total number of hours it took to merge all PRs in this period
-        /// </summary>
-        public int TotalMergeTimeInHours { get; set; }
-
-        /// <summary>
-        /// Average time in hours between create and merge date
-        /// </summary>
-        public int AveragePullRequestClosingTimeInHours { get; set; }
-
-        /// <summary>
-        /// All the contributors over all time who are not part of HQ
-        /// </summary>
-        public int TotalNumberOfContributors { get; set; }
-    }
-
-    public class FirstPr
-    {
-        public string Username { get; set; }
-        public int Year { get; set; }
-        public int Month { get; set; }
     }
 }
