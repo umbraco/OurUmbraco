@@ -267,11 +267,11 @@
     });
 
     function refresh() {
-        // Refreshes every 20 seconds, set value 
-        // below to something other than 20000
+        // Refreshes every 60 seconds, set value 
+        // below to something other than 60000
         // to vary the number of seconds
-        if(new Date().getTime() - time >= 20000) 
-            window.location.reload(true);
+        if(new Date().getTime() - time >= 60000) 
+            window.location.reload();
         else 
             setTimeout(refresh, 10000);
     }
