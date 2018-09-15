@@ -2,13 +2,11 @@
 @inherits UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
-    Html.RequiresJs("~/Assets/amcharts/core.js");
-    Html.RequiresJs("~/Assets/amcharts/charts.js");
     var fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
     var toDate = DateTime.Now.AddMonths(1).ToString("yyyy-MM-01");
 }
-<script src="/Assets/amcharts/core.js"></script>
-<script src="/Assets/amcharts/charts.js"></script>
+<script src="/scripts/amcharts/core.js"></script>
+<script src="/scripts/amcharts/charts.js"></script>
 
 <div id="body" class="page markdown-syntax">
     <div>
