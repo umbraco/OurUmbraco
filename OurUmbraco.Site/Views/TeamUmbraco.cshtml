@@ -217,7 +217,7 @@
     groupedPrsChart.colors.step = 2;
 
     var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
-    categoryAxis.dataFields.category = "MonthYear";
+    categoryAxis.dataFields.category = "GroupName";
     categoryAxis.renderer.grid.template.location = 0;
 
     var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
@@ -228,7 +228,7 @@
     prsMerged.columns.template.width = am4core.percent(80);
     prsMerged.columns.template.tooltipText = "{name}: {valueY.value}";
     prsMerged.name = "PRs merged";
-    prsMerged.dataFields.categoryX = "MonthYear";
+    prsMerged.dataFields.categoryX = "GroupName";
     prsMerged.dataFields.valueY = "NumberMerged";
     prsMerged.stacked = true;
 
@@ -236,7 +236,7 @@
     prsClosed.columns.template.width = am4core.percent(80);
     prsClosed.columns.template.tooltipText = "{name}: {valueY.value}";
     prsClosed.name = "PRs closed";
-    prsClosed.dataFields.categoryX = "MonthYear";
+    prsClosed.dataFields.categoryX = "GroupName";
     prsClosed.dataFields.valueY = "NumberClosed";
     prsClosed.stacked = true;
 
@@ -244,7 +244,7 @@
     prsCreated.columns.template.width = am4core.percent(80);
     prsCreated.columns.template.tooltipText = "{name}: {valueY.value}";
     prsCreated.name = "PRs created";
-    prsCreated.dataFields.categoryX = "MonthYear";
+    prsCreated.dataFields.categoryX = "GroupName";
     prsCreated.dataFields.valueY = "NumberCreated";
     prsCreated.stacked = false;
 
