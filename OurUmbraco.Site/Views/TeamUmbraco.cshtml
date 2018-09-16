@@ -25,418 +25,433 @@
     }
 }
 
-
 <div id="body" class="page markdown-syntax">
-<div>
-    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
-</div>
-<h1>@Model.Content.Name</h1>
-@Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
 
-@if (viewType == "people")
-{
-    var prService = new PullRequestService();
-    var leaderBoardYear = prService.GetLeaderBoard(DateTime.Now.AddMonths(-12), DateTime.Now.AddMonths(1), repository)
-        .OrderByDescending(x => x.Contributions).Skip(0).Take(50);
-    var leaderBoard = prService.GetLeaderBoard(new DateTime(2010, 01, 01), DateTime.Now.AddMonths(1), repository)
-        .OrderByDescending(x => x.Contributions);
+    <ul id="breadcrumb2">
+        <li>
+            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=Umbraco-CMS&type=people">Leaderboard Umbraco CMS</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=UmbracoDocs&type=people">Leaderboard Umbraco Docs</a>
+        </li>
+    </ul>
 
-    <section>
-        <div class="container">
-            <div class="row">
-                <h5>Leaderboard (top 50 past year)</h5>
-                <div class="col-md-12">    
-                    <table>
-                        <tr>
-                            <td><strong>GitHub username</strong></td>
-                            <td><strong>Total contributions</strong></td>
-                            <td><strong>Open</strong></td>
-                            <td><strong>Closed</strong></td>
-                            <td><strong>Merged</strong></td>
-                        </tr>
-                        @foreach (var person in leaderBoardYear)
-                        {
+    <h1>@Model.Content.Name - Stats for @repository</h1>
+    @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+
+    @if (viewType == "people")
+    {
+        var prService = new PullRequestService();
+        var leaderBoardYear = prService.GetLeaderBoard(DateTime.Now.AddMonths(-12), DateTime.Now.AddMonths(1), repository)
+            .OrderByDescending(x => x.Contributions).Skip(0).Take(50);
+        var leaderBoard = prService.GetLeaderBoard(new DateTime(2010, 01, 01), DateTime.Now.AddMonths(1), repository)
+            .OrderByDescending(x => x.Contributions);
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard (top 50 past year)</h5>
+                    <div class="col-md-12">    
+                        <table>
                             <tr>
-                                <td>@person.Username</td>
-                                <td>@person.Contributions</td>
-                                <td>@person.OpenContributions</td>
-                                <td>@person.ClosedContributions</td>
-                                <td>@person.MergedContributions</td>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
                             </tr>
-                        }
-                    </table>
+                            @foreach (var person in leaderBoardYear)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
-    
-    <section>
-        <div class="container">
-            <div class="row">
-                <h5>Leaderboard (top 50 all time)</h5>
-                <div class="col-md-12">    
-                    <table>
-                        <tr>
-                            <td><strong>GitHub username</strong></td>
-                            <td><strong>Total contributions</strong></td>
-                            <td><strong>Open</strong></td>
-                            <td><strong>Closed</strong></td>
-                            <td><strong>Merged</strong></td>
-                        </tr>
-                        @foreach (var person in leaderBoard)
-                        {
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard (top 50 all time)</h5>
+                    <div class="col-md-12">    
+                        <table>
                             <tr>
-                                <td>@person.Username</td>
-                                <td>@person.Contributions</td>
-                                <td>@person.OpenContributions</td>
-                                <td>@person.ClosedContributions</td>
-                                <td>@person.MergedContributions</td>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
                             </tr>
-                        }
-                    </table>
-                </div>
-            </div>
-        </div>
-    </section>
-}
-
-@if (viewType == string.Empty)
-{
-    <script src="/scripts/amcharts/core.js"></script>
-    <script src="/scripts/amcharts/charts.js"></script>
-
-    <style type="text/css">
-        .gauge {
-            height: 250px;
-            width: 350px;
-        }
-
-        .chart {
-            height: 500px;
-            width: 100%;
-            clear: both;
-            display: block;
-        }
-
-        .center-block {
-            margin-left: auto;
-            margin-right: auto;
-            display: block;
-        }
-
-        .stats {
-            height: 550px;
-            display: inline-block;
-            width: 100%;
-            clear: both;
-        }
-
-        #body {
-            margin-bottom: 50px;
-        }
-    </style>
-
-        <section class="stats">
-            <div class="container">
-                <h5>This month's pull request stats</h5>
-                <div class="row ">
-                    <div class="col-md-6">
-                        <div id="OpenPRs" class="gauge center-block"></div>
-                    </div>
-                    <div class="col-md-6">
-                        <div id="NewContributors" class="gauge center-block"></div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-md-4">
-                        <div id="CreatedPRs" class="gauge"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div id="MergedPRs" class="gauge"></div>
-                    </div>
-                    <div class="col-md-4">
-                        <div id="ClosedPRs" class="gauge"></div>
+                            @foreach (var person in leaderBoard)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
                     </div>
                 </div>
             </div>
         </section>
+    }
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>Pull requests: created, merged and closed</h5>
-                    <div class="col-md-12">
-                        <div id="GroupedPRs" class="chart"></div>
+    @if (viewType == string.Empty)
+    {
+        <script src="/scripts/amcharts/core.js"></script>
+        <script src="/scripts/amcharts/charts.js"></script>
+
+        <style type="text/css">
+            .gauge {
+                height: 250px;
+                width: 350px;
+            }
+
+            .chart {
+                height: 500px;
+                width: 100%;
+                clear: both;
+                display: block;
+            }
+
+            .center-block {
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+
+            .stats {
+                height: 550px;
+                display: inline-block;
+                width: 100%;
+                clear: both;
+            }
+
+            #body {
+                margin-bottom: 50px;
+            }
+        </style>
+
+            <section class="stats">
+                <div class="container">
+                    <h5>This month's pull request stats</h5>
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div id="OpenPRs" class="gauge center-block"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="NewContributors" class="gauge center-block"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="CreatedPRs" class="gauge"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="MergedPRs" class="gauge"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="ClosedPRs" class="gauge"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>Contributors: active vs. new</h5>
-                    <div class="col-md-12">
-                        <div id="Contributors" class="chart"></div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Pull requests: created, merged and closed</h5>
+                        <div class="col-md-12">
+                            <div id="GroupedPRs" class="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>Open PRs over time</h5>
-                    <div class="col-md-12">
-                        <div id="OpenPRsAllTime" class="chart"></div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Contributors: active vs. new</h5>
+                        <div class="col-md-12">
+                            <div id="Contributors" class="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>PRs opened after CG 18 that are still open</h5>
-                    <div class="col-md-12">
-                        <div id="OpenPRsSinceCG18" class="chart"></div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Open PRs over time</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsAllTime" class="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>Median PR closing time in hours</h5>
-                    <div class="col-md-12">
-                        <div id="MedianPRMergeTime" class="chart"></div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>PRs opened after CG 18 that are still open</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsSinceCG18" class="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section class="stats">
-            <div class="container">
-                <div class="row">
-                    <h5>Median time for first comment from Team Umbraco</h5>
-                    <div class="col-md-12">
-                        <div id="MedianFirstTeamCommentTime" class="chart"></div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Median PR closing time in hours</h5>
+                        <div class="col-md-12">
+                            <div id="MedianPRMergeTime" class="chart"></div>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-    <script>
-        httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?repository=@(repository)",
-            function(response) {
-                var currentData = JSON.parse(response);
-                var colorSet = new am4core.ColorSet();
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Median time for first comment from Team Umbraco</h5>
+                        <div class="col-md-12">
+                            <div id="MedianFirstTeamCommentTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
-                @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "200")
-                @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "50")
-                @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "50")
-                @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
-                @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "10")
-            });
+        <script>
+            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?repository=@(repository)",
+                function(response) {
+                    var currentData = JSON.parse(response);
+                    var colorSet = new am4core.ColorSet();
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+                    @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "200")
+                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "50")
+                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "50")
+                    @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
+                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "10")
+                });
 
-        var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
-        groupedPrsChart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        groupedPrsChart.scrollbarX = new am4core.Scrollbar();
-        groupedPrsChart.legend = new am4charts.Legend();
-        groupedPrsChart.colors.step = 2;
+            var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
+            groupedPrsChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
 
-        var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
-        categoryAxis.dataFields.category = "GroupName";
-        categoryAxis.renderer.grid.template.location = 0;
+            groupedPrsChart.scrollbarX = new am4core.Scrollbar();
+            groupedPrsChart.legend = new am4charts.Legend();
+            groupedPrsChart.colors.step = 2;
 
-        var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
-        valueAxis.min = 0;
-        valueAxis.renderer.minWidth = 35;
+            var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "GroupName";
+            categoryAxis.renderer.grid.template.location = 0;
 
-        var prsMerged = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-        prsMerged.columns.template.width = am4core.percent(80);
-        prsMerged.columns.template.tooltipText = "{name}: {valueY.value}";
-        prsMerged.name = "PRs merged";
-        prsMerged.dataFields.categoryX = "GroupName";
-        prsMerged.dataFields.valueY = "NumberMerged";
-        prsMerged.stacked = true;
+            var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.min = 0;
+            valueAxis.renderer.minWidth = 35;
 
-        var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-        prsClosed.columns.template.width = am4core.percent(80);
-        prsClosed.columns.template.tooltipText = "{name}: {valueY.value}";
-        prsClosed.name = "PRs closed";
-        prsClosed.dataFields.categoryX = "GroupName";
-        prsClosed.dataFields.valueY = "NumberClosed";
-        prsClosed.stacked = true;
+            var prsMerged = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsMerged.columns.template.width = am4core.percent(80);
+            prsMerged.columns.template.tooltipText = "{name}: {valueY.value}";
+            prsMerged.name = "PRs merged";
+            prsMerged.dataFields.categoryX = "GroupName";
+            prsMerged.dataFields.valueY = "NumberMerged";
+            prsMerged.stacked = true;
 
-        var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-        prsCreated.columns.template.width = am4core.percent(80);
-        prsCreated.columns.template.tooltipText = "{name}: {valueY.value}";
-        prsCreated.name = "PRs created";
-        prsCreated.dataFields.categoryX = "GroupName";
-        prsCreated.dataFields.valueY = "NumberCreated";
-        prsCreated.stacked = false;
+            var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsClosed.columns.template.width = am4core.percent(80);
+            prsClosed.columns.template.tooltipText = "{name}: {valueY.value}";
+            prsClosed.name = "PRs closed";
+            prsClosed.dataFields.categoryX = "GroupName";
+            prsClosed.dataFields.valueY = "NumberClosed";
+            prsClosed.stacked = true;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsCreated.columns.template.width = am4core.percent(80);
+            prsCreated.columns.template.tooltipText = "{name}: {valueY.value}";
+            prsCreated.name = "PRs created";
+            prsCreated.dataFields.categoryX = "GroupName";
+            prsCreated.dataFields.valueY = "NumberCreated";
+            prsCreated.stacked = false;
 
-        var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
-        contributorsChart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        contributorsChart.scrollbarX = new am4core.Scrollbar();
-        contributorsChart.legend = new am4charts.Legend();
+            var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
+            contributorsChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
 
-        var contributorsDateAxis = contributorsChart.xAxes.push(new am4charts.DateAxis());
-        var contributorsValueAxis = contributorsChart.yAxes.push(new am4charts.ValueAxis());
+            contributorsChart.scrollbarX = new am4core.Scrollbar();
+            contributorsChart.legend = new am4charts.Legend();
 
-        var contributorsSeries = contributorsChart.series.push(new am4charts.LineSeries());
-        contributorsSeries.name = "Active contributors";
-        contributorsSeries.dataFields.dateX = "GroupName";
-        contributorsSeries.dataFields.openValueY = "NumberOfActiveContributorsInPastYear";
-        contributorsSeries.dataFields.valueY = "NumberOfNewContributors";
-        contributorsSeries.tooltipText = "Active contributors: {openValueY.value} New contributors: {valueY.value}";
-        contributorsSeries.sequencedInterpolation = true;
-        contributorsSeries.fillOpacity = 0.3;
-        contributorsSeries.strokeWidth = 4;
-        contributorsSeries.tensionX = 0.8;
+            var contributorsDateAxis = contributorsChart.xAxes.push(new am4charts.DateAxis());
+            var contributorsValueAxis = contributorsChart.yAxes.push(new am4charts.ValueAxis());
 
-        var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
-        contributorsSeries2.name = "New contributors";
-        contributorsSeries2.dataFields.dateX = "GroupName";
-        contributorsSeries2.dataFields.valueY = "NumberOfActiveContributorsInPastYear";
-        contributorsSeries2.sequencedInterpolation = true;
-        contributorsSeries2.stroke = contributorsChart.colors.getIndex(6);
-        contributorsSeries2.strokeWidth = 4;
-        contributorsSeries2.tensionX = 0.8;
+            var contributorsSeries = contributorsChart.series.push(new am4charts.LineSeries());
+            contributorsSeries.name = "Active contributors";
+            contributorsSeries.dataFields.dateX = "GroupName";
+            contributorsSeries.dataFields.openValueY = "NumberOfActiveContributorsInPastYear";
+            contributorsSeries.dataFields.valueY = "NumberOfNewContributors";
+            contributorsSeries.tooltipText = "Active contributors: {openValueY.value} New contributors: {valueY.value}";
+            contributorsSeries.sequencedInterpolation = true;
+            contributorsSeries.fillOpacity = 0.3;
+            contributorsSeries.strokeWidth = 4;
+            contributorsSeries.tensionX = 0.8;
 
-        contributorsChart.cursor = new am4charts.XYCursor();
+            var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
+            contributorsSeries2.name = "New contributors";
+            contributorsSeries2.dataFields.dateX = "GroupName";
+            contributorsSeries2.dataFields.valueY = "NumberOfActiveContributorsInPastYear";
+            contributorsSeries2.sequencedInterpolation = true;
+            contributorsSeries2.stroke = contributorsChart.colors.getIndex(6);
+            contributorsSeries2.strokeWidth = 4;
+            contributorsSeries2.tensionX = 0.8;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            contributorsChart.cursor = new am4charts.XYCursor();
 
-        var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
-        openPRsAllTimeChart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        openPRsAllTimeChart.legend = new am4charts.Legend();
+            var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
+            openPRsAllTimeChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
 
-        var openPRsAllTimeDateAxis = openPRsAllTimeChart.xAxes.push(new am4charts.DateAxis());
-        var openPRsAllTimeValueAxis = openPRsAllTimeChart.yAxes.push(new am4charts.ValueAxis());
+            openPRsAllTimeChart.legend = new am4charts.Legend();
 
-        var openPRsAllTimeSeries = openPRsAllTimeChart.series.push(new am4charts.LineSeries());
-        openPRsAllTimeSeries.name = "Open pull requests";
-        openPRsAllTimeSeries.dataFields.dateX = "GroupName";
-        openPRsAllTimeSeries.dataFields.valueY = "TotalNumberOpen";
-        openPRsAllTimeSeries.sequencedInterpolation = true;
-        openPRsAllTimeSeries.stroke = openPRsAllTimeChart.colors.getIndex(6);
-        openPRsAllTimeSeries.strokeWidth = 4;
-        openPRsAllTimeSeries.tensionX = 0.8;
+            var openPRsAllTimeDateAxis = openPRsAllTimeChart.xAxes.push(new am4charts.DateAxis());
+            var openPRsAllTimeValueAxis = openPRsAllTimeChart.yAxes.push(new am4charts.ValueAxis());
 
-        openPRsAllTimeChart.cursor = new am4charts.XYCursor();
+            var openPRsAllTimeSeries = openPRsAllTimeChart.series.push(new am4charts.LineSeries());
+            openPRsAllTimeSeries.name = "Open pull requests";
+            openPRsAllTimeSeries.dataFields.dateX = "GroupName";
+            openPRsAllTimeSeries.dataFields.valueY = "TotalNumberOpen";
+            openPRsAllTimeSeries.sequencedInterpolation = true;
+            openPRsAllTimeSeries.stroke = openPRsAllTimeChart.colors.getIndex(6);
+            openPRsAllTimeSeries.strokeWidth = 4;
+            openPRsAllTimeSeries.tensionX = 0.8;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            openPRsAllTimeChart.cursor = new am4charts.XYCursor();
 
-        var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
-        openPRsSinceCG18Chart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-06-01&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        openPRsSinceCG18Chart.legend = new am4charts.Legend();
+            var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
+            openPRsSinceCG18Chart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-06-01&toDate=@(toDate)&repository=@(repository)";
 
-        var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
-        var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
+            openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
-        var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
-        openPRsSinceCG18Series.name = "Open pull requests";
-        openPRsSinceCG18Series.dataFields.dateX = "GroupName";
-        openPRsSinceCG18Series.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
-        openPRsSinceCG18Series.sequencedInterpolation = true;
-        openPRsSinceCG18Series.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
-        openPRsSinceCG18Series.strokeWidth = 4;
-        openPRsSinceCG18Series.tensionX = 0.8;
+            var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+            var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
 
-        openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
+            var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+            openPRsSinceCG18Series.name = "Open pull requests";
+            openPRsSinceCG18Series.dataFields.dateX = "GroupName";
+            openPRsSinceCG18Series.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series.sequencedInterpolation = true;
+            openPRsSinceCG18Series.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+            openPRsSinceCG18Series.strokeWidth = 4;
+            openPRsSinceCG18Series.tensionX = 0.8;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
 
-        var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
-        mergeTimeInHoursChart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        mergeTimeInHoursChart.legend = new am4charts.Legend();
+            var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
+            mergeTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
 
-        var mergeTimeInHoursDateAxis = mergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
-        var mergeTimeInHoursValueAxis = mergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+            mergeTimeInHoursChart.legend = new am4charts.Legend();
 
-        var mergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
-        mergeTimeInHoursSeries.name = "Median time to merge"
-        mergeTimeInHoursSeries.dataFields.dateX = "GroupName";
-        mergeTimeInHoursSeries.dataFields.valueY = "MedianPullRequestClosingTimeInHours";
-        mergeTimeInHoursSeries.sequencedInterpolation = true;
-        mergeTimeInHoursSeries.stroke = mergeTimeInHoursChart.colors.getIndex(6);
-        mergeTimeInHoursSeries.strokeWidth = 4;
-        mergeTimeInHoursSeries.tensionX = 0.8;
+            var mergeTimeInHoursDateAxis = mergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var mergeTimeInHoursValueAxis = mergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
-        mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+            var mergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            mergeTimeInHoursSeries.name = "Median time to merge"
+            mergeTimeInHoursSeries.dataFields.dateX = "GroupName";
+            mergeTimeInHoursSeries.dataFields.valueY = "MedianPullRequestClosingTimeInHours";
+            mergeTimeInHoursSeries.sequencedInterpolation = true;
+            mergeTimeInHoursSeries.stroke = mergeTimeInHoursChart.colors.getIndex(6);
+            mergeTimeInHoursSeries.strokeWidth = 4;
+            mergeTimeInHoursSeries.tensionX = 0.8;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
 
-        var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
-        firstTeamCommentTimeInHoursChart.dataSource.url =
-            "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
+            var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
+            firstTeamCommentTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
 
-        var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
-        var firstTeamCommentTimeInHoursValueAxis =
-            firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+            firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
-        var firstTeamCommentTimeInHoursSeries =
-            firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
-        firstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time"
-        firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
-        firstTeamCommentTimeInHoursSeries.dataFields.valueY = "MedianFirstTeamCommentTimeInHours";
-        firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
-        firstTeamCommentTimeInHoursSeries.stroke = firstTeamCommentTimeInHoursChart.colors.getIndex(6);
-        firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
-        firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+            var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var firstTeamCommentTimeInHoursValueAxis =
+                firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
-        firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
+            var firstTeamCommentTimeInHoursSeries =
+                firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            firstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time"
+            firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            firstTeamCommentTimeInHoursSeries.dataFields.valueY = "MedianFirstTeamCommentTimeInHours";
+            firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            firstTeamCommentTimeInHoursSeries.stroke = firstTeamCommentTimeInHoursChart.colors.getIndex(6);
+            firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+            firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
 
-        function httpGetAsync(url, callback) {
-            var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function() {
-                if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
-                    callback(xmlHttp.responseText);
-            };
-            xmlHttp.open("GET", url, true); // true for asynchronous
-            xmlHttp.send(null);
-        }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-        var time = new Date().getTime();
-        $(document.body).bind("mousemove keypress",
-            function(e) {
-                time = new Date().getTime();
-            });
+            function httpGetAsync(url, callback) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+                        callback(xmlHttp.responseText);
+                };
+                xmlHttp.open("GET", url, true); // true for asynchronous
+                xmlHttp.send(null);
+            }
 
-        function refresh() {
-            // Refreshes every 300 seconds, set value
-            // below to something other than 300000
-            // to vary the number of seconds
-            if (new Date().getTime() - time >= 300000)
-                window.location.reload();
-            else
-                setTimeout(refresh, 10000);
-        }
+            var time = new Date().getTime();
+            $(document.body).bind("mousemove keypress",
+                function(e) {
+                    time = new Date().getTime();
+                });
 
-        setTimeout(refresh, 10000);
-    </script>
-}
+            function refresh() {
+                // Refreshes every 300 seconds, set value
+                // below to something other than 300000
+                // to vary the number of seconds
+                if (new Date().getTime() - time >= 300000)
+                    window.location.reload();
+                else
+                    setTimeout(refresh, 10000);
+            }
+
+            setTimeout(refresh, 10000);
+        </script>
+    }
 </div>
 
 @helper AddGauge(string chartSuffix, string label, string value, string maxValue)

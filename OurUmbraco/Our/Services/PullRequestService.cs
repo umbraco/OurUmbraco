@@ -90,7 +90,7 @@ namespace OurUmbraco.Our.Services
             var pullsNonHq = GetPullsNonHq(repository);
             var contributors = new List<PullRequestContributor>();
 
-            foreach (var pr in pullsNonHq)
+            foreach (var pr in pullsNonHq.Where(x => x.CreatedAt >= fromDate && x.CreatedAt <= toDate))
             {
                 var isOpen = pr.ClosedAt == null && pr.MergedAt == null;
                 var isClosed = pr.ClosedAt != null && pr.MergedAt == null;
