@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using System.Web.Http;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
+using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using Umbraco.Web.WebApi;
 
@@ -65,6 +66,8 @@ namespace OurUmbraco.Our.Api
 
             foreach (var prInPeriod in mergedPullsInPeriod)
             {
+                var mergeTimes = new List<int>();
+
                 var recentPrsMerged = 0;
                 var totalMergeTimeInHours = 0;
                 var totalMergedOnTime = 0;
@@ -75,11 +78,10 @@ namespace OurUmbraco.Our.Api
                     var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalHours);
                     var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalDays);
 
-                    if (pr.CreatedAt >= new DateTime(2018, 01, 01))
-                    {
-                        recentPrsMerged = recentPrsMerged + 1;
-                        totalMergeTimeInHours = totalMergeTimeInHours + mergeTimeInHours;
-                    }
+                    recentPrsMerged = recentPrsMerged + 1;
+                    totalMergeTimeInHours = totalMergeTimeInHours + mergeTimeInHours;
+                    if (mergeTimeInHours > 0)
+                        mergeTimes.Add(mergeTimeInHours);
 
                     if (mergeTimeInDays <= 30)
                         totalMergedOnTime = totalMergedOnTime + 1;
@@ -115,8 +117,15 @@ namespace OurUmbraco.Our.Api
                     averageMergeTime = Convert.ToInt32(mergedPrs.TotalMergeTimeInHours / recentPrsMerged);
                 mergedPrs.AveragePullRequestClosingTimeInHours = averageMergeTime;
 
+                if (mergeTimes.Any())
+                {
+                    var medianMergeTime = mergeTimes.Median();
+                    mergedPrs.MedianPullRequestClosingTimeInHours = medianMergeTime;
+                }
+
                 groupedPrs.Add(mergedPrs);
             }
+
 
             foreach (var prInPeriod in closedPullsInPeriod)
             {
@@ -158,7 +167,7 @@ namespace OurUmbraco.Our.Api
                     if (pr.ClosedAt == null)
                         openPrsForPeriod.Add(pr);
                     else
-                        // Was it closed (merged items also get set as closed) after the current period? Then it's stil open for this period.
+                    // Was it closed (merged items also get set as closed) after the current period? Then it's stil open for this period.
                     if (pr.ClosedAt != null && pr.ClosedAt > maxDateInPeriod)
                         openPrsForPeriod.Add(pr);
                 }
@@ -184,7 +193,7 @@ namespace OurUmbraco.Our.Api
 
                 pullRequestsInPeriod.TotalNumberOfContributors = firstPrs.Count;
             }
-            
+
             return groupedPrs;
         }
 
