@@ -5,7 +5,6 @@ using System.Linq;
 using System.Web.Hosting;
 using System.Web.Http;
 using Newtonsoft.Json;
-using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
@@ -69,7 +68,7 @@ namespace OurUmbraco.Our.Api
             var prService = new PullRequestService();
             var prRepository = new OurUmbraco.Community.Models.Repository(
                 repository.ToLower(), "umbraco", repository, repository.Replace("-", " "));
-            
+
             foreach (var prInPeriod in mergedPullsInPeriod)
             {
                 var mergeTimes = new List<int>();
@@ -153,7 +152,7 @@ namespace OurUmbraco.Our.Api
                     var medianFirstComment = firstTeamCommentTimes.Median();
                     mergedPrs.MedianFirstTeamCommentTimeInHours = medianFirstComment;
                 }
-                
+
                 groupedPrs.Add(mergedPrs);
             }
 
