@@ -87,6 +87,16 @@ namespace OurUmbraco.Our.Models
         public int MedianPullRequestClosingTimeInHours { get; set; }
 
         /// <summary>
+        /// Average time in hours between create and first comment from PR team
+        /// </summary>
+        public int AverageFirstTeamCommentTimeInHours { get; set; }
+
+        /// <summary>
+        /// Median time in hours between create and first comment from PR team
+        /// </summary>
+        public int MedianFirstTeamCommentTimeInHours { get; set; }
+
+        /// <summary>
         /// All the contributors over all time who are not part of HQ
         /// </summary>
         public int TotalNumberOfContributors { get; set; }

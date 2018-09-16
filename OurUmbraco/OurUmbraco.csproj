@@ -486,6 +486,7 @@
     <Compile Include="Our\Models\FirstPullRequest.cs" />
     <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
+    <Compile Include="Our\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
@@ -664,6 +665,7 @@
     <Compile Include="Our\Rest.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
     <Compile Include="Our\SecureHasher.cs" />
+    <Compile Include="Our\Services\PullRequestService.cs" />
     <Compile Include="Our\Services\ReleasesService.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">

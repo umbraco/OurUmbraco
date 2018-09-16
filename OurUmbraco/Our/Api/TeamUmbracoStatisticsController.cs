@@ -5,9 +5,11 @@ using System.Linq;
 using System.Web.Hosting;
 using System.Web.Http;
 using Newtonsoft.Json;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Our.Services;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -64,9 +66,14 @@ namespace OurUmbraco.Our.Api
 
             var groupedPrs = new List<PullRequestsInPeriod>();
 
+            var prService = new PullRequestService();
+            var prRepository = new OurUmbraco.Community.Models.Repository(
+                repository.ToLower(), "umbraco", repository, repository.Replace("-", " "));
+            
             foreach (var prInPeriod in mergedPullsInPeriod)
             {
                 var mergeTimes = new List<int>();
+                var firstTeamCommentTimes = new List<int>();
 
                 var recentPrsMerged = 0;
                 var totalMergeTimeInHours = 0;
@@ -87,6 +94,14 @@ namespace OurUmbraco.Our.Api
                         totalMergedOnTime = totalMergedOnTime + 1;
                     else
                         totalMergedNotOnTime = totalMergedNotOnTime + 1;
+
+                    var firstTeamComment = prService.GetFirstTeamComment(prRepository, pr.Number.ToString());
+                    var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.Subtract(pr.CreatedAt.Value).TotalHours);
+                    if (firstTeamComment != null)
+                    {
+                        pr.FirstTeamCommentTimeInHours = timeSpan;
+                        firstTeamCommentTimes.Add(timeSpan);
+                    }
                 }
 
                 var period = $"{prInPeriod.Key.Year}{prInPeriod.Key.Month:00}";
@@ -123,6 +138,22 @@ namespace OurUmbraco.Our.Api
                     mergedPrs.MedianPullRequestClosingTimeInHours = medianMergeTime;
                 }
 
+                if (firstTeamCommentTimes.Any())
+                {
+                    var averageCommentTime = 0;
+                    var totalCommentTime = 0;
+                    foreach (var time in firstTeamCommentTimes)
+                        totalCommentTime = totalCommentTime + time;
+
+                    if (totalCommentTime > 0)
+                        averageCommentTime = Convert.ToInt32(totalCommentTime / recentPrsMerged);
+
+                    mergedPrs.AverageFirstTeamCommentTimeInHours = averageCommentTime;
+
+                    var medianFirstComment = firstTeamCommentTimes.Median();
+                    mergedPrs.MedianFirstTeamCommentTimeInHours = medianFirstComment;
+                }
+                
                 groupedPrs.Add(mergedPrs);
             }
 
