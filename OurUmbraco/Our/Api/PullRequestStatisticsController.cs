@@ -1,24 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Web.Hosting;
 using System.Web.Http;
-using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
+using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Our.Services;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
 {
     public class PullRequestStatisticsController : UmbracoAuthorizedApiController
     {
-        public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
-        public readonly string HqMembers = HostingEnvironment.MapPath("~/config/githubhq.txt");
-
         [HttpGet]
         public List<PullRequestsInPeriod> GetGroupedPullRequestData(DateTime fromDate, DateTime toDate, string repository = "Umbraco-CMS")
         {
-            var pullsNonHq = GetPullsNonHq(repository);
+            var pullRequestService = new PullRequestService();
+            var pullsNonHq = pullRequestService.GetPullsNonHq(repository);
 
             var mergedPullsInPeriod = pullsNonHq
                 .Where(x => x.MergedAt != null
@@ -170,29 +170,76 @@ namespace OurUmbraco.Our.Api
 
                 pullRequestsInPeriod.TotalNumberOfContributors = firstPrs.Count;
             }
-            
-            return groupedPrs;
-        }
 
-        private List<GithubPullRequestModel> GetPullsNonHq(string repository)
-        {
-            var content = System.IO.File.ReadAllText(JsonPath);
-            var pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content).Where(x => x.Repository == repository);
-            var hqList = System.IO.File.ReadAllText(HqMembers).Split('\n');
-            var pullsNonHq = new List<GithubPullRequestModel>();
-            foreach (var pull in pulls)
+            var numberOfMonths = fromDate.MonthsBetween(toDate);
+            var periodRange = new List<string>();
+            var periodDate = fromDate;
+            for (var i = 0; i < numberOfMonths; i++)
             {
-                if (pull?.User?.Login == null)
-                    continue;
-
-                var isHq = hqList.Any(
-                    y => string.Equals(y.Trim(), pull.User.Login, StringComparison.InvariantCultureIgnoreCase));
-                if (isHq == false)
-                    pullsNonHq.Add(pull);
+                periodDate = periodDate.AddMonths(i);
+                if (periodDate <= DateTime.Now)
+                {
+                    var period = $"{periodDate.Year}{periodDate.Month:00}";
+                    periodRange.Add(period);
+                }
             }
 
-            pullsNonHq = pullsNonHq.ToList();
-            return pullsNonHq;
+            groupedPrs = groupedPrs.OrderBy(x => x.MonthYear).ToList();
+            foreach (var period in periodRange)
+            {
+                if (groupedPrs.Any(x => x.MonthYear == period))
+                    continue;
+
+                var firstPr = groupedPrs.First();
+                var firstPrMonth = int.Parse(firstPr.MonthYear.Substring(4, 2));
+                var firstPrYear = int.Parse(firstPr.MonthYear.Substring(0, 4));
+                var firstPrDate = new DateTime(firstPrYear, firstPrMonth, 01);
+
+                var month = int.Parse(period.Substring(4, 2));
+                var year = int.Parse(period.Substring(0, 4));
+                var dateTime = new DateTime(year, month, 01);
+
+                if (dateTime < firstPrDate)
+                    continue;
+
+                PullRequestsInPeriod previousPrStats = null;
+
+                var previousMonth = dateTime.AddMonths(-1);
+                if (previousMonth >= fromDate)
+                    previousPrStats = GetPreviousPrStatsInPeriod(previousMonth, groupedPrs);
+
+                if (previousPrStats == null)
+                {
+                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(month)} {year}";
+                    groupedPrs.Add(new PullRequestsInPeriod
+                    {
+                        GroupName = groupName,
+                        MonthYear = period
+                    });
+                }
+                else
+                {
+                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(month)} {year}";
+                    groupedPrs.Add(new PullRequestsInPeriod
+                    {
+                        GroupName = groupName,
+                        MonthYear = period,
+                        NumberOfActiveContributorsInPastYear = previousPrStats.NumberOfActiveContributorsInPastYear,
+                        TotalNumberOfContributors = previousPrStats.TotalNumberOfContributors,
+                        TotalNumberOpen = previousPrStats.TotalNumberOpen,
+                        TotalNumberOpenAfterCodeGarden18 = previousPrStats.TotalNumberOpenAfterCodeGarden18
+                    });
+                }
+            }
+
+            return groupedPrs.OrderBy(x => x.MonthYear).ToList();
+        }
+
+        private static PullRequestsInPeriod GetPreviousPrStatsInPeriod(DateTime dateTime, List<PullRequestsInPeriod> groupedPrs)
+        {
+            var previousPeriod = $"{dateTime.Year}{dateTime.Month:00}";
+            return groupedPrs.FirstOrDefault(x => x.MonthYear == previousPeriod);
         }
     }
 }
+

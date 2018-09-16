@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Web.Hosting;
@@ -10,6 +11,7 @@ namespace OurUmbraco.Our.Services
 {
     public class PullRequestService
     {
+        private readonly string _jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
         private readonly string _hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
         private readonly string _teamUmbracoUsersFile = HostingEnvironment.MapPath("~/Config/TeamUmbraco.json");
 
@@ -60,6 +62,63 @@ namespace OurUmbraco.Our.Services
             }
 
             return firstTeamCommment;
+        }
+
+        public List<GithubPullRequestModel> GetPullsNonHq(string repository)
+        {
+            var content = File.ReadAllText(_jsonPath);
+            var pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content).Where(x => x.Repository == repository);
+            var hqList = File.ReadAllText(_hqUsersFile).Split('\n');
+            var pullsNonHq = new List<GithubPullRequestModel>();
+            foreach (var pull in pulls)
+            {
+                if (pull?.User?.Login == null)
+                    continue;
+
+                var isHq = hqList.Any(
+                    y => string.Equals(y.Trim(), pull.User.Login, StringComparison.InvariantCultureIgnoreCase));
+                if (isHq == false)
+                    pullsNonHq.Add(pull);
+            }
+
+            pullsNonHq = pullsNonHq.ToList();
+            return pullsNonHq;
+        }
+
+        public List<PullRequestContributor> GetLeaderBoard(DateTime fromDate, DateTime toDate, string repository = "Umbraco-CMS")
+        {
+            var pullsNonHq = GetPullsNonHq(repository);
+            var contributors = new List<PullRequestContributor>();
+
+            foreach (var pr in pullsNonHq)
+            {
+                var isOpen = pr.ClosedAt == null && pr.MergedAt == null;
+                var isClosed = pr.ClosedAt != null && pr.MergedAt == null;
+                var isMerged = pr.ClosedAt != null && pr.MergedAt != null;
+
+                var contributor = contributors.FirstOrDefault(x => string.Equals(x.Username, pr.User.Login, StringComparison.InvariantCultureIgnoreCase));
+                if (contributor == null)
+                {
+                    contributor = new PullRequestContributor
+                    {
+                        Username = pr.User.Login,
+                        Contributions = 1,
+                        OpenContributions = isOpen ? 1 : 0,
+                        ClosedContributions = isClosed ? 1 : 0,
+                        MergedContributions = isMerged ? 1 : 0
+                    };
+                    contributors.Add(contributor);
+                }
+                else
+                {
+                    contributor.Contributions = contributor.Contributions + 1;
+                    contributor.OpenContributions = isOpen ? contributor.OpenContributions + 1 : contributor.OpenContributions;
+                    contributor.ClosedContributions = isClosed ? contributor.ClosedContributions + 1 : contributor.ClosedContributions;
+                    contributor.MergedContributions = isMerged ? contributor.MergedContributions + 1 : contributor.MergedContributions;
+                }
+            }
+
+            return contributors;
         }
     }
 }

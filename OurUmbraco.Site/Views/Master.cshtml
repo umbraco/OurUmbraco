@@ -179,7 +179,7 @@
         function externalLinks(e) {
             var url = $(this).attr('href');
             @* Detect if this is not the current hostname *@
-            if (url.indexOf(location.hostname) == -1) {
+            if (url.indexOf(location.hostname) === -1) {
                 @* Send to Google *@
                 ga('send', 'event', 'Micro conversion', 'Clickout', url);
             }

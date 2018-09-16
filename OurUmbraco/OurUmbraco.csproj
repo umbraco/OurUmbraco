@@ -484,6 +484,7 @@
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Extensions\ListExtensions.cs" />
     <Compile Include="Our\Models\FirstPullRequest.cs" />
+    <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Our\Models\TeamUmbraco.cs" />
