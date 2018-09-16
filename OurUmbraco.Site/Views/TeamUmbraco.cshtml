@@ -8,209 +8,115 @@
 <script src="/scripts/amcharts/core.js"></script>
 <script src="/scripts/amcharts/charts.js"></script>
 
+<style type="text/css">
+    .gauge {
+        height: 250px;
+        width: 350px;
+    }
+    .chart {
+        height: 500px;
+        width: 100%;
+        clear: both;
+        display: block;
+    }
+    .center-block {
+        margin-left:auto;
+        margin-right:auto;
+        display:block;
+    }
+    .stats {
+        height: 550px;
+        display: inline-block;
+        width: 100%;
+        clear: both;
+    }
+    #body {
+        margin-bottom: 50px;
+    }    
+</style>
+
 <div id="body" class="page markdown-syntax">
     <div>
         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
     <h1>@Model.Content.Name</h1>
     @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
-    <p>&nbsp;</p>
 
-    <div style="width:1200px; clear: both;">
-        <div id="openPRs" style="float: left; height: 200px; width: 50%;"></div>
-        <div id="openPRs5" style="float: left; height: 200px; width: 50%;"></div>
-    </div>
-    
-    <div style="width:1200px; clear: both; ">
-        <div id="openPRs2" style="float: left; height: 200px; width: 33%;"></div>
-        <div id="openPRs3" style="float: left; height: 200px; width: 33%;"></div>
-        <div id="openPRs4" style="float: left; height: 200px; width: 33%;"></div>
-    </div>
+    <section class="stats">
+        <div class="container">
+            <h5>This month's pull request stats</h5>
+            <div class="row ">
+                <div class="col-md-6">
+                   <div id="OpenPRs" class="gauge center-block"></div>
+                </div>
+                <div class="col-md-6">
+                    <div id="NewContributors" class="gauge center-block"></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                   <div id="CreatedPRs" class="gauge"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="MergedPRs" class="gauge"></div>
+                </div>
+                <div class="col-md-4">
+                    <div id="ClosedPRs" class="gauge"></div>
+                </div>
+            </div> 
+        </div>
+    </section>    
 
-    <div id="groupedPrs" style="clear: both; width: 1200px; height: 500px;"></div>
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h5>Pull requests: created, merged and closed</h5>                
+                <div class="col-md-12">
+                   <div id="GroupedPrs" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>    
+
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h5>Contributors: active vs. new</h5>                
+                <div class="col-md-12">
+                   <div id="Contributors" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>        
+
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h5>Open PRs over time</h5>
+                <div class="col-md-12">
+                   <div id="OpenPRsAllTime" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>    
+
 </div>
 
 <script>
     httpGetAsync( "/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod", function(response) {
         var currentData = JSON.parse(response);
         var colorSet = new am4core.ColorSet();
-
-        var openPrsChart = am4core.create("openPRs", am4charts.GaugeChart); 
-        openPrsChart.innerRadius = -25;
-
-        var axisOpenPrs = openPrsChart.xAxes.push(new am4charts.ValueAxis());
-        axisOpenPrs.min = 0;
-        axisOpenPrs.max = 200;
-        axisOpenPrs.strictMinMax = true;
-        axisOpenPrs.renderer.grid.template.disabled = true;
-
-        var rangeOpenPrs = axisOpenPrs.axisRanges.create();
-        rangeOpenPrs.value = 0;
-        rangeOpenPrs.endValue = 200;
-        rangeOpenPrs.axisFill.fillOpacity = 1;
-        rangeOpenPrs.axisFill.fill = colorSet.getIndex(0);
-
-        var clockHandOpenPrs = new am4charts.ClockHand();
-        clockHandOpenPrs.hand.className = "RoundedRectangle";
-        clockHandOpenPrs.endWidth = 10;
-        clockHandOpenPrs.startWidth = 10;
-        clockHandOpenPrs.pin.radius = 10;
-        var handOpenPrs = openPrsChart.hands.push(clockHandOpenPrs);
-        handOpenPrs.showValue(currentData.TotalNumberOpen)
-
-        var labelOpenPrs = openPrsChart.radarContainer.createChild(am4core.Label);
-        labelOpenPrs.isMeasured = false;
-        labelOpenPrs.fontSize = 18;
-        labelOpenPrs.x = am4core.percent(50);
-        labelOpenPrs.y = am4core.percent(100);
-        labelOpenPrs.horizontalCenter = "middle";
-        labelOpenPrs.verticalCenter = "bottom";
-        labelOpenPrs.text = "Open: " + currentData.TotalNumberOpen;
-        labelOpenPrs.paddingBottom = -50;
-
-///
-        var createdPrsChart = am4core.create("openPRs2", am4charts.GaugeChart); 
-        createdPrsChart.innerRadius = -25;
-
-        var axisCreatedPrs = createdPrsChart.xAxes.push(new am4charts.ValueAxis());
-        axisCreatedPrs.min = 0;
-        axisCreatedPrs.max = 50;
-        axisCreatedPrs.strictMinMax = true;
-        axisCreatedPrs.renderer.grid.template.disabled = true;
-
-        var rangeCreatedPrs = axisCreatedPrs.axisRanges.create();
-        rangeCreatedPrs.value = 0;
-        rangeCreatedPrs.endValue = 50;
-        rangeCreatedPrs.axisFill.fillOpacity = 1;
-        rangeCreatedPrs.axisFill.fill = colorSet.getIndex(0);
-
-        var clockHandCreatedPrs = new am4charts.ClockHand();
-        clockHandCreatedPrs.hand.className = "RoundedRectangle";
-        clockHandCreatedPrs.endWidth = 10;
-        clockHandCreatedPrs.startWidth = 10;
-        clockHandCreatedPrs.pin.radius = 10;
-        var handCreatedPrs = createdPrsChart.hands.push(clockHandCreatedPrs);
-        handCreatedPrs.showValue(currentData.NumberCreated)
-
-        var labelCreatedPrs = createdPrsChart.radarContainer.createChild(am4core.Label);
-        labelCreatedPrs.isMeasured = false;
-        labelCreatedPrs.fontSize = 18;
-        labelCreatedPrs.x = am4core.percent(50);
-        labelCreatedPrs.y = am4core.percent(100);
-        labelCreatedPrs.horizontalCenter = "middle";
-        labelCreatedPrs.verticalCenter = "bottom";
-        labelCreatedPrs.text = "Created: " + currentData.NumberCreated;
-        labelCreatedPrs.paddingBottom = -50;
-
-///
-        var mergedPrsChart = am4core.create("openPRs3", am4charts.GaugeChart); 
-        mergedPrsChart.innerRadius = -25;
-
-        var axismergedPrs = mergedPrsChart.xAxes.push(new am4charts.ValueAxis());
-        axismergedPrs.min = 0;
-        axismergedPrs.max = 50;
-        axismergedPrs.strictMinMax = true;
-        axismergedPrs.renderer.grid.template.disabled = true;
-
-        var rangemergedPrs = axismergedPrs.axisRanges.create();
-        rangemergedPrs.value = 0;
-        rangemergedPrs.endValue = 50;
-        rangemergedPrs.axisFill.fillOpacity = 1;
-        rangemergedPrs.axisFill.fill = colorSet.getIndex(0);
-
-        var clockHandmergedPrs = new am4charts.ClockHand();
-        clockHandmergedPrs.hand.className = "RoundedRectangle";
-        clockHandmergedPrs.endWidth = 10;
-        clockHandmergedPrs.startWidth = 10;
-        clockHandmergedPrs.pin.radius = 10;
-        var handmergedPrs = mergedPrsChart.hands.push(clockHandmergedPrs);
-        handmergedPrs.showValue(currentData.NumberMerged)
-
-        var labelmergedPrs = mergedPrsChart.radarContainer.createChild(am4core.Label);
-        labelmergedPrs.isMeasured = false;
-        labelmergedPrs.fontSize = 18;
-        labelmergedPrs.x = am4core.percent(50);
-        labelmergedPrs.y = am4core.percent(100);
-        labelmergedPrs.horizontalCenter = "middle";
-        labelmergedPrs.verticalCenter = "bottom";
-        labelmergedPrs.text = "Merged: " + currentData.NumberMerged;
-        labelmergedPrs.paddingBottom = -50;
-
-///
-        var closedPrsChart = am4core.create("openPRs4", am4charts.GaugeChart); 
-        closedPrsChart.innerRadius = -25;
-
-        var axisclosedPrs = closedPrsChart.xAxes.push(new am4charts.ValueAxis());
-        axisclosedPrs.min = 0;
-        axisclosedPrs.max = 50;
-        axisclosedPrs.strictMinMax = true;
-        axisclosedPrs.renderer.grid.template.disabled = true;
-
-        var rangeclosedPrs = axisclosedPrs.axisRanges.create();
-        rangeclosedPrs.value = 0;
-        rangeclosedPrs.endValue = 50;
-        rangeclosedPrs.axisFill.fillOpacity = 1;
-        rangeclosedPrs.axisFill.fill = colorSet.getIndex(0);
-
-        var clockHandclosedPrs = new am4charts.ClockHand();
-        clockHandclosedPrs.hand.className = "RoundedRectangle";
-        clockHandclosedPrs.endWidth = 10;
-        clockHandclosedPrs.startWidth = 10;
-        clockHandclosedPrs.pin.radius = 10;
-        var handclosedPrs = closedPrsChart.hands.push(clockHandclosedPrs);
-        handclosedPrs.showValue(currentData.NumberClosed)
-
-        var labelclosedPrs = closedPrsChart.radarContainer.createChild(am4core.Label);
-        labelclosedPrs.isMeasured = false;
-        labelclosedPrs.fontSize = 18;
-        labelclosedPrs.x = am4core.percent(50);
-        labelclosedPrs.y = am4core.percent(100);
-        labelclosedPrs.horizontalCenter = "middle";
-        labelclosedPrs.verticalCenter = "bottom";
-        labelclosedPrs.text = "Closed: " + currentData.NumberClosed;
-        labelclosedPrs.paddingBottom = -50;
-
-///
-        var newContributorsChart = am4core.create("openPRs5", am4charts.GaugeChart); 
-        newContributorsChart.innerRadius = -25;
-
-        var axisnewContributors = newContributorsChart.xAxes.push(new am4charts.ValueAxis());
-        axisnewContributors.min = 0;
-        axisnewContributors.max = 10;
-        axisnewContributors.strictMinMax = true;
-        axisnewContributors.renderer.grid.template.disabled = true;
-
-        var rangenewContributors = axisnewContributors.axisRanges.create();
-        rangenewContributors.value = 0;
-        rangenewContributors.endValue = 10;
-        rangenewContributors.axisFill.fillOpacity = 1;
-        rangenewContributors.axisFill.fill = colorSet.getIndex(0);
-
-        var clockHandnewContributors = new am4charts.ClockHand();
-        clockHandnewContributors.hand.className = "RoundedRectangle";
-        clockHandnewContributors.endWidth = 10;
-        clockHandnewContributors.startWidth = 10;
-        clockHandnewContributors.pin.radius = 10;
-        var handnewContributors = newContributorsChart.hands.push(clockHandnewContributors);
-        handnewContributors.showValue(currentData.NumberOfNewContributors)
-
-        var labelnewContributors = newContributorsChart.radarContainer.createChild(am4core.Label);
-        labelnewContributors.isMeasured = false;
-        labelnewContributors.fontSize = 18;
-        labelnewContributors.x = am4core.percent(50);
-        labelnewContributors.y = am4core.percent(100);
-        labelnewContributors.horizontalCenter = "middle";
-        labelnewContributors.verticalCenter = "bottom";
-        labelnewContributors.text = "New contributors: " + currentData.NumberOfNewContributors;
-        labelnewContributors.paddingBottom = -50;        
+        
+        @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "200")
+        @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "50")
+        @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "50")
+        @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
+        @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "10")
     });
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    var groupedPrsChart = am4core.create("groupedPrs", am4charts.XYChart);
+    var groupedPrsChart = am4core.create("GroupedPrs", am4charts.XYChart);
     groupedPrsChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)";
 
     groupedPrsChart.legend = new am4charts.Legend();
@@ -250,14 +156,69 @@
 
     groupedPrsChart.scrollbarX = new am4core.Scrollbar();
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
+    contributorsChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)";
+
+    var contributorsDateAxis = contributorsChart.xAxes.push(new am4charts.DateAxis());
+    var contributorsValueAxis = contributorsChart.yAxes.push(new am4charts.ValueAxis());
+    
+    var contributorsSeries = contributorsChart.series.push(new am4charts.LineSeries());
+    contributorsSeries.dataFields.dateX = "GroupName";
+    contributorsSeries.dataFields.openValueY = "NumberOfActiveContributorsInPastYear";
+    contributorsSeries.dataFields.valueY = "NumberOfNewContributors";
+    contributorsSeries.tooltipText = "Active contributors: {openValueY.value} New contributors: {valueY.value}";
+    contributorsSeries.sequencedInterpolation = true;
+    contributorsSeries.fillOpacity = 0.3;
+    contributorsSeries.defaultState.transitionDuration = 1000;
+    contributorsSeries.strokeWidth = 4;
+    contributorsSeries.tensionX = 0.8;
+
+    var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
+    contributorsSeries2.dataFields.dateX = "GroupName";
+    contributorsSeries2.dataFields.valueY = "NumberOfActiveContributorsInPastYear";
+    contributorsSeries2.sequencedInterpolation = true;
+    contributorsSeries2.defaultState.transitionDuration = 1500;
+    contributorsSeries2.stroke = contributorsChart.colors.getIndex(6);
+    contributorsSeries2.strokeWidth = 4;
+    contributorsSeries2.tensionX = 0.8;
+
+    contributorsChart.cursor = new am4charts.XYCursor();
+    contributorsChart.cursor.xAxis = contributorsDateAxis;
+    contributorsChart.scrollbarX = new am4core.Scrollbar();    
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
+    openPRsAllTimeChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)";
+
+    var openPRsAllTimeDateAxis = openPRsAllTimeChart.xAxes.push(new am4charts.DateAxis());
+    var openPRsAllTimeValueAxis = openPRsAllTimeChart.yAxes.push(new am4charts.ValueAxis());
+    
+    var openPRsAllTimeSeries = openPRsAllTimeChart.series.push(new am4charts.LineSeries());
+    openPRsAllTimeSeries.dataFields.dateX = "GroupName";
+    openPRsAllTimeSeries.dataFields.valueY = "TotalNumberOpen";
+    openPRsAllTimeSeries.sequencedInterpolation = true;
+    openPRsAllTimeSeries.defaultState.transitionDuration = 1500;
+    openPRsAllTimeSeries.stroke = openPRsAllTimeChart.colors.getIndex(6);
+    openPRsAllTimeSeries.strokeWidth = 4;
+    openPRsAllTimeSeries.tensionX = 0.8;
+
+    openPRsAllTimeChart.cursor = new am4charts.XYCursor();
+    openPRsAllTimeChart.cursor.xAxis = contributorsDateAxis;
+    openPRsAllTimeChart.scrollbarX = new am4core.Scrollbar();
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
     function httpGetAsync(url, callback)
     {
         var xmlHttp = new XMLHttpRequest();
-        xmlHttp.onreadystatechange = function() { 
+        xmlHttp.onreadystatechange = function() {
             if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
                 callback(xmlHttp.responseText);
         }
-        xmlHttp.open("GET", url, true); // true for asynchronous 
+        xmlHttp.open("GET", url, true); // true for asynchronous
         xmlHttp.send(null);
     }
 
@@ -267,14 +228,52 @@
     });
 
     function refresh() {
-        // Refreshes every 60 seconds, set value 
-        // below to something other than 60000
+        // Refreshes every 300 seconds, set value
+        // below to something other than 300000
         // to vary the number of seconds
-        if(new Date().getTime() - time >= 60000) 
+        if(new Date().getTime() - time >= 300000)
             window.location.reload();
-        else 
+        else
             setTimeout(refresh, 10000);
     }
 
     setTimeout(refresh, 10000);
 </script>
+
+@helper AddGauge(string chartSuffix, string label, string value, string maxValue)
+{
+    <text>
+        var chart@(chartSuffix) = am4core.create("@chartSuffix", am4charts.GaugeChart);
+        chart@(chartSuffix).innerRadius = -25;
+
+        var axis@(chartSuffix) = chart@(chartSuffix).xAxes.push(new am4charts.ValueAxis());
+        axis@(chartSuffix).min = 0;
+        axis@(chartSuffix).max = @maxValue;
+        axis@(chartSuffix).strictMinMax = true;
+        axis@(chartSuffix).renderer.grid.template.disabled = true;
+
+        var range@(chartSuffix) = axis@(chartSuffix).axisRanges.create();
+        range@(chartSuffix).value = 0;
+        range@(chartSuffix).endValue = @maxValue;
+        range@(chartSuffix).axisFill.fillOpacity = 1;
+        range@(chartSuffix).axisFill.fill = colorSet.getIndex(0);
+
+        var clockHand@(chartSuffix) = new am4charts.ClockHand();
+        clockHand@(chartSuffix).hand.className = "RoundedRectangle";
+        clockHand@(chartSuffix).endWidth = 10;
+        clockHand@(chartSuffix).startWidth = 10;
+        clockHand@(chartSuffix).pin.radius = 10;
+        var hand@(chartSuffix) = chart@(chartSuffix).hands.push(clockHand@(chartSuffix));
+        hand@(chartSuffix).showValue(@value);
+
+        var label@(chartSuffix) = chart@(chartSuffix).radarContainer.createChild(am4core.Label);
+        label@(chartSuffix).isMeasured = false;
+        label@(chartSuffix).fontSize = 18;
+        label@(chartSuffix).x = am4core.percent(50);
+        label@(chartSuffix).y = am4core.percent(100);
+        label@(chartSuffix).horizontalCenter = "middle";
+        label@(chartSuffix).verticalCenter = "bottom";
+        label@(chartSuffix).text = "@(label): " + @value;
+        label@(chartSuffix).paddingBottom = -50;
+    </text>
+}
