@@ -223,46 +223,36 @@ namespace OurUmbraco.Our.Api
                 pullRequestsInPeriod.TotalNumberOfContributors = firstPrs.Count;
             }
 
-            var numberOfMonths = fromDate.MonthsBetween(toDate);
+            groupedPrs = groupedPrs.OrderBy(x => x.MonthYear).ToList();
+            var firstPrDate = groupedPrs.First().MonthYear.DateFromMonthYear();
+            var lastPrDate = groupedPrs.Last().MonthYear.DateFromMonthYear();
+
+            var numberOfMonths = firstPrDate.MonthsBetween(lastPrDate);
             var periodRange = new List<string>();
-            var periodDate = fromDate;
+            var periodDate = firstPrDate;
             for (var i = 0; i < numberOfMonths; i++)
             {
-                periodDate = periodDate.AddMonths(i);
-                if (periodDate <= DateTime.Now)
-                {
-                    var period = $"{periodDate.Year}{periodDate.Month:00}";
-                    periodRange.Add(period);
-                }
+                var period = $"{periodDate.Year}{periodDate.Month:00}";
+                periodRange.Add(period);
+                periodDate = periodDate.AddMonths(1);
             }
 
-            groupedPrs = groupedPrs.OrderBy(x => x.MonthYear).ToList();
             foreach (var period in periodRange)
             {
                 if (groupedPrs.Any(x => x.MonthYear == period))
                     continue;
 
-                var firstPr = groupedPrs.First();
-                var firstPrMonth = int.Parse(firstPr.MonthYear.Substring(4, 2));
-                var firstPrYear = int.Parse(firstPr.MonthYear.Substring(0, 4));
-                var firstPrDate = new DateTime(firstPrYear, firstPrMonth, 01);
-
-                var month = int.Parse(period.Substring(4, 2));
-                var year = int.Parse(period.Substring(0, 4));
-                var dateTime = new DateTime(year, month, 01);
-                
-                if(dateTime < firstPrDate)
-                    continue;
+                var dateTime = period.DateFromMonthYear();
 
                 PullRequestsInPeriod previousPrStats = null;
-                
+
                 var previousMonth = dateTime.AddMonths(-1);
                 if (previousMonth >= fromDate)
                     previousPrStats = GetPreviousPrStatsInPeriod(previousMonth, groupedPrs);
 
                 if (previousPrStats == null)
                 {
-                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(month)} {year}";
+                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
                     groupedPrs.Add(new PullRequestsInPeriod
                     {
                         GroupName = groupName,
@@ -271,7 +261,7 @@ namespace OurUmbraco.Our.Api
                 }
                 else
                 {
-                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(month)} {year}";
+                    var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
                     groupedPrs.Add(new PullRequestsInPeriod
                     {
                         GroupName = groupName,

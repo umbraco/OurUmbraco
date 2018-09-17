@@ -113,6 +113,14 @@ namespace OurUmbraco.Our.Extensions
                     return "";
             }
         }
+
+        public static DateTime DateFromMonthYear(this string monthYear)
+        {
+            var firstPrMonth = int.Parse(monthYear.Substring(4, 2));
+            var firstPrYear = int.Parse(monthYear.Substring(0, 4));
+            var firstPrDate = new DateTime(firstPrYear, firstPrMonth, 01);
+            return firstPrDate;
+        }
     }
 
     public class Badge
