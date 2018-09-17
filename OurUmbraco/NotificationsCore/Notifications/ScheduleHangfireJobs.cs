@@ -130,20 +130,16 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
         }
         
-        public void UpdateGitHubIssuesCms(PerformContext context)
+        public void UpdateGitHubIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
             var repository = new Community.Models.Repository("Umbraco-CMS", "umbraco", "Umbraco-CMS", "Umbraco CMS");
-            RecurringJob.AddOrUpdate(() => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
-        }
+            RecurringJob.AddOrUpdate("Update Umbraco CMS Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
 
-        public void UpdateGitHubIssuesDocs(PerformContext context)
-        {
-            var gitHubService = new GitHubService();
-            var repository = new Community.Models.Repository("UmbracoDocs", "umbraco", "UmbracoDocs", "Umbraco Documentation");
-            RecurringJob.AddOrUpdate(() => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            repository = new Community.Models.Repository("UmbracoDocs", "umbraco", "UmbracoDocs", "Umbraco Documentation");
+            RecurringJob.AddOrUpdate("Update Umbraco Docs Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
         }
-
+        
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();
