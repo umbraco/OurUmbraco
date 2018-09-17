@@ -136,6 +136,8 @@ namespace OurUmbraco.Our.Api
                     mergedPrs.MedianPullRequestClosingTimeInHours = medianMergeTime;
                 }
 
+                mergedPrs.AllPullRequestClosingTimesInHours = string.Join(",", mergeTimes);
+
                 if (firstTeamCommentTimes.Any())
                 {
                     var averageCommentTime = 0;
@@ -152,9 +154,9 @@ namespace OurUmbraco.Our.Api
                     mergedPrs.MedianFirstTeamCommentTimeInHours = medianFirstComment;
                 }
 
+                mergedPrs.AllFirstTeamCommentTimesInHours = string.Join(",", firstTeamCommentTimes);
                 groupedPrs.Add(mergedPrs);
-            }
-
+            }            
 
             foreach (var prInPeriod in closedPullsInPeriod)
             {
