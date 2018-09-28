@@ -212,17 +212,6 @@
             <section class="stats">
                 <div class="container">
                     <div class="row">
-                        <h5>PRs opened after CG 18 that are still open</h5>
-                        <div class="col-md-12">
-                            <div id="OpenPRsSinceCG18" class="chart"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
                         <h5>Median PR closing time in hours</h5>
                         <div class="col-md-12">
                             <div id="MedianPRMergeTime" class="chart"></div>
@@ -237,6 +226,28 @@
                         <h5>Median time for first comment from Team Umbraco</h5>
                         <div class="col-md-12">
                             <div id="MedianFirstTeamCommentTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
+                        <div class="col-md-12">
+                            <div id="ActiveContributorsAfterCG18" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>After Codegarden 18: PRs created vs. still open</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsSinceCG18" class="chart"></div>
                         </div>
                     </div>
                 </div>
@@ -354,24 +365,69 @@
             openPRsAllTimeChart.cursor = new am4charts.XYCursor();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
+            activeContributorsAfterCg18Chart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-05-23&toDate=@(toDate)&repository=@(repository)";
+
+            activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
+
+            var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+            var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
+
+            var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+            activeContributorsAfterCg18Series.name = "Active contributors";
+            activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
+            activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
+            activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
+            activeContributorsAfterCg18Series.tooltipText = "Contributors: {openValueY.value}. New: {valueY.value}";
+            activeContributorsAfterCg18Series.sequencedInterpolation = true;
+            activeContributorsAfterCg18Series.fillOpacity = 0.3;
+            activeContributorsAfterCg18Series.strokeWidth = 4;
+            activeContributorsAfterCg18Series.tensionX = 0.8;
+
+            var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+            activeContributorsAfterCg18Series2.name = "New contributors";
+            activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
+            activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
+            activeContributorsAfterCg18Series2.sequencedInterpolation = true;
+            activeContributorsAfterCg18Series2.stroke = activeContributorsAfterCg18Chart.colors.getIndex(6);
+            activeContributorsAfterCg18Series2.strokeWidth = 4;
+            activeContributorsAfterCg18Series2.tensionX = 0.8;
+
+            activeContributorsAfterCg18Chart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
             openPRsSinceCG18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-06-01&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-05-23&toDate=@(toDate)&repository=@(repository)";
 
             openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
             var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
             var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
 
+
             var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
-            openPRsSinceCG18Series.name = "Open pull requests";
+            openPRsSinceCG18Series.name = "Created pull requests";
             openPRsSinceCG18Series.dataFields.dateX = "GroupName";
-            openPRsSinceCG18Series.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series.dataFields.openValueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series.dataFields.valueY = "NumberCreated";
+            openPRsSinceCG18Series.tooltipText = "Number of PRs created: {openValueY.value}. Still open PRs: {valueY.value}";
             openPRsSinceCG18Series.sequencedInterpolation = true;
-            openPRsSinceCG18Series.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+            openPRsSinceCG18Series.fillOpacity = 0.3;
             openPRsSinceCG18Series.strokeWidth = 4;
             openPRsSinceCG18Series.tensionX = 0.8;
+
+            var openPRsSinceCG18Series2 = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+            openPRsSinceCG18Series2.name = "Still open";
+            openPRsSinceCG18Series2.dataFields.dateX = "GroupName";
+            openPRsSinceCG18Series2.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series2.sequencedInterpolation = true;
+            openPRsSinceCG18Series2.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+            openPRsSinceCG18Series2.strokeWidth = 4;
+            openPRsSinceCG18Series2.tensionX = 0.8;
 
             openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
 
@@ -387,7 +443,7 @@
             var mergeTimeInHoursValueAxis = mergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
             var mergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
-            mergeTimeInHoursSeries.name = "Median time to merge"
+            mergeTimeInHoursSeries.name = "Median time to merge";
             mergeTimeInHoursSeries.dataFields.dateX = "GroupName";
             mergeTimeInHoursSeries.dataFields.valueY = "MedianPullRequestClosingTimeInHours";
             mergeTimeInHoursSeries.sequencedInterpolation = true;
@@ -406,12 +462,10 @@
             firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
             var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
-            var firstTeamCommentTimeInHoursValueAxis =
-                firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+            var firstTeamCommentTimeInHoursValueAxis = firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
-            var firstTeamCommentTimeInHoursSeries =
-                firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
-            firstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time"
+            var firstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            firstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time";
             firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
             firstTeamCommentTimeInHoursSeries.dataFields.valueY = "MedianFirstTeamCommentTimeInHours";
             firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;

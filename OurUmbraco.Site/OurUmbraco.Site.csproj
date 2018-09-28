@@ -680,8 +680,12 @@
     <Content Include="scripts\amcharts\maps.js" />
     <Content Include="scripts\amcharts\themes\animated.js" />
     <Content Include="scripts\amcharts\themes\dark.js" />
+    <Content Include="scripts\amcharts\themes\dataviz.js" />
+    <Content Include="scripts\amcharts\themes\frozen.js" />
     <Content Include="scripts\amcharts\themes\kelly.js" />
     <Content Include="scripts\amcharts\themes\material.js" />
+    <Content Include="scripts\amcharts\themes\moonrisekingdom.js" />
+    <Content Include="scripts\amcharts\themes\spiritedaway.js" />
     <Content Include="scripts\anchorjs\anchorjs.custom.js" />
     <Content Include="scripts\forumsignalr.js" />
     <Content Include="scripts\forum\Markdown.App.js" />

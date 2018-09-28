@@ -104,5 +104,8 @@ namespace OurUmbraco.Our.Models
         /// All the contributors over all time who are not part of HQ
         /// </summary>
         public int TotalNumberOfContributors { get; set; }
+
+        public int NumberOfActiveContributorsAfterCg18 { get; set; }
+        public int NumberNewOfActiveContributorsAfterCg18 { get; set; }
     }
 }

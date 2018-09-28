@@ -212,15 +212,27 @@ namespace OurUmbraco.Our.Api
                 }
 
                 var activeContributors = new List<string>();
+                var activeContributorsAfterCg18 = new List<string>();
+                var newActiveContributorsAfterCg18 = new List<string>();
+                var firstPrsUsernamesAfterCg18 = new List<string>();
+                
                 foreach (var pr in pullsNonHq)
                 {
                     var startDate = maxDateInPeriod.AddYears(-1).AddMonths(-1).AddDays(1);
                     if (pr.CreatedAt <= maxDateInPeriod && pr.CreatedAt >= startDate)
                         if (activeContributors.Any(x => x == pr.User.Login) == false)
                             activeContributors.Add(pr.User.Login);
+
+                    var cg18StartDate = new DateTime(2018, 05, 20);
+                    if (pr.CreatedAt <= maxDateInPeriod && pr.CreatedAt >= cg18StartDate)
+                    {
+                        if (activeContributorsAfterCg18.Any(x => x == pr.User.Login) == false)
+                            activeContributorsAfterCg18.Add(pr.User.Login);
+                    }
                 }
 
                 pullRequestsInPeriod.NumberOfActiveContributorsInPastYear = activeContributors.Count;
+                pullRequestsInPeriod.NumberOfActiveContributorsAfterCg18 = activeContributorsAfterCg18.Count;
 
                 pullRequestsInPeriod.TotalNumberOfContributors = firstPrs.Count;
             }
