@@ -9,7 +9,7 @@
     }
 
     var fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
-    var toDate = DateTime.Now.AddMonths(1).ToString("yyyy-MM-01");
+    var toDate = DateTime.Now.ToString("yyyy-MM-" + DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
     var repository = "Umbraco-CMS";
     var repoQueryString = Request.QueryString["repo"];
     if (string.IsNullOrWhiteSpace(repoQueryString) == false)
@@ -23,6 +23,19 @@
     {
         viewType = viewTypeQueryString;
     }
+
+    var showLastMonth = false;
+    var lastMonthQueryString = Request.QueryString["lastMonth"];
+    if (string.IsNullOrWhiteSpace(lastMonthQueryString) == false)
+    {
+        showLastMonth = true;
+    }
+
+    if (showLastMonth)
+    {
+        fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
+        toDate = DateTime.Now.ToString("yyyy-" + DateTime.Now.AddMonths(-1).Month.ToString("MM")  + "-" + DateTime.DaysInMonth(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month));
+    }
 }
 
 <div id="body" class="page markdown-syntax">
@@ -32,10 +45,12 @@
 
     <ul id="breadcrumb2">
         <li>
-            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS</a>
+            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS this month</a> / 
+            <a href="/teamumbraco/?repo=Umbraco-CMS&lastMonth=true">Stats Umbraco CMS previous month</a>
         </li>
         <li>
-            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs</a>
+            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs this month</a> / 
+            <a href="/teamumbraco/?repo=UmbracoDocs&lastMonth=true">Stats Umbraco Docs previous month</a>
         </li>
         <li>
             <a href="/teamumbraco/?repo=Umbraco-CMS&type=people">Leaderboard Umbraco CMS</a>
@@ -219,6 +234,17 @@
                     </div>
                 </div>
             </section>
+            
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Average PR closing time in hours</h5>
+                        <div class="col-md-12">
+                            <div id="AveragePRMergeTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             <section class="stats">
                 <div class="container">
@@ -226,6 +252,17 @@
                         <h5>Median time for first comment from Team Umbraco</h5>
                         <div class="col-md-12">
                             <div id="MedianFirstTeamCommentTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Median time for first comment from Team Umbraco</h5>
+                        <div class="col-md-12">
+                            <div id="AverageFirstTeamCommentTime" class="chart"></div>
                         </div>
                     </div>
                 </div>
@@ -254,16 +291,16 @@
             </section>
 
         <script>
-            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?repository=@(repository)",
+            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
                 function(response) {
                     var currentData = JSON.parse(response);
                     var colorSet = new am4core.ColorSet();
 
-                    @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "200")
+                    @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "150")
                     @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "50")
                     @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "50")
                     @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
-                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "10")
+                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "15")
                 });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -285,29 +322,41 @@
             valueAxis.renderer.minWidth = 35;
 
             var prsMerged = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-            prsMerged.columns.template.width = am4core.percent(80);
-            prsMerged.columns.template.tooltipText = "{name}: {valueY.value}";
             prsMerged.name = "PRs merged";
             prsMerged.dataFields.categoryX = "GroupName";
             prsMerged.dataFields.valueY = "NumberMerged";
             prsMerged.stacked = true;
 
+            var prsMergedColumnTemplate = prsMerged.columns.template;
+            prsMergedColumnTemplate.width = am4core.percent(80);
+            prsMergedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+            //prsMergedColumnTemplate.strokeOpacity = 0;
+            //prsMergedColumnTemplate.propertyFields.fill = "color";
+            //var prsMergedLabel = prsMergedColumnTemplate.createChild(am4core.Label);
+            //prsMergedLabel.text = "{valueY.value}";
+            //prsMergedLabel.align = "center";
+            //prsMergedLabel.valign = "top";
+
             var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-            prsClosed.columns.template.width = am4core.percent(80);
-            prsClosed.columns.template.tooltipText = "{name}: {valueY.value}";
             prsClosed.name = "PRs closed";
             prsClosed.dataFields.categoryX = "GroupName";
             prsClosed.dataFields.valueY = "NumberClosed";
             prsClosed.stacked = true;
 
+            var prsClosedColumnTemplate = prsClosed.columns.template;
+            prsClosedColumnTemplate.width = am4core.percent(80);
+            prsClosedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+
             var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
-            prsCreated.columns.template.width = am4core.percent(80);
-            prsCreated.columns.template.tooltipText = "{name}: {valueY.value}";
             prsCreated.name = "PRs created";
             prsCreated.dataFields.categoryX = "GroupName";
             prsCreated.dataFields.valueY = "NumberCreated";
             prsCreated.stacked = false;
-
+            
+            var prsCreatedColumnTemplate = prsCreated.columns.template;
+            prsCreatedColumnTemplate.width = am4core.percent(80);
+            prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+            
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
@@ -330,7 +379,7 @@
             contributorsSeries.fillOpacity = 0.3;
             contributorsSeries.strokeWidth = 4;
             contributorsSeries.tensionX = 0.8;
-
+            
             var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
             contributorsSeries2.name = "New contributors";
             contributorsSeries2.dataFields.dateX = "GroupName";
@@ -408,7 +457,6 @@
             var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
             var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
 
-
             var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
             openPRsSinceCG18Series.name = "Created pull requests";
             openPRsSinceCG18Series.dataFields.dateX = "GroupName";
@@ -455,11 +503,33 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            var averageMergeTimeInHoursChart = am4core.create("AveragePRMergeTime", am4charts.XYChart);
+            averageMergeTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+
+            averageMergeTimeInHoursChart.legend = new am4charts.Legend();
+
+            var averageMergeTimeInHoursDateAxis = averageMergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var averageMergeTimeInHoursValueAxis = averageMergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var averageMergeTimeInHoursSeries = averageMergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageMergeTimeInHoursSeries.name = "Median time to merge";
+            averageMergeTimeInHoursSeries.dataFields.dateX = "GroupName";
+            averageMergeTimeInHoursSeries.dataFields.valueY = "AveragePullRequestClosingTimeInHours";
+            averageMergeTimeInHoursSeries.sequencedInterpolation = true;
+            averageMergeTimeInHoursSeries.stroke = averageMergeTimeInHoursChart.colors.getIndex(6);
+            averageMergeTimeInHoursSeries.strokeWidth = 4;
+            averageMergeTimeInHoursSeries.tensionX = 0.8;
+
+            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
             firstTeamCommentTimeInHoursChart.dataSource.url =
                 "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
 
-            firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
+           firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
             var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
             var firstTeamCommentTimeInHoursValueAxis = firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
@@ -474,6 +544,29 @@
             firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
 
             firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            var averageFirstTeamCommentTimeInHoursChart = am4core.create("AverageFirstTeamCommentTime", am4charts.XYChart);
+            averageFirstTeamCommentTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+            
+            averageFirstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
+
+            var averageFirstTeamCommentTimeInHoursDateAxis = averageFirstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var averageFirstTeamCommentTimeInHoursValueAxis = averageFirstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var averageFirstTeamCommentTimeInHoursSeries = averageFirstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageFirstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.valueY = "AverageFirstTeamCommentTimeInHours";
+            averageFirstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            averageFirstTeamCommentTimeInHoursSeries.stroke = averageFirstTeamCommentTimeInHoursChart.colors.getIndex(6);
+            averageFirstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            averageFirstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+            
+            averageFirstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
