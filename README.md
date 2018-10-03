@@ -1,7 +1,7 @@
 Our Umbraco
 ===========
 
-Complete source of the Umbraco community site, [our.umbraco.org](https://our.umbraco.org).
+Complete source of the Umbraco community site, [our.umbraco.com](https://our.umbraco.com).
 
 ## Build in Visual Studio
 
@@ -18,7 +18,7 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip.
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip.
 
 Restore the database to SQL Server 2012 SP2 (won't work on earlier version) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
