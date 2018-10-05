@@ -17,6 +17,10 @@
         {
             return str.Replace("_", ".");
         }
+        public static string DotToUnderscore(this string str)
+        {
+            return str.Replace(".", "_");
+        }
 
         public static string RemoveDash(this string str)
         {

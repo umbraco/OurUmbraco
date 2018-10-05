@@ -23,6 +23,8 @@ function redirectToSearch(ev) {
 
         }
 
+        var version = $(".version-search-select").val();
+
         var filters = GetSearchFilters(categoryName);
 
         var newUri = "/search";
@@ -39,6 +41,8 @@ function redirectToSearch(ev) {
         newUri = updateQueryString("replies", filters.replies, newUri);
         newUri = updateQueryString("solved", filters.solved, newUri);
         newUri = updateQueryString("unsolved", filters.unsolved, newUri);
+
+                newUri = updateQueryString("v", version, newUri);
 
         window.location = newUri;
     }
@@ -138,6 +142,8 @@ var projectSearch = _.debounce(function (ev) {
 var docsSearch = _.debounce(function (ev) {
 
     var term = this.value;
+    var version = $('.version-search-select').find(":selected").val();
+
     var defaultListing = $('.docs-default-listing');
     var searchListing = $('.docs-search-listing');
 
@@ -159,7 +165,7 @@ var docsSearch = _.debounce(function (ev) {
         $.ajax({
             dataType: "json",
             url: url,
-            data: { term: term },
+            data: { term: term, version: version },
             success: function (response) {
 
                 //toggle and empty box
