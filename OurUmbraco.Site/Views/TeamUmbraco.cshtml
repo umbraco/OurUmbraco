@@ -260,7 +260,7 @@
             <section class="stats">
                 <div class="container">
                     <div class="row">
-                        <h5>Median time for first comment from Team Umbraco</h5>
+                        <h5>Average time for first comment from Team Umbraco</h5>
                         <div class="col-md-12">
                             <div id="AverageFirstTeamCommentTime" class="chart"></div>
                         </div>
@@ -370,7 +370,7 @@
             var contributorsValueAxis = contributorsChart.yAxes.push(new am4charts.ValueAxis());
 
             var contributorsSeries = contributorsChart.series.push(new am4charts.LineSeries());
-            contributorsSeries.name = "Active contributors";
+            contributorsSeries.name = "New contributors";
             contributorsSeries.dataFields.dateX = "GroupName";
             contributorsSeries.dataFields.openValueY = "NumberOfActiveContributorsInPastYear";
             contributorsSeries.dataFields.valueY = "NumberOfNewContributors";
@@ -381,7 +381,7 @@
             contributorsSeries.tensionX = 0.8;
             
             var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
-            contributorsSeries2.name = "New contributors";
+            contributorsSeries2.name = "Active contributors";
             contributorsSeries2.dataFields.dateX = "GroupName";
             contributorsSeries2.dataFields.valueY = "NumberOfActiveContributorsInPastYear";
             contributorsSeries2.sequencedInterpolation = true;
@@ -425,7 +425,7 @@
             var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
 
             var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
-            activeContributorsAfterCg18Series.name = "Active contributors";
+            activeContributorsAfterCg18Series.name = "New contributors";
             activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
             activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
             activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
@@ -436,7 +436,7 @@
             activeContributorsAfterCg18Series.tensionX = 0.8;
 
             var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
-            activeContributorsAfterCg18Series2.name = "New contributors";
+            activeContributorsAfterCg18Series2.name = "Active contributors";
             activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
             activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
             activeContributorsAfterCg18Series2.sequencedInterpolation = true;
