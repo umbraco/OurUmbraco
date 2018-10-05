@@ -56,6 +56,7 @@ namespace OurUmbraco.Documentation.Busineslogic
                     .UseMathematics()
                     .UseMediaLinks()
                     .UsePipeTables()
+                    .UseYamlFrontMatter()
                     .UseListExtras()
                     .UseTaskLists()
                     .UseDiagrams()
