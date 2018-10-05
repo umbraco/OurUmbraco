@@ -1,74 +1,134 @@
 .docs {
-	padding: 0;
-	border-bottom: 1px solid rgba($color-space, .11);
+    padding: 0;
+    border-bottom: 1px solid rgba($color-space, .11);
 
-	.row {
-		margin: 0;
-		display: flex;
-		flex-direction: row;
+    .row {
+        margin: 0;
+        display: flex;
+        flex-direction: row;
 
-		@media (max-width: $md) {
-			flex-direction: column;	
-		}
-	}
+        @media (max-width: $md) {
+            flex-direction: column;
+        }
+    }
 
-	.container, .row, .col-md-6 {
-		@media (max-width: $md) {
-			padding: 0;
+    .container, .row, .col-md-6 {
+        @media (max-width: $md) {
+            padding: 0;
 
-			p {
-				padding: 0 40px;
-			}
-		}
-	}
+            p {
+                padding: 0 40px;
+            }
+        }
+    }
 
-	.advanced, .beginners {
-		padding: 80px 20px;
-		text-align: center;
+    .advanced, .beginners {
+        padding: 80px 20px;
+        text-align: center;
 
-		@media (min-width: $md) {
-			padding: 80px 60px;
-		}
-	}
+        @media (min-width: $md) {
+            padding: 80px 60px;
+        }
+    }
 
-	.advanced {
-		@media (max-width: $md) {
-			padding: 40px 0px 80px;
-			border-top: 1px solid rgba($color-space, .11);
-		}
-	}
+    .advanced {
+        @media (max-width: $md) {
+            padding: 40px 0px 80px;
+            border-top: 1px solid rgba($color-space, .11);
+        }
+    }
 
-	.col-md-6 {
-		&:last-child {
-			@media (min-width: $md) {
-				border-left: 1px solid rgba($color-space, .11);
-			}
-		}
-	}
+    .col-md-6 {
+        &:last-child {
+            @media (min-width: $md) {
+                border-left: 1px solid rgba($color-space, .11);
+            }
+        }
+    }
 
-	img {
-		margin-bottom: 30px;
-		display: inline-block;
-	}
+    img {
+        margin-bottom: 30px;
+        display: inline-block;
+    }
 
-	h2 {
-		font-size: 2rem;
-		margin-bottom: 1rem;
-	}
+    h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
 
-	p {
-		color: darken($color-space, 20%);
-		line-height: 1.5;
-		font-size: 1.1rem;
+    p {
+        color: darken($color-space, 20%);
+        line-height: 1.5;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+    }
 
-		margin-bottom: 30px;
-	}
+    .button {
+        font-size: .9rem !important;
 
-	.button {
-		font-size: .9rem !important;
+        @media (min-width: $md) {
+            font-size: 1rem !important;
+        }
+    }
+}
 
-		@media (min-width: $md) {
-			font-size: 1rem !important;
-		}
-	}
+
+.docs-version-panel {
+    float: right;
+    width: 200px;
+    border: 1px solid #e1e1e1;
+    margin-bottom: 10px;
+    padding: 15px;
+    margin-top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    text-decoration: none;
+}
+
+@mixin notice($bg-color, $border-color, $icon-string) {
+    padding: 10px;
+    margin: 10px 0;
+    background-color: $bg-color;
+    border-top: 5px solid $border-color;
+
+    p:before {
+        font-family: icomoon,Lato,sans-serif;
+        content: $icon-string;
+        display: block;
+        font-weight: bold;
+        margin-bottom: 5px;
+    }
+}
+
+#markdown-docs {
+    .note {
+        @include notice(rgba(163,219,120,.07), rgba(163,219,120,.70), "\e0d1  Note:");
+    }
+
+    .warning {
+        @include notice(rgba(228,123,0,.07), rgba(228,123,0,.70), "\e25d  Warning:");
+    }
+
+    .tip {
+        @include notice(rgba(40,51,204,.07), rgba(40,51,204,.70), "\e148  Tip:");
+    }
+
+    .checklist {
+        ul {
+            list-style: none;
+            margin: 0;
+
+            li {
+                margin: 5px 0;
+            }
+
+            li:before {
+                font-family: icomoon,Lato,sans-serif;
+                content: "\e165";
+                padding: 5px;
+            }
+        }
+    }
 }

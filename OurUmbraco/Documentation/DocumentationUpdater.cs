@@ -402,20 +402,14 @@ namespace OurUmbraco.Documentation
                             return 4;
 
                         //Umbraco Cloud - Troubleshooting
-                        case "content-deploy-schema":
+                        case "deployments":
                             return 0;
-                        case "content-deploy-error":
+                        case "log-files":
                             return 1;
-                        case "structure-error":
+                        case "faq":
                             return 2;
-                        case "duplicate-dictionary-items":
+                        case "courier":
                             return 3;
-                        case "moving-from-courier-to-deploy":
-                            return 4;
-                        case "minor-upgrades":
-                            return 5;
-                        case "plugins-known-issues":
-                            return 6;
 
                     }
                     break;

@@ -58,13 +58,13 @@ namespace OurUmbraco.Our.Api
             return searchResult;
         }
 
-        public SearchResultModel GetDocsSearchResults(string term)
+        public SearchResultModel GetDocsSearchResults(string term, int version)
         {
             // track search
             var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
             ga.SendSearchQuery(term, "docs");
-
-            var searcher = new OurSearcher(term, nodeTypeAlias: "documentation");
+            
+            var searcher = new OurSearcher(term, nodeTypeAlias: "documentation", majorDocsVersion: version);
             var searchResult = searcher.Search("documentationSearcher");
             return searchResult;
         }

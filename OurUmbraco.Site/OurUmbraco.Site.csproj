@@ -392,6 +392,7 @@
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
+    <Content Include="App_Plugins\Hangfire\index.html" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.resource.js" />
@@ -535,6 +536,7 @@
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="config\BackOfficeTours\getting-started.json" />
+    <Content Include="config\TeamUmbraco.json" />
     <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
@@ -657,6 +659,33 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageComplete.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
+    <Content Include="scripts\amcharts\charts.js" />
+    <Content Include="scripts\amcharts\core.js" />
+    <Content Include="scripts\amcharts\deps\canvg.js" />
+    <Content Include="scripts\amcharts\deps\pdfmake.js" />
+    <Content Include="scripts\amcharts\deps\responsivedefaults.js" />
+    <Content Include="scripts\amcharts\deps\xlsx.js" />
+    <Content Include="scripts\amcharts\lang\de_CH.js" />
+    <Content Include="scripts\amcharts\lang\de_DE.js" />
+    <Content Include="scripts\amcharts\lang\en.js" />
+    <Content Include="scripts\amcharts\lang\en_CA.js" />
+    <Content Include="scripts\amcharts\lang\en_US.js" />
+    <Content Include="scripts\amcharts\lang\es_ES.js" />
+    <Content Include="scripts\amcharts\lang\lt_LT.js" />
+    <Content Include="scripts\amcharts\lang\nl_NL.js" />
+    <Content Include="scripts\amcharts\lang\pt_BR.js" />
+    <Content Include="scripts\amcharts\lang\pt_PT.js" />
+    <Content Include="scripts\amcharts\lang\ru_RU.js" />
+    <Content Include="scripts\amcharts\lang\sv_SV.js" />
+    <Content Include="scripts\amcharts\maps.js" />
+    <Content Include="scripts\amcharts\themes\animated.js" />
+    <Content Include="scripts\amcharts\themes\dark.js" />
+    <Content Include="scripts\amcharts\themes\dataviz.js" />
+    <Content Include="scripts\amcharts\themes\frozen.js" />
+    <Content Include="scripts\amcharts\themes\kelly.js" />
+    <Content Include="scripts\amcharts\themes\material.js" />
+    <Content Include="scripts\amcharts\themes\moonrisekingdom.js" />
+    <Content Include="scripts\amcharts\themes\spiritedaway.js" />
     <Content Include="scripts\anchorjs\anchorjs.custom.js" />
     <Content Include="scripts\forumsignalr.js" />
     <Content Include="scripts\forum\Markdown.App.js" />
@@ -677,6 +706,9 @@
     <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.woff2" />
     <Content Include="config\CommunityBlogs.json" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
+    <Content Include="scripts\amcharts\CHANGELOG.md" />
+    <Content Include="scripts\amcharts\LICENSE" />
+    <Content Include="scripts\amcharts\README.md" />
     <None Include="scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="scripts\jquery-1.6.4.js" />
     <Content Include="scripts\jquery-1.6.4.min.js" />
@@ -4398,6 +4430,7 @@
     <Content Include="Views\Partials\Community\Sidebar.cshtml" />
     <Content Include="Views\CommunityCalendar.cshtml" />
     <Content Include="Views\Partials\Community\Calendar.cshtml" />
+    <Content Include="Views\TeamUmbraco.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

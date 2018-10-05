@@ -410,6 +410,9 @@
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="YamlDotNet, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\YamlDotNet.4.3.1\lib\net45\YamlDotNet.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
@@ -429,6 +432,7 @@
     <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
+    <Compile Include="Our\Api\TeamUmbracoStatisticsController.cs" />
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
@@ -462,6 +466,7 @@
     <Compile Include="Community\Videos\CommunityVideosConstants.cs" />
     <Compile Include="Community\Videos\CommunityVideosService.cs" />
     <Compile Include="Community\Videos\YouTubePlayList.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
     <Compile Include="Documentation\Busineslogic\DefaultVersion.cs" />
@@ -482,7 +487,11 @@
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Extensions\ListExtensions.cs" />
+    <Compile Include="Our\Models\FirstPullRequest.cs" />
+    <Compile Include="Our\Models\PullRequestContributor.cs" />
+    <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
+    <Compile Include="Our\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
@@ -661,6 +670,7 @@
     <Compile Include="Our\Rest.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
     <Compile Include="Our\SecureHasher.cs" />
+    <Compile Include="Our\Services\PullRequestService.cs" />
     <Compile Include="Our\Services\ReleasesService.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
@@ -773,6 +783,7 @@
     <Compile Include="Repository\Controllers\PackageRepositoryController.cs" />
     <Compile Include="Repository\Controllers\PackageSortOrder.cs" />
     <Compile Include="Repository\Models\Category.cs" />
+    <Compile Include="Repository\Models\DocumentationVersion.cs" />
     <Compile Include="Repository\Models\ExternalSource.cs" />
     <Compile Include="Repository\Models\PackageDetails.cs" />
     <Compile Include="Repository\Models\Package.cs" />
@@ -782,6 +793,7 @@
     <Compile Include="Repository\Models\PackageOwnerInfo.cs" />
     <Compile Include="Repository\Models\PackageVersionSupport.cs" />
     <Compile Include="Repository\Models\PagedPackages.cs" />
+    <Compile Include="Repository\Services\DocumentationVersionService.cs" />
     <Compile Include="Repository\Services\PackageRepositoryService.cs" />
     <Compile Include="Repository\Project.cs" />
     <Compile Include="Repository\Projects.cs" />
@@ -822,6 +834,7 @@
   <ItemGroup>
     <None Include="Forum\setuptables.sql" />
     <None Include="app.config" />
+    <Compile Include="Our\Examine\ExamineHelper.YamlMetaData.cs" />
     <None Include="packages.config">
       <SubType>Designer</SubType>
     </None>

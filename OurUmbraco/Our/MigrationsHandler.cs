@@ -56,6 +56,8 @@ namespace OurUmbraco.Our
             AddVideosPage();
             AddRetiredStatusToPackages();
             AddPasswordResetTokenToMembers();
+            AddPRTeamPage();
+
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1600,6 +1602,67 @@ namespace OurUmbraco.Our
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+
+        private void AddPRTeamPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "TeamUmbraco";
+                const string contentItemName = "TeamUmbraco";
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var rootContent = contentService.GetRootContent().FirstOrDefault();
+
+                if (rootContent != null)
+                {
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var templateCreateResult =
+                        ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage",
+                            templateName);
+                    if (templateCreateResult.Success)
+                    {
+                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                        template.SetMasterTemplate(masterTemplate);
+                        if (templateContents != string.Empty)
+                            template.Content = templateContents;
+                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                        var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                        var textPageContentType = contentTypeService.GetContentType("TextPage");
+                        var allowedTemplates = new List<ITemplate> {template};
+                        allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
+                        textPageContentType.AllowedTemplates = allowedTemplates;
+                        contentTypeService.Save(textPageContentType);
+                    }
+
+                    var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
+                    textPage.SetValue("umbracoNaviHide", true);
+                    textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                    var saveResult = contentService.SaveAndPublishWithStatus(textPage);
+
+                    string[] lines = {""};
+                    File.WriteAllLines(path, lines);
+                }
             }
             catch (Exception ex)
             {
