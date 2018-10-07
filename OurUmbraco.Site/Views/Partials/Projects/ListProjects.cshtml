@@ -72,7 +72,7 @@
     //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
     //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);
     var searcher = new OurSearcher(term,
-        "project", examineOrder,
+        "project", null, examineOrder,
         filters: filters, maxResults: pageSize * page);
 
     var search = searcher.Search("projectSearcher");
