@@ -67,14 +67,15 @@
     {
         var prService = new PullRequestService();
         var leaderBoardYear = prService.GetLeaderBoard(DateTime.Now.AddMonths(-12), DateTime.Now.AddMonths(1), repository)
-            .OrderByDescending(x => x.Contributions).Skip(0).Take(50);
+            .OrderByDescending(x => x.Contributions).ToList();
         var leaderBoard = prService.GetLeaderBoard(new DateTime(2010, 01, 01), DateTime.Now.AddMonths(1), repository)
-            .OrderByDescending(x => x.Contributions);
+            .OrderByDescending(x => x.Contributions).ToList();
 
         <section>
             <div class="container">
                 <div class="row">
-                    <h5>Leaderboard (top 50 past year)</h5>
+                    <h5>Leaderboard past 12 months</h5>
+                    <h5>Unique contributors: @(leaderBoardYear.Count)</h5>
                     <div class="col-md-12">    
                         <table>
                             <tr>
@@ -103,8 +104,9 @@
         <section>
             <div class="container">
                 <div class="row">
-                    <h5>Leaderboard (top 50 all time)</h5>
-                    <div class="col-md-12">    
+                    <h5>Leaderboard all time</h5>
+                    <h5>Unique contributors: @(leaderBoard.Count)</h5>
+                    <div class="col-md-12">
                         <table>
                             <tr>
                                 <td><strong>GitHub username</strong></td>
