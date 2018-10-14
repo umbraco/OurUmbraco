@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
+using OurUmbraco.NotificationsCore;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -57,6 +58,7 @@ namespace OurUmbraco.Our
             AddRetiredStatusToPackages();
             AddPasswordResetTokenToMembers();
             AddPRTeamPage();
+            AddAdditionalUsers();
 
         }
 
@@ -1317,11 +1319,11 @@ namespace OurUmbraco.Our
                     textbox = new DataTypeDefinition("Umbraco.Textbox");
                     textboxPropertyType = new PropertyType(textbox, "url") { Name = "Url" };
                     contentType.AddPropertyType(textboxPropertyType, "Content");
-                    
+
                     var mediaPicker = new DataTypeDefinition("Umbraco.MediaPicker");
                     var mediaPickerPropertyType = new PropertyType(mediaPicker, "icon") { Name = "Icon" };
                     contentType.AddPropertyType(mediaPickerPropertyType, "Content");
-                    
+
                     contentTypeService.Save(contentType);
 
                     var hubPageContentType = contentTypeService.GetContentType("communityHubPage");
@@ -1649,7 +1651,7 @@ namespace OurUmbraco.Our
 
                         var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                         var textPageContentType = contentTypeService.GetContentType("TextPage");
-                        var allowedTemplates = new List<ITemplate> {template};
+                        var allowedTemplates = new List<ITemplate> { template };
                         allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
                         textPageContentType.AllowedTemplates = allowedTemplates;
                         contentTypeService.Save(textPageContentType);
@@ -1660,9 +1662,39 @@ namespace OurUmbraco.Our
                     textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
                     var saveResult = contentService.SaveAndPublishWithStatus(textPage);
 
-                    string[] lines = {""};
+                    string[] lines = { "" };
                     File.WriteAllLines(path, lines);
                 }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddAdditionalUsers()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var userService = ApplicationContext.Current.Services.UserService;
+
+                var db = ApplicationContext.Current.DatabaseContext.Database;
+
+                for (var i = 1; i <= 45; i++)
+                {
+                    var user = userService.GetUserById(i);
+                    if (user == null)
+                        db.Execute($"INSERT INTO umbracoUser (userName, userLogin, userEmail, userPassword) VALUES('test{i}@@test.com', 'test{i}@@test.com', 'test{i}@@test.com', 'abc123')");
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
             }
             catch (Exception ex)
             {
