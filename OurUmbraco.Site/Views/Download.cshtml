@@ -1,13 +1,14 @@
 ﻿@inherits UmbracoTemplatePage
 @using ClientDependency.Core.Mvc
-@using OurUmbraco.Release
+@using OurUmbraco.Our.Services
 @{
     Layout = "~/Views/Master.cshtml";
     Html.RequiresCss("~/css/releases.css");
     Html.RequiresJs("~/assets/js/components/overlay.js");
     Html.RequiresJs("~/assets/js/lib/svg4everybody.min.js");
 
-    var latestRelease = Download.GetCurrentReleaseFromFile();
+    var releasesService = new ReleasesService();
+    var latestRelease = releasesService.GetLatestRelease();
 }
 
 <section id="download" class="download-umbraco">
@@ -55,7 +56,7 @@
 
                 <p class="large-margin-bottom">
                     Current Version:
-                    <a id="downloadButton" class="download-link" href="/contribute/releases/@(latestRelease.version.Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.version)</a>
+                    <a id="downloadButton" class="download-link" href="/contribute/releases/@(latestRelease.FullVersion.ToString().Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.FullVersion)</a>
                     -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
 

@@ -1,70 +1,46 @@
-@using OurUmbraco.Release
+@using OurUmbraco.Our.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 @{
-    var sortedVersions = new Dictionary<Version, IPublishedContent>();
-    foreach (var release in Model.Content.Children.Where(x => x.GetPropertyValue<string>("releaseStatus") == "Released"))
-    {
-        try
-        {
-            sortedVersions.Add(new Version(release.Name), release);
-        }
-        catch (Exception ex)
-        {
-            <span style="display: none">Couldn't add version @release.Name</span>
-        }
-    }
-
-    var majorVersionGroups = sortedVersions.GroupBy(x => x.Key.Major).OrderByDescending(x => x.Key);
-    var allVersions = new Versions();
-    var youTrackVersions = allVersions.GetAggregateVersionsFromFile();
+    var releasesService = new ReleasesService();
+    var releases = releasesService.GetReleasesCache().Where(x => x.Released).OrderByDescending(x => x.FullVersion).ToList();
+    var majorVersionGroups = releases.GroupBy(x => x.FullVersion.Major).OrderByDescending(x => x.Key);
 }
 
 <h1>All Releases</h1>
-
 @foreach (var majorVersion in majorVersionGroups)
 {
-    var versions = majorVersion.OrderByDescending(x => x.Key);
-    var latest = versions.First();
-    var youTrackVersion = youTrackVersions.First(x => x.version == latest.Key.ToString());
-    var features = youTrackVersion.issues.Count(x => x.type.Contains("Feature"));
-    var issues = youTrackVersion.issues.Count() - features;
-    var breaking = youTrackVersion.issues.Count(x => x.breaking);
-    var firstDownload = latest.Value.Children(x => x.DocumentTypeAlias == "ReleaseDownload").FirstOrDefault();
-    var releaseDate = new DateTime();
-    if (firstDownload != null)
-    {
-        releaseDate = firstDownload.GetPropertyValue<DateTime>("uploadDate");
-    }
+    <h1>Version @majorVersion.Key</h1>
 
-    var infoText = string.Empty;
-    var isFirst = true;
-    var seperator = "&nbsp;|&nbsp;";
-    
+    var releasesInGroup = releases.Where(x => x.FullVersion.Major == majorVersion.Key).ToList();
+    var newestReleaseInGroup = releasesInGroup.First();
+
+    var features = newestReleaseInGroup.Issues.Count(x => x.Type == "type/enhancement" || x.Type == "type/feature" || x.Type.Contains("Feature"));
+    var issues = newestReleaseInGroup.Issues.Count - features;
+    var breaking = newestReleaseInGroup.Issues.Count(x => x.Breaking);
+    var releaseDate = newestReleaseInGroup.ReleaseDate;
+
+    var infoTexts = new List<string>();
+
     if (features > 0)
     {
-        infoText = string.Format("{0}{1}Features: {2}", infoText, isFirst == false ? seperator : string.Empty, features);
-        isFirst = false;
+        infoTexts.Add(string.Format("Features: {0}", features));
     }
     if (issues > 0)
     {
-        infoText = string.Format("{0}{1}Issues fixed: {2}", infoText, isFirst == false ? seperator : string.Empty, issues);
-        isFirst = false;
+        infoTexts.Add(string.Format("Issues fixed: {0}", issues));
     }
     if (breaking > 0)
     {
-        infoText = string.Format("{0}{1}Breaking changes: {2}", infoText, isFirst == false ? seperator : string.Empty, breaking);
-        isFirst = false;
+        infoTexts.Add(string.Format("Breaking changes: {0}", breaking));
     }
-    if (Equals(releaseDate, default(DateTime)) == false)
+    if (Equals(newestReleaseInGroup.ReleaseDate, default(DateTime)) == false)
     {
-        infoText = string.Format("{0}{1}Released: {2}", infoText, isFirst == false ? seperator : string.Empty, releaseDate.ToString("ddd MMM dd yyyy"));
-        isFirst = false;
+        infoTexts.Add(string.Format("Released: {0:ddd MMM dd yyyy}", releaseDate));
     }
 
-
-    <h2 id="version-@majorVersion.Key">Version @majorVersion.Key</h2>
-
+    var infoText = string.Join("&nbsp;|&nbsp;", infoTexts);
+    
     <div class="row releaseTable">
         <div class="col-xs-3">
 
@@ -72,7 +48,7 @@
             <span class="dot big icon-untitled"><span class="line v-line"></span><span class="line h-line"></span></span>
 
             <!-- the rest -->
-            @for (var i = 0; i < versions.Count(); i++)
+            @for (var i = 0; i < releasesInGroup.Skip(1).Count(); i++)
             {
                 if (i % 3 == 0)
                 {
@@ -82,8 +58,6 @@
                     </span>
                 }
             }
-
-
         </div>
 
         <div class="col-xs-9">
@@ -91,20 +65,18 @@
 
                 <!-- latest release -->
                 <div class="col-xs-12">
-                    <h4 style="display: inline"><a href="@latest.Value.Url">v @latest.Key.ToString()</a></h4><p style="display: inline; padding-left: 20px; color: rgba(0, 0, 0, .4); font-size: .8rem;">@Html.Raw(infoText)</p>
-                    <p>@youTrackVersion.releaseDescription @latest.Value.GetPropertyValue("releaseDescription")</p>
+                    <h4 style="display: inline"><a href="@(Model.Content.Url + "/" + newestReleaseInGroup.Version.Replace(".", string.Empty))">v@(newestReleaseInGroup.Version)</a></h4>
+                    <p style="display: inline; padding-left: 20px; color: rgba(0, 0, 0, .4); font-size: .8rem;">@Html.Raw(infoText)</p>
                 </div>
 
                 <!-- the rest -->
-                @foreach (var minorRelease in versions)
+                @foreach (var minorRelease in releasesInGroup.Skip(1))
                 {
-
                     <div class="col-xs-4" style="min-height: 133px">
-                        <h5><a href="@minorRelease.Value.Url">@minorRelease.Key.ToString()</a></h5>
+                        <h5><a href="@(Model.Content.Url + "/" + minorRelease.Version.Replace(".", string.Empty))">@minorRelease.Version</a></h5>
                     </div>
                 }
             </div>
         </div>
     </div>
 }
-

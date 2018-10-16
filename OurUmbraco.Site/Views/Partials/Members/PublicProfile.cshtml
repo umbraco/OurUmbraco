@@ -203,7 +203,7 @@
                             <div class="col-md-12">
                                 <div class="package-forum-activity">
                                     <h3>Packages contributed to</h3>
-                                    @foreach (var project in contribProjects.Where(x => x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
+                                    @foreach (var project in contribProjects.Where(x => x != null && x.GetPropertyValue<bool>("projectLive")).OrderByDescending(x => x.CreateDate))
                                     {
                                         <a href="@project.Url" class="forum-thread">
                                             <div class="row">

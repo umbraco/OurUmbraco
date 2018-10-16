@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Release
+﻿@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
 @inherits UmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
@@ -18,19 +19,10 @@
     }
 
     var currentPage = UmbracoContext.Current.PublishedContentRequest.PublishedContent;
-    var allReleases = Release.GetAllReleaseFromFile();
-    var release = allReleases.First(x => x.version == currentPage.Name);
-    var completedIssues = release.issues.Count(x => x.state == "Fixed");
-    var totalIssues = release.issues.Count();
-    var percentComplete = Math.Round(((double)100 / totalIssues) * completedIssues);
-    var releaseDateParsed = DateTime.Now;
-    if (release.releaseDate != string.Empty)
-    {
-        releaseDateParsed = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
-    }
 
-    var releaseDate = release.releaseDate == "" ? "Not yet determined" : releaseDateParsed.ToString("dddd, MMMM d yyyy");
-
+    var releasesService = new ReleasesService();
+    var releases = releasesService.GetReleasesCache();
+    var release = releases.FirstOrDefault(x => x.Version == currentPage.Name);
 
     var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
     var releaseContent = umbracoHelper.TypedContent(umbracoHelper.UmbracoContext.PageId);
@@ -39,12 +31,12 @@
         var overrideDescription = releaseContent.GetPropertyValue<bool>("overrideYouTrackDescription");
         if (overrideDescription)
         {
-            release.releaseDescription = releaseContent.GetPropertyValue<string>("bodyText");
+            release.ReleaseDescription = releaseContent.GetPropertyValue<string>("bodyText");
         }
-        var overrideReleaseDate = releaseContent.GetPropertyValue<string>("overrideYouTrackReleaseDate");
-        if (string.IsNullOrWhiteSpace(overrideReleaseDate) == false)
+        var overrideReleaseDate = releaseContent.GetPropertyValue<DateTime>("overrideYouTrackReleaseDate");
+        if (overrideReleaseDate != default(DateTime))
         {
-            releaseDate = overrideReleaseDate;
+            release.ReleaseDate = overrideReleaseDate;
         }
     }
 }
@@ -57,19 +49,25 @@
 
                     <nav>
                         <ul class="level-1">
-                            @foreach (var currentRelease in allReleases.Where(x => x.released && x.currentRelease))
+                            @foreach (var currentRelease in releases.Where(x => x.Released && x.LatestRelease))
                             {
 
                                 <li>
-                                    <a class="active" href="/contribute/releases/@(currentRelease.version.Replace(".", string.Empty))"><h3>Latest Release - v@(currentRelease.version)</h3></a>
+                                    <a class="active" href="/contribute/releases/@(currentRelease.Version.Replace(".", string.Empty))">
+                                        <h3>Latest Release - v@(currentRelease.Version)</h3>
+                                    </a>
                                 </li>
                             }
 
                             <li>
-                                <a href="/contribute/progress"><h3>In Progress</h3></a>
+                                <a href="/contribute/progress">
+                                    <h3>In Progress</h3>
+                                </a>
                             </li>
                             <li>
-                                <a href="/contribute/releases"><h3>All Releases</h3></a>
+                                <a href="/contribute/releases">
+                                    <h3>All Releases</h3>
+                                </a>
                                 <ul class="level-2">
                                     <li>
                                         <a href=""><h4>Umbraco 7</h4></a>
@@ -90,9 +88,9 @@
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
-                <div>
-                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
-                </div>
+                    <div>
+                        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                    </div>
                     <style>
                         .release-page .explain h2 {
                             margin-top: 12px;
@@ -151,21 +149,26 @@
                     <div class="row explain">
                         <div class="col-sm-2">
                             <span class="dot big progress">
-                                <div class="chart" data-percent="percentComplete">
-                                    <p>@(percentComplete)%</p>
+                                <div class="chart" data-percent="@release.PercentComplete">
+                                    <p>@(release.PercentComplete)%</p>
                                 </div>
                             </span>
                         </div>
                         <div class="col-sm-10">
                             <h2>v@(Model.Content.Name)</h2>
-                            <small>Status: <span>@(release.released ? "Released" : "In Progress")</span></small>
-                            @if (release.released == false)
+                            <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
+                            @if (release.Released == false)
                             {
                                 <h3>
-                                    <span>@(percentComplete)% complete</span>
-                                    <span>@(100 - percentComplete)% in progress</span>
+                                    <span>@(release.PercentComplete)% complete</span>
+                                    <span>@(100 - release.PercentComplete)% in progress</span>
                                 </h3>
-                                <h3>Target release date: <span style="color:#5B5B5B">@releaseDate</span></h3>
+
+                                <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
+                            }
+                            else
+                            {
+                                <h3>Released on <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
                             }
 
                             @if (Model.Content.HasValue("releaseNotes"))
@@ -214,11 +217,11 @@
 
                             <div class="col-md-5">
 
-                                @if (release.releaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
+                                @if (release.ReleaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
                                 {
                                     <span>
                                         <h2>Summary</h2>
-                                        <p><span>@Html.Raw(release.releaseDescription)</span></p>
+                                        <p><span>@Html.Raw(release.ReleaseDescription)</span></p>
                                     </span>
                                 }
 
@@ -236,14 +239,21 @@
                                             <div class="status features">
                                                 <h3>Features</h3>
                                                 @{
-                                                    var features = release.issues.Where(x => x.type.ToLowerInvariant().Contains("feature")).ToList();
+                                                    var features = release.Features.ToList();
                                                     if (features.Any())
                                                     {
                                                         foreach (var issue in features)
                                                         {
                                                             <ul>
-                                                                <li class="@issue.StateIcon()" title="@issue.state">
-                                                                    <a href="http://issues.umbraco.org/issue/@issue.id" target="_blank">@issue.id - @issue.title</a>
+                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                    @if (issue.Source == "YouTrack")
+                                                                    {
+                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
                                                                 </li>
                                                             </ul>
                                                         }
@@ -257,14 +267,21 @@
                                             <div class="status breaking">
                                                 <h3>Breaking Changes</h3>
                                                 @{
-                                                    var breaking = release.issues.Where(x => x.breaking).ToList();
+                                                    var breaking = release.Issues.Where(x => x.Breaking).ToList();
                                                     if (breaking.Any())
                                                     {
                                                         foreach (var issue in breaking)
                                                         {
                                                             <ul>
-                                                                <li class="@issue.StateIcon()" title="@issue.state">
-                                                                    <a href="http://issues.umbraco.org/issue/@issue.id" target="_blank">@issue.id - @issue.title</a>
+                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                    @if (issue.Source == "YouTrack")
+                                                                    {
+                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
                                                                 </li>
                                                             </ul>
                                                         }
@@ -278,15 +295,22 @@
                                             <div class="status issues">
                                                 <h3>Issues & Tasks</h3>
                                                 @{
-                                                    var issues = release.issues.Where(x => x.breaking == false && x.type.ToLowerInvariant().Contains("feature") == false).ToList();
+                                                    var issues = release.Issues.Where(x => x.Breaking == false).Except(release.Features).ToList();
                                                     if (issues.Any())
                                                     {
                                                         foreach (var issue in issues)
                                                         {
 
                                                             <ul>
-                                                                <li class="@issue.StateIcon()" title="@issue.state">
-                                                                    <a href="http://issues.umbraco.org/issue/@issue.id" target="_blank">@issue.id - @issue.title</a>
+                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                    @if (issue.Source == "YouTrack")
+                                                                    {
+                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    }
                                                                 </li>
                                                             </ul>
                                                         }

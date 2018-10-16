@@ -1,4 +1,5 @@
 @using OurUmbraco.Documentation.Busineslogic
+@using OurUmbraco.Repository.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <style>
@@ -7,6 +8,7 @@
         font-size: 20px !important;
         text-decoration: none !important;
     }
+
     #markdown-docs a.offset-anchor {
         visibility: hidden;
         position: relative;
@@ -21,7 +23,7 @@
         anchors.options = {
             placement: 'left',
             visible: "hover",
-            anchorCreated: function(e) {
+            anchorCreated: function (e) {
                 var id = $(e).attr('id');
                 //clear it's id since we'll be creating a custom anchor point with an offset
                 $(e).removeAttr("id");
@@ -30,19 +32,19 @@
             }
         };
         anchors.add('.markdown-syntax h1, .markdown-syntax h2, .markdown-syntax h3, .markdown-syntax h4, .markdown-syntax h5, .markdown-syntax h5');
-        
+
         var element = $(window.location.hash);
         if (element.length === 1) {
-            setTimeout(function() {
-                //hightlight it 
+            setTimeout(function () {
+                //hightlight it
                 element.closest(".anchorjs-heading").css("color", "#ff6e00");
                 element.closest(".anchorjs-heading").find("a").not(".anchorjs-link").css("color", "#ff6e00");
-            }, 100);            
+            }, 100);
         }
 
-        $("#markdown-docs .anchorjs-link").click(function() {
+        $("#markdown-docs .anchorjs-link").click(function () {
             if (element.length === 1) {
-                //un hightlight it 
+                //un hightlight it
                 element.closest(".anchorjs-heading").css("color", "inherit");
                 element.closest(".anchorjs-heading").find("a").not(".anchorjs-link").css("color", "inherit");
             }
@@ -79,6 +81,44 @@
     }
 
     var markdown = ml.DoTransformation();
+    // method to determine if alternate versions exist for these docs
+    var docVersionService = new DocumentationVersionService();
+    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url);// method to determine which alternate versions exist of this page
+                                                                                       //bool hasAltVersions = altVersions.Any(av => av.IsCurrentVersion == true);  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
+    bool hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
 }
+
+@if (hasAltVersions)
+{
+    <aside>
+        <div class="info-box docs-version-panel">
+            <dl>
+                @*<dt>Applies to</dt>
+                    <dd>v8.0.0</dd>*@
+
+                <dt>@*Alternate*@ Versions</dt>
+                @foreach (var version in altVersions)
+                {
+                    <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")"> 
+                        @if (version.IsCurrentPage)
+                        {
+                            @(version.Version)
+                        }
+                        else
+                        {
+                            <a href='@version.Url'>@(version.Version)</a>
+                        }
+                        @if (version.IsCurrentVersion)
+                        {
+                            @:(current)
+                        }
+                    </dd>
+                }
+
+            </dl>
+        </div>
+    </aside>
+}
+
 
 @Html.Raw(markdown)

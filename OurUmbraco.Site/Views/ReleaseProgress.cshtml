@@ -1,13 +1,12 @@
-﻿@using OurUmbraco.Release
+﻿@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
 @inherits UmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
-    var allReleases = Release.GetAllReleaseFromFile();
-    var inProgress = allReleases.Where(x => x.inProgressRelease).ToList();
 
-    var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-    var currentPage = umbracoHelper.TypedContent(umbracoHelper.UmbracoContext.PageId);
-    var releaseLanding = currentPage.Parent.Children().FirstOrDefault(x => x.ContentType.Alias == "ReleaseLanding");
+    var releasesService = new ReleasesService();
+    var allReleases = releasesService.GetReleasesCache();
+    var inProgress = allReleases.Where(x => x.Released == false).ToList();
 }
 
 <div class="has-sidebar">
@@ -19,11 +18,11 @@
 
                     <nav>
                         <ul class="level-1">
-                            @foreach (var currentRelease in allReleases.Where(x => x.released && x.currentRelease))
+                            @foreach (var currentRelease in allReleases.Where(x => x.Released && x.LatestRelease))
                             {
                                 <li>
-                                    <a class="active" href="/contribute/releases/@(currentRelease.version.Replace(".", string.Empty))">
-                                        <h3>Latest Release - v@(currentRelease.version)</h3>
+                                    <a class="active" href="/contribute/releases/@(currentRelease.Version.Replace(".", string.Empty))">
+                                        <h3>Latest Release - v@(currentRelease.Version)</h3>
                                     </a>
                                 </li>
                             }
@@ -35,8 +34,8 @@
                                     @foreach (var release in inProgress)
                                     {
                                         <li>
-                                            <a href="/contribute/releases/@(release.version.Replace(".", string.Empty))">
-                                                <h4>v@(release.version)</h4>
+                                            <a href="/contribute/releases/@(release.Version.Replace(".", string.Empty))">
+                                                <h4>v@(release.Version)</h4>
                                             </a>
                                         </li>
                                     }
@@ -69,45 +68,11 @@
                     <div class="releaseTable row">
                         @foreach (var release in inProgress)
                         {
-
-                            var completedIssues = release.issues.Count(x => x.state == "Fixed");
-                            var totalIssues = release.issues.Count();
-                            var percentComplete = Math.Round(((double)100 / totalIssues) * completedIssues);
-                            var releaseDateParsed = DateTime.Now;
-                            if (release.releaseDate != string.Empty)
-                            {
-                                releaseDateParsed = DateTime.Parse(release.releaseDate.Substring(3, 2) + "-" + release.releaseDate.Substring(0, 2) + "-" + release.releaseDate.Substring(6));
-                            }
-
-                            var releaseDate = release.releaseDate == "" ? "Not yet determined" : releaseDateParsed.ToString("dddd, MMMM d yyyy");
-                            IPublishedContent releaseContent = null;
-                            if (releaseLanding != null)
-                            {
-                                releaseContent = releaseLanding.Children().FirstOrDefault(x => x.Name.ToLowerInvariant() == release.version.ToLowerInvariant());
-                                if (releaseContent != null)
-                                {
-                                    var overrideDescription = releaseContent.GetPropertyValue<bool>
-                                        ("overrideYouTrackDescription");
-                                    if (overrideDescription)
-                                    {
-                                        release.releaseDescription = releaseContent.GetPropertyValue<string>
-                                            ("bodyText");
-                                    }
-                                    var overrideReleaseDate = releaseContent.GetPropertyValue<string>
-                                        ("overrideYouTrackReleaseDate");
-                                    if (string.IsNullOrWhiteSpace(overrideReleaseDate) == false)
-                                    {
-                                        releaseDate = overrideReleaseDate;
-                                    }
-
-                                }
-                            }
-
                             <div class="inprogress">
                                 <div class="col-xs-3">
                                     <span class="dot big progress">
-                                        <div class="chart" data-percent="@percentComplete">
-                                            <div class="percentage">@(percentComplete)%</div>
+                                        <div class="chart" data-percent="@release.PercentComplete">
+                                            <div class="percentage">@(release.PercentComplete)%</div>
                                         </div>
                                         <span class="line v-line top" style="@(release == inProgress.First() == false ? " display: block;" : null)"></span>
                                         <span class="line v-line"></span>
@@ -122,20 +87,19 @@
                                 <div class="col-xs-9">
                                     <div class="row explain">
                                         <div class="col-xs-12">
-                                            <h4 class="text-right"><a href="/contribute/releases/@(release.version.Replace(".",""))">v@(release.version)</a></h4>
-                                            <small><span>@Html.Raw(release.releaseDescription)</span></small>
+                                            <h4 class="text-right"><a href="/contribute/releases/@(release.Version.Replace(".",""))">v@(release.Version)</a></h4>
                                         </div>
                                         <div class="col-xs-6">
                                             <div class="changes">
-                                                <small>Features: <span>@(release.issues.Count(x => x.type.ToLowerInvariant().Contains("feature")))</span></small>
-                                                <small>Issues: @(release.issues.Count(x => x.type.ToLowerInvariant().Contains("feature") == false && x.breaking == false))<span></span></small>
-                                                <small>Breaking changes: <span>@(release.issues.Count(x => x.breaking))</span></small>
+                                                <small>Features: <span>@(release.Issues.Count(x => x.Type.ToLowerInvariant().Contains("feature")))</span></small>
+                                                <small>Issues: @(release.Issues.Count(x => x.Type.ToLowerInvariant().Contains("feature") == false && x.Breaking == false))<span></span></small>
+                                                <small>Breaking changes: <span>@(release.Issues.Count(x => x.Breaking))</span></small>
                                             </div>
                                         </div>
                                         <div class="col-xs-6">
                                             <div class="changes">
                                                 <small>Release date:</small>
-                                                <small>@releaseDate</small>
+                                                <small>@release.ReleaseDate.AsDisplayedReleaseDate()</small>
                                             </div>
                                         </div>
 

@@ -75,7 +75,7 @@
                         @if (isRetired)
                         {
                             <div class="package-retired">
-                                <h3>This project is marked as retired</h3>
+                                <h3>This package is marked as retired</h3>
 
                                 @{
                                     var retiredMessage = project.GetPropertyValue<string>("retiredMessage");
@@ -86,7 +86,7 @@
                                     }
                                     else
                                     {
-                                        <p>This package has been flagged as retired by the project owner. Continue to use at your own risk</p>
+                                        <p>This package has been flagged as retired by the package owner. Continue to use at your own risk</p>
                                     }
                                 }
                             </div>
@@ -321,7 +321,7 @@
                         </div>
 
                         <div class="package-creator">
-                            <h3>Project owner</h3>
+                            <h3>Package owner</h3>
 
                             <div class="row">
                                 <div class="col-xs-12">
@@ -338,7 +338,7 @@
                                             {
                                                 <br/>
                                                 <br/>
-                                                <a href="/member/profile/projects/details?projectId=@project.Id">Edit project</a>
+                                                <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
                                             }
                                         </div>
                                     </div>
@@ -352,11 +352,11 @@
                         }
 
                         <div class="package-compatibility-information">
-                            <h3>Project Information</h3>
+                            <h3>Package Information</h3>
 
                             <ul>
                                 <li>
-                                    <span>Project owner:</span> @owner.Name
+                                    <span>Package owner:</span> @owner.Name
                                 </li>
 
                                 @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab"))
@@ -395,7 +395,7 @@
                                 }
 
                                 <li>
-                                    <span>License</span> @project.GetPropertyValue("licenseName")
+                                    <span>License</span> <a href="@licenseUrl" target="_blank" rel="noopener">@project.GetPropertyValue("licenseName")</a>
                                 </li>
 
                                 <li>
@@ -419,7 +419,7 @@
                                     @if (!string.IsNullOrEmpty(websiteUrl))
                                     {
                                         <li>
-                                            <a href="@websiteUrl" rel="nofollow">Project website</a>
+                                            <a href="@websiteUrl" rel="nofollow">Package website</a>
                                         </li>
                                     }
                                     @if (!string.IsNullOrEmpty(supportUrl))
@@ -461,7 +461,7 @@ else
             <div class="row">
                 <div class="col-md-7">
                     <div class="package-detail-content">
-                        <h2>Project not found</h2>
+                        <h2>Package not found</h2>
                     </div>
                 </div>
             </div>

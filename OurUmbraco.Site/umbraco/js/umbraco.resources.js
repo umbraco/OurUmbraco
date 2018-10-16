@@ -766,6 +766,18 @@
             getBlueprintById: function (id) {
                 return umbRequestHelper.resourcePromise($http.get(umbRequestHelper.getApiUrl('contentApiBaseUrl', 'GetBlueprintById', [{ id: id }])), 'Failed to retrieve data for content id ' + id);
             },
+            getNotifySettingsById: function (id) {
+                return umbRequestHelper.resourcePromise($http.get(umbRequestHelper.getApiUrl('contentApiBaseUrl', 'GetNotificationOptions', [{ contentId: id }])), 'Failed to retrieve data for content id ' + id);
+            },
+            setNotifySettingsById: function (id, options) {
+                if (!id) {
+                    throw 'contentId cannot be null';
+                }
+                return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentApiBaseUrl', 'PostNotificationOptions', {
+                    contentId: id,
+                    notifyOptions: options
+                })), 'Failed to set notify settings for content id ' + id);
+            },
             /**
           * @ngdoc method
           * @name umbraco.resources.contentResource#getByIds
@@ -1289,8 +1301,17 @@
             createContainer: function (parentId, name) {
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentTypeApiBaseUrl', 'PostCreateContainer', {
                     parentId: parentId,
-                    name: name
+                    name: encodeURIComponent(name)
                 })), 'Failed to create a folder under parent id ' + parentId);
+            },
+            createCollection: function (parentId, collectionName, collectionItemName, collectionIcon, collectionItemIcon) {
+                return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentTypeApiBaseUrl', 'PostCreateCollection', {
+                    parentId: parentId,
+                    collectionName: collectionName,
+                    collectionItemName: collectionItemName,
+                    collectionIcon: collectionIcon,
+                    collectionItemIcon: collectionItemIcon
+                })), 'Failed to create collection under ' + parentId);
             },
             renameContainer: function (id, name) {
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('contentTypeApiBaseUrl', 'PostRenameContainer', {
@@ -1654,7 +1675,7 @@
             createContainer: function (parentId, name) {
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('dataTypeApiBaseUrl', 'PostCreateContainer', {
                     parentId: parentId,
-                    name: name
+                    name: encodeURIComponent(name)
                 })), 'Failed to create a folder under parent id ' + parentId);
             },
             renameContainer: function (id, name) {
@@ -2134,7 +2155,7 @@
           *
           * ##usage
           * <pre>
-          * entityResource.getPagedDescendants(1234, "Content", {pageSize: 10, pageNumber: 2})
+          * entityResource.getPagedDescendants(1234, "Document", {pageSize: 10, pageNumber: 2})
           *    .then(function(contentArray) {
           *        var children = contentArray; 
           *        alert('they are here!');
@@ -2144,8 +2165,8 @@
           * @param {Int} parentid id of content item to return descendants of
           * @param {string} type Object type name
           * @param {Object} options optional options object
-          * @param {Int} options.pageSize if paging data, number of nodes per page, default = 1
-          * @param {Int} options.pageNumber if paging data, current page index, default = 100
+          * @param {Int} options.pageSize if paging data, number of nodes per page, default = 100
+          * @param {Int} options.pageNumber if paging data, current page index, default = 1
           * @param {String} options.filter if provided, query will only return those with names matching the filter
           * @param {String} options.orderDirection can be `Ascending` or `Descending` - Default: `Ascending`
           * @param {String} options.orderBy property to order items by, default: `SortOrder`
@@ -2154,8 +2175,8 @@
           */
             getPagedDescendants: function (parentId, type, options) {
                 var defaults = {
-                    pageSize: 1,
-                    pageNumber: 100,
+                    pageSize: 100,
+                    pageNumber: 1,
                     filter: '',
                     orderDirection: 'Ascending',
                     orderBy: 'SortOrder'
@@ -3107,7 +3128,7 @@
             createContainer: function (parentId, name) {
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('mediaTypeApiBaseUrl', 'PostCreateContainer', {
                     parentId: parentId,
-                    name: name
+                    name: encodeURIComponent(name)
                 })), 'Failed to create a folder under parent id ' + parentId);
             },
             renameContainer: function (id, name) {
@@ -3459,7 +3480,7 @@
          * @methodOf umbraco.resources.packageInstallResource
          *
          * @description
-         * Downloads a package file from our.umbraco.org to the website server.
+         * Downloads a package file from our.umbraco.com to the website server.
          * 
          * ##usage
          * <pre>
@@ -4371,7 +4392,7 @@
           *    });
           * </pre>
           * 
-          * @param {Array} id user id.
+          * @param {Int} userId user id.
           * @returns {Promise} resourcePromise object containing the user.
           *
           */
@@ -4462,6 +4483,29 @@
                 var formattedSaveData = umbDataFormatter.formatUserPostData(user);
                 return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('userApiBaseUrl', 'PostSaveUser'), formattedSaveData), 'Failed to save user');
             }
+            /**
+          * @ngdoc method
+          * @name umbraco.resources.usersResource#deleteNonLoggedInUser
+          * @methodOf umbraco.resources.usersResource
+          *
+          * @description
+          * Deletes a user that hasn't already logged in (and hence we know has made no content updates that would create related records)
+          *
+          * ##usage
+          * <pre>
+          * usersResource.deleteNonLoggedInUser(1)
+          *    .then(function() {
+          *        alert("user was deleted");
+          *    });
+          * </pre>
+          * 
+          * @param {Int} userId user id.
+          * @returns {Promise} resourcePromise object.
+          *
+          */
+            function deleteNonLoggedInUser(userId) {
+                return umbRequestHelper.resourcePromise($http.post(umbRequestHelper.getApiUrl('userApiBaseUrl', 'PostDeleteNonLoggedInUser', { id: userId })), 'Failed to delete the user ' + userId);
+            }
             var resource = {
                 disableUsers: disableUsers,
                 enableUsers: enableUsers,
@@ -4472,6 +4516,7 @@
                 createUser: createUser,
                 inviteUser: inviteUser,
                 saveUser: saveUser,
+                deleteNonLoggedInUser: deleteNonLoggedInUser,
                 clearAvatar: clearAvatar
             };
             return resource;

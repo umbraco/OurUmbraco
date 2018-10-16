@@ -1307,7 +1307,7 @@ Use this directive to render drawer view
 <b>Added in Umbraco 7.8</b>. The tour component is a global component and is already added to the umbraco markup. 
 In the Umbraco UI the tours live in the "Help drawer" which opens when you click the Help-icon in the bottom left corner of Umbraco. 
 You can easily add you own tours to the Help-drawer or show and start tours from 
-anywhere in the Umbraco backoffice. To see a real world example of a custom tour implementation, install <a href="https://our.umbraco.org/projects/starter-kits/the-starter-kit/">The Starter Kit</a> in Umbraco 7.8
+anywhere in the Umbraco backoffice. To see a real world example of a custom tour implementation, install <a href="https://our.umbraco.com/projects/starter-kits/the-starter-kit/">The Starter Kit</a> in Umbraco 7.8
 
 <h1><b>Extending the help drawer with custom tours</b></h1>
 The easiet way to add new tours to Umbraco is through the Help-drawer. All it requires is a my-tour.json file. 
@@ -1576,6 +1576,12 @@ In the following example you see how to run some custom logic before a step goes
                 function findHighlightElement() {
                     scope.elementNotFound = false;
                     $timeout(function () {
+                        // clear element when step as marked as intro, so it always displays in the center
+                        if (scope.model.currentStep && scope.model.currentStep.type === 'intro') {
+                            scope.model.currentStep.element = null;
+                            scope.model.currentStep.eventElement = null;
+                            scope.model.currentStep.event = null;
+                        }
                         // if an element isn't set - show the popover in the center
                         if (scope.model.currentStep && !scope.model.currentStep.element) {
                             setPopoverPosition(null);
@@ -2169,12 +2175,13 @@ Use this directive to render a button with a dropdown of alternative actions.
 **/
     (function () {
         'use strict';
-        function ToggleDirective(localizationService) {
+        function ToggleDirective(localizationService, eventsService) {
             function link(scope, el, attr, ctrl) {
                 scope.displayLabelOn = '';
                 scope.displayLabelOff = '';
                 function onInit() {
                     setLabelText();
+                    eventsService.emit('toggleValue', { value: scope.checked });
                 }
                 function setLabelText() {
                     // set default label for "on"
@@ -2196,6 +2203,7 @@ Use this directive to render a button with a dropdown of alternative actions.
                 }
                 scope.click = function () {
                     if (scope.onClick) {
+                        eventsService.emit('toggleValue', { value: !scope.checked });
                         scope.onClick();
                     }
                 };
@@ -2371,32 +2379,44 @@ Use this directive to render a button with a dropdown of alternative actions.
                 getNode();
             }
             $scope.unPublish = function () {
-                if (formHelper.submitForm({
-                        scope: $scope,
-                        statusMessage: 'Unpublishing...',
-                        skipValidation: true
-                    })) {
-                    $scope.page.buttonGroupState = 'busy';
-                    eventsService.emit('content.unpublishing', { content: $scope.content });
-                    contentResource.unPublish($scope.content.id).then(function (data) {
-                        formHelper.resetForm({
-                            scope: $scope,
-                            notifications: data.notifications
-                        });
-                        contentEditingHelper.handleSuccessfulSave({
-                            scope: $scope,
-                            savedContent: data,
-                            rebindCallback: contentEditingHelper.reBindChangedProperties($scope.content, data)
-                        });
-                        init($scope.content);
-                        syncTreeNode($scope.content, data.path);
-                        $scope.page.buttonGroupState = 'success';
-                        eventsService.emit('content.unpublished', { content: $scope.content });
-                    }, function (err) {
-                        formHelper.showNotifications(err.data);
-                        $scope.page.buttonGroupState = 'error';
-                    });
+                // raising the event triggers the confirmation dialog			
+                if (!notificationsService.hasView()) {
+                    notificationsService.add({ view: 'confirmunpublish' });
                 }
+                $scope.page.buttonGroupState = 'busy';
+                // actioning the dialog raises the confirmUnpublish event, act on it here
+                var actioned = $rootScope.$on('content.confirmUnpublish', function (event, confirmed) {
+                    if (confirmed && formHelper.submitForm({
+                            scope: $scope,
+                            statusMessage: 'Unpublishing...',
+                            skipValidation: true
+                        })) {
+                        eventsService.emit('content.unpublishing', { content: $scope.content });
+                        contentResource.unPublish($scope.content.id).then(function (data) {
+                            formHelper.resetForm({
+                                scope: $scope,
+                                notifications: data.notifications
+                            });
+                            contentEditingHelper.handleSuccessfulSave({
+                                scope: $scope,
+                                savedContent: data,
+                                rebindCallback: contentEditingHelper.reBindChangedProperties($scope.content, data)
+                            });
+                            init($scope.content);
+                            syncTreeNode($scope.content, data.path);
+                            $scope.page.buttonGroupState = 'success';
+                            eventsService.emit('content.unpublished', { content: $scope.content });
+                        }, function (err) {
+                            formHelper.showNotifications(err.data);
+                            $scope.page.buttonGroupState = 'error';
+                        });
+                    } else {
+                        $scope.page.buttonGroupState = 'init';
+                    }
+                    // unsubscribe to avoid queueing notifications
+                    // listener is re-bound when the unpublish button is clicked so it is created just-in-time				
+                    actioned();
+                });
             };
             $scope.sendToPublish = function () {
                 return performSave({
@@ -2541,7 +2561,10 @@ Use this directive to render a button with a dropdown of alternative actions.
                 scope.publishStatus = {};
                 scope.disableTemplates = Umbraco.Sys.ServerVariables.features.disabledFeatures.disableTemplates;
                 function onInit() {
-                    scope.allowOpen = true;
+                    // If logged in user has access to the settings section
+                    // show the open anchors - if the user doesn't have 
+                    // access, documentType is null, see ContentModelMapper
+                    scope.allowOpen = scope.node.documentType !== null;
                     scope.datePickerConfig = {
                         pickDate: true,
                         pickTime: true,
@@ -2561,7 +2584,12 @@ Use this directive to render a button with a dropdown of alternative actions.
                     scope.documentType = scope.node.documentType;
                     // make sure dates are formatted to the user's locale
                     formatDatesToLocal();
+                    // Make sure to set the node status
                     setNodePublishStatus(scope.node);
+                    // Declare a fallback URL for the <umb-node-preview/> directive
+                    if (scope.documentType !== null) {
+                        scope.previewOpenUrl = '#/settings/documenttypes/edit/' + scope.documentType.id;
+                    }
                 }
                 scope.auditTrailPageChange = function (pageNumber) {
                     scope.auditTrailOptions.pageNumber = pageNumber;
@@ -2569,6 +2597,10 @@ Use this directive to render a button with a dropdown of alternative actions.
                 };
                 scope.openDocumentType = function (documentType) {
                     var url = '/settings/documenttypes/edit/' + documentType.id;
+                    $location.url(url);
+                };
+                scope.openTemplate = function () {
+                    var url = '/settings/templates/edit/' + scope.node.templateId;
                     $location.url(url);
                 };
                 scope.updateTemplate = function (templateAlias) {
@@ -3516,6 +3548,8 @@ Use this directive to construct a header inside the main editor window.
                     scope.dialogModel = {
                         view: 'iconpicker',
                         show: true,
+                        icon: scope.icon.split(' ')[0],
+                        color: scope.icon.split(' ')[1],
                         submit: function (model) {
                             /* ensure an icon is selected, because on focus on close button
                            or an element in background no icon is submitted. So don't clear/update existing icon/preview.
@@ -4006,7 +4040,7 @@ Use this directive to construct the main editor window.
     });
     /*
   
-  http://vitalets.github.io/checklist-model/
+  https://vitalets.github.io/checklist-model/
   <label ng-repeat="role in roles">
     <input type="checkbox" checklist-model="user.roles" checklist-value="role.id"> {{role.text}}
   </label>
@@ -4026,7 +4060,7 @@ Use this directive to construct the main editor window.
                 }
                 return false;
             }
-            // add
+            // add 
             function add(arr, item) {
                 arr = angular.isArray(arr) ? arr : [];
                 for (var i = 0; i < arr.length; i++) {
@@ -4049,7 +4083,7 @@ Use this directive to construct the main editor window.
                 }
                 return arr;
             }
-            // http://stackoverflow.com/a/19228302/1458162
+            // https://stackoverflow.com/a/19228302/1458162
             function postLinkFn(scope, elem, attrs) {
                 // compile with `ng-model` pointing to `checked`
                 $compile(elem)(scope);
@@ -5059,7 +5093,7 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
         </umb-box-content>
     </umb-box>
 </pre>
-{@link https://our.umbraco.org/documentation/extending/language-files/ Here you can see more about the language files}
+{@link https://our.umbraco.com/documentation/extending/language-files/ Here you can see more about the language files}
 
 <h3>Use in combination with:</h3>
 <ul>
@@ -5641,11 +5675,14 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
             function link(scope, element, attrs, ctrl) {
                 var evts = [];
                 function onInit() {
-                    scope.allowOpenMediaType = true;
+                    // If logged in user has access to the settings section
+                    // show the open anchors - if the user doesn't have 
+                    // access, contentType is null, see MediaModelMapper
+                    scope.allowOpen = scope.node.contentType !== null;
                     // get document type details
                     scope.mediaType = scope.node.contentType;
-                    // get node url
-                    scope.nodeUrl = scope.node.mediaLink;
+                    // set the media link initially
+                    setMediaLink();
                     // make sure dates are formatted to the user's locale
                     formatDatesToLocal();
                 }
@@ -5655,6 +5692,9 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                         scope.node.createDateFormatted = dateHelper.getLocalDate(scope.node.createDate, currentUser.locale, 'LLL');
                         scope.node.updateDateFormatted = dateHelper.getLocalDate(scope.node.updateDate, currentUser.locale, 'LLL');
                     });
+                }
+                function setMediaLink() {
+                    scope.nodeUrl = scope.node.mediaLink;
                 }
                 scope.openMediaType = function (mediaType) {
                     // remove first "#" from url if it is prefixed else the path won't work
@@ -5669,6 +5709,9 @@ Use this directive to construct a title. Recommended to use it inside an {@link 
                     if (newValue === oldValue) {
                         return;
                     }
+                    // Update the media link
+                    setMediaLink();
+                    // Update the create and update dates
                     formatDatesToLocal();
                 });
                 //ensure to unregister from all events!
@@ -7397,7 +7440,7 @@ Opens an overlay to show a custom YSOD. </br>
                     /**
                  * ACE editor session.
                  * @type object
-                 * @see [EditSession]{@link http://ace.c9.io/#nav=api&api=edit_session}
+                 * @see [EditSession]{@link https://ace.c9.io/#nav=api&api=edit_session}
                  */
                     var session = acee.getSession();
                     /**
@@ -8032,6 +8075,56 @@ Use this directive to render a ui component for selecting child items to a paren
     }());
     /**
 @ngdoc directive
+@name umbraco.directives.directive:umbColorSwatches
+@restrict E
+@scope
+@description
+Use this directive to generate color swatches to pick from.
+<h3>Markup example</h3>
+<pre>
+    <umb-color-swatches
+        colors="colors"
+        selected-color="color"
+        size="s">
+    </umb-color-swatches>
+</pre>
+@param {array} colors (<code>attribute</code>): The array of colors.
+@param {string} colors (<code>attribute</code>): The array of colors.
+@param {string} selectedColor (<code>attribute</code>): The selected color.
+@param {string} size (<code>attribute</code>): The size (s, m).
+@param {function} onSelect (<code>expression</code>): Callback function when the item is selected.
+**/
+    (function () {
+        'use strict';
+        function ColorSwatchesDirective() {
+            function link(scope, el, attr, ctrl) {
+                scope.setColor = function (color) {
+                    //scope.selectedColor({color: color });
+                    scope.selectedColor = color;
+                    if (scope.onSelect) {
+                        scope.onSelect(color);
+                    }
+                };
+            }
+            var directive = {
+                restrict: 'E',
+                replace: true,
+                transclude: true,
+                templateUrl: 'views/components/umb-color-swatches.html',
+                scope: {
+                    colors: '=?',
+                    size: '@',
+                    selectedColor: '=',
+                    onSelect: '&'
+                },
+                link: link
+            };
+            return directive;
+        }
+        angular.module('umbraco.directives').directive('umbColorSwatches', ColorSwatchesDirective);
+    }());
+    /**
+@ngdoc directive
 @name umbraco.directives.directive:umbConfirm
 @restrict E
 @scope
@@ -8342,7 +8435,7 @@ Use this directive to generate a list of content items presented as a flexbox gr
 @description
 <b>Added in Umbraco version 7.6</b>
 This directive is a wrapper of the bootstrap datetime picker version 3.1.3. Use it to render a date time picker.
-For extra details about options and events take a look here: http://eonasdan.github.io/bootstrap-datetimepicker/
+For extra details about options and events take a look here: https://eonasdan.github.io/bootstrap-datetimepicker/
 
 Use this directive to render a date time picker
 
@@ -8875,7 +8968,7 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                         scope.placeholderText = 'Generating Alias...';
                         generateAliasTimeout = $timeout(function () {
                             updateAlias = true;
-                            entityResource.getSafeAlias(value, true).then(function (safeAlias) {
+                            entityResource.getSafeAlias(encodeURIComponent(value), true).then(function (safeAlias) {
                                 if (updateAlias) {
                                     scope.alias = safeAlias.alias;
                                 }
@@ -8916,7 +9009,7 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
     });
     (function () {
         'use strict';
-        function GridSelector() {
+        function GridSelector($location) {
             function link(scope, el, attr, ctrl) {
                 var eventBindings = [];
                 scope.dialogModel = {};
@@ -8956,6 +9049,10 @@ the directive will use {@link umbraco.directives.directive:umbLockedField umbLoc
                             scope.dialogModel = null;
                         }
                     };
+                };
+                scope.openTemplate = function (selectedItem) {
+                    var url = '/settings/templates/edit/' + selectedItem.id;
+                    $location.url(url);
                 };
                 scope.setAsDefaultItem = function (selectedItem) {
                     // clear default item
@@ -9943,8 +10040,8 @@ When this combination is hit an overview is opened with shortcuts based on the m
     }());
     (function () {
         'use strict';
-        function ListViewSettingsDirective(contentTypeResource, dataTypeResource, dataTypeHelper, listViewPrevalueHelper) {
-            function link(scope, el, attr, ctrl) {
+        function ListViewSettingsDirective(dataTypeResource, dataTypeHelper, listViewPrevalueHelper) {
+            function link(scope) {
                 scope.dataType = {};
                 scope.editDataTypeSettings = false;
                 scope.customListViewCreated = false;
@@ -10005,8 +10102,15 @@ When this combination is hit an overview is opened with shortcuts based on the m
                         });
                     });
                 };
+                scope.toggle = function () {
+                    if (scope.enableListView) {
+                        scope.enableListView = false;
+                        return;
+                    }
+                    scope.enableListView = true;
+                };
                 /* ----------- SCOPE WATCHERS ----------- */
-                var unbindEnableListViewWatcher = scope.$watch('enableListView', function (newValue, oldValue) {
+                var unbindEnableListViewWatcher = scope.$watch('enableListView', function (newValue) {
                     if (newValue !== undefined) {
                         activate();
                     }
@@ -10719,6 +10823,7 @@ Use this directive to generate a thumbnail grid of media items.
                 ng-repeat="node in vm.nodes"
                 icon="node.icon"
                 name="node.name"
+                alias="node.alias"
                 published="node.published"
                 description="node.description"
                 sortable="vm.sortable"
@@ -10780,6 +10885,7 @@ Use this directive to generate a thumbnail grid of media items.
 
 @param {string} icon (<code>binding</code>): The node icon.
 @param {string} name (<code>binding</code>): The node name.
+@param {string} alias (<code>binding</code>): The node document type alias will be displayed on hover if in debug mode or logged in as admin
 @param {boolean} published (<code>binding</code>): The node published state.
 @param {string} description (<code>binding</code>): A short description.
 @param {boolean} sortable (<code>binding</code>): Will add a move cursor on the node preview. Can used in combination with ui-sortable.
@@ -10789,6 +10895,9 @@ Use this directive to generate a thumbnail grid of media items.
 @param {function} onRemove (<code>expression</code>): Callback function when the remove button is clicked.
 @param {function} onOpen (<code>expression</code>): Callback function when the open button is clicked.
 @param {function} onEdit (<code>expression</code>): Callback function when the edit button is clicked (Added in version 7.7.0).
+@param {string} openUrl (<code>binding</code>): Fallback URL for <code>onOpen</code> (Added in version 7.12.0).
+@param {string} editUrl (<code>binding</code>): Fallback URL for <code>onEdit</code> (Added in version 7.12.0).
+@param {string} removeUrl (<code>binding</code>): Fallback URL for <code>onRemove</code> (Added in version 7.12.0).
 **/
     (function () {
         'use strict';
@@ -10819,7 +10928,10 @@ Use this directive to generate a thumbnail grid of media items.
                     allowEdit: '=?',
                     onOpen: '&?',
                     onRemove: '&?',
-                    onEdit: '&?'
+                    onEdit: '&?',
+                    openUrl: '=?',
+                    editUrl: '=?',
+                    removeUrl: '=?'
                 },
                 link: link
             };
@@ -10996,7 +11108,7 @@ Use this directive to generate a pagination.
                         }
                     }
                 };
-                var unbindPageNumberWatcher = scope.$watch('pageNumber', function (newValue, oldValue) {
+                var unbindPageNumberWatcher = scope.$watchCollection('[pageNumber, totalPages]', function (newValues, oldValues) {
                     activate();
                 });
                 scope.$on('$destroy', function () {
@@ -12098,7 +12210,7 @@ Use this directive to render a user group preview, where you can see the permiss
     /**
  * Konami Code directive for AngularJS
  * @version v0.0.1
- * @license MIT License, http://www.opensource.org/licenses/MIT
+ * @license MIT License, https://www.opensource.org/licenses/MIT
  */
     angular.module('umbraco.directives').directive('konamiCode', [
         '$document',
@@ -12269,7 +12381,7 @@ Use this directive to render a user group preview, where you can see the permiss
 * @ngdoc directive
 * @name umbraco.directives.directive:noDirtyCheck
 * @restrict A
-* @description Can be attached to form inputs to prevent them from setting the form as dirty (http://stackoverflow.com/questions/17089090/prevent-input-from-setting-form-dirty-angularjs)
+* @description Can be attached to form inputs to prevent them from setting the form as dirty (https://stackoverflow.com/questions/17089090/prevent-input-from-setting-form-dirty-angularjs)
 **/
     function noDirtyCheck() {
         return {
