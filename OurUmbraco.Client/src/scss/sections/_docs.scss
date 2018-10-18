@@ -93,7 +93,7 @@
     background-color: $bg-color;
     border-top: 5px solid $border-color;
 
-    p:before {
+    p:first-child:before {
         font-family: icomoon,Lato,sans-serif;
         content: $icon-string;
         display: block;

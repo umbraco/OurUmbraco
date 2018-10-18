@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
 @inherits UmbracoTemplatePage
 @{
@@ -70,6 +71,74 @@
             .OrderByDescending(x => x.Contributions).ToList();
         var leaderBoard = prService.GetLeaderBoard(new DateTime(2010, 01, 01), DateTime.Now.AddMonths(1), repository)
             .OrderByDescending(x => x.Contributions).ToList();
+        var startDateThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
+        var endDateThisMonth = DateTime.Now.GetDateLastDayOfMonth();
+        var leaderBoardThisMonth = prService.GetLeaderBoard(startDateThisMonth, endDateThisMonth, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+        var startDateLastMonth = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 01);
+        var endDateLastMonth = DateTime.Now.AddMonths(-1).GetDateLastDayOfMonth();
+        var leaderBoardLastMonth = prService.GetLeaderBoard(startDateLastMonth, endDateLastMonth, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard this month - @startDateThisMonth.ToString("yyyy-MM-dd")-@endDateThisMonth.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardThisMonth.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardThisMonth)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard this month -  @startDateLastMonth.ToString("yyyy-MM-dd")-@endDateLastMonth.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardLastMonth.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardLastMonth)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
 
         <section>
             <div class="container">
@@ -640,3 +709,4 @@
         label@(chartSuffix).paddingBottom = -50;
     </text>
 }
+
