@@ -85,6 +85,7 @@
     align-items: center;
     flex-wrap: wrap;
     text-decoration: none;
+    background-color: white;
 }
 
 @mixin notice($bg-color, $border-color, $icon-string) {
