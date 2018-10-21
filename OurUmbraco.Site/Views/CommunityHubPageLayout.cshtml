@@ -1,6 +1,4 @@
-﻿@using System.Configuration
-@using OurUmbraco.Our
-@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
 
@@ -8,12 +6,6 @@
     var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
-
-    var featuresService = new UpcomingFeaturesService();
-    var allowed = featuresService.MemberHasAccessToFeature();
-
-    var unhide = false;
-    bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out unhide);
 }
 
 <style>
@@ -41,15 +33,9 @@
         <div class="main-area">
             <div class="main-content">
                 <div class="content-wrapper">
-                    @if (allowed)
-                    {
-                        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
-                    }
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+
                     <div class="community-content">
-                        @if (allowed && unhide == false)
-                        {
-                            <h1 style="color: red;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
-                        }
                         @RenderBody()
                     </div><!-- .community-content -->
                 </div><!-- .content-wrapper -->

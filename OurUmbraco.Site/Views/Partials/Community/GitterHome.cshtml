@@ -19,22 +19,12 @@
 
     //Need this passed in
     var roomUrl = "https://gitter.im/" + Model.Uri;
-
-    var unhide = false;
-    bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out unhide);
 }
 
 @* This is the main init render in the DOM *@
 <section class="gitter-chat" id="gitter">
     <div class="container">
         <div class="row">
-            @if (unhide == false)
-            {
-                <div class="col-md-12">
-                    <h1 style="color: red;">Note: the Gitter integration is a WIP, you can only see this because you have the admin role on Our, this feature is not yet publicly available - no sharing yet please :-)</h1>
-                    <h1 style="color: green;">But you, dear admin, please come join the channel, let's talk about contributions!</h1>
-                </div>
-            }
             <div class="col-md-5 room-info">
                 <h1 class="text-center">@roomName</h1>
                 <p>@roomTopic</p>

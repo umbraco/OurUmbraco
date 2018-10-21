@@ -1,6 +1,6 @@
 .documentation {
     padding: 0;
- 
+
 
     > .container {
         position: relative;
@@ -9,7 +9,7 @@
 
     #body a {
         color: darken($color-our, 20%);
-    
+
 
         &:hover {
             text-decoration: underline;
@@ -24,8 +24,23 @@
     #github-link {
         line-height: 1rem;
         vertical-align: middle;
-        
-        i{
+        margin: 0.5rem;
+
+        i {
+            margin-right: 5px;
+        }
+
+        @media (min-width:$md) {
+            float: right;
+        }
+    }
+
+    #github-issue-link {
+        line-height: 1rem;
+        vertical-align: middle;
+        margin: 0.5rem;
+
+        i {
             margin-right: 5px;
         }
 

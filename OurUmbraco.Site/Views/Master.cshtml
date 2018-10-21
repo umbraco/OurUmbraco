@@ -135,7 +135,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <h1 class="text-center">Computer says no</h1>
-                                <p>Unfortunaly, it seems that your account has been blocked.</p>
+                                <p>Unfortunately, it seems that your account has been blocked.</p>
                             </div>
                         </div>
                     </div>
@@ -149,7 +149,7 @@
                     <div class="col-xs-12">
                         <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
                         <p>&nbsp;</p>
-                        Our.umbraco.com is the community mothership for Umbraco, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
+                        Our.umbraco.com is the community mothership for <a href="https://umbraco.com">Umbraco</a>, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
                         @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
                         {
                             <text>This site is running Umbraco.</text>
@@ -179,7 +179,7 @@
         function externalLinks(e) {
             var url = $(this).attr('href');
             @* Detect if this is not the current hostname *@
-            if (url.indexOf(location.hostname) == -1) {
+            if (url.indexOf(location.hostname) === -1) {
                 @* Send to Google *@
                 ga('send', 'event', 'Micro conversion', 'Clickout', url);
             }

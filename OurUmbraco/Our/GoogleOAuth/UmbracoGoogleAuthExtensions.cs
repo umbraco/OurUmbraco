@@ -50,7 +50,7 @@ namespace OurUmbraco.Our.GoogleOAuth
                 ClientSecret = clientSecret,
                 //In order to allow using different google providers on the front-end vs the back office,
                 // these settings are very important to make them distinguished from one another.
-                SignInAsAuthenticationType = Constants.Security.BackOfficeExternalAuthenticationType,
+                SignInAsAuthenticationType = Umbraco.Core.Constants.Security.BackOfficeExternalAuthenticationType,
                 //  By default this is '/signin-google', you will need to change that default value in your
                 //  Google developer settings for your web-app in the "REDIRECT URIS" setting
                 CallbackPath = new PathString("/umbraco-google-signin"),

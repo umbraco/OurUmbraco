@@ -9,6 +9,7 @@ using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
@@ -123,6 +124,27 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
         
+        public void GenerateReleasesCache(PerformContext context)
+        {
+            var releasesService = new ReleasesService();
+            RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
+        }
+        
+        public void UpdateGitHubIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            var repository = new Community.Models.Repository("Umbraco-CMS", "umbraco", "Umbraco-CMS", "Umbraco CMS");
+            RecurringJob.AddOrUpdate("Update Umbraco CMS Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+
+            repository = new Community.Models.Repository("UmbracoDocs", "umbraco", "UmbracoDocs", "Umbraco Documentation");
+            RecurringJob.AddOrUpdate("Update Umbraco Docs Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+        }
+        
+        public void GetAllGitHubLabels(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+        }
     }
 
     public class ReminderTopic
