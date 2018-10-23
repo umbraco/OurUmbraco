@@ -79,7 +79,11 @@
         var endDateLastMonth = DateTime.Now.AddMonths(-1).GetDateLastDayOfMonth();
         var leaderBoardLastMonth = prService.GetLeaderBoard(startDateLastMonth, endDateLastMonth, repository)
             .OrderByDescending(x => x.Contributions).ToList();
-
+        var startDateTwoMonthsAgo = new DateTime(DateTime.Now.AddMonths(-2).Year, DateTime.Now.AddMonths(-2).Month, 01);
+        var endDateTwoMonthsAgo = DateTime.Now.AddMonths(-2).GetDateLastDayOfMonth();
+        var leaderBoardTwoMonthsAgo = prService.GetLeaderBoard(startDateTwoMonthsAgo, endDateTwoMonthsAgo, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+			
         <section>
             <div class="container">
                 <div class="row">
@@ -113,7 +117,7 @@
         <section>
             <div class="container">
                 <div class="row">
-                    <h5>Leaderboard this month -  @startDateLastMonth.ToString("yyyy-MM-dd")-@endDateLastMonth.ToString("yyyy-MM-dd")</h5>
+                    <h5>Leaderboard last month -  @startDateLastMonth.ToString("yyyy-MM-dd")-@endDateLastMonth.ToString("yyyy-MM-dd")</h5>
                     <h5>Unique contributors: @(leaderBoardLastMonth.Count)</h5>
                     <div class="col-md-12">    
                         <table>
@@ -125,6 +129,36 @@
                                 <td><strong>Merged</strong></td>
                             </tr>
                             @foreach (var person in leaderBoardLastMonth)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+		
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard two months ago -  @startDateTwoMonthsAgo.ToString("yyyy-MM-dd")-@endDateTwoMonthsAgo.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardTwoMonthsAgo.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardTwoMonthsAgo)
                             {
                                 <tr>
                                     <td>@person.Username</td>
@@ -368,8 +402,8 @@
                     var colorSet = new am4core.ColorSet();
 
                     @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "150")
-                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "50")
-                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "50")
+                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "150")
+                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "100")
                     @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
                     @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "15")
                 });
