@@ -129,9 +129,9 @@ namespace OurUmbraco.Project
                         element.Attributes.Add("href", href.Value);
                         element.Attributes.Add("target", "_blank");
 
-                        if (href.Value.StartsWith("https://our.umbraco.org/") == false &&
-                            href.Value.StartsWith("http://our.umbraco.org/") == false &&
-                            href.Value.StartsWith("our.umbraco.org/") == false)
+                        if (href.Value.StartsWith("https://our.umbraco.") == false &&
+                            href.Value.StartsWith("http://our.umbraco.") == false &&
+                            href.Value.StartsWith("our.umbraco.") == false)
                         {
                             element.Attributes.Add("rel", "nofollow");
                         }

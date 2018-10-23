@@ -141,17 +141,17 @@ namespace OurUmbraco.Our.Controllers
             m.SetValue("passwordResetTokenExpiryDate", expiryDate.ToString(CultureInfo.InvariantCulture));
             memberService.Save(m);
 
-            var resetLink = "https://our.umbraco.org/member/reset-password/?token=" + resetToken + "&email=" + m.Email;
+            var resetLink = "https://our.umbraco.com/member/reset-password/?token=" + resetToken + "&email=" + m.Email;
 
             var mail = "<p>Hi " + m.Name + "</p>";
-            mail = mail + "<p>Someone requested a password reset for your account on https://our.umbraco.org</p>";
+            mail = mail + "<p>Someone requested a password reset for your account on https://our.umbraco.com</p>";
             mail = mail + "<p>If this wasn't you then you can ignore this email, otherwise, please click the following password reset link to continue:</p>";
             mail = mail + "<p>Please go to <a href=\"" + resetLink + "\">" + resetLink + "</a> to reset your password.</p>";
             mail = mail + "<br/><br/><p>All the best<br/> <em>The email robot</em></p>";
 
             using (var mailMessage = new MailMessage())
             {
-                mailMessage.Subject = "Password reset requested for our.umbraco.org";
+                mailMessage.Subject = "Password reset requested for our.umbraco.com";
                 mailMessage.Body = mail;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.To.Add(new MailAddress(m.Email));
