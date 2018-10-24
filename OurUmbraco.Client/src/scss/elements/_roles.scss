@@ -1,103 +1,107 @@
 .roles {
 
-	@media (max-width: $md) {
-		display: block;
-		margin-top: .3rem;
-	}
+    @media (max-width: $md) {
+        display: block;
+        margin-top: .3rem;
+    }
 
-	span {
-		border: 2px solid $color-blue;
-		color: $color-blue;
-		font-size: .6rem;
-		font-weight: bold;
-		// border-radius: 3px;
-		padding: 2px 6px 2px;
-		display: inline-block;
+    span {
+        border: 2px solid $color-blue;
+        color: $color-blue;
+        font-size: .6rem;
+        font-weight: bold;
+        padding: 2px 6px 2px;
+        display: inline-block;
 
-		&:hover {
-			cursor: default;
-		}
+        a {
+            color: darken($color-space, 45%);
+            text-decoration: none;
 
-		+ span {
-			margin-left: 5px;
-		}
+            &:hover {
+                text-decoration: underline;
+            }
+        }
 
-		&:first-child {
-			margin-left: 0;
+        &:hover {
+            cursor: default;
+        }
 
-			@media (min-width: $md) {
-				margin-left: .3rem;
-			}
-		}
+        + span {
+            margin-left: 5px;
+        }
 
-		&.standard {
-			display: none;
-		}
+        &:first-child {
+            margin-left: 0;
 
-		&.hq {
-			border-color: $color-red;
-			color: $color-red;
-			text-transform: uppercase;
+            @media (min-width: $md) {
+                margin-left: .3rem;
+            }
+        }
 
-			// &:hover {
-			// 	background-color: rgba($color-red, .1);
-			// }
-		}
+        &.standard {
+            display: none;
+        }
 
-		&.admin {
-			border-color: $color-turquoise;
-			color: $color-turquoise;
-			text-transform: capitalize;
+        &.hq {
+            border-color: $color-red;
+            color: $color-red;
+            text-transform: uppercase;
+            // &:hover {
+            // 	background-color: rgba($color-red, .1);
+            // }
+        }
 
-			// &:hover {
-			// 	background-color: rgba($color-turquoise, .1);
-			// }
-		}
+        &.admin {
+            border-color: $color-turquoise;
+            color: $color-turquoise;
+            text-transform: capitalize;
+            // &:hover {
+            // 	background-color: rgba($color-turquoise, .1);
+            // }
+        }
 
-		&.mvp {
-			border-color: $color-roles-purple;
-			color: $color-roles-purple;
-			text-transform: uppercase;
+        &.mvp {
+            border-color: $color-roles-purple;
+            color: $color-roles-purple;
+            text-transform: uppercase;
+            // &:hover {
+            // 	background-color: rgba($color-roles-purple, .1);
+            // }
+        }
 
-			// &:hover {
-			// 	background-color: rgba($color-roles-purple, .1);
-			// }
-		}
+        &.core {
+            border-color: $color-roles-orange;
+            color: $color-roles-orange;
+            text-transform: capitalize;
+            // &:hover {
+            // 	background-color: rgba($color-roles-orange, .1);
+            // }
+        }
 
-		&.core {
-			border-color: $color-roles-orange;
-			color: $color-roles-orange;
-			text-transform: capitalize;
+        &.c-trib {
+            border-color: $color-roles-blue;
+            color: $color-roles-blue;
+            text-transform: capitalize;
+            // &:hover {
+            // 	background-color: rgba($color-roles-blue, .1);
+            // }
+        }
 
-			// &:hover {
-			// 	background-color: rgba($color-roles-orange, .1);
-			// }
-		}
+        &.corecontrib {
+            @extend .c-trib;
+            visibility: hidden;
+            position: relative;
 
-		&.c-trib {
-			border-color: $color-roles-blue;
-			color: $color-roles-blue;
-			text-transform: capitalize;
-
-			// &:hover {
-			// 	background-color: rgba($color-roles-blue, .1);
-			// }
-		}
-
-		&.corecontrib {
-			@extend .c-trib;
-			visibility: hidden;
-			position: relative;
-			&:after {
-				visibility: visible;
-				position: absolute;
-				top: -2px;
-				left: -2px;
-				display: block;
-				content: "C-trib";
-				border: inherit;
-				padding: inherit;
-			}
-		}
-	}
+            &:after {
+                visibility: visible;
+                position: absolute;
+                top: -2px;
+                left: -2px;
+                display: block;
+                content: "C-trib";
+                border: inherit;
+                padding: inherit;
+            }
+        }
+    }
 }
