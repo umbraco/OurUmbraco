@@ -1,15 +1,15 @@
-var map;
-var map_refresh_rate = 5000;
-var actionxml;
-var current = 0;
-var count = 0;
+let map;
+let map_refresh_rate = 5000;
+let actionxml;
+let current = 0;
+let count = 0;
 
 function loadMapWithMarker(mapId, latitude, longitude){
 	initialize(mapId);
 	 if (GBrowserIsCompatible()) {
 	
-	var latlng = new GLatLng( latitude, longitude );
-	var marker = new GMarker(latlng);
+	let latlng = new GLatLng( latitude, longitude );
+	let marker = new GMarker(latlng);
 	map.addOverlay(marker);
 	map.setCenter(latlng, 10);
 	}
@@ -19,12 +19,12 @@ function loadEvents(mapId){
 	initialize(mapId);
 
 	jQuery.each( jQuery("#eventList tbody tr") , function(i, n){
-	var event = jQuery(n);
+	let event = jQuery(n);
 
 	if(event.attr("rel") != ','){
-	var location = event.attr("rel");
-	var link = event.find("td.name a").attr('href');
-	var html = "<div class='eventInfo'><strong><a href='" + link + "'>" + event.find("td.name a").text() + "</a></strong>";
+	let location = event.attr("rel");
+	let link = event.find("td.name a").attr('href');
+	let html = "<div class='eventInfo'><strong><a href='" + link + "'>" + event.find("td.name a").text() + "</a></strong>";
 	html += "<p><strong>Location: </strong>" + event.find("td.location").html() + "<br/>";
 	html += "<strong>Date: </strong>" + event.find("td.date").html() + "</p>";
 	
@@ -48,7 +48,7 @@ function initialize(mapId) {
 function addMarker(html, location, link) {
     if (GBrowserIsCompatible()) {
 	
-        var i = new GIcon();
+        let i = new GIcon();
         i.image = "/images/map/smallmarker.png";
         i.shadow = "/images/map/smallmarker_shadow.png";
         i.iconSize = new GSize(12, 20);
@@ -57,8 +57,8 @@ function addMarker(html, location, link) {
         i.infoWindowAnchor = new GPoint(4, 1);
         markerOptions = { icon: i };
 
-	var latlng = new GLatLng( location.split(",")[0], location.split(",")[1] );
-	var marker = new GMarker(latlng, markerOptions);
+	let latlng = new GLatLng( location.split(",")[0], location.split(",")[1] );
+	let marker = new GMarker(latlng, markerOptions);
 
 	GEvent.addListener(marker, "click", function() {
             marker.openInfoWindowHtml(html);
