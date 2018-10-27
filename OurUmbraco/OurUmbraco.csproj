@@ -64,6 +64,9 @@
     <Reference Include="cms, Version=1.0.6837.12339, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.12.3\lib\net45\cms.dll</HintPath>
     </Reference>
+    <Reference Include="ColorCode, Version=1.0.1.62759, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\ColorCode.1.0.1\lib\ColorCode.dll</HintPath>
+    </Reference>
     <Reference Include="controls, Version=1.0.6837.12340, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.12.3\lib\net45\controls.dll</HintPath>
     </Reference>
@@ -266,6 +269,12 @@
     </Reference>
     <Reference Include="Skybrud.Social.Vimeo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Vimeo.1.0.0-beta003\lib\net45\Skybrud.Social.Vimeo.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.SyntaxHighlighter, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.SyntaxHighlighter.1.0.2\lib\net45\Skybrud.SyntaxHighlighter.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.SyntaxHighlighter.Markdig, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.SyntaxHighlighter.Markdig.1.0.0-beta001\lib\net45\Skybrud.SyntaxHighlighter.Markdig.dll</HintPath>
     </Reference>
     <Reference Include="SQLCE4Umbraco, Version=1.0.6837.12340, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.12.3\lib\net45\SQLCE4Umbraco.dll</HintPath>
