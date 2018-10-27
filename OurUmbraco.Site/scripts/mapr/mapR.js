@@ -1,15 +1,15 @@
-    var cloudmade;
-    var map;
-    var infowindow;
-    var pinSound= new Audio("/images/mapR/mapr.mp3");    
+    let cloudmade;
+    let map;
+    let infowindow;
+    let pinSound= new Audio("/images/mapR/mapr.mp3");    
 
-    var recent; 
-    var i;
+    let recent; 
+    let i;
 
     
     function loadMap(){
-    var lat = 51.514;
-    var lng = -0.137;
+    let lat = 51.514;
+    let lng = -0.137;
     
       
     if (google.loader.ClientLocation) {
@@ -17,7 +17,7 @@
        lng = google.loader.ClientLocation.longitude;
     } 
 
-    var myOptions = {
+    let myOptions = {
           zoom: 4,
           center: new google.maps.LatLng(lat, lng),
           mapTypeId: google.maps.MapTypeId.ROADMAP
@@ -30,9 +30,9 @@
   function renderPin(act, showBubble){
     
     if(act.Text != null){
-    var location = new google.maps.LatLng(act.Lat, act.Long);
+    let location = new google.maps.LatLng(act.Lat, act.Long);
     
-    var marker = new google.maps.Marker({
+    let marker = new google.maps.Marker({
       map:map,
       icon: "/images/mapr/" + act.Type + ".png",
       draggable:false,
@@ -41,12 +41,12 @@
       position: location
     });
     
-    var html = "<div class='makr'><span class='t'>" + prettyDate(act.TimeStamp) + "</span><img width='32' height='32' src='" + act.Icon + "'>" + 
+    let html = "<div class='makr'><span class='t'>" + prettyDate(act.TimeStamp) + "</span><img width='32' height='32' src='" + act.Icon + "'>" + 
         "<div><small>" + act.MemberName + ": </small><h3><a target='_blank' href='" + act.Url + "'>" + act.Text + "</a></h3>";
     
     html += "</div></div>";
     
-    var v = new InfoBubble({
+    let v = new InfoBubble({
           content: html,
           shadowStyle: 0,
           padding: 10,
@@ -106,7 +106,7 @@
     
     
 function delayedRender(){
-    var p = recent.pop();
+    let p = recent.pop();
     
     if(p != null)
       renderPin(p, true);
@@ -116,7 +116,7 @@ function delayedRender(){
 
 function prettyDate(time){
   
-  var date = new Date(parseInt(time.replace(/(^.*\()|([+-].*$)/g, ''))),
+  let date = new Date(parseInt(time.replace(/(^.*\()|([+-].*$)/g, ''))),
   diff = (((new Date()).getTime() - date.getTime()) / 1000),
   day_diff = Math.floor(diff / 86400);
   
@@ -141,8 +141,8 @@ function prettyDate(time){
 $(function () {
 
     //the hub
-    var actsHub = $.connection.activities;
-    var actsUL = $("#acts");
+    let actsHub = $.connection.activities;
+    let actsUL = $("#acts");
       
     function init() {
         return actsHub.getRecentActivities().done(function (acts) {
