@@ -44,7 +44,7 @@ accessible via URL `https://www.amcharts.com/lib/4/...`, e.g.:
 
 ### Related packages
 
-This package inlcudes `MapChart` (geographical maps) functionality. However,
+This package includes `MapChart` (geographical maps) functionality. However,
 it does not include geodata itself (map files) needed to instantiate the maps.
 
 Those are available via separate package:
@@ -59,7 +59,7 @@ Those are available via separate package:
 If you have a commercial amCharts 4 license, this software is covered by your
 license, which supercedes any other license bundled with this package.
 
-If you don't hav a commercial license, the use of this software is covered by
+If you don't have a commercial license, the use of this software is covered by
 a freeware license. Refer to included LICENSE file. The license is also
 [available online](https://github.com/amcharts/amcharts4/blob/master/dist/script/LICENSE).
 
