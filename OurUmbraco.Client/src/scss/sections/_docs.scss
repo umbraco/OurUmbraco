@@ -116,6 +116,13 @@
         @include notice(rgba(40,51,204,.07), rgba(40,51,204,.70), "\e148  Tip:");
     }
 
+    .info {
+        @include notice(rgba(40,51,204,.07), rgba(40,51,204,.70), "\e148  Info:");
+    }
+     .notice {
+        @include notice(rgba(40,51,204,.07), rgba(40,51,204,.70), "\e148  Notice:");
+    }
+
     .checklist {
         ul {
             list-style: none;
