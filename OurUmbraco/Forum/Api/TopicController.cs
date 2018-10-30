@@ -16,6 +16,7 @@ namespace OurUmbraco.Forum.Api
             t.MemberId = Members.GetCurrentMemberId();
             t.Created = DateTime.Now;
             t.ParentId = model.Forum;
+            t.Version = model.Version;
             TopicService.Save(t);
         }
 
