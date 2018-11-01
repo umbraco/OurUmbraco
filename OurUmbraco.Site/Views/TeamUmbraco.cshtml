@@ -418,7 +418,7 @@
 
             var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
             groupedPrsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             groupedPrsChart.scrollbarX = new am4core.Scrollbar();
             groupedPrsChart.legend = new am4charts.Legend();
@@ -472,7 +472,7 @@
 
             var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
             contributorsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=01&fromYear=2012&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             contributorsChart.scrollbarX = new am4core.Scrollbar();
             contributorsChart.legend = new am4charts.Legend();
@@ -506,7 +506,7 @@
 
             var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
             openPRsAllTimeChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=01&fromYear=2012&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             openPRsAllTimeChart.legend = new am4charts.Legend();
 
@@ -528,7 +528,7 @@
             
             var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
             activeContributorsAfterCg18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
@@ -561,7 +561,7 @@
 
             var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
             openPRsSinceCG18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
@@ -594,7 +594,7 @@
 
             var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
             mergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             mergeTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -616,7 +616,7 @@
 
             var averageMergeTimeInHoursChart = am4core.create("AveragePRMergeTime", am4charts.XYChart);
             averageMergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             averageMergeTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -638,7 +638,7 @@
 
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
             firstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
            firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -661,7 +661,7 @@
 
             var averageFirstTeamCommentTimeInHoursChart = am4core.create("AverageFirstTeamCommentTime", am4charts.XYChart);
             averageFirstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
             
             averageFirstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
