@@ -9,8 +9,27 @@
         return;
     }
 
-    var fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
-    var toDate = DateTime.Now.ToString("yyyy-MM-" + DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+    var fromMonth = DateTime.Now.AddYears(-1).Month;
+    var fromYear = DateTime.Now.AddYears(-1).Year;
+
+    var toMonth = DateTime.Now.Month;
+    var toYear = DateTime.Now.Year;
+
+    var showLastMonth = false;
+    var lastMonthQueryString = Request.QueryString["lastMonth"];
+    if (string.IsNullOrWhiteSpace(lastMonthQueryString) == false)
+    {
+        showLastMonth = true;
+    }
+
+    if (showLastMonth)
+    {
+        fromMonth = DateTime.Now.AddYears(-1).AddMonths(-1).Month;
+        fromYear = DateTime.Now.AddYears(-1).AddMonths(-1).Year;
+        toMonth = DateTime.Now.AddMonths(-1).Month;
+        toYear = DateTime.Now.AddMonths(-1).Year;
+    }
+
     var repository = "Umbraco-CMS";
     var repoQueryString = Request.QueryString["repo"];
     if (string.IsNullOrWhiteSpace(repoQueryString) == false)
@@ -23,19 +42,6 @@
     if (string.IsNullOrWhiteSpace(viewTypeQueryString) == false)
     {
         viewType = viewTypeQueryString;
-    }
-
-    var showLastMonth = false;
-    var lastMonthQueryString = Request.QueryString["lastMonth"];
-    if (string.IsNullOrWhiteSpace(lastMonthQueryString) == false)
-    {
-        showLastMonth = true;
-    }
-
-    if (showLastMonth)
-    {
-        fromDate = DateTime.Now.AddYears(-1).ToString("yyyy-MM-01");
-        toDate = DateTime.Now.ToString("yyyy-" + DateTime.Now.AddMonths(-1).Month.ToString("MM")  + "-" + DateTime.DaysInMonth(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month));
     }
 }
 
@@ -402,17 +408,17 @@
                     var colorSet = new am4core.ColorSet();
 
                     @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "150")
-                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "150")
-                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "100")
+                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "175")
+                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "130")
                     @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
-                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "15")
+                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "20")
                 });
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
             groupedPrsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             groupedPrsChart.scrollbarX = new am4core.Scrollbar();
             groupedPrsChart.legend = new am4charts.Legend();
@@ -466,7 +472,7 @@
 
             var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
             contributorsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=01&fromYear=2012&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             contributorsChart.scrollbarX = new am4core.Scrollbar();
             contributorsChart.legend = new am4charts.Legend();
@@ -500,7 +506,7 @@
 
             var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
             openPRsAllTimeChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2012-01-01&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=01&fromYear=2012&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             openPRsAllTimeChart.legend = new am4charts.Legend();
 
@@ -522,7 +528,7 @@
             
             var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
             activeContributorsAfterCg18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-05-23&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
@@ -555,7 +561,7 @@
 
             var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
             openPRsSinceCG18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=2018-05-23&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
@@ -588,7 +594,7 @@
 
             var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
             mergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             mergeTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -610,7 +616,7 @@
 
             var averageMergeTimeInHoursChart = am4core.create("AveragePRMergeTime", am4charts.XYChart);
             averageMergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
             averageMergeTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -632,7 +638,7 @@
 
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
             firstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
            firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
@@ -655,7 +661,7 @@
 
             var averageFirstTeamCommentTimeInHoursChart = am4core.create("AverageFirstTeamCommentTime", am4charts.XYChart);
             averageFirstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDate=@(fromDate)&toDate=@(toDate)&repository=@(repository)";
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromMonth=@(fromMonth)&fromYear=@(fromYear)&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
             
             averageFirstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 

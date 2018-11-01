@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Hosting;
 using System.Web.Http;
+using System.Xml.Serialization.Configuration;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
@@ -20,13 +21,15 @@ namespace OurUmbraco.Our.Api
         [HttpGet]
         public PullRequestsInPeriod GetPullRequestDataCurrentPeriod(bool previousPeriod, string repository = "Umbraco-CMS")
         {
-            var month = DateTime.Now.ToString("MM");
-            if(previousPeriod)
-                month = DateTime.Now.AddMonths(-1).ToString("MM");
-            var fromDate = DateTime.Parse(DateTime.Now.ToString($"yyyy-{month}-01"));
-            var toDate = DateTime.Parse(DateTime.Now.ToString($"yyyy-{month}-{DateTime.DaysInMonth(DateTime.Now.Year, int.Parse(month))}"));
+            var month = DateTime.Now.Month;
+            var year = DateTime.Now.Year;
+            if (previousPeriod)
+            {
+                month = DateTime.Now.AddMonths(-1).Month;
+                year = DateTime.Now.AddMonths(-1).Year;
+            }
 
-            var data = GetGroupedPullRequestData(fromDate, toDate, repository);
+            var data = GetGroupedPullRequestData(0, month, year, 0, month, year, repository);
 
             var prsInLastPeriod = data.Any() ? data.LastOrDefault() : new PullRequestsInPeriod();
             return prsInLastPeriod;
@@ -34,8 +37,16 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<PullRequestsInPeriod> GetGroupedPullRequestData(DateTime fromDate, DateTime toDate, string repository = "Umbraco-CMS")
+        public List<PullRequestsInPeriod> GetGroupedPullRequestData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear,  string repository = "Umbraco-CMS")
         {
+            if (fromDay == 0)
+                fromDay = 1;
+            if (toDay == 0)
+                toDay = DateTime.DaysInMonth(toYear, toMonth);
+
+            var fromDate = DateTime.Parse($"{fromYear}-{fromMonth}-{fromDay} 00:00:00");
+            var toDate = DateTime.Parse($"{toYear}-{toMonth}-{toDay} 23:59:59");
+
             var pullRequestService = new PullRequestService();
             var pullsNonHq = pullRequestService.GetPullsNonHq(repository);
 
