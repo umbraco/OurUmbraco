@@ -74,8 +74,6 @@ namespace OurUmbraco.Our.Services
 
         public void GenerateReleasesCache(PerformContext context)
         {
-            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(ReleasesCacheCacheKey);
-
             var releasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
             var umbracoHelper = new UmbracoHelper(GetUmbracoContext());
             var releasesNode = umbracoHelper.TypedContent(releasesPageNodeId);
@@ -117,6 +115,9 @@ namespace OurUmbraco.Our.Services
 
             var releasesCache = JsonConvert.SerializeObject(releases, Formatting.Indented);
             File.WriteAllText(CacheFile, releasesCache, Encoding.UTF8);
+
+            // Clear cache so it will be fetched again the next time someone asks for it
+            ApplicationContext.Current.ApplicationCache.RuntimeCache.ClearCacheItem(ReleasesCacheCacheKey);
         }
 
         private static void PopulateYouTrackIssues(PerformContext context, List<Release> releases)
@@ -158,15 +159,23 @@ namespace OurUmbraco.Our.Services
         {
             var repository = new OurUmbraco.Community.Models.Repository("umbraco-cms", "umbraco", "Umbraco-CMS", "Umbraco CMS");
             var issuesDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/");
-            var files = Directory.EnumerateFiles(issuesDirectory, "*.issue.combined.json").ToArray();
-            context.WriteLine($"Found {files.Length} issues");
+            var pullsDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/");
+            AddItemsToReleases(context, releases, issuesDirectory, "issue");
+            AddItemsToReleases(context, releases, pullsDirectory, "pull");
+        }
+
+        private static void AddItemsToReleases(PerformContext context, List<Release> releases, string directory, string fileTypeName) 
+        {
+            context.WriteLine($"Processing {fileTypeName}s");
+            var files = Directory.EnumerateFiles(directory, $"*.{fileTypeName}.combined.json").ToArray();
+            context.WriteLine($"Found {files.Length} items");
 
             foreach (var file in files)
             {
                 var fileContent = File.ReadAllText(file);
-                var issue = JsonConvert.DeserializeObject<GitHubIssueModel>(fileContent);
+                var item = JsonConvert.DeserializeObject<GitHubIssueModel>(fileContent);
 
-                foreach (var label in issue.labels)
+                foreach (var label in item.labels)
                 {
                     if (label.name.StartsWith("release/") == false)
                         continue;
@@ -176,36 +185,38 @@ namespace OurUmbraco.Our.Services
                     if (release == null)
                     {
                         context.WriteLine(
-                            $"Issue {issue.number} is tagged with release version {version} but this release has no corresponding node in Our");
+                            $"Item {item.number} is tagged with release version {version} but this release has no corresponding node in Our");
                         continue;
                     }
 
-                    var breaking = issue.labels.Any(x => x.name == "compatibility/breaking");
+                    var breaking = item.labels.Any(x => x.name == "compatibility/breaking");
 
-                    var stateLabel = issue.labels.FirstOrDefault(x => x.name.StartsWith("state/"));
-                    
+                    var stateLabel = item.labels.FirstOrDefault(x => x.name.StartsWith("state/"));
+
                     // default state
                     var state = "new";
-                    
+
                     if (stateLabel != null)
                         // if there's a label with a state then use that as the state
                         state = stateLabel.name.Replace("state/", string.Empty);
-                    else if (issue.state == "closed" && issue.labels.Any(x => x.name.StartsWith("release")))
+                    else if (item.state == "closed" && item.labels.Any(x => x.name.StartsWith("release")))
                         // there is no state label applied
-                        // if the issue is closed and has a release label on it then we set it to fixed
+                        // if the item is closed and has a release label on it then we set it to fixed
                         state = "fixed";
 
-                    var typeLabel = issue.labels.FirstOrDefault(x => x.name.StartsWith("type/"));
+                    var typeLabel = item.labels.FirstOrDefault(x => x.name.StartsWith("type/"));
                     var type = string.Empty;
                     if (typeLabel != null)
                         type = typeLabel.name.Replace("type/", string.Empty);
 
+                    context.WriteLine($"Adding {fileTypeName} {item.number} to release {release.Version}");
+
                     release.Issues.Add(new Release.Issue
                     {
-                        Id = issue.number.ToString(),
+                        Id = item.number.ToString(),
                         Breaking = breaking,
                         State = state,
-                        Title = issue.title,
+                        Title = item.title,
                         Type = type,
                         Source = "GitHub"
                     });
