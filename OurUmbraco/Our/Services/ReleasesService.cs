@@ -12,6 +12,7 @@ using Hangfire.Server;
 using Newtonsoft.Json;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Our.Models.GitHub;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Web;
@@ -173,50 +174,50 @@ namespace OurUmbraco.Our.Services
             foreach (var file in files)
             {
                 var fileContent = File.ReadAllText(file);
-                var item = JsonConvert.DeserializeObject<GitHubIssueModel>(fileContent);
+                var item = JsonConvert.DeserializeObject<Issue>(fileContent);
 
-                foreach (var label in item.labels)
+                foreach (var label in item.Labels)
                 {
-                    if (label.name.StartsWith("release/") == false)
+                    if (label.Name.StartsWith("release/") == false)
                         continue;
 
-                    var version = label.name.Replace("release/", string.Empty);
+                    var version = label.Name.Replace("release/", string.Empty);
                     var release = releases.FirstOrDefault(x => x.Version == version);
                     if (release == null)
                     {
                         context.WriteLine(
-                            $"Item {item.number} is tagged with release version {version} but this release has no corresponding node in Our");
+                            $"Item {item.Number} is tagged with release version {version} but this release has no corresponding node in Our");
                         continue;
                     }
 
-                    var breaking = item.labels.Any(x => x.name == "compatibility/breaking");
+                    var breaking = item.Labels.Any(x => x.Name == "compatibility/breaking");
 
-                    var stateLabel = item.labels.FirstOrDefault(x => x.name.StartsWith("state/"));
+                    var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
 
                     // default state
                     var state = "new";
 
                     if (stateLabel != null)
                         // if there's a label with a state then use that as the state
-                        state = stateLabel.name.Replace("state/", string.Empty);
-                    else if (item.state == "closed" && item.labels.Any(x => x.name.StartsWith("release")))
+                        state = stateLabel.Name.Replace("state/", string.Empty);
+                    else if (item.State == "closed" && item.Labels.Any(x => x.Name.StartsWith("release")))
                         // there is no state label applied
                         // if the item is closed and has a release label on it then we set it to fixed
                         state = "fixed";
 
-                    var typeLabel = item.labels.FirstOrDefault(x => x.name.StartsWith("type/"));
+                    var typeLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("type/"));
                     var type = string.Empty;
                     if (typeLabel != null)
-                        type = typeLabel.name.Replace("type/", string.Empty);
+                        type = typeLabel.Name.Replace("type/", string.Empty);
 
-                    context.WriteLine($"Adding {fileTypeName} {item.number} to release {release.Version}");
+                    context.WriteLine($"Adding {fileTypeName} {item.Number} to release {release.Version}");
 
                     release.Issues.Add(new Release.Issue
                     {
-                        Id = item.number.ToString(),
+                        Id = item.Number.ToString(),
                         Breaking = breaking,
                         State = state,
-                        Title = item.title,
+                        Title = item.Title,
                         Type = type,
                         Source = "GitHub"
                     });
@@ -252,101 +253,5 @@ namespace OurUmbraco.Our.Services
         public string Type { get; set; }
         public bool Resolved { get; set; }
         public bool Breaking { get; set; }
-    }
-
-    internal class GitHubIssueModel
-    {
-        public string url { get; set; }
-        public string repository_url { get; set; }
-        public string labels_url { get; set; }
-        public string comments_url { get; set; }
-        public string events_url { get; set; }
-        public string html_url { get; set; }
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public int number { get; set; }
-        public string title { get; set; }
-        public User user { get; set; }
-        public Label[] labels { get; set; }
-        public string state { get; set; }
-        public bool locked { get; set; }
-        public object assignee { get; set; }
-        public object[] assignees { get; set; }
-        public object milestone { get; set; }
-        public int comments { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
-        public object closed_at { get; set; }
-        public string author_association { get; set; }
-        public string body { get; set; }
-        public _Comments[] _comments { get; set; }
-    }
-
-    internal class User
-    {
-        public string login { get; set; }
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool site_admin { get; set; }
-    }
-
-    internal class Label
-    {
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public string url { get; set; }
-        public string name { get; set; }
-        public string color { get; set; }
-        public bool _default { get; set; }
-    }
-
-    internal class _Comments
-    {
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string issue_url { get; set; }
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public User1 user { get; set; }
-        public DateTime created_at { get; set; }
-        public DateTime updated_at { get; set; }
-        public string author_association { get; set; }
-        public string body { get; set; }
-    }
-
-    internal class User1
-    {
-        public string login { get; set; }
-        public int id { get; set; }
-        public string node_id { get; set; }
-        public string avatar_url { get; set; }
-        public string gravatar_id { get; set; }
-        public string url { get; set; }
-        public string html_url { get; set; }
-        public string followers_url { get; set; }
-        public string following_url { get; set; }
-        public string gists_url { get; set; }
-        public string starred_url { get; set; }
-        public string subscriptions_url { get; set; }
-        public string organizations_url { get; set; }
-        public string repos_url { get; set; }
-        public string events_url { get; set; }
-        public string received_events_url { get; set; }
-        public string type { get; set; }
-        public bool site_admin { get; set; }
     }
 }

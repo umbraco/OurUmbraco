@@ -43,24 +43,24 @@
                                 <td nowrap><strong>Assignees</strong></td>
                             </tr>
 
-                            @foreach (var issue in category.Issues.OrderByDescending(x => x.created_at))
+                            @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
                             {
                                 <tr>
                                     <td nowrap>
-                                        <a href="@issue.html_url" target="_blank">@issue.number</a><br />
-                                        <small class="comment">@issue.repositoryName</small>
+                                        <a href="@issue.Link" target="_blank">@issue.Number</a><br />
+                                        <small class="comment">@issue.RepositoryName</small>
                                     </td>
                                     <td nowrap class="author">
-                                        <a href="https://github.com/@issue.user.login" target="_blank">
-                                            <img src="@issue.user.avatar_url" title="@issue.user.login" />
+                                        <a href="https://github.com/@issue.User.Login" target="_blank">
+                                            <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="@issue.html_url" target="_blank" title="@issue.body">@issue.title</a><br />
+                                        <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Title</a><br />
                                         <small>
                                             @{
                                                 var dateCssClass = string.Empty;
-                                                var businessDays = issue.created_at.ToLocalTime().BusinessDaysSince();
+                                                var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
                                             }
                                             @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
                                             {
@@ -70,22 +70,22 @@
                                                 }
                                             }
                                             <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
-                                                @Html.RenderTimestamp(issue.created_at)<br/>
+                                                @Html.RenderTimestamp(issue.CreateDateTime)<br/>
                                                 Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.
                                             </span>
                                         </small>
                                     </td>
                                     <td nowrap>
-                                        @Html.RenderTimestamp(issue.updated_at, multiline: true)
+                                        @Html.RenderTimestamp(issue.UpdateDateTime, multiline: true)
                                     </td>
-                                    <td><span class="label label-warning">@issue.state</span></td>
-                                    <td>@issue.comments</td>
+                                    <td><span class="label label-warning">@issue.State</span></td>
+                                    <td>@issue.CommentCount</td>
                                     <td>---</td>
                                     <td class="assignees">
-                                        @foreach (var assignee in issue.assignees)
+                                        @foreach (var assignee in issue.Assignees)
                                         {
-                                            <a href="https://github.com/@assignee.login" target="_blank">
-                                                <img src="@assignee.avatar_url" title="@assignee.login" />
+                                            <a href="https://github.com/@assignee.Login" target="_blank">
+                                                <img src="@assignee.AvatarUrl" title="@assignee.Login" />
                                             </a>
                                         }
                                     </td>
