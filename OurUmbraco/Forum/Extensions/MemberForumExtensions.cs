@@ -67,6 +67,11 @@ namespace OurUmbraco.Forum.Extensions
             return Roles.IsUserInRole("HQ");
         }
 
+        public static bool IsTeamUmbraco(this MembershipHelper helper)
+        {
+            return Roles.IsUserInRole("HQ") || Roles.IsUserInRole("TeamUmbraco");
+        }
+
         public static bool IsAdmin(this IPublishedContent helper)
         {
             return ModeratorRoles.Split(',').Any(Roles.IsUserInRole);

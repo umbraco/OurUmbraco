@@ -44,6 +44,11 @@ namespace OurUmbraco.Our.Services
                 var issuesDirectory = directory + "\\issues\\";
                 var issueFiles = Directory.EnumerateFiles(issuesDirectory, "*.combined.json");
 
+                var reviewers = hqMembers;
+                var team = teamMembers.FirstOrDefault(x => x.TeamName == repositoryName);
+                if (team != null)
+                    reviewers.AddRange(team.Members);
+
                 foreach (var file in issueFiles)
                 {
                     var fileContent = File.ReadAllText(file);

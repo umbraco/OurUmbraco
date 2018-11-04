@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Web.Hosting;
 using System.Web.Http;
-using System.Xml.Serialization.Configuration;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
@@ -15,9 +13,7 @@ namespace OurUmbraco.Our.Api
 {
     public class TeamUmbracoStatisticsController : UmbracoApiController
     {
-        public readonly string HqMembers = HostingEnvironment.MapPath("~/config/githubhq.txt");
-
-        [MemberAuthorize(AllowGroup = "HQ")]
+        [MemberAuthorize(AllowGroup = "HQ,TeamUmbraco")]
         [HttpGet]
         public PullRequestsInPeriod GetPullRequestDataCurrentPeriod(bool previousPeriod, string repository = "Umbraco-CMS")
         {
@@ -35,7 +31,7 @@ namespace OurUmbraco.Our.Api
             return prsInLastPeriod;
         }
 
-        [MemberAuthorize(AllowGroup = "HQ")]
+        [MemberAuthorize(AllowGroup = "HQ,TeamUmbraco")]
         [HttpGet]
         public List<PullRequestsInPeriod> GetGroupedPullRequestData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear,  string repository = "Umbraco-CMS")
         {

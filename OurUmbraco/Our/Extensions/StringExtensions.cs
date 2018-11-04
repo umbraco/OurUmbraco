@@ -21,7 +21,12 @@ namespace OurUmbraco.Our.Extensions
 
         public static List<Badge> GetBadges(this IEnumerable<string> roles)
         {
-            var rolesList = roles.ToList();
+            var excludeRoles = new List<string>
+            {
+                "teamumbraco".ToLowerInvariant()
+            };
+
+            var rolesList = roles.Except(excludeRoles).ToList();
             var rolesWithoutMvp = rolesList.Where(x => x.ToLowerInvariant().StartsWith("MVP".ToLowerInvariant()) == false).ToList();
             var numberOfMvps = rolesList.Count(x => x.ToLowerInvariant().StartsWith("MVP ".ToLowerInvariant()));
 
@@ -39,7 +44,7 @@ namespace OurUmbraco.Our.Extensions
                     CssClass = "mvp"
                 });
             }
-            
+
             foreach (var role in rolesWithoutMvp)
                 badges.Add(new Badge
                 {
@@ -50,7 +55,7 @@ namespace OurUmbraco.Our.Extensions
 
             return badges;
         }
-        
+
         // From: https://stackoverflow.com/a/42260733/5018
         internal static bool IsLocalPath(this string path)
         {

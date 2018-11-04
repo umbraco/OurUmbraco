@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Web.Hosting;
 using Newtonsoft.Json;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Models;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Our.Services
 {
@@ -46,21 +48,11 @@ namespace OurUmbraco.Our.Services
             return hqMembers;
         }
 
-        internal List<string> GetTeamMembers()
+        internal List<TeamUmbraco> GetTeamMembers()
         {
-            var allTeamMembers = new List<string>();
             var content = File.ReadAllText(_teamUmbracoUsersFile);
             var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
-            foreach (var team in teamUmbracoUsers)
-            {
-                foreach (var member in team.Members)
-                {
-                    if (allTeamMembers.Contains(member) == false)
-                        allTeamMembers.Add(member.ToLowerInvariant());
-                }
-            }
-
-            return allTeamMembers;
+            return teamUmbracoUsers;
         }
 
         private GithubPullRequestModel GetPullRequest(OurUmbraco.Community.Models.Repository repository, string pullRequestNumber)

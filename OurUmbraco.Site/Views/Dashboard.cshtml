@@ -1,12 +1,10 @@
 ﻿@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
-@using Skybrud.Essentials.Time
-@using String = Umbraco.Web.Media.EmbedProviders.Settings.String
 @inherits UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
-    if (Members.IsHq() == false)
+    if (Members.IsTeamUmbraco() == false)
     {
         Response.Redirect("/");
     }
