@@ -32,8 +32,15 @@ namespace OurUmbraco.Our.Services
             return teamUmbraco;
         }
 
-        internal List<string> GetHqMembers()
+        public List<string> GetHqMembers()
         {
+            if (!File.Exists(_hqUsersFile))
+            {
+                var message = $"Config file was not found: {_hqUsersFile}";
+                LogHelper.Debug<GitHubService>(message);
+                throw new Exception(message);
+            }
+
             var hqUsernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
             var hqMembers = hqUsernames.Select(hqUsername => hqUsername.ToLowerInvariant()).ToList();
             return hqMembers;

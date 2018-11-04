@@ -16,6 +16,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
+using OurUmbraco.Our.Services;
 using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
@@ -589,17 +590,8 @@ namespace OurUmbraco.Community.GitHub
             // Initialize a new StringBuilder for logging/testing purposes
             var stringBuilder = new StringBuilder();
 
-            // Map the path to the file containg HQ members that should be excluded in the list
-            var configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
-            if (!File.Exists(configPath))
-            {
-                var message = $"Config file was not found: {configPath}";
-                LogHelper.Debug<GitHubService>(message);
-                throw new Exception(message);
-            }
-
-            // Parse the logins (usernames)
-            var login = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
+            var pullRequestService = new PullRequestService();
+            var logins = pullRequestService.GetHqMembers();
 
             // A dictionary for the response of each repository
             var responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();
@@ -702,7 +694,7 @@ namespace OurUmbraco.Community.GitHub
 
             // Group and sort the contributors from each repository
             var globalContributors = contributors
-                .Where(g => g.Total > 0 && login.Contains(g.Author.Login) == false)
+                .Where(g => g.Total > 0 && logins.Contains(g.Author.Login.ToLowerInvariant()) == false)
                 .GroupBy(g => g.Author.Id)
                 .Select(g => new GitHubGlobalContributorModel(g))
                 .OrderByDescending(c => c.TotalCommits)

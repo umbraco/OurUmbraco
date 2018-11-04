@@ -1,6 +1,7 @@
 ﻿@using System.Web.Hosting
 @using OurUmbraco.Community.GitHub
 @using OurUmbraco.Our.Models
+@using OurUmbraco.Our.Services
 @using File = System.IO.File
 @inherits OurUmbracoTemplatePage
 
@@ -50,15 +51,12 @@
                         <ul>
                             @{
                                 var gitHubService = new GitHubService();
+                                var pullRequestService = new PullRequestService();
                                 var pullRequestMembers = gitHubService.MatchPullsToMembers();
-                                var configPath = HostingEnvironment.MapPath("~/config/githubhq.txt");
-                                var logins = new List<string>();
-                                if (File.Exists(configPath))
-                                {
-                                    logins = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToList();
-                                }
+                                var logins = pullRequestService.GetHqMembers();
+                                
                                 var filteredMembers = pullRequestMembers
-                                    .Where(x => logins.Contains(x.GitHubUsername) == false)
+                                    .Where(x => logins.Contains(x.GitHubUsername.ToLowerInvariant()) == false)
                                     .OrderByDescending(x => x.AcceptedPulls);
                             }
 
