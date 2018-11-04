@@ -6,6 +6,7 @@ using System.Web.Hosting;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
+using String = Umbraco.Web.Media.EmbedProviders.Settings.String;
 
 namespace OurUmbraco.Our.Services
 {
@@ -28,7 +29,8 @@ namespace OurUmbraco.Our.Services
                 var issuesDirectory = directory + "\\issues\\";
                 var issueFiles = Directory.EnumerateFiles(issuesDirectory, "*.combined.json");
 
-                var reviewers = hqMembers;
+                var reviewers = new List<string>();
+                reviewers.AddRange(hqMembers);
                 var team = teamMembers.FirstOrDefault(x => x.TeamName == repositoryName);
                 if (team != null)
                     reviewers.AddRange(team.Members);

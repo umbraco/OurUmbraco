@@ -16,12 +16,34 @@
     {
         totalIssues = totalIssues + categories.Issues.Count;
     }
+    
+
+    var fromMonth = DateTime.Now.AddYears(-1).Month;
+    var fromYear = DateTime.Now.AddYears(-1).Year;
+
+    var toMonth = DateTime.Now.Month;
+    var toYear = DateTime.Now.Year;
 }
+
+<script src="/scripts/amcharts/core.js"></script>
+<script src="/scripts/amcharts/charts.js"></script>
 
 <div id="body" class="page markdown-syntax">
     <div>
         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
+
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h5>Issues: created and closed</h5>
+                <div class="col-md-12">
+                    <div id="GroupedIssues" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
 
     <h1>Issue tracker status - @totalIssues open issues</h1>
     <section>
@@ -99,6 +121,43 @@
     </section>
 </div>
 
+<script>
+       var groupedPrsChart = am4core.create("GroupedIssues", am4charts.XYChart);
+            groupedPrsChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)";
+
+            groupedPrsChart.scrollbarX = new am4core.Scrollbar();
+            groupedPrsChart.legend = new am4charts.Legend();
+            groupedPrsChart.colors.step = 2;
+
+            var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "GroupName";
+            categoryAxis.renderer.grid.template.location = 0;
+
+            var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.min = 0;
+            valueAxis.renderer.minWidth = 35;
+
+            var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsClosed.name = "Issues closed";
+            prsClosed.dataFields.categoryX = "GroupName";
+            prsClosed.dataFields.valueY = "NumberClosed";
+            prsClosed.stacked = true;
+
+            var prsClosedColumnTemplate = prsClosed.columns.template;
+            prsClosedColumnTemplate.width = am4core.percent(80);
+            prsClosedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+
+            var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsCreated.name = "Issues created";
+            prsCreated.dataFields.categoryX = "GroupName";
+            prsCreated.dataFields.valueY = "NumberCreated";
+            prsCreated.stacked = false;
+            
+            var prsCreatedColumnTemplate = prsCreated.columns.template;
+            prsCreatedColumnTemplate.width = am4core.percent(80);
+            prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+</script>
+
 <style type="text/css">
     .page, .container {
         max-width: none;
@@ -142,5 +201,35 @@
 
     span.error {
         color: red;
+    }
+
+
+    .gauge {
+        height: 250px;
+        width: 350px;
+    }
+
+    .chart {
+        height: 500px;
+        width: 100%;
+        clear: both;
+        display: block;
+    }
+
+    .center-block {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .stats {
+        height: 550px;
+        display: inline-block;
+        width: 100%;
+        clear: both;
+    }
+
+    #body {
+        margin-bottom: 50px;
     }
 </style>

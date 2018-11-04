@@ -435,6 +435,7 @@
     <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
+    <Compile Include="Our\Api\IssuesStatisticsController.cs" />
     <Compile Include="Our\Api\TeamUmbracoStatisticsController.cs" />
     <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
@@ -497,6 +498,7 @@
     <Compile Include="Our\Models\GitHub\Label.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
+    <Compile Include="Our\Models\IssuesInPeriod.cs" />
     <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Community\Models\TeamUmbraco.cs" />
