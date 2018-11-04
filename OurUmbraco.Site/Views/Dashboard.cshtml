@@ -1,0 +1,148 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
+@using Skybrud.Essentials.Time
+@using String = Umbraco.Web.Media.EmbedProviders.Settings.String
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    if (Members.IsHq() == false)
+    {
+        Response.Redirect("/");
+    }
+
+    var repoManagementService = new RepositoryManagementService();
+    var categorizedIssues = repoManagementService.GetAllOpenIssues().OrderBy(x => x.SortOrder).ToList();
+    var totalIssues = 0;
+    foreach (var categories in categorizedIssues)
+    {
+        totalIssues = totalIssues + categories.Issues.Count;
+    }
+}
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
+
+    <h1>Issue tracker status - @totalIssues open issues</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    @foreach (var category in categorizedIssues)
+                    {
+                        <h5>@category.CategoryDescription (@category.Issues.Count issues)</h5>
+                        <table class="overview">
+                            <tr>
+                                <td nowrap><strong>#</strong></td>
+                                <td nowrap><strong>Author</strong></td>
+                                <td nowrap><strong>Item</strong></td>
+                                <td nowrap><strong>Last update</strong></td>
+                                <td nowrap><strong>State</strong></td>
+                                <td nowrap><strong>Comments</strong></td>
+                                <td nowrap><strong>Replies by PR Team</strong></td>
+                                <td nowrap><strong>Assignees</strong></td>
+                            </tr>
+
+                            @foreach (var issue in category.Issues.OrderByDescending(x => x.created_at))
+                            {
+                                <tr>
+                                    <td nowrap>
+                                        <a href="@issue.html_url" target="_blank">@issue.number</a><br />
+                                        <small class="comment">@issue.repositoryName</small>
+                                    </td>
+                                    <td nowrap class="author">
+                                        <a href="https://github.com/@issue.user.login" target="_blank">
+                                            <img src="@issue.user.avatar_url" title="@issue.user.login" />
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="@issue.html_url" target="_blank" title="@issue.body">@issue.title</a><br />
+                                        <small>
+                                            @{
+                                                var dateCssClass = string.Empty;
+                                                var businessDays = issue.created_at.ToLocalTime().BusinessDaysSince();
+                                            }
+                                            @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
+                                            {
+                                                if (businessDays > 2)
+                                                {
+                                                    dateCssClass = "error";
+                                                }
+                                            }
+                                            <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
+                                                @Html.RenderTimestamp(issue.created_at)<br/>
+                                                Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.
+                                            </span>
+                                        </small>
+                                    </td>
+                                    <td nowrap>
+                                        @Html.RenderTimestamp(issue.updated_at, multiline: true)
+                                    </td>
+                                    <td><span class="label label-warning">@issue.state</span></td>
+                                    <td>@issue.comments</td>
+                                    <td>---</td>
+                                    <td class="assignees">
+                                        @foreach (var assignee in issue.assignees)
+                                        {
+                                            <a href="https://github.com/@assignee.login" target="_blank">
+                                                <img src="@assignee.avatar_url" title="@assignee.login" />
+                                            </a>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style type="text/css">
+    .page, .container {
+        max-width: none;
+    }
+
+    .overview td {
+        font-size: 14px;
+        vertical-align: top;
+        padding: 6px 6px;
+    }
+
+        .overview td img {
+            margin: 0;
+            max-width: none;
+        }
+
+        .overview td a {
+            color: #FF6E00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .overview td.author img {
+            width: 40px;
+            height: 40px;
+            margin-left: 2px;
+        }
+
+        .overview td.assignees a {
+            float: left;
+        }
+
+        .overview td.assignees img {
+            width: 20px;
+            height: 20px;
+        }
+
+    .overview small, .overview small.comment {
+        font-size: 12px;
+    }
+
+    span.error {
+        color: red;
+    }
+</style>

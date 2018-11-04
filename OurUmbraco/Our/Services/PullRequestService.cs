@@ -32,6 +32,30 @@ namespace OurUmbraco.Our.Services
             return teamUmbraco;
         }
 
+        internal List<string> GetHqMembers()
+        {
+            var hqUsernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
+            var hqMembers = hqUsernames.Select(hqUsername => hqUsername.ToLowerInvariant()).ToList();
+            return hqMembers;
+        }
+
+        internal List<string> GetTeamMembers()
+        {
+            var allTeamMembers = new List<string>();
+            var content = File.ReadAllText(_teamUmbracoUsersFile);
+            var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
+            foreach (var team in teamUmbracoUsers)
+            {
+                foreach (var member in team.Members)
+                {
+                    if (allTeamMembers.Contains(member) == false)
+                        allTeamMembers.Add(member.ToLowerInvariant());
+                }
+            }
+
+            return allTeamMembers;
+        }
+
         private GithubPullRequestModel GetPullRequest(OurUmbraco.Community.Models.Repository repository, string pullRequestNumber)
         {
             GithubPullRequestModel prModel = null;

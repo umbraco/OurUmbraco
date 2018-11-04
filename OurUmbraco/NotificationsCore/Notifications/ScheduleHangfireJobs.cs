@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Web.Hosting;
 using Examine;
@@ -132,12 +134,15 @@ namespace OurUmbraco.NotificationsCore.Notifications
         
         public void UpdateGitHubIssues(PerformContext context)
         {
-            var gitHubService = new GitHubService();
-            var repository = new Community.Models.Repository("Umbraco-CMS", "umbraco", "Umbraco-CMS", "Umbraco CMS");
-            RecurringJob.AddOrUpdate("Update Umbraco CMS Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
+            var fileContent = File.ReadAllText(configFile);
+            var repositories = JsonConvert.DeserializeObject<List<Community.Models.Repository>>(fileContent);
 
-            repository = new Community.Models.Repository("UmbracoDocs", "umbraco", "UmbracoDocs", "Umbraco Documentation");
-            RecurringJob.AddOrUpdate("Update Umbraco Docs Issues", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            }
         }
         
         public void GetAllGitHubLabels(PerformContext context)

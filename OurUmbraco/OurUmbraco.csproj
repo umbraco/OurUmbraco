@@ -224,6 +224,9 @@
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
     </Reference>
+    <Reference Include="Nager.Date, Version=1.22.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Nager.Date.1.22.3\lib\net45\Nager.Date.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
@@ -486,6 +489,7 @@
     <Compile Include="Our\Api\GitHubController.cs" />
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
+    <Compile Include="Our\Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Our\Extensions\ListExtensions.cs" />
     <Compile Include="Our\Models\FirstPullRequest.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
@@ -672,6 +676,7 @@
     <Compile Include="Our\SecureHasher.cs" />
     <Compile Include="Our\Services\PullRequestService.cs" />
     <Compile Include="Our\Services\ReleasesService.cs" />
+    <Compile Include="Our\Services\RepositoryManagementService.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
       <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>

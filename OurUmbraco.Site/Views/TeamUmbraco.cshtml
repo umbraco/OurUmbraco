@@ -6,7 +6,7 @@
     Layout = "Master.cshtml";
     if (Members.IsHq() == false)
     {
-        return;
+        Response.Redirect("/");
     }
 
     var fromMonth = DateTime.Now.AddYears(-1).Month;

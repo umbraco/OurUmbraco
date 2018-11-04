@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Nager.Date;
 
 namespace OurUmbraco.Our.Extensions
 {
@@ -24,6 +27,26 @@ namespace OurUmbraco.Our.Extensions
             var lastDay = DateTime.DaysInMonth(dateTime.Year, dateTime.Month);
             var returnDate = new DateTime(dateTime.Year, dateTime.Month, lastDay);
             return returnDate;
+        }
+
+        public static double BusinessDaysSince(this DateTime fromDate)
+        {
+            var toDate = DateTime.Now;
+            return BusinessDaysBetween(fromDate, toDate);
+        }
+
+        private static double BusinessDaysBetween(DateTime fromDate, DateTime toDate)
+        {
+            var businessDays = new List<DateTime>();
+            for (var date = fromDate; date <= toDate; date = date.AddDays(1))
+            {
+                if (DateSystem.IsPublicHoliday(date, CountryCode.DK) || DateSystem.IsWeekend(date, CountryCode.DK))
+                    continue;
+
+                businessDays.Add(date);
+            }
+
+            return businessDays.Count;
         }
     }
 }
