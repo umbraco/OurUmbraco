@@ -7,53 +7,12 @@ using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Models;
-using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Our.Services
 {
     public class PullRequestService
     {
         private readonly string _jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
-        private readonly string _hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
-        private readonly string _teamUmbracoUsersFile = HostingEnvironment.MapPath("~/Config/TeamUmbraco.json");
-
-        private TeamUmbraco GetTeam(string repository)
-        {
-            var teamUmbraco = new TeamUmbraco();
-            var usernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
-
-            var content = File.ReadAllText(_teamUmbracoUsersFile);
-            var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
-            var team = teamUmbracoUsers.FirstOrDefault(x => x.TeamName == repository);
-            if (team != null)
-            {
-                team.Members.AddRange(usernames);
-                teamUmbraco = team;
-            }
-
-            return teamUmbraco;
-        }
-
-        public List<string> GetHqMembers()
-        {
-            if (!File.Exists(_hqUsersFile))
-            {
-                var message = $"Config file was not found: {_hqUsersFile}";
-                LogHelper.Debug<GitHubService>(message);
-                throw new Exception(message);
-            }
-
-            var hqUsernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
-            var hqMembers = hqUsernames.Select(hqUsername => hqUsername.ToLowerInvariant()).ToList();
-            return hqMembers;
-        }
-
-        internal List<TeamUmbraco> GetTeamMembers()
-        {
-            var content = File.ReadAllText(_teamUmbracoUsersFile);
-            var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
-            return teamUmbracoUsers;
-        }
 
         private GithubPullRequestModel GetPullRequest(OurUmbraco.Community.Models.Repository repository, string pullRequestNumber)
         {
@@ -73,12 +32,14 @@ namespace OurUmbraco.Our.Services
 
         public GithubPullRequestComment GetFirstTeamComment(OurUmbraco.Community.Models.Repository repository, string pullRequestNumber)
         {
+            var gitHubService = new GitHubService();
+
             GithubPullRequestComment firstTeamCommment = null;
             var pr = GetPullRequest(repository, pullRequestNumber);
 
             if (pr != null)
             {
-                var users = GetTeam(repository.Slug).Members.Select(x => x.ToLower());
+                var users = gitHubService.GetTeam(repository.Slug).Members.Select(x => x.ToLower());
                 var foundComment = pr.Comments.OrderBy(x => x.created_at).FirstOrDefault(x => users.Contains(x.user.Login.ToLower()));
                 if (foundComment != null)
                     firstTeamCommment = foundComment;
@@ -91,7 +52,9 @@ namespace OurUmbraco.Our.Services
         {
             var content = File.ReadAllText(_jsonPath);
             var pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content).Where(x => x.Repository == repository);
-            var hqList = File.ReadAllText(_hqUsersFile).Split('\n');
+            var gitHubService = new GitHubService();
+            var hqList = gitHubService.GetHqMembers();
+
             var pullsNonHq = new List<GithubPullRequestModel>();
             foreach (var pull in pulls)
             {

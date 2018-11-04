@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace OurUmbraco.Our.Models
+namespace OurUmbraco.Community.Models
 {
     public class TeamUmbraco
     {

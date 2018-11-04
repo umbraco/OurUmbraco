@@ -16,6 +16,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
+using OurUmbraco.Community.Models;
+using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
 using RestSharp;
 using Skybrud.Essentials.Json;
@@ -42,6 +44,47 @@ namespace OurUmbraco.Community.GitHub
 
         private static readonly object Lock = new object();
         public static bool IsLocked { get; set; }
+
+        private readonly string _hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
+        private readonly string _teamUmbracoUsersFile = HostingEnvironment.MapPath("~/Config/TeamUmbraco.json");
+
+        public TeamUmbraco GetTeam(string repository)
+        {
+            var teamUmbraco = new TeamUmbraco();
+            var usernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
+
+            var content = File.ReadAllText(_teamUmbracoUsersFile);
+            var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
+            var team = teamUmbracoUsers.FirstOrDefault(x => x.TeamName == repository);
+            if (team != null)
+            {
+                team.Members.AddRange(usernames);
+                teamUmbraco = team;
+            }
+
+            return teamUmbraco;
+        }
+
+        public List<string> GetHqMembers()
+        {
+            if (!File.Exists(_hqUsersFile))
+            {
+                var message = $"Config file was not found: {_hqUsersFile}";
+                LogHelper.Debug<GitHubService>(message);
+                throw new Exception(message);
+            }
+
+            var hqUsernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
+            var hqMembers = hqUsernames.Select(hqUsername => hqUsername.ToLowerInvariant()).ToList();
+            return hqMembers;
+        }
+
+        public List<TeamUmbraco> GetTeamMembers()
+        {
+            var content = File.ReadAllText(_teamUmbracoUsersFile);
+            var teamUmbracoUsers = JsonConvert.DeserializeObject<List<TeamUmbraco>>(content);
+            return teamUmbracoUsers;
+        }
 
         public List<Label> RequiredLabels()
         {
@@ -590,8 +633,7 @@ namespace OurUmbraco.Community.GitHub
             // Initialize a new StringBuilder for logging/testing purposes
             var stringBuilder = new StringBuilder();
 
-            var pullRequestService = new PullRequestService();
-            var logins = pullRequestService.GetHqMembers();
+            var logins = GetHqMembers();
 
             // A dictionary for the response of each repository
             var responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();

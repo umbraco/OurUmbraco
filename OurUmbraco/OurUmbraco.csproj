@@ -499,7 +499,7 @@
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
-    <Compile Include="Our\Models\TeamUmbraco.cs" />
+    <Compile Include="Community\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />

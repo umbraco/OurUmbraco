@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Web.Hosting;
 using Newtonsoft.Json;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
 
 namespace OurUmbraco.Our.Services
@@ -34,7 +35,7 @@ namespace OurUmbraco.Our.Services
                 }
             };
 
-            var pullRequestService = new PullRequestService();
+            var pullRequestService = new GitHubService();
             var hqMembers = pullRequestService.GetHqMembers();
             var teamMembers = pullRequestService.GetTeamMembers();
 
@@ -118,7 +119,7 @@ namespace OurUmbraco.Our.Services
 
             return openIssues;
         }
-
+        
         public enum CategoryKey
         {
             NoReply,
