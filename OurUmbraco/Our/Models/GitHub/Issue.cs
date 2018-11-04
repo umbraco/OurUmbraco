@@ -5,9 +5,6 @@ namespace OurUmbraco.Our.Models.GitHub
 {
     public class Issue
     {
-        [JsonProperty("repositoryName")]
-        public string RepositoryName { get; set; }
-
         [JsonProperty("html_url")]
         public string Link { get; set; }
 
@@ -48,8 +45,10 @@ namespace OurUmbraco.Our.Models.GitHub
         public Comments[] Comments { get; set; }
 
         // Custom properties
-        
-        public bool HasPrTeamComment { get; set; }
+
+        public string RepositoryName { get; set; }
+
+        public DateTime? FirstPrTeamOrHqComment { get; set; }
 
         // Note: leaving the other properties commented out in case we need them later
 
