@@ -33,17 +33,6 @@
         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
 
-    <section class="stats">
-        <div class="container">
-            <div class="row">
-                <h5>Issues: created and closed</h5>
-                <div class="col-md-12">
-                    <div id="GroupedIssues" class="chart"></div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
 
     <h1>Issue tracker status - @totalIssues open issues</h1>
     <section>
@@ -92,7 +81,7 @@
                                                 }
                                             }
                                             <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
-                                                @Html.RenderTimestamp(issue.CreateDateTime)<br/>
+                                                @Html.RenderTimestamp(issue.CreateDateTime)<br />
                                                 Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.
                                             </span>
                                         </small>
@@ -119,6 +108,18 @@
             </div>
         </div>
     </section>
+
+    <section class="stats">
+        <div class="container">
+            <div class="row">
+                <h5>Issues: created and closed</h5>
+                <div class="col-md-12">
+                    <div id="GroupedIssues" class="chart"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
 </div>
 
 <script>

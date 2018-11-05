@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Web.Http;
 using GitterSharp.Model;
+using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
 using Umbraco.Web.WebApi;
@@ -34,7 +35,7 @@ namespace OurUmbraco.Our.Api
                 .ToDictionary(x => x.Key, x => x.ToList());
 
             var groupedIssues = new List<IssuesInPeriod>();
-            
+
             foreach (var issuesInPeriod in issues)
             {
                 var period = $"{issuesInPeriod.Key.Year}{issuesInPeriod.Key.Month:00}";
@@ -43,7 +44,9 @@ namespace OurUmbraco.Our.Api
                 {
                     MonthYear = period,
                     GroupName = groupName,
-                    //AllIssueClosingTimesInHours = "",
+                    AllIssueClosingTimesInHours = string.Empty,
+                    IssueAverageClosingTimeInHours = 0,
+                    IssueMedianClosingTimeInHours = 0,
                     //AllIssueFirstCommentTimesInHours = "",
                     NumberClosed = 0,
                     NumberOpen = 0,
@@ -57,19 +60,38 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in allCommunityIssues)
                 {
-                    if(issue.CreateDateTime <= periodLastDay && issue.State != "closed")
+                    if (issue.CreateDateTime <= periodLastDay && issue.State != "closed")
                         issuesList.NumberOpen = issuesList.NumberOpen + 1;
                 }
 
+                var allClosingTimesInHours = new List<double>();
                 foreach (var issue in issuesInPeriod.Value)
                 {
-                    if (issue.State == "closed" && issue.ClosedDateTime >= periodFirstDay && issue.ClosedDateTime <= periodLastDay)
+                    if (issue.State == "closed" && issue.ClosedDateTime.HasValue)
+                    {
+                        var createDateTime = issue.CreateDateTime;
+                        var closedDateTime = issue.ClosedDateTime.Value;
+
+                        if (closedDateTime < periodFirstDay || closedDateTime > periodLastDay)
+                            continue;
+
                         issuesList.NumberClosed = issuesList.NumberClosed + 1;
+
+                        var hoursOpen = createDateTime.BusinessHoursUntil(closedDateTime);
+                        allClosingTimesInHours.Add(hoursOpen);
+                    }
                 }
-                
+
+                issuesList.AllIssueClosingTimesInHours = string.Join(",", allClosingTimesInHours);
+                if (allClosingTimesInHours.Any())
+                {
+                    issuesList.IssueAverageClosingTimeInHours = allClosingTimesInHours.Average();
+                    issuesList.IssueMedianClosingTimeInHours = allClosingTimesInHours.Median();
+                }
+
                 groupedIssues.Add(issuesList);
             }
-            
+
             //foreach (var issuesInPeriod in issues)
             //{
             //    foreach (var issue in issuesInPeriod.Value)

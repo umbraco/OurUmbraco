@@ -32,10 +32,10 @@ namespace OurUmbraco.Our.Extensions
         public static double BusinessDaysSince(this DateTime fromDate)
         {
             var toDate = DateTime.Now;
-            return BusinessDaysBetween(fromDate, toDate);
+            return fromDate.BusinessDaysUntil(toDate);
         }
 
-        private static double BusinessDaysBetween(DateTime fromDate, DateTime toDate)
+        public static double BusinessDaysUntil(this DateTime fromDate, DateTime toDate)
         {
             var businessDays = new List<DateTime>();
             for (var date = fromDate; date <= toDate; date = date.AddDays(1))
@@ -47,6 +47,34 @@ namespace OurUmbraco.Our.Extensions
             }
 
             return businessDays.Count;
+        }
+
+        public static bool IsBusinessDay(this DateTime date)
+        {
+            return DateSystem.IsPublicHoliday(date, CountryCode.DK) == false && DateSystem.IsWeekend(date, CountryCode.DK) == false;
+        }
+
+        public static double BusinessHoursUntil(this DateTime fromDateTime, DateTime toDateTime)
+        {
+            double hoursOpen = 0;
+            if (fromDateTime.IsBusinessDay())
+            {
+                var dayEndTime = new DateTime(fromDateTime.Year, fromDateTime.Month, fromDateTime.Day, 23, 59, 59);
+                hoursOpen = hoursOpen + (dayEndTime - fromDateTime).TotalHours;
+            }
+
+            if (toDateTime.IsBusinessDay())
+            {
+                var dayStartTime = new DateTime(toDateTime.Year, toDateTime.Month, toDateTime.Day, 0, 0, 0);
+                hoursOpen = hoursOpen + (toDateTime - dayStartTime).TotalHours;
+            }
+
+            // We've already added the hours of the opening day and the close day, so calculate the days excluding those days
+            var startFullDay = DateTime.Parse(fromDateTime.AddDays(1).ToString("yyyy MM dd 00:00:00"));
+            var endFullDay = DateTime.Parse(toDateTime.AddDays(-1).ToString("yyyy MM dd 23:59:59"));
+            var businessDaysOpen = startFullDay.BusinessDaysUntil(endFullDay);
+            hoursOpen = Math.Round(hoursOpen + (businessDaysOpen * 24), 0);
+            return hoursOpen;
         }
     }
 }

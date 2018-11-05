@@ -39,5 +39,8 @@
         /// For example: "12,293" means that there were two issues where the first comment came in after for 12 and 293 hours
         /// </summary>
         public string AllIssueFirstCommentTimesInHours { get; set; }
+
+        public double IssueAverageClosingTimeInHours { get; set; }
+        public double IssueMedianClosingTimeInHours { get; set; }
     }
 }
