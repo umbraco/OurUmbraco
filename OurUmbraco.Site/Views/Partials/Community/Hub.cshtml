@@ -1,8 +1,5 @@
-﻿@using System.Web.Hosting
-@using OurUmbraco.Community.GitHub
+﻿@using OurUmbraco.Community.GitHub
 @using OurUmbraco.Our.Models
-@using OurUmbraco.Our.Services
-@using File = System.IO.File
 @inherits OurUmbracoTemplatePage
 
 <style type="text/css">
@@ -51,9 +48,8 @@
                         <ul>
                             @{
                                 var gitHubService = new GitHubService();
-                                var pullRequestService = new PullRequestService();
                                 var pullRequestMembers = gitHubService.MatchPullsToMembers();
-                                var logins = pullRequestService.GetHqMembers();
+                                var logins = gitHubService.GetHqMembers();
                                 
                                 var filteredMembers = pullRequestMembers
                                     .Where(x => logins.Contains(x.GitHubUsername.ToLowerInvariant()) == false)
