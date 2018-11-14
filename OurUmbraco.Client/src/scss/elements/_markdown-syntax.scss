@@ -490,7 +490,7 @@
 }
 
 
-.highlight {
+.markdown-syntax .highlight {
 
     &.csharp {
         color: #333;
@@ -507,13 +507,14 @@
         color: #333;
         font-size: 12px;
         line-height: 16px;
-        .cdata { color: #df5000; }
-        .cdatavalue { color: #df5000; }
-        .element { color: #63a35c; }
-        .attribute { color: #795da3; }
-        .string { color: #df5000; }
-        .quot { color: #df5000; }
-        .comment { color: #969896; }
+        pre { color: #858585; }
+        .cdata { color: #ce9178; }
+        .cdatavalue { color: #ce9178; }
+        .element { color: #569cd6; }
+        .attribute { color: #8cdcfe; }
+        .string { color: #ce9178; }
+        .quot { color: #ce9178; }
+        .comment { color: #6a9955; }
     }
     
     &.javascript {
