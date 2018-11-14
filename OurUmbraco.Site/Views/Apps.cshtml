@@ -3,7 +3,7 @@
 @inherits UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
-    if (Members.IsTeamUmbraco() == false)
+    if (Members.IsHq() == false)
     {
         Response.Redirect("/");
     }
