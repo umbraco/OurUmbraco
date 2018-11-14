@@ -15,6 +15,9 @@ namespace OurUmbraco.Forum.Extensions
         /* Core member */
         public static int Karma(this IPublishedContent member)
         {
+            if (member == null || member.HasProperty("reputationCurrent") == false)
+                return 0;
+
             return member.GetPropertyValue<int>("reputationCurrent");
         }
 

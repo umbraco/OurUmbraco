@@ -1,0 +1,102 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Services
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    if (Members.IsTeamUmbraco() == false)
+    {
+        Response.Redirect("/");
+    }
+    var packagesService = new PackagesService();
+    var data = packagesService.GetPackageStatisticsData();
+}
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
+
+    <h1>Packages data</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="overview">
+                        <tr>
+                            <td nowrap><strong>Name</strong></td>
+                            <td nowrap><strong>Owner</strong></td>
+                            <td nowrap><strong>Created</strong></td>
+                            <td nowrap><strong>Updated</strong></td>
+                            <td nowrap><strong>Version</strong></td>
+                            <td nowrap><strong>Compatibility</strong></td>
+                            <td nowrap><strong>License</strong></td>
+                            <td nowrap><strong>Documentation</strong></td>
+                            <td nowrap><strong>Votes</strong></td>
+                            <td nowrap><strong>Downloads</strong></td>
+                        </tr>
+                        @foreach (var package in data)
+                        {
+                            <tr>
+                                <td>@package.Name</td>
+                                <td nowrap>@package.Owner</td>
+                                <td nowrap>@package.Created</td>
+                                <td nowrap>@package.Updated</td>
+                                <td nowrap>@package.Version</td>
+                                <td nowrap>@package.Compatibility</td>
+                                <td nowrap>@package.License</td>
+                                <td nowrap>@package.HasDocumentation</td>
+                                <td nowrap>@package.Votes</td>
+                                <td nowrap>@package.Downloads</td>
+                            </tr>                            
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<style type="text/css">
+    .page, .container {
+        max-width: none;
+    }
+
+    .overview {
+        width: 1800px;
+    }
+    .overview td {
+        font-size: 14px;
+        vertical-align: top;
+        padding: 6px 6px;
+    }
+
+    .overview td img {
+        margin: 0;
+        max-width: none;
+    }
+
+    .overview td a {
+        color: #FF6E00;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+    .overview td.author img {
+        width: 40px;
+        height: 40px;
+        margin-left: 2px;
+    }
+
+    .overview td.assignees a {
+        float: left;
+    }
+
+    .overview td.assignees img {
+        width: 20px;
+        height: 20px;
+    }
+
+    .overview small, .overview small.comment {
+        font-size: 12px;
+    }
+</style>

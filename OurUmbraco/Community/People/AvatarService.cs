@@ -132,21 +132,28 @@ namespace OurUmbraco.Community.People
 
         internal string GenerateIdenticon(IPublishedContent memberContent)
         {
-            var memberPublishedContent = (MemberPublishedContent)memberContent;
-            var emailHash = CreateMd5Hash(memberPublishedContent.Email);
+            var avatarPath = string.Empty;
+            if (memberContent != null)
+            {
+                var memberPublishedContent = (MemberPublishedContent) memberContent;
+                if (memberPublishedContent != null && memberPublishedContent.Email != null)
+                {
+                    avatarPath = $"/media/avatar/{memberPublishedContent.Id}.png";
+                    var emailHash = CreateMd5Hash(memberPublishedContent.Email);
 
-            var avatarPath = $"/media/avatar/{memberPublishedContent.Id}.png";
-            var savePath = HostingEnvironment.MapPath($"~{avatarPath}");
+                    var savePath = HostingEnvironment.MapPath($"~{avatarPath}");
 
-            if (savePath == null)
-                throw new InvalidOperationException();
+                    if (savePath == null)
+                        throw new InvalidOperationException();
 
-            if (System.IO.File.Exists(savePath))
-                return avatarPath;
+                    if (System.IO.File.Exists(savePath))
+                        return avatarPath;
 
-            var identiconGenerator = GetIdenticonGenerator();
-            using (var output = identiconGenerator.Create(emailHash))
-                output.Save(savePath, ImageFormat.Png);
+                    var identiconGenerator = GetIdenticonGenerator();
+                    using (var output = identiconGenerator.Create(emailHash))
+                        output.Save(savePath, ImageFormat.Png);
+                }
+            }
 
             return avatarPath;
         }

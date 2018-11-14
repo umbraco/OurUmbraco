@@ -691,6 +691,7 @@
     <Compile Include="Our\SecureHasher.cs" />
     <Compile Include="Our\Services\PullRequestService.cs" />
     <Compile Include="Our\Services\ReleasesService.cs" />
+    <Compile Include="Our\Services\PackagesService.cs" />
     <Compile Include="Our\Services\RepositoryManagementService.cs" />
     <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
