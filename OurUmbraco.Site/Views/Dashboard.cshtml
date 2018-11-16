@@ -1,6 +1,7 @@
 ﻿@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
+@using System.Globalization
 @inherits UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
@@ -16,7 +17,7 @@
     {
         totalIssues = totalIssues + categories.Issues.Count;
     }
-    
+
 
     var fromMonth = DateTime.Now.AddYears(-1).Month;
     var fromYear = DateTime.Now.AddYears(-1).Year;
@@ -41,64 +42,58 @@
                 <div class="col-md-12">
                     @foreach (var category in categorizedIssues)
                     {
-                        <h5>@category.CategoryDescription (@category.Issues.Count issues)</h5>
                         <table class="overview">
                             <tr>
-                                <td nowrap><strong>#</strong></td>
+                                <td colspan="2"><h5>@category.CategoryDescription (@category.Issues.Count issues)</h5></td>
+                            </tr>
+                            <tr>
                                 <td nowrap><strong>Author</strong></td>
                                 <td nowrap><strong>Item</strong></td>
-                                <td nowrap><strong>Last update</strong></td>
-                                <td nowrap><strong>State</strong></td>
-                                <td nowrap><strong>Comments</strong></td>
-                                <td nowrap><strong>Replies by PR Team</strong></td>
-                                <td nowrap><strong>Assignees</strong></td>
                             </tr>
 
                             @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
                             {
                                 <tr>
-                                    <td nowrap>
-                                        <a href="@issue.Link" target="_blank">@issue.Number</a><br />
-                                        <small class="comment">@issue.RepositoryName</small>
-                                    </td>
-                                    <td nowrap class="author">
+                                    <td class="author">
                                         <a href="https://github.com/@issue.User.Login" target="_blank">
                                             <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
                                         </a>
                                     </td>
                                     <td>
-                                        <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Title</a><br />
-                                        <small>
-                                            @{
-                                                var dateCssClass = string.Empty;
-                                                var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
-                                            }
-                                            @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
-                                            {
-                                                if (businessDays > 2)
-                                                {
-                                                    dateCssClass = "error";
+                                        <div class="issue">
+                                            <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Number @issue.Title</a><br />
+                                            <small class="comment">@issue.RepositoryName</small><br />
+                                            <small>
+                                                @{
+                                                    var dateCssClass = string.Empty;
+                                                    var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
                                                 }
+                                                @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
+                                                {
+                                                    if (businessDays > 2)
+                                                    {
+                                                        dateCssClass = "error";
+                                                    }
+                                                }
+                                                <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
+                                                    <span title="Created: @issue.CreateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) | Updated: @issue.UpdateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.</span>
+                                                </span>
+                                            </small>
+                                        </div>
+                                        <div class="assignees">
+                                            @foreach (var assignee in issue.Assignees)
+                                            {
+                                                <a href="https://github.com/@assignee.Login" target="_blank">
+                                                    <img src="@assignee.AvatarUrl" title="Assigned to @assignee.Login" />
+                                                </a>
                                             }
-                                            <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
-                                                @Html.RenderTimestamp(issue.CreateDateTime)<br />
-                                                Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.
-                                            </span>
-                                        </small>
-                                    </td>
-                                    <td nowrap>
-                                        @Html.RenderTimestamp(issue.UpdateDateTime, multiline: true)
-                                    </td>
-                                    <td><span class="label label-warning">@issue.State</span></td>
-                                    <td>@issue.CommentCount</td>
-                                    <td>---</td>
-                                    <td class="assignees">
-                                        @foreach (var assignee in issue.Assignees)
-                                        {
-                                            <a href="https://github.com/@assignee.Login" target="_blank">
-                                                <img src="@assignee.AvatarUrl" title="@assignee.Login" />
-                                            </a>
-                                        }
+                                        </div>
+                                        <div class="labels">
+                                            @foreach (var label in issue.Labels)
+                                            {
+                                                <span class="label" style="background-color: #@label.Color">@label.Name</span>
+                                            }
+                                        </div>
                                     </td>
                                 </tr>
                             }
@@ -153,7 +148,7 @@
             prsCreated.dataFields.categoryX = "GroupName";
             prsCreated.dataFields.valueY = "NumberCreated";
             prsCreated.stacked = false;
-            
+
             var prsCreatedColumnTemplate = prsCreated.columns.template;
             prsCreatedColumnTemplate.width = am4core.percent(80);
             prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
@@ -162,6 +157,12 @@
 <style type="text/css">
     .page, .container {
         max-width: none;
+    }
+
+    table.overview {
+        float: left;
+        width: 300px;
+        margin-right: 6px;
     }
 
     .overview td {
@@ -187,17 +188,36 @@
             margin-left: 2px;
         }
 
-        .overview td.assignees a {
+        .overview td>div.issue {
             float: left;
+            width: 85%;
         }
 
-        .overview td.assignees img {
+        .overview td>div.assignees {
+            float: left;
+            width: 15%;
+            text-align: right;
+        }
+        
+        .overview td>div.assignees img {
             width: 20px;
             height: 20px;
         }
 
+        .overview td > div.labels {
+            float: left;
+            width: 100%;
+            margin: 2px;
+        }
+
+        .overview span.label {
+            padding: 4px;
+            font-size: 10px;
+            border-radius: 2px;
+        }
+
     .overview small, .overview small.comment {
-        font-size: 12px;
+        font-size: 10px;
     }
 
     span.error {

@@ -44,6 +44,9 @@ namespace OurUmbraco.Our.Models.GitHub
         [JsonProperty("_comments")]
         public Comments[] Comments { get; set; }
 
+        [JsonProperty("events")]
+        public Event[] Events { get; set; }
+
         // Custom properties
 
         public string RepositoryName { get; set; }

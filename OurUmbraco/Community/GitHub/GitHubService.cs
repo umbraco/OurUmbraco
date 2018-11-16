@@ -838,17 +838,20 @@ namespace OurUmbraco.Community.GitHub
 
                         string issuesFile;
                         string issuesCommentFile;
+                        string issuesEventsFile;
                         string issuesCombinedFile;
                         if (responseIsIssue)
                         {
                             issuesFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.json");
                             issuesCommentFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.comments.json");
+                            issuesEventsFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.events.json");
                             issuesCombinedFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/{response.Number}.issue.combined.json");
                         }
                         else
                         {
                             issuesFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.json");
                             issuesCommentFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.comments.json");
+                            issuesEventsFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.events.json");
                             issuesCombinedFile = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.combined.json");
                         }
 
@@ -857,11 +860,13 @@ namespace OurUmbraco.Community.GitHub
 
                         JsonUtils.SaveJsonObject(issuesFile, response);
 
-                        // Fetch comments if the local JSON file is older than the last update time of the issue
+                        // Fetch comments and events if the local JSON file is older than the last update time of the issue
                         JArray comments;
+                        JArray events;
                         if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
                         {
                             comments = JsonUtils.LoadJsonArray(issuesCommentFile);
+                            events = JsonUtils.LoadJsonArray(issuesEventsFile);
                         }
                         else
                         {
@@ -872,12 +877,21 @@ namespace OurUmbraco.Community.GitHub
 
                             comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
                             JsonUtils.SaveJsonArray(issuesCommentFile, comments);
+                            
+                            context.WriteLine($"Fetching events for issue {response.Number} {response.Title}");
+                            var issueEventssResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
+                            if (issueEventssResponse.StatusCode != HttpStatusCode.OK)
+                                throw new Exception($"Failed fetching events for issue #{response.Number} ({issueEventssResponse.StatusCode})");
+
+                            events = JsonUtils.ParseJsonArray(issueEventssResponse.Body);
+                            JsonUtils.SaveJsonArray(issuesEventsFile, events);
 
                             updated = true;
                         }
-
+                        
                         // Save a JSON file with all the combined data we have for the issue
                         response.JObject.Add("_comments", comments);
+                        response.JObject.Add("events", events);
                         JsonUtils.SaveJsonObject(issuesCombinedFile, response);
 
                         if (updated) localCount++;
