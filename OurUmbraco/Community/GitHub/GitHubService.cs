@@ -866,7 +866,6 @@ namespace OurUmbraco.Community.GitHub
                         if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
                         {
                             comments = JsonUtils.LoadJsonArray(issuesCommentFile);
-                            events = JsonUtils.LoadJsonArray(issuesEventsFile);
                         }
                         else
                         {
@@ -877,7 +876,16 @@ namespace OurUmbraco.Community.GitHub
 
                             comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
                             JsonUtils.SaveJsonArray(issuesCommentFile, comments);
-                            
+
+                            updated = true;
+                        }
+
+                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        {
+                            events = JsonUtils.LoadJsonArray(issuesEventsFile);
+                        }
+                        else
+                        {
                             context.WriteLine($"Fetching events for issue {response.Number} {response.Title}");
                             var issueEventssResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
                             if (issueEventssResponse.StatusCode != HttpStatusCode.OK)
@@ -885,10 +893,8 @@ namespace OurUmbraco.Community.GitHub
 
                             events = JsonUtils.ParseJsonArray(issueEventssResponse.Body);
                             JsonUtils.SaveJsonArray(issuesEventsFile, events);
-
-                            updated = true;
                         }
-                        
+
                         // Save a JSON file with all the combined data we have for the issue
                         response.JObject.Add("_comments", comments);
                         response.JObject.Add("events", events);
@@ -909,6 +915,7 @@ namespace OurUmbraco.Community.GitHub
             catch (Exception ex)
             {
                 context.WriteLine("Error while fetching issues", ex);
+                context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
             }
         }
     }
