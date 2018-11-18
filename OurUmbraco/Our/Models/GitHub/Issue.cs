@@ -53,6 +53,8 @@ namespace OurUmbraco.Our.Models.GitHub
 
         public DateTime? FirstPrTeamOrHqComment { get; set; }
 
+        public DateTime? InThisCategorySince { get; set; }
+
         // Note: leaving the other properties commented out in case we need them later
 
         //public string repository_url { get; set; }

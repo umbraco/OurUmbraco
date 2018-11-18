@@ -101,10 +101,13 @@ namespace OurUmbraco.Our.Services
                     var matchedLabel = false;
                     foreach (var label in item.Labels)
                     {
-                        if (label.Name != "community/pr")
+                        var labels = new[] { "community/pr" };
+                        if (labels.Contains(label.Name) == false)
                             continue;
 
                         matchedLabel = true;
+
+                        AddCategoryCreatedDate(item, label, labels);
                         var prPendingCategory = openIssues.First(x => x.CategoryKey == CategoryKey.PullRequestPending);
                         prPendingCategory.Issues.Add(item);
                     }
@@ -116,14 +119,19 @@ namespace OurUmbraco.Our.Services
 
                     foreach (var label in item.Labels)
                     {
-                        if (label.Name != "community/up-for-grabs" && label.Name != "up-for-grabs" && label.Name != "help wanted")
+                        var labels = new[] { "up-for-grabs", "community/up-for-grabs", "help wanted" };
+                        if (labels.Contains(label.Name) == false)
                             continue;
 
                         matchedLabel = true;
                         var upForGrabsCategory = openIssues.First(x => x.CategoryKey == CategoryKey.UpForGrabs);
                         // We're matching on several labels, so only add the item once in case there's multiple matches
                         if (upForGrabsCategory.Issues.Contains(item) == false)
+                        {
+                            AddCategoryCreatedDate(item, label, labels);
+
                             upForGrabsCategory.Issues.Add(item);
+                        }
                     }
 
                     // only go to the next item in the
@@ -132,11 +140,25 @@ namespace OurUmbraco.Our.Services
                         continue;
                 }
 
+                
                 var otherCategory = openIssues.First(x => x.CategoryKey == CategoryKey.Other);
                 otherCategory.Issues.Add(item);
             }
 
             return openIssues;
+        }
+
+        private static void AddCategoryCreatedDate(Issue item, Models.GitHub.Label label, string[] labelNames)
+        {
+            if (item.Events != null)
+            {
+                // Get the newest event where an "up for grabs" (etc) label was added
+                var labeledUpForGrabs = item.Events.OrderByDescending(x => x.CreateDateTime).ToList()
+                    .FirstOrDefault(x => x.Name == "labeled" && labelNames.Contains(x.Label.Name));
+
+                if (labeledUpForGrabs != null)
+                    item.InThisCategorySince = labeledUpForGrabs.CreateDateTime;
+            }
         }
 
         public enum CategoryKey

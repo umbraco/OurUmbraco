@@ -47,8 +47,8 @@
                                 <td colspan="2"><h5>@category.CategoryDescription (@category.Issues.Count issues)</h5></td>
                             </tr>
                             <tr>
-                                <td nowrap><strong>Author</strong></td>
-                                <td nowrap><strong>Item</strong></td>
+                                <td><strong>Author</strong></td>
+                                <td><strong>Item</strong></td>
                             </tr>
 
                             @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
@@ -77,6 +77,11 @@
                                                 }
                                                 <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
                                                     <span title="Created: @issue.CreateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) | Updated: @issue.UpdateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.</span>
+                                                    @if (issue.InThisCategorySince != null)
+                                                    {
+                                                        <br />
+                                                        <span title="Since: @issue.InThisCategorySince.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">In this category for ~@(issue.InThisCategorySince.Value.BusinessDaysSince()) business days.</span>
+                                                    }
                                                 </span>
                                             </small>
                                         </div>
