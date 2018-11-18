@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Http;
-using GitterSharp.Model;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
 using Umbraco.Web.WebApi;
-using String = Umbraco.Web.Media.EmbedProviders.Settings.String;
 
 namespace OurUmbraco.Our.Api
 {
@@ -27,7 +25,7 @@ namespace OurUmbraco.Our.Api
             var toDate = DateTime.Parse($"{toYear}-{toMonth}-{toDay} 23:59:59");
 
             var repoService = new RepositoryManagementService();
-            var allCommunityIssues = repoService.GetAllCommunityIssues().ToList();
+            var allCommunityIssues = repoService.GetAllCommunityIssues(false).ToList();
             var issues = allCommunityIssues
                 .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate)
                 .OrderBy(x => x.CreateDateTime)

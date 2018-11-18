@@ -6,15 +6,13 @@ using System.Web.Hosting;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
-using String = Umbraco.Web.Media.EmbedProviders.Settings.String;
-
 namespace OurUmbraco.Our.Services
 {
     public class RepositoryManagementService
     {
         private static readonly string IssuesBaseDirectory = HostingEnvironment.MapPath("~/App_Data/TEMP/GitHub/");
 
-        public List<Issue> GetAllCommunityIssues()
+        public List<Issue> GetAllCommunityIssues(bool pulls)
         {
             var issues = new List<Issue>();
 
@@ -27,6 +25,13 @@ namespace OurUmbraco.Our.Services
                 var directoryName = directory.Split('\\').Last();
                 var repositoryName = directoryName.Substring(directoryName.LastIndexOf("__", StringComparison.Ordinal) + 2);
                 var issuesDirectory = directory + "\\issues\\";
+
+                if (pulls)
+                    issuesDirectory = issuesDirectory + "\\pulls\\";
+
+                if (Directory.Exists(issuesDirectory) == false)
+                    continue;
+
                 var issueFiles = Directory.EnumerateFiles(issuesDirectory, "*.combined.json");
 
                 var reviewers = new List<string>();
@@ -60,9 +65,9 @@ namespace OurUmbraco.Our.Services
             return issues;
         }
 
-        public List<GitHubCategorizedIssues> GetAllOpenIssues()
+        public List<GitHubCategorizedIssues> GetAllOpenIssues(bool pulls)
         {
-            var allIssues = GetAllCommunityIssues();
+            var allIssues = GetAllCommunityIssues(pulls);
 
             var openIssues = new List<GitHubCategorizedIssues>
             {

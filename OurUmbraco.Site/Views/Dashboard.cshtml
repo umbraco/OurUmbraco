@@ -10,8 +10,16 @@
         Response.Redirect("/");
     }
 
+    var showPulls = false;
+    var showPullsQueryString = Request.QueryString["pulls"];
+    if (string.IsNullOrWhiteSpace(showPullsQueryString) == false)
+    {
+        showPulls = true;
+    }
+
     var repoManagementService = new RepositoryManagementService();
-    var categorizedIssues = repoManagementService.GetAllOpenIssues().OrderBy(x => x.SortOrder).ToList();
+    var categorizedIssues = repoManagementService.GetAllOpenIssues(showPulls).OrderBy(x => x.SortOrder).ToList();
+
     var totalIssues = 0;
     foreach (var categories in categorizedIssues)
     {
@@ -35,12 +43,19 @@
     </div>
 
 
-    <h1>Issue tracker status - @totalIssues open issues</h1>
+    @if (showPulls)
+    {
+        <h1>Pull requests status - @totalIssues open PRs</h1>
+    }
+    else
+    {
+        <h1>Issue tracker status - @totalIssues open issues</h1>
+    }
     <section>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
-                    @foreach (var category in categorizedIssues)
+                    @foreach (var category in categorizedIssues.Where(x => x.Issues.Any()))
                     {
                         <table class="overview">
                             <tr>
@@ -109,16 +124,19 @@
         </div>
     </section>
 
-    <section class="stats">
-        <div class="container">
-            <div class="row">
-                <h5>Issues: created and closed</h5>
-                <div class="col-md-12">
-                    <div id="GroupedIssues" class="chart"></div>
+    @if (showPulls == false)
+    {
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Issues: created and closed</h5>
+                    <div class="col-md-12">
+                        <div id="GroupedIssues" class="chart"></div>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    }
 
 </div>
 
