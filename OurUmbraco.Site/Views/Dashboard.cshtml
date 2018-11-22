@@ -12,7 +12,7 @@
 
     var showPulls = false;
     var showPullsQueryString = Request.QueryString["pulls"];
-    if (string.IsNullOrWhiteSpace(showPullsQueryString) == false)
+    if (string.IsNullOrWhiteSpace(showPullsQueryString) == false && showPullsQueryString == "true")
     {
         showPulls = true;
     }
@@ -42,6 +42,24 @@
         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
 
+    <h1>Filter</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <form method="get">
+                        <fieldset>
+                            <p>
+                                <input type="radio" id="pulls_issues" name="pulls" value="false" checked="@(!showPulls)" /><label for="pulls_issues"> Issues</label>
+                                <input type="radio" id="pulls_pulls" name="pulls" value="true" checked="@showPulls" /><label for="pulls_pulls"> Pull requests </label>
+                            </p>
+                        </fieldset>
+                        <input type="submit" class="button" value="Filter" />
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
 
     @if (showPulls)
     {
@@ -51,6 +69,8 @@
     {
         <h1>Issue tracker status - @totalIssues open issues</h1>
     }
+
+
     <section>
         <div class="container">
             <div class="row">
