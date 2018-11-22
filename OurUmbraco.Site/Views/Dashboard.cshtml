@@ -19,18 +19,27 @@
     }
 
     var repoManagementService = new RepositoryManagementService();
-    var categorizedIssues = repoManagementService.GetAllOpenIssues(showPulls).OrderBy(x => x.SortOrder).ToList();
+    var allOpenIssues = repoManagementService.GetAllOpenIssues(showPulls);
+
+    var repositories = allOpenIssues.SelectMany(x => x.Issues).Select(x => x.RepositoryName).Distinct().ToList();
+
+    var repoQuerystring = Request.QueryString["repository"];
+
+    List<RepositoryManagementService.GitHubCategorizedIssues> categorizedIssues = null;
+
+    if (string.IsNullOrWhiteSpace(repoQuerystring) == false)
+    {
+        allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.RepositoryName.InvariantEquals(repoQuerystring) == false));
+    }
+
+    categorizedIssues = allOpenIssues.OrderBy(x => x.SortOrder).ToList();
+
 
     var totalIssues = 0;
     foreach (var categories in categorizedIssues)
     {
         totalIssues = totalIssues + categories.Issues.Count;
     }
-
-    var repositories = categorizedIssues.SelectMany(x => x.Issues).Select(x => x.RepositoryName).Distinct();
-
-    var repoQuerystring = Request.QueryString["repository"];
-
 
     var fromMonth = DateTime.Now.AddYears(-1).Month;
     var fromYear = DateTime.Now.AddYears(-1).Year;
@@ -62,13 +71,13 @@
                         <fieldset>
                             <p>
                                 <select name="repository">
-                                    <option selected="" disabled="">Filter by repository</option>
+                                    <option value="">Filter by repository</option>
                                     @foreach (var repo in repositories)
                                     {
                                         <option value="@repo" selected="@(repoQuerystring == repo)">@repo</option>
                                     }
                                 </select>
-                                
+
                             </p>
                         </fieldset>
                         <input type="submit" class="button" value="Filter" />
@@ -248,21 +257,21 @@
             margin-left: 2px;
         }
 
-        .overview td>div.issue {
+        .overview td > div.issue {
             float: left;
             width: 85%;
         }
 
-        .overview td>div.assignees {
+        .overview td > div.assignees {
             float: left;
             width: 15%;
             text-align: right;
         }
-        
-        .overview td>div.assignees img {
-            width: 20px;
-            height: 20px;
-        }
+
+            .overview td > div.assignees img {
+                width: 20px;
+                height: 20px;
+            }
 
         .overview td > div.labels {
             float: left;
@@ -270,11 +279,11 @@
             margin: 2px;
         }
 
-        .overview span.label {
-            padding: 4px;
-            font-size: 10px;
-            border-radius: 2px;
-        }
+    .overview span.label {
+        padding: 4px;
+        font-size: 10px;
+        border-radius: 2px;
+    }
 
     .overview small, .overview small.comment {
         font-size: 10px;
