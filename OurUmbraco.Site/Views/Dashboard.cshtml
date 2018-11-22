@@ -1,4 +1,5 @@
-﻿@using OurUmbraco.Forum.Extensions
+﻿@using System.Activities.Debugger
+@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
 @using System.Globalization
@@ -26,6 +27,10 @@
         totalIssues = totalIssues + categories.Issues.Count;
     }
 
+    var repositories = categorizedIssues.SelectMany(x => x.Issues).Select(x => x.RepositoryName).Distinct();
+
+    var repoQuerystring = Request.QueryString["repository"];
+
 
     var fromMonth = DateTime.Now.AddYears(-1).Month;
     var fromYear = DateTime.Now.AddYears(-1).Year;
@@ -52,6 +57,18 @@
                             <p>
                                 <input type="radio" id="pulls_issues" name="pulls" value="false" checked="@(!showPulls)" /><label for="pulls_issues"> Issues</label>
                                 <input type="radio" id="pulls_pulls" name="pulls" value="true" checked="@showPulls" /><label for="pulls_pulls"> Pull requests </label>
+                            </p>
+                        </fieldset>
+                        <fieldset>
+                            <p>
+                                <select name="repository">
+                                    <option selected="" disabled="">Filter by repository</option>
+                                    @foreach (var repo in repositories)
+                                    {
+                                        <option value="@repo" selected="@(repoQuerystring == repo)">@repo</option>
+                                    }
+                                </select>
+                                
                             </p>
                         </fieldset>
                         <input type="submit" class="button" value="Filter" />
