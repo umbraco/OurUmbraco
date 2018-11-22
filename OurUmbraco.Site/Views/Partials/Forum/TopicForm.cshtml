@@ -88,7 +88,7 @@
             </div>
         </div>
     </div>
-    <span class="markdown-close icon-Page-down"></span>
+    <span class="markdown-close icon-Navigation-down"></span>
     <div class="draft">Draft</div>
 </div>
 
@@ -150,19 +150,18 @@
 
         <div class="actions">
             {{#isLoggedIn}}
-            <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
-                <i class="icon-Reply-arrow"></i><span>Reply</span>
-            </a>
-
-            <a href="#" class="edit-post" data-id="{{id}}" data-topic="{{topicId}}" data-controller="comment">
-                <i class="icon-Edit"></i><span>Edit</span>
-            </a>
+                <a href="#" data-topic="{{topicId}}" data-parent="{{id}}" data-controller="comment" class="forum-reply reply">
+                    <i class="icon-Reply-arrow"></i><span>Reply</span>
+                </a>
+                {{#canManageComment}}
+                <a href="#" class="edit-post" data-id="{{id}}" data-topic="{{topicId}}" data-controller="comment">
+                    <i class="icon-Edit"></i><span>Edit</span>
+                </a>
+                <a href="#" class="delete-reply" data-id="{{id}}">
+                    <i class="icon-Delete-key"></i><span>Delete post</span>
+                </a>
+                {{/canManageComment}}
             {{/isLoggedIn}}
-            {{#isCommentOwner}}
-            <a href="#" class="delete-reply" data-id="{{id}}">
-                <i class="icon-Delete-key"></i><span>Delete post</span>
-            </a>
-            {{/isCommentOwner}}
             <a href="#" class="copy-link" data-id="#{{id}}">
                 <i class="icon-Link"></i><span>Copy Link</span>
             </a>

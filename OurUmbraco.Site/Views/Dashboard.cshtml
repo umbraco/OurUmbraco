@@ -1,0 +1,279 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
+@using System.Globalization
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    if (Members.IsTeamUmbraco() == false)
+    {
+        Response.Redirect("/");
+    }
+
+    var showPulls = false;
+    var showPullsQueryString = Request.QueryString["pulls"];
+    if (string.IsNullOrWhiteSpace(showPullsQueryString) == false)
+    {
+        showPulls = true;
+    }
+
+    var repoManagementService = new RepositoryManagementService();
+    var categorizedIssues = repoManagementService.GetAllOpenIssues(showPulls).OrderBy(x => x.SortOrder).ToList();
+
+    var totalIssues = 0;
+    foreach (var categories in categorizedIssues)
+    {
+        totalIssues = totalIssues + categories.Issues.Count;
+    }
+
+
+    var fromMonth = DateTime.Now.AddYears(-1).Month;
+    var fromYear = DateTime.Now.AddYears(-1).Year;
+
+    var toMonth = DateTime.Now.Month;
+    var toYear = DateTime.Now.Year;
+}
+
+<script src="/scripts/amcharts/core.js"></script>
+<script src="/scripts/amcharts/charts.js"></script>
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
+
+
+    @if (showPulls)
+    {
+        <h1>Pull requests status - @totalIssues open PRs</h1>
+    }
+    else
+    {
+        <h1>Issue tracker status - @totalIssues open issues</h1>
+    }
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    @foreach (var category in categorizedIssues.Where(x => x.Issues.Any()))
+                    {
+                        <table class="overview">
+                            <tr>
+                                <td colspan="2"><h5>@category.CategoryDescription (@category.Issues.Count issues)</h5></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Author</strong></td>
+                                <td><strong>Item</strong></td>
+                            </tr>
+
+                            @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
+                            {
+                                <tr>
+                                    <td class="author">
+                                        <a href="https://github.com/@issue.User.Login" target="_blank">
+                                            <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <div class="issue">
+                                            <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Number @issue.Title</a><br />
+                                            <small class="comment">@issue.RepositoryName</small><br />
+                                            <small>
+                                                @{
+                                                    var dateCssClass = string.Empty;
+                                                    var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
+                                                }
+                                                @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
+                                                {
+                                                    if (businessDays > 2)
+                                                    {
+                                                        dateCssClass = "error";
+                                                    }
+                                                }
+                                                <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
+                                                    <span title="Created: @issue.CreateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) | Updated: @issue.UpdateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.</span>
+                                                    @if (issue.InThisCategorySince != null)
+                                                    {
+                                                        <br />
+                                                        <span title="Since: @issue.InThisCategorySince.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">In this category for ~@(issue.InThisCategorySince.Value.BusinessDaysSince()) business days.</span>
+                                                    }
+                                                </span>
+                                            </small>
+                                        </div>
+                                        <div class="assignees">
+                                            @foreach (var assignee in issue.Assignees)
+                                            {
+                                                <a href="https://github.com/@assignee.Login" target="_blank">
+                                                    <img src="@assignee.AvatarUrl" title="Assigned to @assignee.Login" />
+                                                </a>
+                                            }
+                                        </div>
+                                        <div class="labels">
+                                            @foreach (var label in issue.Labels)
+                                            {
+                                                <span class="label" style="background-color: #@label.Color">@label.Name</span>
+                                            }
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                        </table>
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+
+    @if (showPulls == false)
+    {
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Issues: created and closed</h5>
+                    <div class="col-md-12">
+                        <div id="GroupedIssues" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+</div>
+
+<script>
+       var groupedPrsChart = am4core.create("GroupedIssues", am4charts.XYChart);
+            groupedPrsChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)";
+
+            groupedPrsChart.scrollbarX = new am4core.Scrollbar();
+            groupedPrsChart.legend = new am4charts.Legend();
+            groupedPrsChart.colors.step = 2;
+
+            var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "GroupName";
+            categoryAxis.renderer.grid.template.location = 0;
+
+            var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.min = 0;
+            valueAxis.renderer.minWidth = 35;
+
+            var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsClosed.name = "Issues closed";
+            prsClosed.dataFields.categoryX = "GroupName";
+            prsClosed.dataFields.valueY = "NumberClosed";
+            prsClosed.stacked = true;
+
+            var prsClosedColumnTemplate = prsClosed.columns.template;
+            prsClosedColumnTemplate.width = am4core.percent(80);
+            prsClosedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+
+            var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsCreated.name = "Issues created";
+            prsCreated.dataFields.categoryX = "GroupName";
+            prsCreated.dataFields.valueY = "NumberCreated";
+            prsCreated.stacked = false;
+
+            var prsCreatedColumnTemplate = prsCreated.columns.template;
+            prsCreatedColumnTemplate.width = am4core.percent(80);
+            prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+</script>
+
+<style type="text/css">
+    .page, .container {
+        max-width: none;
+    }
+
+    table.overview {
+        float: left;
+        width: 300px;
+        margin-right: 6px;
+    }
+
+    .overview td {
+        font-size: 14px;
+        vertical-align: top;
+        padding: 6px 6px;
+    }
+
+        .overview td img {
+            margin: 0;
+            max-width: none;
+        }
+
+        .overview td a {
+            color: #FF6E00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        .overview td.author img {
+            width: 40px;
+            height: 40px;
+            margin-left: 2px;
+        }
+
+        .overview td>div.issue {
+            float: left;
+            width: 85%;
+        }
+
+        .overview td>div.assignees {
+            float: left;
+            width: 15%;
+            text-align: right;
+        }
+        
+        .overview td>div.assignees img {
+            width: 20px;
+            height: 20px;
+        }
+
+        .overview td > div.labels {
+            float: left;
+            width: 100%;
+            margin: 2px;
+        }
+
+        .overview span.label {
+            padding: 4px;
+            font-size: 10px;
+            border-radius: 2px;
+        }
+
+    .overview small, .overview small.comment {
+        font-size: 10px;
+    }
+
+    span.error {
+        color: red;
+    }
+
+
+    .gauge {
+        height: 250px;
+        width: 350px;
+    }
+
+    .chart {
+        height: 500px;
+        width: 100%;
+        clear: both;
+        display: block;
+    }
+
+    .center-block {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .stats {
+        height: 550px;
+        display: inline-block;
+        width: 100%;
+        clear: both;
+    }
+
+    #body {
+        margin-bottom: 50px;
+    }
+</style>

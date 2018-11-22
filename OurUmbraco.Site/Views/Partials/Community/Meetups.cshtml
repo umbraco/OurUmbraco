@@ -28,7 +28,7 @@
         distance = item.Event.HasVenue ? memberLocation.GetDistance(item.Event.Venue) : memberLocation.GetDistance(item.Group);
     }
 
-    <a href="@item.Event.Link" class="community-post">
+    <a href="@item.Event.Link" target="_blank" rel="noopener" class="community-post">
         @if (item.Group.GroupPhoto != null)
         {
             <div class="avatar">

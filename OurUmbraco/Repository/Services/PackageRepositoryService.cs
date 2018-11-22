@@ -189,7 +189,9 @@ namespace OurUmbraco.Repository.Services
         {
             if (content == null)
                 return null;
-            
+
+            var ownerId = content != null & content.HasProperty("owner") ? content.GetPropertyValue<int>("owner") : 0;
+            var openForCollab = content != null && content.HasProperty("openForCollab") ? content.GetPropertyValue<bool>("openForCollab", false) : false;
             return new Models.Package
             {
                 Category = content.Parent.Name,
@@ -201,7 +203,7 @@ namespace OurUmbraco.Repository.Services
                 Name = content.Name,
                 Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"), 154, 281),
                 LatestVersion = content.GetPropertyValue<string>("version"),
-                OwnerInfo = GetPackageOwnerInfo(content.GetPropertyValue<int>("owner"), content.GetPropertyValue<bool>("openForCollab", false), content.Id),
+                OwnerInfo = ownerId != 0 ? GetPackageOwnerInfo(ownerId, openForCollab, content.Id) : new PackageOwnerInfo(),
                 Url = string.Concat(BASE_URL, content.Url)
             };
         }
@@ -237,9 +239,22 @@ namespace OurUmbraco.Repository.Services
 
             var packageDetails = new PackageDetails(package)
             {
-                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => x.ToString(3)).ToArray(),
+                TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => {
+                    //ensure the version has consistent parts (major.minor.build)
+                    var version = x.Build >= 0 ? x : new System.Version(x.Major, x.Minor, 0);
+                    return version.ToString(3);
+                }).ToArray(),
                 Compatibility = GetPackageCompatibility(content),
-                StrictFileVersions = strictPackageFileVersions.Select(x => new PackageFileVersion {PackageVersion = x.PackageVersion.ToString(3), MinUmbracoVersion = x.MinUmbracoVersion.ToString(3), FileId = x.FileId}).ToList(),
+                StrictFileVersions = strictPackageFileVersions.Select(x => new PackageFileVersion
+                {
+                    PackageVersion = x.PackageVersion.Build >= 0 
+                        ? x.PackageVersion.ToString(3) 
+                        : new System.Version(x.PackageVersion.Major, x.PackageVersion.Minor, 0).ToString(3),
+                    MinUmbracoVersion = x.MinUmbracoVersion.Build >= 0 
+                        ? x.MinUmbracoVersion.ToString(3) 
+                        : new System.Version(x.MinUmbracoVersion.Major, x.MinUmbracoVersion.Minor, 0).ToString(3),
+                    FileId = x.FileId
+                }).ToList(),
                 NetVersion = content.GetPropertyValue<string>("dotNetVersion"),
                 LicenseName = content.GetPropertyValue<string>("licenseName"),
                 LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
@@ -408,10 +423,11 @@ namespace OurUmbraco.Repository.Services
             var avatarService = new AvatarService();
             var avatarPath = avatarService.GetMemberAvatar(owner);
             var avatar = $"{avatarPath}?width=200&height=200&mode=crop&upscale=true";
+            
             var ownerInfo = new PackageOwnerInfo
             {
-                Karma = owner.Karma(),
-                Owner = owner.Name,
+                Karma = owner?.Karma() ?? 0,
+                Owner = owner?.Name ?? "",
                 OwnerAvatar = avatar
             };
 

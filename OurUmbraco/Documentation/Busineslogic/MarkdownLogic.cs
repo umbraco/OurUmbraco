@@ -2,6 +2,7 @@
 using System.Text.RegularExpressions;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
+using Skybrud.SyntaxHighlighter.Markdig;
 
 
 namespace OurUmbraco.Documentation.Busineslogic
@@ -56,10 +57,12 @@ namespace OurUmbraco.Documentation.Busineslogic
                     .UseMathematics()
                     .UseMediaLinks()
                     .UsePipeTables()
+                    .UseYamlFrontMatter()
                     .UseListExtras()
                     .UseTaskLists()
                     .UseDiagrams()
                     .UseAutoLinks()
+                    .UseSyntaxHighlighter()
                     .Build();
 
                 var transform = Markdown.ToHtml(clean, pipeline);

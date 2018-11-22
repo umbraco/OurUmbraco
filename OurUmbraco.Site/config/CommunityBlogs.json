@@ -251,6 +251,15 @@
       "rss": "https://pstokes.co.uk/rss",
       "logo": "https://pstokes.co.uk/media/1017/img_2254-3.jpg",
       "memberId": 146507
+    },
+     {
+      "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
+      "checkTitles": false,
+      "title": "Owain Codes",
+      "url": "https://www.owain.codes/",
+      "rss": "https://www.owain.codes/blog/rss",
+      "logo": "https://www.owain.codes/media/1033/hoodie_front.png",
+      "memberId": 144571
     }
   ]
 }

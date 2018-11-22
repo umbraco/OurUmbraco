@@ -148,7 +148,7 @@ namespace OurUmbraco.Our.Controllers
                 string githubUsername = userResponse.Body.Login;
 
                 // Get a reference to the member searcher
-                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
 
                 // Initialize new search criteria for the GitHub username
                 ISearchCriteria criteria = searcher.CreateSearchCriteria();
@@ -280,7 +280,7 @@ namespace OurUmbraco.Our.Controllers
                 }
 
                 // Get a reference to the member searcher
-                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection[Constants.Examine.InternalMemberSearcher];
+                BaseSearchProvider searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
 
                 // Initialize new search criteria for the Twitter screen name
                 ISearchCriteria criteria = searcher.CreateSearchCriteria();

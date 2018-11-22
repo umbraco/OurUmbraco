@@ -20,7 +20,7 @@ namespace OurUmbraco.Our.Services
         {
             try
             {
-                const string subject = "Activate your account on our.umbraco.org";
+                const string subject = "Activate your account on our.umbraco.com";
 
                 var body = RenderPartial(
                     "Partials/Emails/ActivationEmailTemplate.cshtml",

@@ -42,7 +42,7 @@
             @Html.ValidationSummary(true)
 
             <fieldset>
-                <legend>Project Information</legend>
+                <legend>Package Information</legend>
                 <p>
                     @Html.LabelFor(m => m.Title)
                     @Html.TextBoxFor(m => m.Title)
@@ -56,19 +56,19 @@
             </fieldset>
 
             <fieldset>
-                <legend>Project Category</legend>
+                <legend>Package Category</legend>
                 <p>
-                    Please select a category this project would fit into<br/>
+                    Please select a category this package would fit into<br />
                     @Html.DropDownListFor(m => m.Category, Model.ProjectCategories)
                     @Html.ValidationMessageFor(m => m.Category)
-                    <br/>
+                    <br />
                     <small>This will help users find your package</small>
                 </p>
             </fieldset>
 
             <fieldset>
-                <legend>Project Description</legend>
-                <p>Be clear and to the point about what your project does. Provide simple examples of how to use your project. DO NOT ask for Karma Votes. If you mention Karma in your description we will instantly mark your project as SPAM.</p>
+                <legend>Package Description</legend>
+                <p>Be clear and to the point about what your package does. Provide simple examples of how to use your package. DO NOT ask for Karma Votes. If you mention Karma in your description we will instantly mark your package as SPAM.</p>
                 <p>
                     @Html.TextAreaFor(m => m.Description)
                 </p>
@@ -94,7 +94,7 @@
                     @Html.LabelFor(m => m.ProjectUrl)
                     @Html.TextBoxFor(m => m.ProjectUrl)
                     @Html.ValidationMessageFor(m => m.ProjectUrl)
-                    <small>If you have a project website somewhere else, (e.g. github.com) link to it here.</small>
+                    <small>If you have a package website somewhere else, (e.g. github.com) link to it here.</small>
                 </p>
                 <p>
                     @Html.LabelFor(m => m.DemonstrationUrl)
@@ -124,7 +124,7 @@
 
             <fieldset>
                 <legend>Analytics and tracking</legend>
-                <p>To best understand how your Project is performing, we suggest that you sign up to Google Analytics and track your project. All you need to do is enter your tracking code. We will pass you custom tracking events such as views, downloads etc</p>
+                <p>To best understand how your package is performing, we suggest that you sign up to Google Analytics and track your package. All you need to do is enter your tracking code. We will pass you custom tracking events such as views, downloads etc</p>
                 <p>
                     @Html.LabelFor(m => m.GoogleAnalyticsCode)
                     @Html.TextBoxFor(m => m.GoogleAnalyticsCode)
@@ -143,8 +143,8 @@
             </fieldset>
 
             <fieldset>
-                <legend>Project status</legend>
-                <p>Is this project still actively maintained?</p>
+                <legend>Package status</legend>
+                <p>Is this package still actively maintained?</p>
                 <p>
                     @Html.LabelFor(m => m.IsRetired)
                     @Html.CheckBoxFor(m => m.IsRetired)

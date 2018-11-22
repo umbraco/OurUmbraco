@@ -1,11 +1,275 @@
-﻿<div class="ourManagementDashboard" ng-controller="ourManagementController">
+﻿<div class="ourManagementDashboard" ng-controller="ourManagementController as vm">
     <h3>Documentation</h3>
-    <button ng-click="downloadDocumentation()">
+    <button type="button" ng-click="downloadDocumentation()">
         Download documentation
     </button>
+    <p>
+        {{vm.docsMessage}}<br />
+        <umb-load-indicator ng-if="vm.docsLoading"></umb-load-indicator>
+    </p>
 
-    <h3>YouTrack</h3>
-    <button ng-click="downloadYoutrackData()">
-        Download YouTrack data
+    <h3>Members - contrib / profile</h3>
+    <p>Here you can search for members to go to them in the members section or to add a contrib badge to their Our profile.<br />
+    <p>Search for a member Id or a part of a member's name, email address, twitter profile or github profile</p>
+    <input type="text" name="searchTerm" id="searchTerm" ng-model="vm.searchTerm" />
+    <button type="button" ng-click="findMember(vm.searchTerm)">
+        Find member
     </button>
+    <p ng-if="vm.memberSearchResults">
+        Choose a member from the search results:
+        <ul>
+            <li ng-click="selectMember(member.Key, member.Name, member.Id)" ng-repeat="member in vm.memberSearchResults">Select {{member.Name}} ({{member.Id}})</li>
+        </ul>
+    </p>
+
+    <p ng-if="vm.memberBackofficeUrl">
+        <a href="{{vm.memberBackofficeUrl}}" target="_blank">Go to member {{vm.memberName}} in the backoffice (opens in new tab)</a><br />
+        <a href="/member/{{vm.memberId}}" target="_blank">Go to the public profile of member {{vm.memberName}}  (opens in new tab)</a>
+        <br />
+        <button type="button" ng-click="addContribBadgeToMember(vm.memberId)">
+            Add contrib badge to {{vm.memberName}}
+        </button>
+        <br />
+    <p ng-if="vm.addBadgeMessage">{{vm.addBadgeMessage}}</p>
+    </p>
+
+    <h3>Our Statistics</h3>
+    <button type="button" ng-click="getOurMemberStatistics()">
+        Get Our member statistics data
+    </button>
+
+    <div ng-if="vm.ourMemberStats">
+        <p>Total number of members (non-spam): {{vm.ourMemberStats.TotalNonSpamMembers}}</p>
+        <p>Total number of members (non-spam with at least 1 login): {{vm.ourMemberStats.TotalNonSpamMembersWithLogin}}</p>
+        <p>Total number of blocked members: {{vm.ourMemberStats.TotalBlockedMembers}}</p>
+        <p>Total number of active members (earned karma at least once): {{vm.ourMemberStats.TotalMembersEarningKarma}}</p>
+        <p>Total number of members: {{vm.ourMemberStats.TotalMembers}}</p>
+    </div>
+    <br />
+
+    <h3>PR Statistics</h3>
+    <button type="button" ng-click="getPullRequestStatisticsCms()">
+        Get CMS PR statistics data
+    </button>
+    <br />
+
+    <div ng-if="vm.prStatsCms.length > 0">
+        <p>Total number of unique outside contributors: {{vm.totalNumberOfContributorsCms}}</p>
+
+        <table>
+            <tr>
+                <th>&nbsp;</th>
+                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsCms">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4)}}</th>
+            </tr>
+            <tr>
+                <td>Number of PRs created</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberCreated}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs merged</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberMerged}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs closed without merging</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberClosed}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs not merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberNotMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total number of open PRs</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.TotalNumberOpen}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of new contributors</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberOfNewContributors}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of active contributors in the past year</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.NumberOfActiveContributorsInPastYear}}
+                </td>
+            </tr>
+            <tr>
+                <td>Average number of hours to close PRs</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.AveragePullRequestClosingTimeInHours}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total number open after CG18</td>
+                <td ng-repeat="stat in vm.prStatsCms">
+                    {{stat.TotalNumberOpenAfterCodeGarden18}}
+                </td>
+            </tr>
+        </table>
+
+        <p>&nbsp;</p>
+    </div>
+
+    <button type="button" ng-click="getPullRequestStatisticsDocs()">
+        Get Documentation PR statistics data
+    </button>
+    <br />
+    <div ng-if="vm.prStatsDocs.length > 0">
+        <p>Total number of unique outside contributors: {{vm.totalNumberOfContributorsDocs}}</p>
+
+        <table>
+            <tr>
+                <th>&nbsp;</th>
+                <th style="white-space: nowrap;" ng-repeat="stat in vm.prStatsDocs">{{stat.MonthYear.substring(0, 4)}}-{{stat.MonthYear.substring(4)}}</th>
+            </tr>
+            <tr>
+                <td>Number of PRs created</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberCreated}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs merged</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberMerged}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of PRs closed without merging</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberClosed}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number PRs not merged within first 30 days</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberNotMergedInThirtyDays}}
+                </td>
+            </tr>
+            <tr>
+                <td>Total number of open PRs</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.TotalNumberOpen}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of new contributors</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberOfNewContributors}}
+                </td>
+            </tr>
+            <tr>
+                <td>Number of active contributors in the past year</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.NumberOfActiveContributorsInPastYear}}
+                </td>
+            </tr>
+            <tr>
+                <td>Average number of hours to close PRs</td>
+                <td ng-repeat="stat in vm.prStatsDocs">
+                    {{stat.AveragePullRequestClosingTimeInHours}}
+                </td>
+            </tr>
+        </table>
+
+        <p>&nbsp;</p>
+    </div>
+
+    <br />
+    <button type="button" ng-click="getGitHubLabelReport()">
+        Get GitHub Label report
+    </button>
+
+    <br />
+
+    <span ng-if="vm.gitHubLabelReport.length === 0">
+        <br />
+        No problems to report, labels look fine
+        <br />
+    </span>
+
+    <div ng-if="vm.gitHubLabelReport.length > 0">
+        <br />
+        <ul>
+            <li ng-repeat="label in vm.gitHubLabelReport">
+                Repository <a href="https://github.com/umbraco/{{label.Repository}}/labels" target="_blank">{{label.Repository}}</a> has the following problems:
+                <ul>
+                    <li ng-repeat="problem in label.NonCompliantLabels">
+                        Label <strong>'{{problem.Label.name}}'</strong> - {{problem.LabelProblem}}
+                    </li>
+                    <li ng-show="label.HasRequiredLabels === false">
+                        One or more required labels are missing or has the wrong color (see above)
+                    </li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <button type="button" ng-click="getGitHubCategoriesProjects()">
+        Get GitHub projects and categories
+    </button>
+
+    <div ng-if="vm.gitHubCategoriesProjects.Projects.length > 0" class="labels">
+        <br />
+        <ul>
+            <li ng-repeat="project in vm.gitHubCategoriesProjects.Projects">
+                Project <strong>'{{project.ProjectName}}'</strong> exists in repositories
+                <span ng-repeat="repository in project.Repositories">
+                    <a href="https://github.com/umbraco/{{repository}}/labels" target="_blank">{{repository}}</a><span class="list-comma">, </span>
+                </span>
+            </li>
+        </ul>
+    </div>
+
+    <div ng-if="vm.gitHubCategoriesProjects.Categories.length > 0" class="labels">
+        <br />
+        <ul>
+            <li ng-repeat="category in vm.gitHubCategoriesProjects.Categories">
+                Category <strong>'{{category.CategoryName}}'</strong> exists in repositories
+                <span ng-repeat="repository in category.Repositories">
+                    <a href="https://github.com/umbraco/{{repository}}/labels" target="_blank">{{repository}}</a><span class="list-comma">, </span>
+                </span>
+            </li>
+        </ul>
+    </div>
+    <br />
+
 </div>
+
+<style>
+    table, th, td, tr {
+        border: 1px solid black;
+    }
+
+    .umb-load-indicator {
+        display: inline-block;
+        left: 43px;
+        margin-top: 24px;
+    }
+
+    .labels span:last-child .list-comma {
+        display: none;
+    }
+</style>

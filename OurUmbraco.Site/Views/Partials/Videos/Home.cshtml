@@ -12,25 +12,23 @@
     var repo = new VideosService();
 
     if (Request.QueryString["force-update"] == "1" && Members.IsAdmin())
-    {
+    { 
         repo.UpdateVimeoVideos("umbraco");
     }
 
     var allVideos = repo.GetVimeoVideosFromDisk("umbraco").Where(x => x.HasTags).ToArray();
     var categories = repo.GroupVideosByCategoryAndYear(allVideos);
-
-    string baseUrl = Request.RawUrl.Split('?')[0];
-
-    string categoryName = Request.QueryString["category"];
-    string categoryYear = Request.QueryString["year"];
+    
+    var categoryName = Request.QueryString["category"];
+    var categoryYear = Request.QueryString["year"];
     
 
     IEnumerable<VimeoVideo> videos;
 
     VideosCategory selectedCategory = null;
-    int selectedYear = 0;
+    var selectedYear = 0;
 
-    if (String.IsNullOrWhiteSpace(categoryName))
+    if (string.IsNullOrWhiteSpace(categoryName))
     {
         videos = allVideos;
     }
@@ -63,10 +61,7 @@
     }
 
     // Count the total amount of videos matching the parameters
-    int videosCount = videos.Count();
-
-    var unhide = false;
-    bool.TryParse(ConfigurationManager.AppSettings["UnhideUpcomingFeatures"], out unhide);
+    var videosCount = videos.Count();
 }
 
 <div class="has-sidebar">
@@ -120,10 +115,6 @@
                         }
                     </ul>
                     <div class="community-content">
-                        @if (unhide == false)
-                        {
-                            <h1 style="color: red; margin-bottom: 20px;">Note: this is a WIP page, you can only see this because you have the admin role on Our, this page is not publicly available - no sharing yet please :-)</h1>
-                        }
                         <div class="videos-list">
                             <h1>Videos</h1>
                             <div class="videos-list-meta">
@@ -144,10 +135,18 @@
                                         <a href="@video.Link" target="_blank" rel="noopener"><strong>@video.Name</strong></a>
                                         <div class="videos-meta">
                                             @video.CreatedTime.ToString("MMM d, yyyy")
+                                            
                                             &ndash;
-                                            @video.Duration.TotalMinutes.ToString("N0") min
-                                            &ndash;
-                                            @video.Stats.Plays @(@video.Stats.Plays == 1 ? "play" : "plays")
+                                            @video.Duration.TotalMinutes.ToString("N0").PadLeft(2, '0'):@video.Duration.Seconds                                            
+
+                                            @if (video.Stats.Plays > 0)
+                                            {
+                                                <span>
+                                                    &ndash;
+                                                    @video.Stats.Plays @(@video.Stats.Plays == 1 ? "play" : "plays")
+                                                </span>
+                                            }
+
                                             @if (video.MetaData.Connections.Likes.Total > 0)
                                             {
                                                 <span>

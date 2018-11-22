@@ -488,3 +488,52 @@
     margin: 20px 0;
   }
 }
+
+
+.markdown-syntax .highlight {
+
+    &.csharp {
+        color: #333;
+        font-size: 12px;
+        line-height: 16px;
+        .identifier { color: #dcdcaa; }
+        .keyword { color: #569cd6; }
+        .comment { color: #6a9955; }
+        .string { color: #ce9178; }
+        .constant { color: #569cd6; }
+    }
+
+    &.xml {
+        color: #333;
+        font-size: 12px;
+        line-height: 16px;
+        pre { color: #858585; }
+        .cdata { color: #ce9178; }
+        .cdatavalue { color: #ce9178; }
+        .element { color: #569cd6; }
+        .attribute { color: #8cdcfe; }
+        .string { color: #ce9178; }
+        .quot { color: #ce9178; }
+        .comment { color: #6a9955; }
+    }
+    
+    &.javascript {
+        color: #333;
+        font-size: 12px;
+        line-height: 16px;
+        .keyword { color: #569cd6; }
+        .constant { color: #0086b3; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; }
+    }
+    
+    &.json {
+        color: #333;
+        font-size: 12px;
+        line-height: 16px;
+        .keyword { color: #a71d5d; }
+        .constant { color: #b5cea8; }
+        .string { color: #ce9178; }
+    }
+
+}

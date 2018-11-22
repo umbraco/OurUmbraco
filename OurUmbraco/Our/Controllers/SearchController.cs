@@ -11,7 +11,7 @@ namespace OurUmbraco.Our.Controllers
     public class SearchController : SurfaceController
     {
         [ChildActionOnly]
-        public ActionResult Render(string q, string cat = "", string order = "", int fid = 0, bool solved = false, bool replies = false)
+        public ActionResult Render(string q, string cat = "", string order = "", int fid = 0, bool solved = false, bool replies = false, int? v = null)
         {
             // If no search string specified, use a blank one to prevent null exceptions.
             if (string.IsNullOrEmpty(q))
@@ -22,7 +22,7 @@ namespace OurUmbraco.Our.Controllers
             if (q.Contains("999999.9'") || q.Contains("0x393133353134353632392e39"))
                 q = string.Empty;
 
-            var umbracoPage = UmbracoContext.PublishedContentRequest.PublishedContent;
+            var umbracoPage = this.CurrentPage;
 
             var nodeTypeAlias = cat;
             
@@ -42,8 +42,7 @@ namespace OurUmbraco.Our.Controllers
                 searchFilters.Filters.Add(new SearchFilter("parentId", fid));
                 filters.Add(searchFilters);
 
-                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-                var forum = umbracoHelper.ContentQuery.TypedContent(fid);
+                var forum = Umbraco.ContentQuery.TypedContent(fid);
                 var parentForum = forum.Parent;
                 forumName = forum.Name + " - " + parentForum.Name;
             }
@@ -67,6 +66,7 @@ namespace OurUmbraco.Our.Controllers
                 orderBy: order,
                 maxResults: 100,
                 nodeTypeAlias: nodeTypeAlias,
+                majorDocsVersion: v,
                 filters: filters);
 
             var results = ourSearcher.Search();

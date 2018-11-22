@@ -1,9 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Net;
 using System.Web;
 using Examine;
+using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
 using ImageProcessor.Web.HttpModules;
+using Lucene.Net.Analysis;
+using Lucene.Net.Analysis.Standard;
+using Lucene.Net.Documents;
 using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using OurUmbraco.Our.Controllers;
@@ -13,15 +18,24 @@ using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.CustomHandlers
 {
+
+    public class DocumentationAnalyzer : PerFieldAnalyzerWrapper
+    {
+        public DocumentationAnalyzer() : base(new StandardAnalyzer(Lucene.Net.Util.Version.LUCENE_29))
+        {
+            this.AddAnalyzer("__fullUrl", new WhitespaceAnalyzer());
+        }
+
+    }
+
     /// <summary>
     /// Main Application startup handler
     /// </summary>
     public class OurApplicationStartupHandler : ApplicationEventHandler
-    {        
+    {
         protected override void ApplicationStarted(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             BindExamineEvents();
-            ZipDownloader.OnFinish += ZipDownloader_OnFinish;
             ImageProcessingModule.ValidatingRequest += ImageProcessingModule_ValidatingRequest;
         }
 
@@ -42,7 +56,7 @@ namespace OurUmbraco.Our.CustomHandlers
         protected override void ApplicationStarting(UmbracoApplicationBase umbracoApplication, ApplicationContext applicationContext)
         {
             DefaultRenderMvcControllerResolver.Current.SetDefaultControllerType(typeof(OurUmbracoController));
-            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol = 
+            ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol =
                 SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
         }
 
@@ -51,7 +65,9 @@ namespace OurUmbraco.Our.CustomHandlers
             var projectIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             projectIndexer.GatheringNodeData += ProjectNodeIndexDataService.ProjectIndexer_GatheringNodeData;
             projectIndexer.DocumentWriting += ProjectNodeIndexDataService.ProjectIndexer_DocumentWriting;
-            
+            var documentationIndexer = (LuceneIndexer)ExamineManager.Instance.IndexProviderCollection["documentationIndexer"];
+            documentationIndexer.DocumentWriting += DocumentationIndexer_DocumentWriting;
+
             //handle errors for non-umbraco indexers
             ExamineManager.Instance.IndexProviderCollection["projectIndexer"].IndexingError += ExamineHelper.LogErrors;
             ExamineManager.Instance.IndexProviderCollection["documentationIndexer"].IndexingError += ExamineHelper.LogErrors;
@@ -59,18 +75,22 @@ namespace OurUmbraco.Our.CustomHandlers
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].IndexingError += ExamineHelper.LogErrors;
         }
 
-        /// <summary>
-        /// Whenever the github zip downloader completes and docs index is rebuilt
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        void ZipDownloader_OnFinish(object sender, FinishEventArgs e)
+        private void DocumentationIndexer_DocumentWriting(object sender, global::Examine.LuceneEngine.DocumentWritingEventArgs e)
         {
-            var indexer = ExamineManager.Instance.IndexProviderCollection[ExamineHelper.DocumentationIndexer];
+            //When document is writing we need to inject a field into the index for the url with a double underscore prefix as this will make it able to be searched
+            //get url field
+            if (e.Fields.ContainsKey("url"))
+            {
+                var urlField = e.Fields["url"];
 
-            //TODO: Fix this - we cannot "Rebuild" on a live site, because the entire index will be taken down/deleted and then recreated, if people
-            // are searching during this operation, YSODs will occur.
-            indexer.RebuildIndex();
+                if (!String.IsNullOrEmpty(urlField))
+                {
+                    var field = new Field("__fullUrl", urlField.ToLowerInvariant(), Field.Store.YES, Field.Index.ANALYZED, Field.TermVector.YES);
+                    e.Document.Add(field);
+
+                }
+            }
         }
+
     }
 }

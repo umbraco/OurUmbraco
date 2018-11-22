@@ -4,6 +4,13 @@
 	color: $color-text;
 	margin-top: 2rem;
 
+	.forum-thread-text{
+		width: 360px;
+		@media (max-width: $xs) {
+			width: 300px;
+		}
+	}
+
 	.member-details {
 		display: flex;
 		align-items: center;
@@ -34,9 +41,7 @@
 		}
 
 		a {
-			&:hover {
-				text-decoration: none;
-			}
+			text-decoration: none;
 		}
 
 

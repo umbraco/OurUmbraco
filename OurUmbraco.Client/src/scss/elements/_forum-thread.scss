@@ -253,6 +253,12 @@
 					@media (min-width: $md) {
 						font-size: .9rem;
 					}
+					@media(max-width: $xs)
+					{
+    					max-width: 15em;
+    					overflow: hidden;
+    					text-overflow: ellipsis;
+					}
 				}
 			}
 

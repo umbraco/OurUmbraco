@@ -31,7 +31,7 @@ namespace OurUmbraco.Documentation.Controllers
         /// A partial part of the documentation tree, that lists out folders
         /// This is used in the new Starter Kit in conjuction with 'Lessons'
         /// </returns>
-        public List<ZipDownloader.SiteMapItem> GetDocsForPath(string path, string userType, string allowedSections, string lang, string version)
+        public List<DocumentationUpdater.SiteMapItem> GetDocsForPath(string path, string userType, string allowedSections, string lang, string version)
         {
             //Ensure path is not null & empty
             if (string.IsNullOrEmpty(path))
@@ -46,7 +46,7 @@ namespace OurUmbraco.Documentation.Controllers
             }
             
             //Get the documentation Sitemap JS file that lives on disk everytime we fetch & unpack the markdown docs from GitHub
-            var docs = new ZipDownloader();
+            var docs = new DocumentationUpdater();
 
             //Note: For now the folder param is NOT the folder/subtree but where the JSON file is stored to build up this model
             var allDocs = docs.DocumentationSiteMap();
@@ -60,10 +60,10 @@ namespace OurUmbraco.Documentation.Controllers
             for (int i = 0; i < pathArray.Length; i++)
             {
                 var pathPart = "/" + string.Join("/", pathArray.Take(i + 1));
-                currentDirectory = currentDirectory.directories.First(x => x.path == pathPart);
+                currentDirectory = currentDirectory.Directories.First(x => x.Path == pathPart);
             }
 
-            return currentDirectory.directories.OrderBy(x=> x.sort).ToList();
+            return currentDirectory.Directories.OrderBy(x=> x.Sort).ToList();
         }
 
         /// <summary>
@@ -73,7 +73,7 @@ namespace OurUmbraco.Documentation.Controllers
         /// <returns></returns>
         public List<LessonStep> GetStepsForPath(string path)
         {
-            var docs = new ZipDownloader();
+            var docs = new DocumentationUpdater();
             var rootFolder = global::Umbraco.Core.IO.IOHelper.MapPath("/Documentation/" + path);
             var mdFiles = System.IO.Directory.GetFiles(rootFolder, "*.md");
 

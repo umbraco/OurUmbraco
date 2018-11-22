@@ -13,7 +13,7 @@
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 20;
-    var headline = orderMode == "createDate" ? "latest" : "most popular";
+    var headline = orderMode == "updateDate" ? "latest" : "most popular";
     if (version != null)
     {
         headline = "version " + version;
@@ -72,7 +72,7 @@
     //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
     //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);
     var searcher = new OurSearcher(term,
-        "project", examineOrder,
+        "project", null, examineOrder,
         filters: filters, maxResults: pageSize * page);
 
     var search = searcher.Search("projectSearcher");
@@ -94,8 +94,8 @@
     </p>
 }
 <div class="search-big">
-    <input type="search" class="project-search-input" required placeholder="Search for projects">
-    <label for="search">Search projects</label>
+    <input type="search" class="project-search-input" required placeholder="Search for packages">
+    <label for="search">Search packages</label>
 </div>
 @functions{
     public string GetField(IDictionary<string, string> fields, string field, string defaultVal = "")
@@ -127,15 +127,15 @@
             return "n/a";
 
         if (orderedVersions.Length == 1)
-            return orderedVersions.First() + "+";
+            return orderedVersions.First().ToString();
 
         if(orderedVersions.Min() == orderedVersions.Max())
-            return orderedVersions.Min() + "+";
+            return orderedVersions.Min().ToString();
 
         return orderedVersions.Min() + " - " + orderedVersions.Max();
     }
 }
-<h1>Browse @headline projects</h1>
+<h1>Browse @headline packages</h1>
 <script type="text/template" class="search-item-project">
     <div class="box">
         <div class="row">

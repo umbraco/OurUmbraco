@@ -1,0 +1,41 @@
+﻿@using Skybrud.Essentials.Strings.Extensions
+@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+
+    var isCommunityTextPage = Model.Content.AncestorOrSelf(2).DocumentTypeAlias == "communityHub";
+
+}
+
+@if (isCommunityTextPage)
+{
+    <div class="has-sidebar">
+        <div class="page-content">
+            <div id="overlay" class="overlay"></div>
+            @Html.Partial("~/Views/Partials/Community/Sidebar.cshtml")
+            <div class="main-area">
+                <div class="main-content">
+                    <div class="content-wrapper">
+                        <div id="body" class="page markdown-syntax">
+                            <div>
+                                @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                            </div>
+                            <h1>@Model.Content.Name</h1>
+                            @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+                        </div><!-- #body -->
+                    </div><!-- .content-wrapper -->
+                </div><!-- .main-content -->
+            </div><!-- .main-area -->
+        </div><!-- .page-content -->
+    </div>
+}
+else
+{
+    <div id="body" class="page markdown-syntax">
+        <div>
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+        </div>
+        <h1>@Model.Content.Name</h1>
+        @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+    </div>
+}

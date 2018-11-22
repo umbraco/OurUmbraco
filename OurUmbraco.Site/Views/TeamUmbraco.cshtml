@@ -1,0 +1,752 @@
+﻿@using OurUmbraco.Forum.Extensions
+@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
+@inherits UmbracoTemplatePage
+@{
+    Layout = "Master.cshtml";
+    if (Members.IsTeamUmbraco() == false)
+    {
+        Response.Redirect("/");
+    }
+
+    var fromMonth = DateTime.Now.AddYears(-1).Month;
+    var fromYear = DateTime.Now.AddYears(-1).Year;
+
+    var toMonth = DateTime.Now.Month;
+    var toYear = DateTime.Now.Year;
+
+    var showLastMonth = false;
+    var lastMonthQueryString = Request.QueryString["lastMonth"];
+    if (string.IsNullOrWhiteSpace(lastMonthQueryString) == false)
+    {
+        showLastMonth = true;
+    }
+
+    if (showLastMonth)
+    {
+        fromMonth = DateTime.Now.AddYears(-1).AddMonths(-1).Month;
+        fromYear = DateTime.Now.AddYears(-1).AddMonths(-1).Year;
+        toMonth = DateTime.Now.AddMonths(-1).Month;
+        toYear = DateTime.Now.AddMonths(-1).Year;
+    }
+
+    var repository = "Umbraco-CMS";
+    var repoQueryString = Request.QueryString["repo"];
+    if (string.IsNullOrWhiteSpace(repoQueryString) == false)
+    {
+        repository = repoQueryString;
+    }
+
+    var viewType = string.Empty;
+    var viewTypeQueryString = Request.QueryString["type"];
+    if (string.IsNullOrWhiteSpace(viewTypeQueryString) == false)
+    {
+        viewType = viewTypeQueryString;
+    }
+}
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+    </div>
+
+    <ul id="breadcrumb2">
+        <li>
+            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS this month</a> / 
+            <a href="/teamumbraco/?repo=Umbraco-CMS&lastMonth=true">Stats Umbraco CMS previous month</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs this month</a> / 
+            <a href="/teamumbraco/?repo=UmbracoDocs&lastMonth=true">Stats Umbraco Docs previous month</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=Umbraco-CMS&type=people">Leaderboard Umbraco CMS</a>
+        </li>
+        <li>
+            <a href="/teamumbraco/?repo=UmbracoDocs&type=people">Leaderboard Umbraco Docs</a>
+        </li>
+    </ul>
+
+    <h1>@Model.Content.Name - Stats for @repository</h1>
+    @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
+
+    @if (viewType == "people")
+    {
+        var prService = new PullRequestService();
+        var leaderBoardYear = prService.GetLeaderBoard(DateTime.Now.AddMonths(-12), DateTime.Now.AddMonths(1), repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+        var leaderBoard = prService.GetLeaderBoard(new DateTime(2010, 01, 01), DateTime.Now.AddMonths(1), repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+        var startDateThisMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 01);
+        var endDateThisMonth = DateTime.Now.GetDateLastDayOfMonth();
+        var leaderBoardThisMonth = prService.GetLeaderBoard(startDateThisMonth, endDateThisMonth, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+        var startDateLastMonth = new DateTime(DateTime.Now.AddMonths(-1).Year, DateTime.Now.AddMonths(-1).Month, 01);
+        var endDateLastMonth = DateTime.Now.AddMonths(-1).GetDateLastDayOfMonth();
+        var leaderBoardLastMonth = prService.GetLeaderBoard(startDateLastMonth, endDateLastMonth, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+        var startDateTwoMonthsAgo = new DateTime(DateTime.Now.AddMonths(-2).Year, DateTime.Now.AddMonths(-2).Month, 01);
+        var endDateTwoMonthsAgo = DateTime.Now.AddMonths(-2).GetDateLastDayOfMonth();
+        var leaderBoardTwoMonthsAgo = prService.GetLeaderBoard(startDateTwoMonthsAgo, endDateTwoMonthsAgo, repository)
+            .OrderByDescending(x => x.Contributions).ToList();
+			
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard this month - @startDateThisMonth.ToString("yyyy-MM-dd")-@endDateThisMonth.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardThisMonth.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardThisMonth)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard last month -  @startDateLastMonth.ToString("yyyy-MM-dd")-@endDateLastMonth.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardLastMonth.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardLastMonth)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+		
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard two months ago -  @startDateTwoMonthsAgo.ToString("yyyy-MM-dd")-@endDateTwoMonthsAgo.ToString("yyyy-MM-dd")</h5>
+                    <h5>Unique contributors: @(leaderBoardTwoMonthsAgo.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardTwoMonthsAgo)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard past 12 months</h5>
+                    <h5>Unique contributors: @(leaderBoardYear.Count)</h5>
+                    <div class="col-md-12">    
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoardYear)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>Leaderboard all time</h5>
+                    <h5>Unique contributors: @(leaderBoard.Count)</h5>
+                    <div class="col-md-12">
+                        <table>
+                            <tr>
+                                <td><strong>GitHub username</strong></td>
+                                <td><strong>Total contributions</strong></td>
+                                <td><strong>Open</strong></td>
+                                <td><strong>Closed</strong></td>
+                                <td><strong>Merged</strong></td>
+                            </tr>
+                            @foreach (var person in leaderBoard)
+                            {
+                                <tr>
+                                    <td>@person.Username</td>
+                                    <td>@person.Contributions</td>
+                                    <td>@person.OpenContributions</td>
+                                    <td>@person.ClosedContributions</td>
+                                    <td>@person.MergedContributions</td>
+                                </tr>
+                            }
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+
+    @if (viewType == string.Empty)
+    {
+        <script src="/scripts/amcharts/core.js"></script>
+        <script src="/scripts/amcharts/charts.js"></script>
+
+        <style type="text/css">
+            .gauge {
+                height: 250px;
+                width: 350px;
+            }
+
+            .chart {
+                height: 500px;
+                width: 100%;
+                clear: both;
+                display: block;
+            }
+
+            .center-block {
+                margin-left: auto;
+                margin-right: auto;
+                display: block;
+            }
+
+            .stats {
+                height: 550px;
+                display: inline-block;
+                width: 100%;
+                clear: both;
+            }
+
+            #body {
+                margin-bottom: 50px;
+            }
+        </style>
+
+            <section class="stats">
+                <div class="container">
+                    <h5>This month's pull request stats</h5>
+                    <div class="row ">
+                        <div class="col-md-6">
+                            <div id="OpenPRs" class="gauge center-block"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="NewContributors" class="gauge center-block"></div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div id="CreatedPRs" class="gauge"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="MergedPRs" class="gauge"></div>
+                        </div>
+                        <div class="col-md-4">
+                            <div id="ClosedPRs" class="gauge"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Pull requests: created, merged and closed</h5>
+                        <div class="col-md-12">
+                            <div id="GroupedPRs" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Contributors: active vs. new</h5>
+                        <div class="col-md-12">
+                            <div id="Contributors" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Open PRs over time</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsAllTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Median PR closing time in hours</h5>
+                        <div class="col-md-12">
+                            <div id="MedianPRMergeTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Average PR closing time in hours</h5>
+                        <div class="col-md-12">
+                            <div id="AveragePRMergeTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Median time for first comment from Team Umbraco</h5>
+                        <div class="col-md-12">
+                            <div id="MedianFirstTeamCommentTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Average time for first comment from Team Umbraco</h5>
+                        <div class="col-md-12">
+                            <div id="AverageFirstTeamCommentTime" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
+                        <div class="col-md-12">
+                            <div id="ActiveContributorsAfterCG18" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>After Codegarden 18: PRs created vs. still open</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsSinceCG18" class="chart"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <script>
+            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
+                function(response) {
+                    var currentData = JSON.parse(response);
+                    var colorSet = new am4core.ColorSet();
+
+                    @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "150")
+                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "175")
+                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "130")
+                    @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
+                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "20")
+                });
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
+            groupedPrsChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            groupedPrsChart.scrollbarX = new am4core.Scrollbar();
+            groupedPrsChart.legend = new am4charts.Legend();
+            groupedPrsChart.colors.step = 2;
+
+            var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
+            categoryAxis.dataFields.category = "GroupName";
+            categoryAxis.renderer.grid.template.location = 0;
+
+            var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
+            valueAxis.min = 0;
+            valueAxis.renderer.minWidth = 35;
+
+            var prsMerged = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsMerged.name = "PRs merged";
+            prsMerged.dataFields.categoryX = "GroupName";
+            prsMerged.dataFields.valueY = "NumberMerged";
+            prsMerged.stacked = true;
+
+            var prsMergedColumnTemplate = prsMerged.columns.template;
+            prsMergedColumnTemplate.width = am4core.percent(80);
+            prsMergedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+            //prsMergedColumnTemplate.strokeOpacity = 0;
+            //prsMergedColumnTemplate.propertyFields.fill = "color";
+            //var prsMergedLabel = prsMergedColumnTemplate.createChild(am4core.Label);
+            //prsMergedLabel.text = "{valueY.value}";
+            //prsMergedLabel.align = "center";
+            //prsMergedLabel.valign = "top";
+
+            var prsClosed = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsClosed.name = "PRs closed";
+            prsClosed.dataFields.categoryX = "GroupName";
+            prsClosed.dataFields.valueY = "NumberClosed";
+            prsClosed.stacked = true;
+
+            var prsClosedColumnTemplate = prsClosed.columns.template;
+            prsClosedColumnTemplate.width = am4core.percent(80);
+            prsClosedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+
+            var prsCreated = groupedPrsChart.series.push(new am4charts.ColumnSeries());
+            prsCreated.name = "PRs created";
+            prsCreated.dataFields.categoryX = "GroupName";
+            prsCreated.dataFields.valueY = "NumberCreated";
+            prsCreated.stacked = false;
+            
+            var prsCreatedColumnTemplate = prsCreated.columns.template;
+            prsCreatedColumnTemplate.width = am4core.percent(80);
+            prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+            
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
+            contributorsChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            contributorsChart.scrollbarX = new am4core.Scrollbar();
+            contributorsChart.legend = new am4charts.Legend();
+
+            var contributorsDateAxis = contributorsChart.xAxes.push(new am4charts.DateAxis());
+            var contributorsValueAxis = contributorsChart.yAxes.push(new am4charts.ValueAxis());
+
+            var contributorsSeries = contributorsChart.series.push(new am4charts.LineSeries());
+            contributorsSeries.name = "New contributors";
+            contributorsSeries.dataFields.dateX = "GroupName";
+            contributorsSeries.dataFields.openValueY = "NumberOfActiveContributorsInPastYear";
+            contributorsSeries.dataFields.valueY = "NumberOfNewContributors";
+            contributorsSeries.tooltipText = "Active contributors: {openValueY.value} New contributors: {valueY.value}";
+            contributorsSeries.sequencedInterpolation = true;
+            contributorsSeries.fillOpacity = 0.3;
+            contributorsSeries.strokeWidth = 4;
+            contributorsSeries.tensionX = 0.8;
+            
+            var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
+            contributorsSeries2.name = "Active contributors";
+            contributorsSeries2.dataFields.dateX = "GroupName";
+            contributorsSeries2.dataFields.valueY = "NumberOfActiveContributorsInPastYear";
+            contributorsSeries2.sequencedInterpolation = true;
+            contributorsSeries2.stroke = contributorsChart.colors.getIndex(6);
+            contributorsSeries2.strokeWidth = 4;
+            contributorsSeries2.tensionX = 0.8;
+
+            contributorsChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
+            openPRsAllTimeChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            openPRsAllTimeChart.legend = new am4charts.Legend();
+
+            var openPRsAllTimeDateAxis = openPRsAllTimeChart.xAxes.push(new am4charts.DateAxis());
+            var openPRsAllTimeValueAxis = openPRsAllTimeChart.yAxes.push(new am4charts.ValueAxis());
+
+            var openPRsAllTimeSeries = openPRsAllTimeChart.series.push(new am4charts.LineSeries());
+            openPRsAllTimeSeries.name = "Open pull requests";
+            openPRsAllTimeSeries.dataFields.dateX = "GroupName";
+            openPRsAllTimeSeries.dataFields.valueY = "TotalNumberOpen";
+            openPRsAllTimeSeries.sequencedInterpolation = true;
+            openPRsAllTimeSeries.stroke = openPRsAllTimeChart.colors.getIndex(6);
+            openPRsAllTimeSeries.strokeWidth = 4;
+            openPRsAllTimeSeries.tensionX = 0.8;
+
+            openPRsAllTimeChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+            
+            var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
+            activeContributorsAfterCg18Chart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
+
+            var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+            var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
+
+            var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+            activeContributorsAfterCg18Series.name = "New contributors";
+            activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
+            activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
+            activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
+            activeContributorsAfterCg18Series.tooltipText = "Contributors: {openValueY.value}. New: {valueY.value}";
+            activeContributorsAfterCg18Series.sequencedInterpolation = true;
+            activeContributorsAfterCg18Series.fillOpacity = 0.3;
+            activeContributorsAfterCg18Series.strokeWidth = 4;
+            activeContributorsAfterCg18Series.tensionX = 0.8;
+
+            var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+            activeContributorsAfterCg18Series2.name = "Active contributors";
+            activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
+            activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
+            activeContributorsAfterCg18Series2.sequencedInterpolation = true;
+            activeContributorsAfterCg18Series2.stroke = activeContributorsAfterCg18Chart.colors.getIndex(6);
+            activeContributorsAfterCg18Series2.strokeWidth = 4;
+            activeContributorsAfterCg18Series2.tensionX = 0.8;
+
+            activeContributorsAfterCg18Chart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
+            openPRsSinceCG18Chart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            openPRsSinceCG18Chart.legend = new am4charts.Legend();
+
+            var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+            var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
+
+            var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+            openPRsSinceCG18Series.name = "Created pull requests";
+            openPRsSinceCG18Series.dataFields.dateX = "GroupName";
+            openPRsSinceCG18Series.dataFields.openValueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series.dataFields.valueY = "NumberCreated";
+            openPRsSinceCG18Series.tooltipText = "Number of PRs created: {openValueY.value}. Still open PRs: {valueY.value}";
+            openPRsSinceCG18Series.sequencedInterpolation = true;
+            openPRsSinceCG18Series.fillOpacity = 0.3;
+            openPRsSinceCG18Series.strokeWidth = 4;
+            openPRsSinceCG18Series.tensionX = 0.8;
+
+            var openPRsSinceCG18Series2 = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+            openPRsSinceCG18Series2.name = "Still open";
+            openPRsSinceCG18Series2.dataFields.dateX = "GroupName";
+            openPRsSinceCG18Series2.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+            openPRsSinceCG18Series2.sequencedInterpolation = true;
+            openPRsSinceCG18Series2.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+            openPRsSinceCG18Series2.strokeWidth = 4;
+            openPRsSinceCG18Series2.tensionX = 0.8;
+
+            openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
+            mergeTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            mergeTimeInHoursChart.legend = new am4charts.Legend();
+
+            var mergeTimeInHoursDateAxis = mergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var mergeTimeInHoursValueAxis = mergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var mergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            mergeTimeInHoursSeries.name = "Median time to merge";
+            mergeTimeInHoursSeries.dataFields.dateX = "GroupName";
+            mergeTimeInHoursSeries.dataFields.valueY = "MedianPullRequestClosingTimeInHours";
+            mergeTimeInHoursSeries.sequencedInterpolation = true;
+            mergeTimeInHoursSeries.stroke = mergeTimeInHoursChart.colors.getIndex(6);
+            mergeTimeInHoursSeries.strokeWidth = 4;
+            mergeTimeInHoursSeries.tensionX = 0.8;
+
+            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var averageMergeTimeInHoursChart = am4core.create("AveragePRMergeTime", am4charts.XYChart);
+            averageMergeTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            averageMergeTimeInHoursChart.legend = new am4charts.Legend();
+
+            var averageMergeTimeInHoursDateAxis = averageMergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var averageMergeTimeInHoursValueAxis = averageMergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var averageMergeTimeInHoursSeries = averageMergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageMergeTimeInHoursSeries.name = "Median time to merge";
+            averageMergeTimeInHoursSeries.dataFields.dateX = "GroupName";
+            averageMergeTimeInHoursSeries.dataFields.valueY = "AveragePullRequestClosingTimeInHours";
+            averageMergeTimeInHoursSeries.sequencedInterpolation = true;
+            averageMergeTimeInHoursSeries.stroke = averageMergeTimeInHoursChart.colors.getIndex(6);
+            averageMergeTimeInHoursSeries.strokeWidth = 4;
+            averageMergeTimeInHoursSeries.tensionX = 0.8;
+
+            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
+            firstTeamCommentTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+           firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
+
+            var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var firstTeamCommentTimeInHoursValueAxis = firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var firstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            firstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time";
+            firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            firstTeamCommentTimeInHoursSeries.dataFields.valueY = "MedianFirstTeamCommentTimeInHours";
+            firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            firstTeamCommentTimeInHoursSeries.stroke = firstTeamCommentTimeInHoursChart.colors.getIndex(6);
+            firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+
+            firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+            var averageFirstTeamCommentTimeInHoursChart = am4core.create("AverageFirstTeamCommentTime", am4charts.XYChart);
+            averageFirstTeamCommentTimeInHoursChart.dataSource.url =
+                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+            
+            averageFirstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
+
+            var averageFirstTeamCommentTimeInHoursDateAxis = averageFirstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var averageFirstTeamCommentTimeInHoursValueAxis = averageFirstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
+
+            var averageFirstTeamCommentTimeInHoursSeries = averageFirstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageFirstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.valueY = "AverageFirstTeamCommentTimeInHours";
+            averageFirstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            averageFirstTeamCommentTimeInHoursSeries.stroke = averageFirstTeamCommentTimeInHoursChart.colors.getIndex(6);
+            averageFirstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            averageFirstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+            
+            averageFirstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            function httpGetAsync(url, callback) {
+                var xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    if (xmlHttp.readyState === 4 && xmlHttp.status === 200)
+                        callback(xmlHttp.responseText);
+                };
+                xmlHttp.open("GET", url, true); // true for asynchronous
+                xmlHttp.send(null);
+            }
+
+            var time = new Date().getTime();
+            $(document.body).bind("mousemove keypress",
+                function(e) {
+                    time = new Date().getTime();
+                });
+
+            function refresh() {
+                // Refreshes every 300 seconds, set value
+                // below to something other than 300000
+                // to vary the number of seconds
+                if (new Date().getTime() - time >= 300000)
+                    window.location.reload();
+                else
+                    setTimeout(refresh, 10000);
+            }
+
+            setTimeout(refresh, 10000);
+        </script>
+    }
+</div>
+
+@helper AddGauge(string chartSuffix, string label, string value, string maxValue)
+{
+    <text>
+        var chart@(chartSuffix) = am4core.create("@chartSuffix", am4charts.GaugeChart);
+        chart@(chartSuffix).innerRadius = -25;
+
+        var axis@(chartSuffix) = chart@(chartSuffix).xAxes.push(new am4charts.ValueAxis());
+        axis@(chartSuffix).min = 0;
+        axis@(chartSuffix).max = @maxValue;
+        axis@(chartSuffix).strictMinMax = true;
+        axis@(chartSuffix).renderer.grid.template.disabled = true;
+
+        var range@(chartSuffix) = axis@(chartSuffix).axisRanges.create();
+        range@(chartSuffix).value = 0;
+        range@(chartSuffix).endValue = @maxValue;
+        range@(chartSuffix).axisFill.fillOpacity = 1;
+        range@(chartSuffix).axisFill.fill = colorSet.getIndex(0);
+
+        var clockHand@(chartSuffix) = new am4charts.ClockHand();
+        clockHand@(chartSuffix).hand.className = "RoundedRectangle";
+        clockHand@(chartSuffix).endWidth = 10;
+        clockHand@(chartSuffix).startWidth = 10;
+        clockHand@(chartSuffix).pin.radius = 10;
+        var hand@(chartSuffix) = chart@(chartSuffix).hands.push(clockHand@(chartSuffix));
+        hand@(chartSuffix).showValue(@value);
+
+        var label@(chartSuffix) = chart@(chartSuffix).radarContainer.createChild(am4core.Label);
+        label@(chartSuffix).isMeasured = false;
+        label@(chartSuffix).fontSize = 18;
+        label@(chartSuffix).x = am4core.percent(50);
+        label@(chartSuffix).y = am4core.percent(100);
+        label@(chartSuffix).horizontalCenter = "middle";
+        label@(chartSuffix).verticalCenter = "bottom";
+        label@(chartSuffix).text = "@(label): " + @value;
+        label@(chartSuffix).paddingBottom = -50;
+    </text>
+}
+

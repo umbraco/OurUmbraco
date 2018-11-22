@@ -15,6 +15,9 @@ namespace OurUmbraco.Forum.Extensions
         /* Core member */
         public static int Karma(this IPublishedContent member)
         {
+            if (member == null || member.HasProperty("reputationCurrent") == false)
+                return 0;
+
             return member.GetPropertyValue<int>("reputationCurrent");
         }
 
@@ -65,6 +68,11 @@ namespace OurUmbraco.Forum.Extensions
         public static bool IsHq(this MembershipHelper helper)
         {
             return Roles.IsUserInRole("HQ");
+        }
+
+        public static bool IsTeamUmbraco(this MembershipHelper helper)
+        {
+            return Roles.IsUserInRole("HQ") || Roles.IsUserInRole("TeamUmbraco");
         }
 
         public static bool IsAdmin(this IPublishedContent helper)

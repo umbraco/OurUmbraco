@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Web.Hosting;
 using Examine;
@@ -9,6 +11,7 @@ using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
@@ -123,6 +126,30 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
         
+        public void GenerateReleasesCache(PerformContext context)
+        {
+            var releasesService = new ReleasesService();
+            RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
+        }
+        
+        public void UpdateGitHubIssues(PerformContext context)
+        {
+            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
+            var fileContent = File.ReadAllText(configFile);
+            var repositories = JsonConvert.DeserializeObject<List<Community.Models.Repository>>(fileContent);
+
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            }
+        }
+        
+        public void GetAllGitHubLabels(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+        }
     }
 
     public class ReminderTopic

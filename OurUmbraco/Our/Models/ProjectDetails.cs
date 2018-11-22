@@ -19,11 +19,11 @@ namespace OurUmbraco.Our.Models
         public string Version { get; set; }
 
         [Required]
-        [Display(Name = "Project category")]
+        [Display(Name = "Package category")]
         public string Category { get; set; }
 
         [Required]
-        [Display(Name = "Project description")]
+        [Display(Name = "Package description")]
         public string Description { get; set; }
 
         [Required]
@@ -34,7 +34,7 @@ namespace OurUmbraco.Our.Models
         [Display(Name = "License URL")]
         public string LicenseUrl { get; set; }
 
-        [Display(Name = "Project URL")]
+        [Display(Name = "Package URL")]
         public string ProjectUrl { get; set; }
 
         [Display(Name = "Demonstration URL")]
@@ -52,10 +52,10 @@ namespace OurUmbraco.Our.Models
         [Display(Name = "Google Analytics code")]
         public string GoogleAnalyticsCode { get; set; }
 
-        [Display(Name = "This project is open for collaboration")]
+        [Display(Name = "This package is open for collaboration")]
         public bool OpenForCollaboration { get; set; }
 
-        [Display(Name = "This project is retired")]
+        [Display(Name = "This package is retired")]
         public bool IsRetired { get; set; }
 
         [Display(Name = "Retired message")]

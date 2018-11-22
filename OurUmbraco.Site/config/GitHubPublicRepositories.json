@@ -1,0 +1,68 @@
+﻿[
+  {
+    "Alias": "Umbraco-CMS",
+    "Owner": "umbraco",
+    "Slug": "Umbraco-CMS",
+    "Name": "Umbraco CMS"
+  },
+  {
+    "Alias": "UmbracoDocs",
+    "Owner": "umbraco",
+    "Slug": "UmbracoCMS",
+    "Name": "Umbraco Documentation"
+  },
+  {
+    "Alias": "OurUmbraco",
+    "Owner": "umbraco",
+    "Slug": "OurUmbraco",
+    "Name": "Our Umbraco Community Site"
+  },
+  {
+    "Alias": "The-Starter-Kit",
+    "Owner": "umbraco",
+    "Slug": "The-Starter-Kit",
+    "Name": "The Default Umbraco Starter Kit"
+  },
+  {
+    "Alias": "UmbracoIdentityExtensions",
+    "Owner": "umbraco",
+    "Slug": "UmbracoIdentityExtensions",
+    "Name": "Umbraco Identity Extensions"
+  },
+  {
+    "Alias": "UmbracoExamine.PDF",
+    "Owner": "umbraco",
+    "Slug": "UmbracoExamine.PDF",
+    "Name": "UmbracoExamine PDF"
+  },
+  {
+    "Alias": "Umbraco.Cloud.Issues",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.Cloud.Issues",
+    "Name": "Umbraco Cloud Issues"
+  },
+  {
+    "Alias": "Umbraco.Courier.Issues",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.Courier.Issues",
+    "Name": "Umbraco Courier Issues"
+  },
+  {
+    "Alias": "Umbraco.Forms.Issues",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.Forms.Issues",
+    "Name": "Umbraco Forms Issues"
+  },
+  {
+    "Alias": "Umbraco.Deploy.Contrib",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.Deploy.Contrib",
+    "Name": "Umbraco Deploy Contrib"
+  },
+  {
+    "Alias": "Umbraco.Courier.Contrib",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.Courier.Contrib",
+    "Name": "Umbraco Courier Contrib" 
+  }
+]
