@@ -124,17 +124,6 @@
                 @Html.HiddenFor(m => m.Avatar)
             </div>
 
-            <div class="profile-input">
-                <label>ID</label>
-                <input type="text" value="@Model.Id" readonly />
-            </div>
-
-            <div class="profile-input">
-                <label>URL</label>
-                <input type="text" value="@Url.GetProfileUrlWithDomain(Model)" readonly />
-                
-            </div>
-
             <div class="profile-input" id="username">
                 @Html.LabelFor(m => m.Name)
                 @Html.TextBoxFor(m => m.Name)
