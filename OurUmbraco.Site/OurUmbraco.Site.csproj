@@ -248,6 +248,10 @@
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
     </Reference>
+    <Reference Include="Skybrud.Social.Twitter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Twitter.1.0.0-beta006\lib\net45\Skybrud.Social.Twitter.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Skybrud.SyntaxHighlighter, Version=1.0.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.SyntaxHighlighter.1.0.2\lib\net45\Skybrud.SyntaxHighlighter.dll</HintPath>
     </Reference>
@@ -547,7 +551,7 @@
     <Content Include="config\EmbeddedMedia.config" />
     <Content Include="config\BaseRestExtensions.config" />
     <Content Include="config\BackOfficeTours\getting-started.json" />
-	<Content Include="App_Plugins\Our\package.manifest" />
+    <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
     <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
