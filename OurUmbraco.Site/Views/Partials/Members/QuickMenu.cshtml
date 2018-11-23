@@ -64,7 +64,7 @@
                             </span>
                         }
                         <div class="public-profile">
-                            <a href="/member/@profile.Member.Id">View my public profile</a>
+                            <a href="@Url.GetProfileUrl(profile)">View my public profile</a>
                         </div>
                         @if (profile.IsAdmin)
                         {

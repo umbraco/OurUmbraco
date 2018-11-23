@@ -1,0 +1,8 @@
+﻿<div ng-if="model.value" ng-init="expand = false;">
+    <button prevent-default class="btn btn-default" ng-click="expand = !expand">{{expand ? 'Collpase JSON' : 'Expand JSON'}}</button>
+    <pre ng-if="expand" style="margin-top: 10px; white-space: pre-wrap; font-size: 11px;">{{model.value | json}}</pre>
+</div>
+
+<div ng-if="!model.value">
+    <em>This property does currently not have a value.</em>
+</div>
