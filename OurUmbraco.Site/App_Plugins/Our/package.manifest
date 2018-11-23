@@ -1,0 +1,12 @@
+{
+  "propertyEditors": [
+    {
+      "alias": "Our.JsonPreview",
+      "name": "Our - Json Preview",
+      "editor": {
+        "view": "~/App_Plugins/Our/Views/JsonPreview.html",
+        "valueType": "JSON"
+      }
+    }
+  ]
+}

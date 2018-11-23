@@ -261,11 +261,17 @@
     <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta003\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
     </Reference>
+    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta002\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
+    </Reference>
     <Reference Include="Skybrud.Social.Google, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Google.1.0.0-beta004\lib\net45\Skybrud.Social.Google.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.Twitter, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Twitter.1.0.0-beta006\lib\net45\Skybrud.Social.Twitter.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Vimeo, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Vimeo.1.0.0-beta003\lib\net45\Skybrud.Social.Vimeo.dll</HintPath>
@@ -630,6 +636,7 @@
     <Compile Include="Our\Examine\DateRangeSearchFilter.cs" />
     <Compile Include="Our\Examine\PullRequestIndexDataService.cs" />
     <Compile Include="Our\Examine\ProjectPopularityPoints.cs" />
+    <Compile Include="Our\Extensions\UrlExtensions.cs" />
     <Compile Include="Our\Models\EditScreenshotModel.cs" />
     <Compile Include="Our\Models\EditFileModel.cs" />
     <Compile Include="Our\Models\EditProjectModel.cs" />

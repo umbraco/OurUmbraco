@@ -7,9 +7,12 @@ namespace OurUmbraco.Our.Models
 {
     public class MemberData
     {
+        public int Id => Member.Id;
         public IPublishedContent Member { get; set; }
         public string Email { get; set; }
         public string TwitterHandle { get; set; }
+        public string GitHubUsername { get; set; }
+        public bool HasGitHubUsername => !string.IsNullOrWhiteSpace(GitHubUsername);
         public int Karma { get; set; }
         public bool IsAdmin { get; set; }
         public IEnumerable<string> Roles { get; set; }
