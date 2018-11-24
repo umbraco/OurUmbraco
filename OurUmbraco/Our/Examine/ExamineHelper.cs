@@ -134,6 +134,12 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet.RowData.Add("keywords", yamlMetaData.Keywords);
                 simpleDataSet.RowData.Add("versionFrom", yamlMetaData.VersionFrom);
                 simpleDataSet.RowData.Add("versionTo", yamlMetaData.VersionTo);
+                simpleDataSet.RowData.Add("AssetID", yamlMetaData.AssetId);
+                simpleDataSet.RowData.Add("Product", yamlMetaData.Product);
+                simpleDataSet.RowData.Add("Topics", yamlMetaData.Topics);
+                simpleDataSet.RowData.Add("Complexity", yamlMetaData.Complexity);
+                simpleDataSet.RowData.Add("Meta.Title", yamlMetaData.MetaTitle);
+                simpleDataSet.RowData.Add("Meta.Description", yamlMetaData.MetaDescription);
 
                 var matchingMajorVersions = CalculateMajorVersions(yamlMetaData);
                 simpleDataSet.RowData.Add("majorVersion", string.Join(" ", matchingMajorVersions));
