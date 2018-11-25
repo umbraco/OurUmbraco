@@ -97,19 +97,30 @@ namespace OurUmbraco.Our.Examine
             return simpleDataSet;
         }
 
+        /// <summary>
+        /// Add all YAML fields to the index
+        /// </summary>
+        /// <param name="simpleDataSet"></param>
+        /// <param name="lines"></param>
+        /// <returns>The linenumber of the second YAML marker</returns>
         private static int AddYamlFields(SimpleDataSet simpleDataSet, List<string> lines)
         {
             // Check if the first line is a YAML marker
             // YAML is only accepted if it's on the top of the document
             // because empty lines are already removed, the index needs to be 0
-            bool hasYaml = lines.ElementAt(0) == "---";
+            bool hasYaml = lines.ElementAt(0).TrimEnd() == "---";
             int secondYamlMarker = 0;
 
             if (hasYaml)
             {
                 // Find the "next" triple dash starting from the second line
-                secondYamlMarker = lines.IndexOf("---", 1);
-                
+                // But first trim all trailing spaces as this only creates issues which are hard to debug
+                // and unclear for users. Make sure you have a ToList because IEnumerable has no IndexOf()
+                secondYamlMarker = lines
+                    .Select(l=>l.TrimEnd())
+                    .ToList()
+                    .IndexOf("---", 1);
+
                 // add all yaml together and parse YAML meta data
                 YamlMetaData yamlMetaData = new YamlMetaData();
                 if (secondYamlMarker > 0)
