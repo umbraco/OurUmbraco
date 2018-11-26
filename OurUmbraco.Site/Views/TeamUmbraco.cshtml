@@ -382,21 +382,41 @@
             <section class="stats">
                 <div class="container">
                     <div class="row">
-                        <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
-                        <div class="col-md-12">
-                            <div id="ActiveContributorsAfterCG18" class="chart"></div>
-                        </div>
+                        @if (repository == "Umbraco-CMS")
+                        {
+                            <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
+                            <div class="col-md-12">
+                                <div id="ActiveContributorsAfterCG18" class="chart"></div>
+                            </div>
+                        }
+                        @if (repository == "UmbracoDocs")
+                        {
+                            <h5>Since January 2018: Active contributors (1 or more PRs created) vs new contributors</h5>
+                            <div class="col-md-12">
+                                <div id="ActiveContributorsSinceJan18" class="chart"></div>
+                            </div>
+                        }
                     </div>
                 </div>
             </section>
 
             <section class="stats">
                 <div class="container">
-                    <div class="row">
+                    <div class="row">SinceJan18
+                    @if (repository == "Umbraco-CMS")
+                    {
                         <h5>After Codegarden 18: PRs created vs. still open</h5>
                         <div class="col-md-12">
                             <div id="OpenPRsSinceCG18" class="chart"></div>
                         </div>
+                    }
+                    @if (repository == "UmbracoDocs")
+                    {
+                        <h5>Since January 2018: PRs created vs. still open</h5>
+                        <div class="col-md-12">
+                            <div id="OpenPRsSinceJan18" class="chart"></div>
+                        </div>
+                    }
                     </div>
                 </div>
             </section>
@@ -525,70 +545,154 @@
             openPRsAllTimeChart.cursor = new am4charts.XYCursor();
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
-            
-            var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
-            activeContributorsAfterCg18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
-            activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
+            @if (repository == "Umbraco-CMS")
+            {
+                <text>
+                    var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
+                    activeContributorsAfterCg18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
-            var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
-            var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
+                    activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
-            var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
-            activeContributorsAfterCg18Series.name = "New contributors";
-            activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
-            activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
-            activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
-            activeContributorsAfterCg18Series.tooltipText = "Contributors: {openValueY.value}. New: {valueY.value}";
-            activeContributorsAfterCg18Series.sequencedInterpolation = true;
-            activeContributorsAfterCg18Series.fillOpacity = 0.3;
-            activeContributorsAfterCg18Series.strokeWidth = 4;
-            activeContributorsAfterCg18Series.tensionX = 0.8;
+                    var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+                    var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
 
-            var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
-            activeContributorsAfterCg18Series2.name = "Active contributors";
-            activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
-            activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
-            activeContributorsAfterCg18Series2.sequencedInterpolation = true;
-            activeContributorsAfterCg18Series2.stroke = activeContributorsAfterCg18Chart.colors.getIndex(6);
-            activeContributorsAfterCg18Series2.strokeWidth = 4;
-            activeContributorsAfterCg18Series2.tensionX = 0.8;
+                    var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+                    activeContributorsAfterCg18Series.name = "New contributors";
+                    activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
+                    activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
+                    activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
+                    activeContributorsAfterCg18Series.tooltipText = "Contributors: {openValueY.value}. New: {valueY.value}";
+                    activeContributorsAfterCg18Series.sequencedInterpolation = true;
+                    activeContributorsAfterCg18Series.fillOpacity = 0.3;
+                    activeContributorsAfterCg18Series.strokeWidth = 4;
+                    activeContributorsAfterCg18Series.tensionX = 0.8;
 
-            activeContributorsAfterCg18Chart.cursor = new am4charts.XYCursor();
+                    var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+                    activeContributorsAfterCg18Series2.name = "Active contributors";
+                    activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
+                    activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
+                    activeContributorsAfterCg18Series2.sequencedInterpolation = true;
+                    activeContributorsAfterCg18Series2.stroke = activeContributorsAfterCg18Chart.colors.getIndex(6);
+                    activeContributorsAfterCg18Series2.strokeWidth = 4;
+                    activeContributorsAfterCg18Series2.tensionX = 0.8;
+
+                    activeContributorsAfterCg18Chart.cursor = new am4charts.XYCursor();
+                </text>
+            }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-            var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
-            openPRsSinceCG18Chart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+            @if (repository == "UmbracoDocs")
+            {
+                <text>
+                    var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsSinceJan18", am4charts.XYChart);
+                    activeContributorsAfterCg18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
 
-            openPRsSinceCG18Chart.legend = new am4charts.Legend();
+                    activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
-            var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
-            var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
+                    var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+                    var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
 
-            var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
-            openPRsSinceCG18Series.name = "Created pull requests";
-            openPRsSinceCG18Series.dataFields.dateX = "GroupName";
-            openPRsSinceCG18Series.dataFields.openValueY = "TotalNumberOpenAfterCodeGarden18";
-            openPRsSinceCG18Series.dataFields.valueY = "NumberCreated";
-            openPRsSinceCG18Series.tooltipText = "Number of PRs created: {openValueY.value}. Still open PRs: {valueY.value}";
-            openPRsSinceCG18Series.sequencedInterpolation = true;
-            openPRsSinceCG18Series.fillOpacity = 0.3;
-            openPRsSinceCG18Series.strokeWidth = 4;
-            openPRsSinceCG18Series.tensionX = 0.8;
+                    var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+                    activeContributorsAfterCg18Series.name = "New contributors";
+                    activeContributorsAfterCg18Series.dataFields.dateX = "GroupName";
+                    activeContributorsAfterCg18Series.dataFields.openValueY = "NumberOfActiveContributorsAfterCg18";
+                    activeContributorsAfterCg18Series.dataFields.valueY = "NumberOfNewContributors";
+                    activeContributorsAfterCg18Series.tooltipText = "Contributors: {openValueY.value}. New: {valueY.value}";
+                    activeContributorsAfterCg18Series.sequencedInterpolation = true;
+                    activeContributorsAfterCg18Series.fillOpacity = 0.3;
+                    activeContributorsAfterCg18Series.strokeWidth = 4;
+                    activeContributorsAfterCg18Series.tensionX = 0.8;
 
-            var openPRsSinceCG18Series2 = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
-            openPRsSinceCG18Series2.name = "Still open";
-            openPRsSinceCG18Series2.dataFields.dateX = "GroupName";
-            openPRsSinceCG18Series2.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
-            openPRsSinceCG18Series2.sequencedInterpolation = true;
-            openPRsSinceCG18Series2.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
-            openPRsSinceCG18Series2.strokeWidth = 4;
-            openPRsSinceCG18Series2.tensionX = 0.8;
+                    var activeContributorsAfterCg18Series2 = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
+                    activeContributorsAfterCg18Series2.name = "Active contributors";
+                    activeContributorsAfterCg18Series2.dataFields.dateX = "GroupName";
+                    activeContributorsAfterCg18Series2.dataFields.valueY = "NumberOfActiveContributorsAfterCg18";
+                    activeContributorsAfterCg18Series2.sequencedInterpolation = true;
+                    activeContributorsAfterCg18Series2.stroke = activeContributorsAfterCg18Chart.colors.getIndex(6);
+                    activeContributorsAfterCg18Series2.strokeWidth = 4;
+                    activeContributorsAfterCg18Series2.tensionX = 0.8;
 
-            openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
+                    activeContributorsAfterCg18Chart.cursor = new am4charts.XYCursor();
+                </text>
+            }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            @if (repository == "Umbraco-CMS")
+            {
+                <text>
+                    var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
+                    openPRsSinceCG18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    openPRsSinceCG18Chart.legend = new am4charts.Legend();
+
+                    var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+                    var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
+
+                    var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+                    openPRsSinceCG18Series.name = "Created pull requests";
+                    openPRsSinceCG18Series.dataFields.dateX = "GroupName";
+                    openPRsSinceCG18Series.dataFields.openValueY = "TotalNumberOpenAfterCodeGarden18";
+                    openPRsSinceCG18Series.dataFields.valueY = "NumberCreated";
+                    openPRsSinceCG18Series.tooltipText =
+                        "Number of PRs created: {openValueY.value}. Still open PRs: {valueY.value}";
+                    openPRsSinceCG18Series.sequencedInterpolation = true;
+                    openPRsSinceCG18Series.fillOpacity = 0.3;
+                    openPRsSinceCG18Series.strokeWidth = 4;
+                    openPRsSinceCG18Series.tensionX = 0.8;
+
+                    var openPRsSinceCG18Series2 = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+                    openPRsSinceCG18Series2.name = "Still open";
+                    openPRsSinceCG18Series2.dataFields.dateX = "GroupName";
+                    openPRsSinceCG18Series2.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+                    openPRsSinceCG18Series2.sequencedInterpolation = true;
+                    openPRsSinceCG18Series2.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+                    openPRsSinceCG18Series2.strokeWidth = 4;
+                    openPRsSinceCG18Series2.tensionX = 0.8;
+
+                    openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
+                </text>
+            }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            @if (repository == "UmbracoDocs")
+            {
+                <text>
+                    var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceJan18", am4charts.XYChart);
+                    openPRsSinceCG18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    openPRsSinceCG18Chart.legend = new am4charts.Legend();
+
+                    var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+                    var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
+
+                    var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+                    openPRsSinceCG18Series.name = "Created pull requests";
+                    openPRsSinceCG18Series.dataFields.dateX = "GroupName";
+                    openPRsSinceCG18Series.dataFields.openValueY = "TotalNumberOpenAfterCodeGarden18";
+                    openPRsSinceCG18Series.dataFields.valueY = "NumberCreated";
+                    openPRsSinceCG18Series.tooltipText =
+                        "Number of PRs created: {openValueY.value}. Still open PRs: {valueY.value}";
+                    openPRsSinceCG18Series.sequencedInterpolation = true;
+                    openPRsSinceCG18Series.fillOpacity = 0.3;
+                    openPRsSinceCG18Series.strokeWidth = 4;
+                    openPRsSinceCG18Series.tensionX = 0.8;
+
+                    var openPRsSinceCG18Series2 = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
+                    openPRsSinceCG18Series2.name = "Still open";
+                    openPRsSinceCG18Series2.dataFields.dateX = "GroupName";
+                    openPRsSinceCG18Series2.dataFields.valueY = "TotalNumberOpenAfterCodeGarden18";
+                    openPRsSinceCG18Series2.sequencedInterpolation = true;
+                    openPRsSinceCG18Series2.stroke = openPRsSinceCG18Chart.colors.getIndex(6);
+                    openPRsSinceCG18Series2.strokeWidth = 4;
+                    openPRsSinceCG18Series2.tensionX = 0.8;
+
+                    openPRsSinceCG18Chart.cursor = new am4charts.XYCursor();
+                </text>
+            }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
