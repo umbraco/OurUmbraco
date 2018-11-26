@@ -77,11 +77,19 @@ namespace OurUmbraco.Our.Services
                 },
                 new GitHubCategorizedIssues
                 {
-                    SortOrder = 10, CategoryDescription = "Up For Grabs", CategoryKey = CategoryKey.UpForGrabs, Issues = new List<Issue>()
+                    SortOrder = 10, CategoryDescription = "HQ discussion", CategoryKey = CategoryKey.HqDiscussion, Issues = new List<Issue>()
                 },
                 new GitHubCategorizedIssues
                 {
-                    SortOrder = 20, CategoryDescription = "Pull Request Pending", CategoryKey = CategoryKey.PullRequestPending, Issues = new List<Issue>()
+                    SortOrder = 20, CategoryDescription = "HQ reply", CategoryKey = CategoryKey.HqReply, Issues = new List<Issue>()
+                },
+                new GitHubCategorizedIssues
+                {
+                    SortOrder = 30, CategoryDescription = "Up For Grabs", CategoryKey = CategoryKey.UpForGrabs, Issues = new List<Issue>()
+                },
+                new GitHubCategorizedIssues
+                {
+                    SortOrder = 40, CategoryDescription = "Pull Request Pending", CategoryKey = CategoryKey.PullRequestPending, Issues = new List<Issue>()
                 },
                 new GitHubCategorizedIssues
                 {
@@ -104,6 +112,43 @@ namespace OurUmbraco.Our.Services
                 if (item.Labels.Length != 0)
                 {
                     var matchedLabel = false;
+
+                    foreach (var label in item.Labels)
+                    {
+                        var labels = new[] { "state/hq-discussion-ux", "state/hq-discussion-cms", "state/hq-discussion-cloud" };
+                        if (labels.Contains(label.Name) == false)
+                            continue;
+
+                        matchedLabel = true;
+
+                        AddCategoryCreatedDate(item, label, labels);
+                        var hqDiscussionCategory = openIssues.First(x => x.CategoryKey == CategoryKey.HqDiscussion);
+                        hqDiscussionCategory.Issues.Add(item);
+                    }
+
+                    // only go to the next item in the
+                    // foreach if we found a match here
+                    if (matchedLabel)
+                        continue;
+
+                    foreach (var label in item.Labels)
+                    {
+                        var labels = new[] { "state/hq-reply" };
+                        if (labels.Contains(label.Name) == false)
+                            continue;
+
+                        matchedLabel = true;
+
+                        AddCategoryCreatedDate(item, label, labels);
+                        var hqReplyCategory = openIssues.First(x => x.CategoryKey == CategoryKey.HqReply);
+                        hqReplyCategory.Issues.Add(item);
+                    }
+
+                    // only go to the next item in the
+                    // foreach if we found a match here
+                    if (matchedLabel)
+                        continue;
+
                     foreach (var label in item.Labels)
                     {
                         var labels = new[] { "community/pr" };
@@ -150,7 +195,7 @@ namespace OurUmbraco.Our.Services
                 otherCategory.Issues.Add(item);
             }
 
-            return openIssues;
+            return openIssues.OrderBy(x => x.SortOrder).ToList();
         }
 
         private static void AddCategoryCreatedDate(Issue item, Models.GitHub.Label label, string[] labelNames)
@@ -170,6 +215,8 @@ namespace OurUmbraco.Our.Services
         {
             NoReply,
             UpForGrabs,
+            HqDiscussion,
+            HqReply,
             PullRequestPending,
             Other
         }

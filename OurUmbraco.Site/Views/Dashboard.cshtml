@@ -48,6 +48,132 @@
     var toYear = DateTime.Now.Year;
 }
 
+<style type="text/css">
+    .page, .container {
+        max-width: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .flex-container {
+        display: flex;
+        flex-direction: column;
+        font-size: 14px;
+        margin: 0 4px 0 0;
+        float: left;
+    }
+
+        .flex-container h5 {
+            max-width: 306px;
+        }
+        
+        .flex-container div.issue a {
+            overflow-wrap: break-word;
+        }
+
+        .flex-container div.issue {
+            max-width: 306px;
+            float: left;
+            padding: 4px;
+            margin-bottom: 4px;
+            border: 1px solid silver;
+            border-radius: 8px;
+        }
+
+        .flex-container div.author {
+            max-width: 46px;
+            float: left;
+        }
+
+        .flex-container div.details {
+            max-width: 250px;
+            float: left;
+        }
+
+        .flex-container .author img {
+            width: 40px;
+            height: 40px;
+            margin: 0 6px 0 0;
+            float: left;
+            border-radius: 20px;
+        }
+
+        .flex-container a {
+            color: #FF6E00;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+
+    .assignees {
+        float: right;
+    }
+
+        .assignees img {
+            width: 20px;
+            height: 20px;
+            margin: 1px;
+            border-radius: 10px;
+        }
+
+    .labels {
+        float: left;
+        margin: 2px;
+        clear: both;
+    }
+
+    span.label {
+        padding: 4px;
+        font-size: 10px;
+        border-radius: 4px;
+        margin-top: 2px;
+        display: inline-block;
+    }
+
+
+    .flex-container small, .overview small.comment {
+        font-size: 10px;
+        float: left;
+    }
+
+    span.error {
+        color: red;
+    }
+
+
+    .gauge {
+        height: 250px;
+        width: 350px;
+    }
+
+    .chart {
+        height: 500px;
+        width: 100%;
+        clear: both;
+        display: block;
+    }
+
+    .stats {
+        height: 550px;
+        display: inline-block;
+        width: 100%;
+        clear: both;
+    }
+
+    #body {
+        margin-bottom: 50px;
+    }
+
+    fieldset {
+        float: left;
+        margin-right: 8px;
+    }
+
+    section.form, .row {
+        margin: 0;
+        padding: 0;
+    }
+</style>
 <script src="/scripts/amcharts/core.js"></script>
 <script src="/scripts/amcharts/charts.js"></script>
 
@@ -56,10 +182,18 @@
         @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
     </div>
 
-    <h1>Filter</h1>
-    <section>
+    @if (showPulls)
+    {
+        <h1>Pull requests status - @totalIssues open PRs</h1>
+    }
+    else
+    {
+        <h1>Issue tracker status - @totalIssues open issues</h1>
+    }
+
+    <section class="form">
         <div class="container">
-            <div class="row">
+            <div class="row form">
                 <div class="col-md-12">
                     <form method="get">
                         <fieldset>
@@ -80,22 +214,14 @@
 
                             </p>
                         </fieldset>
-                        <input type="submit" class="button" value="Filter" />
+                        <fieldset>
+                            <input type="submit" class="button" value="Filter" />
+                        </fieldset>
                     </form>
                 </div>
             </div>
         </div>
     </section>
-
-    @if (showPulls)
-    {
-        <h1>Pull requests status - @totalIssues open PRs</h1>
-    }
-    else
-    {
-        <h1>Issue tracker status - @totalIssues open issues</h1>
-    }
-
 
     <section>
         <div class="container">
@@ -103,67 +229,61 @@
                 <div class="col-md-12">
                     @foreach (var category in categorizedIssues.Where(x => x.Issues.Any()))
                     {
-                        <table class="overview">
-                            <tr>
-                                <td colspan="2"><h5>@category.CategoryDescription (@category.Issues.Count issues)</h5></td>
-                            </tr>
-                            <tr>
-                                <td><strong>Author</strong></td>
-                                <td><strong>Item</strong></td>
-                            </tr>
+                        <div class="flex-container">
+
+                            <h5>@category.CategoryDescription (@category.Issues.Count issues)</h5>
+
 
                             @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
                             {
-                                <tr>
-                                    <td class="author">
+                                <div class="issue">
+                                    <div class="author">
                                         <a href="https://github.com/@issue.User.Login" target="_blank">
                                             <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
                                         </a>
-                                    </td>
-                                    <td>
-                                        <div class="issue">
-                                            <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Number @issue.Title</a><br />
-                                            <small class="comment">@issue.RepositoryName</small><br />
-                                            <small>
-                                                @{
-                                                    var dateCssClass = string.Empty;
-                                                    var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
-                                                }
-                                                @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
-                                                {
-                                                    if (businessDays > 2)
-                                                    {
-                                                        dateCssClass = "error";
-                                                    }
-                                                }
-                                                <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
-                                                    <span title="Created: @issue.CreateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) | Updated: @issue.UpdateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.</span>
-                                                    @if (issue.InThisCategorySince != null)
-                                                    {
-                                                        <br />
-                                                        <span title="Since: @issue.InThisCategorySince.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">In this category for ~@(issue.InThisCategorySince.Value.BusinessDaysSince()) business days.</span>
-                                                    }
-                                                </span>
-                                            </small>
-                                        </div>
-                                        <div class="assignees">
+                                    </div>
+                                    <div class="details">
+                                        <span class="assignees">
                                             @foreach (var assignee in issue.Assignees)
                                             {
                                                 <a href="https://github.com/@assignee.Login" target="_blank">
                                                     <img src="@assignee.AvatarUrl" title="Assigned to @assignee.Login" />
                                                 </a>
                                             }
-                                        </div>
+                                        </span>
+                                        <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Title #@issue.Number</a><br />
+                                        <small class="comment">@issue.RepositoryName</small><br />
+                                        <small>
+                                            @{
+                                                var dateCssClass = string.Empty;
+                                                var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
+                                            }
+                                            @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
+                                            {
+                                                if (businessDays > 2)
+                                                {
+                                                    dateCssClass = "error";
+                                                }
+                                            }
+                                            <span @(dateCssClass != string.Empty ? "class=" + dateCssClass : null)>
+                                                <span title="Created: @issue.CreateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture) | Updated: @issue.UpdateDateTime.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">Created ~@businessDays business @(businessDays > 1 ? "days" : "day") ago.</span>
+                                                @if (issue.InThisCategorySince != null)
+                                                {
+                                                    <br />
+                                                    <span title="Since: @issue.InThisCategorySince.Value.ToLocalTime().ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)">In this category for ~@(issue.InThisCategorySince.Value.BusinessDaysSince()) business days.</span>
+                                                }
+                                            </span>
+                                        </small>
                                         <div class="labels">
                                             @foreach (var label in issue.Labels)
                                             {
                                                 <span class="label" style="background-color: #@label.Color">@label.Name</span>
                                             }
                                         </div>
-                                    </td>
-                                </tr>
+                                    </div>
+                                </div>
                             }
-                        </table>
+                        </div>
                     }
                 </div>
             </div>
@@ -222,104 +342,3 @@
             prsCreatedColumnTemplate.width = am4core.percent(80);
             prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
 </script>
-
-<style type="text/css">
-    .page, .container {
-        max-width: none;
-    }
-
-    table.overview {
-        float: left;
-        width: 300px;
-        margin-right: 6px;
-    }
-
-    .overview td {
-        font-size: 14px;
-        vertical-align: top;
-        padding: 6px 6px;
-    }
-
-        .overview td img {
-            margin: 0;
-            max-width: none;
-        }
-
-        .overview td a {
-            color: #FF6E00;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .overview td.author img {
-            width: 40px;
-            height: 40px;
-            margin-left: 2px;
-        }
-
-        .overview td > div.issue {
-            float: left;
-            width: 85%;
-        }
-
-        .overview td > div.assignees {
-            float: left;
-            width: 15%;
-            text-align: right;
-        }
-
-            .overview td > div.assignees img {
-                width: 20px;
-                height: 20px;
-            }
-
-        .overview td > div.labels {
-            float: left;
-            width: 100%;
-            margin: 2px;
-        }
-
-    .overview span.label {
-        padding: 4px;
-        font-size: 10px;
-        border-radius: 2px;
-    }
-
-    .overview small, .overview small.comment {
-        font-size: 10px;
-    }
-
-    span.error {
-        color: red;
-    }
-
-
-    .gauge {
-        height: 250px;
-        width: 350px;
-    }
-
-    .chart {
-        height: 500px;
-        width: 100%;
-        clear: both;
-        display: block;
-    }
-
-    .center-block {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
-    }
-
-    .stats {
-        height: 550px;
-        display: inline-block;
-        width: 100%;
-        clear: both;
-    }
-
-    #body {
-        margin-bottom: 50px;
-    }
-</style>
