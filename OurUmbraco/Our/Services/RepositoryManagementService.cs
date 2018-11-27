@@ -106,13 +106,14 @@ namespace OurUmbraco.Our.Services
 
                 var pullRequestService = new GitHubService();
                 var hqMembers = pullRequestService.GetHqMembers();
-                var teamMembers = pullRequestService.GetTeamMembers().FirstOrDefault(x => x.TeamName == "Umbraco-CMS");
+                var teamMembers = pullRequestService.GetTeamMembers();
                 var teamUmbraco = hqMembers;
 
                 if (teamMembers != null)
                 {
-                    foreach (var teamMember in teamMembers.Members)
-                        teamUmbraco.Add(teamMember);
+                    foreach (var teamMember in teamMembers)
+                        foreach (var member in teamMember.Members)
+                            teamUmbraco.Add(member);
                 }
 
                 if (item.Comments.Any())
