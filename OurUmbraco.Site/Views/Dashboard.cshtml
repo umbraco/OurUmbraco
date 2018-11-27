@@ -79,6 +79,10 @@
             border: 1px solid silver;
             border-radius: 8px;
         }
+        
+        .flex-container div.issue.error {
+            border-color: red;
+        }
 
         .flex-container div.author {
             max-width: 46px;
@@ -236,7 +240,7 @@
 
                             @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
                             {
-                                <div class="issue">
+                                <div class="issue @(issue.NeedsTeamUmbracoReply ? "error" : null)">
                                     <div class="author">
                                         <a href="https://github.com/@issue.User.Login" target="_blank">
                                             <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />

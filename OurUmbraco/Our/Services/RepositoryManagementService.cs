@@ -6,6 +6,8 @@ using System.Web.Hosting;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
+using Umbraco.Core;
+
 namespace OurUmbraco.Our.Services
 {
     public class RepositoryManagementService
@@ -102,6 +104,28 @@ namespace OurUmbraco.Our.Services
                 if (item.State == "closed")
                     continue;
 
+                var pullRequestService = new GitHubService();
+                var hqMembers = pullRequestService.GetHqMembers();
+                var teamMembers = pullRequestService.GetTeamMembers().FirstOrDefault(x => x.TeamName == "Umbraco-CMS");
+                var teamUmbraco = hqMembers;
+
+                if (teamMembers != null)
+                {
+                    foreach (var teamMember in teamMembers.Members)
+                        teamUmbraco.Add(teamMember);
+                }
+
+                if (item.Comments.Any())
+                {
+                    var latestComment = item.Comments.OrderByDescending(x => x.CreateDateTime).FirstOrDefault();
+                    if (latestComment != null && teamUmbraco.InvariantContains(latestComment.User.Login) == false)
+                        item.NeedsTeamUmbracoReply = true;
+                }
+                else
+                {
+                    item.NeedsTeamUmbracoReply = true;
+                }
+
                 if (item.Labels.Length == 0 && item.CommentCount == 0)
                 {
                     var noFirstReplyCategory = openIssues.First(x => x.CategoryKey == CategoryKey.NoReply);
@@ -190,7 +214,7 @@ namespace OurUmbraco.Our.Services
                         continue;
                 }
 
-                
+
                 var otherCategory = openIssues.First(x => x.CategoryKey == CategoryKey.Other);
                 otherCategory.Issues.Add(item);
             }
