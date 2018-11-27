@@ -137,6 +137,11 @@ namespace OurUmbraco.Our.Services
                     release.ReleaseDate = releaseIssues.ReleaseDate;
                     foreach (var issue in releaseIssues.Issues)
                     {
+                        // Anything from the old issue tracker that's not set to
+                        // fixed should not appear in the release notes of v8
+                        if(release.Version == "8.0.0" && issue.State != "Fixed")
+                            continue;
+
                         release.Issues.Add(new Release.Issue
                         {
                             Id = issue.IssueNumber,
