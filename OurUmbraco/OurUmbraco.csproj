@@ -510,6 +510,7 @@
     <Compile Include="Our\Models\GitHub\Comment.cs" />
     <Compile Include="Our\Models\GitHub\Issue.cs" />
     <Compile Include="Our\Models\GitHub\Label.cs" />
+    <Compile Include="Our\Models\GitHub\PullRequest.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\IssuesInPeriod.cs" />

@@ -1,61 +1,64 @@
 ﻿using System;
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Skybrud.Essentials.Time;
+using Skybrud.Social.GitHub.Models.Issues;
+using Skybrud.Social.GitHub.Models.Labels;
+using Skybrud.Social.GitHub.Models.Users;
 
 namespace OurUmbraco.Our.Models.GitHub
 {
     public class Issue
     {
-        [JsonProperty("html_url")]
-        public string Link { get; set; }
 
-        [JsonProperty("number")]
-        public int Number { get; set; }
+        private readonly GitHubIssue _issue;
+        private Comments[] _comments;
+        private Event[] _events;
 
-        [JsonProperty("title")]
-        public string Title { get; set; }
+        public string Link => _issue.Urls.HtmlUrl;
 
-        [JsonProperty("user")]
-        public User User { get; set; }
+        public int Number => _issue.Number;
 
-        [JsonProperty("labels")]
-        public Label[] Labels { get; set; }
+        public string Title => _issue.Title;
 
-        [JsonProperty("state")]
-        public string State { get; set; }
+        public GitHubUserItem User => _issue.User;
 
-        [JsonProperty("assignees")]
-        public User[] Assignees { get; set; }
+        public GitHubLabel[] Labels => _issue.Labels;
 
-        [JsonProperty("comments")]
-        public int CommentCount { get; set; }
+        public GitHubIssueState State => _issue.State;
 
-        [JsonProperty("created_at")]
-        public DateTime CreateDateTime { get; set; }
+        public GitHubUserItem[] Assignees => _issue.Assignees;
 
-        [JsonProperty("updated_at")]
-        public DateTime UpdateDateTime { get; set; }
+        public int CommentCount => _issue.Comments;
 
-        [JsonProperty("closed_at")]
-        public DateTime? ClosedDateTime { get; set; }
+        public EssentialsDateTime CreateDateTime => _issue.CreatedAt;
 
-        [JsonProperty("body")]
-        public string Description { get; set; }
+        public EssentialsDateTime UpdateDateTime => _issue.UpdatedAt;
 
-        [JsonProperty("_comments")]
-        public Comments[] Comments { get; set; }
+        public EssentialsDateTime ClosedDateTime => _issue.ClosedAt;
 
-        [JsonProperty("events")]
-        public Event[] Events { get; set; }
+        public string Description => _issue.Body;
+
+        public Comments[] Comments => _comments ?? (_comments = _issue.JObject.Value<Comments[]>("comments"));
+
+        public Event[] Events => _events ?? (_events = _issue.JObject.Value<Event[]>("events"));
 
         // Custom properties
 
-        public string RepositoryName { get; set; }
+        public string RepositoryName => Link.Split('/')[4];
 
         public DateTime? FirstPrTeamOrHqComment { get; set; }
 
         public DateTime? InThisCategorySince { get; set; }
 
         public bool NeedsTeamUmbracoReply { get; set; }
+        
+        protected Issue(JObject obj) {
+            _issue = GitHubIssue.Parse(obj);
+        }
+
+        public static Issue Parse(JObject obj) {
+            return obj == null ? null : new Issue(obj);
+        }
 
         // Note: leaving the other properties commented out in case we need them later
 
@@ -69,5 +72,7 @@ namespace OurUmbraco.Our.Models.GitHub
         //public User assignee { get; set; }
         //public object milestone { get; set; }
         //public string author_association { get; set; }
+
     }
+
 }

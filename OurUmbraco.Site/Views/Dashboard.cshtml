@@ -260,7 +260,7 @@
                                         <small>
                                             @{
                                                 var dateCssClass = string.Empty;
-                                                var businessDays = issue.CreateDateTime.ToLocalTime().BusinessDaysSince();
+                                                var businessDays = issue.CreateDateTime.ToLocalTime().DateTime.BusinessDaysSince();
                                             }
                                             @if (category.CategoryKey == RepositoryManagementService.CategoryKey.NoReply)
                                             {

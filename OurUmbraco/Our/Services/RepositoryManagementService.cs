@@ -6,6 +6,9 @@ using System.Web.Hosting;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
+using Skybrud.Essentials.Json;
+using Skybrud.Social.GitHub.Models.Issues;
+using Skybrud.Social.GitHub.Models.Labels;
 using Umbraco.Core;
 
 namespace OurUmbraco.Our.Services
@@ -44,14 +47,12 @@ namespace OurUmbraco.Our.Services
 
                 foreach (var file in issueFiles)
                 {
-                    var fileContent = File.ReadAllText(file);
-                    var item = JsonConvert.DeserializeObject<Issue>(fileContent);
+
+                    Issue item = pulls ? JsonUtils.LoadJsonObject(file, PullRequest.Parse) : JsonUtils.LoadJsonObject(file, Issue.Parse);
 
                     // Exclude issues created by HQ
                     if (hqMembers.Contains(item.User.Login.ToLowerInvariant()))
                         continue;
-
-                    item.RepositoryName = repositoryName;
 
                     foreach (var comment in item.Comments)
                     {
@@ -101,7 +102,7 @@ namespace OurUmbraco.Our.Services
 
             foreach (var item in allIssues)
             {
-                if (item.State == "closed")
+                if (item.State == GitHubIssueState.Closed)
                     continue;
 
                 var pullRequestService = new GitHubService();
@@ -223,7 +224,7 @@ namespace OurUmbraco.Our.Services
             return openIssues.OrderBy(x => x.SortOrder).ToList();
         }
 
-        private static void AddCategoryCreatedDate(Issue item, Models.GitHub.Label label, string[] labelNames)
+        private static void AddCategoryCreatedDate(Issue item, GitHubLabel label, string[] labelNames)
         {
             if (item.Events != null)
             {
