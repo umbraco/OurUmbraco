@@ -1997,6 +1997,7 @@ namespace OurUmbraco.Our
                 if (releaseContentType.PropertyTypeExists(propertyTypeAlias) == false)
                 {
                     var progressSlider = new PropertyType(progressSliderDataType, propertyTypeAlias);
+                    progressSlider.Name = "Override Automated Release Progress";
                     releaseContentType.AddPropertyType(progressSlider, tabName);
                 }
 
