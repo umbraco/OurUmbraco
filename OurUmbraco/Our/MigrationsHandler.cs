@@ -1959,7 +1959,6 @@ namespace OurUmbraco.Our
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var releaseContentType = contentTypeService.GetContentType("Release");
                 var propertyTypeAlias = "overrideYouTrackReleaseProgress";
-                var textbox = new DataTypeDefinition("Umbraco.Textbox");
 
                 // create the slider data type
                 var progressSliderDataTypeName = "Release Progress Slider";
