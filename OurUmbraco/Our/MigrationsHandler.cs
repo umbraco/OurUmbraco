@@ -63,6 +63,7 @@ namespace OurUmbraco.Our
             AddAppsDashboardPage();
             AddGitHubMemberProperties();
             AddTwitterMemberProperties();
+            AddManualProgressSliderToReleases();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -1934,6 +1935,73 @@ namespace OurUmbraco.Our
                     if (user == null)
                         db.Execute($"INSERT INTO umbracoUser (userName, userLogin, userEmail, userPassword) VALUES('test{i}@@test.com', 'test{i}@@test.com', 'test{i}@@test.com', 'abc123')");
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddManualProgressSliderToReleases()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var releaseContentType = contentTypeService.GetContentType("Release");
+                var propertyTypeAlias = "overrideYouTrackReleaseProgress";
+                var textbox = new DataTypeDefinition("Umbraco.Textbox");
+
+                // create the slider data type
+                var progressSliderDataTypeName = "Release Progress Slider";
+
+                var progressSliderDataType = dataTypeService.GetDataTypeDefinitionByName(progressSliderDataTypeName);
+                if (progressSliderDataType == null)
+                {
+                    progressSliderDataType = new DataTypeDefinition(-1, "Umbraco.Slider");
+                    Dictionary<string, PreValue> preValues = new Dictionary<string, PreValue>();
+                    preValues.Add("enableRange", new PreValue("0"));
+                    preValues.Add("orientation", new PreValue("horizontal"));
+                    preValues.Add("initVal1", new PreValue("0"));
+                    preValues.Add("initVal2", new PreValue(""));
+                    preValues.Add("minVal", new PreValue("0"));
+                    preValues.Add("maxVal", new PreValue("100"));
+                    preValues.Add("step", new PreValue("1"));
+                    preValues.Add("precision", new PreValue(""));
+                    preValues.Add("handle", new PreValue("round"));
+                    preValues.Add("tooltip", new PreValue("always"));
+                    preValues.Add("tooltipSplit", new PreValue("0"));
+                    preValues.Add("tooltipFormat", new PreValue(""));
+                    preValues.Add("tooltipPosition", new PreValue(""));
+                    preValues.Add("reversed", new PreValue("0"));
+                    preValues.Add("ticks", new PreValue(""));
+                    preValues.Add("ticksPositions", new PreValue(""));
+                    preValues.Add("ticksLabels", new PreValue(""));
+                    preValues.Add("ticksSnapBounds", new PreValue(""));
+                    progressSliderDataType.Name = progressSliderDataTypeName;
+                    dataTypeService.SaveDataTypeAndPreValues(progressSliderDataType, preValues);
+                }
+
+                var tabName = "Content";
+                if (releaseContentType.PropertyGroups.Contains(tabName) == false)
+                    releaseContentType.AddPropertyGroup(tabName);
+
+                if (releaseContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var progressSlider = new PropertyType(progressSliderDataType, propertyTypeAlias);
+                    releaseContentType.AddPropertyType(progressSlider, tabName);
+                }
+
+                contentTypeService.Save(releaseContentType);
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
