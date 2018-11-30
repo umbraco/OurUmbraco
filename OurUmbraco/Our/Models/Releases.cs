@@ -54,7 +54,7 @@ namespace OurUmbraco.Our.Models
         [JsonIgnore]
         public IEnumerable<Issue> IssuesCompleted { get; set; }
 
-        [JsonIgnore]
+        [JsonProperty("percentComplete")]
         public double PercentComplete { get; set; }
 
         [JsonIgnore]

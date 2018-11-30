@@ -59,7 +59,10 @@ namespace OurUmbraco.Our.Services
                     || x.State.ToLowerInvariant() == "obsolete"
                     || x.State.ToLowerInvariant() == "workaround posted");
 
-                release.PercentComplete = ReleasePercentComplete(release);
+                // if a manual release percentage isn't set, we'll try to calculate based on issue completion
+                if (release.PercentComplete == 0) { 
+                    release.PercentComplete = ReleasePercentComplete(release);
+                }
             }
 
             return releases;
@@ -91,6 +94,7 @@ namespace OurUmbraco.Our.Services
                 var status = node.GetPropertyValue<string>("releaseStatus");
                 var recommendedRelease = node.GetPropertyValue<bool>("recommendedRelease");
                 var releaseDescription = node.GetPropertyValue<string>("bodyText");
+                var manualProgressPercent = node.GetPropertyValue<int>("overrideYouTrackReleaseProgress");
 
                 var release = new Release
                 {
@@ -102,7 +106,8 @@ namespace OurUmbraco.Our.Services
                     InProgressRelease = status != "Released",
                     PlannedRelease = status != "Released",
                     Released = status == "Released",
-                    Issues = new List<Release.Issue>()
+                    Issues = new List<Release.Issue>(),
+                    PercentComplete = manualProgressPercent
                 };
                 releases.Add(release);
             }
