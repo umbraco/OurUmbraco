@@ -6,6 +6,7 @@ using System.Web.Http;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
+using Skybrud.Social.GitHub.Models.Issues;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -58,24 +59,24 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in allCommunityIssues)
                 {
-                    if (issue.CreateDateTime <= periodLastDay && issue.State != "closed")
+                    if (issue.CreateDateTime <= periodLastDay && issue.State != GitHubIssueState.Closed)
                         issuesList.NumberOpen = issuesList.NumberOpen + 1;
                 }
 
                 var allClosingTimesInHours = new List<double>();
                 foreach (var issue in issuesInPeriod.Value)
                 {
-                    if (issue.State == "closed" && issue.ClosedDateTime.HasValue)
+                    if (issue.State == GitHubIssueState.Closed && issue.ClosedDateTime != null)
                     {
                         var createDateTime = issue.CreateDateTime;
-                        var closedDateTime = issue.ClosedDateTime.Value;
+                        var closedDateTime = issue.ClosedDateTime;
 
                         if (closedDateTime < periodFirstDay || closedDateTime > periodLastDay)
                             continue;
 
                         issuesList.NumberClosed = issuesList.NumberClosed + 1;
 
-                        var hoursOpen = createDateTime.BusinessHoursUntil(closedDateTime);
+                        var hoursOpen = createDateTime.DateTime.BusinessHoursUntil(closedDateTime.DateTime);
                         allClosingTimesInHours.Add(hoursOpen);
                     }
                 }

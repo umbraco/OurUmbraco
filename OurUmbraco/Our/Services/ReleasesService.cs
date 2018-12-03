@@ -13,6 +13,7 @@ using Newtonsoft.Json;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Models.GitHub;
+using Skybrud.Social.GitHub.Models.Issues;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Web;
@@ -210,7 +211,7 @@ namespace OurUmbraco.Our.Services
                     if (stateLabel != null)
                         // if there's a label with a state then use that as the state
                         state = stateLabel.Name.Replace("state/", string.Empty);
-                    else if (item.State == "closed" && item.Labels.Any(x => x.Name.StartsWith("release")))
+                    else if (item.State == GitHubIssueState.Closed && item.Labels.Any(x => x.Name.StartsWith("release")))
                         // there is no state label applied
                         // if the item is closed and has a release label on it then we set it to fixed
                         state = "fixed";
