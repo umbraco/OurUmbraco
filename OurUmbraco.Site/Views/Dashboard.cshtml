@@ -32,6 +32,15 @@
         allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.RepositoryName.InvariantEquals(repoQuerystring) == false));
     }
 
+
+    var labelQuerystring = Request.QueryString["label"];
+
+    if (string.IsNullOrWhiteSpace(labelQuerystring) == false)
+    {
+        allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.Labels.Any(z => z.Name.InvariantEquals(labelQuerystring)) == false));
+    }
+
+
     categorizedIssues = allOpenIssues.OrderBy(x => x.SortOrder).ToList();
 
 
@@ -46,6 +55,8 @@
 
     var toMonth = DateTime.Now.Month;
     var toYear = DateTime.Now.Year;
+
+
 }
 
 <style type="text/css">
@@ -78,10 +89,6 @@
             margin-bottom: 4px;
             border: 1px solid silver;
             border-radius: 8px;
-        }
-        
-        .flex-container div.issue.error {
-            border-color: red;
         }
 
         .flex-container div.author {
@@ -133,7 +140,12 @@
         margin-top: 2px;
         display: inline-block;
     }
-
+    
+    span.label a {
+        color: black;
+        font-weight: normal;
+        text-decoration: underline;
+    }
 
     .flex-container small, .overview small.comment {
         font-size: 10px;
@@ -240,7 +252,7 @@
 
                             @foreach (var issue in category.Issues.OrderByDescending(x => x.CreateDateTime))
                             {
-                                <div class="issue @(issue.NeedsTeamUmbracoReply ? "error" : null)">
+                                <div class="issue">
                                     <div class="author">
                                         <a href="https://github.com/@issue.User.Login" target="_blank">
                                             <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
@@ -281,7 +293,7 @@
                                         <div class="labels">
                                             @foreach (var label in issue.Labels)
                                             {
-                                                <span class="label" style="background-color: #@label.Color">@label.Name</span>
+                                                <span class="label" style="background-color: #@label.Color"><a href="@(BuildQueryStringUrl(new[] {"label=" + label.Name }))">@label.Name</a></span>
                                             }
                                         </div>
                                     </div>
@@ -346,3 +358,42 @@
             prsCreatedColumnTemplate.width = am4core.percent(80);
             prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
 </script>
+
+@functions
+{
+    // From: https://stackoverflow.com/a/29206643/5018
+
+    public string BuildQueryStringUrl(string[] newQueryStringArr)
+    {
+        var url = Request.RawUrl;
+        string plainUrl;
+        var queryString = string.Empty;
+
+        var newQueryString = string.Join("&", newQueryStringArr);
+
+        if (url.Contains("?"))
+        {
+            var index = url.IndexOf('?');
+            plainUrl = url.Substring(0, index); //URL With No QueryString
+            queryString = url.Substring(index + 1);
+        }
+        else
+        {
+            plainUrl = url;
+        }
+
+        var nvc = HttpUtility.ParseQueryString(queryString);
+        var qscoll = HttpUtility.ParseQueryString(newQueryString);
+
+        var queryData = string.Join("&",
+            nvc.AllKeys.Where(key => !qscoll.AllKeys.Any(newKey => newKey.Contains(key))).
+                Select(key => string.Format("{0}={1}",
+                    HttpUtility.UrlEncode(key), HttpUtility.UrlEncode(nvc[key]))).ToArray());
+        //Fetch Existing QueryString Except New QueryString
+
+        var delimiter = nvc.HasKeys() && !string.IsNullOrEmpty(queryData) ? "&" : string.Empty;
+        var queryStringToAppend = "?" + newQueryString + delimiter + queryData;
+
+        return plainUrl + queryStringToAppend;
+    }
+}
