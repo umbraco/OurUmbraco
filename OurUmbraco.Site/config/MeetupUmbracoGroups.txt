@@ -38,3 +38,4 @@ Umbraco-User-Group-Sweden
 Surrey-Umbraco-Meetup
 cogworks-hackathon
 Umbraco-Minneapolis
+Umbraco-Nepal-Meetup
