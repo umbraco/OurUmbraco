@@ -223,6 +223,52 @@ namespace OurUmbraco.Our.Services
             return openIssues.OrderBy(x => x.SortOrder).ToList();
         }
 
+        public List<GitHubCategorizedIssues> GetPendingItemsForUser(string githubUsername)
+        {
+            var myIssues = new List<GitHubCategorizedIssues>
+            {
+                new GitHubCategorizedIssues
+                {
+                    SortOrder = 0,
+                    CategoryDescription = "Reply pending",
+                    CategoryKey = CategoryKey.ReplyPending,
+                    Issues = new List<Issue>()
+                }
+            };
+
+            var allIssues = GetAllCommunityIssues(pulls: false);
+            foreach (var issue in allIssues.Where(x => x.State != "closed"))
+            {
+                // only issues the requested user has replied to
+                if (issue.Comments.Any(x => string.Equals(x.User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase)) == false)
+                    continue;
+
+                
+                if (string.Equals(issue.Comments.Last().User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+
+                // if the requested user doesn't have the last reply, add it to the list
+                myIssues.First().Issues.Add(issue);
+            }
+
+            var allPrs = GetAllCommunityIssues(pulls: true);
+            foreach (var issue in allPrs.Where(x => x.State != "closed"))
+            {
+                // only issues the requested user has replied to
+                if (issue.Comments.Any(x => string.Equals(x.User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase)) == false)
+                    continue;
+
+
+                if (string.Equals(issue.Comments.Last().User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase))
+                    continue;
+
+                // if the requested user doesn't have the last reply, add it to the list
+                myIssues.First().Issues.Add(issue);
+            }
+            
+            return myIssues;
+        }
+
         private static void AddCategoryCreatedDate(Issue item, Models.GitHub.Label label, string[] labelNames)
         {
             if (item.Events != null)
@@ -243,6 +289,7 @@ namespace OurUmbraco.Our.Services
             HqDiscussion,
             HqReply,
             PullRequestPending,
+            ReplyPending,
             Other
         }
 

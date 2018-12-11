@@ -1,8 +1,7 @@
-﻿@using System.Activities.Debugger
-@using OurUmbraco.Forum.Extensions
-@using OurUmbraco.Our.Extensions
+﻿@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Services
 @using System.Globalization
+@using OurUmbraco.Our.Extensions
 @inherits UmbracoTemplatePage
 @{
     Layout = "Master.cshtml";
@@ -11,6 +10,9 @@
         Response.Redirect("/");
     }
 
+    var repoManagementService = new RepositoryManagementService();
+    var categorizedIssues = new List<RepositoryManagementService.GitHubCategorizedIssues>();
+
     var showPulls = false;
     var showPullsQueryString = Request.QueryString["pulls"];
     if (string.IsNullOrWhiteSpace(showPullsQueryString) == false && showPullsQueryString == "true")
@@ -18,45 +20,49 @@
         showPulls = true;
     }
 
-    var repoManagementService = new RepositoryManagementService();
-    var allOpenIssues = repoManagementService.GetAllOpenIssues(showPulls);
+    var pendingForUser = false;
+    var pendingForUserQueryString = Request.QueryString["user"];
+    if (string.IsNullOrWhiteSpace(pendingForUserQueryString) == false)
+    {
+        pendingForUser = true;
+        categorizedIssues = repoManagementService.GetPendingItemsForUser(pendingForUserQueryString);
+    }
 
-    var repositories = allOpenIssues.SelectMany(x => x.Issues).Select(x => x.RepositoryName).Distinct().ToList();
+    var totalIssues = 0;
 
     var repoQuerystring = Request.QueryString["repository"];
 
-    List<RepositoryManagementService.GitHubCategorizedIssues> categorizedIssues = null;
-
-    if (string.IsNullOrWhiteSpace(repoQuerystring) == false)
-    {
-        allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.RepositoryName.InvariantEquals(repoQuerystring) == false));
-    }
-
-
     var labelQuerystring = Request.QueryString["label"];
-
-    if (string.IsNullOrWhiteSpace(labelQuerystring) == false)
+    if (pendingForUser == false)
     {
-        allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.Labels.Any(z => z.Name.InvariantEquals(labelQuerystring)) == false));
+        var allOpenIssues = repoManagementService.GetAllOpenIssues(showPulls);
+
+        if (string.IsNullOrWhiteSpace(repoQuerystring) == false)
+        {
+            allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.RepositoryName.InvariantEquals(repoQuerystring) == false));
+        }
+
+        if (string.IsNullOrWhiteSpace(labelQuerystring) == false)
+        {
+            allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.Labels.Any(z => z.Name.InvariantEquals(labelQuerystring)) == false));
+        }
+
+        categorizedIssues = allOpenIssues.OrderBy(x => x.SortOrder).ToList();
+
+
+        foreach (var categories in categorizedIssues)
+        {
+            totalIssues = totalIssues + categories.Issues.Count;
+        }
     }
 
-
-    categorizedIssues = allOpenIssues.OrderBy(x => x.SortOrder).ToList();
-
-
-    var totalIssues = 0;
-    foreach (var categories in categorizedIssues)
-    {
-        totalIssues = totalIssues + categories.Issues.Count;
-    }
+    var repositories = categorizedIssues.SelectMany(x => x.Issues).Select(x => x.RepositoryName).Distinct().ToList();
 
     var fromMonth = DateTime.Now.AddYears(-1).Month;
     var fromYear = DateTime.Now.AddYears(-1).Year;
 
     var toMonth = DateTime.Now.Month;
     var toYear = DateTime.Now.Year;
-
-
 }
 
 <style type="text/css">
