@@ -65,9 +65,30 @@
 
         if (comment.HasChildren)
         {
-            foreach (var child in Model.Comments.Where(c => c.ParentCommentId == comment.Id))
+            var childList = new List<ReadOnlyComment>();
+            childList.AddRange(Model.Comments.Where(c => c.ParentCommentId != 0));
+
+            foreach (var child in Model.Comments.Where(c => c.ParentCommentId != 0))
             {
-                Html.RenderPartial("forum/comment", child);
+                if (child.ParentCommentId == comment.Id)
+                {
+                    Html.RenderPartial("forum/comment", child);
+                }
+                else
+                {
+                    // Huge workaround since we sometimes store the wrong parentId, so there would be a 3rd level..
+                    // don't ask.
+                    // Also: DO NOT TOUCH, it will break if you change this, comments will start disappearing!
+                    var parentComment = childList.FirstOrDefault(x => x.Id == child.ParentCommentId);
+                    if (parentComment != null)
+                    {
+                        child.ParentCommentId = parentComment.ParentCommentId;
+                        if (child.ParentCommentId == comment.Id)
+                        {
+                            Html.RenderPartial("forum/comment", child);
+                        }
+                    }
+                }
             }
         }
     }
