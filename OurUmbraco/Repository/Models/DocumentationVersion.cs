@@ -16,5 +16,7 @@ namespace OurUmbraco.Repository.Models
         public bool IsCurrentPage { get; internal set; }
         public SemVersion VersionFrom { get; internal set; }
         public SemVersion VersionTo { get; internal set; }
+        public string MetaTitle { get; set; }
+        public string MetaDescription { get; set; }
     }
 }

@@ -1,6 +1,42 @@
 ﻿@inherits UmbracoTemplatePage
+@using OurUmbraco.Repository.Services
 @{
     Layout = "~/Views/Master.cshtml";
+}
+@section SeoMetaData {
+    @{
+        var docVersionService = new DocumentationVersionService();
+        var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
+
+        var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
+    }
+    @if (currentDocVersion != null)
+    {
+        <title>@currentDocVersion.MetaTitle - Our Umbraco</title>
+        <meta name="description" content="@currentDocVersion.MetaDescription" />
+    }
+    else
+    {
+        <title>
+            @{
+                var title = string.Empty;
+                var navigationTitle = HttpContext.Current.Items["topicTitle"];
+                if (navigationTitle != null)
+                {
+                    title = navigationTitle.ToString();
+                }
+
+                if (string.IsNullOrWhiteSpace(title) == false)
+                {
+                    <text>@title - </text>
+                }
+            }
+
+            @Model.Content.Name - our.umbraco.com
+        </title>
+        <meta name="description" content="">
+    }
+    @Model.Content.Id
 }
 <div class="has-sidebar">
     <div class="documentation">
@@ -25,11 +61,11 @@
                                 <input type="search" class="docs-search-input" required placeholder="Search for documentation">
                                 <label for="search">Search for documentation</label>
                             </div>
-                                <select class="version-search-select">
-                                    <option value="8">v8</option>
-                                    <option value="7" selected="selected">v7</option>
-                                    <option value="6">v6</option>
-                                </select>
+                            <select class="version-search-select">
+                                <option value="8">v8</option>
+                                <option value="7" selected="selected">v7</option>
+                                <option value="6">v6</option>
+                            </select>
                         </div>
 
                         <ul class="search-all-results docs-search-listing"></ul>
@@ -42,7 +78,7 @@
             </div><!-- .main-area -->
 
         </div><!-- .page-content -->
-        
+
         <script type="text/template" class="search-item-docs">
             <li>
                 <a href="{{ url }}">
