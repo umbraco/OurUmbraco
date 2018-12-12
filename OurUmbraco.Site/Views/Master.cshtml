@@ -75,7 +75,7 @@
                 {
                     var path = title.Split(new string[] { " - " }, StringSplitOptions.None);
 
-                    System.Globalization.TextInfo myTI = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+                    var textInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
 
                     var firstUrlPath = myTI.ToTitleCase(path[0]);
                     var lastUrlPath = myTI.ToTitleCase(path[path.Length - 1]);
