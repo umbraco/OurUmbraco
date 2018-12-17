@@ -80,20 +80,25 @@ namespace OurUmbraco.Our.Models
         /// Average time in hours between create and merge date
         /// </summary>
         public int AveragePullRequestClosingTimeInHours { get; set; }
-
+       
         /// <summary>
         /// Median time in hours between create and merge date
         /// </summary>
         public int MedianPullRequestClosingTimeInHours { get; set; }
 
+
         public string AllPullRequestClosingTimesInHours { get; set; }
 
         public string AllFirstTeamCommentTimesInHours { get; set; }
+
+        public int TargetPullRequestClosingTimeInHours { get; set; } = 720;
 
         /// <summary>
         /// Average time in hours between create and first comment from PR team
         /// </summary>
         public int AverageFirstTeamCommentTimeInHours { get; set; }
+
+        public int TargetFirstTeamCommentTimeInHours { get; set; } = 48;
 
         /// <summary>
         /// Median time in hours between create and first comment from PR team

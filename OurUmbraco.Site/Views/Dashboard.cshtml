@@ -30,7 +30,7 @@
 
     var totalIssues = 0;
 
-    var repoQuerystring = Request.QueryString["repository"];
+    var repoQuerystring = Request.QueryString["repository"]  ?? string.Empty;
 
     var labelQuerystring = Request.QueryString["label"];
     if (pendingForUser == false)
@@ -319,7 +319,27 @@
                 <div class="row">
                     <h5>Issues: created and closed</h5>
                     <div class="col-md-12">
-                        <div id="GroupedIssues" class="chart"></div>
+                        <div id="GroupedIssuesClosed" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Issues: first response time</h5>
+                    <div class="col-md-12">
+                        <div id="IssuesFirstResponseTime" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Issues: closing time</h5>
+                    <div class="col-md-12">
+                        <div id="IssuesClosingTime" class="chart"></div>
                     </div>
                 </div>
             </div>
@@ -329,8 +349,8 @@
 </div>
 
 <script>
-       var groupedPrsChart = am4core.create("GroupedIssues", am4charts.XYChart);
-            groupedPrsChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)";
+            var groupedPrsChart = am4core.create("GroupedIssuesClosed", am4charts.XYChart);
+            groupedPrsChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repoQuerystring)";
 
             groupedPrsChart.scrollbarX = new am4core.Scrollbar();
             groupedPrsChart.legend = new am4charts.Legend();
@@ -363,6 +383,86 @@
             var prsCreatedColumnTemplate = prsCreated.columns.template;
             prsCreatedColumnTemplate.width = am4core.percent(80);
             prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var issuesFirstResponseAverageChart = am4core.create("IssuesFirstResponseTime", am4charts.XYChart);
+            issuesFirstResponseAverageChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repoQuerystring)";
+    
+            issuesFirstResponseAverageChart.scrollbarX = new am4core.Scrollbar();
+            issuesFirstResponseAverageChart.legend = new am4charts.Legend();
+
+            var issuesFirstResponseAverageDateAxis = issuesFirstResponseAverageChart.xAxes.push(new am4charts.DateAxis());
+            var issuesFirstResponseAverageValueAxis = issuesFirstResponseAverageChart.yAxes.push(new am4charts.ValueAxis());
+    
+            var issuesFirstResponseAverageSeries = issuesFirstResponseAverageChart.series.push(new am4charts.LineSeries());
+            issuesFirstResponseAverageSeries.name = "Response time (average)";
+            issuesFirstResponseAverageSeries.dataFields.dateX = "GroupName";
+            issuesFirstResponseAverageSeries.dataFields.valueY = "IssueAverageFirstCommentTimesInHours";
+            issuesFirstResponseAverageSeries.sequencedInterpolation = true;
+            issuesFirstResponseAverageSeries.strokeWidth = 4;
+            issuesFirstResponseAverageSeries.tensionX = 0.8;
+
+            var issuesFirstResponseAverageSeries2 = issuesFirstResponseAverageChart.series.push(new am4charts.LineSeries());
+            issuesFirstResponseAverageSeries2.name = "Response time (median)";
+            issuesFirstResponseAverageSeries2.dataFields.dateX = "GroupName";
+            issuesFirstResponseAverageSeries2.dataFields.valueY = "IssueMedianFirstCommentTimesInHours";
+            issuesFirstResponseAverageSeries2.sequencedInterpolation = true;
+            issuesFirstResponseAverageSeries2.stroke = issuesFirstResponseAverageChart.colors.getIndex(4);
+            issuesFirstResponseAverageSeries2.strokeWidth = 4;
+            issuesFirstResponseAverageSeries2.tensionX = 0.8;
+
+            var issuesFirstResponseAverageSeries3 = issuesFirstResponseAverageChart.series.push(new am4charts.LineSeries());
+            issuesFirstResponseAverageSeries3.name = "Target response time";
+            issuesFirstResponseAverageSeries3.dataFields.dateX = "GroupName";
+            issuesFirstResponseAverageSeries3.dataFields.valueY = "TargetFirstCommentTimeInHours";
+            issuesFirstResponseAverageSeries3.sequencedInterpolation = true;
+            issuesFirstResponseAverageSeries3.stroke = issuesFirstResponseAverageChart.colors.getIndex(6);
+            issuesFirstResponseAverageSeries3.strokeWidth = 4;
+            issuesFirstResponseAverageSeries3.tensionX = 0.8;
+
+            issuesFirstResponseAverageChart.cursor = new am4charts.XYCursor();
+
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var issuesClosingAverageChart = am4core.create("IssuesClosingTime", am4charts.XYChart);
+    issuesClosingAverageChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repoQuerystring)";
+    
+            issuesClosingAverageChart.scrollbarX = new am4core.Scrollbar();
+            issuesClosingAverageChart.legend = new am4charts.Legend();
+
+            var issuesClosingAverageDateAxis = issuesClosingAverageChart.xAxes.push(new am4charts.DateAxis());
+            var issuesClosingAverageValueAxis = issuesClosingAverageChart.yAxes.push(new am4charts.ValueAxis());
+    
+            var issuesClosingAverageSeries = issuesClosingAverageChart.series.push(new am4charts.LineSeries());
+            issuesClosingAverageSeries.name = "Closing time (average)";
+            issuesClosingAverageSeries.dataFields.dateX = "GroupName";
+            issuesClosingAverageSeries.dataFields.valueY = "IssueAverageClosingTimeInHours";
+            issuesClosingAverageSeries.sequencedInterpolation = true;
+            issuesClosingAverageSeries.strokeWidth = 4;
+            issuesClosingAverageSeries.tensionX = 0.8;
+
+            var issuesClosingAverageSeries2 = issuesClosingAverageChart.series.push(new am4charts.LineSeries());
+            issuesClosingAverageSeries2.name = "Closing time (median)";
+            issuesClosingAverageSeries2.dataFields.dateX = "GroupName";
+            issuesClosingAverageSeries2.dataFields.valueY = "IssueMedianClosingTimeInHours";
+            issuesClosingAverageSeries2.sequencedInterpolation = true;
+            issuesClosingAverageSeries2.stroke = issuesClosingAverageChart.colors.getIndex(4);
+            issuesClosingAverageSeries2.strokeWidth = 4;
+            issuesClosingAverageSeries2.tensionX = 0.8;
+
+            var issuesClosingAverageSeries3 = issuesClosingAverageChart.series.push(new am4charts.LineSeries());
+            issuesClosingAverageSeries3.name = "Target closing time";
+            issuesClosingAverageSeries3.dataFields.dateX = "GroupName";
+            issuesClosingAverageSeries3.dataFields.valueY = "TargetClosingTimeInHours";
+            issuesClosingAverageSeries3.sequencedInterpolation = true;
+            issuesClosingAverageSeries3.stroke = issuesClosingAverageChart.colors.getIndex(6);
+            issuesClosingAverageSeries3.strokeWidth = 4;
+            issuesClosingAverageSeries3.tensionX = 0.8;
+
+            issuesClosingAverageChart.cursor = new am4charts.XYCursor();
+
+    
 </script>
 
 @functions

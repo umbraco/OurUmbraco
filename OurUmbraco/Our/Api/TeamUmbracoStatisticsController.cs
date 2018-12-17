@@ -121,7 +121,7 @@ namespace OurUmbraco.Our.Api
                 {
                     GroupName = groupName,
                     MonthYear = period,
-                    NumberMerged = prInPeriod.Value.Count,
+                    NumberMerged = prInPeriod.Value.Count
                 };
 
                 var firstPrsUsernames = new List<string>();
@@ -281,8 +281,7 @@ namespace OurUmbraco.Our.Api
 
                     if (previousPrStats == null)
                     {
-                        var groupName =
-                            $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
+                        var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
                         groupedPrs.Add(new PullRequestsInPeriod
                         {
                             GroupName = groupName,
@@ -291,8 +290,7 @@ namespace OurUmbraco.Our.Api
                     }
                     else
                     {
-                        var groupName =
-                            $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
+                        var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(dateTime.Month)} {dateTime.Year}";
                         groupedPrs.Add(new PullRequestsInPeriod
                         {
                             GroupName = groupName,

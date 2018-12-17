@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Http;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
+using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -14,8 +17,13 @@ namespace OurUmbraco.Our.Api
     {
         [MemberAuthorize(AllowGroup = "HQ,TeamUmbraco")]
         [HttpGet]
-        public List<IssuesInPeriod> GetGroupedIssuesData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear)
+        public List<IssuesInPeriod> GetGroupedIssuesData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear, string repository = "")
         {
+            var gitHubService = new GitHubService();
+            var teamMembers = new List<string>();
+            foreach(var team in gitHubService.GetTeamMembers())
+                teamMembers.AddRange(team.Members);
+
             if (fromDay == 0)
                 fromDay = 1;
             if (toDay == 0)
@@ -26,12 +34,16 @@ namespace OurUmbraco.Our.Api
 
             var repoService = new RepositoryManagementService();
             var allCommunityIssues = repoService.GetAllCommunityIssues(false).ToList();
+
+            if (string.IsNullOrWhiteSpace(repository) == false)
+                allCommunityIssues = allCommunityIssues.Where(x => x.RepositoryName == repository).ToList();
+
             var issues = allCommunityIssues
                 .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate)
                 .OrderBy(x => x.CreateDateTime)
                 .GroupBy(x => new { x.CreateDateTime.Year, x.CreateDateTime.Month })
                 .ToDictionary(x => x.Key, x => x.ToList());
-
+            
             var groupedIssues = new List<IssuesInPeriod>();
 
             foreach (var issuesInPeriod in issues)
@@ -42,10 +54,17 @@ namespace OurUmbraco.Our.Api
                 {
                     MonthYear = period,
                     GroupName = groupName,
+
                     AllIssueClosingTimesInHours = string.Empty,
                     IssueAverageClosingTimeInHours = 0,
                     IssueMedianClosingTimeInHours = 0,
-                    //AllIssueFirstCommentTimesInHours = "",
+                    TargetClosingTimeInHours = 2880, // 120 business days
+
+                    AllIssueFirstCommentTimesInHours = string.Empty,
+                    IssueAverageFirstCommentTimesInHours = 0,
+                    IssueMedianFirstCommentTimesInHours = 0,
+                    TargetFirstCommentTimeInHours = 48, // 2 business days
+
                     NumberClosed = 0,
                     NumberOpen = 0,
                     NumberCreated = issuesInPeriod.Value.Count
@@ -58,11 +77,15 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in allCommunityIssues)
                 {
+                    if(teamMembers.InvariantContains(issue.User.Login))
+                        LogHelper.Info<IssuesStatisticsController>($"Weird, issue https://github.com/umbraco/{issue.RepositoryName}/issue/{issue.Number} was created by {issue.User.Login}");
+
                     if (issue.CreateDateTime <= periodLastDay && issue.State != "closed")
                         issuesList.NumberOpen = issuesList.NumberOpen + 1;
                 }
 
                 var allClosingTimesInHours = new List<double>();
+                var allFirstCommentTimesInHours = new List<double>();
                 foreach (var issue in issuesInPeriod.Value)
                 {
                     if (issue.State == "closed" && issue.ClosedDateTime.HasValue)
@@ -78,6 +101,45 @@ namespace OurUmbraco.Our.Api
                         var hoursOpen = createDateTime.BusinessHoursUntil(closedDateTime);
                         allClosingTimesInHours.Add(hoursOpen);
                     }
+                    else
+                    {
+                        //var dateLastDayOfMonth = issue.CreateDateTime.GetDateLastDayOfMonth().AddDays(1).AddSeconds(-1);
+                        var hoursOpen = issue.CreateDateTime.BusinessHoursUntil(DateTime.Now);
+                        allClosingTimesInHours.Add(hoursOpen);
+                    }
+
+                    double hoursBeforeFirstReply = 0;
+                    double hoursBeforeFirstLabel = 0;
+                    foreach (var comment in issue.Comments.OrderBy(x => x.CreateDateTime))
+                    {
+                        if (teamMembers.InvariantContains(comment.User.Login))
+                        {
+                            hoursBeforeFirstReply = issue.CreateDateTime.BusinessHoursUntil(comment.CreateDateTime);
+                        }
+                        else
+                        {
+                            //var dateLastDayOfMonth = issue.CreateDateTime.GetDateLastDayOfMonth().AddDays(1).AddSeconds(-1);
+                            hoursBeforeFirstReply = issue.CreateDateTime.BusinessHoursUntil(DateTime.Now);
+                        }
+                    }
+
+                    if (issue.Events.Any())
+                    {
+                        var firstLabel = issue.Events.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => x.Name == "labeled");
+                        if (firstLabel != null)
+                            hoursBeforeFirstLabel = issue.CreateDateTime.BusinessDaysUntil(firstLabel.CreateDateTime);
+                    }
+
+                    if (hoursBeforeFirstLabel != 0 && hoursBeforeFirstReply != 0)
+                    {
+                        double hours;
+                        if (hoursBeforeFirstLabel < hoursBeforeFirstReply)
+                            hours = hoursBeforeFirstLabel;
+                        else
+                            hours = hoursBeforeFirstReply;
+
+                        allFirstCommentTimesInHours.Add(hours);
+                    }
                 }
 
                 issuesList.AllIssueClosingTimesInHours = string.Join(",", allClosingTimesInHours);
@@ -85,6 +147,14 @@ namespace OurUmbraco.Our.Api
                 {
                     issuesList.IssueAverageClosingTimeInHours = allClosingTimesInHours.Average();
                     issuesList.IssueMedianClosingTimeInHours = allClosingTimesInHours.Median();
+                }
+
+                issuesList.AllIssueFirstCommentTimesInHours = string.Join(",", allFirstCommentTimesInHours);
+                
+                if (allFirstCommentTimesInHours.Any())
+                {
+                    issuesList.IssueAverageFirstCommentTimesInHours = allFirstCommentTimesInHours.Average();
+                    issuesList.IssueMedianFirstCommentTimesInHours = allFirstCommentTimesInHours.Median();
                 }
 
                 groupedIssues.Add(issuesList);

@@ -338,7 +338,7 @@
             <section class="stats">
                 <div class="container">
                     <div class="row">
-                        <h5>Median PR closing time in hours</h5>
+                        <h5>PR closing time in hours</h5>
                         <div class="col-md-12">
                             <div id="MedianPRMergeTime" class="chart"></div>
                         </div>
@@ -349,18 +349,7 @@
             <section class="stats">
                 <div class="container">
                     <div class="row">
-                        <h5>Average PR closing time in hours</h5>
-                        <div class="col-md-12">
-                            <div id="AveragePRMergeTime" class="chart"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Median time for first comment from Team Umbraco</h5>
+                        <h5>Time for first comment from Team Umbraco</h5>
                         <div class="col-md-12">
                             <div id="MedianFirstTeamCommentTime" class="chart"></div>
                         </div>
@@ -368,17 +357,6 @@
                 </div>
             </section>
             
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Average time for first comment from Team Umbraco</h5>
-                        <div class="col-md-12">
-                            <div id="AverageFirstTeamCommentTime" class="chart"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
             <section class="stats">
                 <div class="container">
                     <div class="row">
@@ -710,34 +688,30 @@
             mergeTimeInHoursSeries.dataFields.dateX = "GroupName";
             mergeTimeInHoursSeries.dataFields.valueY = "MedianPullRequestClosingTimeInHours";
             mergeTimeInHoursSeries.sequencedInterpolation = true;
-            mergeTimeInHoursSeries.stroke = mergeTimeInHoursChart.colors.getIndex(6);
             mergeTimeInHoursSeries.strokeWidth = 4;
             mergeTimeInHoursSeries.tensionX = 0.8;
 
-            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-            var averageMergeTimeInHoursChart = am4core.create("AveragePRMergeTime", am4charts.XYChart);
-            averageMergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
-
-            averageMergeTimeInHoursChart.legend = new am4charts.Legend();
-
-            var averageMergeTimeInHoursDateAxis = averageMergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
-            var averageMergeTimeInHoursValueAxis = averageMergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
-
-            var averageMergeTimeInHoursSeries = averageMergeTimeInHoursChart.series.push(new am4charts.LineSeries());
-            averageMergeTimeInHoursSeries.name = "Median time to merge";
+            var averageMergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageMergeTimeInHoursSeries.name = "Average time to merge";
             averageMergeTimeInHoursSeries.dataFields.dateX = "GroupName";
             averageMergeTimeInHoursSeries.dataFields.valueY = "AveragePullRequestClosingTimeInHours";
             averageMergeTimeInHoursSeries.sequencedInterpolation = true;
-            averageMergeTimeInHoursSeries.stroke = averageMergeTimeInHoursChart.colors.getIndex(6);
+            averageMergeTimeInHoursSeries.stroke = mergeTimeInHoursChart.colors.getIndex(4);
             averageMergeTimeInHoursSeries.strokeWidth = 4;
             averageMergeTimeInHoursSeries.tensionX = 0.8;
 
-            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+            var mergeTimeInHoursSeries2 = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
+            mergeTimeInHoursSeries2.name = "Target merge time";
+            mergeTimeInHoursSeries2.dataFields.dateX = "GroupName";
+            mergeTimeInHoursSeries2.dataFields.valueY = "TargetPullRequestClosingTimeInHours";
+            mergeTimeInHoursSeries2.sequencedInterpolation = true;
+            mergeTimeInHoursSeries2.stroke = mergeTimeInHoursChart.colors.getIndex(6);
+            mergeTimeInHoursSeries2.strokeWidth = 4;
+            mergeTimeInHoursSeries2.tensionX = 0.8;
 
+            mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
+            
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
@@ -754,36 +728,30 @@
             firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
             firstTeamCommentTimeInHoursSeries.dataFields.valueY = "MedianFirstTeamCommentTimeInHours";
             firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+            
+            var averageFirstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            averageFirstTeamCommentTimeInHoursSeries.name = "Average first Team Umbraco comment time";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            averageFirstTeamCommentTimeInHoursSeries.dataFields.valueY = "AverageFirstTeamCommentTimeInHours";
+            averageFirstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
+            averageFirstTeamCommentTimeInHoursSeries.stroke = firstTeamCommentTimeInHoursChart.colors.getIndex(4);
+            averageFirstTeamCommentTimeInHoursSeries.strokeWidth = 4;
+            averageFirstTeamCommentTimeInHoursSeries.tensionX = 0.8;
+
+            var firstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
+            firstTeamCommentTimeInHoursSeries.name = "Target comment time";
+            firstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
+            firstTeamCommentTimeInHoursSeries.dataFields.valueY = "TargetFirstTeamCommentTimeInHours";
+            firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
             firstTeamCommentTimeInHoursSeries.stroke = firstTeamCommentTimeInHoursChart.colors.getIndex(6);
             firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
             firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
 
             firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-            var averageFirstTeamCommentTimeInHoursChart = am4core.create("AverageFirstTeamCommentTime", am4charts.XYChart);
-            averageFirstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
             
-            averageFirstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
-
-            var averageFirstTeamCommentTimeInHoursDateAxis = averageFirstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
-            var averageFirstTeamCommentTimeInHoursValueAxis = averageFirstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
-
-            var averageFirstTeamCommentTimeInHoursSeries = averageFirstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
-            averageFirstTeamCommentTimeInHoursSeries.name = "Median first Team Umbraco comment time";
-            averageFirstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
-            averageFirstTeamCommentTimeInHoursSeries.dataFields.valueY = "AverageFirstTeamCommentTimeInHours";
-            averageFirstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
-            averageFirstTeamCommentTimeInHoursSeries.stroke = averageFirstTeamCommentTimeInHoursChart.colors.getIndex(6);
-            averageFirstTeamCommentTimeInHoursSeries.strokeWidth = 4;
-            averageFirstTeamCommentTimeInHoursSeries.tensionX = 0.8;
-            
-            averageFirstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
-
-    ////////////////////////////////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             function httpGetAsync(url, callback) {
                 var xmlHttp = new XMLHttpRequest();
