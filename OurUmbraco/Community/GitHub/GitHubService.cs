@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using Examine;
@@ -20,6 +21,7 @@ using OurUmbraco.Community.Models;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
 using RestSharp;
+using RestSharp.Authenticators;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
 using Skybrud.Social.GitHub.Exceptions;
@@ -258,15 +260,17 @@ namespace OurUmbraco.Community.GitHub
                 {
                     var pulls = GetExistingPullsFromDisk();
 
-                    var stopImport = false;
-                    // GitHub paging starts at 1, not 0, so we'll start couting at 1 as well
+                    // GitHub paging starts at 1, not 0, so we'll start counting at 1 as well
                     for (var i = 1; i < int.MaxValue; i++)
                     {
-                        if (stopImport)
-                            break;
 
-                        pulls = GetPulls(repository: repository, page: i, pulls: pulls, stopImport: out stopImport);
-                        Thread.Sleep(1000);
+                        var response = GetPulls(repository: repository, page: i, pulls: pulls);
+                        response.Wait();
+                        pulls = response.Result.Pulls;
+                        if (response.Result.IsAtEnd)
+                        {
+                            break;
+                        }
                     }
 
                     // Save the JSON to disk
@@ -290,7 +294,7 @@ namespace OurUmbraco.Community.GitHub
             return pulls;
         }
 
-        private List<GithubPullRequestModel> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls, out bool stopImport)
+        private async Task<GitPullsResponse> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls)
         {
             // Initialize the request
             var username = ConfigurationManager.AppSettings["GitHubUsername"];
@@ -304,15 +308,12 @@ namespace OurUmbraco.Community.GitHub
             client.UserAgent = UserAgent;
 
             // Make the request to the GitHub API
-            var result = client.Execute<List<GithubPullRequestModel>>(request);
-
-            stopImport = false;
-
+            var result = await client.ExecuteTaskAsync<List<GithubPullRequestModel>>(request);
+                        
             if (result.Data.Count == 0)
             {
                 LogHelper.Info<GitHubService>("No records returned from the API, setting stopImport to true");
-                stopImport = true;
-                return pulls;
+                return new GitPullsResponse(pulls, true);
             }
 
             foreach (var pull in result.Data)
@@ -333,8 +334,7 @@ namespace OurUmbraco.Community.GitHub
                     {
                         // We've already imported this one, stop going down the list
                         LogHelper.Info<GitHubService>("We've already imported this PR, so we'll stop importing here");
-                        stopImport = true;
-                        break;
+                        return new GitPullsResponse(pulls, true);
                     }
                 }
 
@@ -342,7 +342,19 @@ namespace OurUmbraco.Community.GitHub
                 pulls.Add(pull);
             }
 
-            return pulls;
+            return new GitPullsResponse(pulls);
+        }
+
+        public class GitPullsResponse 
+        {
+            public GitPullsResponse(List<GithubPullRequestModel> pulls, bool isAtEnd = false)
+            {
+                Pulls = pulls;
+                IsAtEnd = isAtEnd;
+            }
+
+            public List<GithubPullRequestModel> Pulls{get;set;}
+            public bool IsAtEnd {get;set;}
         }
 
         public List<PullRequestMember> MatchPullsToMembers()
@@ -415,7 +427,7 @@ namespace OurUmbraco.Community.GitHub
         /// </summary>
         /// <param name="repo">The alias (slug) of the repository.</param>
         /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
-        public IRestResponse<List<GitHubContributorModel>> GetRepositoryContributors(string repo)
+        public async Task<IRestResponse<List<GitHubContributorModel>>> GetRepositoryContributors(string repo)
         {
             // Initialize the request
             var client = new RestClient(GitHubApiClient);
@@ -423,7 +435,7 @@ namespace OurUmbraco.Community.GitHub
             client.UserAgent = UserAgent;
 
             // Make the request to the GitHub API
-            return client.Execute<List<GitHubContributorModel>>(request);
+            return await client.ExecuteTaskAsync<List<GitHubContributorModel>>(request);
         }
 
         /// <summary>
@@ -628,7 +640,7 @@ namespace OurUmbraco.Community.GitHub
             return response;
         }
 
-        public GitHubContributorsResult GetOverallContributors(int maxAttempts = 3)
+        public async Task<GitHubContributorsResult> GetOverallContributors(int maxAttempts = 3)
         {
             // Initialize a new StringBuilder for logging/testing purposes
             var stringBuilder = new StringBuilder();
@@ -649,7 +661,7 @@ namespace OurUmbraco.Community.GitHub
                 Log(stringBuilder, $"-> Making request to {GitHubApiClient}/repos/{RepositoryOwner}/{repo}/stats/contributors");
 
                 // Make the request to the GitHub API
-                var response = GetRepositoryContributors(repo);
+                var response = await GetRepositoryContributors(repo);
 
                 Log(stringBuilder, $"  -> {(int)response.StatusCode} -> {response.StatusCode}");
 
@@ -682,7 +694,7 @@ namespace OurUmbraco.Community.GitHub
                 foreach (var repo in GetRepositories())
                 {
                     // Make the request to the GitHub API
-                    var response = GetRepositoryContributors(repo);
+                    var response = await GetRepositoryContributors(repo);
 
                     // Error checking
                     switch (response.StatusCode)
@@ -747,10 +759,10 @@ namespace OurUmbraco.Community.GitHub
             return new GitHubContributorsResult(globalContributors, $"{stringBuilder}{string.Empty}");
         }
 
-        public GitHubContributorsResult UpdateOverallContributors(int maxAttempts = 3)
+        public async Task<GitHubContributorsResult> UpdateOverallContributors(int maxAttempts = 3)
         {
             // Load the contributors via the GitHub API
-            var result = GetOverallContributors(maxAttempts);
+            var result = await GetOverallContributors(maxAttempts);
 
             // Map the contributors to the cached model
             var contributors = result.Contributors.Select(x => new GitHubCachedGlobalContributorModel(x));
