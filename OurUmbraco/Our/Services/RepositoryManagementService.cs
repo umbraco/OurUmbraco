@@ -99,7 +99,7 @@ namespace OurUmbraco.Our.Services
                 }
             };
 
-            foreach (var item in allIssues)
+            foreach (var item in allIssues.Where(x => x.Labels.Any(l => l.Name == "status/idea") == false))
             {
                 if (item.State == "closed")
                     continue;
@@ -137,7 +137,7 @@ namespace OurUmbraco.Our.Services
                 if (item.Labels.Length != 0)
                 {
                     var matchedLabel = false;
-
+                    
                     foreach (var label in item.Labels)
                     {
                         var labels = new[] { "state/hq-discussion-ux", "state/hq-discussion-cms", "state/hq-discussion-cloud" };
