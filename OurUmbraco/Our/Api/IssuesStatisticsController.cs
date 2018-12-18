@@ -39,7 +39,7 @@ namespace OurUmbraco.Our.Api
                 allCommunityIssues = allCommunityIssues.Where(x => x.RepositoryName == repository).ToList();
 
             var issues = allCommunityIssues
-                .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate)
+                .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate && x.Labels.Any(l => l.Name == "status/idea") == false)
                 .OrderBy(x => x.CreateDateTime)
                 .GroupBy(x => new { x.CreateDateTime.Year, x.CreateDateTime.Month })
                 .ToDictionary(x => x.Key, x => x.ToList());
