@@ -426,11 +426,16 @@ namespace OurUmbraco.Community.GitHub
         /// Gets a list of contributors (<see cref="GitHubContributorModel"/>) for a single GitHub repository.
         /// </summary>
         /// <param name="repo">The alias (slug) of the repository.</param>
+        /// <param name="page">The page of contributors to get.</param>
         /// <returns>A list of <see cref="GitHubContributorModel"/>.</returns>
         public async Task<IRestResponse<List<GitHubContributorModel>>> GetRepositoryContributors(string repo)
         {
+            var username = ConfigurationManager.AppSettings["GitHubUsername"];
+            var password = ConfigurationManager.AppSettings["GitHubPassword"];
+
             // Initialize the request
             var client = new RestClient(GitHubApiClient);
+            client.Authenticator = new HttpBasicAuthenticator(username, password);
             var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
             client.UserAgent = UserAgent;
 
@@ -648,7 +653,7 @@ namespace OurUmbraco.Community.GitHub
             var logins = GetHqMembers();
 
             // A dictionary for the response of each repository
-            var responses = new Dictionary<string, IRestResponse<List<GitHubContributorModel>>>();
+            var responses = new Dictionary<string, List<GitHubContributorModel>>();
 
             // Hashset for keeping track of missing responses
             var missing = new HashSet<string>();
@@ -662,13 +667,13 @@ namespace OurUmbraco.Community.GitHub
 
                 // Make the request to the GitHub API
                 var response = await GetRepositoryContributors(repo);
-
+                
                 Log(stringBuilder, $"  -> {(int)response.StatusCode} -> {response.StatusCode}");
 
                 switch (response.StatusCode)
                 {
                     case HttpStatusCode.OK:
-                        responses[repo] = response;
+                        responses[repo] = response.Data;
                         break;
                     case HttpStatusCode.Accepted:
                         missing.Add(repo);
@@ -680,43 +685,42 @@ namespace OurUmbraco.Community.GitHub
                 }
             }
 
-            for (var i = 2; i <= maxAttempts; i++)
-            {
-                // Break the loop if there are no missing repositories
-                if (missing.Count == 0)
-                    break;
-
-                // Wait for a few seconds so the GitHub cache hopefully has been populated
-                Thread.Sleep(5000);
-
-                Log(stringBuilder, $"Attempt {i}");
-
-                foreach (var repo in GetRepositories())
+            if(missing.Any()) {
+                
+                for (var i = 2; i <= maxAttempts; i++)
                 {
-                    // Make the request to the GitHub API
-                    var response = await GetRepositoryContributors(repo);
+                    // Wait for a few seconds so the GitHub cache hopefully has been populated
+                    Thread.Sleep(5000);
 
-                    // Error checking
-                    switch (response.StatusCode)
+                    Log(stringBuilder, $"Attempt {i}");
+
+                    foreach (var repo in missing)
                     {
-                        case HttpStatusCode.OK:
-                            // Set the response in the dictionary
-                            responses[repo] = response;
-                            // Remove the repository from queue
-                            missing.Remove(repo);
-                            break;
-                        case HttpStatusCode.Accepted:
-                            break;
-                        default:
-                            var message = $"Failed getting contributors for repository {repo}: {response.StatusCode}\r\n\r\n{response.Content}";
-                            Log(stringBuilder, message);
-                            throw new Exception(message);
-                    }
+                        // Make the request to the GitHub API
+                        var response = await GetRepositoryContributors(repo);
 
+                        // Error checking
+                        switch (response.StatusCode)
+                        {
+                            case HttpStatusCode.OK:
+                                // Set the response in the dictionary
+                                responses[repo] = response.Data;
+                                // Remove the repository from queue
+                                missing.Remove(repo);
+                                break;
+                            case HttpStatusCode.Accepted:
+                                break;
+                            default:
+                                var message = $"Failed getting contributors for repository {repo}: {response.StatusCode}\r\n\r\n{response.Content}";
+                                Log(stringBuilder, message);
+                                throw new Exception(message);
+                        }
+
+                    }
                 }
             }
 
-            if (missing.Count > 0)
+            if (missing.Any())
             {
                 var message = $"Unable to get contributors for one or more repositories:\r\n{string.Join("\r\n", missing)}";
                 Log(stringBuilder, message);
@@ -731,7 +735,7 @@ namespace OurUmbraco.Community.GitHub
             foreach (var response in responses.Values)
             {
                 // Iterate over the contributors of the individual response
-                foreach (var contrib in response.Data)
+                foreach (var contrib in response)
                 {
                     // Make sure we only get weeks from the past year
                     var contribWeeks = contrib.Weeks.Where(x => x.W >= filteredRange).ToList();
