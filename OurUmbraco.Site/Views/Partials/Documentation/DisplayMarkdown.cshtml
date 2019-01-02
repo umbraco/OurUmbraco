@@ -88,42 +88,35 @@
     bool hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
 }
 
-@if (Request.Url.AbsoluteUri.TrimEnd().ToLowerInvariant().EndsWith("articles"))
+@if (hasAltVersions)
 {
-    @Html.Partial("~/Views/Partials/Documentation/ArticlesIndex.cshtml")
-}
-else
-{
-    if (hasAltVersions)
-    {
-        <aside>
-            <div class="info-box docs-version-panel">
-                <dl>
-                    @*<dt>Applies to</dt>
-                        <dd>v8.0.0</dd>*@
+    <aside>
+        <div class="info-box docs-version-panel">
+            <dl>
+                @*<dt>Applies to</dt>
+                    <dd>v8.0.0</dd>*@
 
-                    <dt>@*Alternate*@ Versions</dt>
-                    @foreach (var version in altVersions)
-                    {
-                        <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")">
-                            @if (version.IsCurrentPage)
-                            {
-                                @(version.Version)
-                            }
-                            else
-                            {
-                                <a href='@version.Url'>@(version.Version)</a>
-                            }
-                            @if (version.IsCurrentVersion)
-                            {
-                                @:(current)
-                            }
-                        </dd>
-                    }
+                <dt>@*Alternate*@ Versions</dt>
+                @foreach (var version in altVersions)
+                {
+                    <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")">
+                        @if (version.IsCurrentPage)
+                        {
+                            @(version.Version)
+                        }
+                        else
+                        {
+                            <a href='@version.Url'>@(version.Version)</a>
+                        }
+                        @if (version.IsCurrentVersion)
+                        {
+                            @:(current)
+                        }
+                    </dd>
+                }
 
-                </dl>
-            </div>
-        </aside>
-    }
-    @Html.Raw(markdown)
+            </dl>
+        </div>
+    </aside>
 }
+@Html.Raw(markdown)

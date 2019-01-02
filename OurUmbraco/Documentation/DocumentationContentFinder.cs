@@ -30,13 +30,6 @@ namespace OurUmbraco.Documentation
             if (node == null)
                 return false;
 
-
-            var currentNode = FindContent(contentRequest, url);
-            if (currentNode?.DocumentTypeAlias == "topicTaxonomy")
-            {
-                return false;
-            }
-
             // kill those old urls
             foreach (var s in new[] { "master", "v480" })
                 if (url.StartsWith(mdRoot + "/" + s))

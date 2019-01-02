@@ -34,14 +34,7 @@ namespace OurUmbraco.Documentation
             else
             {
                 // clone if the repo doesn't yet exist
-                LibGit2Sharp.Repository.Clone("https://github.com/jmayntzhusen/UmbracoDocs", _rootFolderPath);
-
-                using (var repo = new LibGit2Sharp.Repository(_rootFolderPath))
-                {
-                    var branch = repo.Branches["origin/documentation-restructure"];
-
-                    Branch currentBranch = Commands.Checkout(repo, branch);
-                }
+                LibGit2Sharp.Repository.Clone("https://github.com/umbraco/UmbracoDocs", _rootFolderPath);
             }
 
             BuildSitemap(_rootFolderPath);

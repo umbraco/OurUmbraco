@@ -4443,8 +4443,6 @@
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
     <Content Include="Views\Dashboard.cshtml" />
     <Content Include="Views\Apps.cshtml" />
-    <Content Include="Views\TopicTaxonomy.cshtml" />
-    <Content Include="Views\Partials\Documentation\ArticlesIndex.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

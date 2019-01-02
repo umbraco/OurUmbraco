@@ -16,36 +16,6 @@
 <nav>
     <ul class="level-1">
 
-        @foreach (var child in Umbraco.TypedContent(new Guid("90ce3982-c439-4963-9433-d537d90ea36f")).Children("topicTaxonomy"))
-        {
-            <li class=" @IsActive(child.Url, "active open")">
-                <a href="@(child.Url)"><h3>@child.Name</h3></a>
-
-                @if (child.Children != null)
-                {
-                    <ul class="level-2 @IsActive(child.Url, "open")">
-                        @foreach (var itemChild in child.Children)
-                        {
-                            <li class=" @IsActive(itemChild.Url, "active open")">
-                                <a href="@(itemChild.Url)"><h4>@itemChild.Name</h4></a>
-
-                                @if (itemChild.Children != null)
-                                {
-                                    <ul class="level-3 @IsActive(child.Url, "open")">
-                                        @foreach (var itemGrandChild in itemChild.Children)
-                                        {
-                                            <li class=" @IsActive(itemGrandChild.Url, "active")"><a href="@(itemGrandChild.Url)"><h5>@itemGrandChild.Name</h5></a></li>
-                                        }
-                                    </ul>
-                                }
-                            </li>
-                        }
-                    </ul>
-                }
-
-            </li>
-        }
-
         @foreach (var item in sitemap.Directories)
         {
             if (item.Name != "Development Guidelines"
@@ -55,41 +25,31 @@
                 && item.Name != "Products"
                 && item.Name != "Cheatsheets")
             {
+                <li class=" @IsActive(root+item.Path, "active open")">
+                    <a href="@(root + item.Path)/"><h3>@item.Name</h3></a>
 
-                if (item.Name == "Articles")
-                {
-                    <li class=" @IsActive(root+item.Path, "active open")">
-                        <a href="@(root + item.Path)/"><h3>@item.Name</h3></a>
-                    </li>
-                }
-                else
-                {
-                    <li class=" @IsActive(root+item.Path, "active open")">
-                        <a href="@(root + item.Path)/"><h3>@item.Name</h3></a>
+                    @if (item.HasChildren)
+                    {
+                        <ul class="level-2 @IsActive(root + item.Path, "open")">
+                            @foreach (var itemChild in item.Directories)
+                            {
+                                <li class=" @IsActive(root + itemChild.Path, "active open")">
+                                    <a href="@(root + itemChild.Path)/"><h4>@itemChild.Name</h4></a>
 
-                        @if (item.HasChildren)
-                        {
-                            <ul class="level-2 @IsActive(root + item.Path, "open")">
-                                @foreach (var itemChild in item.Directories)
-                                {
-                                    <li class=" @IsActive(root + itemChild.Path, "active open")">
-                                        <a href="@(root + itemChild.Path)/"><h4>@itemChild.Name</h4></a>
-
-                                        @if (itemChild.HasChildren)
-                                        {
-                                            <ul class="level-3 @IsActive(root + item.Path, "open")">
-                                                @foreach (var itemGrandChild in itemChild.Directories)
-                                                {
-                                                    <li class=" @IsActive(root + itemGrandChild.Path, "active")"><a href="@(root + itemGrandChild.Path)/"><h5>@itemGrandChild.Name</h5></a></li>
-                                                }
-                                            </ul>
-                                        }
-                                    </li>
-                                }
-                            </ul>
-                        }
-                    </li>
-                }
+                                    @if (itemChild.HasChildren)
+                                    {
+                                        <ul class="level-3 @IsActive(root + item.Path, "open")">
+                                            @foreach (var itemGrandChild in itemChild.Directories)
+                                            {
+                                                <li class=" @IsActive(root + itemGrandChild.Path, "active")"><a href="@(root + itemGrandChild.Path)/"><h5>@itemGrandChild.Name</h5></a></li>
+                                            }
+                                        </ul>
+                                    }
+                                </li>
+                            }
+                        </ul>
+                    }
+                </li>
             }
         }
     </ul>

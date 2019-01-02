@@ -12,11 +12,48 @@
     }
     @if (currentDocVersion != null)
     {
-        <title>@currentDocVersion.MetaTitle - Our Umbraco</title>
+        if (currentDocVersion.MetaTitle != null)
+        {
+            <title>@currentDocVersion.MetaTitle - Our Umbraco</title>
+        }
+        else
+        {
+            <title>
+                @{
+                    var title = string.Empty;
+                    var navigationTitle = HttpContext.Current.Items["topicTitle"];
+                    if (navigationTitle != null)
+                    {
+                        title = navigationTitle.ToString();
+                    }
+
+                    if (string.IsNullOrWhiteSpace(title) == false)
+                    {
+                        if (Model.Content.Name.ToString().ToLower() == "documentation")
+                        {
+                            var path = title.Split(new string[] { " - " }, StringSplitOptions.None);
+
+                            var textInfo = new System.Globalization.CultureInfo("en-US", false).TextInfo;
+
+                            var firstUrlPath = textInfo.ToTitleCase(path[0]).Replace('-', ' ');
+                            var lastUrlPath = textInfo.ToTitleCase(path[path.Length - 1]).Replace('-', ' ');
+
+
+                            <text>@firstUrlPath, @lastUrlPath - Our Umbraco</text>
+                        }
+                        else
+                        {
+                            <text>@title - @Model.Content.Name - Our Umbraco</text>
+                        }
+                    }
+                }
+            </title>
+        }
+        //If no description is set this will just be empty - which is what it used to be anyways, could think of adding some sort of fallback?
         <meta name="description" content="@currentDocVersion.MetaDescription" />
     }
-    else
-    {
+                    else
+                    {
         <title>
             @{
                 var title = string.Empty;
