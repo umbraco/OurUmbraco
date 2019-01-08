@@ -6,8 +6,9 @@
 
     var fromDate = string.IsNullOrWhiteSpace(querystringFromDate) ? DateTime.Now.AddDays(-365*1) : DateTime.Parse(querystringFromDate);
 
-    var daysInPreviousMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month - 1);
-    var toDateDefault = new DateTime(DateTime.Now.Year, DateTime.Now.Month - 1, daysInPreviousMonth);
+	var previousMonth = DateTime.Now.AddMonths(-1);
+	var daysInPreviousMonth = DateTime.DaysInMonth(previousMonth.Year, previousMonth.Month);
+    var toDateDefault = new DateTime(previousMonth.Year, previousMonth.Month, daysInPreviousMonth);
     var toDate = string.IsNullOrWhiteSpace(querystringToDate) ? toDateDefault : DateTime.Parse(querystringToDate);
 
     var forumStatsUrl = Html.Raw(Url.Action("ForumStatistics", "Statistics", new { fromDate = fromDate, toDate = toDate }));

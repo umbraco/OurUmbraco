@@ -33,7 +33,7 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ,TeamUmbraco")]
         [HttpGet]
-        public List<PullRequestsInPeriod> GetGroupedPullRequestData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear,  string repository = "Umbraco-CMS")
+        public List<PullRequestsInPeriod> GetGroupedPullRequestData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear, string repository = "Umbraco-CMS")
         {
             if (fromDay == 0)
                 fromDay = 1;
@@ -169,7 +169,7 @@ namespace OurUmbraco.Our.Api
 
                 mergedPrs.AllFirstTeamCommentTimesInHours = string.Join(",", firstTeamCommentTimes);
                 groupedPrs.Add(mergedPrs);
-            }            
+            }
 
             foreach (var prInPeriod in closedPullsInPeriod)
             {
@@ -228,7 +228,7 @@ namespace OurUmbraco.Our.Api
                 var activeContributorsAfterCg18 = new List<string>();
                 var newActiveContributorsAfterCg18 = new List<string>();
                 var firstPrsUsernamesAfterCg18 = new List<string>();
-                
+
                 foreach (var pr in pullsNonHq)
                 {
                     var startDate = maxDateInPeriod.AddYears(-1).AddMonths(-1).AddDays(1);
@@ -305,6 +305,69 @@ namespace OurUmbraco.Our.Api
             }
 
             return groupedPrs.OrderBy(x => x.MonthYear).ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<GroupedOurMemberStatistics> GetOurMemberData()
+        {
+            var memberData = new List<GroupedOurMemberStatistics>();
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Jul 2018",
+                MonthYear = "201807",
+                TotalNonSpamMembers = 162874,
+                TotalNonSpamMembersWithLogin = 0,
+                TotalMembersEarningKarma = 0
+            });
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Aug 2018",
+                MonthYear = "201808",
+                TotalNonSpamMembers = 163052,
+                TotalNonSpamMembersWithLogin = 8015,
+                TotalMembersEarningKarma = 22780
+            });
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Sep 2018",
+                MonthYear = "201809",
+                TotalNonSpamMembers = 163267,
+                TotalNonSpamMembersWithLogin = 8117,
+                TotalMembersEarningKarma = 22924
+            });
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Oct 2018",
+                MonthYear = "201810",
+                TotalNonSpamMembers = 163613,
+                TotalNonSpamMembersWithLogin = 8253,
+                TotalMembersEarningKarma = 23121
+            });
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Nov 2018",
+                MonthYear = "201811",
+                TotalNonSpamMembers = 163845,
+                TotalNonSpamMembersWithLogin = 8334,
+                TotalMembersEarningKarma = 23267
+            });
+
+            return memberData;
+        }
+
+        public class GroupedOurMemberStatistics
+        {
+            public string GroupName { get; set; }
+            public string MonthYear { get; set; }
+            public int TotalNonSpamMembers { get; set; }
+            public int TotalNonSpamMembersWithLogin { get; set; }
+            public int TotalMembersEarningKarma { get; set; }
         }
 
         private static PullRequestsInPeriod GetPreviousPrStatsInPeriod(DateTime dateTime, List<PullRequestsInPeriod> groupedPrs)
