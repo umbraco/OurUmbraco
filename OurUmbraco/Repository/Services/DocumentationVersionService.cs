@@ -13,7 +13,7 @@ namespace OurUmbraco.Repository.Services
     public class DocumentationVersionService
     {
 
-        public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri)
+        public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri, bool allVersions = false)
         {
             var alternativeDocs = new List<DocumentationVersion>();
             // first off we have the path, do we need to strip the version number from the file name
@@ -58,7 +58,7 @@ namespace OurUmbraco.Repository.Services
             //path beginning with current filename
             var query = searchCriteria.Field("__fullUrl", currentUrl.ToLowerInvariant().MultipleCharacterWildcard()).Compile();
             var searchResults = searcher.Search(query);
-            if (searchResults.TotalItemCount > 1)
+            if (searchResults.TotalItemCount > 1 || allVersions)
             {
                 var versionInfo = searchResults.Select(f =>
                     new DocumentationVersion()
@@ -68,7 +68,9 @@ namespace OurUmbraco.Repository.Services
                         VersionFrom = string.IsNullOrWhiteSpace( f["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionFrom"]),
                         VersionTo = string.IsNullOrWhiteSpace(f["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionTo"]),
                         IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
-                        IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl
+                        IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl,
+                        MetaDescription = f["meta.Description"],
+                        MetaTitle = f["meta.Title"]
                     })
                     .OrderByDescending(v=> v.VersionFrom)
                     .ThenBy(v=>v.VersionTo);

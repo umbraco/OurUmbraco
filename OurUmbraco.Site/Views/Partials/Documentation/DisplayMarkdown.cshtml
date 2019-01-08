@@ -99,7 +99,7 @@
                 <dt>@*Alternate*@ Versions</dt>
                 @foreach (var version in altVersions)
                 {
-                    <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")"> 
+                    <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version")">
                         @if (version.IsCurrentPage)
                         {
                             @(version.Version)
@@ -119,6 +119,4 @@
         </div>
     </aside>
 }
-
-
 @Html.Raw(markdown)

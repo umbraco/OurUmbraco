@@ -14,20 +14,21 @@
 }
 
 <nav>
-	<ul class="level-1">
-	    @foreach (var item in sitemap.Directories)
+    <ul class="level-1">
+
+        @foreach (var item in sitemap.Directories)
         {
-            if (item.Name != "Development Guidelines" 
+            if (item.Name != "Development Guidelines"
                 && item.Name != "Extending Umbraco"
                 && item.Name != "Using Umbraco"
                 && item.Name != "Installation"
-                && item.Name != "Products" 
+                && item.Name != "Products"
                 && item.Name != "Cheatsheets")
             {
                 <li class=" @IsActive(root+item.Path, "active open")">
                     <a href="@(root + item.Path)/"><h3>@item.Name</h3></a>
 
-                    @if(item.HasChildren)
+                    @if (item.HasChildren)
                     {
                         <ul class="level-2 @IsActive(root + item.Path, "open")">
                             @foreach (var itemChild in item.Directories)
