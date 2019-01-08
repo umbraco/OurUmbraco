@@ -382,7 +382,7 @@ namespace OurUmbraco.Documentation
                             return 6;
                         case "smtp-settings":
                             return 7;
-                        case "manage-domains":
+                        case "manage-hostnames":
                             return 8;
                         case "config-transforms":
                             return 9;
