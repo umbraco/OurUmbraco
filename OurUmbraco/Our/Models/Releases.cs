@@ -82,10 +82,15 @@ namespace OurUmbraco.Our.Models
             public bool Breaking { get; set; }
 
             [JsonProperty("source")]
-            public string Source { get; set; }
+            public ReleaseSource Source { get; set; }
 
             [JsonIgnore]
             public string Resolved { get; set; }
         }
+    }
+    public enum ReleaseSource
+    {
+        YouTrack,
+        GitHub
     }
 }
