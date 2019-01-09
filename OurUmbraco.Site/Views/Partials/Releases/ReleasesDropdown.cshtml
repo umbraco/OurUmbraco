@@ -178,9 +178,10 @@
 
                                 foreach (var issue in releaseFeatures)
                                 {
+                                    var url = issue.Source == ReleaseSource.YouTrack ? $"https://issues.umbraco.org/issue/{issue.Id}" : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                     <ul>
                                         <li class="@issue.State.StateIcon()" title="@issue.State">
-                                            <a href="http://issues.umbraco.org/issue/@(issue.Id)" target="_blank">@issue.Id - @issue.Title</a>
+                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }
@@ -202,9 +203,10 @@
 
                                 foreach (var issue in breakingInRelease)
                                 {
+                                    var url = issue.Source == ReleaseSource.YouTrack ? $"https://issues.umbraco.org/issue/{issue.Id}" : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                     <ul>
                                         <li class="@issue.State.StateIcon()" title="@issue.State">
-                                            <a href="http://issues.umbraco.org/issue/@(issue.Id)" target="_blank">@issue.Id - @issue.Title</a>
+                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }
@@ -225,9 +227,11 @@
                                 <h3>Issues & Tasks fixed in version @release.Version</h3>
                                 foreach (var issue in issuesFixedInRelease)
                                 {
+                                    var url = issue.Source == ReleaseSource.YouTrack ? $"https://issues.umbraco.org/issue/{issue.Id}" : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+
                                     <ul>
-                                        <li class="@issue.State.StateIcon()" title="@issue.State.">
-                                            <a href="http://issues.umbraco.org/issue/@(issue.Id)" target="_blank">@issue.Id - @issue.Title</a>
+                                        <li class="@issue.State.StateIcon()" title="@issue.State">
+                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }
