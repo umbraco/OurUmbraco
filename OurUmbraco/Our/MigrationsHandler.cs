@@ -64,6 +64,11 @@ namespace OurUmbraco.Our
             AddGitHubMemberProperties();
             AddTwitterMemberProperties();
             AddManualProgressSliderToReleases();
+            AddSingleMediaPickerDataType();
+            AddUmbracoFestivalsBanner();
+            AddUmbracoFestivals();
+            AddUmbracoFestivalsTreePicker();
+            AddUmbracoFestivalsPropertyToCommunityPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -394,7 +399,6 @@ namespace OurUmbraco.Our
             return new ReadOnlyUserGroup(group.Id, group.Name, group.Icon, group.StartContentId, group.StartMediaId, group.Alias, group.AllowedSections, group.Permissions);
         }
 
-
         private void AddReleaseCompareFeature()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -568,7 +572,6 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-
 
         private void AddSearchDocumentTypeAndPage()
         {
@@ -746,6 +749,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
         private void RenameUaaStoUCloud()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -855,7 +859,6 @@ namespace OurUmbraco.Our
             }
         }
 
-
         private void AddTwitterFilters()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -898,7 +901,6 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-
 
         private void AddHomeScriptsMacro()
         {
@@ -1615,7 +1617,6 @@ namespace OurUmbraco.Our
             }
         }
 
-
         private void AddPRTeamPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -2002,6 +2003,230 @@ namespace OurUmbraco.Our
                 }
 
                 contentTypeService.Save(releaseContentType);
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddSingleMediaPickerDataType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var alias = "Media Picker - Single image";
+                var mediaPickerType = dataTypeService.GetDataTypeDefinitionByName(alias);
+                if (mediaPickerType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.MediaPicker2")
+                    {
+                        Name = alias
+                    };
+
+                    var preValues = new Dictionary<string, PreValue>
+                    {
+                        { "multiPicker", new PreValue("0") },
+                        { "onlyImages", new PreValue("1") },
+                        { "disableFolderSelect", new PreValue("1") }
+                    };
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, preValues);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddUmbracoFestivalsBanner()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var bannerTypeAlias = "festivalBanner";
+                var bannerType = contentTypeService.GetContentType(bannerTypeAlias);
+                if (bannerType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Festival Banner",
+                        Alias = bannerTypeAlias,
+                    }; 
+
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = "Banner" });
+
+                    var media = dataTypeService.GetDataTypeDefinitionByName("Media Picker - Single image");
+                    var mediaPicker = new PropertyType(media, "festivalBanner")
+                    {
+                        Name = "Banner",
+                        Description = "Select a media item to display.",
+                        Mandatory = true
+                    };
+                    contentType.AddPropertyType(mediaPicker, "Banner");
+
+                    var link = new DataTypeDefinition("Umbraco.Textbox");
+                    var linkBox = new PropertyType(link, "festivalLink")
+                    {
+                        Name = "Link",
+                        Description = "An external link to the festival.",
+                        Mandatory = true
+                    };
+                    contentType.AddPropertyType(linkBox, "Banner");
+
+                    contentTypeService.Save(contentType); 
+                }
+                 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddUmbracoFestivals()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var festivalAlias = "festivals";
+                var festivalType = contentTypeService.GetContentType(festivalAlias);
+                if (festivalType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Festivals",
+                        Alias = festivalAlias,
+                        IsContainer = true,
+                        AllowedAsRoot = true
+                    };
+
+                    var banner = contentTypeService.GetContentType("festivalBanner");
+                    if (banner != null)
+                    { 
+                        contentType.AllowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(banner.Id, 0) };
+                    }
+
+                    contentTypeService.Save(contentType);
+
+                    var content = contentService.CreateContent("Festivals", -1, "festivals");
+                    contentService.SaveAndPublishWithStatus(content);
+
+                    string[] lines = { "" };
+                    File.WriteAllLines(path, lines); 
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddUmbracoFestivalsTreePicker()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentService = ApplicationContext.Current.Services.ContentService;
+
+                var alias = "Festivals - Tree Picker";
+                var treePickerType = dataTypeService.GetDataTypeDefinitionByName(alias);
+                if (treePickerType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.MultiNodeTreePicker2")
+                    {
+                        Name = alias
+                    };
+
+                    var preValues = new Dictionary<string, PreValue>
+                    {
+                        { "filter", new PreValue("festivalBanner") },
+                        { "minNumber", new PreValue("0") },
+                        { "maxNumber", new PreValue("15") },
+                    };
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, preValues);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddUmbracoFestivalsPropertyToCommunityPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var communityContentType = contentTypeService.GetContentType("community");
+                if (communityContentType != null && communityContentType.PropertyTypeExists("festivalBanners") == false)
+                { 
+                    var picker = dataTypeService.GetDataTypeDefinitionByName("Festivals - Tree Picker");
+                    var pickerPropertyType = new PropertyType(picker, "festivalBanners") { Name = "Festivals", Description = "Select festival banners to display." };
+                    communityContentType.AddPropertyType(pickerPropertyType, "Banners");
+
+                    contentTypeService.Save(communityContentType);
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
