@@ -29,7 +29,7 @@ namespace OurUmbraco.Our.Services
         public List<Release> GetReleasesCache()
         {
             ApplicationContext.Current.ApplicationCache.RuntimeCache
-                .GetCacheItem(ReleasesCacheCacheKey, () => ReleasesCache(), TimeSpan.FromSeconds(30));
+                .GetCacheItem(ReleasesCacheCacheKey, () => ReleasesCache(), TimeSpan.FromHours(2));
             return (List<Release>)ApplicationContext.Current.ApplicationCache.RuntimeCache
                 .GetCacheItem(ReleasesCacheCacheKey);
         }
