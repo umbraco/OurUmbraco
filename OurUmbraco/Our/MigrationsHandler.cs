@@ -71,6 +71,7 @@ namespace OurUmbraco.Our
             AddBannersPage();
             AddBannersPicker();
             AddBannersToCommunityPage();
+            RemoveHomeOnlyBannerTextArea();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2571,6 +2572,37 @@ namespace OurUmbraco.Our
                     var pickerPropertyType = new PropertyType(picker, "banners") { Name = "Banners", Description = "Select banners to display." };
                     communityContentType.AddPropertyType(pickerPropertyType, "Banners");
 
+                    contentTypeService.Save(communityContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void RemoveHomeOnlyBannerTextArea()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var communityContentType = contentTypeService.GetContentType("Community");
+                var propertyTypeAlias = "homeOnlyBanner";
+                if (communityContentType.PropertyTypeExists(propertyTypeAlias) == true)
+                {
+                    communityContentType.RemovePropertyType("homeOnlyBanner");
                     contentTypeService.Save(communityContentType);
                 }
 

@@ -3,9 +3,6 @@
 @using OurUmbraco.Our.Models
 @inherits OurUmbracoTemplatePage
 @{
-
-    var homeNotificationText = Model.Content.GetPropertyValue<string>("homeOnlyBanner");
-    var showHomeNotification = string.IsNullOrWhiteSpace(homeNotificationText) == false;
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
     var showGlobalNotification = string.IsNullOrWhiteSpace(globalNotificationText) == false;
 }
@@ -52,11 +49,6 @@
     <div class="alertbar__yellow">
         @Html.Raw(globalNotificationText)
     </div>
-}
-
-@if (showHomeNotification)
-{
-    @Html.Raw(homeNotificationText)
 }
 
     <div id="banners"></div>
