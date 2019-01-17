@@ -1,4 +1,5 @@
 ﻿@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Models
 @using OurUmbraco.Our.Services
 @inherits UmbracoTemplatePage
 @{
@@ -246,14 +247,12 @@
                                                         {
                                                             <ul>
                                                                 <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @if (issue.Source == "YouTrack")
-                                                                    {
-                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    @{
+                                                                        var url = issue.Source == ReleaseSource.YouTrack 
+                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}" 
+                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                     }
-                                                                    else
-                                                                    {
-                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
-                                                                    }
+                                                                    <a href="@url" target="_blank">@issue.Id - @issue.Title</a>
                                                                 </li>
                                                             </ul>
                                                         }
@@ -274,14 +273,12 @@
                                                         {
                                                             <ul>
                                                                 <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @if (issue.Source == "YouTrack")
-                                                                    {
-                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    @{
+                                                                        var url = issue.Source == ReleaseSource.YouTrack
+                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}"
+                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                     }
-                                                                    else
-                                                                    {
-                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
-                                                                    }
+                                                                    <a href="@url" target="_blank">@issue.Id - @issue.Title</a>
                                                                 </li>
                                                             </ul>
                                                         }
@@ -303,14 +300,12 @@
 
                                                             <ul>
                                                                 <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @if (issue.Source == "YouTrack")
-                                                                    {
-                                                                        <a href="http://issues.umbraco.org/issue/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
+                                                                    @{
+                                                                        var url = issue.Source == ReleaseSource.YouTrack 
+                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}" 
+                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                     }
-                                                                    else
-                                                                    {
-                                                                        <a href="https://github.com/umbraco/Umbraco-CMS/issues/@issue.Id" target="_blank">@issue.Id - @issue.Title</a>
-                                                                    }
+                                                                    <a href="@url" target="_blank">@issue.Id - @issue.Title</a>
                                                                 </li>
                                                             </ul>
                                                         }
