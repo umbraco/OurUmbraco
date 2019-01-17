@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -65,10 +66,11 @@ namespace OurUmbraco.Our
             AddTwitterMemberProperties();
             AddManualProgressSliderToReleases();
             AddSingleMediaPickerDataType();
-            AddUmbracoFestivalsBanner();
-            AddUmbracoFestivals();
-            AddUmbracoFestivalsTreePicker();
-            AddUmbracoFestivalsPropertyToCommunityPage();
+            AddLocationDataTypes();
+            AddBannerTypes();
+            AddBannersPage();
+            AddBannersPicker();
+            AddBannersToCommunityPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2055,7 +2057,321 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddUmbracoFestivalsBanner()
+        private void AddLocationDataTypes()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path) == true)
+                {
+                    return;
+                }
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var continentAlias = "Locations - Continents";
+                var continentType = dataTypeService.GetDataTypeDefinitionByName(continentAlias);
+                if (continentType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.DropDown.Flexible")
+                    {
+                        Name = continentAlias
+                    };
+
+                    var preValues = new Dictionary<string, PreValue>
+                    {
+                        { "0", new PreValue("Africa") },
+                        { "1", new PreValue("Antarctica") },
+                        { "2", new PreValue("Australia") },
+                        { "3", new PreValue("Asia") },
+                        { "4", new PreValue("Europe") },
+                        { "5", new PreValue("North America") },
+                        { "6", new PreValue("South America") },
+                        { "multiple", new PreValue("1") }
+                    };
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, preValues);
+                }
+
+                var countryAlias = "Locations - Contries";
+                var countryType = dataTypeService.GetDataTypeDefinitionByName(countryAlias);
+                if (countryType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.DropDown.Flexible")
+                    {
+                        Name = countryAlias
+                    };
+
+                    #region Prevalues with countries
+                    var preValues = new Dictionary<string, PreValue>
+                    {
+                        { "0", new PreValue("Afghanistan") },
+                        { "1", new PreValue("Åland Islands") },
+                        { "2", new PreValue("Albania") },
+                        { "3", new PreValue("Algeria") },
+                        { "4", new PreValue("American Samoa") },
+                        { "5", new PreValue("Andorra") },
+                        { "6", new PreValue("Angola") },
+                        { "7", new PreValue("Anguilla") },
+                        { "8", new PreValue("Antigua and Barbuda") },
+                        { "9", new PreValue("Argentina") },
+                        { "10", new PreValue("Armenia") },
+                        { "11", new PreValue("Aruba") },
+                        { "12", new PreValue("Australia") },
+                        { "13", new PreValue("Austria") },
+                        { "14", new PreValue("Azerbaijan") },
+                        { "15", new PreValue("Bahamas") },
+                        { "16", new PreValue("Bahrain") },
+                        { "17", new PreValue("Bangladesh") },
+                        { "18", new PreValue("Barbados") },
+                        { "19", new PreValue("Belarus") },
+                        { "20", new PreValue("Belgium") },
+                        { "21", new PreValue("Belize") },
+                        { "22", new PreValue("Benin") },
+                        { "23", new PreValue("Bermuda") },
+                        { "24", new PreValue("Bhutan") },
+                        { "25", new PreValue("Bolivarian Republic of Venezuela") },
+                        { "26", new PreValue("Bolivia") },
+                        { "27", new PreValue("Bonaire, Sint Eustatius and Saba") },
+                        { "28", new PreValue("Bosnia and Herzegovina") },
+                        { "29", new PreValue("Botswana") },
+                        { "30", new PreValue("Brazil") },
+                        { "31", new PreValue("British Indian Ocean Territory") },
+                        { "32", new PreValue("British Virgin Islands") },
+                        { "33", new PreValue("Brunei Darussalam") },
+                        { "34", new PreValue("Bulgaria") },
+                        { "35", new PreValue("Burkina Faso") },
+                        { "36", new PreValue("Burundi") },
+                        { "37", new PreValue("Cabo Verde") },
+                        { "38", new PreValue("Cambodia") },
+                        { "39", new PreValue("Cameroon") },
+                        { "40", new PreValue("Canada") },
+                        { "41", new PreValue("Caribbean") },
+                        { "42", new PreValue("Cayman Islands") },
+                        { "43", new PreValue("Central African Republic") },
+                        { "44", new PreValue("Chad") },
+                        { "45", new PreValue("Chile") },
+                        { "46", new PreValue("Christmas Island") },
+                        { "47", new PreValue("Città del Vaticano") },
+                        { "48", new PreValue("Cocos (Keeling) Islands") },
+                        { "49", new PreValue("Colombia") },
+                        { "50", new PreValue("Comoros") },
+                        { "51", new PreValue("Congo") },
+                        { "52", new PreValue("Congo (DRC)") },
+                        { "53", new PreValue("Cook Islands") },
+                        { "54", new PreValue("Costa Rica") },
+                        { "55", new PreValue("Côte d’Ivoire") },
+                        { "56", new PreValue("Croatia") },
+                        { "57", new PreValue("Cuba") },
+                        { "58", new PreValue("Curaçao") },
+                        { "59", new PreValue("Cyprus") },
+                        { "60", new PreValue("Czech Republic") },
+                        { "61", new PreValue("Denmark") },
+                        { "62", new PreValue("Djibouti") },
+                        { "63", new PreValue("Dominica") },
+                        { "64", new PreValue("Dominican Republic") },
+                        { "65", new PreValue("Ecuador") },
+                        { "66", new PreValue("Egypt") },
+                        { "67", new PreValue("El Salvador") },
+                        { "68", new PreValue("Equatorial Guinea") },
+                        { "69", new PreValue("Eritrea") },
+                        { "70", new PreValue("Estonia") },
+                        { "71", new PreValue("Ethiopia") },
+                        { "72", new PreValue("Europe") },
+                        { "73", new PreValue("Falkland Islands") },
+                        { "74", new PreValue("Faroe Islands") },
+                        { "75", new PreValue("Fiji") },
+                        { "76", new PreValue("Finland") },
+                        { "77", new PreValue("France") },
+                        { "78", new PreValue("French Guiana") },
+                        { "79", new PreValue("French Polynesia") },
+                        { "80", new PreValue("Gabon") },
+                        { "81", new PreValue("Gambia") },
+                        { "82", new PreValue("Georgia") },
+                        { "83", new PreValue("Germany") },
+                        { "84", new PreValue("Ghana") },
+                        { "85", new PreValue("Gibraltar") },
+                        { "86", new PreValue("Greece") },
+                        { "87", new PreValue("Greenland") },
+                        { "88", new PreValue("Grenada") },
+                        { "89", new PreValue("Guadeloupe") },
+                        { "90", new PreValue("Guam") },
+                        { "91", new PreValue("Guatemala") },
+                        { "92", new PreValue("Guernsey") },
+                        { "93", new PreValue("Guinea") },
+                        { "94", new PreValue("Guinea-Bissau") },
+                        { "95", new PreValue("Guyana") },
+                        { "96", new PreValue("Haiti") },
+                        { "97", new PreValue("Honduras") },
+                        { "98", new PreValue("Hong Kong S.A.R.") },
+                        { "99", new PreValue("Hungary") },
+                        { "100", new PreValue("Iceland") },
+                        { "101", new PreValue("India") },
+                        { "102", new PreValue("Indonesia") },
+                        { "103", new PreValue("Iran") },
+                        { "104", new PreValue("Iraq") },
+                        { "105", new PreValue("Ireland") },
+                        { "106", new PreValue("Islamic Republic of Pakistan") },
+                        { "107", new PreValue("Isle of Man") },
+                        { "108", new PreValue("Israel") },
+                        { "109", new PreValue("Italy") },
+                        { "110", new PreValue("Jamaica") },
+                        { "111", new PreValue("Japan") },
+                        { "112", new PreValue("Jersey") },
+                        { "113", new PreValue("Jordan") },
+                        { "114", new PreValue("Kazakhstan") },
+                        { "115", new PreValue("Kenya") },
+                        { "116", new PreValue("Kiribati") },
+                        { "117", new PreValue("Korea") },
+                        { "118", new PreValue("Kosovo") },
+                        { "119", new PreValue("Kuwait") },
+                        { "120", new PreValue("Kyrgyzstan") },
+                        { "121", new PreValue("Lao P.D.R.") },
+                        { "122", new PreValue("Latin America") },
+                        { "123", new PreValue("Latvia") },
+                        { "124", new PreValue("Lebanon") },
+                        { "125", new PreValue("Lesotho") },
+                        { "126", new PreValue("Liberia") },
+                        { "127", new PreValue("Libya") },
+                        { "128", new PreValue("Liechtenstein") },
+                        { "129", new PreValue("Lithuania") },
+                        { "130", new PreValue("Luxembourg") },
+                        { "131", new PreValue("Macao S.A.R.") },
+                        { "132", new PreValue("Macedonia (FYROM)") },
+                        { "133", new PreValue("Madagascar") },
+                        { "134", new PreValue("Malawi") },
+                        { "135", new PreValue("Malaysia") },
+                        { "136", new PreValue("Maldives") },
+                        { "137", new PreValue("Mali") },
+                        { "138", new PreValue("Malta") },
+                        { "139", new PreValue("Marshall Islands") },
+                        { "140", new PreValue("Martinique") },
+                        { "141", new PreValue("Mauritania") },
+                        { "142", new PreValue("Mauritius") },
+                        { "143", new PreValue("Mayotte") },
+                        { "144", new PreValue("Mexico") },
+                        { "145", new PreValue("Micronesia") },
+                        { "146", new PreValue("Moldova") },
+                        { "147", new PreValue("Mongolia") },
+                        { "148", new PreValue("Montenegro") },
+                        { "149", new PreValue("Montserrat") },
+                        { "150", new PreValue("Morocco") },
+                        { "151", new PreValue("Mozambique") },
+                        { "152", new PreValue("Myanmar") },
+                        { "153", new PreValue("Namibia") },
+                        { "154", new PreValue("Nauru") },
+                        { "155", new PreValue("Nepal") },
+                        { "156", new PreValue("Netherlands") },
+                        { "157", new PreValue("New Caledonia") },
+                        { "158", new PreValue("New Zealand") },
+                        { "159", new PreValue("Nicaragua") },
+                        { "160", new PreValue("Niger") },
+                        { "161", new PreValue("Nigeria") },
+                        { "162", new PreValue("Niue") },
+                        { "163", new PreValue("Norfolk Island") },
+                        { "164", new PreValue("Northern Mariana Islands") },
+                        { "165", new PreValue("Norway") },
+                        { "166", new PreValue("Oman") },
+                        { "167", new PreValue("Palau") },
+                        { "168", new PreValue("Palestinian Authority") },
+                        { "169", new PreValue("Panama") },
+                        { "170", new PreValue("Papua New Guinea") },
+                        { "171", new PreValue("Paraguay") },
+                        { "172", new PreValue("People's Republic of China") },
+                        { "173", new PreValue("Peru") },
+                        { "174", new PreValue("Philippines") },
+                        { "175", new PreValue("Pitcairn Islands") },
+                        { "176", new PreValue("Poland") },
+                        { "177", new PreValue("Portugal") },
+                        { "178", new PreValue("Principality of Monaco") },
+                        { "179", new PreValue("Puerto Rico") },
+                        { "180", new PreValue("Qatar") },
+                        { "181", new PreValue("Réunion") },
+                        { "182", new PreValue("Romania") },
+                        { "183", new PreValue("Russia") },
+                        { "184", new PreValue("Rwanda") },
+                        { "185", new PreValue("Saint Barthélemy") },
+                        { "186", new PreValue("Saint Kitts and Nevis") },
+                        { "187", new PreValue("Saint Lucia") },
+                        { "188", new PreValue("Saint Martin") },
+                        { "189", new PreValue("Saint Pierre and Miquelon") },
+                        { "190", new PreValue("Saint Vincent and the Grenadines") },
+                        { "191", new PreValue("Samoa") },
+                        { "192", new PreValue("San Marino") },
+                        { "193", new PreValue("São Tomé and Príncipe") },
+                        { "194", new PreValue("Saudi Arabia") },
+                        { "195", new PreValue("Senegal") },
+                        { "196", new PreValue("Serbia") },
+                        { "197", new PreValue("Seychelles") },
+                        { "198", new PreValue("Sierra Leone") },
+                        { "199", new PreValue("Singapore") },
+                        { "200", new PreValue("Sint Maarten") },
+                        { "201", new PreValue("Slovakia") },
+                        { "202", new PreValue("Slovenia") },
+                        { "203", new PreValue("Solomon Islands") },
+                        { "204", new PreValue("Somalia") },
+                        { "205", new PreValue("South Africa") },
+                        { "206", new PreValue("South Sudan") },
+                        { "207", new PreValue("Spain") },
+                        { "208", new PreValue("Sri Lanka") },
+                        { "209", new PreValue("St Helena, Ascension, Tristan da Cunha") },
+                        { "210", new PreValue("Sudan") },
+                        { "211", new PreValue("Suriname") },
+                        { "212", new PreValue("Svalbard and Jan Mayen") },
+                        { "213", new PreValue("Swaziland") },
+                        { "214", new PreValue("Sweden") },
+                        { "215", new PreValue("Switzerland") },
+                        { "216", new PreValue("Syria") },
+                        { "217", new PreValue("Taiwan") },
+                        { "218", new PreValue("Tajikistan") },
+                        { "219", new PreValue("Tanzania") },
+                        { "220", new PreValue("Thailand") },
+                        { "221", new PreValue("Timor-Leste") },
+                        { "222", new PreValue("Togo") },
+                        { "223", new PreValue("Tokelau") },
+                        { "224", new PreValue("Tonga") },
+                        { "225", new PreValue("Trinidad and Tobago") },
+                        { "226", new PreValue("Tunisia") },
+                        { "227", new PreValue("Turkey") },
+                        { "228", new PreValue("Turkmenistan") },
+                        { "229", new PreValue("Turks and Caicos Islands") },
+                        { "230", new PreValue("Tuvalu") },
+                        { "231", new PreValue("U.A.E.") },
+                        { "232", new PreValue("U.S. Outlying Islands") },
+                        { "233", new PreValue("U.S. Virgin Islands") },
+                        { "234", new PreValue("Uganda") },
+                        { "235", new PreValue("Ukraine") },
+                        { "236", new PreValue("United Kingdom") },
+                        { "237", new PreValue("United States") },
+                        { "238", new PreValue("Uruguay") },
+                        { "239", new PreValue("Uzbekistan") },
+                        { "240", new PreValue("Vanuatu") },
+                        { "241", new PreValue("Vietnam") },
+                        { "242", new PreValue("Wallis and Futuna") },
+                        { "243", new PreValue("World") },
+                        { "244", new PreValue("Yemen") },
+                        { "245", new PreValue("Zambia") },
+                        { "246", new PreValue("Zimbabwe") },
+                        { "247", new PreValue("조선민주주의인민공화국") },
+                        { "multiple", new PreValue("1") }
+                    };
+                    #endregion
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, preValues);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddBannerTypes()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -2070,20 +2386,21 @@ namespace OurUmbraco.Our
                 var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
 
-                var bannerTypeAlias = "festivalBanner";
+                /// Single banner content type
+                var bannerTypeAlias = "banner";
                 var bannerType = contentTypeService.GetContentType(bannerTypeAlias);
                 if (bannerType == null)
                 {
                     var contentType = new ContentType(-1)
                     {
-                        Name = "Festival Banner",
+                        Name = "Banner",
                         Alias = bannerTypeAlias,
                     }; 
 
                     contentType.PropertyGroups.Add(new PropertyGroup { Name = "Banner" });
 
                     var media = dataTypeService.GetDataTypeDefinitionByName("Media Picker - Single image");
-                    var mediaPicker = new PropertyType(media, "festivalBanner")
+                    var mediaPicker = new PropertyType(media, "image")
                     {
                         Name = "Banner",
                         Description = "Select a media item to display.",
@@ -2092,7 +2409,7 @@ namespace OurUmbraco.Our
                     contentType.AddPropertyType(mediaPicker, "Banner");
 
                     var link = new DataTypeDefinition("Umbraco.Textbox");
-                    var linkBox = new PropertyType(link, "festivalLink")
+                    var linkBox = new PropertyType(link, "link")
                     {
                         Name = "Link",
                         Description = "An external link to the festival.",
@@ -2100,7 +2417,53 @@ namespace OurUmbraco.Our
                     };
                     contentType.AddPropertyType(linkBox, "Banner");
 
-                    contentTypeService.Save(contentType); 
+                    var check = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkBox = new PropertyType(check, "all")
+                    {
+                        Name = "Visible to all?",
+                        Description = "This banner will be visible to all if the checkbox is checked."
+                    };
+                    contentType.AddPropertyType(checkBox, "Banner");
+
+                    var continents = dataTypeService.GetDataTypeDefinitionByName("Locations - Continents");
+                    var continentsDropdown = new PropertyType(continents, "continents")
+                    {
+                        Name = "Continents",
+                        Description = "Select in which continents this banner should be displayed"
+                    };
+                    contentType.AddPropertyType(continentsDropdown, "Banner");
+
+                    var countries = dataTypeService.GetDataTypeDefinitionByName("Locations - Contries");
+                    var countriesDropdown = new PropertyType(countries, "countries")
+                    {
+                        Name = "Countries",
+                        Description = "Select in which countries this banner should be displayed"
+                    };
+                    contentType.AddPropertyType(countriesDropdown, "Banner");
+
+                    contentTypeService.Save(contentType);
+                }
+
+                // Banner container content type
+                var bannersTypeAlias = "banners";
+                var bannersType = contentTypeService.GetContentType(bannersTypeAlias);
+                if (bannersType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = "Banners",
+                        Alias = bannersTypeAlias,
+                        IsContainer = true,
+                        AllowedAsRoot = true
+                    };
+
+                    var banner = contentTypeService.GetContentType("banner");
+                    if (banner != null)
+                    {
+                        contentType.AllowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(banner.Id, 0) };
+                    }
+
+                    contentTypeService.Save(contentType);
                 }
                  
                 string[] lines = { "" };
@@ -2112,7 +2475,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddUmbracoFestivals()
+        private void AddBannersPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -2127,32 +2490,15 @@ namespace OurUmbraco.Our
                 var contentService = ApplicationContext.Current.Services.ContentService;
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
 
-                var festivalAlias = "festivals";
-                var festivalType = contentTypeService.GetContentType(festivalAlias);
-                if (festivalType == null)
+                var bannersType = contentTypeService.GetContentType("banners");
+                if (bannersType != null)
                 {
-                    var contentType = new ContentType(-1)
-                    {
-                        Name = "Festivals",
-                        Alias = festivalAlias,
-                        IsContainer = true,
-                        AllowedAsRoot = true
-                    };
-
-                    var banner = contentTypeService.GetContentType("festivalBanner");
-                    if (banner != null)
-                    { 
-                        contentType.AllowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(banner.Id, 0) };
-                    }
-
-                    contentTypeService.Save(contentType);
-
-                    var content = contentService.CreateContent("Festivals", -1, "festivals");
+                    var content = contentService.CreateContent("Banners", -1, bannersType.Alias);
                     contentService.SaveAndPublishWithStatus(content);
-
-                    string[] lines = { "" };
-                    File.WriteAllLines(path, lines); 
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines); 
             }
             catch (Exception ex)
             {
@@ -2160,7 +2506,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddUmbracoFestivalsTreePicker()
+        private void AddBannersPicker()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -2175,7 +2521,7 @@ namespace OurUmbraco.Our
                 var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
                 var contentService = ApplicationContext.Current.Services.ContentService;
 
-                var alias = "Festivals - Tree Picker";
+                var alias = "Banners - Tree Picker";
                 var treePickerType = dataTypeService.GetDataTypeDefinitionByName(alias);
                 if (treePickerType == null)
                 {
@@ -2186,7 +2532,7 @@ namespace OurUmbraco.Our
 
                     var preValues = new Dictionary<string, PreValue>
                     {
-                        { "filter", new PreValue("festivalBanner") },
+                        { "filter", new PreValue("banner") },
                         { "minNumber", new PreValue("0") },
                         { "maxNumber", new PreValue("15") },
                     };
@@ -2203,7 +2549,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddUmbracoFestivalsPropertyToCommunityPage()
+        private void AddBannersToCommunityPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -2219,10 +2565,10 @@ namespace OurUmbraco.Our
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
 
                 var communityContentType = contentTypeService.GetContentType("community");
-                if (communityContentType != null && communityContentType.PropertyTypeExists("festivalBanners") == false)
+                if (communityContentType != null && communityContentType.PropertyTypeExists("banners") == false)
                 { 
-                    var picker = dataTypeService.GetDataTypeDefinitionByName("Festivals - Tree Picker");
-                    var pickerPropertyType = new PropertyType(picker, "festivalBanners") { Name = "Festivals", Description = "Select festival banners to display." };
+                    var picker = dataTypeService.GetDataTypeDefinitionByName("Banners - Tree Picker");
+                    var pickerPropertyType = new PropertyType(picker, "banners") { Name = "Banners", Description = "Select banners to display." };
                     communityContentType.AddPropertyType(pickerPropertyType, "Banners");
 
                     contentTypeService.Save(communityContentType);
@@ -2236,5 +2582,5 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-    }
-}
+    } 
+} 
