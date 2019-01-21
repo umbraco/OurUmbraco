@@ -9,7 +9,7 @@
     $(document).ready(function () {
 
         try {
-            $("#banners").load("@Url.Action("Render", "Banners", new { id = Model.Content.Id })");
+            $("#banners-wrapper").load("@Url.Action("Render", "Banners", new { id = Model.Content.Id })");
         } catch (banners) {
             console.log("Couldn't load banners ", banners.message);
         }

@@ -1,5 +1,6 @@
 ﻿using OurUmbraco.Community.Banner.Models;
 using OurUmbraco.Location;
+using System.Linq;
 using System.Web.Mvc;
 using Umbraco.Web.Mvc;
 
@@ -21,11 +22,13 @@ namespace OurUmbraco.Community.Banner.Controllers
             var page = Umbraco.TypedContent(id);
             if (page != null && page.DocumentTypeAlias == "Community")
             {
-                var vm = new Banners
+                var vm = new Banners();
+                var banners = _bannerService.GetBannersByPage(page);
+                if (banners != null && banners.Any())
                 {
-                    Collection = _bannerService.GetBannersByPage(page),
-                    Location = _locationService.GetLocationByIp(Request.UserHostAddress)
-                };
+                    vm.Collection = banners;
+                    vm.Location = _locationService.GetLocationByIp(Request.UserHostAddress);
+                }
                 return PartialView("Home/Banners", vm);
             }
 

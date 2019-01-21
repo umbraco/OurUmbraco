@@ -1,6 +1,6 @@
 ﻿@model OurUmbraco.Community.Banner.Models.Banners
 @{
-    if (Model == null || Model.Collection == null && Model.Collection.Any() == false || Model.Location == null)
+    if (Model == null || Model.Collection == null || Model.Collection == null)
     {
         return;
     }
@@ -10,18 +10,20 @@
 
 @if (banners.Any())
 {
-    <section class="section">
-        <div class="container">
+    <div id="banners">
+        <section class="section">
+            <div class="container">
 
-            @foreach (var banner in banners)
-            {
-                <div class="banner">
-                    <a href="@banner.Link">
-                        <img src="@banner.Image.GetCropUrl(height: 200, width: 1000)" alt="@banner.Name" />
-                    </a>
-                </div>
-            }
+                @foreach (var banner in banners)
+                {
+                    <div class="banner">
+                        <a href="@banner.Link">
+                            <img src="@banner.Image.GetCropUrl(height: 200, width: 1000)" alt="@banner.Name" />
+                        </a>
+                    </div>
+                }
 
-        </div>
-    </section>
+            </div>
+        </section>
+    </div>
 }

@@ -1,12 +1,14 @@
 ﻿using Newtonsoft.Json;
 using System.Net;
 using System.Web.Configuration;
+using Umbraco.Core;
 
 namespace OurUmbraco.Location
 {
     public class LocationService
     {
         private readonly string AccessKey = WebConfigurationManager.AppSettings["IpStackAccessKey"];
+        private readonly string CacheKey = "iplocation-";
 
         public Models.Location GetLocationByIp(string ip)
         {
@@ -15,12 +17,15 @@ namespace OurUmbraco.Location
                 return null;
             }
 
-            using (var client = new WebClient())
+            return (Models.Location)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + ip, () =>
             {
-                var response = client.DownloadString(string.Format("http://api.ipstack.com/{0}?access_key={1}&fields=ip,continent_code,continent_name,country_code,country_name", ip, AccessKey));
-                var output = JsonConvert.DeserializeObject<Models.Location>(response);
-                return output.Continent == null || output.Country == null ? null : output;
-            }
+                using (var client = new WebClient())
+                {
+                    var response = client.DownloadString(string.Format("http://api.ipstack.com/{0}?access_key={1}&fields=ip,continent_code,continent_name,country_code,country_name", ip, AccessKey));
+                    var output = JsonConvert.DeserializeObject<Models.Location>(response);
+                    return output.Success == true ? output : null;
+                }
+            });
         }
 
         private bool IsValidIp(string ip)
