@@ -21,7 +21,7 @@ namespace OurUmbraco.Location
             {
                 using (var client = new WebClient())
                 {
-                    var response = client.DownloadString(string.Format("http://api.ipstack.com/{0}?access_key={1}&fields=ip,continent_code,continent_name,country_code,country_name", ip, AccessKey));
+                    var response = client.DownloadString(string.Format("https://api.ipstack.com/{0}?access_key={1}&fields=ip,continent_code,continent_name,country_code,country_name", ip, AccessKey));
                     var output = JsonConvert.DeserializeObject<Models.Location>(response);
                     return output.Success == true ? output : null;
                 }
