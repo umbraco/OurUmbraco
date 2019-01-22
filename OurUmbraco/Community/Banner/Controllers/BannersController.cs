@@ -20,7 +20,7 @@ namespace OurUmbraco.Community.Banner.Controllers
         public ActionResult Render(int id)
         {
             var page = Umbraco.TypedContent(id);
-            if (page != null && page.DocumentTypeAlias == "Community")
+            if (page != null)
             {
                 var vm = new Banners();
                 var banners = _bannerService.GetBannersByPage(page);
@@ -29,6 +29,7 @@ namespace OurUmbraco.Community.Banner.Controllers
                     vm.Collection = banners;
                     vm.Location = _locationService.GetLocationByIp(Request.UserHostAddress);
                 }
+
                 return PartialView("Home/Banners", vm);
             }
 
