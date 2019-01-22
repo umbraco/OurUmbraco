@@ -154,6 +154,7 @@
 	$color-notification-green: 				#1BFF79;
 	$color-notification-spaced: 			#383D43;
 	$color-notification-yellow: 			#fcf5e2;
+	$color-notification-white: 				#fffff;
 	$color-notification-red: 				#FC353A;
 
 
@@ -208,6 +209,17 @@
 	        	&:hover {
 	        		color: darken($color-notification-yellow, 30%);
 	        	}
+	        }
+		}
+
+		&__white {
+			@extend .#{$extend};
+			
+			border: none;
+			background: $color-notification-white;
+			
+	        a, a:visited {
+	            text-decoration: underline;
 	        }
 		}
 

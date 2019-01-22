@@ -432,6 +432,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CamelCaseFormatter.cs" />
+    <Compile Include="Community\Banner\BannerService.cs" />
+    <Compile Include="Community\Banner\Controllers\BannersController.cs" />
+    <Compile Include="Community\Banner\Models\Banner.cs" />
+    <Compile Include="Community\Banner\Models\Banners.cs" />
     <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogInfo.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
@@ -446,6 +450,8 @@
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
     <Compile Include="Community\Models\Repository.cs" />
+    <Compile Include="Location\LocationService.cs" />
+    <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\IssuesStatisticsController.cs" />

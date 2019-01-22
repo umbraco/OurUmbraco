@@ -1,10 +1,19 @@
-﻿<script type="text/javascript">
+﻿@inherits UmbracoTemplatePage
+
+<script type="text/javascript">
 
     function loadAllGitHubContributors() {
         $('#github-contributors .github-contributor-list').addClass('all');
     }
 
-    $(document).ready(function() {
+    $(document).ready(function () {
+
+        try {
+            $("#banners-wrapper").load("@Url.Action("Render", "Banners", new { id = Model.Content.Id })");
+        } catch (banners) {
+            console.log("Couldn't load banners ", banners.message);
+        }
+
         try {
             $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
         } catch (errTwitter) {
@@ -30,6 +39,6 @@
         catch (errGitHub) {
             console.log("Couldn't load latest GitHub contributor activity", errGitHub.message);
         }
-        
+
     });
-</script> 
+</script>
