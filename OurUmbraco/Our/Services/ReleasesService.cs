@@ -154,7 +154,7 @@ namespace OurUmbraco.Our.Services
                             State = issue.State,
                             Title = issue.IssueTitle,
                             Type = issue.Type,
-                            Source = "YouTrack"
+                            Source = ReleaseSource.YouTrack
                         });
                     }
                 }
@@ -229,7 +229,7 @@ namespace OurUmbraco.Our.Services
                         State = state,
                         Title = item.Title,
                         Type = type,
-                        Source = "GitHub"
+                        Source = ReleaseSource.GitHub
                     });
                 }
             }

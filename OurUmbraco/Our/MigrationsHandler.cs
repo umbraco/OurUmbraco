@@ -2418,6 +2418,15 @@ namespace OurUmbraco.Our
                     };
                     contentType.AddPropertyType(linkBox, "Banner");
 
+                    var content = new DataTypeDefinition("Umbraco.TinyMCEv3");
+                    var contentEditor = new PropertyType(content, "bodyText")
+                    {
+                        Name = "Content",
+                        Description = "Text to appear under the banner.",
+                        Mandatory = false
+                    };
+                    contentType.AddPropertyType(contentEditor, "Banner");
+
                     var check = new DataTypeDefinition("Umbraco.TrueFalse");
                     var checkBox = new PropertyType(check, "all")
                     {

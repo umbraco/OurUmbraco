@@ -8,22 +8,20 @@ namespace OurUmbraco.Location
     public class LocationService
     {
         private readonly string AccessKey = WebConfigurationManager.AppSettings["IpStackAccessKey"];
-        private readonly string CacheKey = "iplocation-";
+        private const string CacheKey = "iplocation-";
 
         public Models.Location GetLocationByIp(string ip)
         {
             if (IsValidIp(ip) == false)
-            {
                 return null;
-            }
 
             return (Models.Location)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(CacheKey + ip, () =>
             {
                 using (var client = new WebClient())
                 {
-                    var response = client.DownloadString(string.Format("https://api.ipstack.com/{0}?access_key={1}&fields=ip,continent_code,continent_name,country_code,country_name", ip, AccessKey));
+                    var response = client.DownloadString($"https://api.ipstack.com/{ip}?access_key={AccessKey}&fields=ip,continent_code,continent_name,country_code,country_name");
                     var output = JsonConvert.DeserializeObject<Models.Location>(response);
-                    return output.Success == true ? output : null;
+                    return output.Success ? output : null;
                 }
             });
         }

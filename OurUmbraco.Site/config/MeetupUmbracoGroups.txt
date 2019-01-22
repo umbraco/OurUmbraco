@@ -39,3 +39,4 @@ Surrey-Umbraco-Meetup
 cogworks-hackathon
 Umbraco-Minneapolis
 Umbraco-Nepal-Meetup
+Umbraco-Seattle-Meetup

@@ -32,11 +32,17 @@
         // Make the search in examine
         ISearchResults results = searcher.Search(criteria);
 
-        // Get the member based on the ID from the search result
-        if (results.TotalItemCount > 0)
+        // Search may reveal partial matches, so we need to do an extra check in C#
+        foreach (SearchResult result in results)
         {
-            member = Members.GetById(results.First().Id);
+            string github;
+            if (result.Fields.TryGetValue("github", out github) && String.Equals(username, github, StringComparison.InvariantCultureIgnoreCase))
+            {
+                member = Members.GetById(result.Id);
+                break;
+            }
         }
+    
     }
 
     if (member == null)

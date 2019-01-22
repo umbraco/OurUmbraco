@@ -86,7 +86,7 @@ namespace OurUmbraco.Documentation
                 HasChildren = dir.GetDirectories().Any()
             };
 
-            foreach (var child in dir.GetDirectories().Where(x => x.Name != "images" && x.Name != ".git" && x.Name != ".github"))
+            foreach (var child in dir.GetDirectories().Where(x => x.Name != "images" && x.Name != ".git" && x.Name != ".github" && x.Name != "Old-Courier-versions"))
                 list.Add(GetFolderStructure(child, rootPath, level + 1));
 
             siteMapItem.Directories = list.OrderBy(x => x.Sort).ToList();
@@ -382,7 +382,7 @@ namespace OurUmbraco.Documentation
                             return 6;
                         case "smtp-settings":
                             return 7;
-                        case "manage-domains":
+                        case "manage-hostnames":
                             return 8;
                         case "config-transforms":
                             return 9;
