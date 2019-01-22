@@ -380,7 +380,7 @@
 
             <section class="stats">
                 <div class="container">
-                    <div class="row">SinceJan18
+                    <div class="row">
                     @if (repository == "Umbraco-CMS")
                     {
                         <h5>After Codegarden 18: PRs created vs. still open</h5>
@@ -404,7 +404,7 @@
                 <section class="stats">
                     <div class="container">
                         <div class="row">
-                            <h5>Our</h5>
+                            <h5>Our Members (in 1000s)</h5>
                             <div class="col-md-12">
                                 <div id="OurMemberStats" class="chart"></div>
                             </div>
@@ -778,36 +778,30 @@
             
             ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
             var ourChart = am4core.create("OurMemberStats", am4charts.XYChart);
-            ourChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetOurMemberData/";
+            ourChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetTotalMembers/";
 
-            ourChart.scrollbarX = new am4core.Scrollbar();
             ourChart.legend = new am4charts.Legend();
-            ourChart.colors.step = 2;
 
-            var categoryAxis = ourChart.xAxes.push(new am4charts.CategoryAxis());
-            categoryAxis.dataFields.category = "GroupName";
-            categoryAxis.renderer.grid.template.location = 0;
-
-            var valueAxis = ourChart.yAxes.push(new am4charts.ValueAxis());
-            valueAxis.min = 0;
-            valueAxis.renderer.minWidth = 35;
+            var ourMembersDateAxis = ourChart.xAxes.push(new am4charts.DateAxis());
+            var ourMembersValueAxis = ourChart.yAxes.push(new am4charts.ValueAxis());
             
-            var membersData = ourChart.series.push(new am4charts.ColumnSeries());
-            membersData.name = "Members";
-            membersData.dataFields.categoryX = "GroupName";
-            membersData.dataFields.valueY = "TotalNonSpamMembers";
-            membersData.stacked = false;
+            var ourMembersSeries = ourChart.series.push(new am4charts.LineSeries());
+            ourMembersSeries.name = "Members";
+            ourMembersSeries.dataFields.dateX = "GroupName";
+            ourMembersSeries.dataFields.valueY = "TotalNonSpamMembers";
+            ourMembersSeries.tooltipText = "Number of members: {valueY.value}k";
+            ourMembersSeries.sequencedInterpolation = true;
+            ourMembersSeries.stroke = ourChart.colors.getIndex(6);
+            ourMembersSeries.strokeWidth = 4;
+            ourMembersSeries.tensionX = 0.8;
+
+            ourChart.cursor = new am4charts.XYCursor();
             
-            var membersDataColumnTemplate = prsCreated.columns.template;
-            membersDataColumnTemplate.width = am4core.percent(80);
-            membersDataColumnTemplate.tooltipText = "{name}: {valueY.value}";
-
-
             var ourChart2 = am4core.create("OurMemberStats2", am4charts.XYChart);
             ourChart2.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetOurMemberData/";
-
-            ourChart2.scrollbarX = new am4core.Scrollbar();
+            
             ourChart2.legend = new am4charts.Legend();
             ourChart2.colors.step = 2;
 
@@ -819,7 +813,7 @@
             valueAxis.min = 0;
             valueAxis.renderer.minWidth = 35;
 
-            var membersLoginData = ourChart2.series.push(new am4charts.ColumnSeries());
+            var membersLoginData = ourChart2.series.push(new am4charts.LineSeries());
             membersLoginData.name = "Logged in once or more";
             membersLoginData.dataFields.categoryX = "GroupName";
             membersLoginData.dataFields.valueY = "TotalNonSpamMembersWithLogin";
@@ -829,7 +823,7 @@
             membersLoginDataColumnTemplate.width = am4core.percent(80);
             membersLoginDataColumnTemplate.tooltipText = "{name}: {valueY.value}";
             
-            var membersKarmaData = ourChart2.series.push(new am4charts.ColumnSeries());
+            var membersKarmaData = ourChart2.series.push(new am4charts.LineSeries());
             membersKarmaData.name = "Members earning karma";
             membersKarmaData.dataFields.categoryX = "GroupName";
             membersKarmaData.dataFields.valueY = "TotalMembersEarningKarma";

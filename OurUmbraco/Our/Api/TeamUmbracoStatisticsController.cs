@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Web.Http;
+using Examine;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
+using Skybrud.Essentials.Time.Extensions;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -93,8 +95,8 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var pr in prInPeriod.Value)
                 {
-                    var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalHours);
-                    var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalDays);
+                    var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.BusinessHoursUntil(pr.CreatedAt.Value));
+                    var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.BusinessDaysUntil(pr.CreatedAt.Value));
 
                     recentPrsMerged = recentPrsMerged + 1;
                     totalMergeTimeInHours = totalMergeTimeInHours + mergeTimeInHours;
@@ -107,7 +109,7 @@ namespace OurUmbraco.Our.Api
                         totalMergedNotOnTime = totalMergedNotOnTime + 1;
 
                     var firstTeamComment = prService.GetFirstTeamComment(prRepository, pr.Number.ToString());
-                    var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.Subtract(pr.CreatedAt.Value).TotalHours);
+                    var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.BusinessHoursUntil(pr.CreatedAt.Value));
                     if (firstTeamComment != null)
                     {
                         pr.FirstTeamCommentTimeInHours = timeSpan;
@@ -309,6 +311,46 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
+        public List<GroupedOurMemberStatistics> GetTotalMembers()
+        {
+            var memberData = new List<GroupedOurMemberStatistics>();
+
+            var searcher = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"];
+            var criteria = searcher.CreateSearchCriteria();
+
+            // Empty query to get all of the members
+            var query = criteria.RawQuery("nodeTypeAlias: member");
+            var results = searcher.Search(query).ToList();
+            var blockedMembers = results.Where(x => x.Fields["blocked"] != null && x.Fields["blocked"] == "1").ToList();
+
+            var from = DateTime.Now.AddYears(-1);
+            while (from < DateTime.Now.GetFirstDayOfMonth())
+
+            {
+                from = from.AddMonths(1).GetFirstDayOfMonth();
+                var allMembers = ApplicationContext.DatabaseContext.Database.Fetch<int>(
+                    $"SELECT id, createDate FROM umbracoNode WHERE nodeObjectType = '39eb0f98-b348-42a1-8662-e7eb18487560' AND createDate >= '{from.ToString("yyyy-MM-dd")}'");
+
+                var totalMembers = 0;
+                foreach (var memberId in allMembers)
+                {
+                    if (blockedMembers.Any(x => x.Id == memberId) == false)
+                        totalMembers = totalMembers + 1;
+                }
+
+                memberData.Add(new GroupedOurMemberStatistics
+                {
+                    GroupName = from.ToString("MMM yyy"),
+                    MonthYear = from.ToString("yyyyMM"),
+                    TotalNonSpamMembers = totalMembers
+                });
+            }
+            return memberData;
+
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
         public List<GroupedOurMemberStatistics> GetOurMemberData()
         {
             var memberData = new List<GroupedOurMemberStatistics>();
@@ -317,7 +359,7 @@ namespace OurUmbraco.Our.Api
             {
                 GroupName = "Jul 2018",
                 MonthYear = "201807",
-                TotalNonSpamMembers = 162874,
+                TotalNonSpamMembers = Math.Round(162874M / 1000, 2),
                 TotalNonSpamMembersWithLogin = 0,
                 TotalMembersEarningKarma = 0
             });
@@ -326,7 +368,7 @@ namespace OurUmbraco.Our.Api
             {
                 GroupName = "Aug 2018",
                 MonthYear = "201808",
-                TotalNonSpamMembers = 163052,
+                TotalNonSpamMembers = Math.Round(163052M / 1000, 2),
                 TotalNonSpamMembersWithLogin = 8015,
                 TotalMembersEarningKarma = 22780
             });
@@ -335,7 +377,7 @@ namespace OurUmbraco.Our.Api
             {
                 GroupName = "Sep 2018",
                 MonthYear = "201809",
-                TotalNonSpamMembers = 163267,
+                TotalNonSpamMembers = Math.Round(163267M / 1000, 2),
                 TotalNonSpamMembersWithLogin = 8117,
                 TotalMembersEarningKarma = 22924
             });
@@ -344,7 +386,7 @@ namespace OurUmbraco.Our.Api
             {
                 GroupName = "Oct 2018",
                 MonthYear = "201810",
-                TotalNonSpamMembers = 163613,
+                TotalNonSpamMembers = Math.Round(163613M / 1000, 2),
                 TotalNonSpamMembersWithLogin = 8253,
                 TotalMembersEarningKarma = 23121
             });
@@ -353,9 +395,19 @@ namespace OurUmbraco.Our.Api
             {
                 GroupName = "Nov 2018",
                 MonthYear = "201811",
-                TotalNonSpamMembers = 163845,
+                TotalNonSpamMembers = Math.Round(163845M / 1000, 2),
                 TotalNonSpamMembersWithLogin = 8334,
                 TotalMembersEarningKarma = 23267
+            });
+
+
+            memberData.Add(new GroupedOurMemberStatistics()
+            {
+                GroupName = "Dec 2018",
+                MonthYear = "201812",
+                TotalNonSpamMembers = Math.Round(164073M / 1000, 2),
+                TotalNonSpamMembersWithLogin = 8408,
+                TotalMembersEarningKarma = 23409
             });
 
             return memberData;
@@ -365,7 +417,7 @@ namespace OurUmbraco.Our.Api
         {
             public string GroupName { get; set; }
             public string MonthYear { get; set; }
-            public int TotalNonSpamMembers { get; set; }
+            public decimal TotalNonSpamMembers { get; set; }
             public int TotalNonSpamMembersWithLogin { get; set; }
             public int TotalMembersEarningKarma { get; set; }
         }
