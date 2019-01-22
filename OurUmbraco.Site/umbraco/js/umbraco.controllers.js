@@ -11651,6 +11651,13 @@
             // no value
             if (!$scope.model.value)
                 return;
+            // Backwards compatibility, the color used to be stored as a hex value only
+            if (typeof $scope.model.value === 'string') {
+                $scope.model.value = {
+                    value: $scope.model.value,
+                    label: $scope.model.value
+                };
+            }
             // Complex color (value and label)?
             if (!$scope.model.value.hasOwnProperty('value'))
                 return;
@@ -11872,7 +11879,6 @@
                     return $scope.model.config.idType === 'udi' ? i.udi : i.id;
                 });
                 $scope.model.value = trim(currIds.join(), ',');
-                angularHelper.getCurrentForm($scope).$setDirty();
                 //Validate!
                 if ($scope.model.config && $scope.model.config.minNumber && parseInt($scope.model.config.minNumber) > $scope.renderModel.length) {
                     $scope.contentPickerForm.minCount.$setValidity('minCount', false);
@@ -11911,7 +11917,10 @@
             opacity: 0.7,
             tolerance: 'pointer',
             scroll: true,
-            zIndex: 6000
+            zIndex: 6000,
+            update: function (e, ui) {
+                angularHelper.getCurrentForm($scope).$setDirty();
+            }
         };
         if ($scope.model.config) {
             //merge the server config on top of the default config, then set the server config to use the result
