@@ -84,6 +84,11 @@ namespace OurUmbraco.Community.Videos
 
         public void UpdateYouTubePlaylistVideos()
         {
+            if (ConfigurationManager.AppSettings["GoogleServerKey"] == "it's a secret.. and no, this is not the secret, this key will transformed on the build server")
+            {
+                return;
+            }
+
             var playlists = GetPlaylists();
             foreach (var playlist in playlists)
                 UpdateYouTubePlaylistVideo(playlist.Id);
