@@ -23,7 +23,7 @@ var settings = {
 gulp.task('lint', function() {
   'use strict';
 
-  gulp.src(settings.source+'/js/*.js')
+  return gulp.src(settings.source+'/js/*.js')
   .pipe(jshint())
   .pipe(jshint.reporter(stylish));
 });
@@ -32,7 +32,7 @@ gulp.task('lint', function() {
 gulp.task('js', function() {
   'use strict';
 
-  gulp.src([settings.source+'/js/vendor/**/*.js', settings.source+'/js/*.js'])
+  return gulp.src([settings.source+'/js/vendor/**/*.js', settings.source+'/js/*.js'])
 
   // Mangle is set to false by default.
   // By disabling mangle, Uglify won't rename
@@ -53,7 +53,7 @@ gulp.task('js', function() {
 
 // Compile vendor css and scss
 gulp.task('css', function () {
-    gulp.src(settings.source + '/scss/*.scss')
+    return gulp.src(settings.source + '/scss/*.scss')
         .pipe(sass())
 		.on('error', gutil.log)
 		.pipe(autoprefixer('last 1 version', 'ie 9', 'ios 7'))
@@ -68,31 +68,33 @@ gulp.task('css', function () {
 gulp.task('images', function(){
   'use strict';
 
-  gulp.src(settings.source+'/images/*.svg')
-  .pipe(svgmin())
-  .on('error', gutil.log)
-  .pipe(gulp.dest(settings.build+'/assets/images'))
-  .pipe(gulp.dest(settings.umbraco+'/assets/images'));
+    return gulp.src([settings.source + '/images/*.png', settings.source + '/images/*.jpg', settings.source + '/images/*.gif'])
+    .pipe(imageMin())
+    .on('error', gutil.log)
+    .pipe(gulp.dest(settings.build+'/assets/images'))
+    .pipe(gulp.dest(settings.umbraco+'/assets/images'));
 });
 
 // Svg images
 gulp.task('svg', function() {
   'use strict';
 
-  gulp.src(settings.source+'/images/*.svg')
+  return gulp.src(settings.source+'/images/*.svg')
   .pipe(svgmin())
   .on('error', gutil.log)
   .pipe(gulp.dest(settings.build+'/assets/images'))
   .pipe(gulp.dest(settings.umbraco+'/assets/images'));
 });
 
+gulp.task('dev', gulp.parallel(['lint', 'js', 'css']));
+
+gulp.task('build', gulp.parallel(['lint', 'js', 'css', 'images', 'svg']));
+
 // Default task and watch files
-gulp.task('default', ['build'], function() {
+gulp.task('default', gulp.series('build', function() {
   'use strict';
 
   gulp.watch([settings.source+'/js/vendor/**/*.js', settings.source+'/js/*.js'], ['lint', 'js']);
   gulp.watch([settings.source+'/scss/**/*.scss', settings.source+'/css/**/*.css'], ['css']);
   gulp.watch(settings.source+'/images/**', ['images', 'svg']);
-});
-
-gulp.task('build', ['lint', 'js', 'css', 'images', 'svg']);
+}));
