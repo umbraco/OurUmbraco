@@ -95,8 +95,11 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var pr in prInPeriod.Value)
                 {
-                    var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.BusinessHoursUntil(pr.CreatedAt.Value));
-                    var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.BusinessDaysUntil(pr.CreatedAt.Value));
+                    //var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.BusinessHoursUntil(pr.CreatedAt.Value));
+                    //var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.BusinessDaysUntil(pr.CreatedAt.Value));
+
+                    var mergeTimeInHours = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalHours);
+                    var mergeTimeInDays = Convert.ToInt32(pr.MergedAt.Value.Subtract(pr.CreatedAt.Value).TotalDays);
 
                     recentPrsMerged = recentPrsMerged + 1;
                     totalMergeTimeInHours = totalMergeTimeInHours + mergeTimeInHours;
@@ -109,7 +112,8 @@ namespace OurUmbraco.Our.Api
                         totalMergedNotOnTime = totalMergedNotOnTime + 1;
 
                     var firstTeamComment = prService.GetFirstTeamComment(prRepository, pr.Number.ToString());
-                    var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.BusinessHoursUntil(pr.CreatedAt.Value));
+                    //var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.BusinessHoursUntil(pr.CreatedAt.Value));
+                    var timeSpan = Convert.ToInt32(firstTeamComment?.created_at.Subtract(pr.CreatedAt.Value).TotalHours);
                     if (firstTeamComment != null)
                     {
                         pr.FirstTeamCommentTimeInHours = timeSpan;
