@@ -33,13 +33,13 @@ namespace OurUmbraco.Our.Api
             var toDate = DateTime.Parse($"{toYear}-{toMonth}-{toDay} 23:59:59");
 
             var repoService = new RepositoryManagementService();
-            var allCommunityIssues = repoService.GetAllCommunityIssues(false).ToList();
+            var allCommunityIssues = repoService.GetAllCommunityIssues(false).Where(x => x.Labels.Any(l => l.Name == "status/idea") == false).ToList();
 
             if (string.IsNullOrWhiteSpace(repository) == false)
                 allCommunityIssues = allCommunityIssues.Where(x => x.RepositoryName == repository).ToList();
 
             var issues = allCommunityIssues
-                .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate && x.Labels.Any(l => l.Name == "status/idea") == false)
+                .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate)
                 .OrderBy(x => x.CreateDateTime)
                 .GroupBy(x => new { x.CreateDateTime.Year, x.CreateDateTime.Month })
                 .ToDictionary(x => x.Key, x => x.ToList());
@@ -77,9 +77,6 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in allCommunityIssues)
                 {
-                    if(teamMembers.InvariantContains(issue.User.Login))
-                        LogHelper.Info<IssuesStatisticsController>($"Weird, issue https://github.com/umbraco/{issue.RepositoryName}/issue/{issue.Number} was created by {issue.User.Login}");
-
                     if (issue.CreateDateTime <= periodLastDay && issue.State != "closed")
                         issuesList.NumberOpen = issuesList.NumberOpen + 1;
                 }

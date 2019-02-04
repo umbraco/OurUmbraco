@@ -99,25 +99,41 @@ namespace OurUmbraco.Our.Services
                 }
             };
 
+
+            var pullRequestService = new GitHubService();
+            var hqMembers = pullRequestService.GetHqMembers();
+            var teamMembers = pullRequestService.GetTeamMembers();
+            var teamUmbraco = hqMembers;
+
+            if (teamMembers != null)
+            {
+                foreach (var teamMember in teamMembers)
+                    foreach (var member in teamMember.Members)
+                        teamUmbraco.Add(member);
+            }
+
             foreach (var item in allIssues.Where(x => x.Labels.Any(l => l.Name == "status/idea") == false))
             {
                 if (item.State == "closed")
                     continue;
 
-                var pullRequestService = new GitHubService();
-                var hqMembers = pullRequestService.GetHqMembers();
-                var teamMembers = pullRequestService.GetTeamMembers();
-                var teamUmbraco = hqMembers;
-
-                if (teamMembers != null)
-                {
-                    foreach (var teamMember in teamMembers)
-                        foreach (var member in teamMember.Members)
-                            teamUmbraco.Add(member);
-                }
-
                 if (item.Comments.Any())
                 {
+                    // Only Team Umbraco members can add labels, it's not exactly what we want to do but
+                    // labeling counts as a "reply" even if there's no comments by Team Umbraco on the issue
+                    if (item.Labels.Length == 0)
+                    {
+                        // If nobody on Team Umbraco labeled the issue NOR left a comment, it needs a reply
+                        var teamUmbracoHasReplied = item.Comments.Any(c => teamUmbraco.InvariantContains(c.User.Login));
+                        if (teamUmbracoHasReplied == false)
+                        {
+                            var noFirstReplyCategory = openIssues.First(x => x.CategoryKey == CategoryKey.NoReply);
+                            noFirstReplyCategory.Issues.Add(item);
+                            continue;
+                        }
+                    }
+
+                    // The last comment was not from Team Umbraco, we might need to help move this issue along
                     var latestComment = item.Comments.OrderByDescending(x => x.CreateDateTime).FirstOrDefault();
                     if (latestComment != null && teamUmbraco.InvariantContains(latestComment.User.Login) == false)
                         item.NeedsTeamUmbracoReply = true;
@@ -137,7 +153,7 @@ namespace OurUmbraco.Our.Services
                 if (item.Labels.Length != 0)
                 {
                     var matchedLabel = false;
-                    
+
                     foreach (var label in item.Labels)
                     {
                         var labels = new[] { "state/hq-discussion-ux", "state/hq-discussion-cms", "state/hq-discussion-cloud" };
@@ -243,7 +259,7 @@ namespace OurUmbraco.Our.Services
                 if (issue.Comments.Any(x => string.Equals(x.User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase)) == false)
                     continue;
 
-                
+
                 if (string.Equals(issue.Comments.Last().User.Login, githubUsername, StringComparison.InvariantCultureIgnoreCase))
                     continue;
 
@@ -265,7 +281,7 @@ namespace OurUmbraco.Our.Services
                 // if the requested user doesn't have the last reply, add it to the list
                 myIssues.First().Issues.Add(issue);
             }
-            
+
             return myIssues;
         }
 
