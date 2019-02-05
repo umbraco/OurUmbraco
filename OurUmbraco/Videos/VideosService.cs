@@ -18,6 +18,11 @@ namespace OurUmbraco.Videos
 
         public void UpdateVimeoVideos(string username)
         {
+            if (ConfigurationManager.AppSettings["VimeoAccessToken"] == "it's a secret.. and no, this is not the secret, this key will transformed on the build server")
+            {
+                return;
+            }
+
             if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException("username");
 
             // Map the path to the directory
