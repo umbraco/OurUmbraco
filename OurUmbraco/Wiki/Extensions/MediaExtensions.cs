@@ -52,8 +52,13 @@ namespace OurUmbraco.Wiki.Extensions
 
             // The XPath query will detect if the 'requirements' element has the attribute that we're looking for,
             // and if the child elements also exist. [LK:2016-06-12@CGRT16]
-            var requirements = packageXmlDoc.XPathSelectElement("/umbPackage/info/package/requirements[@type='strict' and major and minor and patch]");
+            var requirements = packageXmlDoc.XPathSelectElement("/umbPackage/info/package/requirements");
             if (requirements == null)
+                return;
+            if(requirements.Attribute("type") == null || requirements.Attribute("type").Value.ToLowerInvariant() != "strict")
+                return;
+
+            if(requirements.Element("major") == null  || requirements.Element("minor") == null || requirements.Element("patch") == null)
                 return;
 
             var major = requirements.Element("major").Value;
