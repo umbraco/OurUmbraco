@@ -73,13 +73,12 @@ namespace OurUmbraco.Our.Examine
                 ? ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]
                 : MajorDocsVersion.ToString();
 
-            //we filter by this version by excluding the other major versions in lucene so
-            var versionsToNegate = currentMajorVersions.Where(f => f != versionToFilterBy).ToArray<string>();
-            foreach (var versionToNegate in versionsToNegate)
+            // filter to the majorVersion
+            if (string.IsNullOrEmpty(versionToFilterBy) == false)
             {
-                sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
+                sb.AppendFormat("+majorVersion:{0} ", versionToFilterBy);
             }
-            
+
             if (!string.IsNullOrEmpty(Term))
             {
                 sb.Append("+(");

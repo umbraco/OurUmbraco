@@ -159,7 +159,7 @@ namespace OurUmbraco.Our.Examine
             else
             {
                 // no YAML information, add the current version as majorVersion
-                simpleDataSet.RowData.Add("majorVersion", GetCurrentDocVersion().ToString());
+                simpleDataSet.RowData.Add("majorVersion", "7 8");
             }
             return secondYamlMarker;
         }
