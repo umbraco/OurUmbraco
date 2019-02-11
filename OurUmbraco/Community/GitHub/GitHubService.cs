@@ -67,7 +67,7 @@ namespace OurUmbraco.Community.GitHub
             return teamUmbraco;
         }
 
-        public List<string> GetHqMembers()
+        public HashSet<string> GetHqMembers()
         {
             if (!File.Exists(_hqUsersFile))
             {
@@ -78,7 +78,7 @@ namespace OurUmbraco.Community.GitHub
 
             var hqUsernames = File.ReadAllLines(_hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
             var hqMembers = hqUsernames.Select(hqUsername => hqUsername.ToLowerInvariant()).ToList();
-            return hqMembers;
+            return new HashSet<string>(hqMembers);
         }
 
         public List<TeamUmbraco> GetTeamMembers()

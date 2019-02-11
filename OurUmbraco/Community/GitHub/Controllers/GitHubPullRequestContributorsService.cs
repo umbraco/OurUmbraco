@@ -14,7 +14,7 @@ namespace OurUmbraco.Community.GitHub.Controllers
         {
             var database = ApplicationContext.Current.DatabaseContext.Database;
             var service = new GitHubService();
-            var hqMembers = service.GetHqMembers();
+            var hqMembers = new HashSet<string>(service.GetHqMembers());
 
             var query = new Sql()
                 .Select("authorlogin as username, min(authorurl) as url, min(authoravatarurl) as avatarurl, count(*) as pullrequestcount, sum(additions) as additions, sum(deletions) as deletions")
@@ -25,7 +25,7 @@ namespace OurUmbraco.Community.GitHub.Controllers
             var allPrs = database.Fetch<AuthorPrs>(query);
 
             return allPrs
-                .Where(p => !hqMembers.Contains(p.Username));
+                .Where(p => !hqMembers.Contains(p.Username.ToLowerInvariant()));
         }
 
     }
