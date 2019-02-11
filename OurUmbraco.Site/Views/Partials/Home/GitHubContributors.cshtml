@@ -11,9 +11,9 @@
             <div class="contributor">
                 <a href="@contributor.AuthorUrl" target="_blank" title="@contributor.AuthorLogin">
                     <div class="avatar">
-                        <img alt="@contributor.AuthorLogin" src="@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 112)"
+                        <img alt="@contributor.AuthorLogin" src="@contributor.AuthorAvatarUrl"
                              srcset="@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 224) 2x,@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 336) 3x" />
-                        <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? "contribution" : "contributions"))">
+                        <span class="contrib-count" title="@(contributor.TotalCommits + " " + (contributor.TotalCommits == 1 ? " PR" : "PRs"))">
                             @contributor.TotalCommits
                         </span>
                         <div class="counts">

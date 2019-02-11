@@ -20,7 +20,7 @@
     "gulp-uglify": "^1.5.3",
     "gulp-util": "3.0.x",
     "gulp-watch": "0.6.x",
-    "jshint": "^2.9.7",
+    "jshint": "^2.9.5",
     "jshint-stylish": "0.2.x"
   },
   "scripts": {

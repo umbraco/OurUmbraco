@@ -9,6 +9,7 @@ using Hangfire.Server;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.GitHub.Controllers;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Our.Services;
@@ -149,6 +150,21 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+        }
+
+        public void UpdateGitHubPullRequests()
+        {
+            RecurringJob.AddOrUpdate(() => UpdateGitHubPullRequestForEachRepo(), Cron.Daily);
+        }
+
+        public void UpdateGitHubPullRequestForEachRepo()
+        {
+            var gitHubService = new GitHubService();
+            var service = new GitHubPullRequestImportService();
+            foreach (var repo in gitHubService.GetRepositories())
+            {
+                BackgroundJob.Enqueue(() => service.UpdatePageOfStoredPullRequests(repo, ""));
+            }
         }
     }
 
