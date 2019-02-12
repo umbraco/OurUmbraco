@@ -1,3 +1,5 @@
+using OurUmbraco.Community.GitHub.Controllers;
+
 namespace OurUmbraco.Community.GitHub.Models.Cached
 {
     public class GitHubCachedGlobalContributorModel
@@ -27,6 +29,16 @@ namespace OurUmbraco.Community.GitHub.Models.Cached
             TotalCommits = contributor.TotalCommits;
             TotalAdditions = contributor.TotalAdditions;
             TotalDeletions = contributor.TotalDeletions;
+        }
+
+        public GitHubCachedGlobalContributorModel(AuthorPrs contributor)
+        {
+            AuthorLogin = contributor.Username;
+            TotalCommits = contributor.PullRequestCount;
+            AuthorUrl = contributor.Url;
+            AuthorAvatarUrl = contributor.AvatarUrl;
+            TotalAdditions = contributor.Additions;
+            TotalDeletions = contributor.Deletions;
         }
     }
 }
