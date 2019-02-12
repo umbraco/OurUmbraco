@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub.Models;
 using RestSharp;
@@ -81,7 +82,7 @@ namespace OurUmbraco.Community.GitHub.Controllers
                     return new PrPage { PullRequests = Enumerable.Empty<GitHubPullRequestDataModel>(), LastCursor = "" };
                 }
             }
-            return null; // TODO : Not null
+            throw new HttpException(Convert.ToInt32(response.StatusCode), response.StatusDescription + " when fetching GitHub Pull Requests");
         }
         
         internal class MergedPullRequestsQuery

@@ -20,10 +20,7 @@ namespace OurUmbraco.Community.GitHub.Migrations
             const string productName = "GitHubPullRequest";
             var currentVersion = new SemVersion(0, 0, 0);
 
-            // get all migrations for "Statistics" already executed
             var migrations = ApplicationContext.Current.Services.MigrationEntryService.GetAll(productName);
-
-            // get the latest migration for "Statistics" executed
             var latestMigration = migrations.OrderByDescending(x => x.Version).FirstOrDefault();
 
             if (latestMigration != null)

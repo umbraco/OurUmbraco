@@ -14,13 +14,14 @@ namespace OurUmbraco.Community.GitHub.Controllers
         {
             var database = ApplicationContext.Current.DatabaseContext.Database;
             var service = new GitHubService();
-            var hqMembers = new HashSet<string>(service.GetHqMembers());
+            var hqMembers = service.GetHqMembers();
 
             var query = new Sql()
                 .Select("authorlogin as username, min(authorurl) as url, min(authoravatarurl) as avatarurl, count(*) as pullrequestcount, sum(additions) as additions, sum(deletions) as deletions")
                 .From<GitHubPullRequestDataModel>(new SqlServerSyntaxProvider())
                 .Append("where lastModified > @0", DateTime.Now.AddYears(-1))
-                .GroupBy("authorlogin");
+                .GroupBy("authorlogin")
+                .OrderByDescending("pullrequestcount","additions","deletions");
 
             var allPrs = database.Fetch<AuthorPrs>(query);
 
