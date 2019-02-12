@@ -446,7 +446,7 @@
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubPullRequestContributorsService.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubPullRequestImportService.cs" />
-    <Compile Include="Community\GitHub\Migrations\CreatePullRequestTable.cs" />
+    <Compile Include="Community\GitHub\Migrations\CreatePullRequestTableAndTriggerPopulation.cs" />
     <Compile Include="Community\GitHub\Migrations\MigrationEvents.cs" />
     <Compile Include="Community\GitHub\Models\GitHubPullRequestDataModel.cs" />
     <Compile Include="Community\Models\Repository.cs" />
