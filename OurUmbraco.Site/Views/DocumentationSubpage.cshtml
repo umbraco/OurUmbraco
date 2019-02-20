@@ -2,14 +2,14 @@
 @using OurUmbraco.Repository.Services
 @{
     Layout = "~/Views/Master.cshtml";
+
+    var docVersionService = new DocumentationVersionService();
+    var currentVersion = docVersionService.GetCurrentMajorVersion();
+    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
+
+    var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
 }
 @section SeoMetaData {
-    @{
-        var docVersionService = new DocumentationVersionService();
-        var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
-
-        var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
-    }
     @if (currentDocVersion != null)
     {
         if (currentDocVersion.MetaTitle != null)
@@ -98,9 +98,9 @@
                                 <label for="search">Search for documentation</label>
                             </div>
                             <select class="version-search-select">
-                                <option value="8">v8</option>
-                                <option value="7" selected="selected">v7</option>
-                                <option value="6">v6</option>
+                                <option value="8" selected="@(currentVersion == "8"? "selected" : null)">v8</option>
+                                <option value="7" selected="@(currentVersion == "7"? "selected" : null)">v7</option>
+                                <option value="6" selected="@(currentVersion == "6"? "selected" : null)">v6</option>    
                             </select>
                         </div>
 

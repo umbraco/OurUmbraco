@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,10 @@ namespace OurUmbraco.Repository.Services
 {
     public class DocumentationVersionService
     {
+        public string GetCurrentMajorVersion()
+        {
+            return ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion];
+        }
 
         public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri, bool allVersions = false)
         {
