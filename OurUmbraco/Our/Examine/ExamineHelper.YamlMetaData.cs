@@ -33,6 +33,7 @@ namespace OurUmbraco.Our.Examine
             /// A space separated list of Topic IDs
             /// </summary>
             public string Topics { get; set; }
+            public string VersionRemoved { get; internal set; }
         }
     }
 }
