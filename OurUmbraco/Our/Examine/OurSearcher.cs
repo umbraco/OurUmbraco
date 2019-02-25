@@ -61,7 +61,7 @@ namespace OurUmbraco.Our.Examine
             {
                 sb.AppendFormat("+nodeTypeAlias: {0} ", NodeTypeAlias);
             }
-            
+
             // Three possiblities:
             // * docs version (MajorDocsVersion) supplied, give current version and NEGATE OTHERS
             // * no docs version (MajorDocsVersion) is not suplied, use it and NEGATE others
@@ -69,17 +69,28 @@ namespace OurUmbraco.Our.Examine
             var currentMajorVersions = new string[] { "6", "7", "8" };
 
             // add mandatory majorVersion is parameter is supplied
-            string versionToFilterBy =  MajorDocsVersion == null
+            string versionToFilterBy = MajorDocsVersion == null
                 ? ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion]
                 : MajorDocsVersion.ToString();
 
-            //we filter by this version by using the major versions
-            var versionToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
-            foreach (var versionToNegate in versionToFind)
+            //we filter by this version by excluding the other major versions in lucene so
+            var versionsToNegate = currentMajorVersions.Where(f => f != versionToFilterBy).ToArray<string>();
+            foreach (var versionToNegate in versionsToNegate)
             {
-                sb.AppendFormat("+majorVersion:{0} ", versionToNegate);
+                sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
             }
-            
+
+            // do it the other way around for documentation
+            if (NodeTypeAlias.InvariantEquals("documentation"))
+            {
+                //we filter by this version by using the major versions
+                var versionToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
+                foreach (var versionToNegate in versionToFind)
+                {
+                    sb.AppendFormat("+majorVersion:{0} ", versionToNegate);
+                }
+            }
+
             if (!string.IsNullOrEmpty(Term))
             {
                 sb.Append("+(");
