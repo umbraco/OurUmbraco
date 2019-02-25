@@ -1,15 +1,15 @@
-﻿@inherits UmbracoTemplatePage
+﻿﻿@inherits UmbracoTemplatePage
 @using OurUmbraco.Repository.Services
 @{
     Layout = "~/Views/Master.cshtml";
+
+    var docVersionService = new DocumentationVersionService();
+    var currentVersion = docVersionService.GetCurrentMajorVersion();
+    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
+
+    var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
 }
 @section SeoMetaData {
-    @{
-        var docVersionService = new DocumentationVersionService();
-        var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
-
-        var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
-    }
     @if (currentDocVersion != null)
     {
         if (currentDocVersion.MetaTitle != null)
@@ -52,8 +52,8 @@
         //If no description is set this will just be empty - which is what it used to be anyways, could think of adding some sort of fallback?
         <meta name="description" content="@currentDocVersion.MetaDescription" />
     }
-                    else
-                    {
+    else
+    {
         <title>
             @{
                 var title = string.Empty;
@@ -68,7 +68,6 @@
                     <text>@title - </text>
                 }
             }
-
             @Model.Content.Name - our.umbraco.com
         </title>
         <meta name="description" content="">
@@ -84,44 +83,37 @@
                     </div><!-- .content-wrapper -->
                 </div><!-- .sidebar-content -->
             </div><!-- .sidebar-area-->
-
             <div class="main-area">
                 <div class="main-content">
                     <div class="content-wrapper">
                         <div>
                             @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                         </div>
-
                         <div class="search-big">
                             <div class="textSearch">
                                 <input type="search" class="docs-search-input" required placeholder="Search for documentation">
                                 <label for="search">Search for documentation</label>
                             </div>
                             <select class="version-search-select">
-                                <option value="8">v8</option>
-                                <option value="7" selected="selected">v7</option>
-                                <option value="6">v6</option>
+                                <option value="8" selected="@(currentVersion == "8"? "selected" : null)">v8</option>
+                                <option value="7" selected="@(currentVersion == "7"? "selected" : null)">v7</option>
+                                <option value="6" selected="@(currentVersion == "6"? "selected" : null)">v6</option>
                             </select>
                         </div>
-
                         <ul class="search-all-results docs-search-listing"></ul>
-
                         <div id="markdown-docs" class="docs-default-listing markdown-syntax">
                             @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml")
                         </div>
                     </div><!-- .content-wrapper -->
                 </div><!-- .main-content -->
             </div><!-- .main-area -->
-
         </div><!-- .page-content -->
-
         <script type="text/template" class="search-item-docs">
             <li>
                 <a href="{{ url }}">
                     <div class="type-icon">
                         <i class="icon-Book-alt"></i>
                     </div>
-
                     <div class="type-context">
                         <div class="type-name">
                             {{ name }}

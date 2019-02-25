@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Semver;
+﻿using Semver;
 
 namespace OurUmbraco.Repository.Models
 {
@@ -16,6 +11,7 @@ namespace OurUmbraco.Repository.Models
         public bool IsCurrentPage { get; internal set; }
         public SemVersion VersionFrom { get; internal set; }
         public SemVersion VersionTo { get; internal set; }
+        public string VersionRemoved { get; internal set; }
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
     }
