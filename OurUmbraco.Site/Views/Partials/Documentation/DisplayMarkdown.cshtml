@@ -1,4 +1,5 @@
 @using OurUmbraco.Documentation.Busineslogic
+@using OurUmbraco.Repository.Models
 @using OurUmbraco.Repository.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
@@ -83,9 +84,12 @@
     var markdown = ml.DoTransformation();
     // method to determine if alternate versions exist for these docs
     var docVersionService = new DocumentationVersionService();
-    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url);// method to determine which alternate versions exist of this page
-                                                                                       //bool hasAltVersions = altVersions.Any(av => av.IsCurrentVersion == true);  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
-    bool hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
+    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url).ToList();// method to determine which alternate versions exist of this page
+    var hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
+
+    var currentVersion = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).SingleOrDefault(x => x.IsCurrentPage);
+    var currentVersionIsRemovedForv8 = currentVersion != null && currentVersion.VersionRemoved != null && currentVersion.VersionRemoved.StartsWith("8");
+    var currentUmbracoVersion = int.Parse(docVersionService.GetCurrentMajorVersion());
 }
 
 @if (hasAltVersions)
@@ -119,4 +123,68 @@
         </div>
     </aside>
 }
+
+@if (string.IsNullOrWhiteSpace(Request.QueryString["debug"]) == false)
+{
+    <table>
+        @if (currentVersion != null)
+        {
+            <tr>
+                <td>Version from (major)</td>
+                <td> @currentVersion.VersionFrom.Major</td>
+            </tr>
+            <tr>
+                <td>Version to (major)</td>
+                <td> @currentVersion.VersionTo.Major</td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td colspan="2">currentVersion is null</td>
+            </tr>
+        }
+        <tr>
+            <td>Current version in web.config</td>
+            <td>@currentUmbracoVersion</td>
+        </tr>
+        <tr>
+            <td>Is this documentation removed for v8?</td>
+            <td>@currentVersionIsRemovedForv8</td>
+        </tr>
+    </table>
+}
+
+@if (currentUmbracoVersion == 8
+     && currentVersionIsRemovedForv8 == false 
+     && currentVersion != null
+     && currentVersion.Url.EndsWith("-v7") == false
+     && currentVersion.VersionFrom.Major == 7 
+     && currentVersion.VersionTo.Major == 0)
+{
+    <div class="note">
+        <p><strong>This article has not yet been verified against Umbraco 8.</strong></p>
+        <p>
+            The concepts and code examples might not work if you are running Umbraco 8.0 or a later version.
+            If you are using Umbraco 7, this article is perfect for you!
+        </p>
+        <p>You are more than welcome to report any issues found on the <a href="https://github.com/umbraco/UmbracoDocs/issues">Documentation Issue Tracker</a>.</p>
+    </div>
+}
+
+@if (currentUmbracoVersion == 8 
+     && currentVersion != null
+     && currentVersion.Url.EndsWith("-v7") == false
+     && currentVersionIsRemovedForv8)
+{
+    <div class="warning">
+        <p><strong>This article does not apply to Umbraco 8.</strong></p>
+        <p>
+            The concepts and code in this article have been deprecated in Umbraco 8 and no longer apply.<br />
+            If you are using Umbraco 7, this article is perfect for you!
+        </p>
+    </div>
+}
+
 @Html.Raw(markdown)
+

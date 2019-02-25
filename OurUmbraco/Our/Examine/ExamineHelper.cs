@@ -152,6 +152,7 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet.RowData.Add("complexity", yamlMetaData.Complexity);
                 simpleDataSet.RowData.Add("meta.Title", yamlMetaData.MetaTitle);
                 simpleDataSet.RowData.Add("meta.Description", yamlMetaData.MetaDescription);
+                simpleDataSet.RowData.Add("versionRemoved", yamlMetaData.VersionRemoved);
 
                 var matchingMajorVersions = CalculateMajorVersions(yamlMetaData);
                 simpleDataSet.RowData.Add("majorVersion", string.Join(" ", matchingMajorVersions));
@@ -171,6 +172,8 @@ namespace OurUmbraco.Our.Examine
             var semverCurrent = new Semver.SemVersion(currentDocVersion);
             bool hasFrom = Semver.SemVersion.TryParse(yamlMetaData.VersionFrom, out Semver.SemVersion semverFrom);
             bool hasTo = Semver.SemVersion.TryParse(yamlMetaData.VersionTo, out Semver.SemVersion semverTo);
+            bool hasRemoved = Semver.SemVersion.TryParse(yamlMetaData.VersionRemoved, out Semver.SemVersion semverRemoved);
+
 
             if (hasFrom == false) { semverFrom = new Semver.SemVersion(currentDocVersion); }
             if (hasTo == false) { semverTo = semverFrom < semverCurrent ? semverCurrent : semverFrom; }
@@ -179,8 +182,15 @@ namespace OurUmbraco.Our.Examine
             var matchingMajorVersions = new List<int>();
             for (int i = semverFrom.Major; i <= semverTo.Major; i++)
             {
-                yield return i;
+                matchingMajorVersions.Add(i);
             }
+
+            if (hasRemoved)
+            {
+                matchingMajorVersions.RemoveAll(x => x == semverRemoved.Major);
+            }
+
+            return matchingMajorVersions;
         }
 
         private static int GetCurrentDocVersion()

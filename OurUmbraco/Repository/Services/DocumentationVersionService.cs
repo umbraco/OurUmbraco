@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -12,6 +13,11 @@ namespace OurUmbraco.Repository.Services
 {
     public class DocumentationVersionService
     {
+
+        public string GetCurrentMajorVersion()
+        {
+            return ConfigurationManager.AppSettings[Constants.AppSettings.DocumentationCurrentMajorVersion];
+        }
 
         public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri, bool allVersions = false)
         {
@@ -67,6 +73,7 @@ namespace OurUmbraco.Repository.Services
                         Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
                         VersionFrom = string.IsNullOrWhiteSpace( f["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionFrom"]),
                         VersionTo = string.IsNullOrWhiteSpace(f["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionTo"]),
+                        VersionRemoved = f["versionRemoved"],
                         IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
                         IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl,
                         MetaDescription = f["meta.Description"],
