@@ -73,6 +73,7 @@ namespace OurUmbraco.Repository.Services
                         Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
                         VersionFrom = string.IsNullOrWhiteSpace( f["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionFrom"]),
                         VersionTo = string.IsNullOrWhiteSpace(f["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionTo"]),
+                        VersionRemoved = f["versionRemoved"],
                         IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
                         IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl,
                         MetaDescription = f["meta.Description"],
