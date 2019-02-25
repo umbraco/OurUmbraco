@@ -86,6 +86,8 @@
     flex-wrap: wrap;
     text-decoration: none;
     background-color: white;
+    z-index: 1;
+    position: relative;
 }
 
 @mixin notice($bg-color, $border-color, $icon-string) {
