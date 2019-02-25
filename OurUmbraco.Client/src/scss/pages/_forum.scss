@@ -540,6 +540,6 @@
 }
 
 .forum .forum-thread.solved {
-    background: rgba(163, 219, 120, 0.23) none repeat scroll 0 0;
-    border: 2px solid rgba(163, 219, 120, 0.66);
+    background: rgba($color-our, 0.23) none repeat scroll 0 0;
+    border: 2px solid rgba($color-our, 0.66);
 }
