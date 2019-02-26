@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
@@ -119,8 +120,10 @@ namespace OurUmbraco.Our.Api
         [HttpPost]
         public HttpResponseMessage ImageUpload()
         {
-            dynamic result = new ExpandoObject();
             var httpRequest = HttpContext.Current.Request;
+            var allowedSuffixes = new[] { ".jpg", ".jpeg", ".png", ".gif" };
+
+            dynamic result = new ExpandoObject();
             if (httpRequest.Files.Count > 0)
             {
                 var filename = string.Empty;
@@ -129,13 +132,18 @@ namespace OurUmbraco.Our.Api
 
                 foreach (string file in httpRequest.Files)
                 {
+                    var postedFile = httpRequest.Files[file];
+                    if(postedFile == null)
+                        continue;
+
+                    // only allow files with certain extensions
+                    if(allowedSuffixes.Contains(postedFile.FileName.Substring(postedFile.FileName.LastIndexOf(".", StringComparison.Ordinal))) == false)
+                        continue;
 
                     var updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + guid));
 
                     if (!updir.Exists)
                         updir.Create();
-
-                    var postedFile = httpRequest.Files[file];
 
                     var filePath = string.Format("{0}/{1}", updir.FullName, postedFile.FileName);
                     postedFile.SaveAs(filePath);
