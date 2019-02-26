@@ -36,7 +36,7 @@ header {
 		z-index: 200;
 		width: 100%;
 		padding: 10px 0;
-		background: $color-our;
+		background: white;
 		@include transition(all, .2s);
 
 		@media (min-width: $md) {
@@ -233,6 +233,7 @@ header {
 		.navigation {
 			background: darken($color-our, 4%);
 			padding: 0;
+			color: white;
 		}
 
 		.menu-toggle {
@@ -245,6 +246,10 @@ header {
 				text-indent: 40px;
 			}
 		}
+		
+		a, a:visited {
+			color: white;
+		}		
 	}
 }
 

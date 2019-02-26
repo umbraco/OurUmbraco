@@ -71,6 +71,9 @@
                                 </a>
                                 <ul class="level-2">
                                     <li>
+                                        <a href=""><h4>Umbraco 8</h4></a>
+                                    </li>
+                                    <li>
                                         <a href=""><h4>Umbraco 7</h4></a>
                                     </li>
                                     <li>
@@ -322,25 +325,38 @@
                             </div>
 
                             <div class="col-md-5 col-md-offset-2">
-
+                                @if (currentPage.Name.StartsWith("8."))
+                                {
+                                    <h2>Frequently asked questions</h2>
+                                    <p>We've put together some answers to often asked questions - <a href="https://our.umbraco.com/documentation/Umbraco8FAQ">you can find it in the Umbraco 8 - FAQ article</a>.</p>
+                                }
                                 <h2>Getting started</h2>
+
                                 <p>Make sure to give the <a href="https://our.umbraco.com/documentation/Getting-Started/Setup/Install/">installation instructions a read</a>.</p>
-                                <p>
-                                    Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
-                                    <ul>
-                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
-                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
-                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
-                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
-                                    </ul>
-                                    <h2>World's best community</h2>
+                                @if (currentPage.Name.StartsWith("8."))
+                                {
+                                    <p>Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v8/">foundation videos</a> on how to get started building Umbraco sites.</p>
+                                }
+                                else
+                                {
+                                    <p>
+                                        Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
+                                        <ul>
+                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
+                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
+                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
+                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
+                                        </ul>
+                                    </p>
+                                }
+                                <h2>World's best community</h2>
                                 <p>You'll find our über active community working hard to help each other at Our Umbraco: <a href="https://our.umbraco.com">https://our.umbraco.com</a></p>
                                 <h2>Upgrading from older versions</h2>
                                 <p>Make sure to read the <a href="https://our.umbraco.com/documentation/getting-started/setup/upgrading/">upgrade instructions</a> before you attempt an upgrade.</p>
 
 
                                 <h2>Found a bug?</h2>
-                                <p>We're happy to help you with any problems you encounter, so please report them in <a href="https://github.com/umbraco/Umbraco-CMS/issues/new/choose">the issue tracker</a> and use the “Affected versions” field to set it to @Model.Content.Name. <br />Do a search first though, if the issue already exists, give it an extra vote.</p>
+                                <p>We're happy to help you with any problems you encounter, so please report them in <a href="https://github.com/umbraco/Umbraco-CMS/issues/new/choose">the issue tracker</a> and mention you're using version @Model.Content.Name. <br />Do a search first though, if the issue already exists, give it a "thumbs up".</p>
 
                                 @if (Model.Content.HasValue("linkToChangeset"))
                                 {
@@ -373,9 +389,9 @@
         setTimeout(function () {
             $('.chart').easyPieChart({
                 size: 60,
-                barColor: '#569327',
+                barColor: '#303ea1',
                 scaleColor: false,
-                trackColor: '#daf0c9'
+                trackColor: '#7682d6'
             });
         }, 300);
     </script>

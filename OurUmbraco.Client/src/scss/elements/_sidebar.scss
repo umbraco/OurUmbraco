@@ -40,7 +40,7 @@ html {
         display: table-cell;
         vertical-align: top;
         width:$sb-width;
-        background-color: lighten($color-our, 30%);
+        background-color: white;
         height: 100%;
 
         @media (max-width:992px) {

@@ -13,7 +13,6 @@
 }
 
 
-
 .explain {
 	flex-direction: column;
 
@@ -225,8 +224,7 @@
 		}
 
 	}
-
-
+	
 	.chart {
 		top: 0px;
 		left: 0px;
@@ -266,6 +264,9 @@
 	}
 }
 
+.chart p, .chart div.percentage, .release .chart p {
+	color: white;
+}
 
 .release-page .explain h2 {
 	margin: 0;
