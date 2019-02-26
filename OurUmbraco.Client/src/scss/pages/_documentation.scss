@@ -151,7 +151,7 @@
     
     a {
         color: darken($color-our, 20%);
-        text-decoration: none;
+        font-weight: bold;
 
         &:hover {
             color: darken($color-our, 40%);
