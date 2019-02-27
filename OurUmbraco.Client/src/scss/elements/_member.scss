@@ -1,137 +1,134 @@
 .public-member {
-	font-size: .9rem;
-	line-height: 1.5;
-	color: $color-text;
-	margin-top: 2rem;
+    font-size: .9rem;
+    line-height: 1.5;
+    color: $color-text;
+    margin-top: 2rem;
 
-	.forum-thread-text{
-		width: 360px;
-		@media (max-width: $xs) {
-			width: 300px;
-		}
-	}
+    .forum-thread-text {
+        width: 360px;
 
-	.member-details {
-		display: flex;
-		align-items: center;
+        @media (max-width: $xs) {
+            width: 300px;
+        }
+    }
 
-		img {
-			border-radius: 50%;
-			max-width: 112px;
-			min-width: 112px;
-			height: auto;
-		}
+    .member-details {
+        display: flex;
+        align-items: center;
 
-		h3 {
-			margin: 0;
-			font-size: 1.2rem;
-			line-height: 1.3;
-			color:  $color-headline;
-			font-weight: bold;
-		}
+        img {
+            border-radius: 50%;
+            max-width: 112px;
+            min-width: 112px;
+            height: auto;
+        }
 
-		small {
-			line-height: 1.3;
-			color: darken($color-space, 25%);
-			font-size: 1.15rem;
+        h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            line-height: 1.3;
+            color: $color-headline;
+            font-weight: bold;
+        }
 
-			font-weight: bold;
+        small {
+            line-height: 1.3;
+            color: darken($color-space, 25%);
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin: 0;
+        }
 
-			margin: 0;
-		}
-
-		a {
-			text-decoration: none;
-		}
-
-
-
-		.text {
-			margin: 0 0 0 1rem;
-
-			small {
-				font-size: 1rem;
-				font-weight: normal;
-				color: darken($color-space, 15%);
-			}
-		}
-
-
-		.roles {
-			display: flex;
-			flex-wrap: wrap;
-			flex: 0 0 100%;
-
-			span {
-				font-size: .85rem;
-				margin: 0 2% 2% 0;
-			}
-		}
-	}
+        a {
+            text-decoration: none;
+        }
 
 
 
+        .text {
+            margin: 0 0 0 1rem;
 
-	h3 {
-		margin: 0 0 .5rem;
-		font-weight: bold;
-
-		font-size: 1.15rem;
-	}
-
-
-
-	.member-bio {
-		margin-top: 1rem;
-
-		p {
-			font-size: 1rem;
-			line-height: 1.4;
-			color: darken($color-space, 20%);
-		}
-	}
+            small {
+                font-size: 1rem;
+                font-weight: normal;
+                color: darken($color-space, 15%);
+            }
+        }
 
 
+        .roles {
+            display: flex;
+            flex-wrap: wrap;
+            flex: 0 0 100%;
 
-	.category {
-		margin-top: .5rem;
+            span {
+                font-size: .85rem;
+                margin: 0 2% 2% 0;
+            }
+        }
+    }
 
-		span.cat {
-			font-size: .75rem;
-		}
-	}
 
 
-	.forum-thread {
-		.row {
-			display: flex;
 
-			align-items: center;
-		}
+    h3 {
+        margin: 0 0 .5rem;
+        font-weight: bold;
+        font-size: 1.15rem;
+    }
 
-		&-text {
-			h3 {
-				font-size: 1rem;
 
-				@media (min-width: $md) {
-					font-size: 1.1rem;
-				}
-			}
-		}
-	}
 
-    .solved{
-        background: rgba(163, 219, 120, 0.23) none repeat scroll 0% 0%;
-        border: 2px solid rgba(163, 219, 120, 0.66);
-     }
+    .member-bio {
+        margin-top: 1rem;
 
-	.goto {
-		font-size: 1rem;
+        p {
+            font-size: 1rem;
+            line-height: 1.4;
+            color: darken($color-space, 20%);
+        }
+    }
 
-		&:hover {
-			text-decoration: none;
-		}
-	}
+
+
+    .category {
+        margin-top: .5rem;
+
+        span.cat {
+            font-size: .75rem;
+        }
+    }
+
+
+    .forum-thread {
+        .row {
+            display: flex;
+            align-items: center;
+        }
+
+        &-text {
+            h3 {
+                font-size: 1rem;
+
+                @media (min-width: $md) {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+    }
+
+    .solved {
+        background: rgba($color-our, .23);
+        border: 2px solid rgba($color-our, .66);
+    }
+
+    .goto {
+        font-size: 1rem;
+
+        &:hover {
+            text-decoration: none;
+        }
+    }
 }
 
 

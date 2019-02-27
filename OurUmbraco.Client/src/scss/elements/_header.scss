@@ -250,6 +250,13 @@ header {
 			}
 			color: white;
 		}
+
+        .toggle span {
+            background-color: $color-white;
+            &:before, &:after{
+                background-color: $color-white;
+            }
+        }
 		
 		a, a:visited {
 			color: white;
@@ -349,7 +356,7 @@ header {
 			top: 12px;
 			width: 25px;
 			height: 2px;
-			background-color: #fff;
+			background-color: $color-our;
 			display: block;
 
 			&:before, &:after {
@@ -357,7 +364,7 @@ header {
 				content: '';
 				width: 25px;
 				height: 2px;
-				background-color: #fff;
+				background-color: $color-our;
 				display: block;
 			}
 
