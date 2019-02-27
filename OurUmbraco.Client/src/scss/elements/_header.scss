@@ -83,6 +83,8 @@ header {
 				opacity: .6;
 			}
 		}
+		
+		color: $color-our;
 	}
 
 	nav {
@@ -238,6 +240,7 @@ header {
 
 		.menu-toggle {
 			top: 15px;
+			color: white;
 		}
 
 		.logo {
@@ -245,6 +248,7 @@ header {
 				background-size: 30px auto;
 				text-indent: 40px;
 			}
+			color: white;
 		}
 		
 		a, a:visited {
@@ -288,6 +292,7 @@ header {
         z-index: 999;
 
         @include transition(top, .3s);
+		color: $color-our;
     }
 
 	.toggle {
