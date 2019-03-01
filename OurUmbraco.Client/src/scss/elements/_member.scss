@@ -120,10 +120,10 @@
 		}
 	}
 
-    .solved{
-        background: rgba(163, 219, 120, 0.23) none repeat scroll 0% 0%;
-        border: 2px solid rgba(163, 219, 120, 0.66);
-     }
+    .solved {
+        background: rgba($color-our, .23);
+        border: 2px solid rgba($color-our, .66);
+    }
 
 	.goto {
 		font-size: 1rem;

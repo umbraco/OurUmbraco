@@ -179,6 +179,9 @@ html {
                 background-color: lighten($color-our,10%);
                 padding-top: 10px;
                 padding-bottom: 10px;
+                h3 {                    
+                    color:$color-white;
+                }
             }
         }
 
@@ -193,6 +196,10 @@ html {
             @media (max-width: 992px) {
                 border-left: none;
                 background-color:  lighten($color-our,15%);
+                h4 {
+                    color: $color-white;
+                }
+
             }
         }
 
@@ -207,6 +214,9 @@ html {
             @media (max-width: 992px) {
                 border-left: none;
                 background-color:  lighten($color-our,25%);
+                h3 {                    
+                    color:$color-white;
+                }
             }
         }
     }
