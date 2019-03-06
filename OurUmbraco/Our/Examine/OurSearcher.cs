@@ -74,10 +74,13 @@ namespace OurUmbraco.Our.Examine
                 : MajorDocsVersion.ToString();
 
             //we filter by this version by excluding the other major versions in lucene so
-            var versionsToNegate = currentMajorVersions.Where(f => f != versionToFilterBy).ToArray<string>();
-            foreach (var versionToNegate in versionsToNegate)
+            if (NodeTypeAlias.InvariantEquals("documentation") == false)
             {
-                sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
+                var versionsToNegate = currentMajorVersions.Where(f => f != versionToFilterBy).ToArray<string>();
+                foreach (var versionToNegate in versionsToNegate)
+                {
+                    sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
+                }
             }
 
             // do it the other way around for documentation
