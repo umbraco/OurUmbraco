@@ -215,7 +215,7 @@ namespace OurUmbraco.Community.BlogPosts
             DateTimeOffset pubDate;
             try
             {
-                pubDate = Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(publishDate);
+                return Skybrud.Essentials.Time.TimeUtils.Rfc822ToDateTimeOffset(publishDate);
             }
             catch (Exception e)
             {
