@@ -252,7 +252,7 @@
       "logo": "https://pstokes.co.uk/media/1017/img_2254-3.jpg",
       "memberId": 146507
     },
-     {
+    {
       "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
       "checkTitles": false,
       "title": "Owain Codes",
@@ -260,6 +260,15 @@
       "rss": "https://www.owain.codes/blog/rss",
       "logo": "https://www.owain.codes/media/1033/hoodie_front.png",
       "memberId": 144571
+    },	
+    {
+      "id": "d4c4eaf6-203a-4968-8b99-e7191f9b4943",
+      "checkTitles": false,
+      "title": "Moriyama",
+      "url": "https://www.moriyama.co.uk/",
+      "rss": "https://www.moriyama.co.uk/rss",
+      "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
+      "memberId": 1199
     }
   ]
 }
