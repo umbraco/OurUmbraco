@@ -110,6 +110,10 @@ body.download {
 	}
 
 	.requirements {
+		background: rgba($color-blue,.23);
+		border: 2px solid rgba($color-blue, .66);
+		padding: 8px;
+	
 		ul {
 			margin-top:10px;
 			list-style:none;
@@ -119,6 +123,8 @@ body.download {
 			font-size: 13px;
 			margin-bottom: 7px;
 		}
+		
+		
 	}
 
 
