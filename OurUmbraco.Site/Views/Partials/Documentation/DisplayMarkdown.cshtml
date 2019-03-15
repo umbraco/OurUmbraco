@@ -157,10 +157,7 @@
 
 @if (currentUmbracoVersion == 8
      && currentVersionIsRemovedForv8 == false 
-     && currentVersion != null
-     && currentVersion.Url.EndsWith("-v7") == false
-     && currentVersion.VersionFrom.Major == 7 
-     && currentVersion.VersionTo.Major == 0)
+     && currentVersion.NeedsV8Update == "true")
 {
     <div class="note">
         <p><strong>This article has not yet been verified against Umbraco 8.</strong></p>

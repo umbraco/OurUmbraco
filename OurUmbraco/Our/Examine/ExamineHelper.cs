@@ -153,6 +153,7 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet.RowData.Add("meta.Title", yamlMetaData.MetaTitle);
                 simpleDataSet.RowData.Add("meta.Description", yamlMetaData.MetaDescription);
                 simpleDataSet.RowData.Add("versionRemoved", yamlMetaData.VersionRemoved);
+                simpleDataSet.RowData.Add("needsV8Update", yamlMetaData.NeedsV8Update);
 
                 var matchingMajorVersions = CalculateMajorVersions(yamlMetaData);
                 simpleDataSet.RowData.Add("majorVersion", string.Join(" ", matchingMajorVersions));
