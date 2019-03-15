@@ -77,7 +77,8 @@ namespace OurUmbraco.Repository.Services
                         IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
                         IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl,
                         MetaDescription = f["meta.Description"],
-                        MetaTitle = f["meta.Title"]
+                        MetaTitle = f["meta.Title"],
+                        NeedsV8Update = f["needsV8Update"]
                     })
                     .OrderByDescending(v=> v.VersionFrom)
                     .ThenBy(v=>v.VersionTo);

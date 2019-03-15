@@ -34,6 +34,7 @@ namespace OurUmbraco.Our.Examine
             /// </summary>
             public string Topics { get; set; }
             public string VersionRemoved { get; internal set; }
+            public string NeedsV8Update { get; set; }
         }
     }
 }
