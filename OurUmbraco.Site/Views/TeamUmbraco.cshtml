@@ -401,6 +401,18 @@
             
             if (Members.IsHq())
             {
+            
+                <section class="stats">
+                    <div class="container">
+                        <div class="row">
+                            <h5>Forum data</h5>
+                            <div class="col-md-12">
+                                <div id="ForumData" class="chart"></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
                 <section class="stats">
                     <div class="container">
                         <div class="row">
@@ -834,6 +846,49 @@
             membersKarmaDataColumnTemplate.tooltipText = "{name}: {valueY.value}";
             
             ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
+            var forumStatsChart = am4core.create("ForumData", am4charts.XYChart);
+            forumStatsChart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetForumStats/";
+
+            forumStatsChart.legend = new am4charts.Legend();
+
+            var forumStatsChartDateAxis = forumStatsChart.xAxes.push(new am4charts.DateAxis());
+            var forumStatsChartValueAxis = forumStatsChart.yAxes.push(new am4charts.ValueAxis());
+
+            var topicStarterSeries = forumStatsChart.series.push(new am4charts.LineSeries());
+            topicStarterSeries.name = "Topic starters only";
+            topicStarterSeries.dataFields.dateX = "GroupName";
+            topicStarterSeries.dataFields.valueY = "TopicStarters";
+            topicStarterSeries.sequencedInterpolation = true;
+            topicStarterSeries.strokeWidth = 4;
+            topicStarterSeries.tensionX = 0.8;
+
+
+            var commenterSeries = forumStatsChart.series.push(new am4charts.LineSeries());
+            commenterSeries.name = "Commenters only";
+            commenterSeries.dataFields.dateX = "GroupName";
+            commenterSeries.dataFields.valueY = "Commenters";
+            commenterSeries.sequencedInterpolation = true;
+            commenterSeries.stroke = forumStatsChart.colors.getIndex(4);
+            commenterSeries.strokeWidth = 4;
+            commenterSeries.tensionX = 0.8;
+
+            var topicStartersAndCommenterSeries = forumStatsChart.series.push(new am4charts.LineSeries());
+            topicStartersAndCommenterSeries.name = "Both topic started and commenter";
+            topicStartersAndCommenterSeries.dataFields.dateX = "GroupName";
+            topicStartersAndCommenterSeries.dataFields.valueY = "TopicStartersAndCommenters";
+            topicStartersAndCommenterSeries.sequencedInterpolation = true;
+            topicStartersAndCommenterSeries.stroke = forumStatsChart.colors.getIndex(6);
+            topicStartersAndCommenterSeries.strokeWidth = 4;
+            topicStartersAndCommenterSeries.tensionX = 0.8;
+
+            forumStatsChart.cursor = new am4charts.XYCursor();
+            
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 
             function httpGetAsync(url, callback) {
                 var xmlHttp = new XMLHttpRequest();

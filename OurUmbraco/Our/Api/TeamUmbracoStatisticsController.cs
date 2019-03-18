@@ -354,6 +354,52 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
+        public List<GroupedForumMemberStatistics> GetForumStats()
+        {
+            var forumData = new List<GroupedForumMemberStatistics>();
+
+            var from = DateTime.Now.AddYears(-1);
+            while (from < DateTime.Now.GetFirstDayOfMonth())
+            {
+                from = from.AddMonths(1).GetFirstDayOfMonth();
+                var to = from.GetLastDayOfMonth();
+
+                var allTopicStarters = ApplicationContext.DatabaseContext.Database.Fetch<int>($"SELECT DISTINCT memberId FROM powersTopic WHERE date >= '{from.ToString("yyyy-MM-dd")}' AND date <= '{to.ToString("yyyy-MM-dd")}'");
+                var allCommenters = ApplicationContext.DatabaseContext.Database.Fetch<int>($"SELECT DISTINCT memberId FROM powersComment WHERE date >= '{from.ToString("yyyy-MM-dd")}' AND date <= '{to.ToString("yyyy-MM-dd")}'");
+
+                var topicStartersOnly = allTopicStarters.Count;
+                var topicStartersAndCommenter = 0;
+                var commenters = 0;
+
+                foreach (var memberId in allCommenters)
+                {
+                    if (allTopicStarters.Contains(memberId))
+                    {
+                        topicStartersOnly = topicStartersOnly - 1;
+                        topicStartersAndCommenter = topicStartersAndCommenter + 1;
+                    }
+                    else
+                    {
+                        // Never started a topic only commented
+                        commenters = commenters + 1;
+                    }
+                }
+                
+                forumData.Add(new GroupedForumMemberStatistics
+                {
+                    GroupName = from.ToString("MMM yyy"),
+                    MonthYear = from.ToString("yyyyMM"),
+                    Commenters = commenters,
+                    TopicStarters = topicStartersOnly,
+                    TopicStartersAndCommenters = topicStartersAndCommenter
+                });
+            }
+            return forumData;
+
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
         public List<GroupedOurMemberStatistics> GetOurMemberData()
         {
             var memberData = new List<GroupedOurMemberStatistics>();
@@ -423,6 +469,15 @@ namespace OurUmbraco.Our.Api
             public decimal TotalNonSpamMembers { get; set; }
             public int TotalNonSpamMembersWithLogin { get; set; }
             public int TotalMembersEarningKarma { get; set; }
+        }
+
+        public class GroupedForumMemberStatistics
+        {
+            public string GroupName { get; set; }
+            public string MonthYear { get; set; }
+            public int TopicStarters { get; set; }
+            public int TopicStartersAndCommenters { get; set; }
+            public int Commenters { get; set; }
         }
 
         private static PullRequestsInPeriod GetPreviousPrStatsInPeriod(DateTime dateTime, List<PullRequestsInPeriod> groupedPrs)
