@@ -329,11 +329,10 @@ namespace OurUmbraco.Our.Api
 
             var from = DateTime.Now.AddYears(-1);
             while (from < DateTime.Now.GetFirstDayOfMonth())
-
             {
                 from = from.AddMonths(1).GetFirstDayOfMonth();
                 var allMembers = ApplicationContext.DatabaseContext.Database.Fetch<int>(
-                    $"SELECT id, createDate FROM umbracoNode WHERE nodeObjectType = '39eb0f98-b348-42a1-8662-e7eb18487560' AND createDate >= '{from.ToString("yyyy-MM-dd")}'");
+                    $"SELECT id, createDate FROM umbracoNode WHERE nodeObjectType = '39eb0f98-b348-42a1-8662-e7eb18487560' AND createDate <= '{from.ToString("yyyy-MM-dd")}'");
 
                 var totalMembers = 0;
                 foreach (var memberId in allMembers)
