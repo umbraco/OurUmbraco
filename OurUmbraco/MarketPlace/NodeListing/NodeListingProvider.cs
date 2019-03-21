@@ -277,7 +277,11 @@ namespace OurUmbraco.MarketPlace.NodeListing
 
             foreach (var contribPackageId in contribPackageIds)
             {
-                contribProjects.Add(umbracoHelper.TypedContent(contribPackageId));
+                var contribPackage = umbracoHelper.TypedContent(contribPackageId);
+                if (contribPackage != null)
+                {
+                    contribProjects.Add(contribPackage);
+                }
             }
 
             var listings = new List<IListingItem>();
