@@ -13,7 +13,7 @@
 
         <fieldset>
             <p>
-                @Html.LabelFor(m => m.Username, new { @class = "inputLabel" })<br />
+                @Html.Label("Email address", new { @class = "inputLabel", @for = "Username" })<br />
                 @Html.ValidationMessageFor(m => m.Username)
 
                 @Html.TextBoxFor(m => m.Username, new { @class = "email title" })
