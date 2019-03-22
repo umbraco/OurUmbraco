@@ -107,7 +107,7 @@
 
 #markdown-docs {
     .note {
-        @include notice(rgba($color-our,.07), rgba($color-our,.70), "\e0d1  Note:");
+        @include notice(rgba(163,219,120,.07), rgba(163,219,120,.70), "\e0d1  Note:");
     }
 
     .warning {
