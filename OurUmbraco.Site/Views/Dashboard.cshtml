@@ -12,6 +12,7 @@
 
     var repoManagementService = new RepositoryManagementService();
     var categorizedIssues = new List<RepositoryManagementService.GitHubCategorizedIssues>();
+    var startDate = new DateTime(2019, 03, 18);
 
     var showPulls = false;
     var showPullsQueryString = Request.QueryString["pulls"];
@@ -31,6 +32,7 @@
     var totalIssues = 0;
 
     var repoQuerystring = Request.QueryString["repository"]  ?? string.Empty;
+    var showOldIssuesQuerystring = Request.QueryString["showOldIssues"]  ?? string.Empty;
 
     var labelQuerystring = Request.QueryString["label"];
     if (pendingForUser == false)
@@ -45,6 +47,11 @@
         if (string.IsNullOrWhiteSpace(labelQuerystring) == false)
         {
             allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.Labels.Any(z => z.Name.InvariantEquals(labelQuerystring)) == false));
+        }
+
+        if (string.IsNullOrWhiteSpace(showOldIssuesQuerystring))
+        {
+            allOpenIssues.ForEach(x => x.Issues.RemoveAll(y => y.CreateDateTime <= startDate));
         }
 
         categorizedIssues = allOpenIssues.OrderBy(x => x.SortOrder).ToList();
@@ -206,11 +213,11 @@
 
     @if (showPulls)
     {
-        <h1>Pull requests status - @totalIssues open PRs</h1>
+        <h1>Pull requests status - @totalIssues open PRs @(string.IsNullOrWhiteSpace(showOldIssuesQuerystring) ? $"[SINCE: {startDate.ToString("yyyy-MM-dd")}]" : string.Empty)</h1>
     }
     else
     {
-        <h1>Issue tracker status - @totalIssues open issues</h1>
+        <h1>Issue tracker status - @totalIssues open issues  @(string.IsNullOrWhiteSpace(showOldIssuesQuerystring) ? $"[SINCE: {startDate.ToString("yyyy-MM-dd")}]" : string.Empty)</h1>
     }
 
     <section class="form">
@@ -312,7 +319,7 @@
         </div>
     </section>
 
-    @if (showPulls == false)
+    @*@if (showPulls == false)
     {
         <section class="stats">
             <div class="container">
@@ -344,11 +351,11 @@
                 </div>
             </div>
         </section>
-    }
+    }*@
 
 </div>
 
-<script>
+@*<script>
             var groupedPrsChart = am4core.create("GroupedIssuesClosed", am4charts.XYChart);
             groupedPrsChart.dataSource.url = "/umbraco/api/IssuesStatistics/GetGroupedIssuesData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repoQuerystring)";
 
@@ -463,7 +470,7 @@
             issuesClosingAverageChart.cursor = new am4charts.XYCursor();
 
     
-</script>
+</script>*@
 
 @functions
 {
