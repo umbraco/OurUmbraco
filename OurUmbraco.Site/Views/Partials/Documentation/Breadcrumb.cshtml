@@ -27,11 +27,15 @@
                 baseurl += page + "/";
             }
         }
-
-        @if (!absolutePath.EndsWith("/"))
+        
+        @if (!absolutePath.Contains("-v"))
         {
-            <li>@absolutePath.Substring(absolutePath.LastIndexOf('/') + 1).RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</li>
+            if (!absolutePath.EndsWith("/"))
+            {
+                <li>@absolutePath.Substring(absolutePath.LastIndexOf('/') + 1).RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText()</li>
+            }
         }
+
 
 
 
