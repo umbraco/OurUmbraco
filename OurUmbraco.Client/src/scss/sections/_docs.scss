@@ -88,6 +88,17 @@
     background-color: white;
     z-index: 1;
     position: relative;
+    
+    .selected-version {
+      background-color: darken($color-our, 4%);
+      color: white;
+      padding-top: 5px;
+      padding-bottom: 5px;
+      
+      a {
+        color: inherit;
+      }
+    }
 }
 
 @mixin notice($bg-color, $border-color, $icon-string) {
