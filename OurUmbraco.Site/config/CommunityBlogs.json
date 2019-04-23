@@ -269,6 +269,15 @@
       "rss": "https://www.moriyama.co.uk/rss",
       "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
       "memberId": 1199
+    },
+	    {
+      "id": "40b25a24-8a8f-40f7-8271-5e855b76909a",
+      "checkTitles": false,
+      "title": "My Umbraco Adventures",
+      "url": "https://jvantroyen.blogspot.com/",
+      "rss": "http://jvantroyen.blogspot.com/feeds/posts/default",
+      "logo": "https://our.umbraco.com/media/upload/0e40926e-0884-42e4-abc4-ed72ab2f2c31/Jeroen%20Vantroyen.png?width=500&height=500&mode=crop&upscale=true",
+      "memberId": 274827
     }
   ]
 }
