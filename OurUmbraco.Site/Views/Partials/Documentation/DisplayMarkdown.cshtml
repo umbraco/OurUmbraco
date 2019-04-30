@@ -155,8 +155,11 @@
     </table>
 }
 
-@if (currentUmbracoVersion == 8
+@if (currentUmbracoVersion != null 
+     && currentUmbracoVersion == 8
+     && currentVersionIsRemovedForv8 != null
      && currentVersionIsRemovedForv8 == false 
+     && currentVersion != null
      && currentVersion.NeedsV8Update == "true")
 {
     <div class="note">
@@ -169,7 +172,8 @@
     </div>
 }
 
-@if (currentUmbracoVersion == 8 
+@if (currentUmbracoVersion != null 
+     && currentUmbracoVersion == 8 
      && currentVersion != null
      && currentVersion.Url.EndsWith("-v7") == false
      && currentVersionIsRemovedForv8)
