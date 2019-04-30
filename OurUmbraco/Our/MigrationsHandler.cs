@@ -31,7 +31,6 @@ namespace OurUmbraco.Our
             ForumArchivedCheckbox();
             AddHomeOnlyBannerTextArea();
             AddMissingUmbracoUsers();
-            AddReleaseCompareFeature();
             AddTermsAndConditionsPage();
             UseNewRegistrationForm();
             AddStrictMinimumVersionForPackages();
@@ -401,102 +400,7 @@ namespace OurUmbraco.Our
             //otherwise create one
             return new ReadOnlyUserGroup(group.Id, group.Name, group.Icon, group.StartContentId, group.StartMediaId, group.Alias, group.AllowedSections, group.Permissions);
         }
-
-        private void AddReleaseCompareFeature()
-        {
-            var migrationName = MethodBase.GetCurrentMethod().Name;
-
-            try
-            {
-                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path))
-                    return;
-
-                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
-                var releaseCompareAlias = "ReleaseCompare";
-                var compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
-                if (compareContentType == null)
-                {
-                    var contentType = new ContentType(-1)
-                    {
-                        Name = "Release Compare",
-                        Alias = releaseCompareAlias
-                    };
-                    contentTypeService.Save(contentType);
-                }
-
-                compareContentType = contentTypeService.GetContentType(releaseCompareAlias);
-
-                var releaseLandingContentType = contentTypeService.GetContentType("ReleaseLanding");
-
-                var allowedContentTypes = new List<ContentTypeSort> { new ContentTypeSort(compareContentType.Id, 0) };
-                releaseLandingContentType.AllowedContentTypes = allowedContentTypes;
-                contentTypeService.Save(releaseLandingContentType);
-
-                var templatePathRelative = "~/masterpages/ReleaseCompare.master";
-                var templatePath = HostingEnvironment.MapPath(templatePathRelative);
-                var templateContent = File.ReadAllText(templatePath);
-                var releaseCompareTemplate = new Template("Release Compare", releaseCompareAlias)
-                {
-                    MasterTemplateAlias = "Master",
-                    Content = templateContent
-                };
-
-                var fileService = ApplicationContext.Current.Services.FileService;
-
-                var masterTemplate = fileService.GetTemplate("Master");
-                releaseCompareTemplate.SetMasterTemplate(masterTemplate);
-
-                fileService.SaveTemplate(releaseCompareTemplate);
-                contentTypeService.Save(compareContentType);
-
-                compareContentType.AllowedTemplates = new List<ITemplate> { releaseCompareTemplate };
-                compareContentType.SetDefaultTemplate(releaseCompareTemplate);
-
-                contentTypeService.Save(compareContentType);
-
-                var contentService = ApplicationContext.Current.Services.ContentService;
-                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
-                if (rootNode == null)
-                    return;
-
-                var contributeNode = rootNode.Children().FirstOrDefault(x => x.Name == "Contribute");
-                if (contributeNode == null)
-                    return;
-
-                var releasesNode = contributeNode.Children().FirstOrDefault(x => x.Name == "Releases");
-
-                if (releasesNode == null)
-                    return;
-
-                var compareContent = contentService.CreateContent("Compare", releasesNode.Id, "ReleaseCompare");
-                compareContent.Template = releaseCompareTemplate;
-                contentService.SaveAndPublishWithStatus(compareContent);
-
-                var macroService = ApplicationContext.Current.Services.MacroService;
-                const string macroAlias = "ReleasesDropdown";
-                if (macroService.GetByAlias(macroAlias) == null)
-                {
-                    var macro = new Macro
-                    {
-                        Name = "ReleasesDropdown",
-                        Alias = macroAlias,
-                        ScriptingFile = "~/Views/MacroPartials/Releases/ReleasesDropdown.cshtml",
-                        UseInEditor = true
-                    };
-                    macro.Save();
-                }
-
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
-            }
-        }
-
+        
         private void AddTermsAndConditionsPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -565,7 +469,7 @@ namespace OurUmbraco.Our
                     return;
 
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                db.Execute("ALTER TABLE [wikiFiles] ADD [minimumVersionStrict] VARCHAR(50)");
+                db.Execute("IF COL_LENGTH('wikiFiles', 'minimumVersionStrict') IS NULL BEGIN ALTER TABLE [wikiFiles] ADD [minimumVersionStrict] VARCHAR(50) END");
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
@@ -801,7 +705,7 @@ namespace OurUmbraco.Our
                     return;
 
                 var db = ApplicationContext.Current.DatabaseContext.Database;
-                db.Execute("ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0))");
+                db.Execute("IF COL_LENGTH('forumTopics', 'markAsSolutionReminderSent') IS NULL BEGIN ALTER TABLE [forumTopics] ADD [markAsSolutionReminderSent] [BIT] NULL DEFAULT ((0)) END");
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
@@ -1638,37 +1542,41 @@ namespace OurUmbraco.Our
                 var rootContent = contentService.GetRootContent().FirstOrDefault();
 
                 if (rootContent != null)
-                {
-                    var templateContents = string.Empty;
-
-                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
-                    if (templateFile != null && File.Exists(templateFile))
-                        templateContents = File.ReadAllText(templateFile);
-
-                    var templateCreateResult =
-                        ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage",
-                            templateName);
-                    if (templateCreateResult.Success)
+                { 
+                    var teamUmbracoPage = rootContent.Children().FirstOrDefault(x => x.Name == contentItemName);
+                    if (teamUmbracoPage != null)
                     {
-                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
-                        template.SetMasterTemplate(masterTemplate);
-                        if (templateContents != string.Empty)
-                            template.Content = templateContents;
-                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+                        var templateContents = string.Empty;
 
-                        var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
-                        var textPageContentType = contentTypeService.GetContentType("TextPage");
-                        var allowedTemplates = new List<ITemplate> { template };
-                        allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
-                        textPageContentType.AllowedTemplates = allowedTemplates;
-                        contentTypeService.Save(textPageContentType);
+                        var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                        if (templateFile != null && File.Exists(templateFile))
+                            templateContents = File.ReadAllText(templateFile);
+
+                        var templateCreateResult =
+                            ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage",
+                                templateName);
+                        if (templateCreateResult.Success)
+                        {
+                            var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                            var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                            template.SetMasterTemplate(masterTemplate);
+                            if (templateContents != string.Empty)
+                                template.Content = templateContents;
+                            ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                            var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                            var textPageContentType = contentTypeService.GetContentType("TextPage");
+                            var allowedTemplates = new List<ITemplate> {template};
+                            allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
+                            textPageContentType.AllowedTemplates = allowedTemplates;
+                            contentTypeService.Save(textPageContentType);
+                        }
+
+                        var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
+                        textPage.SetValue("umbracoNaviHide", true);
+                        textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                        var saveResult = contentService.SaveAndPublishWithStatus(textPage);
                     }
-
-                    var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
-                    textPage.SetValue("umbracoNaviHide", true);
-                    textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                    var saveResult = contentService.SaveAndPublishWithStatus(textPage);
 
                     string[] lines = { "" };
                     File.WriteAllLines(path, lines);
@@ -1699,36 +1607,40 @@ namespace OurUmbraco.Our
 
                 if (rootContent != null)
                 {
-                    var templateContents = string.Empty;
-
-                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
-                    if (templateFile != null && File.Exists(templateFile))
-                        templateContents = File.ReadAllText(templateFile);
-
-                    var templateCreateResult =
-                        ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage",
-                            templateName);
-                    if (templateCreateResult.Success)
+                    var dashboardPage = rootContent.Children().FirstOrDefault(x => x.Name == contentItemName);
+                    if (dashboardPage != null)
                     {
-                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
-                        template.SetMasterTemplate(masterTemplate);
-                        if (templateContents != string.Empty)
-                            template.Content = templateContents;
-                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+                        var templateContents = string.Empty;
 
-                        var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
-                        var textPageContentType = contentTypeService.GetContentType("TextPage");
-                        var allowedTemplates = new List<ITemplate> { template };
-                        allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
-                        textPageContentType.AllowedTemplates = allowedTemplates;
-                        contentTypeService.Save(textPageContentType);
+                        var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                        if (templateFile != null && File.Exists(templateFile))
+                            templateContents = File.ReadAllText(templateFile);
+
+                        var templateCreateResult =
+                            ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage",
+                                templateName);
+                        if (templateCreateResult.Success)
+                        {
+                            var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                            var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                            template.SetMasterTemplate(masterTemplate);
+                            if (templateContents != string.Empty)
+                                template.Content = templateContents;
+                            ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                            var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                            var textPageContentType = contentTypeService.GetContentType("TextPage");
+                            var allowedTemplates = new List<ITemplate> {template};
+                            allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
+                            textPageContentType.AllowedTemplates = allowedTemplates;
+                            contentTypeService.Save(textPageContentType);
+                        }
+
+                        var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
+                        textPage.SetValue("umbracoNaviHide", true);
+                        textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                        var saveResult = contentService.SaveAndPublishWithStatus(textPage);
                     }
-
-                    var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
-                    textPage.SetValue("umbracoNaviHide", true);
-                    textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                    var saveResult = contentService.SaveAndPublishWithStatus(textPage);
 
                     string[] lines = { "" };
                     File.WriteAllLines(path, lines);
@@ -1759,35 +1671,39 @@ namespace OurUmbraco.Our
 
                 if (rootContent != null)
                 {
-                    var templateContents = string.Empty;
-
-                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
-                    if (templateFile != null && File.Exists(templateFile))
-                        templateContents = File.ReadAllText(templateFile);
-
-                    var templateCreateResult =
-                        ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage", templateName);
-                    if (templateCreateResult.Success)
+                    var appsPage = rootContent.Children().FirstOrDefault(x => x.Name == contentItemName);
+                    if (appsPage != null)
                     {
-                        var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                        var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
-                        template.SetMasterTemplate(masterTemplate);
-                        if (templateContents != string.Empty)
-                            template.Content = templateContents;
-                        ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+                        var templateContents = string.Empty;
 
-                        var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
-                        var textPageContentType = contentTypeService.GetContentType("TextPage");
-                        var allowedTemplates = new List<ITemplate> { template };
-                        allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
-                        textPageContentType.AllowedTemplates = allowedTemplates;
-                        contentTypeService.Save(textPageContentType);
+                        var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                        if (templateFile != null && File.Exists(templateFile))
+                            templateContents = File.ReadAllText(templateFile);
+
+                        var templateCreateResult =
+                            ApplicationContext.Current.Services.FileService.CreateTemplateForContentType("TextPage", templateName);
+                        if (templateCreateResult.Success)
+                        {
+                            var template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                            var masterTemplate = ApplicationContext.Current.Services.FileService.GetTemplate("master");
+                            template.SetMasterTemplate(masterTemplate);
+                            if (templateContents != string.Empty)
+                                template.Content = templateContents;
+                            ApplicationContext.Current.Services.FileService.SaveTemplate(template);
+
+                            var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                            var textPageContentType = contentTypeService.GetContentType("TextPage");
+                            var allowedTemplates = new List<ITemplate> { template };
+                            allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
+                            textPageContentType.AllowedTemplates = allowedTemplates;
+                            contentTypeService.Save(textPageContentType);
+                        }
+
+                        var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
+                        textPage.SetValue("umbracoNaviHide", true);
+                        textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
+                        var saveResult = contentService.SaveAndPublishWithStatus(textPage);
                     }
-
-                    var textPage = contentService.CreateContent(contentItemName, rootContent.Id, "TextPage");
-                    textPage.SetValue("umbracoNaviHide", true);
-                    textPage.Template = ApplicationContext.Current.Services.FileService.GetTemplate(templateName);
-                    var saveResult = contentService.SaveAndPublishWithStatus(textPage);
 
                     string[] lines = { "" };
                     File.WriteAllLines(path, lines);
@@ -2396,7 +2312,7 @@ namespace OurUmbraco.Our
                     {
                         Name = "Banner",
                         Alias = bannerTypeAlias,
-                    }; 
+                    };
 
                     contentType.PropertyGroups.Add(new PropertyGroup { Name = "Banner" });
 
@@ -2475,7 +2391,7 @@ namespace OurUmbraco.Our
 
                     contentTypeService.Save(contentType);
                 }
-                 
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
             }
@@ -2508,7 +2424,7 @@ namespace OurUmbraco.Our
                 }
 
                 string[] lines = { "" };
-                File.WriteAllLines(path, lines); 
+                File.WriteAllLines(path, lines);
             }
             catch (Exception ex)
             {
@@ -2576,7 +2492,7 @@ namespace OurUmbraco.Our
 
                 var communityContentType = contentTypeService.GetContentType("community");
                 if (communityContentType != null && communityContentType.PropertyTypeExists("banners") == false)
-                { 
+                {
                     var picker = dataTypeService.GetDataTypeDefinitionByName("Banners - Tree Picker");
                     var pickerPropertyType = new PropertyType(picker, "banners") { Name = "Banners", Description = "Select banners to display." };
                     communityContentType.AddPropertyType(pickerPropertyType, "Banners");
@@ -2623,5 +2539,5 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-    } 
-} 
+    }
+}

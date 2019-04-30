@@ -18,9 +18,9 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev.zip.
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20190430.zip.
 
-Restore the database to SQL Server 2012 SP2 (won't work on earlier version) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
+Restore the database to SQL Server 2016 SP1 (won't work on earlier version) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
 ## Logging in
 
