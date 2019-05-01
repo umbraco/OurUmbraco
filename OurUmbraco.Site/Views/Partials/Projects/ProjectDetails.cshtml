@@ -348,26 +348,26 @@
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
-
-                                            @if (badges.Any())
-                                            {
-                                                <span class="roles">
-                                                    @foreach (var badge in badges)
-                                                    {
-                                                        if (string.IsNullOrWhiteSpace(badge.Link))
+                                            <div class="member-details">
+                                                @if (badges.Any())
+                                                {
+                                                    <span class="roles">
+                                                        @foreach (var badge in badges)
                                                         {
-                                                            <span class="@badge.CssClass">@badge.Name</span>
+                                                            if (string.IsNullOrWhiteSpace(badge.Link))
+                                                            {
+                                                                <span class="@badge.CssClass">@badge.Name</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
+                                                            }
                                                         }
-                                                        else
-                                                        {
-                                                            <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
-                                                        }
-                                                    }
-                                                </span>
-                                            }
-
+                                                    </span>
+                                                }
+                                                </div>
+                                            </div>
                                         </div>
-                                    </div>
                                 </div>
                             </div>
                         </div>
