@@ -329,7 +329,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="package-creator-information">
-                                        @*@Html.Raw(img)*@
+                                        @Html.Raw(img)
                                         <div class="text">
                                             <h3>
                                                 <a href="/member/@owner.Id">
@@ -340,8 +340,8 @@
 
                                             @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
-                                                <br />
-                                                <br />
+                                                <br/>
+                                                <br/>
                                                 <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
                                             }
                                         </div>
