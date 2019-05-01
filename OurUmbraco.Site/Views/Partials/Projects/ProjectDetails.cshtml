@@ -6,6 +6,7 @@
 @using OurUmbraco.Wiki.BusinessLogic
 @using System.Text.RegularExpressions;
 @using OurUmbraco.Community.People
+@using OurUmbraco.Our.Extensions
 
 @{
     var project = Model.Content;
@@ -48,9 +49,11 @@
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
     var projectLive = project.GetPropertyValue<bool>("projectLive");
     var isRetired = project.GetPropertyValue<bool>("isRetired");
-    
+
     var avatarService = new AvatarService();
     var img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
+
+    var badges = owner.GetRoles().GetBadges();
 }
 
 @if (projectLive)
@@ -326,7 +329,7 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="package-creator-information">
-                                        @Html.Raw(img)
+                                        @*@Html.Raw(img)*@
                                         <div class="text">
                                             <h3>
                                                 <a href="/member/@owner.Id">
@@ -334,12 +337,35 @@
                                                 </a>
                                             </h3>
                                             <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+
                                             @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
-                                                <br/>
-                                                <br/>
+                                                <br />
+                                                <br />
                                                 <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
                                             }
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+
+                                            @if (badges.Any())
+                                            {
+                                                <span class="roles">
+                                                    @foreach (var badge in badges)
+                                                    {
+                                                        if (string.IsNullOrWhiteSpace(badge.Link))
+                                                        {
+                                                            <span class="@badge.CssClass">@badge.Name</span>
+                                                        }
+                                                        else
+                                                        {
+                                                            <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
+                                                        }
+                                                    }
+                                                </span>
+                                            }
+
                                         </div>
                                     </div>
                                 </div>
@@ -470,13 +496,13 @@ else
 }
 
 @helper pluralize(int count, string oneValue, string pluralValue)
+{
+    if (count == 1)
     {
-        if (count == 1)
-        {
-            <text>@count @oneValue</text>
-        }
-        else
-        {
-            <text>@count @pluralValue</text>
-        }
+        <text>@count @oneValue</text>
+    }
+    else
+    {
+        <text>@count @pluralValue</text>
+    }
 }
