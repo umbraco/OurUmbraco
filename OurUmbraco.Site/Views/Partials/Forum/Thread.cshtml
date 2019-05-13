@@ -119,7 +119,7 @@
     if (Model.ForumNewTopicsAllowed)
     {
         <div class="replybutton">
-            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment" onclick="ga('send', 'event', 'Forum question', 'Click', 'Reply (bottom of page)');">
+            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment">
                 <i class="icon-Reply-arrow"></i>&nbsp;Reply to question
             </a>
         </div>
@@ -133,7 +133,7 @@
                     </a>
                 }
 
-                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic" onclick="ga('send', 'event', 'Forum', @Html.Raw(Model.Subscribed ? "'Follow'" : "'Unfollow'"), '');">
+                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
                     <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
                 </a>
 
