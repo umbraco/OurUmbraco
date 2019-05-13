@@ -102,79 +102,82 @@
     @RenderSection("HeadCssScripts", false)
 </head>
 
-<body class="@bodyCss"><!-- Google Tag Manager (noscript) -->
+<body class="@bodyCss">
+
+<!-- Google Tag Manager (noscript) -->
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-W9TZ2XW"
-                  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+                  height="0" width="0" style="display: none; visibility: hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->
-    @Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
-    <div class="wrapper">
-        <header>
-            <div class="navigation">
-                <div class="container">
-                    <div class="row">
-                        <div class="col-md-3">
-                            <a class="logo" href="/">Our Umbraco</a>
-                        </div>
-                        <div id="toggle" class="menu-toggle">
-                            <a href="#" class="toggle cross"><span></span></a>
-                        </div>
-                        <nav class="col-md-9">
-                            @Html.Partial("~/Views/Partials/Navigation/TopNavigation.cshtml")
-                        </nav>
-                    </div>
-                </div>
-            </div>
-        </header>
+@Html.Partial("~/Views/Partials/Members/QuickMenu.cshtml")
 
-        @{
-            if (memberIsBlocked == false)
-            {
-                @Html.Partial("~/Views/Partials/Global/AlertBar.cshtml")
-                @RenderSection("Search", false)
-                @RenderBody()
-            }
-            else
-            {
-                <section class="forum">
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <h1 class="text-center">Computer says no</h1>
-                                <p>Unfortunately, it seems that your account has been blocked.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-            }
-        }
-
-        <footer>
+<div class="wrapper">
+    <header>
+        <div class="navigation">
             <div class="container">
                 <div class="row">
-                    <div class="col-xs-12">
-                        <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
-                        <p>&nbsp;</p>
-                        Our.umbraco.com is the community mothership for <a href="https://umbraco.com">Umbraco</a>, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
-                        @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
-                        {
-                            <text>This site is running Umbraco.</text>
-                        }
-                        else
-                        {
-                            <text>This site is running</text>
-                            <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
-                        }
+                    <div class="col-md-3">
+                        <a class="logo" href="/">Our Umbraco</a>
                     </div>
+                    <div id="toggle" class="menu-toggle">
+                        <a href="#" class="toggle cross"><span></span></a>
+                    </div>
+                    <nav class="col-md-9">
+                        @Html.Partial("~/Views/Partials/Navigation/TopNavigation.cshtml")
+                    </nav>
                 </div>
             </div>
-        </footer>
+        </div>
+    </header>
 
-    </div>
-    <!--.wrapper-->
+    @{
+        if (memberIsBlocked == false)
+        {
+            @Html.Partial("~/Views/Partials/Global/AlertBar.cshtml")
+            @RenderSection("Search", false)
+            @RenderBody()
+        }
+        else
+        {
+            <section class="forum">
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h1 class="text-center">Computer says no</h1>
+                            <p>Unfortunately, it seems that your account has been blocked.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        }
+    }
 
-    @Html.RenderJsHere()
-    
-    @RenderSection("EndScripts", false)
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12">
+                    <p><a href="/code-of-conduct">Code Of Conduct</a> - <a href="/privacy-policy">Privacy Policy</a></p>
+                    <p>&nbsp;</p>
+                    Our.umbraco.com is the community mothership for <a href="https://umbraco.com">Umbraco</a>, the open source asp.net cms. With a friendly forum for all your questions, a comprehensive documentation and a ton of packages from the community.
+                    @if (HttpContext.Current != null && HttpContext.Current.Request.UserAgent != null && HttpContext.Current.Request.UserAgent.ToLower().Contains("googlebot"))
+                    {
+                        <text>This site is running Umbraco.</text>
+                    }
+                    else
+                    {
+                        <text>This site is running</text>
+                        <data id="umbraco-version" value="@UmbracoVersion.GetSemanticVersion()">Umbraco version @UmbracoVersion.GetSemanticVersion()</data>
+                    }
+                </div>
+            </div>
+        </div>
+    </footer>
+
+</div>
+<!--.wrapper-->
+
+@Html.RenderJsHere()
+
+@RenderSection("EndScripts", false)
 </body>
 </html>
