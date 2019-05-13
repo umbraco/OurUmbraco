@@ -109,7 +109,7 @@
                     {
                         if (currentMember.Id != Model.MemberId)
                         {
-                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five" onclick="ga('send', 'event', 'Forum question', 'Click', 'High five');"/>High Five</a>
+                            <a href="#" data-id="@Model.Id"><img src="/assets/images/highfive.svg" alt="high five"/>High Five</a>
 
                         }
                     }
@@ -136,38 +136,38 @@
         <div class="actions">
             @if (currentMember != null)
             {
-                <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id" onclick="ga('send', 'event', 'Forum question', 'Click', 'Flag as spam');">
+                <a href="#" class="flag-comment" data-id="@Model.Id" data-member="@currentMember.Id">
                     <i class="icon-Flag"></i><span>Flag as spam</span>
                 </a>
 
                 if (Model.IsAnswer == false && (memberIsAdmin || currentMember.Id == Model.TopicAuthorId))
                 {
-                    <a href="#" class="solved" data-id="@Model.Id" onclick="ga('send', 'event', 'Forum question', 'Click', 'Mark as solution');">
+                    <a href="#" class="solved" data-id="@Model.Id">
                         <i class="icon-Check"></i><span>Mark as solution</span>
                     </a>
                 }
 
                 if (commentAuthor != null && Model.ParentCommentId <= 0 && forumReadOnly == false)
                 {
-                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply" onclick="ga('send', 'event', 'Forum question', 'Click', 'Reply');">
+                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.Id" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }
 
                 if (commentAuthor != null && Model.ParentCommentId > 0 && forumReadOnly == false)
                 {
-                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply" onclick="ga('send', 'event', 'Forum question', 'Click', 'Reply');">
+                    <a href="#" data-author="@commentAuthor.Member.Name" data-topic="@Model.TopicId" data-parent="@Model.ParentCommentId" data-controller="comment" class="forum-reply reply">
                         <i class="icon-Reply-arrow"></i><span>Reply</span>
                     </a>
                 }
 
                 if (memberIsAdmin || currentMember.Id == Model.MemberId)
                 {
-                    <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment" onclick="ga('send', 'event', 'Forum question', 'Click', 'Edit');">
+                    <a href="#" class="edit-post" data-id="@Model.Id" data-topic="@Model.TopicId" data-controller="comment">
                         <i class="icon-Edit"></i><span>Edit</span>
                     </a>
 
-                    <a href="#" class="delete-reply" data-id="@Model.Id" onclick="ga('send', 'event', 'Forum question', 'Click', 'Delete');">
+                    <a href="#" class="delete-reply" data-id="@Model.Id">
                         <i class="icon-Delete-key"></i><span>Delete</span>
                     </a>
 
@@ -175,13 +175,13 @@
                     {
                         if (Model.IsSpam)
                         {
-                            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment" onclick="ga('send', 'event', 'Forum question', 'Click', 'Mark as ham');">
+                            <a href="#" class="mark-as-ham" data-id="@Model.Id" data-controller="comment">
                                 <i class="icon-Alert-alt"></i><span>Mark as ham</span>
                             </a>
                         }
                         else
                         {
-                            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment" onclick="ga('send', 'event', 'Forum question', 'Click', 'Mark as spam');">
+                            <a href="#" class="mark-as-spam" data-id="@Model.Id" data-controller="comment">
                                 <i class="icon-Alert-alt"></i><span>Mark as spam</span>
                             </a>
                         }
@@ -189,7 +189,7 @@
                 }
             }
 
-            <a href="#" id="copy-link" class="copy-link" data-id="#comment-@Model.Id" onclick="ga('send', 'event', 'Forum question', 'Click', 'Copy link');">
+            <a href="#" id="copy-link" class="copy-link" data-id="#comment-@Model.Id">
                 <i class="icon-Link"></i><span>Copy Link</span>
             </a>
         </div>

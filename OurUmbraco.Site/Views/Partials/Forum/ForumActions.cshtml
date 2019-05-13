@@ -7,7 +7,7 @@
     {
         if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
-            <a href="#" class="button create-new-thread" data-controller="topic" onclick="ga('send', 'event', 'Forum', 'Creating topic', 'Create new (signed in) ');">
+            <a href="#" class="button create-new-thread" data-controller="topic">
                 <i class="icon-Add"></i><span>Ask a question</span>
             </a>
         }
@@ -15,20 +15,20 @@
         var subscribed = Utils.IsSubscribedToForum(CurrentPage.Id, MemberData.Member.Id);
         if (subscribed)
         {
-            <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="" onclick="ga('send', 'event', 'Forum', 'Unfollow topic', '');">
+            <a href="#" class="follow button following" data-id="@CurrentPage.Id" data-controller="">
                 <i class="icon-Bookmark"></i><span>Following</span>
             </a>
         }
         else
         {
-            <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="" onclick="ga('send', 'event', 'Forum', 'Follow topic', '');">
+            <a href="#" class="follow button transparent" data-id="@CurrentPage.Id" data-controller="">
                 <i class="icon-Bookmark"></i><span>Follow</span>
             </a>
         }
     }
     else
     {
-        <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login" onclick="ga('send', 'event', 'Forum', 'Creating topic', 'Sign in to create a topic (not signed in)');">
+        <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
             <i class="icon-Add"></i><span>Sign in to ask a question</span>
         </a>
     }
