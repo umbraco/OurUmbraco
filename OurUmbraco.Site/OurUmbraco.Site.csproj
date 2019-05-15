@@ -4449,6 +4449,8 @@
     <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
     <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\HQDashboard.cshtml" />
+    <Content Include="Views\DashboardLayout.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

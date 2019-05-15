@@ -61,6 +61,14 @@ namespace OurUmbraco.Community.GitHub
                 team.Members.AddRange(usernames);
                 teamUmbraco = team;
             }
+            else
+            {
+                teamUmbraco = new TeamUmbraco
+                {
+                    TeamName = repository,
+                    Members = usernames.ToList()
+                };
+            }
 
             return teamUmbraco;
         }

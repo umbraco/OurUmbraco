@@ -134,9 +134,8 @@ namespace OurUmbraco.NotificationsCore.Notifications
         
         public void UpdateGitHubIssues(PerformContext context)
         {
-            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
-            var fileContent = File.ReadAllText(configFile);
-            var repositories = JsonConvert.DeserializeObject<List<Community.Models.Repository>>(fileContent);
+            var repositoryService = new RepositoryManagementService();
+            var repositories = repositoryService.GetAllPublicRepositories();
 
             var gitHubService = new GitHubService();
             foreach (var repository in repositories)
