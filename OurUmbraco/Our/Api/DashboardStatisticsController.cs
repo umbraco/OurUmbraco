@@ -14,33 +14,27 @@ namespace OurUmbraco.Our.Api
     {
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<Contributions> GetContributorStatistics()
+        public List<Contributions> GetContributorStatistics(int startMonth = 6, string repository = "", bool monthly = true)
         {
-            var startMonth = 6;
-            var monthly = true;
-
             var totalContributors = new List<Contributions>();
 
             var firstPrs = new List<string>();
 
             var repoService = new RepositoryManagementService();
-            //var pullsNonHq = repoService.GetAllCommunityIssues(true).Where(x => x.RepositoryName == "Umbraco-CMS").ToList();
-            var pullsNonHq = repoService.GetAllCommunityIssues(true).ToList();
-
+            
+            var pullsNonHq = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllCommunityIssues(true).ToList()
+                : repoService.GetAllCommunityIssues(true).Where(x => x.RepositoryName == repository).ToList();
+            
             var date = new DateTime(2010, startMonth, 1);
             while (date < DateTime.Now)
             {
-                var endMonth = date.Month;
-                var endYear = date.Year;
                 var year = date.Year;
-                if (monthly)
-                {
-                    startMonth = date.Month;
-                    endMonth = date.AddMonths(1).Month;
-                    endYear = date.AddMonths(1).Year;
-                }
 
-                var startDate = new DateTime(year, startMonth, 1);
+                var endMonth = monthly ? date.AddMonths(1).Month : date.AddYears(1).Month;
+                var endYear = monthly ? date.AddMonths(1).Year : date.AddYears(1).Year;
+                
+                var startDate = new DateTime(year, date.Month, 1);
                 var endDate = new DateTime(endYear, endMonth, 1);
 
                 var repoStatistics = new Contributions
@@ -53,11 +47,13 @@ namespace OurUmbraco.Our.Api
 
                 repoStatistics.PullRequestsCreated = prsCreated.Count;
 
-                // GitHub marks all merged PRs as "closed", so we want to differentiate: if there's no MergedAt date then it was closed without merging
+                // GitHub marks all merged PRs as "closed", so we want to differentiate: if there's no "merged" event then it was closed without merging
                 var prsClosed = pullsNonHq.Where(x => x.State == "closed" 
                                                       && x.Events.Any(y => y.Name == "merged") == false
                                                       && x.ClosedDateTime >= startDate
                                                       && x.ClosedDateTime < endDate).ToList();
+
+                // There was a "merged" event and it was in the current period
                 var prsMerged = pullsNonHq.Where(x => x.State == "closed" 
                                                       && x.Events.Any(y => y.Name == "merged") == true 
                                                       && x.Events.First(y => y.Name == "merged").CreateDateTime >= startDate 
@@ -70,7 +66,10 @@ namespace OurUmbraco.Our.Api
                 }
 
                 // Created in this period and still open now or merged/closed after the last date in this period
-                var prsStillOpen = pullsNonHq.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate && (x.State == "open" || x.ClosedDateTime >= endDate || x.ClosedDateTime > endDate)).ToList();
+                var prsStillOpen = pullsNonHq.Where(x => 
+                    x.CreateDateTime >= startDate 
+                    && x.CreateDateTime < endDate 
+                    && (x.State == "open" || x.ClosedDateTime >= endDate || x.ClosedDateTime > endDate)).ToList();
 
                 repoStatistics.PullRequestsClosed = prsClosed.Count;
                 repoStatistics.PullRequestsMerged = prsMerged.Count;
@@ -98,29 +97,24 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<IssueStatistics> GetIssueStatistics()
+        public List<IssueStatistics> GetIssueStatistics(int startMonth = 6, string repository = "", bool monthly = true)
         {
-            int startMonth = 6;
-            var monthly = true;
-
             var repoService = new RepositoryManagementService();
-            var allCommunityIssues = repoService.GetAllCommunityIssues(false).ToList();
+
+            var allCommunityIssues = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllCommunityIssues(false).ToList()
+                : repoService.GetAllCommunityIssues(false).Where(x => x.RepositoryName == repository).ToList();
 
             var issueStatistics = new List<IssueStatistics>();
             var date = new DateTime(2010, startMonth, 1);
             while (date < DateTime.Now)
             {
-                var endMonth = date.Month;
-                var endYear = date.Year;
                 var year = date.Year;
-                if (monthly)
-                {
-                    startMonth = date.Month;
-                    endMonth = date.AddMonths(1).Month;
-                    endYear = date.AddMonths(1).Year;
-                }
 
-                var startDate = new DateTime(year, startMonth, 1);
+                var endMonth = monthly ? date.AddMonths(1).Month : date.AddYears(1).Month;
+                var endYear = monthly ? date.AddMonths(1).Year : date.AddYears(1).Year;
+
+                var startDate = new DateTime(year, date.Month, 1);
                 var endDate = new DateTime(endYear, endMonth, 1);
 
                 var yearIssues = allCommunityIssues.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
