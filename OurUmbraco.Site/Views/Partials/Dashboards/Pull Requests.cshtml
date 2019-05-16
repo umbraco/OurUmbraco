@@ -1,0 +1,80 @@
+﻿@using OurUmbraco.Our.Api
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var controller = new DashboardStatisticsController();
+    var repository = "";
+    var startYear = 2012;
+    var startMonth = 6;
+    var startDate = new DateTime(startYear, startMonth, 1);
+    var contributorStatistics = controller.GetContributorStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: false);
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Issue statistics (since @(startDate.ToString("MMMM yyyy")))</h6>
+    </div>
+    <div class="card-body">
+
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        @if (string.IsNullOrWhiteSpace(repository) == false)
+                        {
+                            <th>Repository</th>
+                        }
+                        <th>Period</th>
+                        <th>UniqueContributors</th>
+                        <th>NewContributors</th>
+                        <th>CreatedPRs</th>
+                        <th>ProcessRatio</th>
+                        <th>ProcessedPRs</th>
+                        <th>FirstComment (Median)</th>
+                        <th>FirstCommentOnTime</th>
+                        <th>FirstCommentLate</th>
+                        <th>FirstCommentOnTime%</th>
+                        <th>CommentMissing</th>
+                        <th>Leftovers</th>
+                        <th>ReleasePRs</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in contributorStatistics)
+                    {
+                    <tr>
+                        @if (string.IsNullOrWhiteSpace(repository) == false)
+                        {
+                            <td>@repository</td>
+                        }
+                        <td>@stat.Title</td>
+                        <td>@stat.UniqueContributorCount</td>
+                        <td>@stat.FirstAcceptedPullRequests</td>
+                        <td>@stat.PullRequestsCreated</td>
+                        <td>@stat.PullRequestsProcessed</td>
+                        <td>
+                            @{
+                                var ratio = Math.Round((double)stat.PullRequestsProcessed / ((double)stat.PullRequestsCreated / 100), 2);
+                            }
+                            @(ratio)%
+                        </td>
+                        <td>@stat.MedianHoursToFirstComment</td>
+                        <td>@stat.FirstTeamCommentOnTime</td>
+                        <td>@stat.FirstTeamCommentLate</td>
+                        <td>
+                            @{
+                                var onTimePercentage = Math.Round((double)stat.FirstTeamCommentOnTime / ((double)stat.PullRequestsCreated / 100), 2);
+                            }
+                            @(onTimePercentage)%
+                        </td>
+                        <td>@stat.TeamCommentMissing</td>
+                        <td>@stat.PullRequestsStillOpenInPeriod</td>
+                        <td>@stat.ReleasePullRequests</td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

@@ -14,7 +14,7 @@ namespace OurUmbraco.Our.Api
     {
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<Contributions> GetContributorStatistics(int startMonth = 6, string repository = "", bool monthly = true)
+        public List<Contributions> GetContributorStatistics(int startMonth = 6, int startYear = 2010, string repository = "", bool monthly = true)
         {
             var totalContributors = new List<Contributions>();
 
@@ -26,7 +26,7 @@ namespace OurUmbraco.Our.Api
                 ? repoService.GetAllCommunityIssues(true).ToList()
                 : repoService.GetAllCommunityIssues(true).Where(x => x.RepositoryName == repository).ToList();
             
-            var date = new DateTime(2010, startMonth, 1);
+            var date = new DateTime(startYear, startMonth, 1);
             while (date < DateTime.Now)
             {
                 var year = date.Year;
@@ -43,7 +43,50 @@ namespace OurUmbraco.Our.Api
                     Title = date.ToString(monthly ? "yyyyMM" : "yyyy")
                 };
 
+                var allFirstCommentTimesInHours = new List<double>();
+
                 var prsCreated = pullsNonHq.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
+                foreach (var pr in prsCreated)
+                {
+                    var firstTeamComment = GetFirstTeamComment(pr);
+
+                    DateTime labeledAt = default;
+                    var labeledEvent = pr.Events.FirstOrDefault(x => x.Name == "labeled");
+                    if (labeledEvent != null)
+                        labeledAt = labeledEvent.CreateDateTime;
+
+                    if (firstTeamComment == null)
+                    {
+                        // For now we'll treat a label as a "comment"
+                        // Only HQ can add labels
+                        if (labeledAt != default)
+                        {
+                            var timeSpan = Convert.ToInt32(pr.CreateDateTime.BusinessHoursUntil(labeledAt));
+                            allFirstCommentTimesInHours.Add(timeSpan);
+                            repoStatistics.TeamCommentMissing = repoStatistics.TeamCommentMissing + 1;
+                        }
+                    }
+                    else
+                    {
+                        var timeSpan =
+                            Convert.ToInt32(pr.CreateDateTime.BusinessHoursUntil(firstTeamComment.CreateDateTime));
+                        allFirstCommentTimesInHours.Add(timeSpan);
+                        if (timeSpan <= 48)
+                        {
+                            repoStatistics.FirstTeamCommentOnTime = repoStatistics.FirstTeamCommentOnTime + 1;
+                        }
+                        else
+                        {
+                            repoStatistics.FirstTeamCommentLate = repoStatistics.FirstTeamCommentLate + 1;
+                        }
+                    }
+                }
+
+                if (allFirstCommentTimesInHours.Any())
+                {
+                    repoStatistics.AverageHoursToFirstComment = (int)Math.Round(allFirstCommentTimesInHours.Average());
+                    repoStatistics.MedianHoursToFirstComment = (int)Math.Round(allFirstCommentTimesInHours.Median());
+                }
 
                 repoStatistics.PullRequestsCreated = prsCreated.Count;
 
@@ -97,7 +140,7 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<IssueStatistics> GetIssueStatistics(int startMonth = 6, string repository = "", bool monthly = true)
+        public List<IssueStatistics> GetIssueStatistics(int startMonth = 6, int startYear = 2010, string repository = "", bool monthly = true)
         {
             var repoService = new RepositoryManagementService();
 
@@ -106,7 +149,7 @@ namespace OurUmbraco.Our.Api
                 : repoService.GetAllCommunityIssues(false).Where(x => x.RepositoryName == repository).ToList();
 
             var issueStatistics = new List<IssueStatistics>();
-            var date = new DateTime(2010, startMonth, 1);
+            var date = new DateTime(startYear, startMonth, 1);
             while (date < DateTime.Now)
             {
                 var year = date.Year;
@@ -117,21 +160,21 @@ namespace OurUmbraco.Our.Api
                 var startDate = new DateTime(year, date.Month, 1);
                 var endDate = new DateTime(endYear, endMonth, 1);
 
-                var yearIssues = allCommunityIssues.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
-                var closedYearIssues = yearIssues.Where(x => x.State == "closed" && x.ClosedDateTime >= startDate && x.ClosedDateTime < endDate).ToList();
+                var issuesInPeriod = allCommunityIssues.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
+                var issuesClosedInPeriod = issuesInPeriod.Where(x => x.State == "closed" && x.ClosedDateTime >= startDate && x.ClosedDateTime < endDate).ToList();
 
                 var yearStatistics = new IssueStatistics
                 {
                     CodegardenYear = year,
                     Title = date.ToString(monthly ? "yyyyMM" : "yyyy"),
-                    CreatedIssues = yearIssues.Count,
-                    ClosedIssues = closedYearIssues.Count
+                    CreatedIssues = issuesInPeriod.Count,
+                    ClosedIssues = issuesClosedInPeriod.Count
                 };
 
                 var allFirstCommentTimesInHours = new List<double>();
                 var allClosingTimesInHours = new List<double>();
 
-                foreach (var issue in yearIssues)
+                foreach (var issue in issuesInPeriod)
                 {
                     var firstTeamComment = GetFirstTeamComment(issue);
 
@@ -220,6 +263,11 @@ namespace OurUmbraco.Our.Api
         public int PullRequestsStillOpenInPeriod { get; set; }
         public int FirstAcceptedPullRequests { get; set; }
         public int ReleasePullRequests { get; set; }
+        public int FirstTeamCommentOnTime { get; set; }
+        public int FirstTeamCommentLate { get; set; }
+        public int TeamCommentMissing { get; set; }
+        public int AverageHoursToFirstComment { get; set; }
+        public int MedianHoursToFirstComment { get; set; }
     }
 
     public class IssueStatistics

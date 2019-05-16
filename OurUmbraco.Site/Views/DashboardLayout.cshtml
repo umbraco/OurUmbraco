@@ -12,6 +12,10 @@
     var home = Model.Content.Site();
     var dashboard = home.Children().FirstOrDefault(x => x.Name == "Dashboard");
 
+    @* 
+        html template from : https://startbootstrap.com/themes/sb-admin-2/    
+    *@
+
 }<!DOCTYPE html>
 <html lang="en">
 
@@ -92,11 +96,7 @@
 
     <!-- Page level plugins -->
     <script src="/dashboard/vendor/chart.js/Chart.min.js"></script>
-
-    <!-- Page level custom scripts -->
-    <script src="/dashboard/js/demo/chart-area-demo.js"></script>
-
-
+    
     @RenderSection("Scripts", false)
 
 </body>
