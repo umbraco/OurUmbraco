@@ -1,12 +1,46 @@
 ﻿@using OurUmbraco.Our.Api
+@using OurUmbraco.Our.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    var controller = new DashboardStatisticsController();
+    var repoService = new RepositoryManagementService();
+    var repositories = repoService.GetAllPublicRepositories();
+
     var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var monthly = true;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["period"]) == false)
+    {
+        var period = Request.QueryString["period"];
+        monthly = period == "monthly";
+    }
+
     var startYear = 2018;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startYear"]) == false)
+    {
+        int.TryParse(Request.QueryString["startYear"], out startYear);
+    }
+
     var startMonth = 6;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startMonth"]) == false)
+    {
+        int.TryParse(Request.QueryString["startMonth"], out startMonth);
+    }
+
+    var debug = false;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["debug"]) == false)
+    {
+        var debugQueryString = Request.QueryString["debug"];
+        debug = debugQueryString == "true";
+    }
+
     var startDate = new DateTime(startYear, startMonth, 1);
-    var issueStatistics = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: false);
+    
+    var controller = new DashboardStatisticsController();
+    var issueStatistics = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: monthly);
 }
 
 
@@ -14,17 +48,56 @@
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Issue statistics (since @(startDate.ToString("MMMM yyyy")))</h6>
     </div>
-    <div class="card-body">
 
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="get">
+                    <div>
+                        <label>
+                            Show
+                            <select name="repository">
+                                <option value="" @(repository == "" ? "selected" : null)>All repositories</option>
+                                @foreach (var repo in repositories)
+                                {
+                                    <option value="@repo.Alias" @(repository == repo.Alias ? "selected" : null)>@repo.Alias</option>
+                                }
+                            </select>
+                        </label>
+                        &nbsp;|&nbsp;
+                        <span>Grouped by: </span>
+                        <label for="yearly">year</label>
+                        <input type="radio" name="period" id="yearly" value="yearly" @(monthly == false ? "checked" : null) />
+                        <label for="monthly">month</label>
+                        <input type="radio" name="period" id="monthly" value="monthly" @(monthly ? "checked" : null) />
+                        &nbsp;|&nbsp;
+                        <span>Start month: </span>
+                        <select name="startMonth">
+                            @for (var i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" @(startMonth == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;|&nbsp;
+                        <span>Start year: </span>
+                        <select name="startYear">
+                            @for (var i = 2010; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@i" @(startYear == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;&nbsp;
+                        <input type="submit" name="Update" value="Update" />
+                    </div>
+                </form>
+            </div>
+        </div>
         <div class="col-sm-12">
+
             <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
 
                 <thead>
                     <tr role="row">
-                        @if (string.IsNullOrWhiteSpace(repository) == false)
-                        {
-                            <th>Repository</th>
-                        }
                         <th>Period</th>
                         <th>CreatedIssues</th>
                         <th>ClosedIssues</th>
@@ -42,10 +115,6 @@
                     @foreach (var stat in issueStatistics)
                     {
                         <tr>
-                            @if (string.IsNullOrWhiteSpace(repository) == false)
-                            {
-                                <td>@repository</td>
-                            }
                             <td>@stat.Title</td>
                             <td>@stat.CreatedIssues</td>
                             <td>@stat.ClosedIssues</td>
@@ -57,17 +126,21 @@
                             </td>
                             <td>@stat.MedianHoursToFirstComment</td>
                             <td>@stat.MedianHoursToClose</td>
-                            <td>@stat.FirstTeamCommentOnTime</td>
-                            <td>@stat.FirstTeamCommentLate</td>
+                            <td>@stat.FirstCommentStatistics.FirstEventOnTime</td>
+                            <td>@stat.FirstCommentStatistics.FirstEventLate</td>
                             <td>
                                 @{
-                                    var onTimePercentage = Math.Round((double)stat.FirstTeamCommentOnTime / ((double)stat.CreatedIssues / 100), 2);
+                                    var onTimePercentage = Math.Round((double)stat.FirstCommentStatistics.FirstEventOnTime / ((double)stat.CreatedIssues / 100), 2);
                                 }
                                 @(onTimePercentage)%
                             </td>
-                            <td>@stat.TeamCommentMissing</td>
+                            <td>@stat.FirstCommentStatistics.TeamEventMissing</td>
                             <td>@stat.ReleaseIssues</td>
                         </tr>
+                        if (debug)
+                        {
+                            @Html.Partial("~/Views/Partials/Dashboards/DebugInfo.cshtml", stat.AllIssues)
+                        }
                     }
                 </tbody>
             </table>

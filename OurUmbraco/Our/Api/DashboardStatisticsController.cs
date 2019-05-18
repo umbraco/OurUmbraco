@@ -21,11 +21,11 @@ namespace OurUmbraco.Our.Api
             var firstPrs = new List<string>();
 
             var repoService = new RepositoryManagementService();
-            
+
             var pullsNonHq = string.IsNullOrWhiteSpace(repository)
                 ? repoService.GetAllCommunityIssues(true).ToList()
                 : repoService.GetAllCommunityIssues(true).Where(x => x.RepositoryName == repository).ToList();
-            
+
             var date = new DateTime(startYear, startMonth, 1);
             while (date < DateTime.Now)
             {
@@ -33,52 +33,38 @@ namespace OurUmbraco.Our.Api
 
                 var endMonth = monthly ? date.AddMonths(1).Month : date.AddYears(1).Month;
                 var endYear = monthly ? date.AddMonths(1).Year : date.AddYears(1).Year;
-                
+
                 var startDate = new DateTime(year, date.Month, 1);
                 var endDate = new DateTime(endYear, endMonth, 1);
+
+                var prsCreated = pullsNonHq.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
 
                 var repoStatistics = new Contributions
                 {
                     CodegardenYear = year,
-                    Title = date.ToString(monthly ? "yyyyMM" : "yyyy")
+                    Title = date.ToString(monthly ? "yyyyMM" : "yyyy"),
+                    FirstCommentStatistics = new FirstCommentStatistics { AllFirstEventTimesInHours = new List<double>() },
+                    AllPulls = prsCreated
                 };
 
                 var allFirstCommentTimesInHours = new List<double>();
+                var allClosingTimesInHours = new List<double>();
 
-                var prsCreated = pullsNonHq.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
                 foreach (var pr in prsCreated)
                 {
-                    var firstTeamComment = GetFirstTeamComment(pr);
+                    var firstCommentStatistics = GetFirstEventStatistics(pr);
+                    repoStatistics.FirstCommentStatistics.FirstEventOnTime += firstCommentStatistics.FirstEventOnTime;
+                    repoStatistics.FirstCommentStatistics.FirstEventLate += firstCommentStatistics.FirstEventLate;
+                    repoStatistics.FirstCommentStatistics.TeamEventMissing += firstCommentStatistics.TeamEventMissing;
+                    allFirstCommentTimesInHours.AddRange(firstCommentStatistics.AllFirstEventTimesInHours);
 
-                    DateTime labeledAt = default;
-                    var labeledEvent = pr.Events.FirstOrDefault(x => x.Name == "labeled");
-                    if (labeledEvent != null)
-                        labeledAt = labeledEvent.CreateDateTime;
+                    if (pr.ClosedDateTime != null)
+                    {
+                        var timeSpan = Convert.ToInt32(pr.CreateDateTime.BusinessHoursUntil(pr.ClosedDateTime.Value));
+                        allClosingTimesInHours.Add(timeSpan);
 
-                    if (firstTeamComment == null)
-                    {
-                        // For now we'll treat a label as a "comment"
-                        // Only HQ can add labels
-                        if (labeledAt != default)
-                        {
-                            var timeSpan = Convert.ToInt32(pr.CreateDateTime.BusinessHoursUntil(labeledAt));
-                            allFirstCommentTimesInHours.Add(timeSpan);
-                            repoStatistics.TeamCommentMissing = repoStatistics.TeamCommentMissing + 1;
-                        }
-                    }
-                    else
-                    {
-                        var timeSpan =
-                            Convert.ToInt32(pr.CreateDateTime.BusinessHoursUntil(firstTeamComment.CreateDateTime));
-                        allFirstCommentTimesInHours.Add(timeSpan);
-                        if (timeSpan <= 48)
-                        {
-                            repoStatistics.FirstTeamCommentOnTime = repoStatistics.FirstTeamCommentOnTime + 1;
-                        }
-                        else
-                        {
-                            repoStatistics.FirstTeamCommentLate = repoStatistics.FirstTeamCommentLate + 1;
-                        }
+                        if (pr.Labels.Any(x => x.Name.StartsWith("release/")))
+                            repoStatistics.ReleasePullRequests += 1;
                     }
                 }
 
@@ -88,30 +74,30 @@ namespace OurUmbraco.Our.Api
                     repoStatistics.MedianHoursToFirstComment = (int)Math.Round(allFirstCommentTimesInHours.Median());
                 }
 
+                if (allClosingTimesInHours.Any())
+                {
+                    repoStatistics.AverageHoursToClose = (int)Math.Round(allClosingTimesInHours.Average());
+                    repoStatistics.MedianHoursToClose = (int)Math.Round(allClosingTimesInHours.Median());
+                }
+
                 repoStatistics.PullRequestsCreated = prsCreated.Count;
 
                 // GitHub marks all merged PRs as "closed", so we want to differentiate: if there's no "merged" event then it was closed without merging
-                var prsClosed = pullsNonHq.Where(x => x.State == "closed" 
+                var prsClosed = pullsNonHq.Where(x => x.State == "closed"
                                                       && x.Events.Any(y => y.Name == "merged") == false
                                                       && x.ClosedDateTime >= startDate
                                                       && x.ClosedDateTime < endDate).ToList();
 
                 // There was a "merged" event and it was in the current period
-                var prsMerged = pullsNonHq.Where(x => x.State == "closed" 
-                                                      && x.Events.Any(y => y.Name == "merged") == true 
-                                                      && x.Events.First(y => y.Name == "merged").CreateDateTime >= startDate 
+                var prsMerged = pullsNonHq.Where(x => x.State == "closed"
+                                                      && x.Events.Any(y => y.Name == "merged") == true
+                                                      && x.Events.First(y => y.Name == "merged").CreateDateTime >= startDate
                                                       && x.Events.First(y => y.Name == "merged").CreateDateTime < endDate).ToList();
 
-                foreach (var pr in prsMerged.Where(x => x.Labels != null && x.Labels.Any()))
-                {
-                    if (pr.Labels.Any(x => x.Name.StartsWith("release/")))
-                        repoStatistics.ReleasePullRequests = repoStatistics.ReleasePullRequests + 1;
-                }
-
                 // Created in this period and still open now or merged/closed after the last date in this period
-                var prsStillOpen = pullsNonHq.Where(x => 
-                    x.CreateDateTime >= startDate 
-                    && x.CreateDateTime < endDate 
+                var prsStillOpen = pullsNonHq.Where(x =>
+                    x.CreateDateTime >= startDate
+                    && x.CreateDateTime < endDate
                     && (x.State == "open" || x.ClosedDateTime >= endDate || x.ClosedDateTime > endDate)).ToList();
 
                 repoStatistics.PullRequestsClosed = prsClosed.Count;
@@ -168,7 +154,9 @@ namespace OurUmbraco.Our.Api
                     CodegardenYear = year,
                     Title = date.ToString(monthly ? "yyyyMM" : "yyyy"),
                     CreatedIssues = issuesInPeriod.Count,
-                    ClosedIssues = issuesClosedInPeriod.Count
+                    ClosedIssues = issuesClosedInPeriod.Count,
+                    FirstCommentStatistics = new FirstCommentStatistics { AllFirstEventTimesInHours = new List<double>() },
+                    AllIssues = issuesInPeriod
                 };
 
                 var allFirstCommentTimesInHours = new List<double>();
@@ -176,37 +164,11 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in issuesInPeriod)
                 {
-                    var firstTeamComment = GetFirstTeamComment(issue);
-
-                    DateTime labeledAt = default;
-                    var labeledEvent = issue.Events.FirstOrDefault(x => x.Name == "labeled");
-                    if (labeledEvent != null)
-                        labeledAt = labeledEvent.CreateDateTime;
-
-                    if (firstTeamComment == null)
-                    {
-                        // For now we'll treat a label as a "comment"
-                        // Only HQ can add labels
-                        if (labeledAt != default)
-                        {
-                            var timeSpan = Convert.ToInt32(issue.CreateDateTime.BusinessHoursUntil(labeledAt));
-                            allFirstCommentTimesInHours.Add(timeSpan);
-                            yearStatistics.TeamCommentMissing = yearStatistics.TeamCommentMissing + 1;
-                        }
-                    }
-                    else
-                    {
-                        var timeSpan = Convert.ToInt32(issue.CreateDateTime.BusinessHoursUntil(firstTeamComment.CreateDateTime));
-                        allFirstCommentTimesInHours.Add(timeSpan);
-                        if (timeSpan <= 48)
-                        {
-                            yearStatistics.FirstTeamCommentOnTime = yearStatistics.FirstTeamCommentOnTime + 1;
-                        }
-                        else
-                        {
-                            yearStatistics.FirstTeamCommentLate = yearStatistics.FirstTeamCommentLate + 1;
-                        }
-                    }
+                    var firstCommentStatistics = GetFirstEventStatistics(issue);
+                    yearStatistics.FirstCommentStatistics.FirstEventOnTime += firstCommentStatistics.FirstEventOnTime;
+                    yearStatistics.FirstCommentStatistics.FirstEventLate += firstCommentStatistics.FirstEventLate;
+                    yearStatistics.FirstCommentStatistics.TeamEventMissing += firstCommentStatistics.TeamEventMissing;
+                    allFirstCommentTimesInHours.AddRange(firstCommentStatistics.AllFirstEventTimesInHours);
 
                     if (issue.ClosedDateTime != null)
                     {
@@ -214,7 +176,7 @@ namespace OurUmbraco.Our.Api
                         allClosingTimesInHours.Add(timeSpan);
 
                         if (issue.Labels.Any(x => x.Name.StartsWith("release/")))
-                            yearStatistics.ReleaseIssues = yearStatistics.ReleaseIssues + 1;
+                            yearStatistics.ReleaseIssues += 1;
                     }
                 }
 
@@ -238,16 +200,72 @@ namespace OurUmbraco.Our.Api
             return issueStatistics;
         }
 
-        public Comments GetFirstTeamComment(Issue issue)
+        private FirstCommentStatistics GetFirstEventStatistics(Issue issue)
         {
-            Comments firstTeamCommment = null;
+            var firstCommentStatistics = new FirstCommentStatistics
+            {
+                AllFirstEventTimesInHours = new List<double>(),
+                IssuesNoComments = new List<Issue>()
+            };
+
+            var firstTeamEventDateTime = GetFirstTeamEventDateTime(issue);
+
+            if (firstTeamEventDateTime == default(DateTime))
+            {
+                firstCommentStatistics.TeamEventMissing += 1;
+                firstCommentStatistics.IssuesNoComments.Add(issue);
+            }
+            else
+            {
+                var timeSpan = Convert.ToInt32(issue.CreateDateTime.BusinessHoursUntil(firstTeamEventDateTime.Value));
+                firstCommentStatistics.AllFirstEventTimesInHours.Add(timeSpan);
+                if (timeSpan <= 48)
+                {
+                    firstCommentStatistics.FirstEventOnTime += 1;
+                }
+                else
+                {
+                    firstCommentStatistics.FirstEventLate += 1;
+                }
+            }
+
+            return firstCommentStatistics;
+        }
+
+        public DateTime? GetFirstTeamEventDateTime(Issue issue)
+        {
             var gitHubService = new GitHubService();
             var users = gitHubService.GetTeam(issue.RepositoryName).Members.Select(x => x.ToLower());
-            var foundComment = issue.Comments.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => users.Contains(x.User.Login.ToLowerInvariant()));
-            if (foundComment != null)
-                firstTeamCommment = foundComment;
 
-            return firstTeamCommment;
+            var eventDateTimes = new List<DateTime>();
+            var comments = issue.Comments.Where(x => x.User != null && users.Contains(x.User.Login.ToLowerInvariant()));
+
+            // When someone mentions a team member the "actor" is set to that team member, where it should be the user (community member) that is the actor
+            // When a team member subscribes to a PR / issue, this does not send any signals, nobody can see it, so it should not count as an event
+            // If wafflebot assigns something, ignore that as well, it had weird rules so just don't trust it
+            var events = issue.Events.Where(x => x.Actor != null && users.Contains(x.Actor.Login.ToLowerInvariant()) && x.Name != "mentioned" && x.Name != "subscribed" && (x.Assigner != null && x.Assigner.Login != "wafflebot[bot]"));
+            eventDateTimes.AddRange(comments.Select(x => x.CreateDateTime));
+            eventDateTimes.AddRange(events.Select(x => x.CreateDateTime));
+
+            if (issue.Reviews != null)
+            {
+                var reviews = issue.Reviews.Where(x => x.Actor != null && users.Contains(x.Actor.Login.ToLowerInvariant()));
+                eventDateTimes.AddRange(reviews.Select(x => x.CreateDateTime));
+            }
+
+            // Special case: if a user closes their own issue we can count that as a team event
+            if (issue.State == "closed")
+            {
+                var closedEvent = issue.Events.FirstOrDefault(x => x.Name == "closed");
+                if (closedEvent != null)
+                {
+                    // Nice one: if a user deletes themselves from GitHub, the Actor becomes.. null :/
+                    if (closedEvent.Actor == null || issue.User.Login == closedEvent.Actor.Login)
+                        eventDateTimes.Add(closedEvent.CreateDateTime);
+                }
+            }
+
+            return eventDateTimes.OrderBy(x => x).FirstOrDefault();
         }
     }
 
@@ -263,11 +281,12 @@ namespace OurUmbraco.Our.Api
         public int PullRequestsStillOpenInPeriod { get; set; }
         public int FirstAcceptedPullRequests { get; set; }
         public int ReleasePullRequests { get; set; }
-        public int FirstTeamCommentOnTime { get; set; }
-        public int FirstTeamCommentLate { get; set; }
-        public int TeamCommentMissing { get; set; }
         public int AverageHoursToFirstComment { get; set; }
         public int MedianHoursToFirstComment { get; set; }
+        public int AverageHoursToClose { get; set; }
+        public int MedianHoursToClose { get; set; }
+        public FirstCommentStatistics FirstCommentStatistics { get; set; }
+        public List<Issue> AllPulls { get; set; }
     }
 
     public class IssueStatistics
@@ -277,12 +296,20 @@ namespace OurUmbraco.Our.Api
         public int CreatedIssues { get; set; }
         public int ClosedIssues { get; set; }
         public int ReleaseIssues { get; set; }
-        public int FirstTeamCommentOnTime { get; set; }
-        public int FirstTeamCommentLate { get; set; }
-        public int TeamCommentMissing { get; set; }
         public int AverageHoursToFirstComment { get; set; }
         public int MedianHoursToFirstComment { get; set; }
         public int AverageHoursToClose { get; set; }
         public int MedianHoursToClose { get; set; }
+        public FirstCommentStatistics FirstCommentStatistics { get; set; }
+        public List<Issue> AllIssues { get; set; }
+    }
+
+    public class FirstCommentStatistics
+    {
+        public int FirstEventOnTime { get; set; }
+        public int FirstEventLate { get; set; }
+        public int TeamEventMissing { get; set; }
+        public List<double> AllFirstEventTimesInHours { get; set; }
+        public List<Issue> IssuesNoComments { get; set; }
     }
 }

@@ -4453,6 +4453,7 @@
     <Content Include="Views\DashboardLayout.cshtml" />
     <Content Include="Views\Partials\Dashboards\Issues.cshtml" />
     <Content Include="Views\Partials\Dashboards\Pull Requests.cshtml" />
+    <Content Include="Views\Partials\Dashboards\DebugInfo.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
