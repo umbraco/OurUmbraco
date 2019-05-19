@@ -1,20 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
-using System.Web.Hosting;
-using Examine;
+﻿using Examine;
 using Hangfire;
 using Hangfire.Server;
 using Newtonsoft.Json;
-using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+using System.Web;
+using System.Web.Hosting;
 using Umbraco.Core;
 using Umbraco.Core.Persistence;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
@@ -50,6 +53,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void UpdateMeetupStats()
         {
             RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.MinuteInterval(15));
+        }
+
+        // schedule the hangfire job
+        public void UpdateIssuesWithLabelComments()
+        {
+            RecurringJob.AddOrUpdate(() => AddCommentToGitHubIssue(), Cron.HourInterval(100));
         }
 
         public void UpdateGitHubContributorsJsonFile()
@@ -107,12 +116,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var service = new CommunityVideosService();
             service.UpdateYouTubePlaylistVideos();
         }
-        
+
         public void GetGitHubPullRequests()
         {
             RecurringJob.AddOrUpdate(() => UpdatePullRequests(), Cron.HourInterval(1));
         }
-        
+
         public void UpdatePullRequests()
         {
             var service = new GitHubService();
@@ -125,13 +134,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var karmaService = new KarmaService();
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
-        
+
         public void GenerateReleasesCache(PerformContext context)
         {
             var releasesService = new ReleasesService();
             RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
         }
-        
+
         public void UpdateGitHubIssues(PerformContext context)
         {
             var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
@@ -144,11 +153,36 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
             }
         }
-        
+
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+        }
+
+        //calling the service method
+        public void AddCommentToGitHubIssue()
+        {
+            var repositoryService = new RepositoryManagementService();
+            var issues = repositoryService.GetAllOpenIssues(false);
+            var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
+            if (upForGrabsIssues != null && upForGrabsIssues.Issues.Count > 0)
+            {
+                var recentIssues = upForGrabsIssues.Issues.FindAll(i => i.RepositoryName == "Umbraco-CMS" && i.Number == 5184); //i.UpdateDateTime < DateTime.Now.AddMinutes(-60));
+                var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
+                var labelDescription = umbracoHelper.TypedContentSingleAtXPath("//githubLabelCommentTemplates").GetProperty("upForGrabs").DataValue;
+                var addComment = new Our.Models.GitHub.AddComment { CommentBody = labelDescription.ToString()};
+                var service = new GitHubService();
+                service.AddLabelDescriptionAsComment(recentIssues, addComment, "Umbraco-cms", "Up For Grabs");
+
+            }
+        }
+
+        private UmbracoContext EnsureUmbracoContext()
+        {
+            if (UmbracoContext.Current != null) return UmbracoContext.Current;
+            var dummyContext = new HttpContextWrapper(new System.Web.HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current, new WebSecurity(dummyContext, ApplicationContext.Current), false);
         }
     }
 

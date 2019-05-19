@@ -43,6 +43,7 @@ namespace OurUmbraco.Our.GoogleOAuth
                 .UseSqlServerStorage(connectionString, options)
                 .UseConsole();
 
+        
             var dashboardOptions = new DashboardOptions { Authorization = new[] { new UmbracoAuthorizationFilter() } };
             app.UseHangfireDashboard("/hangfire", dashboardOptions);
             app.UseHangfireServer();
@@ -60,6 +61,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.GenerateReleasesCache(null);
             scheduler.UpdateGitHubIssues(null);
             scheduler.GetAllGitHubLabels(null);
+            scheduler.UpdateIssuesWithLabelComments();
 
             //Hangfire jobs for Google Maps aka Radar
             var radarScheduler = new RadarHangfireJobs();

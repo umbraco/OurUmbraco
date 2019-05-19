@@ -512,6 +512,7 @@
     <Compile Include="Our\Extensions\HtmlHelperExtensions.cs" />
     <Compile Include="Our\Extensions\ListExtensions.cs" />
     <Compile Include="Our\Models\FirstPullRequest.cs" />
+    <Compile Include="Our\Models\GitHub\AddComment.cs" />
     <Compile Include="Our\Models\GitHub\Event.cs" />
     <Compile Include="Our\Models\GitHub\Comment.cs" />
     <Compile Include="Our\Models\GitHub\Issue.cs" />

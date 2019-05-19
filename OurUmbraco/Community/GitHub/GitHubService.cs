@@ -1,14 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Web.Configuration;
-using System.Web.Hosting;
-using Examine;
+﻿using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using Hangfire.Console;
 using Hangfire.Server;
@@ -17,8 +7,7 @@ using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using OurUmbraco.Community.Models;
-using OurUmbraco.Our.Models;
-using OurUmbraco.Our.Services;
+using OurUmbraco.Our.Models.GitHub;
 using RestSharp;
 using Skybrud.Essentials.Json;
 using Skybrud.Essentials.Time;
@@ -26,6 +15,17 @@ using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Web;
+using System.Web.Configuration;
+using System.Web.Hosting;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
@@ -917,6 +917,31 @@ namespace OurUmbraco.Community.GitHub
                 context.WriteLine("Error while fetching issues", ex);
                 context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
             }
+        }
+
+        public string AddLabelDescriptionAsComment(List<Issue> issues, AddComment addComment, string repository, string label)
+        {
+            // Initialize the request
+            var username = ConfigurationManager.AppSettings["GitHubUsername"];
+            var password = ConfigurationManager.AppSettings["GitHubPassword"];
+            var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
+            var resource = $"/repos/{RepositoryOwner}/{repository}/issues/";
+            // Make the request to the GitHub API           
+            foreach (var recentIssue in issues)
+            {
+                addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + recentIssue.User.Login);
+                var commentsEndPoint = string.Concat(resource, recentIssue.Number, "/comments");
+                var request = new RestRequest(commentsEndPoint, Method.POST);
+                request.AddHeader("Authorization", "Bearer 1b0cbfb54673f5bbd0747cfaa4bc7004d839e4ab");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
+                client.UserAgent = UserAgent;
+                var result = client.Execute<List<GithubPullRequestModel>>(request);
+
+                LogHelper.Info<GitHubService>($"Adding comment to issue {recentIssue.Number}");
+          }
+
+            return string.Empty;
         }
     }
 
