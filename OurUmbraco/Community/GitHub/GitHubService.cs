@@ -6,10 +6,13 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
+using GraphQL.Client;
+using GraphQL.Common.Request;
 using Hangfire.Console;
 using Hangfire.Server;
 using Newtonsoft.Json;
@@ -17,7 +20,6 @@ using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using OurUmbraco.Community.Models;
-using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Services;
 using RestSharp;
 using Skybrud.Essentials.Json;
@@ -613,6 +615,77 @@ namespace OurUmbraco.Community.GitHub
             var allLabelsJson = JsonConvert.SerializeObject(allLabels);
             File.WriteAllText($"{LabelsJsonPath}AllLabels.json", allLabelsJson, Encoding.UTF8);
         }
+
+        public async Task NotifyUnmergeablePullRequests(PerformContext context)
+        {
+            var queryFileLocation = "~/Config/Queries/GetUnmergeablePullRequests.json";
+            var query = GetQueryFromFile(queryFileLocation);
+            if (query == null)
+                context.WriteLine($"Query file not found {queryFileLocation}");
+
+            var cursor = string.Empty;
+
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
+
+            foreach (var repo in repositories)
+            {
+                var repositoryName = repo.Alias;
+
+                while (true)
+                {
+                    var graphClient = GetGraphQlClient();
+                    var request = string.IsNullOrEmpty(cursor)
+                        ? new GraphQLRequest { Query = query, Variables = $"{{ \"repository\": \"{repositoryName}\" }}" }
+                        : new GraphQLRequest { Query = query, Variables = $"{{ \"cursor\": \"{cursor}\", \"repository\": \"{repositoryName}\" }}" };
+
+                    try
+                    {
+                        var response = await graphClient.PostAsync(request).ConfigureAwait(false);
+
+                        if (response.Errors != null)
+                            foreach (var error in response.Errors)
+                            {
+                                context.SetTextColor(ConsoleTextColor.Red);
+                                context.WriteLine($"Error executing GraphQL query: {error.Message}");
+                                context.ResetTextColor();
+                            }
+
+                        var repository = response.GetDataFieldAs<GraphQLModel.Repository>("repository");
+                        if (repository.PullRequests.Edges.Any() == false)
+                            break;
+
+                        var unmergeable = repository.PullRequests.Edges.Where(x => x.Node.Mergeable == "CONFLICTING").ToList();
+
+                        cursor = repository.PullRequests.PageInfo.EndCursor;
+
+                        foreach (var pr in unmergeable)
+                            context.WriteLine($"Pull number {pr.Node.Number} for repository {repo.Alias} is not mergeable due to a conflict");
+                    }
+                    catch (Exception ex)
+                    {
+                        context.WriteLine($"Ran into a bit of trouble - {ex.Message}");
+                    }
+                }
+            }
+        }
+
+        private static string GetQueryFromFile(string queryFileLocation)
+        {
+            var queryFile = HostingEnvironment.MapPath(queryFileLocation);
+            var query = File.ReadAllText(queryFile);
+            return query;
+        }
+
+        private static GraphQLClient GetGraphQlClient()
+        {
+            var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubAccessToken"];
+            var graphClient = new GraphQLClient("https://api.github.com/graphql");
+            graphClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {gitHubAccessToken}");
+            graphClient.DefaultRequestHeaders.Add("User-Agent", "OurUmbraco");
+            return graphClient;
+        }
+
 
         /// <summary>
         /// Get all contributors from GitHub Umbraco repositories

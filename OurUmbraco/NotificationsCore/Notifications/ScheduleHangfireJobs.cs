@@ -134,9 +134,8 @@ namespace OurUmbraco.NotificationsCore.Notifications
         
         public void UpdateGitHubIssues(PerformContext context)
         {
-            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
-            var fileContent = File.ReadAllText(configFile);
-            var repositories = JsonConvert.DeserializeObject<List<Community.Models.Repository>>(fileContent);
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
 
             var gitHubService = new GitHubService();
             foreach (var repository in repositories)
@@ -148,7 +147,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
+        }
+
+        public void NotifyUnmergeablePullRequests(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
         }
     }
 
