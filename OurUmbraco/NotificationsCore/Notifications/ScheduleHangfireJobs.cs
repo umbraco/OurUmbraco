@@ -56,9 +56,9 @@ namespace OurUmbraco.NotificationsCore.Notifications
         }
 
         // schedule the hangfire job
-        public void UpdateIssuesWithLabelComments()
+        public void UpdateUpForGrabsIssues()
         {
-            RecurringJob.AddOrUpdate(() => AddCommentToGitHubIssue(), Cron.HourInterval(100));
+            RecurringJob.AddOrUpdate(() => AddCommentToUpForGrabsIssues(), Cron.HourInterval(100));
         }
 
         public void UpdateGitHubContributorsJsonFile()
@@ -161,7 +161,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
         }
 
         //calling the service method
-        public void AddCommentToGitHubIssue()
+        public void AddCommentToUpForGrabsIssues()
         {
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
