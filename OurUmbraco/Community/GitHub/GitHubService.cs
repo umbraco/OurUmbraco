@@ -1058,8 +1058,16 @@ namespace OurUmbraco.Community.GitHub
             context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
 
             var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
+            
+            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
+            if (enableGitHubCommenting == false)
+            {
+                context.SetTextColor(ConsoleTextColor.Yellow);
+                context.WriteLine($"NOTE: `enableGitHubCommenting` is disabled, nothing will actually be posted.");
+                context.ResetTextColor();
+            }
 
-            foreach (var issue in categorizedIssues.Issues)
+            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184))
             {
                 var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
                 var selectedComment = friendlyComments[randomCommentIndex];
@@ -1069,19 +1077,14 @@ namespace OurUmbraco.Community.GitHub
                 var comment = selectedComment.GetProperty("comment").DataValue.ToString();
                 comment = comment.Replace("{{issueowner}}", "@" + issue.User.Login);
 
-                context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (with template index {randomCommentIndex}).");
+                context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (template index {randomCommentIndex}`).");
+
                 var result = AddCommentToIssue(issue, gitHubAutoReplyType, comment);
-                if (result == null)
-                {
-                    bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
-                    var postingEnabled = enableGitHubCommenting ? "enabled" : "disabled";
-                    context.WriteLine($"Didn't post anything enableGitHubCommenting is {postingEnabled}.");
-                }
-                else
+                if (result != null)
                 {
                     if (result.Success)
                     {
-                        context.WriteLine($"Comment posted successfully: {result.Response.Body}");
+                        context.WriteLine($"Comment posted successfully");
                     }
                     else
                     {
