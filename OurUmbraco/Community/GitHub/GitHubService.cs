@@ -1,15 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading;
-using System.Web;
-using System.Web.Configuration;
-using System.Web.Hosting;
-using Examine;
+﻿using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using GraphQL.Client;
 using GraphQL.Common.Request;
@@ -29,6 +18,17 @@ using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
+using System;
+using System.Collections.Generic;
+using System.Configuration;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using System.Threading;
+using System.Web;
+using System.Web.Configuration;
+using System.Web.Hosting;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -51,6 +51,7 @@ namespace OurUmbraco.Community.GitHub
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
         public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
         public readonly string LabelsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GitHubLabels/");
+        private readonly string HopTopicMarkersPath = "~/App_Data/TEMP/HotTopics/";
 
         private static readonly object Lock = new object();
         public static bool IsLocked { get; set; }
@@ -1016,6 +1017,72 @@ namespace OurUmbraco.Community.GitHub
             AddLabelDescriptionAsComment(context, awaitingFeedback, "awaiting feedback".ToLowerInvariant());
         }
 
+        public void PostHotTopicIssueToSlack(PerformContext context, string repositoryName, string slackChannel)
+        {
+            var repositoryService = new RepositoryManagementService();
+            var slackService = new SlackService();
+            var issues = repositoryService.GetAllCommunityIssues(false);
+            //hotissues - all open issues where there has been 10 replies in 7hrs and HQ team has not replied
+            var hotIssues = issues.Where(i => i.RepositoryName == repositoryName && i.State != "closed" && i.CommentCount >= 10 && i.FirstHqComment == null);
+            foreach (var hotIssue in hotIssues)
+            {
+                var path = HostingEnvironment.MapPath(HopTopicMarkersPath + hotIssue.Number + ".txt");
+                if (!File.Exists(path))
+                {
+                    var createTime = hotIssue.CreateDateTime;
+                    var updateTime = hotIssue.Comments.Last().CreateDateTime;
+                    if (updateTime.Subtract(createTime).TotalMinutes <= 420)
+                    {
+                        var post = string.Format($"Issue title: *{hotIssue.Title}*\nLink to issue: https://github.com/umbraco/{repositoryName}/issues/{hotIssue.Number}");
+                        try
+                        {
+                            slackService.SendSlackNotification(post, slackChannel);
+                            string[] lines = { "" };
+                            File.WriteAllLines(path, lines);
+                            context.WriteLine($"Slack notification sent for {hotIssue.Number}");
+                        }
+                        catch (Exception)
+                        {
+                            context.WriteLine($"Failed to send slack notification for {hotIssue.Number}");
+                        }
+                    }
+                }
+            }
+        }
+
+        public void PostHotCMSPullRequestsToSlack(PerformContext context, string repositoryName, string slackChannel)
+        {
+            var repositoryService = new RepositoryManagementService();
+            var slackService = new SlackService();
+            var pullRequests = repositoryService.GetAllCommunityIssues(true);
+            //hotissues - all open PRs where there has been 10 replies in 7hrs and HQ team has not replied
+            var hotPullRequests = pullRequests.Where(p => p.RepositoryName == repositoryName && p.State != "closed" && p.CommentCount >= 10 && p.FirstHqComment == null);
+            foreach (var hotPullRequest in hotPullRequests)
+            {
+                var path = HostingEnvironment.MapPath(HopTopicMarkersPath + hotPullRequest.Number + ".txt");
+                if (!File.Exists(path))
+                {
+                    var createTime = hotPullRequest.CreateDateTime;
+                    var updateTime = hotPullRequest.Comments.Last().CreateDateTime;
+                    if (updateTime.Subtract(createTime).TotalMinutes <= 420)
+                    {
+                        var post = string.Format($"PR title: *{hotPullRequest.Title}*\nLink to PR: https://github.com/umbraco/{repositoryName}/pulls/{hotPullRequest.Number}");
+                        try
+                        {
+                            slackService.SendSlackNotification(post, slackChannel);
+                            string[] lines = { "" };
+                            File.WriteAllLines(path, lines);
+                            context.WriteLine($"Slack notification sent for {hotPullRequest.Number}");
+                        }
+                        catch (Exception)
+                        {
+                            context.WriteLine($"Failed to send slack notification for {hotPullRequest.Number}");
+                        }
+                    }
+                }
+            }
+        }
+
         private void AddLabelDescriptionAsComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, string taskAlias)
         {
             if (categorizedIssues == null || categorizedIssues.Issues.Any() == false)
@@ -1032,7 +1099,7 @@ namespace OurUmbraco.Community.GitHub
 
             var actionNode = labelType.FirstOrDefault();
             var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
-            
+
 
             foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184 && x.RepositoryName == "Umbraco-CMS"))
             {

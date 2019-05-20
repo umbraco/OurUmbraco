@@ -58,6 +58,10 @@ namespace OurUmbraco.Our.Services
                         var commenter = comment.User.Login.ToLowerInvariant();
                         if (item.FirstPrTeamOrHqComment == null && reviewers.Contains(commenter))
                             item.FirstPrTeamOrHqComment = comment.CreateDateTime.ToLocalTime();
+
+                        if (item.FirstHqComment == null && hqMembers.Contains(commenter))
+                            item.FirstHqComment = comment.CreateDateTime.ToLocalTime();
+
                     }
 
                     issues.Add(item);

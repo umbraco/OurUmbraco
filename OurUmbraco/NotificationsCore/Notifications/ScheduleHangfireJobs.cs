@@ -173,6 +173,17 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
         }
+
+        public void PostHotCMSIssueToSlack(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.PostHotTopicIssueToSlack(context, "Umbraco-CMS", "#hot-topics"), Cron.MonthInterval(12));
+        }
+        public void PostHotCMSPullRequestsToSlack(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.PostHotCMSPullRequestsToSlack(context, "Umbraco-CMS", "#hot-topics"), Cron.MonthInterval(12));
+        }
     }
 
     public class ReminderTopic
