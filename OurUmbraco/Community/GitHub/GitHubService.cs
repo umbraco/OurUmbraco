@@ -28,6 +28,7 @@ using System.Web.Configuration;
 using System.Web.Hosting;
 using Umbraco.Core.Logging;
 using Umbraco.Web;
+using static OurUmbraco.Our.Services.RepositoryManagementService;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
 
 namespace OurUmbraco.Community.GitHub
@@ -918,8 +919,24 @@ namespace OurUmbraco.Community.GitHub
                 context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
             }
         }
+        //public void CloseExpiredIssue(GitHubCategorizedIssues expiredIssues)
+        //{
+        //    foreach (var issue in expiredIssues)
+        //    {
+        //        addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + recentIssue.User.Login);
+        //        var commentsEndPoint = string.Concat(resource, recentIssue.Number, "/comments");
+        //        var request = new RestRequest(commentsEndPoint, Method.POST);
+        //        request.AddHeader("Authorization", "Bearer 6ddf7be25ff5db5522a1a54517f09e41e345726e");
+        //        request.AddHeader("Content-Type", "application/json");
+        //        request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
+        //        client.UserAgent = UserAgent;
+        //        var result = client.Execute<List<GithubPullRequestModel>>(request);
 
-        public string AddLabelDescriptionAsComment(List<Issue> issues, AddComment addComment, string repository, string label)
+        //        LogHelper.Info<GitHubService>($"Adding comment to issue {recentIssue.Number}");
+        //    }
+        //}
+
+        public string AddLabelDescriptionAsComment(List<Issue> issues, AddComment addComment, string repository, string label, PerformContext context)
         {
             // Initialize the request
             var username = ConfigurationManager.AppSettings["GitHubUsername"];
@@ -932,13 +949,13 @@ namespace OurUmbraco.Community.GitHub
                 addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + recentIssue.User.Login);
                 var commentsEndPoint = string.Concat(resource, recentIssue.Number, "/comments");
                 var request = new RestRequest(commentsEndPoint, Method.POST);
-                request.AddHeader("Authorization", "Bearer 1b0cbfb54673f5bbd0747cfaa4bc7004d839e4ab");
+                request.AddHeader("Authorization", "Bearer 9fb688e28f551ab7278b478145648d09cd6ab662");
                 request.AddHeader("Content-Type", "application/json");
                 request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
                 client.UserAgent = UserAgent;
                 var result = client.Execute<List<GithubPullRequestModel>>(request);
 
-                LogHelper.Info<GitHubService>($"Adding comment to issue {recentIssue.Number}");
+                context.WriteLine($"Adding comment to issue {recentIssue.Number}");
           }
 
             return string.Empty;

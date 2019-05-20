@@ -62,6 +62,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateGitHubIssues(null);
             scheduler.GetAllGitHubLabels(null);
             scheduler.UpdateUpForGrabsIssues();
+            scheduler.UpdateAwaitingFeedbackIssues();
 
             //Hangfire jobs for Google Maps aka Radar
             var radarScheduler = new RadarHangfireJobs();

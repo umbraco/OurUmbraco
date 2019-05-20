@@ -96,6 +96,10 @@ namespace OurUmbraco.Our.Services
                 new GitHubCategorizedIssues
                 {
                     SortOrder = 10000, CategoryDescription = "Other", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
+                },
+                new GitHubCategorizedIssues
+                {
+                    SortOrder = 10000, CategoryDescription = "Awaiting Feedback", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
                 }
             };
 
@@ -306,6 +310,7 @@ namespace OurUmbraco.Our.Services
             HqReply,
             PullRequestPending,
             ReplyPending,
+            AwaitingFeedback,
             Other
         }
 
