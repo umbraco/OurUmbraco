@@ -873,9 +873,13 @@ namespace OurUmbraco.Community.GitHub
         }
 
         private Skybrud.Social.GitHub.GitHubService _github;
+        private Skybrud.Social.GitHub.GitHubService _githubBot;
 
         public Skybrud.Social.GitHub.GitHubService GitHubApi => _github
                 ?? (_github = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GitHubAccessToken"]));
+
+        public Skybrud.Social.GitHub.GitHubService GitHubBotApi => _githubBot
+                ?? (_githubBot = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GitHubUmbraBotAccessToken"]));
 
         public void UpdateIssues(PerformContext context, Community.Models.Repository repository)
         {
@@ -1066,7 +1070,7 @@ namespace OurUmbraco.Community.GitHub
             if (UmbracoContext.Current != null) return UmbracoContext.Current;
             var dummyContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
             return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current,
-                new WebSecurity(dummyContext, 
+                new WebSecurity(dummyContext,
                     ApplicationContext.Current),
                     UmbracoConfig.For.UmbracoSettings(),
                     UrlProviderResolver.Current.Providers,
@@ -1082,19 +1086,19 @@ namespace OurUmbraco.Community.GitHub
         /// <returns>An instance of <see cref="AddCommentResult"/>.</returns>
         public AddCommentResult AddCommentToIssue(Issue issue, GitHubAutoReplyType type, string message)
         {
-
             if (issue == null) throw new ArgumentNullException(nameof(type));
-
-            // Need to use this in the future
-            var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubUmbraBotAccessToken"];
 
             JObject body = new JObject
             {
-                {"body", message }
+                { "body", message }
             };
 
+            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
+            if (enableGitHubCommenting == false)
+                return null;
+
             // Use Skybrud.Social to make the request to the GitHub API (it will handle the authentication)
-            var response = GitHubApi.Client.DoHttpPostRequest(issue.CommentsUrl, body);
+            var response = GitHubBotApi.Client.DoHttpPostRequest(issue.CommentsUrl, body);
 
             // Success? Success!!!
             if (response.StatusCode == HttpStatusCode.Created)
@@ -1116,7 +1120,6 @@ namespace OurUmbraco.Community.GitHub
             LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
 
             return new AddCommentResult(response);
-
         }
 
     }
