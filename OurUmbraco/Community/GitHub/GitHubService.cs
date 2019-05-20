@@ -1066,11 +1066,30 @@ namespace OurUmbraco.Community.GitHub
                 if (selectedComment == null)
                     return;
 
-                context.WriteLine($"Selected comment template number {randomCommentIndex}");
-
                 var comment = selectedComment.GetProperty("comment").DataValue.ToString();
                 comment = comment.Replace("{{issueowner}}", "@" + issue.User.Login);
-                AddCommentToIssue(issue, gitHubAutoReplyType, comment);
+
+                context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (with template index {randomCommentIndex}).");
+                var result = AddCommentToIssue(issue, gitHubAutoReplyType, comment);
+                if (result == null)
+                {
+                    bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
+                    var postingEnabled = enableGitHubCommenting ? "enabled" : "disabled";
+                    context.WriteLine($"Didn't post anything enableGitHubCommenting is {postingEnabled}.");
+                }
+                else
+                {
+                    if (result.Success)
+                    {
+                        context.WriteLine($"Comment posted successfully: {result.Response.Body}");
+                    }
+                    else
+                    {
+                        context.SetTextColor(ConsoleTextColor.Red);
+                        context.WriteLine($"Comment post failed: {result.Response.Body}");
+                        context.ResetTextColor();
+                    }
+                }
             }
         }
 
