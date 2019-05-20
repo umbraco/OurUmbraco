@@ -104,14 +104,15 @@ namespace OurUmbraco.Our.Services
                 {
                     SortOrder = 40, CategoryDescription = "Pull Request Pending", CategoryKey = CategoryKey.PullRequestPending, Issues = new List<Issue>()
                 },
-                new GitHubCategorizedIssues
+                 new GitHubCategorizedIssues
                 {
-                    SortOrder = 10000, CategoryDescription = "Other", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
+                    SortOrder = 50, CategoryDescription = "Awaiting Feedback", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
                 },
                 new GitHubCategorizedIssues
                 {
-                    SortOrder = 10000, CategoryDescription = "Awaiting Feedback", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
+                    SortOrder = 10000, CategoryDescription = "Other", CategoryKey = CategoryKey.Other, Issues = new List<Issue>()
                 }
+               
             };
 
 

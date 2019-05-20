@@ -21,7 +21,12 @@
 
         UpForGrabs = 4,
 
-        AwaitingFeedback = 5
+        AwaitingFeedback = 5,
+
+        /// <summary>
+        /// Indicates that an issue has been assigned a state/HqDiscussion label.
+        /// </summary>
+        HqDiscussion = 6
 
     }
 

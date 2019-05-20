@@ -168,6 +168,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MonthInterval(12));
         }
 
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MonthInterval(12));
+        }
+
         public void NotifyUnmergeablePullRequests(PerformContext context)
         {
             var gitHubService = new GitHubService();
