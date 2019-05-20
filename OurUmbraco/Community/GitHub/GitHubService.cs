@@ -1023,6 +1023,15 @@ namespace OurUmbraco.Community.GitHub
             AddGitHubComment(context, awaitingFeedback, GitHubAutoReplyType.AwaitingFeedback);
         }
 
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
+        {
+            var repositoryService = new RepositoryManagementService();
+            var issues = repositoryService.GetAllOpenIssues(false);
+            var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion); 
+            AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
+        }
+        
+
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
         {
             var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
