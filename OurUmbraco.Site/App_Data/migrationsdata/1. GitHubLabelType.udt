@@ -1,0 +1,53 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DocumentType>
+  <Info>
+    <Name>GitHub Label Type</Name>
+    <Alias>gitHubLabelType</Alias>
+    <Icon>icon-conversation-alt color-black</Icon>
+    <Thumbnail>folder.png</Thumbnail>
+    <Description />
+    <AllowAtRoot>False</AllowAtRoot>
+    <IsListView>False</IsListView>
+    <Compositions />
+    <AllowedTemplates />
+    <DefaultTemplate></DefaultTemplate>
+  </Info>
+  <Structure />
+  <GenericProperties>
+    <GenericProperty>
+      <Name>Fire Only Once?</Name>
+      <Alias>fireOnlyOnce</Alias>
+      <Type>Umbraco.TrueFalse</Type>
+      <Definition>92897bc6-a5f3-4ffe-ae27-f2e7e33dda49</Definition>
+      <Tab>Content</Tab>
+      <SortOrder>2</SortOrder>
+      <Mandatory>False</Mandatory>
+      <Description><![CDATA[If this toggle is set to true, the task will only fire once. If false, it can be fired each time an event is triggered.]]></Description>
+    </GenericProperty>
+    <GenericProperty>
+      <Name>Task Alias</Name>
+      <Alias>taskAlias</Alias>
+      <Type>Umbraco.Textbox</Type>
+      <Definition>0cc0eba1-9960-42c9-bf9b-60e150b429ae</Definition>
+      <Tab>Content</Tab>
+      <SortOrder>0</SortOrder>
+      <Mandatory>False</Mandatory>
+    </GenericProperty>
+    <GenericProperty>
+      <Name>GitHub Label Comments</Name>
+      <Alias>gitHubLabelComments</Alias>
+      <Type>Umbraco.NestedContent</Type>
+      <Definition>cf7d5eb5-df52-4e15-980c-c3caa59d43df</Definition>
+      <Tab>Content</Tab>
+      <SortOrder>1</SortOrder>
+      <Mandatory>False</Mandatory>
+    </GenericProperty>
+  </GenericProperties>
+  <Tabs>
+    <Tab>
+      <Id>52</Id>
+      <Caption>Content</Caption>
+      <SortOrder>0</SortOrder>
+    </Tab>
+  </Tabs>
+</DocumentType>

@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DocumentType>
+  <Info>
+    <Name>Git Hub Label Comment</Name>
+    <Alias>gitHubLabelComment</Alias>
+    <Icon>icon-conversation-alt color-black</Icon>
+    <Thumbnail>folder.png</Thumbnail>
+    <Description />
+    <AllowAtRoot>False</AllowAtRoot>
+    <IsListView>False</IsListView>
+    <Compositions />
+    <AllowedTemplates />
+    <DefaultTemplate></DefaultTemplate>
+  </Info>
+  <Structure />
+  <GenericProperties>
+    <GenericProperty>
+      <Name>Comment</Name>
+      <Alias>comment</Alias>
+      <Type>Umbraco.MarkdownEditor</Type>
+      <Definition>1251c96c-185c-4e9b-93f4-b48205573cbd</Definition>
+      <Tab>Content</Tab>
+      <SortOrder>1</SortOrder>
+      <Mandatory>False</Mandatory>
+      <Description><![CDATA[Enter a friendly comment here to post automatically to GitHub when a label is assigned. Use ' ' to frame a GitHub label and {{}} to ensure the GitHub username is pulled from the user's GitHub account.]]></Description>
+    </GenericProperty>
+  </GenericProperties>
+  <Tabs>
+    <Tab>
+      <Id>51</Id>
+      <Caption>Content</Caption>
+      <SortOrder>0</SortOrder>
+    </Tab>
+  </Tabs>
+</DocumentType>

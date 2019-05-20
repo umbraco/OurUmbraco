@@ -5,12 +5,15 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Web.Hosting;
+using System.Xml;
+using System.Xml.Linq;
 using OurUmbraco.NotificationsCore;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
 using Umbraco.Core.PropertyEditors;
+using Umbraco.Web;
 using File = System.IO.File;
 using Macro = umbraco.cms.businesslogic.macro.Macro;
 
@@ -71,6 +74,7 @@ namespace OurUmbraco.Our
             AddBannersPicker();
             AddBannersToCommunityPage();
             RemoveHomeOnlyBannerTextArea();
+            ImportGitHubLabelDocTypes();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -400,7 +404,7 @@ namespace OurUmbraco.Our
             //otherwise create one
             return new ReadOnlyUserGroup(group.Id, group.Name, group.Icon, group.StartContentId, group.StartMediaId, group.Alias, group.AllowedSections, group.Permissions);
         }
-        
+
         private void AddTermsAndConditionsPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1162,6 +1166,55 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void ImportGitHubLabelDocTypes()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                var files = new List<string>();
+                var basePath = HostingEnvironment.MapPath("~/App_Data/migrationsdata/");
+
+                var datatypeFile = basePath + "0. GitHubDataType.xml";
+                var xmlDocument = new XmlDocument { XmlResolver = null };
+                xmlDocument.Load(datatypeFile);
+                var element = XElement.Parse(xmlDocument.InnerXml);
+                var importDataType =
+                    ApplicationContext.Current.Services.PackagingService.ImportDataTypeDefinitions(element, 0);
+                if (importDataType != null)
+                {
+                    files.Add(basePath + "1. GitHubLabelType.udt");
+                    files.Add(basePath + "2. GitHubLabelComment.udt");
+                    files.Add(basePath + "3. GitHubLabelCommentRepository.udt");
+                    foreach (var file in files)
+                    {
+                        xmlDocument = new XmlDocument { XmlResolver = null };
+                        xmlDocument.Load(file);
+
+                        element = XElement.Parse(xmlDocument.InnerXml);
+                        var importContentTypes =
+                            ApplicationContext.Current.Services.PackagingService.ImportContentTypes(element, 0);
+                        var contentType = importContentTypes.FirstOrDefault();
+                        if (contentType != null)
+                        {
+                            //success
+                        }
+                    }
+
+                    string[] lines = { "" };
+                    File.WriteAllLines(path, lines);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
         private void AddCommunityCalendarDocType()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -1542,7 +1595,7 @@ namespace OurUmbraco.Our
                 var rootContent = contentService.GetRootContent().FirstOrDefault();
 
                 if (rootContent != null)
-                { 
+                {
                     var teamUmbracoPage = rootContent.Children().FirstOrDefault(x => x.Name == contentItemName);
                     if (teamUmbracoPage != null)
                     {
@@ -1566,7 +1619,7 @@ namespace OurUmbraco.Our
 
                             var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                             var textPageContentType = contentTypeService.GetContentType("TextPage");
-                            var allowedTemplates = new List<ITemplate> {template};
+                            var allowedTemplates = new List<ITemplate> { template };
                             allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
                             textPageContentType.AllowedTemplates = allowedTemplates;
                             contentTypeService.Save(textPageContentType);
@@ -1630,7 +1683,7 @@ namespace OurUmbraco.Our
 
                             var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                             var textPageContentType = contentTypeService.GetContentType("TextPage");
-                            var allowedTemplates = new List<ITemplate> {template};
+                            var allowedTemplates = new List<ITemplate> { template };
                             allowedTemplates.AddRange(textPageContentType.AllowedTemplates);
                             textPageContentType.AllowedTemplates = allowedTemplates;
                             contentTypeService.Save(textPageContentType);
