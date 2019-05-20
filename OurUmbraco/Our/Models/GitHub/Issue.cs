@@ -5,8 +5,19 @@ namespace OurUmbraco.Our.Models.GitHub
 {
     public class Issue
     {
+
+        [JsonProperty("url")]
+        public string Url { get; set; }
+
+        public string RepoOwner => Url.Split('/')[4];
+
+        public string RepoSlug => Url.Split('/')[5];
+
         [JsonProperty("html_url")]
         public string Link { get; set; }
+
+        [JsonProperty("comments_url")]
+        public string CommentsUrl { get; set; }
 
         [JsonProperty("number")]
         public int Number { get; set; }
@@ -69,5 +80,12 @@ namespace OurUmbraco.Our.Models.GitHub
         //public User assignee { get; set; }
         //public object milestone { get; set; }
         //public string author_association { get; set; }
+
+
+        /// <summary>
+        /// Gets whether the issue is a pull request.
+        /// </summary>
+        public bool IsPr => Link?.Contains("/pull/") ?? false;
+
     }
 }

@@ -173,6 +173,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
         }
+        public void CheckContributorBadge(PerformContext context)
+        {
+            var contributors = new ContributorBadgeService();
+            RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
+        }
+
     }
 
     public class ReminderTopic

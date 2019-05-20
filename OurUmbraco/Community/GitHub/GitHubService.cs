@@ -19,11 +19,14 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
+using OurUmbraco.Community.GitHub.Models.Comments;
 using OurUmbraco.Community.Models;
 using OurUmbraco.Our.Models.GitHub;
+using OurUmbraco.Our.Models.GitHub.AutoReplies;
 using OurUmbraco.Our.Services;
 using RestSharp;
 using Skybrud.Essentials.Json;
+using Skybrud.Essentials.Json.Extensions;
 using Skybrud.Essentials.Time;
 using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
@@ -1071,6 +1074,50 @@ namespace OurUmbraco.Community.GitHub
             var dummyContext = new HttpContextWrapper(new System.Web.HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
             return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current, new WebSecurity(dummyContext, ApplicationContext.Current), false);
         }
+
+        /// <summary>
+        /// Attempts to add a new comment to <see cref="issue"/> (which may either be an issue or a PR).
+        /// </summary>
+        /// <param name="issue">The issue to which the comment will be added.</param>
+        /// <param name="type">The type of the message. This ensures that we later can check whether this type of message already been sent.</param>
+        /// <param name="message"></param>
+        /// <returns>An instance of <see cref="AddCommentResult"/>.</returns>
+        public AddCommentResult AddCommentToIssue(Issue issue, GitHubAutoReplyType type, string message)
+        {
+
+            if (issue == null) throw new ArgumentNullException(nameof(type));
+
+            JObject body = new JObject
+            {
+                {"body", message }
+            };
+
+            // Use Skybrud.Social to make the request to the GitHub API (it will handle the authentication)
+            var response = GitHubApi.Client.DoHttpPostRequest(issue.CommentsUrl, body);
+
+            // Success? Success!!!
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+
+                // Parse the response body into a JObject
+                JObject responseBody = JObject.Parse(response.Body);
+
+                // Get the ID if the comment
+                long commentId = responseBody.GetInt64("id");
+
+                // Add an entry to the database so we know that we've sent the comment
+                GitHubAutoReply.AddReply(issue.RepoSlug, issue.Number, type, commentId);
+
+                return new AddCommentResult(response);
+
+            }
+
+            LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
+
+            return new AddCommentResult(response);
+
+        }
+
     }
 
     public class PullRequestMember

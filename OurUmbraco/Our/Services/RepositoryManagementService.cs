@@ -2,19 +2,26 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Web.Hosting;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
+using OurUmbraco.Our.Models.GitHub.AutoReplies;
+using Skybrud.Essentials.Json.Extensions;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
+using File = System.IO.File;
 
 namespace OurUmbraco.Our.Services
 {
+
     public class RepositoryManagementService
     {
         private static readonly string IssuesBaseDirectory = HostingEnvironment.MapPath("~/App_Data/TEMP/GitHub/");
 
-        public List<Issue> GetAllCommunityIssues(bool pulls)
+        public List<Issue> GetAllCommunityIssues(bool pulls, DateTime? since = null)
         {
             var issues = new List<Issue>();
 
@@ -44,6 +51,10 @@ namespace OurUmbraco.Our.Services
 
                 foreach (var file in issueFiles)
                 {
+
+                    // Skip the file if older than the specified timestamp
+                    if (since != null && File.GetLastWriteTimeUtc(file) < since.Value) continue;
+
                     var fileContent = File.ReadAllText(file);
                     var item = JsonConvert.DeserializeObject<Issue>(fileContent);
 
