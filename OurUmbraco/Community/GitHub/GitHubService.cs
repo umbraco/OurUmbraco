@@ -6,7 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using Examine;
@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
 using OurUmbraco.Community.Models;
+using OurUmbraco.Our.Models.GitHub;
 using OurUmbraco.Our.Services;
 using RestSharp;
 using Skybrud.Essentials.Json;
@@ -28,14 +29,21 @@ using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
+using Umbraco.Core;
 using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Web.Security;
+using File = System.IO.File;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
+using Task = System.Threading.Tasks.Task;
 
 namespace OurUmbraco.Community.GitHub
 {
     public class GitHubService
     {
+        private readonly Random random = new Random();
+
         private const string RepositoryOwner = "Umbraco";
         private const string GitHubApiClient = "https://api.github.com";
         private const string UserAgent = "OurUmbraco";
@@ -991,6 +999,78 @@ namespace OurUmbraco.Community.GitHub
                 context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
             }
         }
+
+        public void AddCommentToUpForGrabsIssues(PerformContext context)
+        {
+            var repositoryService = new RepositoryManagementService();
+            var issues = repositoryService.GetAllOpenIssues(false);
+            var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
+            AddLabelDescriptionAsComment(context, upForGrabsIssues, "up for grabs".ToLowerInvariant());
+        }
+
+        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
+        {
+            var repositoryService = new RepositoryManagementService();
+            var issues = repositoryService.GetAllOpenIssues(false);
+            var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
+            AddLabelDescriptionAsComment(context, awaitingFeedback, "awaiting feedback".ToLowerInvariant());
+        }
+
+        private void AddLabelDescriptionAsComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, string taskAlias)
+        {
+            if (categorizedIssues == null || categorizedIssues.Issues.Any() == false)
+                return;
+
+            var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
+
+            var labelType = umbracoHelper
+                .TypedContentSingleAtXPath("//gitHubLabelCommentRepository")
+                .Children(c => c.GetPropertyValue<string>("taskAlias").ToLowerInvariant() == taskAlias);
+
+            if (labelType == null)
+                return;
+
+            var actionNode = labelType.FirstOrDefault();
+            var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
+            
+
+            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184 && x.RepositoryName == "Umbraco-CMS"))
+            {
+                var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
+                var selectedComment = friendlyComments[randomCommentIndex];
+
+                if (selectedComment == null)
+                    return;
+
+                var addComment = new AddComment { CommentBody = selectedComment.GetProperty("comment").DataValue.ToString() };
+
+                var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubUmbraBotAccessToken"];
+
+                // Initialize the request
+                var username = ConfigurationManager.AppSettings["GitHubUsername"];
+                var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, gitHubAccessToken) };
+                var resource = $"/repos/{RepositoryOwner}/{issue.RepositoryName}/issues/";
+
+                addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + issue.User.Login);
+                var commentsEndPoint = string.Concat(resource, issue.Number, "/comments");
+                var request = new RestRequest(commentsEndPoint, Method.POST);
+                request.AddHeader("Authorization", $"Bearer {gitHubAccessToken}");
+                request.AddHeader("Content-Type", "application/json");
+                request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
+                client.UserAgent = UserAgent;
+                var result = client.Execute<List<GithubPullRequestModel>>(request);
+
+                context.WriteLine($"Added comment to issue [{issue.RepositoryName}/{issue.Number}]");
+            }
+
+        }
+
+        private UmbracoContext EnsureUmbracoContext()
+        {
+            if (UmbracoContext.Current != null) return UmbracoContext.Current;
+            var dummyContext = new HttpContextWrapper(new System.Web.HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current, new WebSecurity(dummyContext, ApplicationContext.Current), false);
+        }
     }
 
     public class PullRequestMember
@@ -1055,5 +1135,22 @@ namespace OurUmbraco.Community.GitHub
         public List<Label> Categories { get; set; }
         public List<Label> RequiredLabels { get; set; }
         public List<Label> RogueLabels { get; set; }
+    }
+
+
+    // From: https://stackoverflow.com/a/11473510/5018
+    public static class StaticRandom
+    {
+        private static int seed;
+
+        private static ThreadLocal<Random> threadLocal = new ThreadLocal<Random>
+            (() => new Random(Interlocked.Increment(ref seed)));
+
+        static StaticRandom()
+        {
+            seed = Environment.TickCount;
+        }
+
+        public static Random Instance { get { return threadLocal.Value; } }
     }
 }

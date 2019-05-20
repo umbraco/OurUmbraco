@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
+using System.Web;
 using System.Web.Hosting;
 using Examine;
 using Hangfire;
@@ -13,8 +15,12 @@ using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
+using Tweetinvi.Core.Events;
 using Umbraco.Core;
+using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
+using Umbraco.Web;
+using Umbraco.Web.Security;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
@@ -107,12 +113,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var service = new CommunityVideosService();
             service.UpdateYouTubePlaylistVideos();
         }
-        
+
         public void GetGitHubPullRequests()
         {
             RecurringJob.AddOrUpdate(() => UpdatePullRequests(), Cron.HourInterval(1));
         }
-        
+
         public void UpdatePullRequests()
         {
             var service = new GitHubService();
@@ -125,13 +131,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var karmaService = new KarmaService();
             RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
         }
-        
+
         public void GenerateReleasesCache(PerformContext context)
         {
             var releasesService = new ReleasesService();
             RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
         }
-        
+
         public void UpdateGitHubIssues(PerformContext context)
         {
             var repoManagementService = new RepositoryManagementService();
@@ -143,11 +149,23 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
             }
         }
-        
+
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
+        }
+
+        public void AddCommentToUpForGrabsIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MonthInterval(12));
+        }
+
+        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MonthInterval(12));
         }
 
         public void NotifyUnmergeablePullRequests(PerformContext context)
