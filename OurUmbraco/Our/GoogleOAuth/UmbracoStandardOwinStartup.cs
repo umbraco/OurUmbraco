@@ -66,7 +66,9 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.NotifyUnmergeablePullRequests(null);
             scheduler.PostHotCMSIssueToSlack(null);
             scheduler.PostHotCMSPullRequestsToSlack(null);
-
+            scheduler.AddCommentToStateHQDiscussionIssues(null);
+            scheduler.CheckContributorBadge(null);
+			
             //Hangfire jobs for Google Maps aka Radar
             var radarScheduler = new RadarHangfireJobs();
             radarScheduler.FindSignals();

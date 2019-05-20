@@ -4,6 +4,10 @@ namespace OurUmbraco.Our.Models.GitHub
 {
     public class User
     {
+
+        [JsonProperty("id")]
+        public int Id { get; set; }
+
         [JsonProperty("login")]
         public string Login { get; set; }
 

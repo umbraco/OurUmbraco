@@ -168,6 +168,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MonthInterval(12));
         }
 
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MonthInterval(12));
+        }
+
         public void NotifyUnmergeablePullRequests(PerformContext context)
         {
             var gitHubService = new GitHubService();
@@ -179,11 +185,18 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.PostHotTopicIssueToSlack(context, "Umbraco-CMS", "#hot-topics"), Cron.MonthInterval(12));
         }
+		
         public void PostHotCMSPullRequestsToSlack(PerformContext context)
         {
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.PostHotCMSPullRequestsToSlack(context, "Umbraco-CMS", "#hot-topics"), Cron.MonthInterval(12));
         }
+		
+        public void CheckContributorBadge(PerformContext context)
+        {
+            var contributors = new ContributorBadgeService();
+            RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
+        }		
     }
 
     public class ReminderTopic

@@ -21,7 +21,9 @@ namespace OurUmbraco.Our.Models.GitHub
 
         //public DateTime updated_at { get; set; }
         //public string author_association { get; set; }
+
         [JsonProperty("body")]
-        public string CommentBody { get; set; }
+        public string Body { get; set; }
+
     }
 }

@@ -1,24 +1,4 @@
-﻿using Examine;
-using Examine.LuceneEngine.SearchCriteria;
-using GraphQL.Client;
-using GraphQL.Common.Request;
-using Hangfire.Console;
-using Hangfire.Server;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OurUmbraco.Community.GitHub.Models;
-using OurUmbraco.Community.GitHub.Models.Cached;
-using OurUmbraco.Community.Models;
-using OurUmbraco.Our.Models.GitHub;
-using OurUmbraco.Our.Services;
-using RestSharp;
-using Skybrud.Essentials.Json;
-using Skybrud.Essentials.Time;
-using Skybrud.Social.GitHub.Exceptions;
-using Skybrud.Social.GitHub.Options;
-using Skybrud.Social.GitHub.Options.Issues;
-using Skybrud.Social.GitHub.Responses.Issues;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.IO;
@@ -29,10 +9,37 @@ using System.Threading;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
+using AngleSharp.Css.Values;
+using Examine;
+using Examine.LuceneEngine.SearchCriteria;
+using GraphQL.Client;
+using GraphQL.Common.Request;
+using Hangfire.Console;
+using Hangfire.Server;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using OurUmbraco.Community.GitHub.Models;
+using OurUmbraco.Community.GitHub.Models.Cached;
+using OurUmbraco.Community.GitHub.Models.Comments;
+using OurUmbraco.Community.Models;
+using OurUmbraco.Our.Models.GitHub;
+using OurUmbraco.Our.Models.GitHub.AutoReplies;
+using OurUmbraco.Our.Services;
+using RestSharp;
+using Skybrud.Essentials.Json;
+using Skybrud.Essentials.Json.Extensions;
+using Skybrud.Essentials.Time;
+using Skybrud.Social.GitHub.Exceptions;
+using Skybrud.Social.GitHub.Options;
+using Skybrud.Social.GitHub.Options.Issues;
+using Skybrud.Social.GitHub.Responses.Issues;
 using Umbraco.Core;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
+using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
 using File = System.IO.File;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
@@ -867,9 +874,13 @@ namespace OurUmbraco.Community.GitHub
         }
 
         private Skybrud.Social.GitHub.GitHubService _github;
+        private Skybrud.Social.GitHub.GitHubService _githubBot;
 
         public Skybrud.Social.GitHub.GitHubService GitHubApi => _github
                 ?? (_github = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GitHubAccessToken"]));
+
+        public Skybrud.Social.GitHub.GitHubService GitHubBotApi => _githubBot
+                ?? (_githubBot = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(WebConfigurationManager.AppSettings["GitHubUmbraBotAccessToken"]));
 
         public void UpdateIssues(PerformContext context, Community.Models.Repository repository)
         {
@@ -1006,7 +1017,7 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-            AddLabelDescriptionAsComment(context, upForGrabsIssues, "up for grabs".ToLowerInvariant());
+            AddGitHubComment(context, upForGrabsIssues, GitHubAutoReplyType.UpForGrabs);
         }
 
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
@@ -1014,7 +1025,7 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
-            AddLabelDescriptionAsComment(context, awaitingFeedback, "awaiting feedback".ToLowerInvariant());
+            AddGitHubComment(context, awaitingFeedback, GitHubAutoReplyType.AwaitingFeedback);
         }
 
         public void PostHotTopicIssueToSlack(PerformContext context, string repositoryName, string slackChannel)
@@ -1083,62 +1094,135 @@ namespace OurUmbraco.Community.GitHub
             }
         }
 
-        private void AddLabelDescriptionAsComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, string taskAlias)
+
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
         {
+            var repositoryService = new RepositoryManagementService();
+            var issues = repositoryService.GetAllOpenIssues(false);
+            var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion); 
+            AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
+        }
+
+
+        private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
+        {
+            var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
             if (categorizedIssues == null || categorizedIssues.Issues.Any() == false)
+            {
+                context.WriteLine($"No issues to process for task alias {taskAlias}");
                 return;
+            }
 
             var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
 
-            var labelType = umbracoHelper
+            var actionNode = umbracoHelper
                 .TypedContentSingleAtXPath("//gitHubLabelCommentRepository")
-                .Children(c => c.GetPropertyValue<string>("taskAlias").ToLowerInvariant() == taskAlias);
+                .Children(c => c.GetPropertyValue<string>("taskAlias").ToLowerInvariant() == taskAlias)
+                .FirstOrDefault();
 
-            if (labelType == null)
+            if (actionNode == null)
                 return;
 
-            var actionNode = labelType.FirstOrDefault();
+            context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
+
             var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
+            
+            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
+            if (enableGitHubCommenting == false)
+            {
+                context.SetTextColor(ConsoleTextColor.Yellow);
+                context.WriteLine($"NOTE: `enableGitHubCommenting` is disabled, nothing will actually be posted.");
+                context.ResetTextColor();
+            }
 
-
-            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184 && x.RepositoryName == "Umbraco-CMS"))
+            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184))
             {
                 var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
                 var selectedComment = friendlyComments[randomCommentIndex];
-
                 if (selectedComment == null)
                     return;
 
-                var addComment = new AddComment { CommentBody = selectedComment.GetProperty("comment").DataValue.ToString() };
+                var comment = selectedComment.GetProperty("comment").DataValue.ToString();
+                comment = comment.Replace("{{issueowner}}", "@" + issue.User.Login);
 
-                var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubUmbraBotAccessToken"];
+                context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (template index {randomCommentIndex}`).");
 
-                // Initialize the request
-                var username = ConfigurationManager.AppSettings["GitHubUsername"];
-                var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, gitHubAccessToken) };
-                var resource = $"/repos/{RepositoryOwner}/{issue.RepositoryName}/issues/";
-
-                addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + issue.User.Login);
-                var commentsEndPoint = string.Concat(resource, issue.Number, "/comments");
-                var request = new RestRequest(commentsEndPoint, Method.POST);
-                request.AddHeader("Authorization", $"Bearer {gitHubAccessToken}");
-                request.AddHeader("Content-Type", "application/json");
-                request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
-                client.UserAgent = UserAgent;
-                var result = client.Execute<List<GithubPullRequestModel>>(request);
-
-                context.WriteLine($"Added comment to issue [{issue.RepositoryName}/{issue.Number}]");
+                var result = AddCommentToIssue(issue, gitHubAutoReplyType, comment);
+                if (result != null)
+                {
+                    if (result.Success)
+                    {
+                        context.WriteLine($"Comment posted successfully");
+                    }
+                    else
+                    {
+                        context.SetTextColor(ConsoleTextColor.Red);
+                        context.WriteLine($"Comment post failed: {result.Response.Body}");
+                        context.ResetTextColor();
+                    }
+                }
             }
-
         }
 
         private UmbracoContext EnsureUmbracoContext()
         {
             if (UmbracoContext.Current != null) return UmbracoContext.Current;
-            var dummyContext = new HttpContextWrapper(new System.Web.HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current, new WebSecurity(dummyContext, ApplicationContext.Current), false);
+            var dummyContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
+            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current,
+                new WebSecurity(dummyContext,
+                    ApplicationContext.Current),
+                    UmbracoConfig.For.UmbracoSettings(),
+                    UrlProviderResolver.Current.Providers,
+                    false);
         }
+
+        /// <summary>
+        /// Attempts to add a new comment to <see cref="issue"/> (which may either be an issue or a PR).
+        /// </summary>
+        /// <param name="issue">The issue to which the comment will be added.</param>
+        /// <param name="type">The type of the message. This ensures that we later can check whether this type of message already been sent.</param>
+        /// <param name="message"></param>
+        /// <returns>An instance of <see cref="AddCommentResult"/>.</returns>
+        public AddCommentResult AddCommentToIssue(Issue issue, GitHubAutoReplyType type, string message)
+        {
+            if (issue == null) throw new ArgumentNullException(nameof(type));
+
+            JObject body = new JObject
+            {
+                { "body", message }
+            };
+
+            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
+            if (enableGitHubCommenting == false)
+                return null;
+
+            // Use Skybrud.Social to make the request to the GitHub API (it will handle the authentication)
+            var response = GitHubBotApi.Client.DoHttpPostRequest(issue.CommentsUrl, body);
+
+            // Success? Success!!!
+            if (response.StatusCode == HttpStatusCode.Created)
+            {
+
+                // Parse the response body into a JObject
+                JObject responseBody = JObject.Parse(response.Body);
+
+                // Get the ID if the comment
+                long commentId = responseBody.GetInt64("id");
+
+                // Add an entry to the database so we know that we've sent the comment
+                GitHubAutoReply.AddReply(issue.RepoSlug, issue.Number, type, commentId);
+
+                return new AddCommentResult(response);
+
+            }
+
+            LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
+
+            return new AddCommentResult(response);
+        }
+
     }
+
 
     public class PullRequestMember
     {
