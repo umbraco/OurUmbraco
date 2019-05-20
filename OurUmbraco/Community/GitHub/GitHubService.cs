@@ -1030,6 +1030,10 @@ namespace OurUmbraco.Community.GitHub
 
         public void PostHotTopicIssueToSlack(PerformContext context, string repositoryName, string slackChannel)
         {
+            var hopTopicMarkersPath = HostingEnvironment.MapPath(HopTopicMarkersPath);
+            if (Directory.Exists(hopTopicMarkersPath) == false)
+                Directory.CreateDirectory(hopTopicMarkersPath);
+
             var repositoryService = new RepositoryManagementService();
             var slackService = new SlackService();
             var issues = repositoryService.GetAllCommunityIssues(false);
@@ -1038,31 +1042,35 @@ namespace OurUmbraco.Community.GitHub
             foreach (var hotIssue in hotIssues)
             {
                 var path = HostingEnvironment.MapPath(HopTopicMarkersPath + hotIssue.Number + ".txt");
-                if (!File.Exists(path))
+                if (File.Exists(path))
+                    continue;
+
+                var createTime = hotIssue.CreateDateTime;
+                var updateTime = hotIssue.Comments.Last().CreateDateTime;
+                if (!(updateTime.Subtract(createTime).TotalMinutes <= 420))
+                    continue;
+
+                var post = string.Format($"Issue title: *{hotIssue.Title}*\nLink to issue: https://github.com/umbraco/{repositoryName}/issues/{hotIssue.Number}");
+                try
                 {
-                    var createTime = hotIssue.CreateDateTime;
-                    var updateTime = hotIssue.Comments.Last().CreateDateTime;
-                    if (updateTime.Subtract(createTime).TotalMinutes <= 420)
-                    {
-                        var post = string.Format($"Issue title: *{hotIssue.Title}*\nLink to issue: https://github.com/umbraco/{repositoryName}/issues/{hotIssue.Number}");
-                        try
-                        {
-                            slackService.SendSlackNotification(post, slackChannel);
-                            string[] lines = { "" };
-                            File.WriteAllLines(path, lines);
-                            context.WriteLine($"Slack notification sent for {hotIssue.Number}");
-                        }
-                        catch (Exception)
-                        {
-                            context.WriteLine($"Failed to send slack notification for {hotIssue.Number}");
-                        }
-                    }
+                    var result = slackService.SendSlackNotification(post, slackChannel);
+                    string[] lines = { "" };
+                    File.WriteAllLines(path, lines);
+                    context.WriteLine($"Slack notification sent for {hotIssue.Number}");
+                }
+                catch (Exception ex)
+                {
+                    context.WriteLine($"Failed to send slack notification for {hotIssue.Number} - {ex.Message}");
                 }
             }
         }
 
         public void PostHotCMSPullRequestsToSlack(PerformContext context, string repositoryName, string slackChannel)
         {
+            var hopTopicMarkersPath = HostingEnvironment.MapPath(HopTopicMarkersPath);
+            if (Directory.Exists(hopTopicMarkersPath) == false)
+                Directory.CreateDirectory(hopTopicMarkersPath);
+
             var repositoryService = new RepositoryManagementService();
             var slackService = new SlackService();
             var pullRequests = repositoryService.GetAllCommunityIssues(true);
@@ -1093,7 +1101,6 @@ namespace OurUmbraco.Community.GitHub
                 }
             }
         }
-
 
         public void AddCommentToStateHQDiscussionIssues(PerformContext context)
         {

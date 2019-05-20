@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
+﻿using System.Collections.Specialized;
 using System.Configuration;
 using System.Net;
 
@@ -8,7 +6,7 @@ namespace OurUmbraco.Our.Services
 {
    public class SlackService
     {
-        public void SendSlackNotification(string post, string slackChannel = null)
+        public string SendSlackNotification(string post, string slackChannel = null)
         {
             using (var client = new WebClient())
             {
@@ -26,7 +24,7 @@ namespace OurUmbraco.Our.Services
                 
                     var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
                     var response = client.Encoding.GetString(data);
-               
+                    return response;
             }
         }
     }
