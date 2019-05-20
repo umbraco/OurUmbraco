@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+  <DataTypes>
+    <DataType Name="GitHub Label Comments" Id="Umbraco.NestedContent" Definition="cf7d5eb5-df52-4e15-980c-c3caa59d43df" DatabaseType="Ntext">
+      <PreValues>
+        <PreValue Id="386" Value="[&#xD;&#xA;  {&#xD;&#xA;    &quot;ncAlias&quot;: &quot;gitHubLabelComment&quot;,&#xD;&#xA;    &quot;ncTabAlias&quot;: &quot;Content&quot;,&#xD;&#xA;    &quot;nameTemplate&quot;: &quot;Friendly comment&quot;&#xD;&#xA;  }&#xD;&#xA;]" Alias="contentTypes" SortOrder="0" />
+        <PreValue Id="387" Value="0" Alias="minItems" SortOrder="1" />
+        <PreValue Id="388" Value="0" Alias="maxItems" SortOrder="2" />
+        <PreValue Id="389" Value="1" Alias="confirmDeletes" SortOrder="3" />
+        <PreValue Id="390" Value="1" Alias="showIcons" SortOrder="4" />
+        <PreValue Id="391" Value="0" Alias="hideLabel" SortOrder="5" />
+      </PreValues>
+    </DataType>
+  </DataTypes>

@@ -1,0 +1,15 @@
+query ($cursor: String, $repository: String!) {
+  repository(owner: "umbraco", name: $repository) {
+    pullRequests(first: 100, after: $cursor, orderBy: {field: CREATED_AT, direction: ASC}, states: OPEN) {
+      edges {
+        node {
+          number
+          mergeable
+        }
+      }
+      pageInfo {
+        endCursor
+      }
+    }
+  }
+}

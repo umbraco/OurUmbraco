@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DocumentType>
+  <Info>
+    <Name>Github Label Comment Repository</Name>
+    <Alias>gitHubLabelCommentRepository</Alias>
+    <Icon>icon-umb-settings color-black</Icon>
+    <Thumbnail>folder.png</Thumbnail>
+    <Description />
+    <AllowAtRoot>True</AllowAtRoot>
+    <IsListView>False</IsListView>
+    <Compositions />
+    <AllowedTemplates />
+    <DefaultTemplate></DefaultTemplate>
+  </Info>
+  <Structure>
+    <DocumentType>gitHubLabelType</DocumentType>
+  </Structure>
+  <GenericProperties />
+  <Tabs />
+</DocumentType>

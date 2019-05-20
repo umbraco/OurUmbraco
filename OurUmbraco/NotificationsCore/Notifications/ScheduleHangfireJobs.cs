@@ -1,21 +1,21 @@
-﻿using Examine;
-using Hangfire;
-using Hangfire.Server;
-using Newtonsoft.Json;
-using OurUmbraco.Community.BlogPosts;
-using OurUmbraco.Community.GitHub;
-using OurUmbraco.Community.Karma;
-using OurUmbraco.Community.Videos;
-using OurUmbraco.Our.Services;
-using OurUmbraco.Videos;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Web;
 using System.Web.Hosting;
-using umbraco;
+using Examine;
+using Hangfire;
+using Hangfire.Server;
+using Newtonsoft.Json;
+using OurUmbraco.Community.GitHub;
+using OurUmbraco.Community.BlogPosts;
+using OurUmbraco.Community.Karma;
+using OurUmbraco.Community.Videos;
+using OurUmbraco.Our.Services;
+using OurUmbraco.Videos;
+using Tweetinvi.Core.Events;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
@@ -56,16 +56,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void UpdateMeetupStats()
         {
             RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.MinuteInterval(15));
-        }
-
-        public void UpdateUpForGrabsIssues()
-        {
-            RecurringJob.AddOrUpdate(() => AddCommentToUpForGrabsIssues(), Cron.HourInterval(100));
-        }
-
-        public void UpdateAwaitingFeedbackIssues()
-        {
-            RecurringJob.AddOrUpdate(() => AddCommentToAwaitingFeedbackIssues(), Cron.HourInterval(100));
         }
 
         public void UpdateGitHubContributorsJsonFile()
@@ -150,9 +140,8 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateGitHubIssues(PerformContext context)
         {
-            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
-            var fileContent = System.IO.File.ReadAllText(configFile);
-            var repositories = JsonConvert.DeserializeObject<List<Community.Models.Repository>>(fileContent);
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
 
             var gitHubService = new GitHubService();
             foreach (var repository in repositories)
@@ -164,82 +153,25 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(48));
+            RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
         }
 
         public void AddCommentToUpForGrabsIssues(PerformContext context)
         {
-            var repositoryService = new RepositoryManagementService();
-            var issues = repositoryService.GetAllOpenIssues(false);
-            var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-            if (upForGrabsIssues != null && upForGrabsIssues.Issues.Count > 0)
-            {
-                var recentIssues = upForGrabsIssues.Issues.FindAll(i => i.RepositoryName == "Umbraco-CMS" && i.Number == 5184); //i.UpdateDateTime < DateTime.Now.AddMinutes(-60));
-                var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
-
-                var upForGrabsLabelType = umbracoHelper.TypedContentSingleAtXPath("//gitHubLabelCommentRepository").Children(c => c.GetPropertyValue<string>("taskAlias").ToLower() == "up for grabs");
-                if (upForGrabsLabelType != null)
-                {
-                    var upForGrabsNode = upForGrabsLabelType.FirstOrDefault();
-                    var friendlyComments = upForGrabsNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
-
-                    Random rnd = new Random();
-                    int randomCommentIndex = rnd.Next(friendlyComments.Count());
-                    var selectedComment = friendlyComments[randomCommentIndex];
-
-                    if (selectedComment != null)
-                    {
-                        var addComment = new Our.Models.GitHub.AddComment { CommentBody = selectedComment.GetProperty("comment").DataValue.ToString() };
-                        var service = new GitHubService();
-                        service.AddLabelDescriptionAsComment(recentIssues, addComment, "Umbraco-cms", "Up For Grabs", context);
-                    }
-
-                }
-
-            }
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MonthInterval(12));
         }
 
-        public void AddCommentToAwaitingFeedbackIssues()
+        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
         {
-            var repositoryService = new RepositoryManagementService();
-            var issues = repositoryService.GetAllOpenIssues(false);
-            var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
-            if (awaitingFeedback != null && awaitingFeedback.Issues.Count > 0)
-            {
-                var recentIssues = awaitingFeedback.Issues.FindAll(i => i.RepositoryName == "Umbraco-CMS" && i.Number == 5184); //i.UpdateDateTime < DateTime.Now.AddMinutes(-60));
-                var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
-                var labelDescription = umbracoHelper.TypedContentSingleAtXPath("//githubLabelCommentTemplates").GetProperty("awaitingFeedback").DataValue;
-                var addComment = new Our.Models.GitHub.AddComment { CommentBody = labelDescription.ToString() };
-                var service = new GitHubService();
-                service.AddLabelDescriptionAsComment(recentIssues, addComment, "Umbraco-cms", "Awaiting Feedback");
-
-            }
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MonthInterval(12));
         }
 
-        //public void CloseCommentAwaitingFeedbacckExpired()
-        //{
-        //    var repositoryService = new RepositoryManagementService();
-        //    var issues = repositoryService.GetAllOpenIssues(false);
-        //    var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
-
-        //    if (awaitingFeedback != null && awaitingFeedback.Issues.Count > 0)
-        //    {
-        //        var expiredIssues = awaitingFeedback.Issues.FindAll(i => i.Comments. == "Umbraco-CMS" && i.Number == 5184); //i.UpdateDateTime < DateTime.Now.AddMinutes(-60));
-        //        var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
-        //        var labelDescription = umbracoHelper.TypedContentSingleAtXPath("//githubLabelCommentTemplates").GetProperty("awaitingFeedback").DataValue;
-        //        var addComment = new Our.Models.GitHub.AddComment { CommentBody = labelDescription.ToString() };
-        //        var service = new GitHubService();
-        //        service.AddLabelDescriptionAsComment(recentIssues, addComment, "Umbraco-cms", "Awaiting Feedback");
-        //        service.
-
-        //    }
-        //}
-
-        private UmbracoContext EnsureUmbracoContext()
+        public void NotifyUnmergeablePullRequests(PerformContext context)
         {
-            if (UmbracoContext.Current != null) return UmbracoContext.Current;
-            var dummyContext = new HttpContextWrapper(new System.Web.HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current, new WebSecurity(dummyContext, ApplicationContext.Current), false);
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
         }
     }
 
