@@ -9,6 +9,7 @@ using System.Threading;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
+using AngleSharp.Css.Values;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using GraphQL.Client;
@@ -1005,7 +1006,7 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-            AddLabelDescriptionAsComment(context, upForGrabsIssues, "up for grabs".ToLowerInvariant());
+            AddGitHubComment(context, upForGrabsIssues, "up for grabs".ToLowerInvariant());
         }
 
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
@@ -1013,28 +1014,34 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
-            AddLabelDescriptionAsComment(context, awaitingFeedback, "awaiting feedback".ToLowerInvariant());
+            AddGitHubComment(context, awaitingFeedback, "awaiting feedback".ToLowerInvariant());
         }
 
-        private void AddLabelDescriptionAsComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, string taskAlias)
+        private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, string taskAlias)
         {
+
             if (categorizedIssues == null || categorizedIssues.Issues.Any() == false)
+            {
+                context.WriteLine($"No issues to process for task alias {taskAlias}");
                 return;
+            }
 
             var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
 
             var labelType = umbracoHelper
                 .TypedContentSingleAtXPath("//gitHubLabelCommentRepository")
                 .Children(c => c.GetPropertyValue<string>("taskAlias").ToLowerInvariant() == taskAlias);
-
+            
             if (labelType == null)
                 return;
 
             var actionNode = labelType.FirstOrDefault();
+            context.WriteLine($"Found node {actionNode.Id} - {actionNode.Name}");
+
             var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
             
-
-            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184 && x.RepositoryName == "Umbraco-CMS"))
+            //foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184 && x.RepositoryName == "Umbraco-CMS"))
+            foreach (var issue in categorizedIssues.Issues)
             {
                 var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
                 var selectedComment = friendlyComments[randomCommentIndex];
@@ -1059,8 +1066,16 @@ namespace OurUmbraco.Community.GitHub
                 request.AddParameter("undefined", JsonConvert.SerializeObject(addComment), ParameterType.RequestBody);
                 client.UserAgent = UserAgent;
                 var result = client.Execute<List<GithubPullRequestModel>>(request);
-
-                context.WriteLine($"Added comment to issue [{issue.RepositoryName}/{issue.Number}]");
+                if (result.StatusCode == HttpStatusCode.OK)
+                {
+                    context.WriteLine($"Added comment to issue [{issue.RepositoryName}/{issue.Number}]");
+                }
+                else
+                {
+                    context.SetTextColor(ConsoleTextColor.Red);
+                    context.WriteLine($"Error adding comment to issue [{issue.RepositoryName}/{issue.Number}] - error: {result.ErrorMessage}");
+                    context.ResetTextColor();
+                }
             }
 
         }
