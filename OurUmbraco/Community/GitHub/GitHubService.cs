@@ -1048,8 +1048,7 @@ namespace OurUmbraco.Community.GitHub
 
                 // Initialize the request
                 var username = ConfigurationManager.AppSettings["GitHubUsername"];
-                var password = ConfigurationManager.AppSettings["GitHubPassword"];
-                var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
+                var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, gitHubAccessToken) };
                 var resource = $"/repos/{RepositoryOwner}/{issue.RepositoryName}/issues/";
 
                 addComment.CommentBody = addComment.CommentBody.Replace("{{issueowner}}", "@" + issue.User.Login);
@@ -1061,7 +1060,7 @@ namespace OurUmbraco.Community.GitHub
                 client.UserAgent = UserAgent;
                 var result = client.Execute<List<GithubPullRequestModel>>(request);
 
-                context.WriteLine($"Added comment to issue {issue.Number}");
+                context.WriteLine($"Added comment to issue [{issue.RepositoryName}/{issue.Number}]");
             }
 
         }
