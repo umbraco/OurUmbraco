@@ -58,6 +58,7 @@ namespace OurUmbraco.Community.GitHub
         public readonly string JsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubContributors.json");
         public readonly string PullRequestsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GithubPullRequests.json");
         public readonly string LabelsJsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/GitHubLabels/");
+        private readonly string HopTopicMarkersPath = "~/App_Data/TEMP/HotTopics/";
 
         private static readonly object Lock = new object();
         public static bool IsLocked { get; set; }
@@ -1027,6 +1028,80 @@ namespace OurUmbraco.Community.GitHub
             AddGitHubComment(context, awaitingFeedback, GitHubAutoReplyType.AwaitingFeedback);
         }
 
+        public void PostHotTopicIssueToSlack(PerformContext context, string repositoryName, string slackChannel)
+        {
+            var hopTopicMarkersPath = HostingEnvironment.MapPath(HopTopicMarkersPath);
+            if (Directory.Exists(hopTopicMarkersPath) == false)
+                Directory.CreateDirectory(hopTopicMarkersPath);
+
+            var repositoryService = new RepositoryManagementService();
+            var slackService = new SlackService();
+            var issues = repositoryService.GetAllCommunityIssues(false);
+            //hotissues - all open issues where there has been 10 replies in 7hrs and HQ team has not replied
+            var hotIssues = issues.Where(i => i.RepositoryName == repositoryName && i.State != "closed" && i.CommentCount >= 10 && i.FirstHqComment == null);
+            foreach (var hotIssue in hotIssues)
+            {
+                var path = HostingEnvironment.MapPath(HopTopicMarkersPath + hotIssue.Number + ".txt");
+                if (File.Exists(path))
+                    continue;
+
+                var createTime = hotIssue.CreateDateTime;
+                var updateTime = hotIssue.Comments.Last().CreateDateTime;
+                if (!(updateTime.Subtract(createTime).TotalMinutes <= 420))
+                    continue;
+
+                var post = string.Format($"Issue title: *{hotIssue.Title}*\nLink to issue: https://github.com/umbraco/{repositoryName}/issues/{hotIssue.Number}");
+                try
+                {
+                    var result = slackService.SendSlackNotification(post, slackChannel);
+                    string[] lines = { "" };
+                    File.WriteAllLines(path, lines);
+                    context.WriteLine($"Slack notification sent for {hotIssue.Number}");
+                }
+                catch (Exception ex)
+                {
+                    context.WriteLine($"Failed to send slack notification for {hotIssue.Number} - {ex.Message}");
+                }
+            }
+        }
+
+        public void PostHotCMSPullRequestsToSlack(PerformContext context, string repositoryName, string slackChannel)
+        {
+            var hopTopicMarkersPath = HostingEnvironment.MapPath(HopTopicMarkersPath);
+            if (Directory.Exists(hopTopicMarkersPath) == false)
+                Directory.CreateDirectory(hopTopicMarkersPath);
+
+            var repositoryService = new RepositoryManagementService();
+            var slackService = new SlackService();
+            var pullRequests = repositoryService.GetAllCommunityIssues(true);
+            //hotissues - all open PRs where there has been 10 replies in 7hrs and HQ team has not replied
+            var hotPullRequests = pullRequests.Where(p => p.RepositoryName == repositoryName && p.State != "closed" && p.CommentCount >= 10 && p.FirstHqComment == null);
+            foreach (var hotPullRequest in hotPullRequests)
+            {
+                var path = HostingEnvironment.MapPath(HopTopicMarkersPath + hotPullRequest.Number + ".txt");
+                if (!File.Exists(path))
+                {
+                    var createTime = hotPullRequest.CreateDateTime;
+                    var updateTime = hotPullRequest.Comments.Last().CreateDateTime;
+                    if (updateTime.Subtract(createTime).TotalMinutes <= 420)
+                    {
+                        var post = string.Format($"PR title: *{hotPullRequest.Title}*\nLink to PR: https://github.com/umbraco/{repositoryName}/pulls/{hotPullRequest.Number}");
+                        try
+                        {
+                            slackService.SendSlackNotification(post, slackChannel);
+                            string[] lines = { "" };
+                            File.WriteAllLines(path, lines);
+                            context.WriteLine($"Slack notification sent for {hotPullRequest.Number}");
+                        }
+                        catch (Exception)
+                        {
+                            context.WriteLine($"Failed to send slack notification for {hotPullRequest.Number}");
+                        }
+                    }
+                }
+            }
+        }
+
         public void AddCommentToStateHQDiscussionIssues(PerformContext context)
         {
             var repositoryService = new RepositoryManagementService();
@@ -1034,7 +1109,7 @@ namespace OurUmbraco.Community.GitHub
             var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion); 
             AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
         }
-        
+
 
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
         {
@@ -1154,6 +1229,7 @@ namespace OurUmbraco.Community.GitHub
         }
 
     }
+
 
     public class PullRequestMember
     {

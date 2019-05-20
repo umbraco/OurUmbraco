@@ -1,4 +1,5 @@
 ﻿using OurUmbraco.Forum.Services;
+using OurUmbraco.Our.Services;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Forum.Api
@@ -13,10 +14,12 @@ namespace OurUmbraco.Forum.Api
             TopicService = new TopicService(DatabaseContext);
             CommentService = new CommentService(DatabaseContext, TopicService);
             ForumService = new ForumService(DatabaseContext);
+            SlackService = new SlackService();
         }
 
         protected TopicService TopicService { get; private set; }
         protected CommentService CommentService { get; private set; }
         protected ForumService ForumService { get; private set; }
+        protected SlackService SlackService { get; private set; }
     }
 }

@@ -1,22 +1,18 @@
-﻿using System;
-using System.Collections.Specialized;
-using System.Configuration;
+﻿using Newtonsoft.Json;
+using OurUmbraco.Forum.AntiSpam;
+using OurUmbraco.Forum.Extensions;
+using OurUmbraco.Forum.Models;
+using OurUmbraco.Forum.Services;
+using OurUmbraco.Our.Extensions;
+using System;
 using System.Dynamic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Web;
 using System.Web.Http;
 using System.Web.Security;
-using Newtonsoft.Json;
-using OurUmbraco.Forum.AntiSpam;
-using OurUmbraco.Forum.Extensions;
-using OurUmbraco.Forum.Library;
-using OurUmbraco.Forum.Models;
-using OurUmbraco.Forum.Services;
-using OurUmbraco.Our.Extensions;
 using umbraco;
 using umbraco.cms.helpers;
 using Umbraco.Core;
@@ -26,12 +22,7 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Forum.Api
 {
-    using System.Threading.Tasks;
-
-    using Microsoft.AspNet.SignalR;
     using Microsoft.AspNet.SignalR.Client;
-
-    using OurUmbraco.SignalRHubs;
 
     [MemberAuthorize(AllowType = "member")]
     public class ForumController : ForumControllerBase
@@ -140,7 +131,16 @@ namespace OurUmbraco.Forum.Api
             CommentService.Delete(c);
             SignalRCommentDeleted(c.TopicId, id);
             if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
-                SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
+            {
+                try
+                {
+                    SlackService.SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+                }
+            }
         }
 
         [HttpGet]
@@ -260,7 +260,16 @@ namespace OurUmbraco.Forum.Api
             CommentService.Delete(c);
 
             if (Members.IsAdmin() && c.MemberId != Members.GetCurrentMemberId())
-                SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
+            {
+                try
+                {
+                    SlackService.SendSlackNotification(BuildDeleteNotifactionPost(Members.GetCurrentMember().Name, c.MemberId));
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+                }
+            }
         }
 
         [HttpGet]
@@ -365,7 +374,15 @@ namespace OurUmbraco.Forum.Api
             member.SetValue("blocked", true);
             memberService.Save(member);
 
-            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, true));
+            try
+            {
+                SlackService.SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, true));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+            }
+
         }
 
         [HttpPost]
@@ -383,7 +400,14 @@ namespace OurUmbraco.Forum.Api
             member.SetValue("blocked", false);
             memberService.Save(member);
 
-            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+            try
+            {
+                SlackService.SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+            }
         }
 
         [HttpDelete]
@@ -489,7 +513,14 @@ namespace OurUmbraco.Forum.Api
             var newForumTopicNotification = new NotificationsCore.Notifications.AccountApproved();
             newForumTopicNotification.SendNotification(member.Email);
 
-            SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+            try
+            {
+                SlackService.SendSlackNotification(BuildBlockedNotifactionPost(Members.GetCurrentMember().Name, member.Id, false));
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+            }
 
             return minimumKarma;
         }
@@ -520,7 +551,14 @@ namespace OurUmbraco.Forum.Api
 
             post = post + string.Format("Topic title: *{0}*\nLink to author: http://our.umbraco.org/member/{1}\n Link to {2}: http://our.umbraco.org{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
 
-            SendSlackNotification(post);
+            try
+            {
+                SlackService.SendSlackNotification(post);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
+            }
         }
 
         private static string BuildDeleteNotifactionPost(string adminName, int memberId)
@@ -537,32 +575,7 @@ namespace OurUmbraco.Forum.Api
             return post;
         }
 
-        private static void SendSlackNotification(string post)
-        {
-            using (var client = new WebClient())
-            {
-                post = post.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-                var values = new NameValueCollection
-                             {
-                                 {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
-                                 {"token", ConfigurationManager.AppSettings["SlackToken"]},
-                                 {"username", ConfigurationManager.AppSettings["SlackUsername"]},
-                                 {"icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
-                                 {"text", post}
-                             };
-
-                try
-                {
-                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                    var response = client.Encoding.GetString(data);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
-                }
-            }
-        }
     }
 
     public class Flag
