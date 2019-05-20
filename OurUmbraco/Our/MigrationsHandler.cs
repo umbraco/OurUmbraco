@@ -8,10 +8,12 @@ using System.Web.Hosting;
 using System.Xml;
 using System.Xml.Linq;
 using OurUmbraco.NotificationsCore;
+using OurUmbraco.Our.Models.GitHub.AutoReplies;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.Membership;
+using Umbraco.Core.Persistence;
 using Umbraco.Core.PropertyEditors;
 using Umbraco.Web;
 using File = System.IO.File;
@@ -75,6 +77,7 @@ namespace OurUmbraco.Our
             AddBannersToCommunityPage();
             RemoveHomeOnlyBannerTextArea();
             ImportGitHubLabelDocTypes();
+            CreateGitHubAutoRepliesTable();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2592,5 +2595,39 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+        private void CreateGitHubAutoRepliesTable()
+        {
+
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+            if (File.Exists(path)) return;
+
+            try
+            {
+
+                var schema = new DatabaseSchemaHelper(
+                    ApplicationContext.Current.DatabaseContext.Database,
+                    ApplicationContext.Current.ProfilingLogger.Logger,
+                    ApplicationContext.Current.DatabaseContext.SqlSyntax
+                );
+
+                if (schema.TableExist<GitHubAutoReplyPoco>() == false)
+                {
+                    schema.CreateTable<GitHubAutoReplyPoco>();
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+
+        }
+
     }
 }

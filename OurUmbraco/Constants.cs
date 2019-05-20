@@ -15,5 +15,13 @@ namespace OurUmbraco
             /// </summary>
             public const string DocumentationCurrentMajorVersion = "Documentation:CurrentMajorVersion";
         }
+
+        public static class MemberGroups
+        {
+
+            public const string Contributor = "CoreContrib";
+
+        }
+
     }
 }
