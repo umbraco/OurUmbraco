@@ -1,0 +1,186 @@
+﻿@using OurUmbraco.Our.Api
+@using OurUmbraco.Our.Services
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var repoService = new RepositoryManagementService();
+    var repositories = repoService.GetAllPublicRepositories();
+
+    var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var monthly = true;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["period"]) == false)
+    {
+        var period = Request.QueryString["period"];
+        monthly = period == "monthly";
+    }
+
+    var startYear = 2018;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startYear"]) == false)
+    {
+        int.TryParse(Request.QueryString["startYear"], out startYear);
+    }
+
+    var startMonth = 6;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startMonth"]) == false)
+    {
+        int.TryParse(Request.QueryString["startMonth"], out startMonth);
+    }
+
+    var debug = false;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["debug"]) == false)
+    {
+        var debugQueryString = Request.QueryString["debug"];
+        debug = debugQueryString == "true";
+    }
+
+    var startDate = new DateTime(startYear, startMonth, 1);
+
+    var controller = new DashboardStatisticsController();
+    var issueStatistics = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: monthly);
+}
+
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Issue statistics (since @(startDate.ToString("MMMM yyyy")))</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="row">
+            <div class="col-xl-8 col-lg-7">
+
+                <!-- Area Chart -->
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-area">
+                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <canvas id="myAreaChart" style="display: block; width: 1037px; height: 320px;" width="1037" height="320" class="chartjs-render-monitor"></canvas>
+                        </div>
+                        <hr>
+                        Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
+                    </div>
+                </div>
+
+
+                <!-- Bar Chart -->
+                @*<div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                            <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                        </div>
+                        <div class="card-body">
+                            <div class="chart-bar">
+                                <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                                <canvas id="myBarChart" width="1037" height="320" class="chartjs-render-monitor" style="display: block; width: 1037px; height: 320px;"></canvas>
+                            </div>
+                            <hr>
+                            Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
+                        </div>
+                    </div>*@
+
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="get">
+                    <div>
+                        <label>
+                            Show
+                            <select name="repository">
+                                <option value="" @(repository == "" ? "selected" : null)>All repositories</option>
+                                @foreach (var repo in repositories)
+                                {
+                                    <option value="@repo.Alias" @(repository == repo.Alias ? "selected" : null)>@repo.Alias</option>
+                                }
+                            </select>
+                        </label>
+                        &nbsp;|&nbsp;
+                        <span>Grouped by: </span>
+                        <label for="yearly">year</label>
+                        <input type="radio" name="period" id="yearly" value="yearly" @(monthly == false ? "checked" : null) />
+                        <label for="monthly">month</label>
+                        <input type="radio" name="period" id="monthly" value="monthly" @(monthly ? "checked" : null) />
+                        &nbsp;|&nbsp;
+                        <span>Start month: </span>
+                        <select name="startMonth">
+                            @for (var i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" @(startMonth == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;|&nbsp;
+                        <span>Start year: </span>
+                        <select name="startYear">
+                            @for (var i = 2010; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@i" @(startYear == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;&nbsp;
+                        <input type="submit" name="Update" value="Update" />
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-12">
+
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Period</th>
+                        <th>CreatedIssues</th>
+                        <th>ClosedIssues</th>
+                        <th>CloseRatio</th>
+                        <th>FirstComment (Median)</th>
+                        <th>CloseTime (Median)</th>
+                        <th>FirstCommentOnTime</th>
+                        <th>FirstCommentLate</th>
+                        <th>FirstCommentOnTime%</th>
+                        <th>CommentMissing</th>
+                        <th>ReleaseIssues</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stat in issueStatistics)
+                    {
+                        <tr>
+                            <td>@stat.Title</td>
+                            <td>@stat.CreatedIssues</td>
+                            <td>@stat.ClosedIssues</td>
+                            <td>
+                                @{
+                                    var ratio = Math.Round((double)stat.ClosedIssues / ((double)stat.CreatedIssues / 100), 2);
+                                }
+                                @(ratio)%
+                            </td>
+                            <td>@stat.MedianHoursToFirstComment</td>
+                            <td>@stat.MedianHoursToClose</td>
+                            <td>@stat.FirstCommentStatistics.FirstEventOnTime</td>
+                            <td>@stat.FirstCommentStatistics.FirstEventLate</td>
+                            <td>
+                                @{
+                                    var onTimePercentage = Math.Round((double)stat.FirstCommentStatistics.FirstEventOnTime / ((double)stat.CreatedIssues / 100), 2);
+                                }
+                                @(onTimePercentage)%
+                            </td>
+                            <td>@stat.FirstCommentStatistics.TeamEventMissing</td>
+                            <td>@stat.ReleaseIssues</td>
+                        </tr>
+                        if (debug)
+                        {
+                            @Html.Partial("~/Views/Partials/Dashboards/DebugInfo.cshtml", stat.AllIssues)
+                        }
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
