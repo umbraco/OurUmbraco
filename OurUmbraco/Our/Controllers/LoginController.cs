@@ -3,10 +3,20 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
+using System.Text;
+using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Security;
+using Newtonsoft.Json.Linq;
 using reCAPTCHA.MVC;
+using Skybrud.Social.GitHub.Models.Users;
+using Skybrud.Social.GitHub.OAuth;
+using Skybrud.Social.GitHub.Responses.Authentication;
+using Skybrud.Social.GitHub.Responses.Users;
+using Skybrud.Social.GitHub.Scopes;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
 using Umbraco.Web.Models;
 using Umbraco.Web.Mvc;
 
@@ -164,10 +174,214 @@ namespace OurUmbraco.Our.Controllers
             return Redirect(CurrentPage.Url + "?success=true");
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult GitHub()
+        {
+
+            string rootUrl = Request.Url.GetLeftPart(UriPartial.Authority);
+
+            GitHubOAuthClient client = new GitHubOAuthClient();
+            client.ClientId = WebConfigurationManager.AppSettings["GitHubClientId"];
+            client.ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"];
+            client.RedirectUri = rootUrl + "/umbraco/surface/Login/GitHub";
+
+            // Set the state (a unique/random value)
+            string state = Guid.NewGuid().ToString();
+            Session["GitHub_" + state] = "Unicorn rainbows";
+
+            // Construct the authorization URL
+            string authorizatioUrl = client.GetAuthorizationUrl(state, GitHubScopes.UserEmail);
+
+            // Redirect the user to the OAuth dialog
+            return Redirect(authorizatioUrl);
+
+        }
+
+        [HttpGet]
+        public ActionResult GitHub(string state, string code)
+        {
+
+            // Get the member of the current ID
+            int memberId = Members.GetCurrentMemberId();
+            if (memberId > 0) return GetErrorResult("Oh noes! An error happened.");
+
+            try
+            {
+
+                IPublishedContent profilePage = Umbraco.TypedContent(1057);
+                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+
+                // Initialize the OAuth client
+                GitHubOAuthClient client = new GitHubOAuthClient
+                {
+                    ClientId = WebConfigurationManager.AppSettings["GitHubClientId"],
+                    ClientSecret = WebConfigurationManager.AppSettings["GitHubClientSecret"]
+                };
+
+                // Validate state - Step 1
+                if (String.IsNullOrWhiteSpace(state))
+                {
+                    LogHelper.Info<LoginController>("No OAuth state specified in the query string.");
+                    return GetErrorResult("No state specified in the query string.");
+                }
+
+                // Validate state - Step 2
+                string session = Session["GitHub_" + state] as string;
+                if (String.IsNullOrWhiteSpace(session))
+                {
+                    LogHelper.Info<LoginController>("Failed finding OAuth session item. Most likely the session expired.");
+                    return GetErrorResult("Session expired? Please click the \"Login with GitHub\" to try again ;)");
+                }
+
+                // Remove the state from the session
+                Session.Remove("GitHub_" + state);
+
+                // Exchange the auth code for an access token
+                GitHubTokenResponse accessTokenResponse;
+                try
+                {
+                    accessTokenResponse = client.GetAccessTokenFromAuthorizationCode(code);
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<LoginController>("Unable to retrieve access token from GitHub API", ex);
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+                
+                // Initialize a new service instance from the retrieved access token
+                var service = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(accessTokenResponse.Body.AccessToken);
+
+                // Get some information about the authenticated GitHub user
+                GitHubGetUserResponse userResponse;
+                try
+                {
+                    userResponse = service.User.GetUser();
+                }
+                catch (Exception ex)
+                {
+                    LogHelper.Error<LoginController>("Unable to get user information from the GitHub API", ex);
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+
+                var user = userResponse.Body;
+
+                var members = ApplicationContext.Services.MemberService.GetMembersByPropertyValue("githubId", user.Id.ToString()).ToArray();
+
+                if (members.Length == 0) return RegisterFromGitHub(service, user);
+
+                //if (members.Length == 0)
+                //{
+
+
+
+                //    ViewData["GitHubLoginError"] = "We couldn't find an Our account matching your GitHub ID. Are you sure you've linked your Our account with your GitHub account?";
+
+                //    //return new UmbracoPageResult();
+                //    //return RedirectToUmbracoPage(1056);
+
+                //    return GetErrorResult("We couldn't find an Our account matching your GitHub ID. Are you sure you've linked your Our account with your GitHub account?");
+
+                //}
+
+                if (members.Length > 1)
+                {
+                    LogHelper.Info<LoginController>("Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + ")");
+                    return GetErrorResult("Oh noes! An error happened.");
+                }
+
+
+                FormsAuthentication.SetAuthCookie(members[0].Username, false);
+                return Redirect("/");
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<LoginController>("Failed logging in member from GitHub", ex);
+                return GetErrorResult("Oh noes! An error happened.");
+            }
+
+        }
+
+        private ActionResult RegisterFromGitHub(Skybrud.Social.GitHub.GitHubService service, GitHubUser user)
+        {
+            
+            var memberService = Services.MemberService;
+
+            string email = user.Email;
+
+            if (string.IsNullOrWhiteSpace(email))
+            {
+
+                var response = service.User.GetEmails();
+
+                var primary = response.Body.FirstOrDefault(x => x.IsPrimary);
+
+                if (primary == null)
+                {
+                    return GetErrorResult("Your primary email address on GitHub is missing.");
+                }
+
+                if (primary.IsVerified == false)
+                {
+                    return GetErrorResult("Your primary email address on GitHub is not verified. Make sure to verify your email address, and then try again.");
+                }
+
+                email = primary.Email;
+
+            }
+
+            if (memberService.GetByEmail(email) != null)
+            {
+                return GetErrorResult("A member with that email address already exists.");
+            }
+
+
+            var member = memberService.CreateMember(email, email, user.Name, "member");
+            member.SetValue("github", user.Login);
+            member.SetValue("githubId", user.Id);
+            member.SetValue("githubData", user.JObject.ToString());
+
+            member.SetValue("treshold", "-10");
+            member.SetValue("bugMeNot", false);
+
+            member.SetValue("reputationTotal", 20);
+            member.SetValue("reputationCurrent", 20);
+            member.SetValue("forumPosts", 0);
+
+            //member.SetValue("tos", DateTime.Now);
+
+            member.IsApproved = true;
+            memberService.Save(member);
+
+            memberService.AssignRole(member.Username, "standard");
+
+            FormsAuthentication.SetAuthCookie(email, false);
+            return Redirect("/");
+
+        }
+
         public ActionResult Logout()
         {
             FormsAuthentication.SignOut();
             return Redirect("/");
+        }
+
+        private ActionResult GetErrorResult(string message)
+        {
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.AppendLine("<style> body { margin: 10px; font-family: sans-serif; } </style>");
+            sb.AppendLine(message);
+            sb.AppendLine("<p><a href=\"/member/login/\">Return to the login page</a></p>");
+
+
+            ContentResult result = new ContentResult();
+            result.ContentType = "text/html";
+            result.Content = sb.ToString();
+            return result;
+
         }
     }
 
