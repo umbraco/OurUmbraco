@@ -9,7 +9,6 @@ using System.Threading;
 using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
-using AngleSharp.Css.Values;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using GraphQL.Client;
@@ -35,7 +34,6 @@ using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
-using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -1096,11 +1094,10 @@ namespace OurUmbraco.Community.GitHub
         {
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
-            var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion); 
+            var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion);
             AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
         }
         
-
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
         {
             var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
@@ -1123,7 +1120,7 @@ namespace OurUmbraco.Community.GitHub
             context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
 
             var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
-            
+
             bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
             if (enableGitHubCommenting == false)
             {
@@ -1132,8 +1129,15 @@ namespace OurUmbraco.Community.GitHub
                 context.ResetTextColor();
             }
 
-            foreach (var issue in categorizedIssues.Issues.Where(x => x.Number == 5184))
+            // Only do this for newly created issues since this feature was introduced so as not to spam all the older issues.
+            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 5, 28));
+            foreach (var issue in issues)
             {
+                // If we've already sent this reply, don't add it again
+                if (GitHubAutoReply.HasReply(issue, gitHubAutoReplyType))
+                    continue;
+
+                // Get a random reply from the available replies for this reply type
                 var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
                 var selectedComment = friendlyComments[randomCommentIndex];
                 if (selectedComment == null)
@@ -1145,18 +1149,18 @@ namespace OurUmbraco.Community.GitHub
                 context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (template index {randomCommentIndex}`).");
 
                 var result = AddCommentToIssue(issue, gitHubAutoReplyType, comment);
-                if (result != null)
+                if (result == null)
+                    continue;
+
+                if (result.Success)
                 {
-                    if (result.Success)
-                    {
-                        context.WriteLine($"Comment posted successfully");
-                    }
-                    else
-                    {
-                        context.SetTextColor(ConsoleTextColor.Red);
-                        context.WriteLine($"Comment post failed: {result.Response.Body}");
-                        context.ResetTextColor();
-                    }
+                    context.WriteLine($"Comment posted successfully");
+                }
+                else
+                {
+                    context.SetTextColor(ConsoleTextColor.Red);
+                    context.WriteLine($"Comment post failed: {result.Response.Body}");
+                    context.ResetTextColor();
                 }
             }
         }
@@ -1184,10 +1188,15 @@ namespace OurUmbraco.Community.GitHub
         {
             if (issue == null) throw new ArgumentNullException(nameof(type));
 
-            JObject body = new JObject
-            {
-                { "body", message }
-            };
+            // Special case, might be a Github thing?
+            // The fancy quote/double quote that GDocs/Word uses is
+            // not recognized by GitHub so we need to replace it.
+            message = message.Replace("‘", "'");
+            message = message.Replace("’", "'");
+            message = message.Replace("“", "\"");
+            message = message.Replace("”", "\"");
+
+            var body = new JObject { { "body", message } };
 
             bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
             if (enableGitHubCommenting == false)
@@ -1199,18 +1208,16 @@ namespace OurUmbraco.Community.GitHub
             // Success? Success!!!
             if (response.StatusCode == HttpStatusCode.Created)
             {
-
                 // Parse the response body into a JObject
-                JObject responseBody = JObject.Parse(response.Body);
+                var responseBody = JObject.Parse(response.Body);
 
                 // Get the ID if the comment
-                long commentId = responseBody.GetInt64("id");
+                var commentId = responseBody.GetInt64("id");
 
                 // Add an entry to the database so we know that we've sent the comment
                 GitHubAutoReply.AddReply(issue.RepoSlug, issue.Number, type, commentId);
 
                 return new AddCommentResult(response);
-
             }
 
             LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
@@ -1219,6 +1226,7 @@ namespace OurUmbraco.Community.GitHub
         }
 
     }
+
 
     public class PullRequestMember
     {
