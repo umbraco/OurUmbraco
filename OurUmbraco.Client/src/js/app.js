@@ -22,7 +22,7 @@ jQuery(document).ready(function () {
     });
 
     // Mobile navigation
-    $("#toggle").click(function (e) {
+    $("#toggle a").click(function (e) {
         e.preventDefault();
         $(".cross").toggleClass("open");
         $("nav").toggleClass("open");
