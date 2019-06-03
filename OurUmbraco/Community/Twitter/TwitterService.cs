@@ -36,8 +36,6 @@ namespace OurUmbraco.Community.Twitter
                                     ConfigurationManager.AppSettings["twitterUserAccessToken"],
                                     ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
 
-                            Tweetinvi.User.GetAuthenticatedUser();
-
                             var searchParameter = new SearchTweetsParameters("umbraco")
                             {
                                 SearchType = SearchResultType.Recent
