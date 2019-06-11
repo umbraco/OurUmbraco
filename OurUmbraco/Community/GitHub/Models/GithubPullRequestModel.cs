@@ -18,6 +18,7 @@ namespace OurUmbraco.Community.GitHub.Models
         [JsonProperty("_comments", NullValueHandling = NullValueHandling.Ignore)]
         public GithubPullRequestComment[] Comments { get; set; }
         public int FirstTeamCommentTimeInHours { get; set; }
+        public Label[] Labels { get; set; }
     }
 
     public class GithubPullRequestUser

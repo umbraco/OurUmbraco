@@ -200,7 +200,7 @@ namespace OurUmbraco.Our.Services
                         continue;
                     }
 
-                    var breaking = item.Labels.Any(x => x.Name == "compatibility/breaking");
+                    var breaking = item.Labels.Any(x => x.Name == "category/breaking");
 
                     var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
 

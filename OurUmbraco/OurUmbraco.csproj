@@ -463,6 +463,7 @@
     <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
+    <Compile Include="Our\Api\DashboardStatisticsController.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\IssuesStatisticsController.cs" />

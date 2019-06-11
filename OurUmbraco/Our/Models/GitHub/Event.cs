@@ -12,10 +12,13 @@ namespace OurUmbraco.Our.Models.GitHub
         public Label Label { get; set; }
 
         [JsonProperty("actor")]
-        public User User { get; set; }
+        public User Actor { get; set; }
 
         [JsonProperty("created_at")]
         public DateTime CreateDateTime { get; set; }
+
+        [JsonProperty("assigner")]
+        public User Assigner { get; set; }
 
         // Note: leaving the other properties commented out in case we need them later
 
@@ -25,7 +28,6 @@ namespace OurUmbraco.Our.Models.GitHub
         //public object commit_id { get; set; }
         //public object commit_url { get; set; }
         //public User assignee { get; set; }
-        //public User assigner { get; set; }
 
         //public Milestone milestone { get; set; }
         //public class Milestone

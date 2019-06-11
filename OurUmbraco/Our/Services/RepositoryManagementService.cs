@@ -303,7 +303,6 @@ namespace OurUmbraco.Our.Services
 
         public List<OurUmbraco.Community.Models.Repository> GetAllPublicRepositories()
         {
-
             var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
             var fileContent = File.ReadAllText(configFile);
             var repositories = JsonConvert.DeserializeObject<List<OurUmbraco.Community.Models.Repository>>(fileContent);
@@ -322,7 +321,7 @@ namespace OurUmbraco.Our.Services
                     item.InThisCategorySince = labeledUpForGrabs.CreateDateTime;
             }
         }
-
+        
         public enum CategoryKey
         {
             NoReply,

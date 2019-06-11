@@ -58,6 +58,9 @@ namespace OurUmbraco.Our.Models.GitHub
         [JsonProperty("events")]
         public Event[] Events { get; set; }
 
+        [JsonProperty("reviews")]
+        public Event[] Reviews { get; set; }
+
         // Custom properties
 
         public string RepositoryName { get; set; }
