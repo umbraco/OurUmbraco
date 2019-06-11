@@ -205,7 +205,7 @@ namespace OurUmbraco.Our.Controllers
 
             // Get the member of the current ID
             int memberId = Members.GetCurrentMemberId();
-            if (memberId > 0) return GetErrorResult("Oh noes! An error happened.");
+            if (memberId > 0) return GetErrorResult("It seems that you're already logged into Our Umbraco. Log out out if you wish to log in with another account.");
 
             GitHubService github = new GitHubService();
 
@@ -223,18 +223,18 @@ namespace OurUmbraco.Our.Controllers
                 };
 
                 // Validate state - Step 1
-                if (String.IsNullOrWhiteSpace(state))
+                if (string.IsNullOrWhiteSpace(state))
                 {
                     LogHelper.Info<LoginController>("No OAuth state specified in the query string.");
-                    return GetErrorResult("No state specified in the query string.");
+                    return GetErrorResult("No state specified in the query string. Please go back to the login page and click the \"Login with GitHub\" to try again ;)");
                 }
 
                 // Validate state - Step 2
                 string session = Session["GitHub_" + state] as string;
-                if (String.IsNullOrWhiteSpace(session))
+                if (string.IsNullOrWhiteSpace(session))
                 {
                     LogHelper.Info<LoginController>("Failed finding OAuth session item. Most likely the session expired.");
-                    return GetErrorResult("Session expired? Please click the \"Login with GitHub\" to try again ;)");
+                    return GetErrorResult("Session expired? Please go back to the login page and click the \"Login with GitHub\" to try again ;)");
                 }
 
                 // Remove the state from the session
@@ -249,7 +249,7 @@ namespace OurUmbraco.Our.Controllers
                 catch (Exception ex)
                 {
                     LogHelper.Error<LoginController>("Unable to retrieve access token from GitHub API", ex);
-                    return GetErrorResult("Oh noes! An error happened.");
+                    return GetErrorResult("Oh noes! An error happened in the communication with the GitHub API. It may help going back to the login page and click the \"Login with GitHub\" to try again ;)");
                 }
                 
                 // Initialize a new service instance from the retrieved access token
@@ -264,7 +264,7 @@ namespace OurUmbraco.Our.Controllers
                 catch (Exception ex)
                 {
                     LogHelper.Error<LoginController>("Unable to get user information from the GitHub API", ex);
-                    return GetErrorResult("Oh noes! An error happened.");
+                    return GetErrorResult("Oh noes! An error happened in the communication with the GitHub API. It may help going back to the login page and click the \"Login with GitHub\" to try again ;)");
                 }
 
                 var user = userResponse.Body;
@@ -285,7 +285,7 @@ namespace OurUmbraco.Our.Controllers
             catch (Exception ex)
             {
                 LogHelper.Error<LoginController>("Failed logging in member from GitHub", ex);
-                return GetErrorResult("Oh noes! An error happened.");
+                return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you." + ex);
             }
 
         }
@@ -356,20 +356,29 @@ namespace OurUmbraco.Our.Controllers
 
         private ActionResult GetErrorResult(string message)
         {
-
-            StringBuilder sb = new StringBuilder();
-
-            sb.AppendLine("<style> body { margin: 10px; font-family: sans-serif; } </style>");
-            sb.AppendLine(message);
-            sb.AppendLine("<p><a href=\"/member/login/\">Return to the login page</a></p>");
-
-
-            ContentResult result = new ContentResult();
-            result.ContentType = "text/html";
-            result.Content = sb.ToString();
-            return result;
-
+            return View("~/Views/Minimal/GitHub/Error.cshtml", new GitHubLoginError
+            {
+                Title = "Authentication with GitHub failed",
+                Message = message,
+                PrimaryActionText = "Return to the login page",
+                PrimaryActionUrl = "/member/login/"
+            });
+        }
     }
+
+    public class GitHubLoginError
+    {
+
+        public string Title { get; set; }
+
+        public string Message { get; set; }
+
+        public string PrimaryActionText { get; set; }
+
+        public string PrimaryActionUrl { get; set; }
+
+        public bool HasPrimaryAction => string.IsNullOrWhiteSpace(PrimaryActionText) == false && string.IsNullOrWhiteSpace(PrimaryActionUrl) == false;
+
     }
 
     internal class DuplicateMember
