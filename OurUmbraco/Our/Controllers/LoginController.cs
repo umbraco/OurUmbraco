@@ -8,6 +8,7 @@ using System.Web.Configuration;
 using System.Web.Mvc;
 using System.Web.Security;
 using Newtonsoft.Json.Linq;
+using OurUmbraco.Community.GitHub;
 using reCAPTCHA.MVC;
 using Skybrud.Social.GitHub.Models.Users;
 using Skybrud.Social.GitHub.OAuth;
@@ -206,11 +207,13 @@ namespace OurUmbraco.Our.Controllers
             int memberId = Members.GetCurrentMemberId();
             if (memberId > 0) return GetErrorResult("Oh noes! An error happened.");
 
+            GitHubService github = new GitHubService();
+
             try
             {
 
                 IPublishedContent profilePage = Umbraco.TypedContent(1057);
-                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen.");
+                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
 
                 // Initialize the OAuth client
                 GitHubOAuthClient client = new GitHubOAuthClient
@@ -266,32 +269,16 @@ namespace OurUmbraco.Our.Controllers
 
                 var user = userResponse.Body;
 
-                var members = ApplicationContext.Services.MemberService.GetMembersByPropertyValue("githubId", user.Id.ToString()).ToArray();
-
-                if (members.Length == 0) return RegisterFromGitHub(service, user);
-
-                //if (members.Length == 0)
-                //{
-
-
-
-                //    ViewData["GitHubLoginError"] = "We couldn't find an Our account matching your GitHub ID. Are you sure you've linked your Our account with your GitHub account?";
-
-                //    //return new UmbracoPageResult();
-                //    //return RedirectToUmbracoPage(1056);
-
-                //    return GetErrorResult("We couldn't find an Our account matching your GitHub ID. Are you sure you've linked your Our account with your GitHub account?");
-
-                //}
-
-                if (members.Length > 1)
+                // Get the total amount of members with the GitHub user ID
+                if (github.ValidateGitHubUserId(user.Id, out int count, out IMember member) == false)
                 {
                     LogHelper.Info<LoginController>("Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + ")");
-                    return GetErrorResult("Oh noes! An error happened.");
+                    return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
                 }
 
-
-                FormsAuthentication.SetAuthCookie(members[0].Username, false);
+                if (count == 0) return RegisterFromGitHub(service, user);
+                
+                FormsAuthentication.SetAuthCookie(member.Username, false);
                 return Redirect("/");
 
             }
@@ -382,7 +369,7 @@ namespace OurUmbraco.Our.Controllers
             result.Content = sb.ToString();
             return result;
 
-        }
+    }
     }
 
     internal class DuplicateMember

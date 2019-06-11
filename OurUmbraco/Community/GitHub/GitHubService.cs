@@ -36,6 +36,7 @@ using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Persistence;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
@@ -62,6 +63,53 @@ namespace OurUmbraco.Community.GitHub
 
         private readonly string _hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
         private readonly string _teamUmbracoUsersFile = HostingEnvironment.MapPath("~/Config/TeamUmbraco.json");
+
+        private static int _gitHubUserIdPropertyTypeId;
+
+        /// <summary>
+        /// Returns whether the specified <paramref name="githubId"/> is valid, meaning that there exists exactly zero or one members with this ID.
+        /// </summary>
+        /// <param name="githubId">The GitHub user ID.</param>
+        /// <param name="count">THe amount of members with the ID.</param>
+        /// <param name="member">The first matched member if the ID is valid.</param>
+        /// <returns></returns>
+        public bool ValidateGitHubUserId(int githubId, out int count, out IMember member)
+        {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            const string propertyTypeAlias = "githubId";
+
+            // In order to lookup the GitHub user ID in the database, we first need the ID of the
+            // property type holding the value. To minimize calls to the database, the ID is stored
+            // in a static field once we have found it, ensuring we only have to look it up once
+            // during the application lifetime
+            if (_gitHubUserIdPropertyTypeId == 0)
+            {
+
+                // Declare a nice and raw SQL query
+                Sql sql1 = new Sql("SELECT [id] FROM [dbo].[cmsPropertyType] WHERE [Alias] = @0;", propertyTypeAlias);
+
+                // Fire it up in the database
+                _gitHubUserIdPropertyTypeId = db.FirstOrDefault<int>(sql1);
+
+                // The result will be "0" if a matching row isn't found (which should then trigger an exception)
+                if (_gitHubUserIdPropertyTypeId == 0) throw new Exception("Failed retrieving ID of property type with alias " + propertyTypeAlias);
+
+            }
+
+            // Declare another nice and raw SQL query
+            Sql sql2 = new Sql("SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1", _gitHubUserIdPropertyTypeId, githubId);
+
+            // Get the IDs of matching members (there should either be zero or one)
+            List<int> memberIds = db.Fetch<int>(sql2);
+
+            count = memberIds.Count;
+            member = count == 1 ? ApplicationContext.Current.Services.MemberService.GetById(memberIds[0]) : null;
+
+            return member != null;
+
+        }
 
         public TeamUmbraco GetTeam(string repository)
         {
