@@ -37,6 +37,7 @@ using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
+using Umbraco.Core.Persistence;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
@@ -63,6 +64,8 @@ namespace OurUmbraco.Community.GitHub
 
         private readonly string _hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
         private readonly string _teamUmbracoUsersFile = HostingEnvironment.MapPath("~/Config/TeamUmbraco.json");
+        
+        private static int _gitHubUserIdPropertyTypeId;
 
         public TeamUmbraco GetTeam(string repository)
         {
@@ -1290,6 +1293,58 @@ namespace OurUmbraco.Community.GitHub
             LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
 
             return new AddCommentResult(response);
+        }
+
+        private int GetGitHubIdPropertyTypeId()
+        {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            const string propertyTypeAlias = "githubId";
+
+            // In order to lookup the GitHub user ID in the database, we first need the ID of the
+            // property type holding the value. To minimize calls to the database, the ID is stored
+            // in a static field once we have found it, ensuring we only have to look it up once
+            // during the application lifetime
+            if (_gitHubUserIdPropertyTypeId == 0)
+            {
+
+                // Declare a nice and raw SQL query
+                Sql sql = new Sql("SELECT [id] FROM [dbo].[cmsPropertyType] WHERE [Alias] = @0;", propertyTypeAlias);
+
+                // Fire it up in the database
+                _gitHubUserIdPropertyTypeId = db.FirstOrDefault<int>(sql);
+
+                // The result will be "0" if a matching row isn't found (which should then trigger an exception)
+                if (_gitHubUserIdPropertyTypeId == 0) throw new Exception("Failed retrieving ID of property type with alias " + propertyTypeAlias);
+
+            }
+
+            return _gitHubUserIdPropertyTypeId;
+
+        }
+
+        /// <summary>
+        /// Gets the first member matching the specified <paramref name="githubId"/>.
+        /// </summary>
+        /// <param name="githubId">The ID of the GitHub user.</param>
+        /// <returns>The <see cref="IMember"/> instance representing the member, or <c>null</c> if not found.</returns>
+        public IMember GetMemberByGitHubUserId(int githubId) {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            // Declare another nice and raw SQL query
+            Sql sql = new Sql(
+                "SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1",
+                GetGitHubIdPropertyTypeId(), githubId
+            );
+
+            // Get the ID of the first member matching matching "githubId"
+            int memberId = db.FirstOrDefault<int>(sql);
+
+            // Look up the member via the member service if we found a match
+            return memberId > 0 ? ApplicationContext.Current.Services.MemberService.GetById(memberId) : null;
+
         }
 
     }
