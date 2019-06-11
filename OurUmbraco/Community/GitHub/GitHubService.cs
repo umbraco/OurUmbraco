@@ -1130,7 +1130,7 @@ namespace OurUmbraco.Community.GitHub
             }
 
             // Only do this for newly created issues since this feature was introduced so as not to spam all the older issues.
-            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 6, 6));
+            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 6, 10));
             foreach (var issue in issues)
             {
                 // If we've already sent this reply, don't add it again
