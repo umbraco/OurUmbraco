@@ -1079,7 +1079,31 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-            AddGitHubComment(context, upForGrabsIssues, GitHubAutoReplyType.UpForGrabs);
+            var removeIssues = new List<int>();
+            var hqMembers = GetHqMembers();
+
+            foreach (var issue in upForGrabsIssues.Issues)
+            {
+                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
+                if (hqComments.Any() == false)
+                    continue;
+
+                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("Up for grabs".ToLowerInvariant()));
+                if (alreadyMentioned)
+                    removeIssues.Add(issue.Number);
+            }
+
+            var notifyIssues = upForGrabsIssues.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
+            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
+            {
+                SortOrder = upForGrabsIssues.SortOrder,
+                CategoryKey = upForGrabsIssues.CategoryKey,
+                CategoryDescription = upForGrabsIssues.CategoryDescription,
+                Issues = notifyIssues
+            };
+
+
+            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.UpForGrabs);
         }
 
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
@@ -1097,7 +1121,7 @@ namespace OurUmbraco.Community.GitHub
             var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion);
             AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
         }
-        
+
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
         {
             var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
@@ -1115,7 +1139,12 @@ namespace OurUmbraco.Community.GitHub
                 .FirstOrDefault();
 
             if (actionNode == null)
+            {
+                context.SetTextColor(ConsoleTextColor.Yellow);
+                context.WriteLine($"Could not find content for the alias {taskAlias} - no notifications will be sent.");
+                context.ResetTextColor();
                 return;
+            }
 
             context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
 
@@ -1130,7 +1159,7 @@ namespace OurUmbraco.Community.GitHub
             }
 
             // Only do this for newly created issues since this feature was introduced so as not to spam all the older issues.
-            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 6, 10));
+            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 5, 24));
             foreach (var issue in issues)
             {
                 // If we've already sent this reply, don't add it again
