@@ -230,7 +230,7 @@ namespace OurUmbraco.Repository.Services
             //TODO: SD: I dunno where these come from or if we care about it?
             //var deliCompatVersions = Utils.GetProjectCompatibleVersions(content.Id) ?? new List<string>();
 
-            var allPackageFiles = wikiFiles.Where(x => x.FileType.InvariantEquals("package")).ToArray();
+            var allPackageFiles = wikiFiles.Where(x => x.FileType.InvariantEquals("package") && x.Archived == false).ToArray();
 
             //get the strict packages in the correct desc order
             var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();

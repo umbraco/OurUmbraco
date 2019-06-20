@@ -73,6 +73,9 @@ namespace OurUmbraco.Our.Services
         public void CheckContributorBadges(Issue pr, PerformContext hangfire = null)
         {
 
+            if (IsLive == false)
+                return;
+
             string prefix = $"[{pr.RepoSlug}/{pr.Number}]";
 
             // Look for a "merged" event in the list of events

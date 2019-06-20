@@ -394,6 +394,38 @@
             }
         }
     }
+	display: flex;
+	align-items: center;
+	justify-content: flex-start;
+    margin-bottom:10px;
+
+	h3 {
+		margin: 0;
+		font-size: 1rem;
+		color:  rgba(#000, .8);
+
+		a {
+			text-decoration: none;
+
+			&:hover {
+				color: $color-our;
+			}
+		}
+	}
+
+	.text {
+		margin: 0 0 0 1rem;
+		display: inline-block;
+		vertical-align: bottom;
+
+		a {
+			text-decoration: underline;
+
+			&:hover {
+				text-decoration: none;
+			}
+		}
+	}
 }
 
 .package-creator,
