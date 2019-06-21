@@ -1079,6 +1079,7 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
+
             var removeIssues = new List<int>();
             var hqMembers = GetHqMembers();
 
@@ -1101,8 +1102,7 @@ namespace OurUmbraco.Community.GitHub
                 CategoryDescription = upForGrabsIssues.CategoryDescription,
                 Issues = notifyIssues
             };
-
-
+            
             AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.UpForGrabs);
         }
 
@@ -1119,7 +1119,32 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion);
-            AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
+
+            var removeIssues = new List<int>();
+            var hqMembers = GetHqMembers();
+
+            foreach (var issue in stateHQDiscussion.Issues)
+            {
+                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
+                if (hqComments.Any() == false)
+                    continue;
+
+                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("at HQ".ToLowerInvariant()) ||
+                                                           x.Body.ToLowerInvariant().Contains("discuss".ToLowerInvariant()));
+                if (alreadyMentioned)
+                    removeIssues.Add(issue.Number);
+            }
+
+            var notifyIssues = stateHQDiscussion.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
+            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
+            {
+                SortOrder = stateHQDiscussion.SortOrder,
+                CategoryKey = stateHQDiscussion.CategoryKey,
+                CategoryDescription = stateHQDiscussion.CategoryDescription,
+                Issues = notifyIssues
+            };
+            
+            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.HqDiscussion);
         }
 
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)

@@ -159,19 +159,19 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void AddCommentToUpForGrabsIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MonthInterval(12));
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MinuteInterval(10));
         }
 
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MonthInterval(12));
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MinuteInterval(10));
         }
 
         public void AddCommentToStateHQDiscussionIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MonthInterval(12));
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MinuteInterval(10));
         }
 
         public void NotifyUnmergeablePullRequests(PerformContext context)
@@ -179,6 +179,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
         }
+
         public void CheckContributorBadge(PerformContext context)
         {
             var contributors = new ContributorBadgeService();

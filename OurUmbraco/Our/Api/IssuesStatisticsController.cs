@@ -6,6 +6,7 @@ using System.Web.Http;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
+using OurUmbraco.Our.Models.GitHub;
 using OurUmbraco.Our.Services;
 using Umbraco.Core;
 using Umbraco.Core.Logging;
@@ -17,11 +18,12 @@ namespace OurUmbraco.Our.Api
     {
         [MemberAuthorize(AllowGroup = "HQ,TeamUmbraco")]
         [HttpGet]
-        public List<IssuesInPeriod> GetGroupedIssuesData(int fromDay, int fromMonth, int fromYear, int toDay, int toMonth, int toYear, string repository = "")
+        public List<IssuesInPeriod> GetGroupedIssuesData(int fromDay, int fromMonth, int fromYear, int toDay,
+            int toMonth, int toYear, string repository = "")
         {
             var gitHubService = new GitHubService();
             var teamMembers = new List<string>();
-            foreach(var team in gitHubService.GetTeamMembers())
+            foreach (var team in gitHubService.GetTeamMembers())
                 teamMembers.AddRange(team.Members);
 
             if (fromDay == 0)
@@ -33,7 +35,8 @@ namespace OurUmbraco.Our.Api
             var toDate = DateTime.Parse($"{toYear}-{toMonth}-{toDay} 23:59:59");
 
             var repoService = new RepositoryManagementService();
-            var allCommunityIssues = repoService.GetAllCommunityIssues(false).Where(x => x.Labels.Any(l => l.Name == "status/idea") == false).ToList();
+            var allCommunityIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.Labels.Any(l => l.Name == "status/idea") == false).ToList();
 
             if (string.IsNullOrWhiteSpace(repository) == false)
                 allCommunityIssues = allCommunityIssues.Where(x => x.RepositoryName == repository).ToList();
@@ -41,15 +44,16 @@ namespace OurUmbraco.Our.Api
             var issues = allCommunityIssues
                 .Where(x => x.CreateDateTime >= fromDate && x.CreateDateTime <= toDate)
                 .OrderBy(x => x.CreateDateTime)
-                .GroupBy(x => new { x.CreateDateTime.Year, x.CreateDateTime.Month })
+                .GroupBy(x => new {x.CreateDateTime.Year, x.CreateDateTime.Month})
                 .ToDictionary(x => x.Key, x => x.ToList());
-            
+
             var groupedIssues = new List<IssuesInPeriod>();
 
             foreach (var issuesInPeriod in issues)
             {
                 var period = $"{issuesInPeriod.Key.Year}{issuesInPeriod.Key.Month:00}";
-                var groupName = $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(issuesInPeriod.Key.Month)} {issuesInPeriod.Key.Year}";
+                var groupName =
+                    $"{DateTimeFormatInfo.CurrentInfo.GetAbbreviatedMonthName(issuesInPeriod.Key.Month)} {issuesInPeriod.Key.Year}";
                 var issuesList = new IssuesInPeriod
                 {
                     MonthYear = period,
@@ -122,7 +126,8 @@ namespace OurUmbraco.Our.Api
 
                     if (issue.Events.Any())
                     {
-                        var firstLabel = issue.Events.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => x.Name == "labeled");
+                        var firstLabel = issue.Events.OrderBy(x => x.CreateDateTime)
+                            .FirstOrDefault(x => x.Name == "labeled");
                         if (firstLabel != null)
                             hoursBeforeFirstLabel = issue.CreateDateTime.BusinessDaysUntil(firstLabel.CreateDateTime);
                     }
@@ -147,7 +152,7 @@ namespace OurUmbraco.Our.Api
                 }
 
                 issuesList.AllIssueFirstCommentTimesInHours = string.Join(",", allFirstCommentTimesInHours);
-                
+
                 if (allFirstCommentTimesInHours.Any())
                 {
                     issuesList.IssueAverageFirstCommentTimesInHours = allFirstCommentTimesInHours.Average();

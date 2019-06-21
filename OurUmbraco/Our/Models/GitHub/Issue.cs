@@ -90,5 +90,7 @@ namespace OurUmbraco.Our.Models.GitHub
         /// </summary>
         public bool IsPr => Link?.Contains("/pull/") ?? false;
 
+        public DateTime SetToUpForGrabs { get; set; }
+        public DateTime SetToIdea { get; set; }
     }
 }

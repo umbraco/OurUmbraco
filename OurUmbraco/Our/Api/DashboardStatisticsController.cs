@@ -210,7 +210,7 @@ namespace OurUmbraco.Our.Api
 
             var firstTeamEventDateTime = GetFirstTeamEventDateTime(issue);
 
-            if (firstTeamEventDateTime == default(DateTime))
+            if (firstTeamEventDateTime == default(DateTime) && issue.ClosedDateTime == null)
             {
                 firstCommentStatistics.TeamEventMissing += 1;
                 firstCommentStatistics.IssuesNoComments.Add(issue);
@@ -243,7 +243,7 @@ namespace OurUmbraco.Our.Api
             // When someone mentions a team member the "actor" is set to that team member, where it should be the user (community member) that is the actor
             // When a team member subscribes to a PR / issue, this does not send any signals, nobody can see it, so it should not count as an event
             // If wafflebot assigns something, ignore that as well, it had weird rules so just don't trust it
-            var events = issue.Events.Where(x => x.Actor != null && users.Contains(x.Actor.Login.ToLowerInvariant()) && x.Name != "mentioned" && x.Name != "subscribed" && (x.Assigner != null && x.Assigner.Login != "wafflebot[bot]"));
+            var events = issue.Events.Where(x => x.Actor != null && users.Contains(x.Actor.Login.ToLowerInvariant()) && x.Name != "mentioned" && x.Name != "subscribed" && (x.Assigner == null || x.Assigner.Login != "wafflebot[bot]"));
             eventDateTimes.AddRange(comments.Select(x => x.CreateDateTime));
             eventDateTimes.AddRange(events.Select(x => x.CreateDateTime));
 
@@ -267,49 +267,135 @@ namespace OurUmbraco.Our.Api
 
             return eventDateTimes.OrderBy(x => x).FirstOrDefault();
         }
-    }
 
-    public class Contributions
-    {
-        public string Title { get; set; }
-        public int CodegardenYear { get; set; }
-        public int UniqueContributorCount { get; set; }
-        public int PullRequestsCreated { get; set; }
-        public int PullRequestsMerged { get; set; }
-        public int PullRequestsClosed { get; set; }
-        public int PullRequestsProcessed { get; set; }
-        public int PullRequestsStillOpenInPeriod { get; set; }
-        public int FirstAcceptedPullRequests { get; set; }
-        public int ReleasePullRequests { get; set; }
-        public int AverageHoursToFirstComment { get; set; }
-        public int MedianHoursToFirstComment { get; set; }
-        public int AverageHoursToClose { get; set; }
-        public int MedianHoursToClose { get; set; }
-        public FirstCommentStatistics FirstCommentStatistics { get; set; }
-        public List<Issue> AllPulls { get; set; }
-    }
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetOldUpForGrabsIssues()
+        {
+            var repoService = new RepositoryManagementService();
+            var allCommunityIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null && x.Labels.Any(l => l.Name == "status/idea") == false).ToList();
 
-    public class IssueStatistics
-    {
-        public string Title { get; set; }
-        public int CodegardenYear { get; set; }
-        public int CreatedIssues { get; set; }
-        public int ClosedIssues { get; set; }
-        public int ReleaseIssues { get; set; }
-        public int AverageHoursToFirstComment { get; set; }
-        public int MedianHoursToFirstComment { get; set; }
-        public int AverageHoursToClose { get; set; }
-        public int MedianHoursToClose { get; set; }
-        public FirstCommentStatistics FirstCommentStatistics { get; set; }
-        public List<Issue> AllIssues { get; set; }
-    }
+            var oldDate = DateTime.Now.AddDays(-120);
 
-    public class FirstCommentStatistics
-    {
-        public int FirstEventOnTime { get; set; }
-        public int FirstEventLate { get; set; }
-        public int TeamEventMissing { get; set; }
-        public List<double> AllFirstEventTimesInHours { get; set; }
-        public List<Issue> IssuesNoComments { get; set; }
+            var upForGrabsIssues = allCommunityIssues
+                .Where(x => x.Labels.Any(l => l.Name == "community/up-for-grabs" || l.Name == "help wanted"))
+                .OrderBy(x => x.CreateDateTime)
+                .ToList();
+
+            var oldUpForGrabsIssues = new List<Issue>();
+
+            foreach (var issue in upForGrabsIssues)
+            {
+                foreach (var issueEvent in issue.Events)
+                {
+                    if (issueEvent.Name == "labeled" &&
+                        (issueEvent.Label.Name == "community/up-for-grabs" || issueEvent.Label.Name == "help wanted"))
+                    {
+                        if (issueEvent.CreateDateTime <= oldDate)
+                        {
+                            issue.SetToUpForGrabs = issueEvent.CreateDateTime;
+                            if (oldUpForGrabsIssues.Any(x => x.Number == issue.Number) == false)
+                                oldUpForGrabsIssues.Add(issue);
+                        }
+                    }
+                }
+            }
+
+            return oldUpForGrabsIssues;
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetIdeasIssues()
+        {
+            var repoService = new RepositoryManagementService();
+            var ideasIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null && x.Labels.Any(l => l.Name == "status/idea")).ToList();
+
+            foreach (var issue in ideasIssues)
+            {
+                var ideaLabelEvent = issue.Events.FirstOrDefault(x => x.Name == "labeled" && x.Label.Name == "status/idea");
+                if(ideaLabelEvent != null)
+                    issue.SetToIdea = ideaLabelEvent.CreateDateTime;
+            }
+
+            return ideasIssues;
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetNoCommentIssues()
+        {
+            var repoService = new RepositoryManagementService();
+            var communityIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null && x.Labels.Any(l => l.Name == "status/idea") == false).ToList();
+
+            var noCommentIssues = new List<Issue>();
+
+            foreach (var issue in communityIssues)
+            {
+                var firstTeamEvent = GetFirstTeamEventDateTime(issue);
+                if (firstTeamEvent == null || firstTeamEvent == default(DateTime))
+                    noCommentIssues.Add(issue);
+            }
+
+            return noCommentIssues;
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetAssignedIssues()
+        {
+            var repoService = new RepositoryManagementService();
+            var assignedIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null && x.Labels.Any(l => l.Name == "status/idea") == false && x.Assignees.Any()).ToList();
+
+            return assignedIssues;
+        }
     }
+}
+
+public class Contributions
+{
+    public string Title { get; set; }
+    public int CodegardenYear { get; set; }
+    public int UniqueContributorCount { get; set; }
+    public int PullRequestsCreated { get; set; }
+    public int PullRequestsMerged { get; set; }
+    public int PullRequestsClosed { get; set; }
+    public int PullRequestsProcessed { get; set; }
+    public int PullRequestsStillOpenInPeriod { get; set; }
+    public int FirstAcceptedPullRequests { get; set; }
+    public int ReleasePullRequests { get; set; }
+    public int AverageHoursToFirstComment { get; set; }
+    public int MedianHoursToFirstComment { get; set; }
+    public int AverageHoursToClose { get; set; }
+    public int MedianHoursToClose { get; set; }
+    public FirstCommentStatistics FirstCommentStatistics { get; set; }
+    public List<Issue> AllPulls { get; set; }
+}
+
+public class IssueStatistics
+{
+    public string Title { get; set; }
+    public int CodegardenYear { get; set; }
+    public int CreatedIssues { get; set; }
+    public int ClosedIssues { get; set; }
+    public int ReleaseIssues { get; set; }
+    public int AverageHoursToFirstComment { get; set; }
+    public int MedianHoursToFirstComment { get; set; }
+    public int AverageHoursToClose { get; set; }
+    public int MedianHoursToClose { get; set; }
+    public FirstCommentStatistics FirstCommentStatistics { get; set; }
+    public List<Issue> AllIssues { get; set; }
+}
+
+public class FirstCommentStatistics
+{
+    public int FirstEventOnTime { get; set; }
+    public int FirstEventLate { get; set; }
+    public int TeamEventMissing { get; set; }
+    public List<double> AllFirstEventTimesInHours { get; set; }
+    public List<Issue> IssuesNoComments { get; set; }
 }
