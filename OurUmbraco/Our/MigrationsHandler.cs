@@ -79,6 +79,7 @@ namespace OurUmbraco.Our
             ImportGitHubLabelDocTypes();
             CreateGitHubAutoRepliesTable();
             AddSmallRteDataType();
+            AddMapToggleToCommunityHub();
             AddNotificationToCommunityHub();
             AddRtesToCommunityHub();
         }
@@ -2630,6 +2631,41 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
 
+        }
+
+        private void AddMapToggleToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null && !communityHubContentType.PropertyTypeExists("showMap"))
+                {
+                    var rte = dataTypeService.GetDataTypeDefinitionByName("Checkbox");
+                    var pickerPropertyType = new PropertyType(rte, "showMap")
+                    {
+                        Name = "Show map?",
+                        Description = "Renderes the community member map if toggled."
+                    };
+                    communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                    contentTypeService.Save(communityHubContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
         }
 
         private void AddSmallRteDataType()
