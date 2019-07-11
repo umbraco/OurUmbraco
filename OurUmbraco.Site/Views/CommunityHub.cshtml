@@ -23,7 +23,7 @@
         @if (!string.IsNullOrEmpty(primary))
         {
             <div class="row">
-                @Html.Raw(Model.Content.GetPropertyValue("primaryRte"))
+                @Html.Raw(primary)
             </div>
         }
 
@@ -44,7 +44,7 @@
         @if (!string.IsNullOrEmpty(secondary))
         {
             <div class="row">
-                @Html.Raw(Model.Content.GetPropertyValue("primaryRte"))
+                @Html.Raw(secondary)
             </div>
         }
     </div>
