@@ -78,6 +78,10 @@ namespace OurUmbraco.Our
             RemoveHomeOnlyBannerTextArea();
             ImportGitHubLabelDocTypes();
             CreateGitHubAutoRepliesTable();
+            AddSmallRteDataType();
+            AddMapToggleToCommunityHub();
+            AddNotificationToCommunityHub();
+            AddRtesToCommunityHub();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2629,5 +2633,152 @@ namespace OurUmbraco.Our
 
         }
 
+        private void AddMapToggleToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null && !communityHubContentType.PropertyTypeExists("showMap"))
+                {
+                    var rte = dataTypeService.GetDataTypeDefinitionByName("Checkbox");
+                    var pickerPropertyType = new PropertyType(rte, "showMap")
+                    {
+                        Name = "Show map?",
+                        Description = "Renderes the community member map if toggled."
+                    };
+                    communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                    contentTypeService.Save(communityHubContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddSmallRteDataType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var alias = "Richtext Editor - Small";
+                var mediaPickerType = dataTypeService.GetDataTypeDefinitionByName(alias);
+                if (mediaPickerType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.TinyMCEv3")
+                    {
+                        Name = alias
+                    };
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, new Dictionary<string, PreValue> ());
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddNotificationToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null && !communityHubContentType.PropertyTypeExists("notification"))
+                {
+                    var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor - Small");
+                    var pickerPropertyType = new PropertyType(rte, "notification")
+                    {
+                        Name = "Notification",
+                        Description = "This notification will be displayed at the top of the community hub page."
+                    };
+                    communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                    contentTypeService.Save(communityHubContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddRtesToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null)
+                {
+                    // Primary (above the map)
+                    if (!communityHubContentType.PropertyTypeExists("primaryRte"))
+                    {
+                        var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor");
+                        var pickerPropertyType = new PropertyType(rte, "primaryRte") { Name = "Content", Description = "Content to have displayed above the map." };
+                        communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                        contentTypeService.Save(communityHubContentType);
+                    }
+
+                    // Secondary (below the map)
+                    if (!communityHubContentType.PropertyTypeExists("secondaryRte"))
+                    {
+                        var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor");
+                        var pickerPropertyType = new PropertyType(rte, "secondaryRte") { Name = "Content", Description = "Content to have displayed below the map." };
+                        communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                        contentTypeService.Save(communityHubContentType);
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }

@@ -1,6 +1,51 @@
 ﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     Layout = "~/Views/CommunityHubPageLayout.cshtml";
+
+    var notification = Model.Content.GetPropertyValue<string>("notification");
+    var map = Model.Content.GetPropertyValue<bool>("showMap");
+
+    var primary = Model.Content.GetPropertyValue<string>("primaryRte");
+    var secondary = Model.Content.GetPropertyValue<string>("secondaryRte");
 }
 
-@Html.Partial("~/Views/Partials/Community/Hub.cshtml")
+@if (!string.IsNullOrEmpty(notification))
+{
+    <div class="note">
+        <div class="message text-center">
+            @Html.Raw(notification)
+        </div>
+    </div>
+}
+
+<section class="community">
+    <div class="container">
+        @if (!string.IsNullOrEmpty(primary))
+        {
+            <div class="row">
+                @Html.Raw(primary)
+            </div>
+        }
+
+        @if (map)
+        {
+            <div class="row map-wrapper">
+                <div class="col-md-12">
+                    <h2 class="text-center">Community members around you</h2>
+                    <p>
+                        Many people in the world have joined our lively community, have a look on the map below. You can edit your appearance on the map <a href="/member/profile">in your profile</a>.
+                    </p>
+                </div>
+
+                @Html.Partial("Community/Map")
+            </div>
+        }
+
+        @if (!string.IsNullOrEmpty(secondary))
+        {
+            <div class="row">
+                @Html.Raw(secondary)
+            </div>
+        }
+    </div>
+</section>
