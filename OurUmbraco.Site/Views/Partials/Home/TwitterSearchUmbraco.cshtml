@@ -1,6 +1,12 @@
 ﻿@using OurUmbraco.Forum.Extensions
 @model OurUmbraco.Community.Models.TweetsModel
 
+@if (Model.Tweets == null || Model.Tweets.Any() == false)
+{
+    <h2>Could not load recent tweets.</h2>
+    return;
+}
+
 @if (Model.ShowAdminOverView == false)
 {
     foreach (var tweet in Model.Tweets)
@@ -8,7 +14,7 @@
         <a href="@tweet.Url" class="forum-thread">
 
             <div class="avatar">
-                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")"/>
+                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
             </div>
 
             <div class="meta">
@@ -41,7 +47,7 @@ else
         <h3>@tweet.Text</h3>
         <p>@tweet.CreatedAt.ConvertToRelativeTime() by <a href="https://twitter.com/@twitterHandle/with_replies" target="_blank">@@@twitterHandle (@tweet.CreatedBy.Name)</a></p><br />
         <a href="@tweet.Url" target="_blank">@tweet.Url</a><br />
-        
+
         using (Html.BeginForm("MarkAsSpam", "TwitterSearch"))
         {
             @Html.AntiForgeryToken()
@@ -54,7 +60,3 @@ else
     }
 }
 
-@if (Model.Tweets.Any() == false)
-{
-    <h2>Could not load recent tweets.</h2>
-}
