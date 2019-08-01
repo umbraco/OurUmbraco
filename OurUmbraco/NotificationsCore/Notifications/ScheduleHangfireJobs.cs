@@ -15,7 +15,6 @@ using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
-using Tweetinvi.Core.Events;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
