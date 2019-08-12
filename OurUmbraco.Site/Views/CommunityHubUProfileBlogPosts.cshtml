@@ -42,13 +42,13 @@
 {
     foreach (var post in Model.Posts)
     {
-        <a href="@post.Link" class="community-post" target="_blank" rel="noopener">
+        <a href="@(!string.IsNullOrEmpty(post.Link) ? post.Link : string.Empty)" class="community-post" target="_blank" rel="noopener">
             <div class="avatar">
-                <img src="@post.Thumbnail" alt="@post.Title" style="height: 46px; width: 46px;">
+                <img src="@(!string.IsNullOrEmpty(post.Thumbnail) ? post.Thumbnail : string.Empty)" alt="@post.Title" style="height: 46px; width: 46px;">
             </div>
             <div class="meta">
                 <div class="forum-thread-text">
-                    <h3>@post.Title</h3>
+                    <h3>@(!string.IsNullOrEmpty(post.Title) ? post.Title : string.Empty)</h3>
                     
                     @if (!string.IsNullOrEmpty(post.Description))
                     {
