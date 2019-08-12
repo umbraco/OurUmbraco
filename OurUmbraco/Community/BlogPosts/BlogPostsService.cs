@@ -203,7 +203,6 @@ namespace OurUmbraco.Community.BlogPosts
                         var title = post.GetElementValue<string>("title")?.Trim();
                         var link = post.GetElementValue<string>("link")?.Trim();
                         var description = post.GetElementValue<string>("description")?.Trim();
-                        var date = post.Element("pubDate");
 
                         var image = post.Element("image");
                         var thumbnail = image?.GetElementValue<string>("url")?.Trim();
@@ -213,8 +212,7 @@ namespace OurUmbraco.Community.BlogPosts
                             Title = title,
                             Link = link,
                             Thumbnail = thumbnail,
-                            Description = description,
-                            PublishedDate = GetPublishDate(date)
+                            Description = description
                         };
 
                         posts.Add(item);
@@ -285,8 +283,8 @@ namespace OurUmbraco.Community.BlogPosts
         public BlogCachedRssItem[] GetCachedBlogPosts(int take, int numberOfPostsPerBlog)
         {
             // Return an empty array as the file doesn't exist
-            /*if (File.Exists(JsonFile) == false)
-                return new BlogCachedRssItem[0];*/
+            if (File.Exists(JsonFile) == false)
+                return new BlogCachedRssItem[0];
 
             var blogs = GetBlogs().ToDictionary(x => x.Id);
 
@@ -323,7 +321,7 @@ namespace OurUmbraco.Community.BlogPosts
             var service = new BlogPostsService();
 
             // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Newtonsoft.Json.Formatting.Indented);
+            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Formatting.Indented);
 
             // Save the JSON to disk
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);
