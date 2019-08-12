@@ -82,6 +82,7 @@ namespace OurUmbraco.Our
             AddMapToggleToCommunityHub();
             AddNotificationToCommunityHub();
             AddRtesToCommunityHub();
+            AddCommunityBlogPostsTemplate();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2780,5 +2781,52 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
+
+        private void AddCommunityBlogPostsTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var hubPageAlias = "communityHubPage";
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var templateName = "CommunityHubUProfileBlogPosts";
+
+                var contentType = contentTypeService.GetContentType(hubPageAlias);
+                if (contentType != null)
+                {
+
+                    var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+
     }
 }

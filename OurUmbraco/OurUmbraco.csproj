@@ -447,9 +447,11 @@
     <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
+    <Compile Include="Community\Controllers\CommunityHubPageController.cs" />
     <Compile Include="Community\Models\GraphQLModel.cs" />
     <Compile Include="Community\GitHub\Models\Comments\AddCommentResult.cs" />
     <Compile Include="Community\Models\Repository.cs" />
+    <Compile Include="Community\Models\ViewModels\CommunityBlogPostViewModel.cs" />
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\DashboardStatisticsController.cs" />
