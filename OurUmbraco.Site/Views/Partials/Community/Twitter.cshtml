@@ -4,7 +4,7 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var twitterService = new TwitterService();
-    var result = twitterService.GetTweets(10, false);
+    var result = twitterService.GetTweets(30, false);
 }
 
 @if (result.Tweets != null && result.Tweets.Any())
