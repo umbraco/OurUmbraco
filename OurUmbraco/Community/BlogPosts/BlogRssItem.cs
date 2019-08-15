@@ -12,6 +12,12 @@ namespace OurUmbraco.Community.BlogPosts {
         [JsonProperty("link")]
         public string Link { get; set; }
 
+        [JsonProperty("description")]
+        public string Description { get; set; }
+
+        [JsonProperty("thumbnail")]
+        public string Thumbnail { get; set; }
+
         [JsonProperty("pubDate")]
         [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTimeOffset PublishedDate { get; set; }
