@@ -25,7 +25,7 @@
 
         public string PullsStorageDirectory()
         {
-            return $"~/App_Data/TEMP/GitHub/{Owner}__{Alias}/pulls";
+            return $"{IssuesStorageDirectory()}/pulls";
         }
     }
 }

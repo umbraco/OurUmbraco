@@ -41,6 +41,10 @@
 
     var controller = new DashboardStatisticsController();
     var issueStatistics = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: monthly);
+    var oldUpForGrabsIssues = controller.GetOldUpForGrabsIssues();
+    var ideasIssues = controller.GetIdeasIssues();
+    var noCommentIssues = controller.GetNoCommentIssues();
+    var assignedIssues = controller.GetAssignedIssues();
 }
 
 
@@ -50,7 +54,8 @@
     </div>
 
     <div class="card-body">
-        <div class="row">
+
+        @*<div class="row">
             <div class="col-xl-8 col-lg-7">
 
                 <!-- Area Chart -->
@@ -60,7 +65,14 @@
                     </div>
                     <div class="card-body">
                         <div class="chart-area">
-                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <div class="chartjs-size-monitor">
+                                <div class="chartjs-size-monitor-expand">
+                                    <div class=""></div>
+                                </div>
+                                <div class="chartjs-size-monitor-shrink">
+                                    <div class=""></div>
+                                </div>
+                            </div>
                             <canvas id="myAreaChart" style="display: block; width: 1037px; height: 320px;" width="1037" height="320" class="chartjs-render-monitor"></canvas>
                         </div>
                         <hr>
@@ -70,22 +82,22 @@
 
 
                 <!-- Bar Chart -->
-                @*<div class="card shadow mb-4">
-                        <div class="card-header py-3">
-                            <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
+                    </div>
+                    <div class="card-body">
+                        <div class="chart-bar">
+                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
+                            <canvas id="myBarChart" width="1037" height="320" class="chartjs-render-monitor" style="display: block; width: 1037px; height: 320px;"></canvas>
                         </div>
-                        <div class="card-body">
-                            <div class="chart-bar">
-                                <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                                <canvas id="myBarChart" width="1037" height="320" class="chartjs-render-monitor" style="display: block; width: 1037px; height: 320px;"></canvas>
-                            </div>
-                            <hr>
-                            Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
-                        </div>
-                    </div>*@
-
+                        <hr>
+                        Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
+                    </div>
+                </div>
             </div>
-        </div>
+        </div>*@
+
 
         <div class="row">
             <div class="col-sm-12">
@@ -180,6 +192,133 @@
                         }
                     }
                 </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Old Up For Grabs issues (@oldUpForGrabsIssues.Count in total)</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Set to "up for grabs"</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in oldUpForGrabsIssues)
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@(Math.Round((DateTime.Now - issue.SetToUpForGrabs).TotalDays, 0)) days ago</td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank">@issue.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Idea issues (@ideasIssues.Count in total)</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Set to "idea"</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in ideasIssues)
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@(Math.Round((DateTime.Now - issue.SetToIdea).TotalDays, 0)) days ago</td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank">@issue.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">No comment issues (@noCommentIssues.Count in total)</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Created</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in noCommentIssues.OrderByDescending(x => x.CreateDateTime))
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@issue.CreateDateTime.ToString("yyyy-MM-dd")</td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank">@issue.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Assigned issues (@assignedIssues.Count in total)</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Created</th>
+                        <th>Assigned to</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in assignedIssues.OrderByDescending(x => x.CreateDateTime))
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@issue.CreateDateTime.ToString("yyyy-MM-dd")</td>
+                        <td>
+                            @foreach (var assignee in issue.Assignees)
+                            {
+                                <span>@assignee.Login&nbsp;</span>
+                            }
+                        </td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank">@issue.Title</a></td>
+                    </tr>
+                }
             </table>
         </div>
     </div>

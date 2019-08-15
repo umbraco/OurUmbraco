@@ -5,7 +5,7 @@ Complete source of the Umbraco community site, [our.umbraco.com](https://our.umb
 
 ## Build in Visual Studio
 
-Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first buid of the project will take quite a while, please be patient, it will finish at some point.
+Make sure to allow NuGet Package Restore in VS (Tools > Options > Package Manager). The first build of the project will take quite a while, please be patient, it will finish at some point.
 Upon build a `web.config` file will be copied into the `OurUmbraco.Site` project which you can use in the following step.
 
 If you're working on the frontend (the js/css/etc parts in `~/OurUmbraco.Client`) then you can either run `~/build/BuildClientFiles.bat` to build them and have them copied into the site. Or if you have npm/gulp installed on your machine you can run the usual commands in the `~/OurUmbraco.Client` folder:
