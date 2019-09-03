@@ -11,7 +11,7 @@
 {
     foreach (var tweet in Model.Tweets)
     {
-        <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" class="forum-thread">
+        <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" class="forum-thread" target="_blank">
 
             <div class="avatar">
                 <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" />
