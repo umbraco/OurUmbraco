@@ -572,12 +572,6 @@
     <Compile Include="Forum\Services\ForumService.cs" />
     <Compile Include="Forum\Services\TopicService.cs" />
     <Compile Include="Forum\Singleton.cs" />
-    <Compile Include="Gitter\GitterApiController.cs" />
-    <Compile Include="Gitter\GitterProxyHub.cs" />
-    <Compile Include="Gitter\GitterRoomSurfaceController.cs" />
-    <Compile Include="Gitter\GitterService.cs" />
-    <Compile Include="Gitter\GitterUmbracoEventHandler.cs" />
-    <Compile Include="Gitter\UmbracoMessage.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStep.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStepCollection.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\StepDefinitions\Complete.cs" />
