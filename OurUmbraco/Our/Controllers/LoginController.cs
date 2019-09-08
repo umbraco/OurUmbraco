@@ -213,7 +213,11 @@ namespace OurUmbraco.Our.Controllers
             {
 
                 IPublishedContent profilePage = Umbraco.TypedContent(1057);
-                if (profilePage == null) return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
+                if (profilePage == null)
+                {
+                    LogHelper.Info<LoginController>("Profile page not found. Has this been unpublished in Umbraco?");
+                    return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
+                }
 
                 // Initialize the OAuth client
                 GitHubOAuthClient client = new GitHubOAuthClient
