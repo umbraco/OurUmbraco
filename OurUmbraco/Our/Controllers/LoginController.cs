@@ -282,7 +282,7 @@ namespace OurUmbraco.Our.Controllers
                 if (memberIds.Length > 1)
                 {
                     LogHelper.Info<LoginController>("Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + "). Matching member IDs are: " + string.Join(", ", memberIds));
-                    return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.<br /><br />" + "Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + "). Matching member IDs are: " + string.Join(", ", memberIds));
+                    return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
                 }
 
                 // Get a reference to the member
