@@ -256,10 +256,10 @@ namespace OurUmbraco.Our.Controllers
                 var service = Skybrud.Social.GitHub.GitHubService.CreateFromAccessToken(accessTokenResponse.Body.AccessToken);
 
                 // Get some information about the authenticated GitHub user
-                GitHubGetUserResponse userResponse;
+                GitHubUser user;
                 try
                 {
-                    userResponse = service.User.GetUser();
+                    user = service.User.GetUser().Body;
                 }
                 catch (Exception ex)
                 {
@@ -267,17 +267,34 @@ namespace OurUmbraco.Our.Controllers
                     return GetErrorResult("Oh noes! An error happened in the communication with the GitHub API. It may help going back to the login page and click the \"Login with GitHub\" to try again ;)");
                 }
 
-                var user = userResponse.Body;
-
                 // Get the total amount of members with the GitHub user ID
-                if (github.ValidateGitHubUserId(user.Id, out int count, out IMember member) == false)
+                var memberIds = github.GetMemberIdsFromGitHubUserId(user.Id);
+
+                // No matching members means that the GitHub user has not yet been linked with any Our members, so we
+                // create a new Our member instead
+                if (memberIds.Length == 0)
                 {
-                    LogHelper.Info<LoginController>("Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + ")");
+                    return RegisterFromGitHub(service, user);
+                }
+
+                // More than one matching member indicates an error as there should not be more than one Our member
+                // linked with the same GitHub user
+                if (memberIds.Length > 1)
+                {
+                    LogHelper.Info<LoginController>("Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + "). Matching member IDs are: " + string.Join(", ", memberIds));
+                    return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.<br /><br />" + "Multiple Our members are linked with the same GitHub account: " + user.Login + " (ID: " + user.Id + "). Matching member IDs are: " + string.Join(", ", memberIds));
+                }
+
+                // Get a reference to the member
+                var member = Services.MemberService.GetById(memberIds[0]);
+
+                // Check whether the member was found
+                if (member == null)
+                {
+                    LogHelper.Info<LoginController>("No Our member found with the ID " + memberIds[0]);
                     return GetErrorResult("Oh noes! This really shouldn't happen. This is us, not you.");
                 }
 
-                if (count == 0) return RegisterFromGitHub(service, user);
-                
                 FormsAuthentication.SetAuthCookie(member.Username, false);
                 return Redirect("/");
 

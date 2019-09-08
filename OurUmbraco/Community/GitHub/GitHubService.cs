@@ -67,13 +67,16 @@ namespace OurUmbraco.Community.GitHub
         private static int _gitHubUserIdPropertyTypeId;
 
         /// <summary>
-        /// Returns whether the specified <paramref name="githubId"/> is valid, meaning that there exists exactly zero or one members with this ID.
+        /// Gets the numeric IDs of all members with the specified <paramref name="githubId"/>.
+        ///
+        /// Ideally there should only ever be zero or one matches members.
+        ///
+        /// No matches indicate that the GitHub user is not linked to any Our members. More than one match indicates an
+        /// error, as there should not be more than one Our member linked to the same GitHub user.
         /// </summary>
-        /// <param name="githubId">The GitHub user ID.</param>
-        /// <param name="count">THe amount of members with the ID.</param>
-        /// <param name="member">The first matched member if the ID is valid.</param>
-        /// <returns></returns>
-        public bool ValidateGitHubUserId(int githubId, out int count, out IMember member)
+        /// <param name="githubId">The ID of a GitHub user.</param>
+        /// <returns>Array if member IDs.</returns>
+        public int[] GetMemberIdsFromGitHubUserId(int githubId)
         {
 
             var db = ApplicationContext.Current.DatabaseContext.Database;
@@ -101,13 +104,8 @@ namespace OurUmbraco.Community.GitHub
             // Declare another nice and raw SQL query
             Sql sql2 = new Sql("SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1", _gitHubUserIdPropertyTypeId, githubId);
 
-            // Get the IDs of matching members (there should either be zero or one)
-            List<int> memberIds = db.Fetch<int>(sql2);
-
-            count = memberIds.Count;
-            member = count == 1 ? ApplicationContext.Current.Services.MemberService.GetById(memberIds[0]) : null;
-
-            return member != null;
+            // Get the IDs of matching members
+            return db.Fetch<int>(sql2).ToArray();
 
         }
 
