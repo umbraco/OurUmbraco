@@ -475,7 +475,6 @@
     <Compile Include="Community\Map\MapApiController.cs" />
     <Compile Include="Community\Map\MapEventHandler.cs" />
     <Compile Include="Community\Map\MemberLocation.cs" />
-    <Compile Include="Community\Map\RadarHangfireJobs.cs" />
     <Compile Include="Community\Meetup\MeetupService.cs" />
     <Compile Include="Community\Meetup\Models\MeetupCacheItem.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />

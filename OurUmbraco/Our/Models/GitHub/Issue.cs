@@ -94,5 +94,6 @@ namespace OurUmbraco.Our.Models.GitHub
 
         public DateTime SetToUpForGrabs { get; set; }
         public DateTime SetToIdea { get; set; }
+        public DateTime LabelAdded { get; set; }
     }
 }

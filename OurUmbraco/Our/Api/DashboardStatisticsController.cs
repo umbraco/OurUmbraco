@@ -307,6 +307,41 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
+        public List<Issue> GetIssuesWithLabel(string label)
+        {
+            var repoService = new RepositoryManagementService();
+            var labelIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null 
+                            && x.Labels.Any(l => l.Name == "status/idea") == false 
+                            && x.Labels.Any(l => string.Equals(l.Name, label, StringComparison.InvariantCultureIgnoreCase))).ToList();
+            
+            foreach (var issue in labelIssues)
+            {
+                foreach (var issueEvent in issue.Events)
+                {
+                    if (issueEvent.Name == "labeled" && string.Equals(issueEvent.Label.Name, label, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        issue.LabelAdded = issueEvent.CreateDateTime;
+                    }
+                }
+            }
+
+            return labelIssues.OrderByDescending(x => x.LabelAdded).ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetOpenPulls()
+        {
+            var repoService = new RepositoryManagementService();
+            var openPrs = repoService.GetAllCommunityIssues(true)
+                .Where(x => x.ClosedDateTime == null).ToList();
+            
+            return openPrs.OrderByDescending(x => x.CreateDateTime).ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
         public List<Issue> GetIdeasIssues()
         {
             var repoService = new RepositoryManagementService();
@@ -316,7 +351,7 @@ namespace OurUmbraco.Our.Api
             foreach (var issue in ideasIssues)
             {
                 var ideaLabelEvent = issue.Events.FirstOrDefault(x => x.Name == "labeled" && x.Label.Name == "status/idea");
-                if(ideaLabelEvent != null)
+                if (ideaLabelEvent != null)
                     issue.SetToIdea = ideaLabelEvent.CreateDateTime;
             }
 
