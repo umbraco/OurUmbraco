@@ -14,7 +14,7 @@
         <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" class="forum-thread">
 
             <div class="avatar">
-                <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://")" />
+                <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" />
             </div>
 
             <div class="meta">
@@ -43,7 +43,7 @@ else
     {
         var twitterHandle = tweet.Author.ScreenName;
 
-        <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://")" /><br />
+        <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" /><br />
         <h3>@tweet.Text</h3>
         <p>@tweet.CreatedDate.ConvertToRelativeTime() by <a href="https://twitter.com/@twitterHandle/with_replies" target="_blank">@@@twitterHandle (@tweet.Author.ScreenName)</a></p><br />
         <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" target="_blank">https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id</a><br />
