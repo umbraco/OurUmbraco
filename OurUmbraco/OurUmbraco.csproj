@@ -524,6 +524,7 @@
     <Compile Include="Our\Models\GitHub\Issue.cs" />
     <Compile Include="Our\Models\GitHub\Label.cs" />
     <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyType.cs" />
+    <Compile Include="Our\Models\GitHub\Review.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\IssuesInPeriod.cs" />

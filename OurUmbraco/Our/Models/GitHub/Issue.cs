@@ -61,7 +61,7 @@ namespace OurUmbraco.Our.Models.GitHub
         public Event[] Events { get; set; }
 
         [JsonProperty("reviews")]
-        public Event[] Reviews { get; set; }
+        public Review[] Reviews { get; set; }
 
         // Custom properties
 
@@ -95,5 +95,12 @@ namespace OurUmbraco.Our.Models.GitHub
         public DateTime SetToUpForGrabs { get; set; }
         public DateTime SetToIdea { get; set; }
         public DateTime LabelAdded { get; set; }
+        public string ReviewState { get; set; }
+        public DateTime LastReviewDate { get; set; }
+
+
+        public DateTime AcknowledgeDate { get; set; }
+        public DateTime SignificantUpdateDate { get; set; }
+        
     }
 }

@@ -331,13 +331,62 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
+        public List<Issue> GetAllOpenIssues(string label)
+        {
+            var repoService = new RepositoryManagementService();
+            var allOpenIssues = repoService.GetAllCommunityIssues(false).Where(x => x.ClosedDateTime == null).ToList();
+
+            foreach (var issue in allOpenIssues)
+            {
+                var firstLabel = issue.Events.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => x.Name == "labeled");
+            }
+            
+
+            foreach (var issue in allOpenIssues)
+            {
+                var firstComment = issue.Comments.OrderBy(x => x.CreateDateTime).FirstOrDefault();
+
+            }
+
+            // Added label by HQ
+            // -- Discussion / HQ Reply
+            // -- Estimation
+            // 
+
+            //foreach (var issue in labelIssues)
+            //{
+            //    foreach (var issueEvent in issue.Events)
+            //    {
+            //        if (issueEvent.Name == "labeled" && string.Equals(issueEvent.Label.Name, label, StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            issue.LabelAdded = issueEvent.CreateDateTime;
+            //        }
+            //    }
+            //}
+
+            return allOpenIssues.ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
         public List<Issue> GetOpenPulls()
         {
             var repoService = new RepositoryManagementService();
             var openPrs = repoService.GetAllCommunityIssues(true)
                 .Where(x => x.ClosedDateTime == null).ToList();
-            
-            return openPrs.OrderByDescending(x => x.CreateDateTime).ToList();
+
+            foreach (var pr in openPrs)
+            {
+                var lastReview = pr.Reviews.LastOrDefault();
+                if (lastReview != null)
+                {
+                    pr.ReviewState = lastReview.State;
+                    pr.LastReviewDate = lastReview.CreateDateTime; 
+                }
+
+            }
+
+            return openPrs.OrderByDescending(x => x.LastReviewDate).ToList();
         }
 
         [MemberAuthorize(AllowGroup = "HQ")]

@@ -85,19 +85,66 @@ namespace OurUmbraco.Our.Services
                 var contributor = contributors.FirstOrDefault(x => string.Equals(x.Username, pr.User.Login, StringComparison.InvariantCultureIgnoreCase));
                 if (contributor == null)
                 {
+                    DateTime createdAt = default;
+                    if (pr.CreatedAt != null)
+                        createdAt = pr.CreatedAt.Value;
+
                     contributor = new PullRequestContributor
                     {
                         Username = pr.User.Login,
                         Contributions = 1,
                         OpenContributions = isOpen ? 1 : 0,
                         ClosedContributions = isClosed ? 1 : 0,
-                        MergedContributions = isMerged ? 1 : 0
+                        MergedContributions = isMerged ? 1 : 0,
+                        FirstContribution = createdAt
                     };
                     contributors.Add(contributor);
                 }
                 else
                 {
                     contributor.Contributions = contributor.Contributions + 1;
+                    contributor.OpenContributions = isOpen ? contributor.OpenContributions + 1 : contributor.OpenContributions;
+                    contributor.ClosedContributions = isClosed ? contributor.ClosedContributions + 1 : contributor.ClosedContributions;
+                    contributor.MergedContributions = isMerged ? contributor.MergedContributions + 1 : contributor.MergedContributions;
+                }
+            }
+
+            return contributors;
+        }
+
+        public List<PullRequestContributor> GetFirstContributors(string repository = "Umbraco-CMS")
+        {
+            var pullsNonHq = GetPullsNonHq(repository);
+            var contributors = new List<PullRequestContributor>();
+
+            foreach (var pr in pullsNonHq.OrderBy(x => x.CreatedAt))
+            {
+                var isOpen = pr.ClosedAt == null && pr.MergedAt == null;
+                var isClosed = pr.ClosedAt != null && pr.MergedAt == null;
+                var isMerged = pr.ClosedAt != null && pr.MergedAt != null;
+
+                var contributor = contributors.FirstOrDefault(x => string.Equals(x.Username, pr.User.Login, StringComparison.InvariantCultureIgnoreCase));
+                if (contributor == null)
+                {
+                    DateTime createdAt = default;
+                    if (pr.CreatedAt != null)
+                        createdAt = pr.CreatedAt.Value;
+
+                    contributor = new PullRequestContributor
+                    {
+                        Username = pr.User.Login,
+                        Contributions = 1,
+                        OpenContributions = isOpen ? 1 : 0,
+                        ClosedContributions = isClosed ? 1 : 0,
+                        MergedContributions = isMerged ? 1 : 0,
+                        FirstContribution = createdAt
+                    };
+                    contributors.Add(contributor);
+                }
+                else
+                {
+                    contributor.Contributions = contributor.Contributions + 1;
+
                     contributor.OpenContributions = isOpen ? contributor.OpenContributions + 1 : contributor.OpenContributions;
                     contributor.ClosedContributions = isClosed ? contributor.ClosedContributions + 1 : contributor.ClosedContributions;
                     contributor.MergedContributions = isMerged ? contributor.MergedContributions + 1 : contributor.MergedContributions;

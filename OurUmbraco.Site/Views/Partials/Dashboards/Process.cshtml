@@ -1,5 +1,4 @@
-﻿@using OurUmbraco.Community.GitHub
-@using OurUmbraco.Our.Api
+﻿@using OurUmbraco.Our.Api
 @using OurUmbraco.Our.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
@@ -18,18 +17,14 @@
         page = int.Parse(Request.QueryString["page"]);
     }
 
-    //var controller = new DashboardStatisticsController();
-    //var awaitingFeedbackLabel = "status/awaiting-feedback";
-    //var awaitingFeedbackIssues = controller.GetIssuesWithLabel(awaitingFeedbackLabel);
-
-    var githubService = new GitHubService();
-    githubService.UpdateReviews(repositories.First(x => x.Alias == repository), page);
+    var controller = new DashboardStatisticsController();
+    var awaitingFeedbackLabel = "status/awaiting-feedback";
+    var awaitingFeedbackIssues = controller.GetIssuesWithLabel(awaitingFeedbackLabel);
+    var openPulls = controller.GetOpenPulls();
+    var openIssues = controller.GetAllOpenIssues("none");
 }
 
-
-
-
-@*<div class="card shadow mb-4">
+<div class="card shadow mb-4">
     <div class="card-header py-3">
         <h6 class="m-0 font-weight-bold text-primary">Issues "@awaitingFeedbackLabel"</h6>
     </div>
@@ -57,4 +52,46 @@
             </table>
         </div>
     </div>
-</div>*@
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Open PRs</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Review state</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var pr in openPulls.OrderByDescending(p => p.Reviews.Any()))
+                {
+                    <tr>
+                        <td>[@pr.RepositoryName/@pr.Number]</td>
+                        <td>
+                            @{
+                                var lastReview = pr.Reviews?.LastOrDefault();
+                            }
+                            @if (lastReview != null)
+                            {
+                                @pr.ReviewState <text> - </text> @(Math.Round((DateTime.Now - pr.LastReviewDate).TotalDays, 0)) <text>days ago</text>
+                            }
+                            else
+                            {
+                                <text>n/a</text>
+                            }
+                        </td>
+                        <td><a href="https://github.com/@pr.RepoOwner/@pr.RepositoryName/issues/@pr.Number" target="_blank">@pr.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

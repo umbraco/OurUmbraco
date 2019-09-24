@@ -52,11 +52,11 @@
 
     <ul id="breadcrumb2">
         <li>
-            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS this month</a> / 
+            <a href="/teamumbraco/?repo=Umbraco-CMS">Stats Umbraco CMS this month</a> /
             <a href="/teamumbraco/?repo=Umbraco-CMS&lastMonth=true">Stats Umbraco CMS previous month</a>
         </li>
         <li>
-            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs this month</a> / 
+            <a href="/teamumbraco/?repo=UmbracoDocs">Stats Umbraco Docs this month</a> /
             <a href="/teamumbraco/?repo=UmbracoDocs&lastMonth=true">Stats Umbraco Docs previous month</a>
         </li>
         <li>
@@ -89,13 +89,14 @@
         var endDateTwoMonthsAgo = DateTime.Now.AddMonths(-2).GetDateLastDayOfMonth();
         var leaderBoardTwoMonthsAgo = prService.GetLeaderBoard(startDateTwoMonthsAgo, endDateTwoMonthsAgo, repository)
             .OrderByDescending(x => x.Contributions).ToList();
-			
+        var firstContrib = prService.GetFirstContributors(repository).ToList();
+
         <section>
             <div class="container">
                 <div class="row">
                     <h5>Leaderboard this month - @startDateThisMonth.ToString("yyyy-MM-dd")-@endDateThisMonth.ToString("yyyy-MM-dd")</h5>
                     <h5>Unique contributors: @(leaderBoardThisMonth.Count)</h5>
-                    <div class="col-md-12">    
+                    <div class="col-md-12">
                         <table>
                             <tr>
                                 <td><strong>GitHub username</strong></td>
@@ -125,7 +126,7 @@
                 <div class="row">
                     <h5>Leaderboard last month -  @startDateLastMonth.ToString("yyyy-MM-dd")-@endDateLastMonth.ToString("yyyy-MM-dd")</h5>
                     <h5>Unique contributors: @(leaderBoardLastMonth.Count)</h5>
-                    <div class="col-md-12">    
+                    <div class="col-md-12">
                         <table>
                             <tr>
                                 <td><strong>GitHub username</strong></td>
@@ -149,13 +150,13 @@
                 </div>
             </div>
         </section>
-		
+
         <section>
             <div class="container">
                 <div class="row">
                     <h5>Leaderboard two months ago -  @startDateTwoMonthsAgo.ToString("yyyy-MM-dd")-@endDateTwoMonthsAgo.ToString("yyyy-MM-dd")</h5>
                     <h5>Unique contributors: @(leaderBoardTwoMonthsAgo.Count)</h5>
-                    <div class="col-md-12">    
+                    <div class="col-md-12">
                         <table>
                             <tr>
                                 <td><strong>GitHub username</strong></td>
@@ -185,7 +186,7 @@
                 <div class="row">
                     <h5>Leaderboard past 12 months</h5>
                     <h5>Unique contributors: @(leaderBoardYear.Count)</h5>
-                    <div class="col-md-12">    
+                    <div class="col-md-12">
                         <table>
                             <tr>
                                 <td><strong>GitHub username</strong></td>
@@ -209,7 +210,51 @@
                 </div>
             </div>
         </section>
-        
+
+        <section>
+            <div class="container">
+                <div class="row">
+                    <h5>New contributors past 12 months</h5>
+                    @{ 
+                        var firstContributors = firstContrib.Where(
+                           x => x.FirstContribution != default(DateTime)
+                                && x.FirstContribution.Value > new DateTime(2018, 11, 01))
+                            .OrderBy(x => x.FirstContribution)
+                           .ToList();
+                    }
+                    <h5>Number of new contributors: @(firstContributors.Count)</h5>
+
+                    @foreach (var contrib in firstContributors.GroupBy(x => x.FirstContribution.Value.Month))
+                    {
+                        <h6>Month: @contrib.Key</h6>
+                        <div class="col-md-12">
+                            <table>
+                                <tr>
+                                    <td><strong>GitHub username</strong></td>
+                                    <td><strong>Total contributions</strong></td>
+                                    <td><strong>Open</strong></td>
+                                    <td><strong>Closed</strong></td>
+                                    <td><strong>Merged</strong></td>
+                                    <td><strong>First contribution</strong></td>
+                                </tr>
+                                @foreach (var person in contrib.Where(x => x.FirstContribution.Value.Month == contrib.Key))
+                                {
+                                    <tr>
+                                        <td>@person.Username</td>
+                                        <td>@person.Contributions</td>
+                                        <td>@person.OpenContributions</td>
+                                        <td>@person.ClosedContributions</td>
+                                        <td>@person.MergedContributions</td>
+                                        <td>@person.FirstContribution.Value.ToLongDateString()</td>
+                                    </tr>
+                                }
+                            </table>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
         <section>
             <div class="container">
                 <div class="row">
@@ -277,110 +322,110 @@
             }
         </style>
 
-            <section class="stats">
-                <div class="container">
-                    <h5>This month's pull request stats</h5>
-                    <div class="row ">
-                        <div class="col-md-6">
-                            <div id="OpenPRs" class="gauge center-block"></div>
-                        </div>
-                        <div class="col-md-6">
-                            <div id="NewContributors" class="gauge center-block"></div>
-                        </div>
+        <section class="stats">
+            <div class="container">
+                <h5>This month's pull request stats</h5>
+                <div class="row ">
+                    <div class="col-md-6">
+                        <div id="OpenPRs" class="gauge center-block"></div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-4">
-                            <div id="CreatedPRs" class="gauge"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div id="MergedPRs" class="gauge"></div>
-                        </div>
-                        <div class="col-md-4">
-                            <div id="ClosedPRs" class="gauge"></div>
-                        </div>
+                    <div class="col-md-6">
+                        <div id="NewContributors" class="gauge center-block"></div>
                     </div>
                 </div>
-            </section>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div id="CreatedPRs" class="gauge"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="MergedPRs" class="gauge"></div>
+                    </div>
+                    <div class="col-md-4">
+                        <div id="ClosedPRs" class="gauge"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Pull requests: created, merged and closed</h5>
-                        <div class="col-md-12">
-                            <div id="GroupedPRs" class="chart"></div>
-                        </div>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Pull requests: created, merged and closed</h5>
+                    <div class="col-md-12">
+                        <div id="GroupedPRs" class="chart"></div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Contributors: active vs. new</h5>
-                        <div class="col-md-12">
-                            <div id="Contributors" class="chart"></div>
-                        </div>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Contributors: active vs. new</h5>
+                    <div class="col-md-12">
+                        <div id="Contributors" class="chart"></div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Open PRs over time</h5>
-                        <div class="col-md-12">
-                            <div id="OpenPRsAllTime" class="chart"></div>
-                        </div>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Open PRs over time</h5>
+                    <div class="col-md-12">
+                        <div id="OpenPRsAllTime" class="chart"></div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>PR closing time in hours</h5>
-                        <div class="col-md-12">
-                            <div id="MedianPRMergeTime" class="chart"></div>
-                        </div>
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>PR closing time in hours</h5>
+                    <div class="col-md-12">
+                        <div id="MedianPRMergeTime" class="chart"></div>
                     </div>
                 </div>
-            </section>
-            
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Time for first comment from Team Umbraco</h5>
-                        <div class="col-md-12">
-                            <div id="MedianFirstTeamCommentTime" class="chart"></div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-            
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        @if (repository == "Umbraco-CMS")
-                        {
-                            <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
-                            <div class="col-md-12">
-                                <div id="ActiveContributorsAfterCG18" class="chart"></div>
-                            </div>
-                        }
-                        @if (repository == "UmbracoDocs")
-                        {
-                            <h5>Since January 2018: Active contributors (1 or more PRs created) vs new contributors</h5>
-                            <div class="col-md-12">
-                                <div id="ActiveContributorsSinceJan18" class="chart"></div>
-                            </div>
-                        }
-                    </div>
-                </div>
-            </section>
+            </div>
+        </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    <h5>Time for first comment from Team Umbraco</h5>
+                    <div class="col-md-12">
+                        <div id="MedianFirstTeamCommentTime" class="chart"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="row">
+                    @if (repository == "Umbraco-CMS")
+                    {
+                        <h5>After Codegarden 18: Active contributors (1 or more PRs created) vs new contributors</h5>
+                        <div class="col-md-12">
+                            <div id="ActiveContributorsAfterCG18" class="chart"></div>
+                        </div>
+                    }
+                    @if (repository == "UmbracoDocs")
+                    {
+                        <h5>Since January 2018: Active contributors (1 or more PRs created) vs new contributors</h5>
+                        <div class="col-md-12">
+                            <div id="ActiveContributorsSinceJan18" class="chart"></div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </section>
+
+        <section class="stats">
+            <div class="container">
+                <div class="row">
                     @if (repository == "Umbraco-CMS")
                     {
                         <h5>After Codegarden 18: PRs created vs. still open</h5>
@@ -395,46 +440,46 @@
                             <div id="OpenPRsSinceJan18" class="chart"></div>
                         </div>
                     }
+                </div>
+            </div>
+        </section>
+
+        if (Members.IsHq())
+        {
+
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Forum data</h5>
+                        <div class="col-md-12">
+                            <div id="ForumData" class="chart"></div>
+                        </div>
                     </div>
                 </div>
             </section>
-            
-            if (Members.IsHq())
-            {
-            
-                <section class="stats">
-                    <div class="container">
-                        <div class="row">
-                            <h5>Forum data</h5>
-                            <div class="col-md-12">
-                                <div id="ForumData" class="chart"></div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
 
-                <section class="stats">
-                    <div class="container">
-                        <div class="row">
-                            <h5>Our Members (in 1000s)</h5>
-                            <div class="col-md-12">
-                                <div id="OurMemberStats" class="chart"></div>
-                            </div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Our Members (in 1000s)</h5>
+                        <div class="col-md-12">
+                            <div id="OurMemberStats" class="chart"></div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-                <section class="stats">
-                    <div class="container">
-                        <div class="row">
-                            <h5>Our</h5>
-                            <div class="col-md-12">
-                                <div id="OurMemberStats2" class="chart"></div>
-                            </div>
+            <section class="stats">
+                <div class="container">
+                    <div class="row">
+                        <h5>Our</h5>
+                        <div class="col-md-12">
+                            <div id="OurMemberStats2" class="chart"></div>
                         </div>
                     </div>
-                </section>
-            }
+                </div>
+            </section>
+        }
 
         <script>
             httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
@@ -498,11 +543,11 @@
             prsCreated.dataFields.categoryX = "GroupName";
             prsCreated.dataFields.valueY = "NumberCreated";
             prsCreated.stacked = false;
-            
+
             var prsCreatedColumnTemplate = prsCreated.columns.template;
             prsCreatedColumnTemplate.width = am4core.percent(80);
             prsCreatedColumnTemplate.tooltipText = "{name}: {valueY.value}";
-            
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
@@ -525,7 +570,7 @@
             contributorsSeries.fillOpacity = 0.3;
             contributorsSeries.strokeWidth = 4;
             contributorsSeries.tensionX = 0.8;
-            
+
             var contributorsSeries2 = contributorsChart.series.push(new am4charts.LineSeries());
             contributorsSeries2.name = "Active contributors";
             contributorsSeries2.dataFields.dateX = "GroupName";
@@ -748,7 +793,7 @@
             mergeTimeInHoursSeries2.tensionX = 0.8;
 
             mergeTimeInHoursChart.cursor = new am4charts.XYCursor();
-            
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
@@ -767,7 +812,7 @@
             firstTeamCommentTimeInHoursSeries.sequencedInterpolation = true;
             firstTeamCommentTimeInHoursSeries.strokeWidth = 4;
             firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
-            
+
             var averageFirstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
             averageFirstTeamCommentTimeInHoursSeries.name = "Average first Team Umbraco comment time";
             averageFirstTeamCommentTimeInHoursSeries.dataFields.dateX = "GroupName";
@@ -787,7 +832,7 @@
             firstTeamCommentTimeInHoursSeries.tensionX = 0.8;
 
             firstTeamCommentTimeInHoursChart.cursor = new am4charts.XYCursor();
-            
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -798,7 +843,7 @@
 
             var ourMembersDateAxis = ourChart.xAxes.push(new am4charts.DateAxis());
             var ourMembersValueAxis = ourChart.yAxes.push(new am4charts.ValueAxis());
-            
+
             var ourMembersSeries = ourChart.series.push(new am4charts.LineSeries());
             ourMembersSeries.name = "Members";
             ourMembersSeries.dataFields.dateX = "GroupName";
@@ -810,10 +855,10 @@
             ourMembersSeries.tensionX = 0.8;
 
             ourChart.cursor = new am4charts.XYCursor();
-            
+
             var ourChart2 = am4core.create("OurMemberStats2", am4charts.XYChart);
             ourChart2.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetOurMemberData/";
-            
+
             ourChart2.legend = new am4charts.Legend();
             ourChart2.colors.step = 2;
 
@@ -830,21 +875,21 @@
             membersLoginData.dataFields.categoryX = "GroupName";
             membersLoginData.dataFields.valueY = "TotalNonSpamMembersWithLogin";
             membersLoginData.stacked = false;
-            
+
             var membersLoginDataColumnTemplate = prsCreated.columns.template;
             membersLoginDataColumnTemplate.width = am4core.percent(80);
             membersLoginDataColumnTemplate.tooltipText = "{name}: {valueY.value}";
-            
+
             var membersKarmaData = ourChart2.series.push(new am4charts.LineSeries());
             membersKarmaData.name = "Members earning karma";
             membersKarmaData.dataFields.categoryX = "GroupName";
             membersKarmaData.dataFields.valueY = "TotalMembersEarningKarma";
             membersKarmaData.stacked = false;
-            
+
             var membersKarmaDataColumnTemplate = prsCreated.columns.template;
             membersKarmaDataColumnTemplate.width = am4core.percent(80);
             membersKarmaDataColumnTemplate.tooltipText = "{name}: {valueY.value}";
-            
+
             ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -886,7 +931,7 @@
             topicStartersAndCommenterSeries.tensionX = 0.8;
 
             forumStatsChart.cursor = new am4charts.XYCursor();
-            
+
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
