@@ -2835,20 +2835,19 @@ namespace OurUmbraco.Our
             try
             {
                 var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
-                if (File.Exists(path)) return;
+                if (File.Exists(path))
+                    return;
 
-                var packageLandingAlias = "aboutPackages";
+                const string templateName = "ProjectLanding";
+                const string contentTypeAlias = "TextPage";
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
                 var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
                 var fileService = ApplicationContext.Current.Services.FileService;
 
-                var templateName = "ProjectLanding";
-
-                var contentType = contentTypeService.GetContentType(packageLandingAlias);
+                var contentType = contentTypeService.GetContentType(contentTypeAlias);
                 if (contentType != null)
                 {
-
-                    var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
-
                     var templateContents = string.Empty;
 
                     var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
@@ -2862,10 +2861,6 @@ namespace OurUmbraco.Our
                     contentType.AllowedTemplates = allowsTemplates;
                     contentTypeService.Save(contentType);
                 }
-
-                string[] lines = { "" };
-                File.WriteAllLines(path, lines);
-
             }
             catch (Exception ex)
             {
