@@ -83,6 +83,7 @@ namespace OurUmbraco.Our
             AddNotificationToCommunityHub();
             AddRtesToCommunityHub();
             AddCommunityBlogPostsTemplate();
+            AddPackageLandingPageTemplate();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2798,6 +2799,51 @@ namespace OurUmbraco.Our
                 var templateName = "CommunityHubUProfileBlogPosts";
 
                 var contentType = contentTypeService.GetContentType(hubPageAlias);
+                if (contentType != null)
+                {
+
+                    var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddPackageLandingPageTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var packageLandingAlias = "aboutPackages";
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var templateName = "ProjectLanding";
+
+                var contentType = contentTypeService.GetContentType(packageLandingAlias);
                 if (contentType != null)
                 {
 
