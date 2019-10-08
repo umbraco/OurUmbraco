@@ -4459,7 +4459,6 @@
     <Content Include="Views\CommunityHubUProfileBlogPosts.cshtml" />
     <Content Include="Views\Partials\Dashboards\Process.cshtml" />
     <Content Include="Views\ProjectLanding.cshtml" />
-    <Content Include="Views\Partials\Projects\Breadcrumb.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
