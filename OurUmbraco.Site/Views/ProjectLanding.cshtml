@@ -23,7 +23,7 @@
         <div class="main-content">
             <div class="content-wrapper">
                 <div>
-                    @Html.Partial("~/Views/Partials/Projects/Breadcrumb.cshtml")
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                 </div>
                 <div class="rte">
                     @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
