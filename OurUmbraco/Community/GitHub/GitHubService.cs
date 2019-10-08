@@ -261,7 +261,8 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Deploy.Contrib",
                 "Umbraco.Deploy.ValueConnectors" ,
                 "rfcs",	
-                "organizer-guide"
+                "organizer-guide",
+                "The-Starter-Kit"
             };
         }
 
