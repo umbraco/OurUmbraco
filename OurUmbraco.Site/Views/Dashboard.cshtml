@@ -267,7 +267,7 @@
                             {
                                 <div class="issue">
                                     <div class="author">
-                                        <a href="https://github.com/@issue.User.Login" target="_blank">
+                                        <a href="https://github.com/@issue.User.Login" target="_blank" rel="noreferrer noopener">
                                             <img src="@issue.User.AvatarUrl" title="@issue.User.Login" />
                                         </a>
                                     </div>
@@ -275,12 +275,12 @@
                                         <span class="assignees">
                                             @foreach (var assignee in issue.Assignees)
                                             {
-                                                <a href="https://github.com/@assignee.Login" target="_blank">
+                                                <a href="https://github.com/@assignee.Login" target="_blank" rel="noreferrer noopener">
                                                     <img src="@assignee.AvatarUrl" title="Assigned to @assignee.Login" />
                                                 </a>
                                             }
                                         </span>
-                                        <a href="@issue.Link" target="_blank" title="@issue.Description">@issue.Title #@issue.Number</a><br />
+                                        <a href="@issue.Link" target="_blank" rel="noreferrer noopener" title="@issue.Description">@issue.Title #@issue.Number</a><br />
                                         <small class="comment">@issue.RepositoryName</small><br />
                                         <small>
                                             @{

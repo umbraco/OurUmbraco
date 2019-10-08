@@ -132,7 +132,7 @@
                             {
                                 <div class="videos-item">
                                     <div class="videos-details">
-                                        <a href="@video.Link" target="_blank" rel="noopener"><strong>@video.Name</strong></a>
+                                        <a href="@video.Link" target="_blank" rel="noreferrer noopener"><strong>@video.Name</strong></a>
                                         <div class="videos-meta">
                                             @video.CreatedTime.ToString("MMM d, yyyy")
                                             
@@ -176,7 +176,7 @@
                                             <div class="videos-description">@Html.Raw(html)</div>
                                         }
                                     </div>
-                                    <a href="@video.Link" class="videos-thumbnail" target="_blank" rel="noopener">
+                                    <a href="@video.Link" class="videos-thumbnail" target="_blank" rel="noreferrer noopener">
                                         <div class="videos-thumbnail-overlay">
                                             <i class="icon-Video"></i>
                                         </div>

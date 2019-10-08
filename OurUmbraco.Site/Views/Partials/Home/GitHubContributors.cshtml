@@ -9,7 +9,7 @@
         @foreach (var contributor in Model.Contributors)
         {
             <div class="contributor">
-                <a href="@contributor.AuthorUrl" target="_blank" title="@contributor.AuthorLogin">
+                <a href="@contributor.AuthorUrl" target="_blank" rel="noreferrer noopener" title="@contributor.AuthorLogin">
                     <div class="avatar">
                         <img alt="@contributor.AuthorLogin" src="@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 112)"
                              srcset="@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 224) 2x,@avatarService.GetRemoteAvatarUrl(contributor.AuthorAvatarUrl, 336) 3x" />

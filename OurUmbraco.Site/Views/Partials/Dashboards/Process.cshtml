@@ -46,7 +46,7 @@
                     <tr>
                         <td>[@issue.RepositoryName/@issue.Number]</td>
                         <td>@(Math.Round((DateTime.Now - issue.LabelAdded).TotalDays, 0)) days ago</td>
-                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank">@issue.Title</a></td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank" rel="noreferrer noopener">@issue.Title</a></td>
                     </tr>
                 }
             </table>
@@ -88,7 +88,7 @@
                                 <text>n/a</text>
                             }
                         </td>
-                        <td><a href="https://github.com/@pr.RepoOwner/@pr.RepositoryName/issues/@pr.Number" target="_blank">@pr.Title</a></td>
+                        <td><a href="https://github.com/@pr.RepoOwner/@pr.RepositoryName/issues/@pr.Number" target="_blank" rel="noreferrer noopener">@pr.Title</a></td>
                     </tr>
                 }
             </table>
