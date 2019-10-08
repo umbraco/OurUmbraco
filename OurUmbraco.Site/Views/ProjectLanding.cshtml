@@ -10,7 +10,7 @@
                 <nav>
                     <ul class="level-1">
                         <li class="filter-orderBy">
-                            <h3><a href="/packages">Browse Packages</a></h3>
+                            <h3><a href="/packages"><i class="icon-Box"></i> Browse Packages</a></h3>
                         </li>
                     </ul>
                 </nav>
@@ -23,7 +23,7 @@
         <div class="main-content">
             <div class="content-wrapper">
                 <div>
-                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                    @Html.Partial("~/Views/Partials/Projects/Breadcrumb.cshtml")
                 </div>
                 <div class="rte">
                     @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
