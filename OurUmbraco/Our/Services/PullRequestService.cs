@@ -85,7 +85,7 @@ namespace OurUmbraco.Our.Services
                 var contributor = contributors.FirstOrDefault(x => string.Equals(x.Username, pr.User.Login, StringComparison.InvariantCultureIgnoreCase));
                 if (contributor == null)
                 {
-                    DateTime createdAt = default;
+                    var createdAt = DateTime.MinValue;
                     if (pr.CreatedAt != null)
                         createdAt = pr.CreatedAt.Value;
 
@@ -126,7 +126,7 @@ namespace OurUmbraco.Our.Services
                 var contributor = contributors.FirstOrDefault(x => string.Equals(x.Username, pr.User.Login, StringComparison.InvariantCultureIgnoreCase));
                 if (contributor == null)
                 {
-                    DateTime createdAt = default;
+                    var createdAt = DateTime.MinValue;
                     if (pr.CreatedAt != null)
                         createdAt = pr.CreatedAt.Value;
 
