@@ -2861,6 +2861,9 @@ namespace OurUmbraco.Our
                     contentType.AllowedTemplates = allowsTemplates;
                     contentTypeService.Save(contentType);
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
             }
             catch (Exception ex)
             {
