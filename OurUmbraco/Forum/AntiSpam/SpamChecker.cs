@@ -52,9 +52,9 @@ namespace OurUmbraco.Forum.AntiSpam
             using (var client = new WebClient())
             {
                 var topic = ts.GetById(topicId);
-                var post = string.Format("Topic title: *{0}*\n\n Link to topic: http://our.umbraco.org{1}\n\n", topic.Title, topic.GetUrl());
+                var post = string.Format("Topic title: *{0}*\n\n Link to topic: https://our.umbraco.com{1}\n\n", topic.Title, topic.GetUrl());
                 post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
-                post = post + string.Format("Go to member http://our.umbraco.org/member/{0}\n\n", memberId);
+                post = post + string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
 
                 var body = string.Format("The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}", post);
                 body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");

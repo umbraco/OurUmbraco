@@ -21,7 +21,7 @@
   <!-- Update these variables to modify the feed -->
   <xsl:variable name="RSSNoItems" select="string('10')"/>
   <xsl:variable name="RSSTitle" select="$section"/>
-  <xsl:variable name="SiteURL" select="string('http://our.umbraco.org')"/>
+  <xsl:variable name="SiteURL" select="string('https://our.umbraco.com')"/>
   <xsl:variable name="RSSDescription" select="concat(string('Recommended help for the section') , $RSSTitle)"/>
 
   
