@@ -20,7 +20,7 @@
 			<xsl:text> - </xsl:text>
 		</xsl:if>
 		<xsl:value-of select="$currentPage/@nodeName"/>
-		<xsl:text> - our.umbraco.org</xsl:text>
+		<xsl:text> - our.umbraco.com</xsl:text>
 	</xsl:template>
 
 </xsl:stylesheet>

@@ -400,7 +400,7 @@ jQuery(document).ready(function () {
     });
 
     jQuery("a.noVote").click(function () {
-        jQuery.modal("<h3>You cannot vote yet</h3><p>You need at least <em>70 karma points</em> to be able to rate items on our.umbraco.org</p><p>You gain karma points every time you do something constructive, like answering topics on the forum, or starting new ones or publishing your work as a project</p></div>", { position: ["100px", ], overlayClose: true, closeHTML: '<a href="#" id="modalCloseButton" title="Close">close</a>' });
+        jQuery.modal("<h3>You cannot vote yet</h3><p>You need at least <em>70 karma points</em> to be able to rate items on our.umbraco.com</p><p>You gain karma points every time you do something constructive, like answering topics on the forum, or starting new ones or publishing your work as a project</p></div>", { position: ["100px", ], overlayClose: true, closeHTML: '<a href="#" id="modalCloseButton" title="Close">close</a>' });
         return false;
     });
 

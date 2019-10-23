@@ -45,7 +45,7 @@
       </xsl:variable>
 
       <!-- Register RSS -->
-      <xsl:value-of select="uForum:RegisterRssFeed( concat('http://our.umbraco.org/rss/forum?id=',$forumNode/@id), concat('New topics from the ',$forumNode/@nodeName ,' forum'), 'topicRss')"/>
+      <xsl:value-of select="uForum:RegisterRssFeed( concat('https://our.umbraco.com/rss/forum?id=',$forumNode/@id), concat('New topics from the ',$forumNode/@nodeName ,' forum'), 'topicRss')"/>
 
       <xsl:variable name="items">15</xsl:variable>
       <xsl:variable name="pages" select="uForum:ForumPager($forumNode/@id, $items, $p)"/>

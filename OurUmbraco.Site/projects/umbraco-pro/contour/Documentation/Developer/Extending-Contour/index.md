@@ -20,11 +20,11 @@ A Record action is an action that can be executed against a single record (like 
 ### Recordset Action Types ###
 A Recordset Action is an action that can be executed against a variable number of records. These actions are available in the record viewer of each form after selecting a number of records.
 ###Complete examples available
-The [sourcecode](http://our.umbraco.org/projects/developer-tools/umbraco-contour-shared-source) for the default providers is available for download and shows you how our default components are build.
+The [sourcecode](https://our.umbraco.com/projects/developer-tools/umbraco-contour-shared-source) for the default providers is available for download and shows you how our default components are build.
 
 There are also several community addons that can be used for inspiration when extending Contour
 
-* [Contour contrib](http://our.umbraco.org/projects/developer-tools/contour-contrib)
+* [Contour contrib](https://our.umbraco.com/projects/developer-tools/contour-contrib)
 * [Contour strikes again](http://contourstrikesagain.codeplex.com/)
 
 ##[Adding a form template](Adding-a-Form-Template.md) ##
