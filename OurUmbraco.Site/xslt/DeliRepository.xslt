@@ -166,7 +166,7 @@
 
       <p class="guiDialogNormal" style="margin-top: 5px;">
         <strong>Author: </strong>
-        <a href="http://our.umbraco.org/member/{$current/owner}" target="_blank" rel="noreferrer noopener">
+        <a href="https://our.umbraco.com/member/{$current/owner}" target="_blank" rel="noreferrer noopener">
           <xsl:value-of select="umbraco.library:GetMemberName($current/owner)"/>
         </a>
       </p>

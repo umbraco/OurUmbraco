@@ -8,7 +8,7 @@ namespace OurUmbraco.Our.Extensions
     public static class StringExtensions
     {
         /// <summary>
-        /// taken from https://our.umbraco.org/projects/website-utilities/ezsearch/bugs-feedback-suggestions/59447-Special-Characters-in-Search-Term#comment-215504
+        /// taken from https://our.umbraco.com/projects/website-utilities/ezsearch/bugs-feedback-suggestions/59447-Special-Characters-in-Search-Term#comment-215504
         /// </summary>
         /// <param name="query"></param>
         /// <returns></returns>

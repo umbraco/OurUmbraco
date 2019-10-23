@@ -30,7 +30,7 @@
                 longname: 'Umbraco Save short cut key',
                 author: 'Umbraco HQ',
                 authorurl: 'http://umbraco.com',
-                infourl: 'http://our.umbraco.org',
+                infourl: 'https://our.umbraco.com',
                 version: "1.0"
             };
         }

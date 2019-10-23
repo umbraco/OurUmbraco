@@ -30,7 +30,7 @@
 			<xsl:when test="uForum:GetCurrentMember()/bugMeNot = 1">
 				<div class="alert" style="width:600px">
 					Currently you will not receive any notifications since your profile preference is set
-					to 'Do not send me any notifications or newsletters from our.umbraco.org'.
+					to 'Do not send me any notifications or newsletters from our.umbraco.com'.
 					To change this, please update the setting on your profile.
 				</div>
 			</xsl:when>

@@ -499,7 +499,7 @@ namespace OurUmbraco.Forum.Api
         {
             var post = string.Format("A {0} has been flagged as spam for a moderator to check\n", flag.TypeOfPost);
             var member = Members.GetById(flag.MemberId);
-            post = post + string.Format("Flagged by member {0} https://our.umbraco.org/member/{1}\n", member.Name, member.Id);
+            post = post + string.Format("Flagged by member {0} https://our.umbraco.com/member/{1}\n", member.Name, member.Id);
 
             var topicId = flag.Id;
             var posterId = 0;
@@ -518,7 +518,7 @@ namespace OurUmbraco.Forum.Api
                 posterId = topic.MemberId;
             }
 
-            post = post + string.Format("Topic title: *{0}*\nLink to author: http://our.umbraco.org/member/{1}\n Link to {2}: http://our.umbraco.org{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
+            post = post + string.Format("Topic title: *{0}*\nLink to author: https://our.umbraco.com/member/{1}\n Link to {2}: https://our.umbraco.com{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
 
             SendSlackNotification(post);
         }
@@ -526,14 +526,14 @@ namespace OurUmbraco.Forum.Api
         private static string BuildDeleteNotifactionPost(string adminName, int memberId)
         {
             var post = string.Format("Topic or comment deleted by admin {0}\n", adminName);
-            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+            post = post + string.Format("Go to affected member https://our.umbraco.com/member/{0}\n\n", memberId);
             return post;
         }
 
         private static string BuildBlockedNotifactionPost(string adminName, int memberId, bool blocked)
         {
             var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked/approved*", adminName);
-            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+            post = post + string.Format("Go to affected member https://our.umbraco.com/member/{0}\n\n", memberId);
             return post;
         }
 

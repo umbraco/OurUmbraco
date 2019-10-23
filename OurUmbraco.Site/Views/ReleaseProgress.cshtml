@@ -21,7 +21,7 @@
                             @foreach (var currentRelease in allReleases.Where(x => x.Released && x.LatestRelease))
                             {
                                 <li>
-                                    <a class="active" href="/contribute/releases/@(currentRelease.Version.Replace(".", string.Empty))">
+                                    <a class="active" href="@Url.GetReleaseUrl(currentRelease)">
                                         <h3>Latest Release - v@(currentRelease.Version)</h3>
                                     </a>
                                 </li>
@@ -34,7 +34,7 @@
                                     @foreach (var release in inProgress)
                                     {
                                         <li>
-                                            <a href="/contribute/releases/@(release.Version.Replace(".", string.Empty))">
+                                            <a href="@Url.GetReleaseUrl(release)">
                                                 <h4>v@(release.Version)</h4>
                                             </a>
                                         </li>
@@ -87,7 +87,7 @@
                                 <div class="col-xs-9">
                                     <div class="row explain">
                                         <div class="col-xs-12">
-                                            <h4 class="text-right"><a href="/contribute/releases/@(release.Version.Replace(".",""))">v@(release.Version)</a></h4>
+                                            <h4 class="text-right"><a href="@Url.GetReleaseUrl(release)">v@(release.Version)</a></h4>
                                         </div>
                                         <div class="col-xs-6">
                                             <div class="changes">

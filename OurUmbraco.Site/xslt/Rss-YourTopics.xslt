@@ -25,8 +25,8 @@
     <!-- Update these variables to modify the feed -->
     <xsl:variable name="RSSNoItems" select="string('20')"/>
     <xsl:variable name="RSSTitle" select="string('Your topics')"/>
-    <xsl:variable name="SiteURL" select="string('http://our.umbraco.org')"/>
-    <xsl:variable name="RSSDescription" select="string('Topics you are participating in on the our.umbraco.org forum')"/>
+    <xsl:variable name="SiteURL" select="string('https://our.umbraco.com')"/>
+    <xsl:variable name="RSSDescription" select="string('Topics you are participating in on the our.umbraco.com forum')"/>
 
     <!-- This gets all news and events and orders by updateDate to use for the pubDate in RSS feed -->
     <xsl:variable name="pubDate" select="$ts/topic[0]/created"/>

@@ -287,7 +287,7 @@
         </xsl:when>
 
         <xsl:when test=". ='admin'">
-          <a href="/wiki/about/our-admins" title="Member of the our.umbraco.org admin team" class="badge admin">admin</a>
+          <a href="/wiki/about/our-admins" title="Member of the our.umbraco.com admin team" class="badge admin">admin</a>
         </xsl:when>
 
         <xsl:when test=". = 'vendor'">

@@ -8,7 +8,7 @@ The manual process consists of 2 files:
 -  CreateDBEngine.sql (*file containing the database tables install script*)
 
 ##Fetching the files
-The most recent manual installation files can always be found on the [Contour project page](http://our.umbraco.org/projects/umbraco-pro/contour). Browse the page untill you see the Package files, there look for the file UmbracoContour_X.X.X_Manual_Install.zip where X.X.X is the current stable Contour version.
+The most recent manual installation files can always be found on the [Contour project page](https://our.umbraco.com/projects/umbraco-pro/contour). Browse the page untill you see the Package files, there look for the file UmbracoContour_X.X.X_Manual_Install.zip where X.X.X is the current stable Contour version.
 
 ##Installing the files
 
