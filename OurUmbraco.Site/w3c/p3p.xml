@@ -1,6 +1,6 @@
 <POLICIES xmlns="http://www.w3.org/2002/01/P3Pv1" xml:lang="en" >
 <POLICY name = "anything-policy"
-  discuri = "http://our.umbraco.org/policy.xml">
+  discuri = "https://our.umbraco.com/policy.xml">
   <ENTITY>
     <DATA-GROUP>
       <DATA ref="#business.name">Umbraco i/s</DATA>

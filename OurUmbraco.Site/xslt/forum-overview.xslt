@@ -28,7 +28,7 @@
 
 	<xsl:template match="/">
 		<xsl:if test="$isLoggedOn">
-			<xsl:value-of select="uForum:RegisterRssFeed(concat('http://our.umbraco.org/rss/yourtopics?id=', $currentMember/@id), 'Your active topics', 'yourtopics')"/>
+			<xsl:value-of select="uForum:RegisterRssFeed(concat('https://our.umbraco.com/rss/yourtopics?id=', $currentMember/@id), 'Your active topics', 'yourtopics')"/>
 		</xsl:if>
 
 		<xsl:choose>

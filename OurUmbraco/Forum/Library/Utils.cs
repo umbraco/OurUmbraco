@@ -124,10 +124,10 @@ namespace OurUmbraco.Forum.Library
             if (spammer.MemberId != 0)
             {
                 body = body + string.Format(
-                           "<a href=\"http://our.umbraco.org/umbraco/members/editMember.aspx?id={0}\">Edit Member</a><br /><br />",
+                           "<a href=\"https://our.umbraco.com/umbraco/members/editMember.aspx?id={0}\">Edit Member</a><br /><br />",
                            spammer.MemberId);
 
-                body = body + string.Format("<a href=\"http://our.umbraco.org/member/{0}\">Go to member</a><br />", spammer.MemberId);
+                body = body + string.Format("<a href=\"https://our.umbraco.com/member/{0}\">Go to member</a><br />", spammer.MemberId);
             }
             else if (spammer.Blocked)
             {

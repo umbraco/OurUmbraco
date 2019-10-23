@@ -36,7 +36,7 @@ namespace OurUmbraco.Our.usercontrols
             mm.Subject = "Umbraco community: Request to contribute to project";
 
             mm.Body =
-                string.Format("The Umbraco Community member '{0}'  would like to contribute to your project '{1}'.  You can add the member to the project from your profile on our.umbraco.org.",
+                string.Format("The Umbraco Community member '{0}'  would like to contribute to your project '{1}'.  You can add the member to the project from your profile on our.umbraco.com.",
                 m.Text, p.Name);
 
             mm.Body = mm.Body + string.Format("\n\r\n\rMessage from {0}: \n\r\n\r", m.Text) + tb_message.Text;

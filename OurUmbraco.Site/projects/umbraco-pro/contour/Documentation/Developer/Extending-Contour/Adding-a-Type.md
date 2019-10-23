@@ -66,4 +66,4 @@ Finally compile the project and copy the .dll to your website /bin folder or cop
 needed. Also look in the reference chapter for complete class implementations of workflows, fields and export types
 
 ##Complete examples
-For some complet examples check out the [Contour shared source code](http://our.umbraco.org/projects/developer-tools/umbraco-contour-shared-source) this project contains the sourcecode for all default providers and is a good place to get some inspiration
+For some complet examples check out the [Contour shared source code](https://our.umbraco.com/projects/developer-tools/umbraco-contour-shared-source) this project contains the sourcecode for all default providers and is a good place to get some inspiration
