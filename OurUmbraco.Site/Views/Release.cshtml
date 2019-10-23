@@ -54,7 +54,7 @@
                             {
 
                                 <li>
-                                    <a class="active" href="/contribute/releases/@(currentRelease.Version.Replace(".", string.Empty))">
+                                    <a class="active" href="@Url.GetReleaseUrl(currentRelease)">
                                         <h3>Latest Release - v@(currentRelease.Version)</h3>
                                     </a>
                                 </li>
