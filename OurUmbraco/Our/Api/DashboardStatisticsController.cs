@@ -173,6 +173,42 @@ namespace OurUmbraco.Our.Api
 
             return processedPullRequests;
         }
+        
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<ApproveddPullRequest> GetApprovedRequestCloseData(int startMonth = 6, int startYear = 2010, string repository = "")
+        {
+            var repoService = new RepositoryManagementService();
+            var date = new DateTime(startYear, startMonth, 1);
+            
+            var approvedPulls = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllIssues(true).Where(x => x.CreateDateTime >= date && x.State != "closed" && x.Reviews.Any(y => y.State == "APPROVED")).ToList()
+                : repoService.GetAllIssues(true).Where(x => x.CreateDateTime >= date && x.State != "closed" && x.Reviews.Any(y => y.State == "APPROVED") && x.RepositoryName == repository).ToList();
+
+            var approvedPullRequestData = new List<ApproveddPullRequest>();
+            foreach (var pull in approvedPulls)
+            {
+                var approvals = pull.Reviews.Where(x => x.State == "APPROVED").ToList();
+                var approvalNames = new List<string>();
+                foreach (var approval in approvals)
+                {
+                    if(approvalNames.Contains(approval.Actor.Login) == false)
+                        approvalNames.Add(approval.Actor.Login);
+                }
+                var firstApproval = approvals.OrderBy(x => x.CreateDateTime).First();
+                var approvers = string.Join(",", approvalNames);
+                approvedPullRequestData.Add(new ApproveddPullRequest
+                {
+                    Number = pull.Number,
+                    Repository = pull.RepositoryName,
+                    Title = pull.Title,
+                    ApprovedDateTime = firstApproval.CreateDateTime,
+                    ApprovedByUser = approvers
+                });
+            }
+            
+            return approvedPullRequestData;
+        }
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
@@ -519,6 +555,15 @@ public class ProcessedPullRequest
     public DateTime CloseDateTime { get; set; }
     public string CloseType { get; set; }
     public string ClosedByUser { get; set; }
+}
+
+public class ApproveddPullRequest
+{
+    public int Number { get; set; }
+    public string Repository { get; set; }
+    public string Title { get; set; }
+    public DateTime ApprovedDateTime { get; set; }
+    public string ApprovedByUser { get; set; }
 }
 
 public class IssueStatistics
