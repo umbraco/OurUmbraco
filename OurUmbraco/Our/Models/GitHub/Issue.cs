@@ -97,9 +97,11 @@ namespace OurUmbraco.Our.Models.GitHub
         public DateTime LabelAdded { get; set; }
         public string ReviewState { get; set; }
         public DateTime LastReviewDate { get; set; }
-
+        
+        public User CloseUser { get; set; }
 
         public DateTime AcknowledgeDate { get; set; }
+        
         public DateTime SignificantUpdateDate { get; set; }
         
     }

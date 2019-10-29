@@ -1726,6 +1726,7 @@
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
+    <Content Include="Views\Partials\Dashboards\PRData.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.svg" />

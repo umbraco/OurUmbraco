@@ -123,6 +123,56 @@ namespace OurUmbraco.Our.Api
 
             return new List<Contributions>(totalContributors.Where(x => x.UniqueContributorCount != 0).OrderBy(x => x.CodegardenYear));
         }
+        
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<ProcessedPullRequest> GetPullRequestCloseData(int startMonth = 6, int startYear = 2010, string repository = "")
+        {
+            var repoService = new RepositoryManagementService();
+
+            var pulls = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllIssues(true).ToList()
+                : repoService.GetAllIssues(true).Where(x => x.RepositoryName == repository).ToList();
+            
+            var date = new DateTime(startYear, startMonth, 1);
+            var prsCreated = pulls.Where(x => x.CreateDateTime >= date).ToList();
+
+            var processedPullRequests = new List<ProcessedPullRequest>();
+            foreach (var pr in prsCreated)
+            {
+                if(pr.State != "closed")
+                    // still open, continue
+                    continue;
+                
+                var processedPr = new ProcessedPullRequest();
+                processedPr.Number = pr.Number;
+                processedPr.Repository = pr.RepositoryName;
+                processedPr.Title = pr.Title;
+                if(pr.ClosedDateTime.HasValue)
+                    processedPr.CloseDateTime = pr.ClosedDateTime.Value;
+                processedPr.ClosedByUser = pr.CloseUser?.Login;
+                
+                // GitHub marks all merged PRs as "closed", so we want to differentiate: if there's no "merged" event then it was closed without merging
+                if (pr.Events.Any(y => y.Name == "merged") == false)
+                {
+                    var closeEvent = pr.Events.LastOrDefault(y => y.Name == "closed");
+                    processedPr.ClosedByUser = closeEvent?.Actor?.Login;
+                    processedPr.CloseType = "closed";
+                }
+
+                // There was a "merged" event
+                if (pr.Events.Any(y => y.Name == "merged"))
+                {
+                    var mergeEvent = pr.Events.LastOrDefault(y => y.Name == "merged");
+                    processedPr.ClosedByUser = mergeEvent?.Actor?.Login;
+                    processedPr.CloseType = "merged";
+                }
+
+                processedPullRequests.Add(processedPr);
+            }
+
+            return processedPullRequests;
+        }
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
@@ -458,6 +508,17 @@ public class Contributions
     public int MedianHoursToClose { get; set; }
     public FirstCommentStatistics FirstCommentStatistics { get; set; }
     public List<Issue> AllPulls { get; set; }
+}
+
+public class ProcessedPullRequest
+{
+    public int Number { get; set; }
+    
+    public string Repository { get; set; }
+    public string Title { get; set; }
+    public DateTime CloseDateTime { get; set; }
+    public string CloseType { get; set; }
+    public string ClosedByUser { get; set; }
 }
 
 public class IssueStatistics
