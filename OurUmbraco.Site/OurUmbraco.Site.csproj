@@ -472,8 +472,6 @@
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
-    <Content Include="Assets\js\gitter\gitter.signalr.init.js" />
-    <Content Include="Assets\js\gitter\gitter.signalr.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
     <Content Include="Assets\js\lib\emojione.min.js" />
     <Content Include="Assets\js\lib\markerclusterer.js" />
@@ -4420,12 +4418,10 @@
     <Content Include="Views\ProjectGroup.cshtml" />
     <Content Include="Views\ProjectsTags.cshtml" />
     <Content Include="Views\CommunityVideos.cshtml" />
-    <Content Include="Views\Partials\Community\GitterHome.cshtml" />
     <Content Include="Views\Partials\Community\Videos.cshtml" />
     <Content Include="Views\Partials\Community\Map.cshtml" />
     <Content Include="Views\Partials\Community\Sidebar.cshtml" />
     <Content Include="Views\CommunityBadges.cshtml" />
-    <Content Include="Views\Partials\Community\GitterCommunity.cshtml" />
     <Content Include="Views\MacroPartials\Members\ResetPassword.cshtml" />
     <Content Include="Views\Partials\Members\ResetPassword.cshtml" />
     <Content Include="Views\Partials\Emails\EmailTemplateMaster.cshtml" />
