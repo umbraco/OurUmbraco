@@ -22,7 +22,7 @@
       <xsl:for-each select="$topics/topics/topic">
         <li class="entry-content">
 
-          <img src="//our.umbraco.org/media/avatar/{latestReplyAuthor}.jpg" alt="Topic author image"/>
+          <img src="//our.umbraco.com/media/avatar/{latestReplyAuthor}.jpg" alt="Topic author image"/>
           <xsl:choose>
             <xsl:when test="latestComment &gt; 0">
               <a>

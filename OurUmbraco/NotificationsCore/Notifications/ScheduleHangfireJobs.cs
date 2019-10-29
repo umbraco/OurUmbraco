@@ -149,6 +149,18 @@ namespace OurUmbraco.NotificationsCore.Notifications
             }
         }
 
+        public void UpdateAllIssues(PerformContext context)
+        {
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
+
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
+            }
+        }
+
         public void GetAllGitHubLabels(PerformContext context)
         {
             var gitHubService = new GitHubService();

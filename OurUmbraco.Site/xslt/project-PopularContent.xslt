@@ -22,7 +22,7 @@
 <xsl:variable name="n" select="umbraco.library:GetXmlNodeById(id)"/>
 
 <xsl:if test="position() &lt;= $maxItems">
-  <li><a href="http://our.umbraco.org{umbraco.library:NiceUrl($n/@id)}">
+  <li><a href="https://our.umbraco.com{umbraco.library:NiceUrl($n/@id)}">
     <xsl:value-of select="umbraco.library:TruncateString($n/@nodeName, 60, '...')"/></a>
   <small>Version: <xsl:value-of select="$n/version"/>,  by <xsl:value-of select="umbraco.library:GetMemberName($n/owner)"/> </small>
   </li>

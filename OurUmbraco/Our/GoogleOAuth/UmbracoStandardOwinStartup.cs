@@ -60,17 +60,14 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.RefreshKarmaStatistics();
             scheduler.GenerateReleasesCache(null);
             scheduler.UpdateGitHubIssues(null);
+            scheduler.UpdateAllIssues(null);
             scheduler.GetAllGitHubLabels(null);
             scheduler.AddCommentToAwaitingFeedbackIssues(null);
             scheduler.AddCommentToUpForGrabsIssues(null);
             scheduler.NotifyUnmergeablePullRequests(null);
             scheduler.AddCommentToStateHQDiscussionIssues(null);
-			
-            scheduler.CheckContributorBadge(null);
 
-            //Hangfire jobs for Google Maps aka Radar
-            var radarScheduler = new RadarHangfireJobs();
-            radarScheduler.FindSignals();
+            scheduler.CheckContributorBadge(null);
         }
     }
 }

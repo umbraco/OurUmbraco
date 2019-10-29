@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "ad10ed4d-d22e-405f-8588-ba8a3d1592cf",
+      "checkTitles": false,
+      "title": "Rasolo's blog",
+      "url": "http://rasolo.azurewebsites.net/blogs/umbraco/",
+      "rss": "http://rasolo.azurewebsites.net/blogs/umbraco/feed",
+      "logo": "http://rasolo.azurewebsites.net/media/5a1pqhxs/rasolo.png",
+      "memberId": "278134"
+    },
+    {
       "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
       "checkTitles": false,
       "title": "codeshare.co.uk Blog",
@@ -78,7 +87,7 @@
       "title": "Umbraco HQ",
       "url": "https://umbraco.com/blog",
       "rss": "https://umbraco.com/blog/rss-feed/",
-      "logo": "https://our.umbraco.org/media/7514503/umbraco_logo_turquoise_transparent.png",
+      "logo": "https://our.umbraco.com/media/7514503/umbraco_logo_turquoise_transparent.png",
       "memberId": null
     },
     {

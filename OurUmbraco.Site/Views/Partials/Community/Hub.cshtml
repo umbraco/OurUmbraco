@@ -58,7 +58,7 @@
                             @foreach (var member in filteredMembers)
                             {
                                 <li>
-                                    <a href="/member/@member.MemberId">@member.Name</a> <a href="https://github.com/@member.GitHubUsername" title="See @member.Name's profile on GitHub" target="_blank" rel="noopener">(Github: @member.GitHubUsername)</a>
+                                    <a href="/member/@member.MemberId">@member.Name</a> <a href="https://github.com/@member.GitHubUsername" title="See @member.Name's profile on GitHub" target="_blank" rel="noreferrer noopener">(Github: @member.GitHubUsername)</a>
                                     <p>PR Stats:</p>
                                     <ul>
                                         <li>PRs: @member.TotalPulls</li>

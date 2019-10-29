@@ -110,7 +110,7 @@ namespace OurUmbraco.Forum.Extensions
                             {
                                 link.Attributes.Remove("rel");
                             }
-                            link.Attributes.Add("rel", "noopener");
+                            link.Attributes.Add("rel", "nofollow noreferrer noopener");
                         }
                     }
                 }

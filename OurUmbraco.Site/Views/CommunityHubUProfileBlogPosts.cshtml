@@ -42,7 +42,7 @@
 {
     foreach (var post in Model.Posts)
     {
-        <a href="@(!string.IsNullOrEmpty(post.Link) ? post.Link : string.Empty)" class="community-post" target="_blank" rel="noopener">
+        <a href="@(!string.IsNullOrEmpty(post.Link) ? post.Link : string.Empty)" class="community-post" target="_blank" rel="noreferrer noopener">
             <div class="avatar">
                 <img src="@(!string.IsNullOrEmpty(post.Thumbnail) ? post.Thumbnail : string.Empty)" alt="@post.Title" style="height: 46px; width: 46px;">
             </div>

@@ -58,7 +58,7 @@
         </xsl:variable>
 
         <!-- RSS -->
-        <xsl:value-of select="uForum:RegisterRssFeed( concat('http://our.umbraco.org/rss/topic?id=',$topicID), concat('New replies to the the ',$topic/title ,' thread'), 'topicRss')"/>
+        <xsl:value-of select="uForum:RegisterRssFeed( concat('https://our.umbraco.com/rss/topic?id=',$topicID), concat('New replies to the the ',$topic/title ,' thread'), 'topicRss')"/>
 
         <!-- Treshold -->
         <xsl:variable name="treshold">
@@ -607,7 +607,7 @@
           </xsl:when>
 
           <xsl:when test=". ='admin'">
-            <a href="/wiki/about/our-admins" title="Member of the our.umbraco.org admin team" class="badge admin">admin</a>
+            <a href="/wiki/about/our-admins" title="Member of the our.umbraco.com admin team" class="badge admin">admin</a>
           </xsl:when>
 
           <xsl:when test=". = 'vendor'">

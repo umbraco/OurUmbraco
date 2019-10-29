@@ -109,7 +109,7 @@ RE: <xsl:value-of select="title" />
 </xsl:template>
 
 <xsl:template name="front">
-<xsl:call-template name="renderTopBar"><xsl:with-param name="title">our.umbraco.org</xsl:with-param></xsl:call-template>
+<xsl:call-template name="renderTopBar"><xsl:with-param name="title">our.umbraco.com</xsl:with-param></xsl:call-template>
 
 <div id="content">
 <xsl:if test="$loggedOn">

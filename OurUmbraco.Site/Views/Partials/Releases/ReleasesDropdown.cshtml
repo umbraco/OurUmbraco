@@ -181,7 +181,7 @@
                                     var url = issue.Source == ReleaseSource.YouTrack ? $"https://issues.umbraco.org/issue/{issue.Id}" : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                     <ul>
                                         <li class="@issue.State.StateIcon()" title="@issue.State">
-                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
+                                            <a href="@(url)" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }
@@ -206,7 +206,7 @@
                                     var url = issue.Source == ReleaseSource.YouTrack ? $"https://issues.umbraco.org/issue/{issue.Id}" : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                     <ul>
                                         <li class="@issue.State.StateIcon()" title="@issue.State">
-                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
+                                            <a href="@(url)" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }
@@ -231,7 +231,7 @@
 
                                     <ul>
                                         <li class="@issue.State.StateIcon()" title="@issue.State">
-                                            <a href="@(url)" target="_blank">@issue.Id - @issue.Title</a>
+                                            <a href="@(url)" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
                                         </li>
                                     </ul>
                                 }

@@ -37,7 +37,7 @@ namespace OurUmbraco.Repository.Services
         private readonly MembershipHelper MembershipHelper;
         private readonly UmbracoHelper UmbracoHelper;
 
-        const string BASE_URL = "https://our.umbraco.org";
+        const string BASE_URL = "https://our.umbraco.com";
 
         public PackageRepositoryService(UmbracoHelper umbracoHelper, MembershipHelper membershipHelper, DatabaseContext databaseContext)
         {

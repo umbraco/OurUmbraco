@@ -14,7 +14,7 @@
     foreach (var banner in banners)
     {
         <div class="alertbar__white">
-            <a href="@banner.Link" target="_blank" >
+            <a href="@banner.Link" target="_blank" rel="noreferrer noopener">
                 <img src="@banner.Image.GetCropUrl(height: 150, width: 1000, imageCropMode: ImageCropMode.Max)" alt="@banner.Name" />
             </a>
             @(banner.GetPropertyValue<IHtmlString>("bodyText"))

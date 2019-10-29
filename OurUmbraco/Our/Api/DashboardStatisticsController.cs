@@ -123,6 +123,92 @@ namespace OurUmbraco.Our.Api
 
             return new List<Contributions>(totalContributors.Where(x => x.UniqueContributorCount != 0).OrderBy(x => x.CodegardenYear));
         }
+        
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<ProcessedPullRequest> GetPullRequestCloseData(int startMonth = 6, int startYear = 2010, string repository = "")
+        {
+            var repoService = new RepositoryManagementService();
+
+            var pulls = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllIssues(true).ToList()
+                : repoService.GetAllIssues(true).Where(x => x.RepositoryName == repository).ToList();
+            
+            var date = new DateTime(startYear, startMonth, 1);
+            var prsCreated = pulls.Where(x => x.CreateDateTime >= date).ToList();
+
+            var processedPullRequests = new List<ProcessedPullRequest>();
+            foreach (var pr in prsCreated)
+            {
+                if(pr.State != "closed")
+                    // still open, continue
+                    continue;
+                
+                var processedPr = new ProcessedPullRequest();
+                processedPr.Number = pr.Number;
+                processedPr.Repository = pr.RepositoryName;
+                processedPr.Title = pr.Title;
+                if(pr.ClosedDateTime.HasValue)
+                    processedPr.CloseDateTime = pr.ClosedDateTime.Value;
+                processedPr.ClosedByUser = pr.CloseUser?.Login;
+                
+                // GitHub marks all merged PRs as "closed", so we want to differentiate: if there's no "merged" event then it was closed without merging
+                if (pr.Events.Any(y => y.Name == "merged") == false)
+                {
+                    var closeEvent = pr.Events.LastOrDefault(y => y.Name == "closed");
+                    processedPr.ClosedByUser = closeEvent?.Actor?.Login;
+                    processedPr.CloseType = "closed";
+                }
+
+                // There was a "merged" event
+                if (pr.Events.Any(y => y.Name == "merged"))
+                {
+                    var mergeEvent = pr.Events.LastOrDefault(y => y.Name == "merged");
+                    processedPr.ClosedByUser = mergeEvent?.Actor?.Login;
+                    processedPr.CloseType = "merged";
+                }
+
+                processedPullRequests.Add(processedPr);
+            }
+
+            return processedPullRequests;
+        }
+        
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<ApproveddPullRequest> GetApprovedRequestCloseData(int startMonth = 6, int startYear = 2010, string repository = "")
+        {
+            var repoService = new RepositoryManagementService();
+            var date = new DateTime(startYear, startMonth, 1);
+            
+            var approvedPulls = string.IsNullOrWhiteSpace(repository)
+                ? repoService.GetAllIssues(true).Where(x => x.CreateDateTime >= date && x.State != "closed" && x.Reviews.Any(y => y.State == "APPROVED")).ToList()
+                : repoService.GetAllIssues(true).Where(x => x.CreateDateTime >= date && x.State != "closed" && x.Reviews.Any(y => y.State == "APPROVED") && x.RepositoryName == repository).ToList();
+
+            var approvedPullRequestData = new List<ApproveddPullRequest>();
+            foreach (var pull in approvedPulls)
+            {
+                var approvals = pull.Reviews.Where(x => x.State == "APPROVED").ToList();
+                var approvalNames = new List<string>();
+                foreach (var approval in approvals)
+                {
+                    if(approvalNames.Contains(approval.Actor.Login) == false)
+                        approvalNames.Add(approval.Actor.Login);
+                }
+                var firstApproval = approvals.OrderBy(x => x.CreateDateTime).First();
+                var approvers = string.Join(",", approvalNames);
+                approvedPullRequestData.Add(new ApproveddPullRequest
+                {
+                    Number = pull.Number,
+                    Repository = pull.RepositoryName,
+                    Title = pull.Title,
+                    ApprovedDateTime = firstApproval.CreateDateTime,
+                    ApprovedByUser = approvers
+                });
+            }
+            
+            return approvedPullRequestData;
+        }
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
@@ -307,6 +393,90 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
+        public List<Issue> GetIssuesWithLabel(string label)
+        {
+            var repoService = new RepositoryManagementService();
+            var labelIssues = repoService.GetAllCommunityIssues(false)
+                .Where(x => x.ClosedDateTime == null 
+                            && x.Labels.Any(l => l.Name == "status/idea") == false 
+                            && x.Labels.Any(l => string.Equals(l.Name, label, StringComparison.InvariantCultureIgnoreCase))).ToList();
+            
+            foreach (var issue in labelIssues)
+            {
+                foreach (var issueEvent in issue.Events)
+                {
+                    if (issueEvent.Name == "labeled" && string.Equals(issueEvent.Label.Name, label, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        issue.LabelAdded = issueEvent.CreateDateTime;
+                    }
+                }
+            }
+
+            return labelIssues.OrderByDescending(x => x.LabelAdded).ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetAllOpenIssues(string label)
+        {
+            var repoService = new RepositoryManagementService();
+            var allOpenIssues = repoService.GetAllCommunityIssues(false).Where(x => x.ClosedDateTime == null).ToList();
+
+            foreach (var issue in allOpenIssues)
+            {
+                var firstLabel = issue.Events.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => x.Name == "labeled");
+            }
+            
+
+            foreach (var issue in allOpenIssues)
+            {
+                var firstComment = issue.Comments.OrderBy(x => x.CreateDateTime).FirstOrDefault();
+
+            }
+
+            // Added label by HQ
+            // -- Discussion / HQ Reply
+            // -- Estimation
+            // 
+
+            //foreach (var issue in labelIssues)
+            //{
+            //    foreach (var issueEvent in issue.Events)
+            //    {
+            //        if (issueEvent.Name == "labeled" && string.Equals(issueEvent.Label.Name, label, StringComparison.InvariantCultureIgnoreCase))
+            //        {
+            //            issue.LabelAdded = issueEvent.CreateDateTime;
+            //        }
+            //    }
+            //}
+
+            return allOpenIssues.ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<Issue> GetOpenPulls()
+        {
+            var repoService = new RepositoryManagementService();
+            var openPrs = repoService.GetAllCommunityIssues(true)
+                .Where(x => x.ClosedDateTime == null).ToList();
+
+            foreach (var pr in openPrs)
+            {
+                var lastReview = pr.Reviews.LastOrDefault();
+                if (lastReview != null)
+                {
+                    pr.ReviewState = lastReview.State;
+                    pr.LastReviewDate = lastReview.CreateDateTime; 
+                }
+
+            }
+
+            return openPrs.OrderByDescending(x => x.LastReviewDate).ToList();
+        }
+
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
         public List<Issue> GetIdeasIssues()
         {
             var repoService = new RepositoryManagementService();
@@ -316,7 +486,7 @@ namespace OurUmbraco.Our.Api
             foreach (var issue in ideasIssues)
             {
                 var ideaLabelEvent = issue.Events.FirstOrDefault(x => x.Name == "labeled" && x.Label.Name == "status/idea");
-                if(ideaLabelEvent != null)
+                if (ideaLabelEvent != null)
                     issue.SetToIdea = ideaLabelEvent.CreateDateTime;
             }
 
@@ -374,6 +544,26 @@ public class Contributions
     public int MedianHoursToClose { get; set; }
     public FirstCommentStatistics FirstCommentStatistics { get; set; }
     public List<Issue> AllPulls { get; set; }
+}
+
+public class ProcessedPullRequest
+{
+    public int Number { get; set; }
+    
+    public string Repository { get; set; }
+    public string Title { get; set; }
+    public DateTime CloseDateTime { get; set; }
+    public string CloseType { get; set; }
+    public string ClosedByUser { get; set; }
+}
+
+public class ApproveddPullRequest
+{
+    public int Number { get; set; }
+    public string Repository { get; set; }
+    public string Title { get; set; }
+    public DateTime ApprovedDateTime { get; set; }
+    public string ApprovedByUser { get; set; }
 }
 
 public class IssueStatistics

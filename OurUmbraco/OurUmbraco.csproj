@@ -472,7 +472,6 @@
     <Compile Include="Community\Map\MapApiController.cs" />
     <Compile Include="Community\Map\MapEventHandler.cs" />
     <Compile Include="Community\Map\MemberLocation.cs" />
-    <Compile Include="Community\Map\RadarHangfireJobs.cs" />
     <Compile Include="Community\Meetup\MeetupService.cs" />
     <Compile Include="Community\Meetup\Models\MeetupCacheItem.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
@@ -522,6 +521,7 @@
     <Compile Include="Our\Models\GitHub\Issue.cs" />
     <Compile Include="Our\Models\GitHub\Label.cs" />
     <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyType.cs" />
+    <Compile Include="Our\Models\GitHub\Review.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\IssuesInPeriod.cs" />

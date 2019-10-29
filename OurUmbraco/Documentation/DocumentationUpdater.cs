@@ -69,7 +69,7 @@ namespace OurUmbraco.Documentation
             public bool HasChildren { get; set; }
             public List<SiteMapItem> Directories { get; set; }
 
-            public string Url => $"https://our.umbraco.org/documentation{Path}/?altTemplate=Lesson";
+            public string Url => $"https://our.umbraco.com/documentation{Path}/?altTemplate=Lesson";
         }
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)

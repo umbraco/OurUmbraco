@@ -36,7 +36,7 @@
         </p>
         
         <p>
-            In the meantime why don't you take a look at the <a href="http://search.twitter.com/search?q=umbraco" target="_blank">Umbraco twitter stream</a>?
+            In the meantime why don't you take a look at the <a href="http://search.twitter.com/search?q=umbraco" target="_blank" rel="noreferrer noopener">Umbraco twitter stream</a>?
 
             
         </p>

@@ -1,5 +1,6 @@
 ﻿@inherits UmbracoTemplatePage
 @using ClientDependency.Core.Mvc
+@using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
 @{
     Layout = "~/Views/Master.cshtml";
@@ -23,7 +24,7 @@
                 </p>
 
                 <div class="large-margin-bottom">
-                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/?utm_source=our&utm_campaign=trial_signup_cloud">Sign up on umbraco.com</a>
+                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/">Sign up on umbraco.com</a>
                 </div>
 
                 <p>
@@ -35,7 +36,7 @@
                     comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
                     of a button. See how it works:
                 </p>
-                
+
                 <div class="video video-element large-margin-bottom">
                     <a href="/documentation/Umbraco-Cloud/Deployment/">
                         <img src="https://our.umbraco.com/documentation/Umbraco-Cloud/Deployment/Cloud-to-Cloud/images/deploy-in-portal.gif" alt="See how Umbraco Cloud works" />
@@ -56,7 +57,7 @@
 
                 <p class="large-margin-bottom">
                     Current Version:
-                    <a id="downloadButton" class="download-link" href="/contribute/releases/@(latestRelease.FullVersion.ToString().Replace(".", string.Empty))?fromdownload=true">Download @(latestRelease.FullVersion)</a>
+                    <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)">Download @(latestRelease.FullVersion)</a>
                     -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
 
