@@ -85,6 +85,7 @@ namespace OurUmbraco.Our
             AddCommunityBlogPostsTemplate();
             AddPackageLandingPageTemplate();
             AddEnhancedTextPage();
+            AddEnhancedTextPageTemplate();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2895,6 +2896,48 @@ namespace OurUmbraco.Our
                         Alias = alias,
                     };
 
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddEnhancedTextPageTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                const string templateName = "EnhancedTextPage";
+                const string contentTypeAlias = "enhancedTextPage";
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var contentType = contentTypeService.GetContentType(contentTypeAlias);
+                if (contentType != null)
+                {
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
                     contentTypeService.Save(contentType);
                 }
 
