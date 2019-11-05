@@ -100,10 +100,20 @@
                                 {
                                     if (user.IsHQ == false || (user.IsHQ && contrib.Labels.Any(y => y.Name.InvariantContains("hacktoberfest"))))
                                     {
+                                        var color = "orange";
+                                        if (contrib.CloseState == "merged")
+                                        {
+                                            color = "green";
+                                        }
+                                        if (contrib.CloseState == "closed")
+                                        {
+                                            color = "red";
+                                        }
+
                                         <li>
                                             <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a>
+                                            <span>| <strong style="color: @color">@contrib.CloseState</strong></span>
                                             <span>| @contrib.Title</span>
-                                            <span>| @contrib.CloseState</span>
 
                                             @if (contrib.IsUsersFirstContributionToAnyUmbracoRepository)
                                             {
