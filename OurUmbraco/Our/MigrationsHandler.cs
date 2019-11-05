@@ -84,6 +84,7 @@ namespace OurUmbraco.Our
             AddRtesToCommunityHub();
             AddCommunityBlogPostsTemplate();
             AddPackageLandingPageTemplate();
+            AddEnhancedTextPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2871,6 +2872,39 @@ namespace OurUmbraco.Our
             }
         }
 
+        private void AddEnhancedTextPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
 
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var name = "Enhanced Text Page";
+                var alias = "enhancedTextPage";
+
+                var enhancedTextPageType = contentTypeService.GetContentType(alias);
+                if (enhancedTextPageType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = name,
+                        Alias = alias,
+                    };
+
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
     }
 }
