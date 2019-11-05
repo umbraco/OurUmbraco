@@ -86,6 +86,8 @@ namespace OurUmbraco.Our
             AddPackageLandingPageTemplate();
             AddEnhancedTextPage();
             AddEnhancedTextPageTemplate();
+            AddGridDataType();
+            AddGridToEnhancedTextPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2940,6 +2942,83 @@ namespace OurUmbraco.Our
                     contentType.AllowedTemplates = allowsTemplates;
                     contentTypeService.Save(contentType);
                 }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddGridDataType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var dataTypeAlias = "Grid Layout";
+
+                var gridDataType = dataTypeService.GetDataTypeDefinitionByName(dataTypeAlias);
+                if (gridDataType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.Grid")
+                    {
+                        Name = dataTypeAlias
+                    };
+
+                    dataTypeService.Save(dataType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddGridToEnhancedTextPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var contentType = contentTypeService.GetContentType("enhancedTextPage");
+                if (contentType != null)
+                {
+                    var name = "Content";
+
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = name });
+
+                    var grid = dataTypeService.GetDataTypeDefinitionByName("Grid Layout");
+                    if (grid != null)
+                    {
+                        var gridProperty = new PropertyType(grid, "gridContent")
+                        {
+                            Name = "Content",
+                            Description = "Content for the page",
+                            Mandatory = false
+                        };
+
+                        contentType.AddPropertyType(gridProperty, name);
+                    }
+
+                    contentTypeService.Save(contentType);
+                } 
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);

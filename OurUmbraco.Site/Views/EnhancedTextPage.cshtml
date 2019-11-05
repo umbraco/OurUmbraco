@@ -3,6 +3,6 @@
 	Layout = "Master.cshtml";
 }
 
-<p>
-    Hola
-</p>
+<div class="rte">
+    @Html.GetGridHtml(Model.Content, "gridContent")
+</div>
