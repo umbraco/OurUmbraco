@@ -2906,7 +2906,7 @@ namespace OurUmbraco.Our
             }
             catch (Exception ex)
             {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
             }
         }
 
@@ -2948,7 +2948,7 @@ namespace OurUmbraco.Our
             }
             catch (Exception ex)
             {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
             }
         }
 
@@ -3025,7 +3025,7 @@ namespace OurUmbraco.Our
             }
             catch (Exception ex)
             {
-                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
             }
         }
     }
