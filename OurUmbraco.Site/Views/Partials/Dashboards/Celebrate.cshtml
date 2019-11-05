@@ -1,0 +1,134 @@
+﻿@using OurUmbraco.Our.Api
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var startYear = 2019;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startYear"]) == false)
+    {
+        int.TryParse(Request.QueryString["startYear"], out startYear);
+    }
+
+    var startMonth = 6;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startMonth"]) == false)
+    {
+        int.TryParse(Request.QueryString["startMonth"], out startMonth);
+    }
+
+    var startDate = new DateTime(startYear, startMonth, 1);
+
+    var controller = new DashboardStatisticsController();
+    var pullRequestsGrouped = controller.GetPullRequestsGrouped(repository: repository, startYear: startYear, startMonth: startMonth)
+        .ToList();
+}
+<h1>🎉</h1>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">First PR Stats since @(startDate.ToString("MMMM yyyy"))</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var group in pullRequestsGrouped)
+                {
+                    <h2>First PRs in @group.Period</h2>
+
+                    var anyFirstContrib = group.Contributors.Where(x => x.Contributions.Any(y => y.IsUsersFirstContributionToThisRepository || y.IsUsersFirstContributionToAnyUmbracoRepository)).ToList();
+                    if (anyFirstContrib.Any() == false)
+                    {
+                        <strong>No first-timers this month</strong>
+                    }
+                    else
+                    {
+                        foreach (var user in anyFirstContrib)
+                        {
+                            <strong>
+                                <a href="https://github.com/@user.User.Login" target="_blank">@user.User.Login</a>
+                            </strong>
+                            <ul>
+                                @foreach (var contrib in user.Contributions.Where(x => x.IsUsersFirstContributionToThisRepository || x.IsUsersFirstContributionToAnyUmbracoRepository))
+                                {
+                                    <li>
+                                        <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a>
+                                        | Any: @contrib.IsUsersFirstContributionToAnyUmbracoRepository
+                                        | This: @contrib.IsUsersFirstContributionToThisRepository
+                                    </li>
+                                }
+                            </ul>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">PR Stats since @(startDate.ToString("MMMM yyyy"))</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                @foreach (var group in pullRequestsGrouped)
+                {
+                    <h2>@group.Period</h2>
+
+                    <ul>
+                        <li>Total contributions (no swaghunters): @(group.TotalContributions - group.TotalSwagHunterContributions)</li>
+                        <li>First contributors (no swaghunters): @(group.TotalFirstContributors - group.TotalSwagHunters)</li>
+                        <li>Unique contributors (no swaghunters): @group.TotalUniqueContributors</li>
+                        <li>Unique people with a Hacktoberfest label: @group.TotalUniqueHacktoberfestLabels</li>
+                        <li>Swag hunters: @group.TotalSwagHunters</li>
+                        <li>Swag hunter contributions: @group.TotalSwagHunterContributions</li>
+                    </ul>
+                                     
+                    foreach (var user in group.Contributors)
+                    {
+                        if (user.IsHQ == false || (user.IsHQ && user.Contributions.Any(x => x.Labels.Any(y => y.Name.InvariantContains("hacktoberfest")))))
+                        {
+                            <a href="https://github.com/@user.User.Login" target="_blank" style="@(user.IsSwagHunter ? "font-size: 60%; font-weight: bold; color: white; background-color:black; padding: 4px" : null)">@user.User.Login</a>
+                            if (user.IsSwagHunter)
+                            {
+                                <span style="font-size: 60%; font-weight: bold; color: white; background-color:black; padding: 4px">swaghunter</span>
+                            }
+                            <ul>
+                                @foreach (var contrib in user.Contributions)
+                                {
+                                    if (user.IsHQ == false || (user.IsHQ && contrib.Labels.Any(y => y.Name.InvariantContains("hacktoberfest"))))
+                                    {
+                                        <li>
+                                            <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a>
+                                            <span>| @contrib.Title</span>
+                                            <span>| @contrib.CloseState</span>
+
+                                            @if (contrib.IsUsersFirstContributionToAnyUmbracoRepository)
+                                            {
+                                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: deeppink; padding: 4px">first ever contrib</span>
+                                            }
+                                            @if (contrib.IsUsersFirstContributionToThisRepository)
+                                            {
+                                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: yellow; padding: 4px">first contrib to this repo</span>
+                                            }
+                                            @if (contrib.IsHacktoberfestEligible)
+                                            {
+                                                <span style="font-size: 60%; font-weight: bold; color: white; background-color: red; padding: 4px">hacktoberfest</span>
+                                            }
+                                            @if (user.IsHQ)
+                                            {
+                                                <span style="font-size: 60%; font-weight: bold; color: white; background-color: green; padding: 4px">HQ</span>
+                                            }
+                                        </li>
+                                    }
+                                }
+                            </ul>
+                        }
+                    }
+                }
+            </div>
+        </div>
+    </div>
+</div>

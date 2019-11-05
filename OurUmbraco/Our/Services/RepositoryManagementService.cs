@@ -78,7 +78,7 @@ namespace OurUmbraco.Our.Services
             return issues;
         }
         
-        public List<Issue> GetAllIssues(bool pulls, DateTime? since = null)
+        public IEnumerable<Issue> GetAllIssues(bool pulls, DateTime? since = null)
         {
             var issues = new List<Issue>();
 

@@ -104,5 +104,10 @@ namespace OurUmbraco.Our.Models.GitHub
         
         public DateTime SignificantUpdateDate { get; set; }
         
+        public bool IsUsersFirstContributionToThisRepository { get; set; }
+        public bool IsUsersFirstContributionToAnyUmbracoRepository { get; set; }
+        public bool IsHacktoberfestEligible { get; set; }
+        
+        public string CloseState { get; set; }
     }
 }

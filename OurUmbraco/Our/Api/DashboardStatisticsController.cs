@@ -4,8 +4,10 @@ using System.Linq;
 using System.Web.Http;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Extensions;
+using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Models.GitHub;
 using OurUmbraco.Our.Services;
+using Umbraco.Core;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -209,7 +211,204 @@ namespace OurUmbraco.Our.Api
             
             return approvedPullRequestData;
         }
+        
+        [MemberAuthorize(AllowGroup = "HQ")]
+        [HttpGet]
+        public List<ContributionsGroupedByUser> GetPullRequestsGrouped(int startMonth = 6, int startYear = 2019, string repository = "")
+        {
+            var repoService = new RepositoryManagementService();
+            var date = new DateTime(startYear, startMonth, 1);
+         
+            var gitHubService = new GitHubService();
+            var hqList = gitHubService.GetHqMembers();
+            
+            var allPulls = repoService.GetAllIssues(true);
+            if (string.IsNullOrWhiteSpace(repository) == false)
+                allPulls = allPulls.Where(x => x.RepositoryName == repository);
 
+            var allPullsList = allPulls.ToList();
+            
+            // Get everyone's first pull requests
+            var firstPrs = new HashSet<FirstPullRequest>();
+            foreach (var pull in allPullsList.OrderBy(x => x.CreateDateTime))
+            {
+                firstPrs.Add(new FirstPullRequest
+                {
+                    Username = pull.User.Login,
+                    IssueNumber = pull.Number,
+                    CreateDateTime = pull.CreateDateTime, 
+                    RepositoryName = pull.RepositoryName
+                });
+            }
+            
+            // Get and group the pull requests for the requested date range
+            var groupedPulls = allPullsList
+                .Where(x => x.CreateDateTime >= date)
+                .OrderBy(x => x.CreateDateTime)
+                .GroupBy(x => new {x.CreateDateTime.Year, x.CreateDateTime.Month})
+                .ToDictionary(x => x.Key, x => x.ToList());
+
+            var contributionsGroupedByUser = new List<ContributionsGroupedByUser>();
+            foreach (var groupedPullsByDate in groupedPulls)
+            {
+                var uniqueContributors = new HashSet<string>();
+                var uniqueHacktoberfestLabels = new HashSet<string>();
+                var swagHunters = new HashSet<string>();
+                var swagHunterContributions = new List<Issue>();
+                var firstPullRequests = new HashSet<string>();
+                var contributions = new HashSet<Issue>();
+                
+                // Group the pull requests by user in each date group
+                var contributionGroup = new ContributionsGroupedByUser
+                {
+                    Contributors = new List<Contributor>(),
+                    Period = $"{groupedPullsByDate.Key.Year}{groupedPullsByDate.Key.Month:00}",
+                    UniqueContributors = new List<string>()
+                };
+                
+                var pullsGroupedByUser = groupedPullsByDate.Value
+                    .OrderBy(x => x.User.Login)
+                    .GroupBy(x => x.User)
+                    .ToDictionary(x => x.Key, x => x.ToList());
+                
+                foreach (var groupedPullsByUser in pullsGroupedByUser)
+                {
+                    uniqueContributors.Add(groupedPullsByUser.Key.Login);
+                    
+                    foreach (var pull in groupedPullsByUser.Value)
+                    {
+                        // If it's not an HQ member or if it's a HQ member with a hacktoberfest label
+                        if(hqList.InvariantContains(pull.User.Login) == false 
+                           || (hqList.InvariantContains(pull.User.Login) 
+                               && pull.Labels.Any(x => x.Name.InvariantContains("hacktoberfest"))))
+                            contributions.Add(pull);
+                            
+                        var firstPrsForUser = firstPrs
+                            .Where(x => x.Username == pull.User.Login)
+                            .OrderBy(x=>x.CreateDateTime)
+                            .ToList();
+
+                        var firstPrForUser = firstPrsForUser.First();
+                        if (firstPrForUser.IssueNumber == pull.Number)
+                        {
+                            pull.IsUsersFirstContributionToAnyUmbracoRepository = true;
+                            firstPullRequests.Add(pull.User.Login);
+                        }
+
+                        var firstPrForRepo = firstPrsForUser
+                            .FirstOrDefault(x => x.RepositoryName == pull.RepositoryName);
+                        
+                        if (firstPrForRepo != null && firstPrForRepo.IssueNumber == pull.Number)
+                            pull.IsUsersFirstContributionToThisRepository = true;
+
+                        if (pull.Labels.Any(x => x.Name.InvariantStartsWith("hacktoberfest")))
+                        {
+                            pull.IsHacktoberfestEligible = true;
+                            uniqueHacktoberfestLabels.Add(pull.User.Login);
+                        }
+
+                        pull.CloseState = pull.State == "closed" && pull.Events.Any(y => y.Name == "merged")
+                            ? "merged"
+                            : "closed";
+                        if (pull.State == "open")
+                            pull.CloseState = "open";
+                    }
+                    
+                    var existingContributor = contributionGroup.Contributors
+                        .FirstOrDefault(x => x.User.Login.InvariantEquals(groupedPullsByUser.Key.Login));
+
+                    if (existingContributor == null)
+                    {
+                        var contributor = new Contributor
+                        {
+                            User = groupedPullsByUser.Key,
+                            Contributions = groupedPullsByUser.Value
+                        };
+                        
+                        if (hqList.InvariantContains(groupedPullsByUser.Key.Login))
+                            contributor.IsHQ = true;
+                        
+                        contributionGroup.Contributors.Add(contributor);
+                    }
+                    else
+                    {
+                        existingContributor.Contributions.AddRange(groupedPullsByUser.Value);
+                    }
+                }
+                
+                if (groupedPullsByDate.Key.Month == 10)
+                {
+                    foreach (var contributor in uniqueContributors.ToList())
+                    {
+                        var firstEverPrIsThisMonth = false;
+                        var prsWithHacktoberFestLabel = new List<Issue>();
+                        var openPrsInThisMonth = new List<Issue>();
+                        foreach (var userPulls in contributionGroup.Contributors.Select(x=>x.Contributions.Where(y => y.User.Login == contributor)))
+                        {
+                            foreach (var issue in userPulls)
+                            {
+                                if(issue.Labels.Any(x => x.Name.InvariantContains("hacktoberfest")))
+                                    prsWithHacktoberFestLabel.Add(issue);
+                                if(issue.State == "open")
+                                    openPrsInThisMonth.Add(issue);
+                                if (issue.IsUsersFirstContributionToThisRepository)
+                                    firstEverPrIsThisMonth = true;
+                            }
+                        }
+                        
+                        if(openPrsInThisMonth.Any())
+                            continue;
+                        if (prsWithHacktoberFestLabel.Any())
+                            continue;
+                        
+                        if (firstEverPrIsThisMonth)
+                        {
+                            var foundContributor = contributionGroup.Contributors.First(x => x.User.Login == contributor);
+                            foundContributor.IsSwagHunter = true;
+                            swagHunters.Add(foundContributor.User.Login);
+                            swagHunterContributions.AddRange(foundContributor.Contributions);
+                        }
+                    }
+                    
+                }
+
+                contributionGroup.UniqueContributors = uniqueContributors.ToList();
+                contributionGroup.TotalUniqueContributors = uniqueContributors.Count - swagHunters.Count;
+                contributionGroup.TotalFirstContributors = firstPullRequests.Count;
+                contributionGroup.TotalContributions = contributions.Count;
+                contributionGroup.TotalUniqueHacktoberfestLabels = uniqueHacktoberfestLabels.Count;
+                contributionGroup.TotalSwagHunters = swagHunters.Count;
+                contributionGroup.TotalSwagHunterContributions = swagHunterContributions.Count;
+                contributionsGroupedByUser.Add(contributionGroup);
+            }
+            
+            return contributionsGroupedByUser;
+        }
+
+        public class ContributionsGroupedByUser
+        {
+            public string Period { get; set; }
+            public List<Contributor> Contributors { get; set; }
+            public List<string> UniqueContributors { get; set; }
+            
+            public int TotalSwagHunters { get; set; }
+            public int TotalSwagHunterContributions { get; set; }
+            public int TotalContributions { get; set; }
+            public int TotalFirstContributors { get; set; }
+            public int TotalUniqueContributors { get; set; }
+            public int TotalUniqueHacktoberfestLabels { get; set; }
+        }
+        
+        public class Contributor
+        {
+            public User User { get; set; }
+            public List<Issue> Contributions { get; set; }
+
+            public bool IsSwagHunter { get; set; }
+            
+            public bool IsHQ { get; set; }
+        }
+        
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
         public List<IssueStatistics> GetIssueStatistics(int startMonth = 6, int startYear = 2010, string repository = "", bool monthly = true)
@@ -524,6 +723,8 @@ namespace OurUmbraco.Our.Api
             return assignedIssues;
         }
     }
+
+
 }
 
 public class Contributions
