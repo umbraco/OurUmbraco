@@ -3,6 +3,28 @@
 	Layout = "Master.cshtml";
 }
 
-<div class="rte">
-    @Html.GetGridHtml(Model.Content, "gridContent")
+<div class="has-sidebar">
+    <div class="page-content">
+        <div id="overlay" class="overlay"></div>
+
+        @Html.Partial("~/Views/Partials/Community/Sidebar.cshtml")
+        
+        <div class="main-area">
+            <div class="main-content">
+                <div class="content-wrapper">
+                    <div id="body" class="page markdown-syntax">
+
+                        <div>
+                            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                        </div>
+
+                        <div class="rte">
+                            @Html.GetGridHtml(Model.Content, "gridContent")
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
