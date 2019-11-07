@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Configuration;
 using System.Web.Security;
 
 namespace OurUmbraco.Auth
@@ -8,12 +8,14 @@ namespace OurUmbraco.Auth
         private const string SecretEnvVariable = "Umbraco.AuthToken";
 
         /// <summary>
-        /// This sets the secret as an Environment Variable
+        /// This sets the secret as an AppSetting
         /// </summary>
         /// <param name="secret">Secret string to set</param>
         public static void SetSecret(string secret)
         {
-            Environment.SetEnvironmentVariable(SecretEnvVariable, secret);
+            //TODO: Don't think we can set/add
+            //For now ensure appSetting key exists with a value
+            ConfigurationManager.AppSettings.Add(SecretEnvVariable, secret);
         }
 
         /// <summary>
@@ -22,7 +24,7 @@ namespace OurUmbraco.Auth
         /// <returns>Returns the string secret</returns>
         public static string GetSecret()
         {
-            var secret = Environment.GetEnvironmentVariable(SecretEnvVariable);
+            var secret = ConfigurationManager.AppSettings[SecretEnvVariable];
 
             //If it does not exist or is null/empty then we set a new one
             if (string.IsNullOrEmpty(secret))

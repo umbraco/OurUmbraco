@@ -1,17 +1,18 @@
-﻿using OurUmbraco.Wiki.BusinessLogic;
+﻿using OurUmbraco.Auth;
+using OurUmbraco.Wiki.BusinessLogic;
 using System.Collections.Generic;
 using System.Linq;
-using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Project.Api
 {
-    public class ProjectUploadController : UmbracoApiController
+    [UmbracoMemberAuthToken()]
+    public class ProjectUploadController : UmbracoMemberAuthApiController
     {
         // http://localhost:24292/Umbraco/Api/ProjectUpload/GetPing
         // http://our.umbraco.local/Umbraco/Api/ProjectUpload/GetPing
         public string GetPing()
         {
-            return "pong";
+            return $"pong Member {AuthorisedMember.Id} {AuthorisedMember.Name} - ProjectNodeId: {ProjectNodeId}";
         }
 
         public List<WikiFile> GetProjectFiles()

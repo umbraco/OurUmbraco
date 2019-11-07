@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using OurUmbraco.Auth;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.ListingItem;
@@ -54,9 +55,39 @@ namespace OurUmbraco.Our.Controllers
             model.GoogleAnalyticsCode = project.GACode;
             model.Id = projectId;
 
-            // JWT APIKey will need to retrieved from DB
-            // May be empty/non existing so the check can create/initalize one if needed
-            model.ApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwicHJvamVjdCI6MTI1OCwidXNlciI6ODk1fQ.dZRTHayFYFo3IRmTpDy0lVm4v8glJb5Nb_okh3Wut4I";
+            //Current Member ID
+            var memberId = Members.GetCurrentMember().Id;
+
+            //Check if we have an Auth Token for user
+            var hasAuthToken = UmbracoAuthTokenDbHelper.GetAuthToken(memberId);
+
+            //If the token already exists
+            if (hasAuthToken != null)
+            {
+                //Lets just return it in the request
+                model.ApiKey = hasAuthToken.AuthToken;
+            }
+            else
+            {
+                //Else user has no token yet - so let's create one
+                //Generate AuthToken DB object
+                var newToken = new UmbracoAuthToken();
+                newToken.MemberId = memberId;
+                newToken.ProjectId = projectId;
+
+                //Generate a new token for the user
+                var authToken = UmbracoAuthTokenFactory.GenerateAuthToken(newToken);
+
+                //We insert authToken as opposed to newToken
+                //As authToken now has DateTime & JWT token string on it now
+
+                //Store in DB (inserts or updates existing)
+                UmbracoAuthTokenDbHelper.InsertAuthToken(authToken);
+
+                //Return the JWT token as the response
+                //This means valid login & client in our case mobile app stores token in local storage
+                model.ApiKey = authToken.AuthToken;
+            }
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
         }
