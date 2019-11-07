@@ -19,9 +19,6 @@ namespace OurUmbraco.Auth
         [Column("projectId")]
         public int ProjectId { get; set; }
 
-        //[Column("identityType")]
-        //public string IdentityType { get; set; }
-
         [Column("dateCreated")]
         public DateTime DateCreated { get; set; }
 

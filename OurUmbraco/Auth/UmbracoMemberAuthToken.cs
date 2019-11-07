@@ -13,15 +13,11 @@ namespace OurUmbraco.Auth
 {
     public class UmbracoMemberAuthToken : ActionFilterAttribute
     {
-        private string _isInGroup;
-
         /// <summary>
         /// Assign this attribute to protect a WebAPI call for an Umbraco member
         /// </summary>
-        /// <param name="isInGroup">This is the group alias that the member must be in. This is an optional param</param>
-        public UmbracoMemberAuthToken(string isInGroup)
+        public UmbracoMemberAuthToken()
         {
-            _isInGroup = isInGroup;
         }
 
         /// <summary>
@@ -33,7 +29,7 @@ namespace OurUmbraco.Auth
             try
             {
                 //Auth the member from the request (HTTP headers) with the JWT as an Auth header
-                var member = Authenticate(actionContext.Request);
+                var member = Authenticate(actionContext.Request, out int projectId);
 
                 //Member details not correct (as member obj null)
                 if (member == null)
@@ -46,24 +42,9 @@ namespace OurUmbraco.Auth
                 actionContext.ControllerContext.Request.Properties.Add("umbraco-member", member);
 
                 //Set the project-nodeid in route data so the WebAPI controller can use it
-                actionContext.ControllerContext.Request.Properties.Add("project-nodeid", member);
-
-                //If we have any optional member groups to check for
-                if (_isInGroup.Any())
-                {
-                    //Check that the user has access to the one or more provided sections (Contains ALL)
-                    var hasAccess = member != null && ApplicationContext.Current.Services.MemberService.GetMembersByGroup(_isInGroup).Contains(member);
-
-                    //If member is NOT in member group specified
-                    if (!hasAccess)
-                    {
-                        //Return a HTTP 401 Unauthorised header
-                        actionContext.Response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
-                    }
-                }
-
+                actionContext.ControllerContext.Request.Properties.Add("project-nodeid", projectId);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 //Return a HTTP 401 Unauthorised header
                 actionContext.Response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
@@ -79,10 +60,11 @@ namespace OurUmbraco.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns>If success auth'd return the associated Umbraco backoffice user</returns>
-        private static IMember Authenticate(HttpRequestMessage request)
+        private static IMember Authenticate(HttpRequestMessage request, out int projectId)
         {
             //Try to get the Authorization header in the request
             var ah = request.Headers.Authorization;
+            projectId = int.MinValue;
 
             //If no Auth header sent or the scheme is not bearer aka TOKEN
             if (ah == null || ah.Scheme.ToLower() != "bearer")
@@ -124,11 +106,11 @@ namespace OurUmbraco.Auth
                     }
 
                     //Get the project ID in the decoded JWT
-                    var projectID = decodeJwt.ProjectId;
+                    projectId = decodeJwt.ProjectId;
 
                     // Project ID is an int for a content node in backoffice
                     // It contains a property called `owner` which stores the int of the memberID
-                    var projectNode = UmbracoContext.Current.ContentCache.GetById(projectID);
+                    var projectNode = UmbracoContext.Current.ContentCache.GetById(projectId);
                     var projectOwner = projectNode.GetPropertyValue<int>("owner");
 
                     if(projectOwner != decodeJwt.MemberId)
