@@ -277,7 +277,6 @@ WHERE timestamp > @from";
                         Verified = false
                     };
 
-                    wikiFile.SetMinimumUmbracoVersion();
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
@@ -290,6 +289,7 @@ WHERE timestamp > @from";
                         fileStream.Write(file, 0, file.Length);
 
                     wikiFile.Path = path;
+                    wikiFile.SetMinimumUmbracoVersion();
                     wikiFile.Save();
 
                     return wikiFile;
