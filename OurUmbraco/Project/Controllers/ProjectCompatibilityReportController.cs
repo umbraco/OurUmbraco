@@ -23,7 +23,6 @@ namespace OurUmbraco.Project.Controllers
                 new VersionCompatibilityReportModel
                 {
                     VersionCompatibilities = compatReport.GetCompatibilityReport(projectId),
-                    CurrentMemberHasDownloaded = currentMember != null && Utils.HasMemberDownloadedPackage(currentMember.Id, projectId),
                     CurrentMemberIsLoggedIn = currentMember != null,
                     FileId = fileId,
                     ProjectId = projectId,
