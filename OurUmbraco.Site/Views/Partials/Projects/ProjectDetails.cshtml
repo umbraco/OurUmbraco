@@ -5,10 +5,13 @@
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
 @using System.Text.RegularExpressions;
+@using OurUmbraco.Community.Nuget
 @using OurUmbraco.Community.People
 @using OurUmbraco.Our.Extensions
 
 @{
+    var nugetService = new NugetPackageDownloadService();
+
     var project = Model.Content;
 
     var owner = Members.GetById(Model.Content.GetPropertyValue<int>("owner"));
@@ -36,6 +39,9 @@
     var totalVotes = Utils.GetProjectTotalVotes(project.Id);
     var currentMember = Members.GetCurrentMember();
     var hasMemberVoted = Members.IsLoggedIn() ? Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
+
+    var nugetPackageId = nugetService.GetNuGetPackageId(project);
+
     var downloads = Utils.GetProjectTotalDownloadCount(project.Id);
 
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
@@ -296,30 +302,14 @@
                                 <div class="button green">No current release</div>
                             }
 
-                            @if (!string.IsNullOrEmpty(nuGetPackageUrl))
+                            @if (!string.IsNullOrEmpty(nugetPackageId))
                             {
-                                Regex regex = new Regex(@"^(http|https)://", RegexOptions.IgnoreCase);
 
-                                if (!regex.Match(nuGetPackageUrl).Success)
-                                {
-                                    nuGetPackageUrl = "http://" + nuGetPackageUrl;
-                                }
+                                <p class="small">or, install via <a href="@nuGetPackageUrl">nuget</a></p>
+                                <span class="pm-nuget">
+                                    <input class="pre nuget" value="Install-Package @nugetPackageId" readonly>
+                                </span>
 
-                                var nuGetPackageUri = new Uri(nuGetPackageUrl);
-                                string nuGetPackageCmd = string.Empty;
-
-                                if (nuGetPackageUri.Segments.Length >= 2)
-                                {
-                                    nuGetPackageCmd = nuGetPackageUri.Segments[2].Trim("/");
-                                }
-
-                                if (!string.IsNullOrEmpty(nuGetPackageCmd))
-                                {
-                                    <p class="small">or, install via <a href="@nuGetPackageUrl">nuget</a></p>
-                                    <span class="pm-nuget">
-                                        <input class="pre nuget" value="Install-Package @nuGetPackageCmd" readonly>
-                                    </span>
-                                }
                             }
                         </div>
 
@@ -340,8 +330,8 @@
 
                                             @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
-                                                <br/>
-                                                <br/>
+                                                <br />
+                                                <br />
                                                 <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
                                             }
                                         </div>
@@ -365,9 +355,9 @@
                                                         }
                                                     </span>
                                                 }
-                                                </div>
                                             </div>
                                         </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
