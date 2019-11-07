@@ -92,4 +92,5 @@ rhealefever
 TheGeekyUnicorn
 rasmusjp
 umbrabot
-MahmoudUmbraco	
+MahmoudUmbraco
+jonat123
