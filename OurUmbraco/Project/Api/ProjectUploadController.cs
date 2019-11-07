@@ -20,7 +20,7 @@ namespace OurUmbraco.Project.Api
             // No param of Project ID
             // As this lives in the JWT which is decoded with the Auth Attribute
 
-            var files = WikiFile.CurrentFiles(1179); //CWS SK
+            var files = WikiFile.CurrentFiles(ProjectNodeId);
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
         }
 
