@@ -54,6 +54,10 @@ namespace OurUmbraco.Our.Controllers
             model.GoogleAnalyticsCode = project.GACode;
             model.Id = projectId;
 
+            // JWT APIKey will need to retrieved from DB
+            // May be empty/non existing so the check can create/initalize one if needed
+            model.ApiKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwicHJvamVjdCI6MTI1OCwidXNlciI6ODk1fQ.dZRTHayFYFo3IRmTpDy0lVm4v8glJb5Nb_okh3Wut4I";
+
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
         }
 
