@@ -29,7 +29,11 @@
     /// </summary>
     public class NugetPackageDownloadService
     {
-        private string _nugetServiceUrl = "https://api.nuget.org/v3/index.json";
+        private  string _nugetServiceUrl = "https://api.nuget.org/v3/index.json";
+
+        private  string _storageDirectory = HostingEnvironment.MapPath("~/App_Data/TEMP/NugetDownloads");
+
+        private string _downloadsFile = "downloads.json";
 
         public void ImportNugetPackageDownloads()
         {
@@ -101,22 +105,47 @@
                         // store downloads if any
                         if (packageDownLoadsDictionary.Any())
                         {
-                            var storageDirectory = HostingEnvironment.MapPath("~/App_Data/TEMP/NugetDownloads");
-
-                            if (!Directory.Exists(storageDirectory))
+                            if (!Directory.Exists(this._storageDirectory))
                             {
-                                Directory.CreateDirectory(storageDirectory);
+                                Directory.CreateDirectory(this._storageDirectory);
                             }
 
                             var rawJson = JsonConvert.SerializeObject(packageDownLoadsDictionary, Formatting.Indented);
-                            File.WriteAllText($"{storageDirectory.EnsureEndsWith("/")}downloads.json", rawJson, Encoding.UTF8);
+                            File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson, Encoding.UTF8);
                         }
                     }
                 }
             }
         }
 
-        private static string GetNuGetPackageId(IPublishedContent project)
+        public Dictionary<string, int> GetNugetPackageDownloads()
+        {
+            // check if we can cache this until the file changes
+           var downloads = new Dictionary<string,int>();
+
+           var downloadsFile = $"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}";
+
+           if (File.Exists(downloadsFile))
+           {
+               var rawJson = File.ReadAllText(downloadsFile, Encoding.UTF8);
+
+               if (!string.IsNullOrWhiteSpace(rawJson))
+               {
+                   try
+                   {
+                       downloads = JsonConvert.DeserializeObject<Dictionary<string, int>>(rawJson);
+                   }
+                   catch
+                   {
+                        // should we log this
+                   }
+               }
+           }
+
+           return downloads;
+        }
+
+        public string GetNuGetPackageId(IPublishedContent project)
         {
             var nuGetPackageUrl = project.GetPropertyValue<string>("nuGetPackageUrl");
 

@@ -24,6 +24,8 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
+    using OurUmbraco.Community.Nuget;
+
     /// <summary>
     /// Data service used for projects
     /// </summary>
@@ -126,6 +128,10 @@ namespace OurUmbraco.Our.Examine
 
             var projects = umbContxt.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
+            var nugetService = new NugetPackageDownloadService();
+
+            var nugetDownloads = nugetService.GetNugetPackageDownloads();
+
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
@@ -144,6 +150,16 @@ namespace OurUmbraco.Our.Examine
                 var projectKarma = allProjectKarma.ContainsKey(project.Id) ? allProjectKarma[project.Id] : 0;
                 var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] { };
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
+
+                var nugetPackageId = nugetService.GetNuGetPackageId(project);
+
+                if (!string.IsNullOrWhiteSpace(nugetPackageId))
+                {
+                    if (nugetDownloads.ContainsKey(nugetPackageId))
+                    {
+                        projectDownloads += nugetDownloads[nugetPackageId];
+                    }
+                }
 
                 yield return MapProjectToSimpleDataIndexItem(
                     downloadStats,
