@@ -88,6 +88,7 @@ namespace OurUmbraco.Our
             AddEnhancedTextPageTemplate();
             AddGridDataType();
             AddGridToEnhancedTextPage();
+            AddCorrectContinentForAustralia();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -3019,6 +3020,41 @@ namespace OurUmbraco.Our
 
                     contentTypeService.Save(contentType);
                 } 
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddCorrectContinentForAustralia()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var dataType = dataTypeService.GetDataTypeDefinitionByName("Locations - Continents");
+                if (dataType != null)
+                {
+                    var collection = dataTypeService.GetPreValuesCollectionByDataTypeId(dataType.Id);
+                    if (collection?.PreValuesAsDictionary != null)
+                    {
+                        var dict = new Dictionary<string, PreValue>(collection.PreValuesAsDictionary);
+
+                        var australia = dict.FirstOrDefault(x => x.Value.Value == "Australia");
+                        australia.Value.Value = "Oceania";
+
+                        dataTypeService.SaveDataTypeAndPreValues(dataType, dict);
+                    }
+                }
 
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
