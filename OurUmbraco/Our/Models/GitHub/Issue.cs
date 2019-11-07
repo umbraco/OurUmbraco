@@ -109,5 +109,8 @@ namespace OurUmbraco.Our.Models.GitHub
         public bool IsHacktoberfestEligible { get; set; }
         
         public string CloseState { get; set; }
+
+        public int ReviewApprovals { get; set; }
+        public int ReviewChangesRequested { get; set; }
     }
 }

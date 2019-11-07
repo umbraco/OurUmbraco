@@ -353,6 +353,8 @@ namespace OurUmbraco.Our.Api
                                     openPrsInThisMonth.Add(issue);
                                 if (issue.IsUsersFirstContributionToThisRepository)
                                     firstEverPrIsThisMonth = true;
+                                issue.ReviewApprovals = issue.Reviews.Count(x => x.State == "APPROVED");
+                                issue.ReviewChangesRequested = issue.Reviews.Count(x => x.State == "CHANGES_REQUESTED");
                             }
                         }
                         

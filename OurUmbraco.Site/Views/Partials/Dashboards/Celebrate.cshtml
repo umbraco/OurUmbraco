@@ -100,24 +100,27 @@
                                 {
                                     if (user.IsHQ == false || (user.IsHQ && contrib.Labels.Any(y => y.Name.InvariantContains("hacktoberfest"))))
                                     {
-                                        var color = "orange";
+                                        var stateColor = "orange";
                                         if (contrib.CloseState == "merged")
                                         {
-                                            color = "green";
+                                            stateColor = "green";
                                         }
                                         if (contrib.CloseState == "closed")
                                         {
-                                            color = "red";
+                                            stateColor = "red";
                                         }
+                                        var approvalColor = contrib.ReviewApprovals > 0 ? "lightgreen" : "";
+                                        var changesRequestedColor = contrib.ReviewChangesRequested > 0 ? "lightpink" : "";
 
                                         <li>
                                             <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a>
-                                            <span>| <strong style="color: @color">@contrib.CloseState</strong></span>
+                                            <span>| <strong style="color: @stateColor">@contrib.CloseState</strong></span>
                                             <span>| @contrib.Title</span>
-
+                                            <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @approvalColor; padding: 4px">A: @contrib.ReviewApprovals</span></span>
+                                            <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @changesRequestedColor; padding: 4px">C: @contrib.ReviewChangesRequested</span></span>
                                             @if (contrib.IsUsersFirstContributionToAnyUmbracoRepository)
                                             {
-                                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: deeppink; padding: 4px">first ever contrib</span>
+                                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: lightgreen; padding: 4px">first ever contrib</span>
                                             }
                                             @if (contrib.IsUsersFirstContributionToThisRepository)
                                             {
