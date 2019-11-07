@@ -7,6 +7,7 @@
     using System.Text;
     using System.Text.RegularExpressions;
     using System.Web;
+    using System.Web.Caching;
     using System.Web.Hosting;
 
     using Newtonsoft.Json;
@@ -120,29 +121,39 @@
 
         public Dictionary<string, int> GetNugetPackageDownloads()
         {
-            // check if we can cache this until the file changes
-           var downloads = new Dictionary<string,int>();
+            var downloadsFile = $"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}";
 
-           var downloadsFile = $"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}";
+            return (Dictionary<string, int>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+                "NugetDownloads",
+                () =>
+                    {
+                        var downloads = new Dictionary<string, int>();
 
-           if (File.Exists(downloadsFile))
-           {
-               var rawJson = File.ReadAllText(downloadsFile, Encoding.UTF8);
+                        if (File.Exists(downloadsFile))
+                        {
+                            var rawJson = File.ReadAllText(downloadsFile, Encoding.UTF8);
 
-               if (!string.IsNullOrWhiteSpace(rawJson))
-               {
-                   try
-                   {
-                       downloads = JsonConvert.DeserializeObject<Dictionary<string, int>>(rawJson);
-                   }
-                   catch
-                   {
-                        // should we log this
-                   }
-               }
-           }
+                            if (!string.IsNullOrWhiteSpace(rawJson))
+                            {
+                                try
+                                {
+                                    downloads = JsonConvert.DeserializeObject<Dictionary<string, int>>(rawJson);
+                                }
+                                catch
+                                {
+                                    // should we log this
+                                }
+                            }
+                        }
 
-           return downloads;
+                        return downloads;
+                    },
+                TimeSpan.FromHours(1),
+                false,
+                CacheItemPriority.Normal,
+                null,
+                new[] { downloadsFile });
+
         }
 
         public string GetNuGetPackageId(IPublishedContent project)
