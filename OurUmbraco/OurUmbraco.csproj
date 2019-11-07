@@ -801,6 +801,7 @@
     <Compile Include="Project\Api\ProjectForumController.cs" />
     <Compile Include="Project\Controllers\ProjectCompatibilityReportController.cs" />
     <Compile Include="Project\Controllers\RepositoryController.cs" />
+    <Compile Include="Project\Models\PackageFileViewModel.cs" />
     <Compile Include="Project\ProjectExtensions.cs" />
     <Compile Include="Project\Helpers\ExtensionMethods.cs" />
     <Compile Include="Project\Helpers\Helper.cs" />
