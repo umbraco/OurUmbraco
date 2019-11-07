@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Web.Hosting;
 using System.Xml;
 using System.Xml.Linq;
+using OurUmbraco.Auth;
 using OurUmbraco.NotificationsCore;
 using OurUmbraco.Our.Models.GitHub.AutoReplies;
 using Umbraco.Core;
@@ -88,6 +89,7 @@ namespace OurUmbraco.Our
             AddEnhancedTextPageTemplate();
             AddGridDataType();
             AddGridToEnhancedTextPage();
+            AddJwtAuthTable();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -3026,6 +3028,38 @@ namespace OurUmbraco.Our
             catch (Exception ex)
             {
                 LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddJwtAuthTable()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+            if (File.Exists(path)) return;
+
+            try
+            {
+
+
+                var schema = new DatabaseSchemaHelper(
+                    ApplicationContext.Current.DatabaseContext.Database,
+                    ApplicationContext.Current.ProfilingLogger.Logger,
+                    ApplicationContext.Current.DatabaseContext.SqlSyntax
+                );
+
+                if (schema.TableExist<UmbracoAuthToken>() == false)
+                {
+                    schema.CreateTable<UmbracoAuthToken>();
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
     }
