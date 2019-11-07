@@ -158,9 +158,16 @@
                 </p>
             </fieldset>
 
+            <fieldset>
+                <legend>API Key</legend>
+                <p>This is used to upload packages to our.umbraco.org with the CLI tool</p>
+                @Html.LabelFor(m => m.ApiKey)
+                <textarea readonly style="font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;">@Model.ApiKey</textarea>
+            </fieldset>
+
             @Html.HiddenFor(m => m.Id)
 
-            <div class="buttons">
+            <div class="buttons" style="margin-bottom:30px;">
                 <input type="submit" value="Next" class="submitButton button green tiny"/>
             </div>
         }

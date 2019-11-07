@@ -62,5 +62,9 @@ namespace OurUmbraco.Our.Models
         public string RetiredMessage { get; set; }
 
         public List<SelectListItem> ProjectCategories { get; set; }
+
+        // This is the API key as a JWT to allow users to upload packages via CLI tool
+        [Display(Name = "API Key")]
+        public string ApiKey { get; set; }
     }
 }
