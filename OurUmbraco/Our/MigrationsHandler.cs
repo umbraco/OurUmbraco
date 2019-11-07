@@ -3042,10 +3042,10 @@ namespace OurUmbraco.Our
                 if (dataType != null)
                 {
                     var collection = dataTypeService.GetPreValuesCollectionByDataTypeId(dataType.Id);
-                    if (collection?.PreValuesAsDictionary != null)
-                    {
-                        var dict = new Dictionary<string, PreValue>(collection.PreValuesAsDictionary);
 
+                    var dict = collection?.PreValuesAsDictionary;
+                    if (dict != null)
+                    {
                         var australia = dict.FirstOrDefault(x => x.Value.Value == "Australia");
                         australia.Value.Value = "Oceania";
 
