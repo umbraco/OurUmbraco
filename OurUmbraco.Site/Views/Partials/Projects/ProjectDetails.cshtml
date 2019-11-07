@@ -42,7 +42,15 @@
 
     var nugetPackageId = nugetService.GetNuGetPackageId(project);
 
-    var downloads = Utils.GetProjectTotalDownloadCount(project.Id);
+    var ourDownloads = Utils.GetProjectTotalDownloadCount(project.Id);
+    var nugetDownloads = 0;
+
+    var nugetPackageDownloads = nugetService.GetNugetPackageDownloads();
+
+    if (nugetPackageDownloads.ContainsKey(nugetPackageId))
+    {
+        nugetDownloads = nugetPackageDownloads[nugetPackageId];
+    }
 
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
     var contributors = cs.GetContributors(project.Id).ToList();
@@ -415,8 +423,18 @@
                                 </li>
 
                                 <li>
-                                    <span>Downloads:</span> @downloads
+                                    <span>Downloads on our:</span> @ourDownloads
                                 </li>
+                                
+                                @if (nugetDownloads > 0)
+                                {
+                                    <li>
+                                        <span>Downloads on nuget:</span> @nugetDownloads
+                                    </li>
+                                    <li>
+                                        <span>Total downloads : </span> @(nugetDownloads + ourDownloads)
+                                    </li>
+                                }
                             </ul>
                         </div>
 
