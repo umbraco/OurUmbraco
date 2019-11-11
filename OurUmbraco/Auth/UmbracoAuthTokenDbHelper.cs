@@ -12,10 +12,10 @@ namespace OurUmbraco.Auth
         /// </summary>
         /// <param name="identityId">The user or member ID to try and find in the DB</param>
         /// <returns>Returns Auth Token record/object in DB or null if not found</returns>
-        public static UmbracoAuthToken GetAuthToken(int memberId)
+        public static UmbracoAuthToken GetAuthToken(int memberId, int projectId)
         {
             //Try & find a record in the DB from the userId
-            var findRecord = Database.SingleOrDefault<UmbracoAuthToken>("WHERE MemberId=@0", memberId);
+            var findRecord = Database.SingleOrDefault<UmbracoAuthToken>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
 
             //Return the object (Will be null if can't find an item)
             return findRecord;
@@ -29,7 +29,7 @@ namespace OurUmbraco.Auth
         public static void InsertAuthToken(UmbracoAuthToken authToken)
         {
             //Just to be 100% sure for data sanity that a record for the user does not exist already
-            var existingRecord = GetAuthToken(authToken.MemberId);
+            var existingRecord = GetAuthToken(authToken.MemberId, authToken.ProjectId);
 
             //Insert new record if no item exists already
             if (existingRecord == null)
@@ -53,15 +53,15 @@ namespace OurUmbraco.Auth
         /// 
         /// </summary>
         /// <param name="identityId"></param>
-        public static void DeleteAuthToken(int memberId)
+        public static void DeleteAuthToken(int memberId, int projectId)
         {
             //Just to be 100% sure for data sanity that a record for the user does not exist already
-            var existingRecord = GetAuthToken(memberId);
+            var existingRecord = GetAuthToken(memberId, projectId);
 
             if (existingRecord != null)
             {
                 //We found the record in the DB - let's remove/delete it
-                Database.Delete<UmbracoAuthToken>("WHERE MemberId=@0", memberId);
+                Database.Delete<UmbracoAuthToken>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
             }
         }
 
@@ -77,7 +77,7 @@ namespace OurUmbraco.Auth
             //Is what we have in the DB matching on the UserID as lookup
 
             //Try & find record in DB on UserID
-            var lookupRecord = GetAuthToken(authToken.MemberId);
+            var lookupRecord = GetAuthToken(authToken.MemberId, authToken.ProjectId);
 
             //If we find a record in DB
             if (lookupRecord != null)

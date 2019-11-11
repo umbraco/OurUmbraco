@@ -59,7 +59,7 @@ namespace OurUmbraco.Our.Controllers
             var memberId = Members.GetCurrentMember().Id;
 
             //Check if we have an Auth Token for user
-            var hasAuthToken = UmbracoAuthTokenDbHelper.GetAuthToken(memberId);
+            var hasAuthToken = UmbracoAuthTokenDbHelper.GetAuthToken(memberId, projectId);
 
             //If the token already exists
             if (hasAuthToken != null)
