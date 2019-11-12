@@ -127,12 +127,16 @@ namespace OurUmbraco.Auth
                 //JWT token could not be serialised to AuthToken object
                 return null;
             }
+            catch (TokenExpiredException ex)
+            {
+                //Bubble exception up
+                throw ex;
+            }
             catch (SignatureVerificationException ex)
             {
                 //Bubble exception up
                 throw ex;
             }
-
         }
     }
 }
