@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Globalization;
 using JWT;
+using JWT.Algorithms;
+using JWT.Builder;
 
 namespace OurUmbraco.Auth
 {
@@ -20,15 +22,14 @@ namespace OurUmbraco.Auth
             var dateCreated = DateTime.UtcNow;
             var dateCreatedToString = dateCreated.ToString("u");
 
-            //Create JSON payload for JWT token
-            var payload = new Dictionary<string, object>() {
-                { "member_id", authToken.MemberId },
-                { "project_id", authToken.ProjectId },
-                { "date_created", dateCreatedToString }
-            };
-
             //Encode the JWT token with JSON payload, algorithm & our secret in constant
-            var encodedToken = JsonWebToken.Encode(payload, _secretKey, JwtHashAlgorithm.HS256);
+            var encodedToken = new JwtBuilder()
+                .WithAlgorithm(new HMACSHA256Algorithm())
+                .WithSecret(_secretKey)
+                .AddClaim("date_created", dateCreatedToString)
+                .AddClaim("member_id", authToken.MemberId)
+                .AddClaim("project_id", authToken.ProjectId)
+                .Build();
 
             //Return same object we passed in (Now with Date Created & Token properties updated)
             authToken.DateCreated = dateCreated;
@@ -45,25 +46,14 @@ namespace OurUmbraco.Auth
         /// <returns>A decoded authToken object from the JWT</returns>
         public static UmbracoAuthToken DecodeUserAuthToken(string jwtToken)
         {
-            //Object to return
-            var userAuth = new UmbracoAuthToken();
-
             //Decode & verify token was signed with our secret
-            var jsonPayload = JsonWebToken.DecodeToObject(jwtToken, _secretKey) as IDictionary<string, object>;
+            var userAuth = new JwtBuilder()
+                .WithSecret(_secretKey)
+                .MustVerifySignature() //Throws ex if not signed correctly or expired token
+                .Decode<UmbracoAuthToken>(jwtToken);
 
-            //Just the presence of the token & being deserialised with correct SECRET key is a good sign
-            if (jsonPayload != null)
-            {
-                //Do DateTime conversion from u type back into DateTime object
-                DateTime dateCreated;
-                DateTime.TryParseExact(jsonPayload["date_created"].ToString(), "u", null, DateTimeStyles.AdjustToUniversal, out dateCreated);
-
-                //Get the details of the user from the JWT payload
-                userAuth.MemberId = Convert.ToInt32(jsonPayload["member_id"]);
-                userAuth.ProjectId = Convert.ToInt32(jsonPayload["project_id"]);
-                userAuth.DateCreated = dateCreated;
-                userAuth.AuthToken = jwtToken;
-            }
+            // If we have not thrown - assign it back to object
+            userAuth.AuthToken = jwtToken;
 
             //Return the object
             return userAuth;
