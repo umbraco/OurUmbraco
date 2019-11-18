@@ -115,8 +115,9 @@
 
                         @if (Model.Version > 0)
                         {
+                            // This is ugly but easy :-)
                             <div class="version">
-                                <a href="#">Umbraco @Model.Version</a>
+                                <a href="#">Umbraco @(Model.Version == 99 ? "Heartcore" : Model.Version.ToString())</a>
                             </div>
                         }
                     </div>
