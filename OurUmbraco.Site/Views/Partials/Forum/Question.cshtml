@@ -8,10 +8,12 @@
 @{
     var currentMember = Model.MemberData != null && Model.MemberData.Member != null ? Model.MemberData.Member : null;
     var topicAuthor = new TopicMember();
+
     if (Model.TopicMembers != null)
     {
         topicAuthor = Model.TopicMembers.FirstOrDefault(x => x.Member.Id == Model.MemberId);
     }
+
     var currentMemberIsAuthor = currentMember != null && topicAuthor != null && currentMember.Id == topicAuthor.Member.Id;
     var memberIsAdmin = Model.MemberData != null && Model.MemberData.IsAdmin;
     var canSeePost = Model.IsSpam == false || currentMemberIsAuthor || memberIsAdmin;
@@ -32,6 +34,7 @@
                     @if (topicAuthor != null)
                     {
                         <a href="/member/@topicAuthor.Member.Id">@topicAuthor.Member.Name</a>
+
                         <span>
                             @if (topicAuthor.Member.ForumPosts() == 0 || topicAuthor.Member.ForumPosts() > 1)
                             {
@@ -44,12 +47,14 @@
                                 <text>post</text>
                             }
                         </span>
+
                         <span>@topicAuthor.Member.Karma() karma points</span>
                     }
                     else
                     {
                         <p><em>Topic author was deleted</em></p>
                     }
+
                     @if (badges.Any())
                     {
                         <span class="roles">
@@ -83,15 +88,17 @@
                     <div class="highfive highfive-question">
                         @{
                             var html = "High fives from:<br />";
+
                             foreach (var vote in Model.Votes)
                             {
                                 html = string.Format("{0}<a href='/member/{1}'>{2}</a><br />", html, vote.MemberId, vote.MemberName);
                             }
-                            @*html = string.Format("{0}<a href=\"/documentation/our/karma\" class=\"explain\">what is this?</a><br />", html);*@
                         }
+
                         <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                             @Model.Score
                         </div>
+
                         @if (currentMember != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                         {
                             if (currentMember.Id != Model.MemberId)
@@ -108,6 +115,7 @@
                     <div class="topic">
                         <h2>@Model.Title</h2>
                     </div>
+
                     <div class="categories">
                         <div class="category core">
                             <a href="@Model.ForumUrl">@Model.ForumName</a>
