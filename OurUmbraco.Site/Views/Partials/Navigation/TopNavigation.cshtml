@@ -1,6 +1,6 @@
 ﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 <ul>
-    @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where("Visible"))
+    @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where(x => x.IsVisible()))
     {
         <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
             @if (page.Name == "Packages")
