@@ -2,16 +2,16 @@
 <ul>
     @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where("Visible"))
     {
-    <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
-        @if (page.Name == "Packages")
-        {
-            <a href="/about-packages">@page.Name</a>
-        }
-        else
-        {
-            <a href="@page.Url">@page.Name</a>
-        }
-    </li>
+        <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
+            @if (page.Name == "Packages")
+            {
+                <a href="/about-packages">@page.Name</a>
+            }
+            else
+            {
+                <a href="@page.Url">@page.Name</a>
+            }
+        </li>
     }
 
     <li>
@@ -19,6 +19,7 @@
         {
             <div class="user">
                 @Html.Raw(MemberData.AvatarHtml)
+
                 @if (MemberData.AvatarImageTooSmall)
                 {
                     <span class="notificationCount">1</span>
