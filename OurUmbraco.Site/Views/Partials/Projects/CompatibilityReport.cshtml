@@ -97,22 +97,15 @@
     </div>
 
     @if (Model.CurrentMemberIsLoggedIn)
-    {
-        if (Model.CurrentMemberHasDownloaded)
-        {
-            <div id="reportingTools">
-                <a href="#" id="reportCompatibility">Report compatibility</a>
-                <div style="display: none;" id="reportCompatibilityPanel">
-                    <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
-                </div>
-                <br />
+    {        
+        <div id="reportingTools">
+            <a href="#" id="reportCompatibility">Report compatibility</a>
+            <div style="display: none;" id="reportCompatibilityPanel">
+                <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
             </div>
-        }
-        else
-        {
-            <p><small>You need to download this package before you can report on it's compatibility</small></p>
-        }
-    }
+            <br />
+        </div>
+     }
     else
     {
         <p><small>You must login before you can report on package compatibility.</small></p>
