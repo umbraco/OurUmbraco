@@ -47,9 +47,11 @@
 
     var nugetPackageDownloads = nugetService.GetNugetPackageDownloads();
 
-    if (nugetPackageDownloads.ContainsKey(nugetPackageId))
+    var nugetPackageInfo = nugetPackageDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
+
+    if (nugetPackageInfo != null)
     {
-        nugetDownloads = nugetPackageDownloads[nugetPackageId];
+        nugetDownloads = nugetPackageInfo.TotalDownLoads;
     }
 
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);

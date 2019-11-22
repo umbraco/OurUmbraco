@@ -155,9 +155,11 @@ namespace OurUmbraco.Our.Examine
 
                 if (!string.IsNullOrWhiteSpace(nugetPackageId))
                 {
-                    if (nugetDownloads.ContainsKey(nugetPackageId))
+                    var packageInfo = nugetDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
+
+                    if (packageInfo != null)
                     {
-                        projectDownloads += nugetDownloads[nugetPackageId];
+                        projectDownloads +=  packageInfo.TotalDownLoads;
                     }
                 }
 

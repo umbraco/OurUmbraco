@@ -163,15 +163,15 @@
             }
         }
 
-        public Dictionary<string, int> GetNugetPackageDownloads()
+        public List<NugetPackageInfo> GetNugetPackageDownloads()
         {
             var downloadsFile = $"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}";
 
-            return (Dictionary<string, int>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+            return (List<NugetPackageInfo>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
                 "NugetDownloads",
                 () =>
                     {
-                        var downloads = new Dictionary<string, int>();
+                        var downloads = new List<NugetPackageInfo>();
 
                         if (File.Exists(downloadsFile))
                         {
@@ -181,7 +181,7 @@
                             {
                                 try
                                 {
-                                    downloads = JsonConvert.DeserializeObject<Dictionary<string, int>>(rawJson);
+                                    downloads = JsonConvert.DeserializeObject<List<NugetPackageInfo>>(rawJson);
                                 }
                                 catch
                                 {
