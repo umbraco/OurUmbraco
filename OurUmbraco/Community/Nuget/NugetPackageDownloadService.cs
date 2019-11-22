@@ -59,7 +59,7 @@
 
                     if (!string.IsNullOrWhiteSpace(searchUrl))
                     {
-                        var packageDownLoadsDictionary = new Dictionary<string, int>();
+                        var nugetPackageDownloads = new List<NugetPackageInfo>();
 
                         // we will loop trough our projects in groups of 5 so we can query for multiple packages at ones
                         // the nuget api has a rate limit, so to avoid hitting that we query multiple packages at once
@@ -93,25 +93,69 @@
                                 {
                                     foreach (var package in packageSearchResult.Results)
                                     {
-                                        if (!packageDownLoadsDictionary.ContainsKey(package.Id))
+                                        var packageInfo = new NugetPackageInfo
+                                                              {
+                                                                  PackageId = package.Id,
+                                                                  TotalDownLoads = package.TotalDownloads
+                                                              };
+
+                                       
+
+                                        // try get details about downloads over time
+                                        // so we get the publish date of the package on nuget. And calculate the average downloads per day.
+                                        // we can use this data for the popular package query on our
+                                        // we can run into issues when a package has more than 128 versions. This call will return a different response then
+                                        // see https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+
+                                        var registrationClient = new RestClient(package.PackageRegistrationUrl);
+
+                                        var registrationResponse = registrationClient.Execute(new RestRequest());
+
+                                        var registrationResult =
+                                            JsonConvert.DeserializeObject<NugetRegistrationResponse>(
+                                                registrationResponse.Content);
+
+                                        if (registrationResult != null)
                                         {
-                                            packageDownLoadsDictionary.Add(package.Id, package.TotalDownloads);
+                                            // get the lowest publish date
+                                            var registrationItem = registrationResult.Items.FirstOrDefault();
+
+                                            if (registrationItem != null)
+                                            {
+                                                var publishedDate = registrationItem.Items.Select(x => x.CatalogEntry)
+                                                    .OrderBy(x => x.PublishedDate).FirstOrDefault(x => x.PublishedDate.Year > 1900)?.PublishedDate;
+
+                                                if (publishedDate.HasValue)
+                                                {
+                                                    var daysSincePublished =
+                                                        (DateTime.Now - publishedDate.Value).TotalDays;
+
+                                                    packageInfo.AverageDownloadPerDay = (int)Math.Ceiling(package.TotalDownloads / daysSincePublished);
+                                                }
+                                            }
+                                        }
+
+                                        if (!nugetPackageDownloads.Any(x => x.PackageId == packageInfo.PackageId))
+                                        {
+                                            nugetPackageDownloads.Add(packageInfo);
                                         }
                                     }
+
+                                   
                                 }
                             
                             }
                         }
 
                         // store downloads if any
-                        if (packageDownLoadsDictionary.Any())
+                        if (nugetPackageDownloads.Any())
                         {
                             if (!Directory.Exists(this._storageDirectory))
                             {
                                 Directory.CreateDirectory(this._storageDirectory);
                             }
 
-                            var rawJson = JsonConvert.SerializeObject(packageDownLoadsDictionary, Formatting.Indented);
+                            var rawJson = JsonConvert.SerializeObject(nugetPackageDownloads, Formatting.Indented);
                             File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson, Encoding.UTF8);
                         }
                     }
