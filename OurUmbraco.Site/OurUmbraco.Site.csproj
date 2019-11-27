@@ -1723,6 +1723,7 @@
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
+    <Content Include="Views\EnhancedTextPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
     <Content Include="Views\Partials\Dashboards\PRData.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
