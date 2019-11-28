@@ -214,7 +214,7 @@ namespace OurUmbraco.Forum.Api
             if (model.Version == Constants.Forum.HeartcoreVersionNumber)
             {
                 var heartCodeForumId = GetHeartCoreForumId();
-                model.Forum = heartCodeForumId;
+                t.ParentId = heartCodeForumId;
             }
             
             TopicService.Save(t);
@@ -251,7 +251,7 @@ namespace OurUmbraco.Forum.Api
             if (model.Version == Constants.Forum.HeartcoreVersionNumber)
             {
                 var heartCodeForumId = GetHeartCoreForumId();
-                model.Forum = heartCodeForumId;
+                t.ParentId = heartCodeForumId;
             }
             
             TopicService.Save(t);
