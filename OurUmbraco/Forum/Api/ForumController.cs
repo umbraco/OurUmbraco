@@ -209,6 +209,14 @@ namespace OurUmbraco.Forum.Api
             t.Answer = 0;
             t.LatestComment = 0;
             t.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || t.DetectSpam();
+            
+            // If the chosen version is Umbraco Heartcore, overrule other categories
+            if (model.Version == Constants.Forum.HeartcoreVersionNumber)
+            {
+                var heartCodeForumId = GetHeartCoreForumId();
+                model.Forum = heartCodeForumId;
+            }
+            
             TopicService.Save(t);
 
             if (t.IsSpam)
@@ -238,11 +246,41 @@ namespace OurUmbraco.Forum.Api
             t.Version = model.Version;
             t.ParentId = model.Forum;
             t.Title = model.Title;
+            
+            // If the chosen version is Umbraco Heartcore, overrule other categories
+            if (model.Version == Constants.Forum.HeartcoreVersionNumber)
+            {
+                var heartCodeForumId = GetHeartCoreForumId();
+                model.Forum = heartCodeForumId;
+            }
+            
             TopicService.Save(t);
 
             o.url = string.Format("{0}/{1}-{2}", library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
+        }
+
+        private static int GetHeartCoreForumId()
+        {
+            var heartCoreForumId = 0;
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var rootNode = umbracoHelper.TypedContentAtRoot()
+                .FirstOrDefault(x =>
+                    string.Equals(x.DocumentTypeAlias, "Community", StringComparison.InvariantCultureIgnoreCase));
+            
+            if (rootNode != null)
+            {
+                var forumNode = rootNode.FirstChild(x => string.Equals(x.DocumentTypeAlias, "Forum"));
+                if (forumNode != null)
+                {
+                    var heartCoreForumNode = forumNode.FirstChild(x => x.Name.Contains(Constants.Forum.UmbracoHeadlessName));
+                    if (heartCoreForumNode != null)
+                        heartCoreForumId = heartCoreForumNode.Id;
+                }
+            }
+
+            return heartCoreForumId;
         }
 
 
