@@ -1,0 +1,111 @@
+﻿@using OurUmbraco.Our.Api
+@using OurUmbraco.Our.Models.GitHub
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var startYear = 2019;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startYear"]) == false)
+    {
+        int.TryParse(Request.QueryString["startYear"], out startYear);
+    }
+
+    var startMonth = 9;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startMonth"]) == false)
+    {
+        int.TryParse(Request.QueryString["startMonth"], out startMonth);
+    }
+
+    var startDate = new DateTime(startYear, startMonth, 1);
+
+    var controller = new DashboardStatisticsController();
+    var pullRequestsGrouped = controller.GetPullRequestsGrouped(repository: repository, startYear: startYear, startMonth: startMonth)
+        .ToList();
+
+    var firstHacktoberfestEligiblePullsPerUser = new Dictionary<string, Issue>();
+
+    foreach (var group in pullRequestsGrouped)
+    {
+        <p>@group.Period</p>
+        foreach (var user in group.Contributors)
+        {
+            if (group.Period.StartsWith(startYear.ToString()) && (group.Period.EndsWith("09") || group.Period.EndsWith("10")))
+            {
+                if (firstHacktoberfestEligiblePullsPerUser.ContainsKey(user.User.Login))
+                {
+                    continue;
+                }
+
+                foreach (var contrib in user.Contributions.Where(contrib => contrib.IsHacktoberfestEligible))
+                {
+                    if (firstHacktoberfestEligiblePullsPerUser.ContainsKey(user.User.Login) == false)
+                    {
+                        firstHacktoberfestEligiblePullsPerUser.Add(user.User.Login, contrib);
+                    }
+                }
+            }
+        }
+    }
+}
+
+<h1>🍂</h1>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Hacktoberfest list for @(startDate.ToString("yyyy"))</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+
+                <p><strong>Unique contributors (no swaghunters): @(firstHacktoberfestEligiblePullsPerUser.Count)</strong></p>
+
+                @foreach (var item in firstHacktoberfestEligiblePullsPerUser.OrderByDescending(x => x.Value.CreateDateTime))
+                {
+                    <ul>
+                        @{
+                            var contrib = item.Value;
+                            var stateColor = "orange";
+                            if (contrib.CloseState == "merged")
+                            {
+                                stateColor = "green";
+                            }
+                            if (contrib.CloseState == "closed")
+                            {
+                                stateColor = "red";
+                            }
+                            var approvalColor = contrib.ReviewApprovals > 0 ? "lightgreen" : "";
+                            var changesRequestedColor = contrib.ReviewChangesRequested > 0 ? "lightpink" : "";
+                        }
+                        <li>
+                            <strong>@(item.Key)</strong>
+                            <span>| @contrib.CreateDateTime.ToString("yyyy-MM-dd")</span>
+                            <span>| <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a></span>
+                            <span>| <strong style="color: @stateColor">@contrib.CloseState</strong></span>
+                            <span>| @contrib.Title</span>
+                            <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @approvalColor; padding: 4px">A: @contrib.ReviewApprovals</span></span>
+                            <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @changesRequestedColor; padding: 4px">C: @contrib.ReviewChangesRequested</span></span>
+                            @if (contrib.IsUsersFirstContributionToAnyUmbracoRepository)
+                            {
+                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: lightgreen; padding: 4px">first ever contrib</span>
+                            }
+                            @if (contrib.IsUsersFirstContributionToThisRepository)
+                            {
+                                <span style="font-size: 60%; font-weight: bold; color: black; background-color: yellow; padding: 4px">first contrib to this repo</span>
+                            }
+                            @if (contrib.IsHacktoberfestEligible)
+                            {
+                                <span style="font-size: 60%; font-weight: bold; color: white; background-color: red; padding: 4px">hacktoberfest</span>
+                            }
+                        </li>
+
+                    </ul>
+                }
+            </div>
+        </div>
+    </div>
+</div>
