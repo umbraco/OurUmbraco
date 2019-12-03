@@ -1,0 +1,144 @@
+﻿@using OurUmbraco.Our.Api
+@using OurUmbraco.Our.Services
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var repoService = new RepositoryManagementService();
+    var repositories = repoService.GetAllPublicRepositories();
+
+    var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var startYear = 2012;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startYear"]) == false)
+    {
+        int.TryParse(Request.QueryString["startYear"], out startYear);
+    }
+
+    var startMonth = 6;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["startMonth"]) == false)
+    {
+        int.TryParse(Request.QueryString["startMonth"], out startMonth);
+    }
+
+    var startDate = new DateTime(startYear, startMonth, 1);
+
+    var controller = new DashboardStatisticsController();
+    var pullRequestCloseData = controller.GetPullRequestCloseData(repository: repository, startYear: startYear, startMonth: startMonth)
+        .ToList()
+        .OrderByDescending(x => x.CloseDateTime);
+    
+    var approvedPullRequests = controller.GetApprovedRequestCloseData(repository: repository, startYear: startYear, startMonth: startMonth)
+        .ToList()
+        .OrderByDescending(x => x.ApprovedDateTime);
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">PR Close data (since @(startDate.ToString("MMMM yyyy")))</h6>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-sm-12">
+                <form method="get">
+                    <div>
+                        <label>
+                            Show
+                            <select name="repository">
+                                <option value="" @(repository == "" ? "selected" : null)>All repositories</option>
+                                @foreach (var repo in repositories)
+                                {
+                                    <option value="@repo.Alias" @(repository == repo.Alias ? "selected" : null)>@repo.Alias</option>
+                                }
+                            </select>
+                        </label>
+                        &nbsp;|&nbsp;
+                        <span>Start month: </span>
+                        <select name="startMonth">
+                            @for (var i = 1; i <= 12; i++)
+                            {
+                                <option value="@i" @(startMonth == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;|&nbsp;
+                        <span>Start year: </span>
+                        <select name="startYear">
+                            @for (var i = 2010; i <= DateTime.Now.Year; i++)
+                            {
+                                <option value="@i" @(startYear == i ? "selected" : null)>@i</option>
+                            }
+                        </select>
+                        &nbsp;&nbsp;
+                        <input type="submit" name="Update" value="Update"/>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-sm-12">
+
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                <tr role="row">
+                    <th>Repository</th>
+                    <th>PR Number</th>
+                    <th>Title</th>
+                    <th>Closed</th>
+                    <th>CloseType</th>
+                    <th>ClosedByUser</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var pr in pullRequestCloseData)
+                {
+                    <tr>
+                        <td>@pr.Repository</td>
+                        <td><a href="https://github.com/umbraco/@(pr.Repository)/pull/@(pr.Number)">@pr.Number</a></td>
+                        <td>@pr.Title</td>
+                        <td>@pr.CloseDateTime</td>
+                        <td>@pr.CloseType</td>
+                        <td>@pr.ClosedByUser</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Approved PR data (since @(startDate.ToString("MMMM yyyy")))</h6>
+    </div>
+    <div class="card-body">
+        <div class="col-sm-12">
+
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                <tr role="row">
+                    <th>Repository</th>
+                    <th>PR Number</th>
+                    <th>Title</th>
+                    <th>ApproveDate</th>
+                    <th>Approvers</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var pr in approvedPullRequests)
+                {
+                    <tr>
+                        <td>@pr.Repository</td>
+                        <td><a href="https://github.com/umbraco/@(pr.Repository)/pull/@(pr.Number)">@pr.Number</a></td>
+                        <td>@pr.Title</td>
+                        <td>@pr.ApprovedDateTime</td>
+                        <td>@pr.ApprovedByUser</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

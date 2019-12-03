@@ -1,0 +1,61 @@
+﻿@inherits UmbracoViewPage<CommunityBlogPostViewModel>
+@using OurUmbraco.Community.BlogPosts;
+@using OurUmbraco.Community.Models.ViewModels;
+@{
+    Layout = "~/Views/CommunityHubPageLayout.cshtml";
+}
+
+<section class="community">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <h1>@Model.Content.Name</h1>
+                <p>@(Model.Content.GetPropertyValue<string>("headline"))</p>
+            </div>
+            <div class="col-md-12">
+                @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
+                <p>&nbsp;</p>
+            </div>
+
+
+            @if (Model.Posts != null && Model.Posts.Any())
+            {
+                <div class="col-md-12">
+                    <small>Recent uProfile blog posts</small>
+                </div>
+
+                <div class="col-md-12 flex" id="community-posts">
+                    @RenderPosts(Model.Posts)
+                </div>
+            }
+            else
+            {
+                <p>
+                    Unable to fetch uProfile blog posts. Please try again.
+                </p>
+            }
+        </div>
+    </div>
+</section>
+
+@helper RenderPosts(IEnumerable<BlogRssItem> posts)
+{
+    foreach (var post in Model.Posts)
+    {
+        <a href="@(!string.IsNullOrEmpty(post.Link) ? post.Link : string.Empty)" class="community-post" target="_blank" rel="noreferrer noopener">
+            <div class="avatar">
+                <img src="@(!string.IsNullOrEmpty(post.Thumbnail) ? post.Thumbnail : string.Empty)" alt="@post.Title" style="height: 46px; width: 46px;">
+            </div>
+            <div class="meta">
+                <div class="forum-thread-text">
+                    <h3>@(!string.IsNullOrEmpty(post.Title) ? post.Title : string.Empty)</h3>
+                    
+                    @if (!string.IsNullOrEmpty(post.Description))
+                    {
+                        <p>@Umbraco.TruncateByWords(post.Description, 15)</p>
+                    }
+                </div>
+            </div>
+        </a>
+    }
+}

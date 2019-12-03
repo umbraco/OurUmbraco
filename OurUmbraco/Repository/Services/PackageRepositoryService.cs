@@ -37,7 +37,7 @@ namespace OurUmbraco.Repository.Services
         private readonly MembershipHelper MembershipHelper;
         private readonly UmbracoHelper UmbracoHelper;
 
-        const string BASE_URL = "https://our.umbraco.org";
+        const string BASE_URL = "https://our.umbraco.com";
 
         public PackageRepositoryService(UmbracoHelper umbracoHelper, MembershipHelper membershipHelper, DatabaseContext databaseContext)
         {
@@ -230,7 +230,7 @@ namespace OurUmbraco.Repository.Services
             //TODO: SD: I dunno where these come from or if we care about it?
             //var deliCompatVersions = Utils.GetProjectCompatibleVersions(content.Id) ?? new List<string>();
 
-            var allPackageFiles = wikiFiles.Where(x => x.FileType.InvariantEquals("package")).ToArray();
+            var allPackageFiles = wikiFiles.Where(x => x.FileType.InvariantEquals("package") && x.Archived == false).ToArray();
 
             //get the strict packages in the correct desc order
             var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();

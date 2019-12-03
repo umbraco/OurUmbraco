@@ -5,6 +5,8 @@ namespace OurUmbraco.Our.Models.GitHub
 {
     public class Issue
     {
+        [JsonProperty("id")]
+        public int Id { get; set; }
 
         [JsonProperty("url")]
         public string Url { get; set; }
@@ -59,7 +61,7 @@ namespace OurUmbraco.Our.Models.GitHub
         public Event[] Events { get; set; }
 
         [JsonProperty("reviews")]
-        public Event[] Reviews { get; set; }
+        public Review[] Reviews { get; set; }
 
         // Custom properties
 
@@ -90,5 +92,17 @@ namespace OurUmbraco.Our.Models.GitHub
         /// </summary>
         public bool IsPr => Link?.Contains("/pull/") ?? false;
 
+        public DateTime SetToUpForGrabs { get; set; }
+        public DateTime SetToIdea { get; set; }
+        public DateTime LabelAdded { get; set; }
+        public string ReviewState { get; set; }
+        public DateTime LastReviewDate { get; set; }
+        
+        public User CloseUser { get; set; }
+
+        public DateTime AcknowledgeDate { get; set; }
+        
+        public DateTime SignificantUpdateDate { get; set; }
+        
     }
 }

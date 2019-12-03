@@ -16,7 +16,7 @@ html {
 }
 
 
-.has-sidebar, .projects-page{
+.has-sidebar, .projects-page, .textpage-page {
     
     .page-content {
         width: 100%;
@@ -149,7 +149,7 @@ html {
                 color: darken($color-our, 20%);
             }
             li.open > ul {
-                max-height: 600px;
+                max-height: 100%;
             }
             @media (max-width: 992px) {
                 padding-left: 0;

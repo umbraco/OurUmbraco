@@ -86,7 +86,7 @@
             </xsl:if>
 
             <xsl:if test="string($currentPage/vendorUrl)">
-                <a href="{$currentPage/vendorUrl}" class="projectPurchase" target="_blank" onClick="javascript: pageTracker._trackPageview('/purchase/{$currentPage/@urlName}');">
+                <a href="{$currentPage/vendorUrl}" class="projectPurchase" target="_blank" rel="noreferrer noopener" onClick="javascript: pageTracker._trackPageview('/purchase/{$currentPage/@urlName}');">
                     Purchase
                     <span>
                         <xsl:value-of select="$currentPage/@nodeName"/>,  <xsl:value-of select="$currentPage/version"/>
@@ -428,7 +428,7 @@
 </xsl:when>
 
 <xsl:when test="contains($groups, 'admin')">
-  <a href="/wiki/about/our-admins" title="Member of the our.umbraco.org admin team" class="badge admin">admin</a>
+  <a href="/wiki/about/our-admins" title="Member of the our.umbraco.com admin team" class="badge admin">admin</a>
 </xsl:when>
 
 <xsl:when test="contains($groups, 'vendor')">

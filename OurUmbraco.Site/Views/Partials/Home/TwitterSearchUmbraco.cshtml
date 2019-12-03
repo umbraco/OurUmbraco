@@ -1,20 +1,26 @@
 ﻿@using OurUmbraco.Forum.Extensions
 @model OurUmbraco.Community.Models.TweetsModel
 
+@if (Model.Tweets == null || Model.Tweets.Any() == false)
+{
+    <h2>Could not load recent tweets.</h2>
+    return;
+}
+
 @if (Model.ShowAdminOverView == false)
 {
     foreach (var tweet in Model.Tweets)
     {
-        <a href="@tweet.Url" class="forum-thread">
+        <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" class="forum-thread" target="_blank" rel="noreferrer noopener">
 
             <div class="avatar">
-                <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")"/>
+                <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" />
             </div>
 
             <div class="meta">
                 <div class="forum-thread-text">
                     <h3>@tweet.Text</h3>
-                    <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
+                    <p>@tweet.CreatedDate.ConvertToRelativeTime() by @@@tweet.Author.ScreenName</p>
                 </div>
             </div>
         </a>
@@ -35,13 +41,13 @@ else
 {
     foreach (var tweet in Model.Tweets)
     {
-        var twitterHandle = tweet.CreatedBy.UserIdentifier.ScreenName;
+        var twitterHandle = tweet.Author.ScreenName;
 
-        <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" /><br />
+        <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" /><br />
         <h3>@tweet.Text</h3>
-        <p>@tweet.CreatedAt.ConvertToRelativeTime() by <a href="https://twitter.com/@twitterHandle/with_replies" target="_blank">@@@twitterHandle (@tweet.CreatedBy.Name)</a></p><br />
-        <a href="@tweet.Url" target="_blank">@tweet.Url</a><br />
-        
+        <p>@tweet.CreatedDate.ConvertToRelativeTime() by <a href="https://twitter.com/@twitterHandle/with_replies" target="_blank" rel="noreferrer noopener">@@@twitterHandle (@tweet.Author.ScreenName)</a></p><br />
+        <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" target="_blank" rel="noreferrer noopener">https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id</a><br />
+
         using (Html.BeginForm("MarkAsSpam", "TwitterSearch"))
         {
             @Html.AntiForgeryToken()
@@ -54,7 +60,3 @@ else
     }
 }
 
-@if (Model.Tweets.Any() == false)
-{
-    <h2>Could not load recent tweets.</h2>
-}

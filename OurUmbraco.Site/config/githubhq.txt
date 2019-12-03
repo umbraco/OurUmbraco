@@ -91,3 +91,6 @@ HalldorLyngmo
 rhealefever
 TheGeekyUnicorn
 rasmusjp
+umbrabot
+MahmoudUmbraco
+jonat123

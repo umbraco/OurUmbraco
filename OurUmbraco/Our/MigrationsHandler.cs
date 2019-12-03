@@ -78,6 +78,16 @@ namespace OurUmbraco.Our
             RemoveHomeOnlyBannerTextArea();
             ImportGitHubLabelDocTypes();
             CreateGitHubAutoRepliesTable();
+            AddSmallRteDataType();
+            AddMapToggleToCommunityHub();
+            AddNotificationToCommunityHub();
+            AddRtesToCommunityHub();
+            AddCommunityBlogPostsTemplate();
+            AddPackageLandingPageTemplate();
+            AddEnhancedTextPage();
+            AddEnhancedTextPageTemplate();
+            AddGridDataType();
+            AddGridToEnhancedTextPage();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2629,5 +2639,394 @@ namespace OurUmbraco.Our
 
         }
 
+        private void AddMapToggleToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null && !communityHubContentType.PropertyTypeExists("showMap"))
+                {
+                    var rte = dataTypeService.GetDataTypeDefinitionByName("Checkbox");
+                    var pickerPropertyType = new PropertyType(rte, "showMap")
+                    {
+                        Name = "Show map?",
+                        Description = "Renderes the community member map if toggled."
+                    };
+                    communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                    contentTypeService.Save(communityHubContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddSmallRteDataType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var alias = "Richtext Editor - Small";
+                var mediaPickerType = dataTypeService.GetDataTypeDefinitionByName(alias);
+                if (mediaPickerType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.TinyMCEv3")
+                    {
+                        Name = alias
+                    };
+
+                    dataTypeService.SaveDataTypeAndPreValues(dataType, new Dictionary<string, PreValue> ());
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddNotificationToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null && !communityHubContentType.PropertyTypeExists("notification"))
+                {
+                    var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor - Small");
+                    var pickerPropertyType = new PropertyType(rte, "notification")
+                    {
+                        Name = "Notification",
+                        Description = "This notification will be displayed at the top of the community hub page."
+                    };
+                    communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                    contentTypeService.Save(communityHubContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddRtesToCommunityHub()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var communityHubContentType = contentTypeService.GetContentType("communityHub");
+                if (communityHubContentType != null)
+                {
+                    // Primary (above the map)
+                    if (!communityHubContentType.PropertyTypeExists("primaryRte"))
+                    {
+                        var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor");
+                        var pickerPropertyType = new PropertyType(rte, "primaryRte") { Name = "Content", Description = "Content to have displayed above the map." };
+                        communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                        contentTypeService.Save(communityHubContentType);
+                    }
+
+                    // Secondary (below the map)
+                    if (!communityHubContentType.PropertyTypeExists("secondaryRte"))
+                    {
+                        var rte = dataTypeService.GetDataTypeDefinitionByName("Richtext Editor");
+                        var pickerPropertyType = new PropertyType(rte, "secondaryRte") { Name = "Content", Description = "Content to have displayed below the map." };
+                        communityHubContentType.AddPropertyType(pickerPropertyType, "Content");
+
+                        contentTypeService.Save(communityHubContentType);
+                    }
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddCommunityBlogPostsTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var hubPageAlias = "communityHubPage";
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var templateName = "CommunityHubUProfileBlogPosts";
+
+                var contentType = contentTypeService.GetContentType(hubPageAlias);
+                if (contentType != null)
+                {
+
+                    var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddPackageLandingPageTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path))
+                    return;
+
+                const string templateName = "ProjectLanding";
+                const string contentTypeAlias = "TextPage";
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var contentType = contentTypeService.GetContentType(contentTypeAlias);
+                if (contentType != null)
+                {
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddEnhancedTextPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+
+                var name = "Enhanced Text Page";
+                var alias = "enhancedTextPage";
+
+                var enhancedTextPageType = contentTypeService.GetContentType(alias);
+                if (enhancedTextPageType == null)
+                {
+                    var contentType = new ContentType(-1)
+                    {
+                        Name = name,
+                        Alias = alias,
+                    };
+
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddEnhancedTextPageTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                const string templateName = "EnhancedTextPage";
+                const string contentTypeAlias = "enhancedTextPage";
+                var relativeTemplateLocation = $"~/Views/{templateName}.cshtml";
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var fileService = ApplicationContext.Current.Services.FileService;
+
+                var contentType = contentTypeService.GetContentType(contentTypeAlias);
+                if (contentType != null)
+                {
+                    var templateContents = string.Empty;
+
+                    var templateFile = HostingEnvironment.MapPath(relativeTemplateLocation);
+                    if (templateFile != null && File.Exists(templateFile))
+                        templateContents = File.ReadAllText(templateFile);
+
+                    var template = fileService.CreateTemplateWithIdentity(templateName, templateContents);
+
+                    var allowsTemplates = contentType.AllowedTemplates.ToList();
+                    allowsTemplates.Add(template);
+                    contentType.AllowedTemplates = allowsTemplates;
+                    contentTypeService.Save(contentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddGridDataType()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var dataTypeAlias = "Grid Layout";
+
+                var gridDataType = dataTypeService.GetDataTypeDefinitionByName(dataTypeAlias);
+                if (gridDataType == null)
+                {
+                    var dataType = new DataTypeDefinition(-1, "Umbraco.Grid")
+                    {
+                        Name = dataTypeAlias
+                    };
+
+                    dataTypeService.Save(dataType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddGridToEnhancedTextPage()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var dataTypeService = ApplicationContext.Current.Services.DataTypeService;
+
+                var contentType = contentTypeService.GetContentType("enhancedTextPage");
+                if (contentType != null)
+                {
+                    var name = "Content";
+
+                    contentType.PropertyGroups.Add(new PropertyGroup { Name = name });
+
+                    var grid = dataTypeService.GetDataTypeDefinitionByName("Grid Layout");
+                    if (grid != null)
+                    {
+                        var gridProperty = new PropertyType(grid, "gridContent")
+                        {
+                            Name = "Content",
+                            Description = "Content for the page",
+                            Mandatory = false
+                        };
+
+                        contentType.AddPropertyType(gridProperty, name);
+                    }
+
+                    contentTypeService.Save(contentType);
+                } 
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
     }
 }

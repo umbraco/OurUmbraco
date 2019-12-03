@@ -40,3 +40,4 @@ cogworks-hackathon
 Umbraco-Minneapolis
 Umbraco-Nepal-Meetup
 Umbraco-Seattle-Meetup
+Thames-Valley-Umbraco-User-Group

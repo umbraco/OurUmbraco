@@ -209,6 +209,14 @@ namespace OurUmbraco.Forum.Api
             t.Answer = 0;
             t.LatestComment = 0;
             t.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || t.DetectSpam();
+            
+            // If the chosen version is Umbraco Heartcore, overrule other categories
+            if (model.Version == Constants.Forum.HeartcoreVersionNumber)
+            {
+                var heartCodeForumId = GetHeartCoreForumId();
+                t.ParentId = heartCodeForumId;
+            }
+            
             TopicService.Save(t);
 
             if (t.IsSpam)
@@ -238,11 +246,41 @@ namespace OurUmbraco.Forum.Api
             t.Version = model.Version;
             t.ParentId = model.Forum;
             t.Title = model.Title;
+            
+            // If the chosen version is Umbraco Heartcore, overrule other categories
+            if (model.Version == Constants.Forum.HeartcoreVersionNumber)
+            {
+                var heartCodeForumId = GetHeartCoreForumId();
+                t.ParentId = heartCodeForumId;
+            }
+            
             TopicService.Save(t);
 
             o.url = string.Format("{0}/{1}-{2}", library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
             return o;
+        }
+
+        private static int GetHeartCoreForumId()
+        {
+            var heartCoreForumId = 0;
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var rootNode = umbracoHelper.TypedContentAtRoot()
+                .FirstOrDefault(x =>
+                    string.Equals(x.DocumentTypeAlias, "Community", StringComparison.InvariantCultureIgnoreCase));
+            
+            if (rootNode != null)
+            {
+                var forumNode = rootNode.FirstChild(x => string.Equals(x.DocumentTypeAlias, "Forum"));
+                if (forumNode != null)
+                {
+                    var heartCoreForumNode = forumNode.FirstChild(x => x.Name.Contains(Constants.Forum.UmbracoHeadlessName));
+                    if (heartCoreForumNode != null)
+                        heartCoreForumId = heartCoreForumNode.Id;
+                }
+            }
+
+            return heartCoreForumId;
         }
 
 
@@ -499,7 +537,7 @@ namespace OurUmbraco.Forum.Api
         {
             var post = string.Format("A {0} has been flagged as spam for a moderator to check\n", flag.TypeOfPost);
             var member = Members.GetById(flag.MemberId);
-            post = post + string.Format("Flagged by member {0} https://our.umbraco.org/member/{1}\n", member.Name, member.Id);
+            post = post + string.Format("Flagged by member {0} https://our.umbraco.com/member/{1}\n", member.Name, member.Id);
 
             var topicId = flag.Id;
             var posterId = 0;
@@ -518,7 +556,7 @@ namespace OurUmbraco.Forum.Api
                 posterId = topic.MemberId;
             }
 
-            post = post + string.Format("Topic title: *{0}*\nLink to author: http://our.umbraco.org/member/{1}\n Link to {2}: http://our.umbraco.org{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
+            post = post + string.Format("Topic title: *{0}*\nLink to author: https://our.umbraco.com/member/{1}\n Link to {2}: https://our.umbraco.com{3}{4}\n\n", topic.Title, posterId, flag.TypeOfPost, topic.GetUrl(), flag.TypeOfPost == "comment" ? "#comment-" + flag.Id : string.Empty);
 
             SendSlackNotification(post);
         }
@@ -526,14 +564,14 @@ namespace OurUmbraco.Forum.Api
         private static string BuildDeleteNotifactionPost(string adminName, int memberId)
         {
             var post = string.Format("Topic or comment deleted by admin {0}\n", adminName);
-            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+            post = post + string.Format("Go to affected member https://our.umbraco.com/member/{0}\n\n", memberId);
             return post;
         }
 
         private static string BuildBlockedNotifactionPost(string adminName, int memberId, bool blocked)
         {
             var post = string.Format("Member {0} by admin {1}\n", blocked ? "_blocked_" : "*unblocked/approved*", adminName);
-            post = post + string.Format("Go to affected member https://our.umbraco.org/member/{0}\n\n", memberId);
+            post = post + string.Format("Go to affected member https://our.umbraco.com/member/{0}\n\n", memberId);
             return post;
         }
 

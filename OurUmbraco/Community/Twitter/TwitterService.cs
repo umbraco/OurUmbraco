@@ -1,11 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using OurUmbraco.Community.Models;
 using OurUmbraco.Forum.Extensions;
-using Tweetinvi;
-using Tweetinvi.Models;
-using Tweetinvi.Parameters;
+using TweetSharp;
 using umbraco.MacroEngines;
 using Umbraco.Core;
 using Umbraco.Core.Cache;
@@ -24,27 +23,32 @@ namespace OurUmbraco.Community.Twitter
             if (member == null || member.IsHq() == false)
                 tweetsModel.ShowAdminOverView = false;
 
-            ITweet[] filteredTweets = { };
+            List<TwitterStatus> filteredTweets = new List<TwitterStatus>();
             try
             {
                 var tweets =
-                    UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<ITweet[]>("UmbracoSearchedTweets",
+                    UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<IEnumerable<TwitterStatus>>("UmbracoSearchedTweets",
                         () =>
                         {
-                            Auth.SetUserCredentials(ConfigurationManager.AppSettings["twitterConsumerKey"],
-                                    ConfigurationManager.AppSettings["twitterConsumerSecret"],
-                                    ConfigurationManager.AppSettings["twitterUserAccessToken"],
-                                    ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
+                            var service = new TweetSharp.TwitterService(
+                    ConfigurationManager.AppSettings["twitterConsumerKey"],
+                    ConfigurationManager.AppSettings["twitterConsumerSecret"]);
+                            service.AuthenticateWith(
+                                ConfigurationManager.AppSettings["twitterUserAccessToken"],
+                                ConfigurationManager.AppSettings["twitterUserAccessSecret"]);
 
-                            var searchParameter = new SearchTweetsParameters("umbraco")
+                            var options = new SearchOptions
                             {
-                                SearchType = SearchResultType.Recent
+                                Count = 100,
+                                Resulttype = TwitterSearchResultType.Recent,
+                                Q = "umbraco"
                             };
-                            var results = Search.SearchTweets(searchParameter);
-                            return results == null ? new ITweet[]{} : results.ToArray();
+
+                            var results = service.Search(options);
+                            return results.Statuses;
 
                         }, TimeSpan.FromMinutes(2));
-                
+
                 var settingsNode = umbracoHelper.TypedContentAtRoot().FirstOrDefault();
                 if (settingsNode != null)
                 {
@@ -54,20 +58,18 @@ namespace OurUmbraco.Community.Twitter
                         .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
 
                     filteredTweets = tweets.Where(x =>
-                            x.CreatedBy.UserIdentifier.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) ==
-                            false
-                            && x.UserMentions.Any(m => m.ScreenName.ContainsAny(usernameFilter)) == false
+                            x.Author.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
                             && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false
                             && x.Text.StartsWith("RT ") == false)
                         .Take(numberOfResults)
-                        .ToArray();
+                        .ToList();
                 }
 
                 tweetsModel.Tweets = filteredTweets;
             }
             catch (Exception ex)
             {
-                LogHelper.Error<ITweet>("Could not get tweets", ex);
+                LogHelper.Error<TwitterService>("Could not get tweets", ex);
             }
 
             return tweetsModel;

@@ -73,6 +73,9 @@ namespace OurUmbraco.Our.Services
         public void CheckContributorBadges(Issue pr, PerformContext hangfire = null)
         {
 
+            if (IsLive == false)
+                return;
+
             string prefix = $"[{pr.RepoSlug}/{pr.Number}]";
 
             // Look for a "merged" event in the list of events
@@ -91,12 +94,9 @@ namespace OurUmbraco.Our.Services
                 hangfire.WriteLine($"{prefix} Auto reply to {pr.User.Login} has already been posted.");
                 return;
             }
-
-            // Gets a collection of members matching the GitHub ID of the commit author (there really should only be one)
-            var creators = ApplicationContext.Current.Services.MemberService.GetMembersByPropertyValue("githubId", pr.User.Id.ToString());
-
-            // Get the first member (or null)
-            var creator = creators.FirstOrDefault();
+            
+            // Get the first member matching the GitHub user ID (or null if not found)
+            var creator = _github.GetMemberByGitHubUserId(pr.User.Id);
 
             // Member wasn't found in Umbraco
             if (creator == null)

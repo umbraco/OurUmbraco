@@ -32,6 +32,7 @@ using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
@@ -301,7 +302,10 @@ namespace OurUmbraco.Community.GitHub
                 "OurUmbraco",
                 "Umbraco.Courier.Contrib",
                 "Umbraco.Deploy.Contrib",
-                "Umbraco.Deploy.ValueConnectors"
+                "Umbraco.Deploy.ValueConnectors" ,
+                "rfcs",	
+                "organizer-guide",
+                "The-Starter-Kit"
             };
         }
 
@@ -323,39 +327,74 @@ namespace OurUmbraco.Community.GitHub
             {
                 IsLocked = true;
 
+                var pulls = new List<GithubPullRequestModel>();
+
                 foreach (var repository in GetRepositories())
                 {
-                    var pulls = GetExistingPullsFromDisk();
-
-                    var stopImport = false;
-                    // GitHub paging starts at 1, not 0, so we'll start couting at 1 as well
-                    for (var i = 1; i < int.MaxValue; i++)
+                    var existingPulls = GetExistingPullsFromDisk(repository);
+                    foreach (var pull in existingPulls)
                     {
-                        if (stopImport)
-                            break;
+                        DateTime? mergeDateTime = null;
+                        var mergedEvent = pull.Events.FirstOrDefault(x => x.Name == "merged");
+                        if (mergedEvent != null)
+                        {
+                            mergeDateTime = mergedEvent.CreateDateTime;
+                        }
 
-                        pulls = GetPulls(repository: repository, page: i, pulls: pulls, stopImport: out stopImport);
-                        Thread.Sleep(1000);
+                        var pullRequest = new GithubPullRequestModel
+                        {
+                            Id = pull.Id,
+                            ClosedAt = pull.ClosedDateTime,
+                            CreatedAt = pull.CreateDateTime,
+                            UpdatedAt = pull.UpdateDateTime,
+                            MergedAt = mergeDateTime,
+                            Number = pull.Number,
+                            Repository = pull.RepoSlug,
+                            State = pull.State,
+                            User = new GithubPullRequestUser
+                            {
+                                Id = pull.User.Id,
+                                Login = pull.User.Login
+                            },
+                            Title = pull.Title
+                        };
+                        pulls.Add(pullRequest);
                     }
-
-                    // Save the JSON to disk
-                    var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
-                    File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
                 }
+
+                // Save the JSON to disk
+                var rawJson = JsonConvert.SerializeObject(pulls, Formatting.Indented);
+                File.WriteAllText(PullRequestsJsonPath, rawJson, Encoding.UTF8);
+
 
                 IsLocked = false;
             }
         }
 
-        private List<GithubPullRequestModel> GetExistingPullsFromDisk()
+        private List<Issue> GetExistingPullsFromDisk(string alias)
         {
-            var pulls = new List<GithubPullRequestModel>();
-            if (File.Exists(PullRequestsJsonPath) == false)
-                return pulls;
+            var repository = new Community.Models.Repository(alias, "umbraco", alias, alias);
+            var dir = HostingEnvironment.MapPath(repository.PullsStorageDirectory());
+            var pulls = new List<Issue>();
+            if (Directory.Exists(dir))
+            {
+                var files = Directory.GetFiles(dir, "*.pull.combined.json");
 
-            var content = File.ReadAllText(PullRequestsJsonPath);
-            pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content);
+                foreach (var file in files)
+                {
+                    try
+                    {
+                        var content = File.ReadAllText(file);
+                        var pull = JsonConvert.DeserializeObject<Issue>(content);
+                        pulls.Add(pull);
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(e);
 
+                    }
+                }
+            }
             return pulls;
         }
 
@@ -941,6 +980,8 @@ namespace OurUmbraco.Community.GitHub
 
             try
             {
+                EnsureCacheDirectories(repository);
+
                 var options = new GitHubGetRepositoryIssuesOptions
                 {
                     Owner = repository.Owner,
@@ -962,8 +1003,7 @@ namespace OurUmbraco.Community.GitHub
                     try
                     {
                         issuesResponse = GitHubApi.Issues.GetIssues(options);
-                        context.WriteLine(
-                            $"GitHub says: {issuesResponse.RateLimiting.Remaining} requests remaining - will reset at {issuesResponse.RateLimiting.Reset.ToString("yyyy-MM-dd HH:mm")} UTC");
+                        context.WriteLine($"GitHub says: {issuesResponse.RateLimiting.Remaining} requests remaining - will reset at {issuesResponse.RateLimiting.Reset.ToString("yyyy-MM-dd HH:mm")} UTC");
                     }
                     catch (GitHubHttpException ex)
                     {
@@ -975,6 +1015,7 @@ namespace OurUmbraco.Community.GitHub
                         throw new Exception($"Failed fetching page {options.Page}", ex);
                     }
 
+
                     foreach (var response in issuesResponse.Body)
                     {
                         // Local flag used later to determine whether new data was fetched for this issue
@@ -983,42 +1024,15 @@ namespace OurUmbraco.Community.GitHub
                         var gitHubResponse = JsonConvert.DeserializeObject<GitHubResponse>(response.JObject.ToString());
                         var responseIsIssue = gitHubResponse.pull_request == null;
 
-                        string issuesFile;
-                        string issuesCommentFile;
-                        string issuesEventsFile;
-                        string issuesReviewsFile;
-                        string issuesCombinedFile;
-                        if (responseIsIssue)
-                        {
-                            issuesFile =
-                                HostingEnvironment.MapPath(
-                                    $"{repository.IssuesStorageDirectory()}/{response.Number}.issue.json");
-                            issuesCommentFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/{response.Number}.issue.comments.json");
-                            issuesEventsFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/{response.Number}.issue.events.json");
-                            issuesReviewsFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/{response.Number}.issue.reviews.json");
-                            issuesCombinedFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/{response.Number}.issue.combined.json");
-                        }
-                        else
-                        {
-                            issuesFile =
-                                HostingEnvironment.MapPath(
-                                    $"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.json");
-                            issuesCommentFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.comments.json");
-                            issuesEventsFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.events.json");
-                            issuesReviewsFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.reviews.json");
-                            issuesCombinedFile = HostingEnvironment.MapPath(
-                                $"{repository.IssuesStorageDirectory()}/pulls/{response.Number}.pull.combined.json");
-                        }
+                        var directory = responseIsIssue ? repository.IssuesStorageDirectory() : repository.PullsStorageDirectory();
+                        var issueTypename = responseIsIssue ? "issue" : "pull";
+                        var filePrefix = $"{directory}\\{response.Number}.{issueTypename}";
 
-                        // Make sure we have a directory
-                        Directory.CreateDirectory(Path.GetDirectoryName(issuesFile));
+                        var issuesFile = HostingEnvironment.MapPath($"{filePrefix}.json");
+                        var issuesCommentFile = HostingEnvironment.MapPath($"{filePrefix}.comments.json");
+                        var issuesEventsFile = HostingEnvironment.MapPath($"{filePrefix}.events.json");
+                        var issuesReviewsFile = HostingEnvironment.MapPath($"{filePrefix}.reviews.json");
+                        var issuesCombinedFile = HostingEnvironment.MapPath($"{filePrefix}.combined.json");
 
                         JsonUtils.SaveJsonObject(issuesFile, response);
 
@@ -1027,19 +1041,16 @@ namespace OurUmbraco.Community.GitHub
                         JArray events;
                         JArray reviews = null;
 
-                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) >
-                            response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
                         {
                             comments = JsonUtils.LoadJsonArray(issuesCommentFile);
                         }
                         else
                         {
                             context.WriteLine($"Fetching comments for issue {response.Number} {response.Title}");
-                            var issueCommentsResponse = GitHubApi.Client.DoHttpGetRequest(
-                                $"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/comments");
+                            var issueCommentsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/comments");
                             if (issueCommentsResponse.StatusCode != HttpStatusCode.OK)
-                                throw new Exception(
-                                    $"Failed fetching comments for issue #{response.Number} ({issueCommentsResponse.StatusCode})");
+                                throw new Exception($"Failed fetching comments for issue #{response.Number} ({issueCommentsResponse.StatusCode})");
 
                             comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
                             JsonUtils.SaveJsonArray(issuesCommentFile, comments);
@@ -1047,37 +1058,33 @@ namespace OurUmbraco.Community.GitHub
                             updated = true;
                         }
 
-                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) >
-                            response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
                         {
                             events = JsonUtils.LoadJsonArray(issuesEventsFile);
                         }
                         else
                         {
                             context.WriteLine($"Fetching events for issue {response.Number} {response.Title}");
-                            var issueEventssResponse = GitHubApi.Client.DoHttpGetRequest(
-                                $"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
-                            if (issueEventssResponse.StatusCode != HttpStatusCode.OK)
+                            var issueEventsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
+                            if (issueEventsResponse.StatusCode != HttpStatusCode.OK)
                                 throw new Exception(
-                                    $"Failed fetching events for issue #{response.Number} ({issueEventssResponse.StatusCode})");
+                                    $"Failed fetching events for issue #{response.Number} ({issueEventsResponse.StatusCode})");
 
-                            events = JsonUtils.ParseJsonArray(issueEventssResponse.Body);
+                            events = JsonUtils.ParseJsonArray(issueEventsResponse.Body);
                             JsonUtils.SaveJsonArray(issuesEventsFile, events);
                         }
 
                         // Only PRs have reviews, no need to check for them on issues
                         if (responseIsIssue == false)
                         {
-                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) >
-                                response.UpdatedAt.DateTime.ToUniversalTime())
+                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
                             {
                                 reviews = JsonUtils.LoadJsonArray(issuesReviewsFile);
                             }
                             else
                             {
                                 context.WriteLine($"Fetching reviews for PR {response.Number} {response.Title}");
-                                var issueReviewsResponse = GitHubApi.Client.DoHttpGetRequest(
-                                    $"/repos/{repository.Owner}/{repository.Alias}/pulls/{response.Number}/comments");
+                                var issueReviewsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/pulls/{response.Number}/reviews");
                                 if (issueReviewsResponse.StatusCode == HttpStatusCode.NotFound)
                                 {
                                     // make sure to save an empty array for all of them so we don't keep revisiting this unless there's been a PR update
@@ -1087,8 +1094,7 @@ namespace OurUmbraco.Community.GitHub
                                 }
 
                                 if (issueReviewsResponse.StatusCode != HttpStatusCode.OK)
-                                    throw new Exception(
-                                        $"Failed fetching reviews for PR #{response.Number} ({issueReviewsResponse.StatusCode})");
+                                    throw new Exception($"Failed fetching reviews for PR #{response.Number} ({issueReviewsResponse.StatusCode})");
 
                                 reviews = JsonUtils.ParseJsonArray(issueReviewsResponse.Body);
                                 JsonUtils.SaveJsonArray(issuesReviewsFile, reviews);
@@ -1120,12 +1126,228 @@ namespace OurUmbraco.Community.GitHub
             }
         }
 
+
+        public void UpdateReviews(PerformContext context, Community.Models.Repository repository)
+        {
+            // Accept newer versions of the TLS protocol
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            var page = 0;
+            var pageTrackerFile = HostingEnvironment.MapPath($"~/App_Data/TEMP/GitHub/PageTracker-{repository.Alias}.txt");
+
+            if (File.Exists(pageTrackerFile) == false)
+            {
+                File.WriteAllText(pageTrackerFile, page.ToString(), Encoding.Default);
+            }
+            else
+            {
+                var line = File.ReadLines(pageTrackerFile).First();
+                int.TryParse(line, out page);
+            }
+
+            try
+            {
+                EnsureCacheDirectories(repository);
+
+                var options = new GitHubGetRepositoryIssuesOptions
+                {
+                    Owner = repository.Owner,
+                    Repository = repository.Alias,
+                    Sort = GitHubIssueSortField.Updated,
+                    Direction = GitHubSortDirection.Descending,
+                    State = GitHubIssueState.All,
+                    PerPage = 100,
+                    Page = page
+                };
+
+                while (true)
+                {
+                    var currentPage = options.Page;
+                    var localCount = 0;
+
+                    // Make the initial request to the API
+                    context.WriteLine($"Fetching issues for repo {repository.Alias} (page {options.Page})");
+
+                    GitHubGetIssuesResponse issuesResponse;
+                    try
+                    {
+                        issuesResponse = GitHubApi.Issues.GetIssues(options);
+                        context.WriteLine($"Number of pages returned {issuesResponse.TotalPages}");
+                        context.WriteLine($"GitHub says: {issuesResponse.RateLimiting.Remaining} requests remaining - will reset at {issuesResponse.RateLimiting.Reset.ToString("yyyy-MM-dd HH:mm")} UTC");
+
+                        if (issuesResponse.RateLimiting.Remaining <= 1000)
+                        {
+                            context.WriteLine($"Not enough remaining requests available {issuesResponse.RateLimiting.Remaining} - stopping now.");
+                            break;
+                        }
+
+                        // Break the loop if there's no more pages left
+                        if (currentPage > issuesResponse.TotalPages)
+                        {
+                            context.WriteLine($"Page {currentPage} is higher than the number of available pages ({issuesResponse.TotalPages}) - stopping now.");
+                            break;
+                        }
+                    }
+                    catch (GitHubHttpException ex)
+                    {
+                        throw new Exception(
+                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.Response.ResponseUri}", ex);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new Exception($"Failed fetching page {options.Page}", ex);
+                    }
+
+
+                    foreach (var response in issuesResponse.Body)
+                    {
+                        // Local flag used later to determine whether new data was fetched for this issue
+                        var updated = false;
+
+                        var gitHubResponse = JsonConvert.DeserializeObject<GitHubResponse>(response.JObject.ToString());
+                        var responseIsIssue = gitHubResponse.pull_request == null;
+
+                        var directory = responseIsIssue ? repository.IssuesStorageDirectory() : repository.PullsStorageDirectory();
+                        var issueTypename = responseIsIssue ? "issue" : "pull";
+                        var filePrefix = $"{directory}\\{response.Number}.{issueTypename}";
+
+                        var issuesFile = HostingEnvironment.MapPath($"{filePrefix}.json");
+                        var issuesCommentFile = HostingEnvironment.MapPath($"{filePrefix}.comments.json");
+                        var issuesEventsFile = HostingEnvironment.MapPath($"{filePrefix}.events.json");
+                        var issuesReviewsFile = HostingEnvironment.MapPath($"{filePrefix}.reviews.json");
+                        var issuesCombinedFile = HostingEnvironment.MapPath($"{filePrefix}.combined.json");
+
+                        JsonUtils.SaveJsonObject(issuesFile, response);
+
+                        // Fetch comments and events if the local JSON file is older than the last update time of the issue
+                        JArray comments;
+                        JArray events;
+                        JArray reviews = null;
+
+                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        {
+                            comments = JsonUtils.LoadJsonArray(issuesCommentFile);
+                        }
+                        else
+                        {
+                            context.WriteLine($"Fetching comments for issue {response.Number} {response.Title}");
+                            var issueCommentsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/comments");
+                            if (issueCommentsResponse.StatusCode != HttpStatusCode.OK)
+                                context.WriteLine($"Failed fetching comments for issue #{response.Number} ({issueCommentsResponse.StatusCode}), continuing");
+
+                            comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
+                            JsonUtils.SaveJsonArray(issuesCommentFile, comments);
+
+                            updated = true;
+                        }
+
+                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        {
+                            events = JsonUtils.LoadJsonArray(issuesEventsFile);
+                        }
+                        else
+                        {
+                            context.WriteLine($"Fetching events for issue {response.Number} {response.Title}");
+                            var issueEventsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
+                            if (issueEventsResponse.StatusCode != HttpStatusCode.OK)
+                                context.WriteLine($"Failed fetching events for issue #{response.Number} ({issueEventsResponse.StatusCode}), continuing");
+
+                            events = JsonUtils.ParseJsonArray(issueEventsResponse.Body);
+                            JsonUtils.SaveJsonArray(issuesEventsFile, events);
+                        }
+
+                        // Only PRs have reviews, no need to check for them on issues
+                        if (responseIsIssue == false)
+                        {
+                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                            {
+                                reviews = JsonUtils.LoadJsonArray(issuesReviewsFile);
+                            }
+                            else
+                            {
+                                context.WriteLine($"Fetching reviews for PR {response.Number} {response.Title}");
+                                var issueReviewsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/pulls/{response.Number}/reviews");
+                                if (issueReviewsResponse.StatusCode == HttpStatusCode.NotFound)
+                                {
+                                    // make sure to save an empty array for all of them so we don't keep revisiting this unless there's been a PR update
+                                    reviews = JsonUtils.ParseJsonArray("[]");
+                                    JsonUtils.SaveJsonArray(issuesReviewsFile, reviews);
+                                    continue;
+                                }
+
+                                if (issueReviewsResponse.StatusCode != HttpStatusCode.OK)
+                                    context.WriteLine($"Failed fetching reviews for PR #{response.Number} ({issueReviewsResponse.StatusCode}), continuing");
+
+                                reviews = JsonUtils.ParseJsonArray(issueReviewsResponse.Body);
+                                JsonUtils.SaveJsonArray(issuesReviewsFile, reviews);
+                            }
+                        }
+
+                        // Save a JSON file with all the combined data we have for the issue / PR
+                        response.JObject.Add("_comments", comments);
+                        response.JObject.Add("events", events);
+                        response.JObject.Add("reviews", reviews);
+                        JsonUtils.SaveJsonObject(issuesCombinedFile, response);
+
+                        if (updated) localCount++;
+                    }
+
+                    context.WriteLine($"Updated {localCount} issues on page {options.Page}");
+
+                    // Increment the page count
+                    options.Page++;
+                    currentPage = options.Page;
+
+                    File.WriteAllText(pageTrackerFile, currentPage.ToString(), Encoding.Default);
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<GitHubService>("Error while fetching issues", ex);
+                context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
+            }
+        }
+
+        private static void EnsureCacheDirectories(Community.Models.Repository repository)
+        {
+            var issuesDirectory = HostingEnvironment.MapPath(repository.IssuesStorageDirectory());
+            if (Directory.Exists(issuesDirectory) == false)
+                Directory.CreateDirectory(issuesDirectory);
+            var pullsDirectory = HostingEnvironment.MapPath(repository.PullsStorageDirectory());
+            if (Directory.Exists(pullsDirectory) == false)
+                Directory.CreateDirectory(pullsDirectory);
+        }
+
         public void AddCommentToUpForGrabsIssues(PerformContext context)
         {
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-            AddGitHubComment(context, upForGrabsIssues, GitHubAutoReplyType.UpForGrabs);
+
+            var removeIssues = new List<int>();
+            var hqMembers = GetHqMembers();
+
+            foreach (var issue in upForGrabsIssues.Issues)
+            {
+                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
+                if (hqComments.Any() == false)
+                    continue;
+
+                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("Up for grabs".ToLowerInvariant()));
+                if (alreadyMentioned)
+                    removeIssues.Add(issue.Number);
+            }
+
+            var notifyIssues = upForGrabsIssues.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
+            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
+            {
+                SortOrder = upForGrabsIssues.SortOrder,
+                CategoryKey = upForGrabsIssues.CategoryKey,
+                CategoryDescription = upForGrabsIssues.CategoryDescription,
+                Issues = notifyIssues
+            };
+
+            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.UpForGrabs);
         }
 
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
@@ -1141,9 +1363,34 @@ namespace OurUmbraco.Community.GitHub
             var repositoryService = new RepositoryManagementService();
             var issues = repositoryService.GetAllOpenIssues(false);
             var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion);
-            AddGitHubComment(context, stateHQDiscussion, GitHubAutoReplyType.HqDiscussion);
+
+            var removeIssues = new List<int>();
+            var hqMembers = GetHqMembers();
+
+            foreach (var issue in stateHQDiscussion.Issues)
+            {
+                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
+                if (hqComments.Any() == false)
+                    continue;
+
+                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("at HQ".ToLowerInvariant()) ||
+                                                           x.Body.ToLowerInvariant().Contains("discuss".ToLowerInvariant()));
+                if (alreadyMentioned)
+                    removeIssues.Add(issue.Number);
+            }
+
+            var notifyIssues = stateHQDiscussion.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
+            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
+            {
+                SortOrder = stateHQDiscussion.SortOrder,
+                CategoryKey = stateHQDiscussion.CategoryKey,
+                CategoryDescription = stateHQDiscussion.CategoryDescription,
+                Issues = notifyIssues
+            };
+
+            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.HqDiscussion);
         }
-        
+
         private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
         {
             var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
@@ -1161,7 +1408,12 @@ namespace OurUmbraco.Community.GitHub
                 .FirstOrDefault();
 
             if (actionNode == null)
+            {
+                context.SetTextColor(ConsoleTextColor.Yellow);
+                context.WriteLine($"Could not find content for the alias {taskAlias} - no notifications will be sent.");
+                context.ResetTextColor();
                 return;
+            }
 
             context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
 
@@ -1176,7 +1428,7 @@ namespace OurUmbraco.Community.GitHub
             }
 
             // Only do this for newly created issues since this feature was introduced so as not to spam all the older issues.
-            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 6, 10));
+            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 5, 24));
             foreach (var issue in issues)
             {
                 // If we've already sent this reply, don't add it again
@@ -1269,6 +1521,59 @@ namespace OurUmbraco.Community.GitHub
             LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
 
             return new AddCommentResult(response);
+        }
+
+        private int GetGitHubIdPropertyTypeId()
+        {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            const string propertyTypeAlias = "githubId";
+
+            // In order to lookup the GitHub user ID in the database, we first need the ID of the
+            // property type holding the value. To minimize calls to the database, the ID is stored
+            // in a static field once we have found it, ensuring we only have to look it up once
+            // during the application lifetime
+            if (_gitHubUserIdPropertyTypeId == 0)
+            {
+
+                // Declare a nice and raw SQL query
+                Sql sql = new Sql("SELECT [id] FROM [dbo].[cmsPropertyType] WHERE [Alias] = @0;", propertyTypeAlias);
+
+                // Fire it up in the database
+                _gitHubUserIdPropertyTypeId = db.FirstOrDefault<int>(sql);
+
+                // The result will be "0" if a matching row isn't found (which should then trigger an exception)
+                if (_gitHubUserIdPropertyTypeId == 0) throw new Exception("Failed retrieving ID of property type with alias " + propertyTypeAlias);
+
+            }
+
+            return _gitHubUserIdPropertyTypeId;
+
+        }
+
+        /// <summary>
+        /// Gets the first member matching the specified <paramref name="githubId"/>.
+        /// </summary>
+        /// <param name="githubId">The ID of the GitHub user.</param>
+        /// <returns>The <see cref="IMember"/> instance representing the member, or <c>null</c> if not found.</returns>
+        public IMember GetMemberByGitHubUserId(int githubId)
+        {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            // Declare another nice and raw SQL query
+            Sql sql = new Sql(
+                "SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1",
+                GetGitHubIdPropertyTypeId(), githubId
+            );
+
+            // Get the ID of the first member matching matching "githubId"
+            int memberId = db.FirstOrDefault<int>(sql);
+
+            // Look up the member via the member service if we found a match
+            return memberId > 0 ? ApplicationContext.Current.Services.MemberService.GetById(memberId) : null;
+
         }
 
     }

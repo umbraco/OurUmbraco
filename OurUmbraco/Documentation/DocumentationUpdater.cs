@@ -69,7 +69,7 @@ namespace OurUmbraco.Documentation
             public bool HasChildren { get; set; }
             public List<SiteMapItem> Directories { get; set; }
 
-            public string Url => $"https://our.umbraco.org/documentation{Path}/?altTemplate=Lesson";
+            public string Url => $"https://our.umbraco.com/documentation{Path}/?altTemplate=Lesson";
         }
 
         private SiteMapItem GetFolderStructure(DirectoryInfo dir, string rootPath, int level)
@@ -115,6 +115,8 @@ namespace OurUmbraco.Documentation
                             return 5;
                         case "umbraco-cloud":
                             return 6;
+                        case "umbraco-heartcore":
+                            return 7;
                     }
                     break;
 

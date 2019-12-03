@@ -108,7 +108,7 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Defining Content",
                         Description = "Here you'll find an explanation of how content is defined and quick guide for your first go at it (based on an empty installation).",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Defining-content/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Data/Defining-content/"
                     }
                 };
             }
@@ -122,42 +122,42 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Templates",
                         Description = "Templating in Umbraco builds on the concept of Razor Views from asp.net MVC - if you already know this, then you are ready to create your first template - if not, this is a quick and handy guide.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Design/Templates/"
                     },
                     new HelpDocument
                     {
                         Name = "Basic Razor Syntax",
                         Description = "Shows how to perform common logical tasks in Razor like if/else, foreach loops, switch statements and using the @ character to separate code and markup.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
                     },
                     new HelpDocument
                     {
                         Name = "Rendering Content",
                         Description = "The primary task of any template in Umbraco is to render the values of the current page or the result of query against the content cache.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Rendering-Content/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Design/Rendering-Content/"
                     },
                     new HelpDocument
                     {
                         Name = "Rendering Media",
                         Description = "Templates can access items in the Media library, to assist in displaying rich content like galleries.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Rendering-Media/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Design/Rendering-Media/"
                     },
                     new HelpDocument
                     {
                         Name = "Basic Razor Syntax",
                         Description = "Shows how to perform common logical tasks in Razor like if/else, foreach loops, switch statements and using the @ character to separate code and markup.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Design/Templates/basic-razor-syntax"
                     },
                     new HelpDocument
                     {
                         Name = "View/Razor Examples",
                         Description = "Lots of examples of using various techniques to render data in a view",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Reference/Templating/Mvc/examples"
+                        Url = "https://our.umbraco.com/documentation/Reference/Templating/Mvc/examples"
                     }
                 };
             }
@@ -171,7 +171,7 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Creating Media",
                         Description = "Media in Umbraco is handled in much the same way as content. Instead of defining Document Types you define Media Types that act as the base for media items.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Creating-Media/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Data/Creating-Media/"
                     }
                 };
             }
@@ -185,7 +185,7 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Data-Types",
                         Description = "A Data Type defines the type of input for a property. So when adding a property (on Document Types, Media Types and Members) when selecting the Type you are selecting a Data Type. There are a number of preconfigured Data Types available in Umbraco and more can be added in the Developer section.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Data-Types/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Data/Data-Types/"
                     },
 
 
@@ -193,7 +193,7 @@ namespace OurUmbraco.Documentation.Controllers
                     {
                         Name = "Property Editors",
                         Description = "Extend Umbraco with your own property editors ",
-                        Url = "https://our.umbraco.org/documentation/Extending/Property-Editors/",
+                        Url = "https://our.umbraco.com/documentation/Extending/Property-Editors/",
                         Type = HelpDocType.Doc
                     }
                 };
@@ -208,7 +208,7 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Members",
                         Description = "Members are used for registering and authenticating external users of an Umbraco installation (ie. forum members, intranet users and so forth). Unlike with Document Types and Media Types everything is done in the Members section both defining and creating, and editing members.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Members/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Data/Members/"
                     }
                 };
             }
@@ -222,7 +222,7 @@ namespace OurUmbraco.Documentation.Controllers
                         Name = "Data-Types",
                         Description = "A Data Type defines the type of input for a property. So when adding a property (on Document Types, Media Types and Members) when selecting the Type you are selecting a Data Type. There are a number of preconfigured Data Types available in Umbraco and more can be added in the Developer section.",
                         Type = HelpDocType.Doc,
-                        Url = "https://our.umbraco.org/documentation/Getting-Started/Data/Data-Types/"
+                        Url = "https://our.umbraco.com/documentation/Getting-Started/Data/Data-Types/"
                     },
 
 
@@ -230,7 +230,7 @@ namespace OurUmbraco.Documentation.Controllers
                     {
                         Name = "Macros",
                         Description = "A macro is a reusable piece of functionality that you can re-use throughout your site. Macros can be configured with parameters and be inserted into a Rich Text Editor.",
-                        Url = "https://our.umbraco.org/Documentation/Reference/Templating/Macros/",
+                        Url = "https://our.umbraco.com/Documentation/Reference/Templating/Macros/",
                         Type = HelpDocType.Doc
                     },
 
@@ -238,7 +238,7 @@ namespace OurUmbraco.Documentation.Controllers
                     {
                         Name = "Xslt",
                         Description = "XSLT will soon be removed from Umbraco - read how you can transition away from it",
-                        Url = "https://our.umbraco.org/Documentation/Reference/Templating/Macros/Xslt/",
+                        Url = "https://our.umbraco.com/Documentation/Reference/Templating/Macros/Xslt/",
                         Type = HelpDocType.Doc
                     }
                 };

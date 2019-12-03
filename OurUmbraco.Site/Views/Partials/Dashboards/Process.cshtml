@@ -1,0 +1,97 @@
+﻿@using OurUmbraco.Our.Api
+@using OurUmbraco.Our.Services
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var repoService = new RepositoryManagementService();
+    var repositories = repoService.GetAllPublicRepositories();
+
+    var repository = "";
+    if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
+    {
+        repository = Request.QueryString["repository"];
+    }
+
+    var page = 0;
+    if (string.IsNullOrWhiteSpace(Request.QueryString["page"]) == false)
+    {
+        page = int.Parse(Request.QueryString["page"]);
+    }
+
+    var controller = new DashboardStatisticsController();
+    var awaitingFeedbackLabel = "status/awaiting-feedback";
+    var awaitingFeedbackIssues = controller.GetIssuesWithLabel(awaitingFeedbackLabel);
+    var openPulls = controller.GetOpenPulls();
+    var openIssues = controller.GetAllOpenIssues("none");
+}
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Issues "@awaitingFeedbackLabel"</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Set to "@awaitingFeedbackLabel"</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in awaitingFeedbackIssues)
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@(Math.Round((DateTime.Now - issue.LabelAdded).TotalDays, 0)) days ago</td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank" rel="noreferrer noopener">@issue.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Open PRs</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Review state</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var pr in openPulls.OrderByDescending(p => p.Reviews.Any()))
+                {
+                    <tr>
+                        <td>[@pr.RepositoryName/@pr.Number]</td>
+                        <td>
+                            @{
+                                var lastReview = pr.Reviews?.LastOrDefault();
+                            }
+                            @if (lastReview != null)
+                            {
+                                @pr.ReviewState <text> - </text> @(Math.Round((DateTime.Now - pr.LastReviewDate).TotalDays, 0)) <text>days ago</text>
+                            }
+                            else
+                            {
+                                <text>n/a</text>
+                            }
+                        </td>
+                        <td><a href="https://github.com/@pr.RepoOwner/@pr.RepositoryName/issues/@pr.Number" target="_blank" rel="noreferrer noopener">@pr.Title</a></td>
+                    </tr>
+                }
+            </table>
+        </div>
+    </div>
+</div>

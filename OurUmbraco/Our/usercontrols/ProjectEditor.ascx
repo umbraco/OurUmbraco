@@ -10,7 +10,7 @@
 
 <div class="notice" runat="server" ID="d_notice">
 <p>
-  If you wish to add a <em>commercial package</em> please get in touch <a href="http://umbraco.org/about/contact/commercial-package" target="_blank">here</a>.
+  If you wish to add a <em>commercial package</em> please get in touch <a href="http://umbraco.org/about/contact/commercial-package" target="_blank" rel="noreferrer noopener">here</a>.
 </p>
 
 </div>

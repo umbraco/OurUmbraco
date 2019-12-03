@@ -19,7 +19,7 @@
 
 @foreach (var item in items)
 {
-    <a href="@item.Link" target="_blank" rel="noopener" class="community-post">
+    <a href="@item.Link" target="_blank" rel="noreferrer noopener" class="community-post">
         @if (item.Blog.HasLogoUrl)
         {
             var avatarPath = item.Blog.LogoUrl;

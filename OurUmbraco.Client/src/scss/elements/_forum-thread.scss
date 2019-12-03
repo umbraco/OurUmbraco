@@ -1,22 +1,29 @@
 .comments {
-	list-style-type: none;
-	padding: 0 20px 0 20px;
-	position: relative;
-	margin: 0 0 0 10px;
+    list-style-type: none;
+    padding: 0 20px 0 20px;
+    position: relative;
+    margin: 0 0 0 10px;
 
-	@media (min-width: $md) {
-		padding: 0 20px 0 30px;
-		margin: 0 0 0 30px;
-	}
+    @media (min-width: $md) {
+        padding: 0 20px 0 30px;
+        margin: 0 0 0 30px;
+    }
 
 
-	.comment {
-		margin-bottom: 75px;
-		position: relative;
-		border-radius: 2px;
-		background: rgba($color-space, 0.08);
-		border: 1px solid rgba($color-space, 0.15);
+    .comment {
+        margin-bottom: 75px;
+        position: relative;
+        border-radius: 2px;
+        background: rgba($color-space, 0.08);
+        border: 1px solid rgba($color-space, 0.15);
 
+        &.new-signalr {
+            background: lighten($color-notification-blue, 25%);
+        }
+
+        &.edit-signalr {
+            background: lighten($color-notification-blue, 10%);
+        }
 
 		&.solution {
 			background: rgba($color-our, .23);

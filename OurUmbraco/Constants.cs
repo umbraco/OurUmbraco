@@ -23,5 +23,10 @@ namespace OurUmbraco
 
         }
 
+        public static class Forum
+        {
+            public const int HeartcoreVersionNumber = 9999;
+            public const string UmbracoHeadlessName = "Heartcore";
+        }
     }
 }

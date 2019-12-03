@@ -41,6 +41,7 @@
 @import 'elements/roles';
 @import 'elements/forum-thread';
 @import 'elements/pagination';
+@import 'elements/enhanced-text';
 @import 'elements/packages';
 @import 'elements/package-badges';
 @import 'elements/search-big';
@@ -54,6 +55,8 @@
 @import 'elements/videos';
 @import 'elements/overlay';
 @import 'elements/umb-load-indicator';
+@import 'elements/note';
+@import 'elements/rte';
 
 /**
 /* Sections
@@ -64,7 +67,6 @@
 @import 'sections/people';
 @import 'sections/events';
 @import 'sections/contributors';
-@import 'sections/gitter';
 
 /**
 /* Pages
@@ -79,5 +81,6 @@
 @import 'pages/wiki';
 @import 'pages/forum';
 @import 'pages/community';
+@import 'pages/packages';
 
 @import 'elements/wrap-old-our';

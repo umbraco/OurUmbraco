@@ -6,6 +6,7 @@
 @using OurUmbraco.Wiki.BusinessLogic
 @using System.Text.RegularExpressions;
 @using OurUmbraco.Community.People
+@using OurUmbraco.Our.Extensions
 
 @{
     var project = Model.Content;
@@ -48,9 +49,11 @@
     var supportUrl = project.GetPropertyValue<string>("supportUrl");
     var projectLive = project.GetPropertyValue<bool>("projectLive");
     var isRetired = project.GetPropertyValue<bool>("isRetired");
-    
+
     var avatarService = new AvatarService();
     var img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
+
+    var badges = owner.GetRoles().GetBadges();
 }
 
 @if (projectLive)
@@ -109,7 +112,7 @@
                                     @foreach (var image in screenshots)
                                     {
                                         <a class="fancybox" data-fancybox="package-gallery" href="@Utils.GetScreenshotPath(image.Path)" title="">
-                                            <img src="@Utils.GetScreenshotPath(image.Path)?bgcolor=fff&height=154&width=281&format=png" alt="" />
+                                            <img src="@Utils.GetScreenshotPath(image.Path)?height=154&width=281&bgcolor=fff&format=png" alt="" />
                                         </a>
                                     }
 
@@ -334,6 +337,7 @@
                                                 </a>
                                             </h3>
                                             <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+
                                             @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                             {
                                                 <br/>
@@ -342,6 +346,28 @@
                                             }
                                         </div>
                                     </div>
+                                    <div class="row">
+                                        <div class="col-xs-12">
+                                            <div class="member-details">
+                                                @if (badges.Any())
+                                                {
+                                                    <span class="roles">
+                                                        @foreach (var badge in badges)
+                                                        {
+                                                            if (string.IsNullOrWhiteSpace(badge.Link))
+                                                            {
+                                                                <span class="@badge.CssClass">@badge.Name</span>
+                                                            }
+                                                            else
+                                                            {
+                                                                <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
+                                                            }
+                                                        }
+                                                    </span>
+                                                }
+                                                </div>
+                                            </div>
+                                        </div>
                                 </div>
                             </div>
                         </div>
@@ -395,7 +421,7 @@
                                 }
 
                                 <li>
-                                    <span>License</span> <a href="@licenseUrl" target="_blank" rel="noopener">@project.GetPropertyValue("licenseName")</a>
+                                    <span>License</span> <a href="@licenseUrl" target="_blank" rel="noreferrer noopener">@project.GetPropertyValue("licenseName")</a>
                                 </li>
 
                                 <li>
@@ -449,6 +475,10 @@
     if (Model.Content.HasValue("gaCode"))
     {
         <script type="text/javascript">
+             (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+             (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+             m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+             })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
              ga('create', '@(Model.Content.GetPropertyValue("gaCode"))', 'auto', { 'name': 'PackageMaker' });
              ga('PackageMaker.send', 'pageview');
         </script>
@@ -470,13 +500,13 @@ else
 }
 
 @helper pluralize(int count, string oneValue, string pluralValue)
+{
+    if (count == 1)
     {
-        if (count == 1)
-        {
-            <text>@count @oneValue</text>
-        }
-        else
-        {
-            <text>@count @pluralValue</text>
-        }
+        <text>@count @oneValue</text>
+    }
+    else
+    {
+        <text>@count @pluralValue</text>
+    }
 }

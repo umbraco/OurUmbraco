@@ -1,4 +1,4 @@
-﻿@using OurUmbraco.Forum.Extensions
+﻿@using OurUmbraco.Forum.Extensions;
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <div class="markdown-spacer"></div>
@@ -14,40 +14,38 @@
         </div>
 
         <div class="row create-topic">
-            <div class="col-sm-6">
+            <div class="col-sm-9">
                 <input id="topic-title" class="markdown-control" name="topic-title" type="text" placeholder="Enter topic title">
             </div>
 
             @if (CurrentPage.Parent.DocumentTypeAlias != "Project")
             {
                 var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
-                var categoriesIncludeCurrentPage = categories.Any(x => x.Id == Model.Content.Id);
+                var firstCategory = categories.First();
 
-                <div class="col-sm-3 col-xs-6">
+                <div class="col-sm-3 col-xs-6" style="display: none;">
                     <select name="topic-category" id="topic-category" class="markdown-control">
-                        @if (categoriesIncludeCurrentPage)
+                        <option class="@firstCategory.Name.ToLower().Replace(" ", "")" value="@firstCategory.Id">@firstCategory.Name</option>
+                        @foreach (var cat in categories.Where(x => x.Id != firstCategory.Id))
                         {
-                            <option value="" disabled="">Choose a category</option>
-                        }
-                        else
-                        {
-                            <option value="" selected="" disabled="">Choose a category</option>
-                        }
-                        @foreach (var cat in categories)
-                        {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(cat.Id == Model.Content.Id ? "" : null)">@cat.Name</option>
+                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">@cat.Name</option>
                         }
                     </select>
                 </div>
             }
 
             <div class="col-sm-3 col-xs-6">
-                <select name="topic-version" id="topic-version" class="markdown-control">
-                    <option value="Choose a version" selected="" disabled="">Choose version</option>
-                    <option value="8">Umbraco v8</option>
-                    <option value="7">Umbraco v7</option>
-                    <option value="6">Umbraco v6</option>
-                    <option value="4">Umbraco v4</option>
+                <select name="topic-version" id="topic-version" class="markdown-control" style="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "display: none;": null)">
+                    <option value="Choose a version" selected="" disabled="">Choose Umbraco version</option>
+                    <optgroup label="">
+                        <option value="8">Umbraco v8</option>
+                        <option value="@(OurUmbraco.Constants.Forum.HeartcoreVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">Umbraco @OurUmbraco.Constants.Forum.UmbracoHeadlessName</option>
+                    </optgroup>
+                    <optgroup label="">
+                        <option value="7">Umbraco v7</option>
+                        <option value="6">Umbraco v6</option>
+                        <option value="4">Umbraco v4</option>
+                    </optgroup>
                 </select>
             </div>
 
