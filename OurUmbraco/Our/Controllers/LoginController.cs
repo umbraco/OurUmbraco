@@ -344,8 +344,10 @@ namespace OurUmbraco.Our.Controllers
                 return GetErrorResult("A member with that email address already exists.");
             }
 
+            // Since names are not mandatory on Github we use the username as fallback
+            var name = !string.IsNullOrWhiteSpace(user.Name) ? user.Name : user.Login;
 
-            var member = memberService.CreateMember(email, email, user.Name, "member");
+            var member = memberService.CreateMember(email, email, name, "member");
             member.SetValue("github", user.Login);
             member.SetValue("githubId", user.Id);
             member.SetValue("githubData", user.JObject.ToString());
