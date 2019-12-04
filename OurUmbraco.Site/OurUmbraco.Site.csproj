@@ -4457,6 +4457,8 @@
     <Content Include="Views\CommunityHubUProfileBlogPosts.cshtml" />
     <Content Include="Views\Partials\Dashboards\Process.cshtml" />
     <Content Include="Views\ProjectLanding.cshtml" />
+    <Content Include="Views\Minimal\GitHub\Error.cshtml" />
+    <Content Include="Views\Minimal\Master.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
