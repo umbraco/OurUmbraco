@@ -1,0 +1,74 @@
+﻿@using ClientDependency.Core.Mvc
+@{
+
+    Html.RequiresCss("~/assets/css/style.min.css", 0);
+
+}<html>
+<head>
+    @*<style>
+        body {
+            margin: 0;
+            background: #F2F3F4;
+            background: #fff;
+        }
+
+        body {
+            line-height: 1;
+            font-family: Lato,sans-serif;
+            position: relative;
+            font-size: 16px;
+        }
+
+        header .logo {
+            background: url(/assets/images/logo.svg) left center/30px auto no-repeat;
+            height: 60px;
+            line-height: 60px;
+            display: inline-block;
+            text-indent: 40px;
+            text-decoration: none;
+            position: relative;
+            z-index: 300;
+            font-size: 1.15rem;
+            transition: .2s;
+            color: #3544b1;
+        }
+
+    </style>*@
+    
+
+    @Html.RenderCssHere()
+    <style>
+        /*body {
+            background: #F2F3F4;
+        }
+        header {
+            background: #fff;
+        }
+        .wrapper {
+            display: flex;
+        }*/
+
+        .container {
+            max-width: 540px;
+            padding: 0 10px;
+        }
+
+    </style>
+</head>
+<body>
+<div class="wrapper">
+    <div class="navigation">
+        <div class="container">
+            <div class="row">
+                <header>
+                    <a class="logo" href="/">Our Umbraco</a>
+                </header>
+            </div>
+        </div>
+    </div>
+    <div>
+        @RenderBody()
+    </div>
+</div>
+</body>
+</html>

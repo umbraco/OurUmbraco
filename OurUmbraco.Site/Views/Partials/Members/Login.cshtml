@@ -6,33 +6,85 @@
 }
 
 <div class="form simpleForm" id="registrationForm">
-    @using (Html.BeginUmbracoForm<LoginController>("Login"))
-    {
-        @Html.ValidationSummary(true)
-        @Html.AntiForgeryToken()
+    
+    <div>
+        @using (Html.BeginUmbracoForm<LoginController>("Login"))
+        {
+            @Html.ValidationSummary(true)
+            @Html.AntiForgeryToken()
 
-        <fieldset>
-            <p>
-                @Html.Label("Email address", new { @class = "inputLabel", @for = "Username" })<br />
-                @Html.ValidationMessageFor(m => m.Username)
+            <fieldset>
+                <p>
+                    @Html.Label("Email address", new { @class = "inputLabel", @for = "Username" })<br />
+                    @Html.ValidationMessageFor(m => m.Username)
 
-                @Html.TextBoxFor(m => m.Username, new { @class = "email title" })
-            </p>
-        </fieldset>
+                    @Html.TextBoxFor(m => m.Username, new { @class = "email title" })
+                </p>
+            </fieldset>
 
-        <fieldset>
-            <p>
-                @Html.LabelFor(m => m.Password, new { @class = "inputLabel" })<br />
-                @Html.ValidationMessageFor(m => m.Password)
-                @Html.PasswordFor(m => m.Password, new { @class = "password title" })
-            </p>
-        </fieldset>
+            <fieldset>
+                <p>
+                    @Html.LabelFor(m => m.Password, new { @class = "inputLabel" })<br />
+                    @Html.ValidationMessageFor(m => m.Password)
+                    @Html.PasswordFor(m => m.Password, new { @class = "password title" })
+                </p>
+            </fieldset>
 
-        <input class="button green" type="submit" value="Log in">
-    }
+            <input class="button green" type="submit" value="Log in">
+        }
+    </div>
+
+    <div>
+        <div class="github-login">
+            @using (Html.BeginUmbracoForm<LoginController>("GitHub"))
+            {
+                @Html.AntiForgeryToken()
+                <p>As an addition to logging in using your email address and password, you can also login using GitHub account.</p>
+                <div style="text-align: center;">
+                    <button class="button green" type="submit">
+                        <i class="icon-github" aria-hidden="true"></i>
+                        Login with GitHub
+                    </button>
+                </div>
+                <p>If you do not yet have an account on Our Umbraco, one will be created based on your name and email address from GitHub.</p>
+            }
+        </div>
+    </div>
+    
+    
 </div>
 
+
+
 <style type="text/css">
+
+    .simpleForm {
+        display: flex;
+    }
+
+    .simpleForm div:first-child {
+        flex: 1;
+    }
+
+    .github-login {
+        margin-top: 15px;
+        margin-left: 15px;
+        padding: 10px;
+        background-color: rgba(53,68,177,.07);
+        border-top: 5px solid rgba(53,68,177,.7);
+        max-width: 450px;
+    }
+
+    .github-login button {
+        margin: 5px 0;
+        padding: 10px 20px;
+    }
+
+    .github-login button > i {
+        margin-right: 15px;
+        font-size: 24px;
+    }
+
     .field-validation-error, .validation-summary-errors {
         color: red;
     }

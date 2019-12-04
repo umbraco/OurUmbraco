@@ -1,0 +1,71 @@
+﻿@inherits UmbracoViewPage<OurUmbraco.Our.Controllers.GitHubLoginError>
+
+@{
+
+    Layout = "../Master.cshtml";
+
+
+
+}
+
+<style>
+    .error {
+        border-radius: 3px;
+        background: #ffffff;
+        background: #efefef;
+        max-width: 540px;
+        padding: 50px;
+        margin: 0 auto;
+    }
+
+    .error h1 {
+        color: #392f54;
+        font-family: sans-serif;
+        font-weight: bold;
+        line-height: 1.4;
+        font-size: 24px;
+        text-align: left;
+        margin: 0 0 30px;
+    }
+
+    .error a.btn {
+        color: #ffffff;
+        text-decoration: none;
+        word-break: break-all;
+        border-radius: 5px;
+        box-sizing: border-box;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: bold;
+        background: #3544B1;
+        margin: 15px 0 0 0;
+        padding: 12px 30px;
+        border: 1px solid #3544B1;
+        text-shadow: initial;
+    }
+
+    .error a.btn:hover, .error a.btn:focus {
+        background: #3b4cc4;
+        border: 1px solid #3b4cc4;
+    }
+
+    .error p + p {
+        margin-top: 15px;
+    }
+
+</style>
+
+<div class="error">
+    
+    <h1>@Model.Title</h1>
+    
+    <p>@Model.Message</p>
+    
+    @if (Model.HasPrimaryAction)
+    {
+        <p>
+            <a href="@Model.PrimaryActionUrl" class="btn">@Model.PrimaryActionText</a>
+        </p>
+    }
+
+</div>
