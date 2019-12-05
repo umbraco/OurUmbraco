@@ -3,16 +3,16 @@ using Umbraco.Core.Persistence;
 
 namespace OurUmbraco.Auth
 {
-    public static class UmbracoAuthTokenDbHelper
+    public class UmbracoAuthTokenDbHelper
     {
-        private static readonly UmbracoDatabase Database = ApplicationContext.Current.DatabaseContext.Database;
+        private readonly UmbracoDatabase Database = ApplicationContext.Current.DatabaseContext.Database;
 
         /// <summary>
         /// Try & see if we can find a record in the DB based off the User ID
         /// </summary>
         /// <param name="identityId">The user or member ID to try and find in the DB</param>
         /// <returns>Returns Auth Token record/object in DB or null if not found</returns>
-        public static UmbracoAuthToken GetAuthToken(int memberId, int projectId)
+        public UmbracoAuthToken GetAuthToken(int memberId, int projectId)
         {
             //Try & find a record in the DB from the userId
             var findRecord = Database.SingleOrDefault<UmbracoAuthToken>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
@@ -26,7 +26,7 @@ namespace OurUmbraco.Auth
         /// Update just the auth token if we find a record for the backoffice user already
         /// </summary>
         /// <param name="authToken"></param>
-        public static void InsertAuthToken(UmbracoAuthToken authToken)
+        public void InsertAuthToken(UmbracoAuthToken authToken)
         {
             //Just to be 100% sure for data sanity that a record for the user does not exist already
             var existingRecord = GetAuthToken(authToken.MemberId, authToken.ProjectId);
@@ -53,7 +53,7 @@ namespace OurUmbraco.Auth
         /// 
         /// </summary>
         /// <param name="identityId"></param>
-        public static void DeleteAuthToken(int memberId, int projectId)
+        public void DeleteAuthToken(int memberId, int projectId)
         {
             //Just to be 100% sure for data sanity that a record for the user does not exist already
             var existingRecord = GetAuthToken(memberId, projectId);
@@ -71,7 +71,7 @@ namespace OurUmbraco.Auth
         /// </summary>
         /// <param name="authToken"></param>
         /// <returns></returns>
-        public static bool IsTokenValid(UmbracoAuthToken authToken)
+        public bool IsTokenValid(UmbracoAuthToken authToken)
         {
             //Let's verify the token we have
             //Is what we have in the DB matching on the UserID as lookup

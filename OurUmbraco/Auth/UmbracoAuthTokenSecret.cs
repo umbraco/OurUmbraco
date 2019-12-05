@@ -3,7 +3,7 @@ using System.Web.Security;
 
 namespace OurUmbraco.Auth
 {
-    public static class UmbracoAuthTokenSecret
+    public class UmbracoAuthTokenSecret
     {
         private const string SecretEnvVariable = "Umbraco.AuthToken";
 
@@ -11,7 +11,7 @@ namespace OurUmbraco.Auth
         /// This sets the secret as an AppSetting
         /// </summary>
         /// <param name="secret">Secret string to set</param>
-        public static void SetSecret(string secret)
+        public void SetSecret(string secret)
         {
             //TODO: Don't think we can set/add
             //For now ensure appSetting key exists with a value
@@ -22,7 +22,7 @@ namespace OurUmbraco.Auth
         /// Goes & fetchs the secret from the Machine Environment Variables
         /// </summary>
         /// <returns>Returns the string secret</returns>
-        public static string GetSecret()
+        public string GetSecret()
         {
             var secret = ConfigurationManager.AppSettings[SecretEnvVariable];
 

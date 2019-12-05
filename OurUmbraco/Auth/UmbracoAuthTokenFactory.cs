@@ -1,22 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using JWT;
 using JWT.Algorithms;
 using JWT.Builder;
 
 namespace OurUmbraco.Auth
 {
-    public static class UmbracoAuthTokenFactory
+    public class UmbracoAuthTokenFactory
     {
-        static string _secretKey = UmbracoAuthTokenSecret.GetSecret();
+        private string _secretKey;
 
+        public UmbracoAuthTokenFactory()
+        {
+            _secretKey = new UmbracoAuthTokenSecret().GetSecret();
+        }
+        
         /// <summary>
         /// This generates a JWT Auth Token and sets as an PetaPoco object to save to DB
         /// </summary>
         /// <param name="authToken">Pass in existing params on authToken object such as identity id & type</param>
         /// <returns>A new authToken object with the date and actual token data in</returns>
-        public static UmbracoAuthToken GenerateAuthToken(UmbracoAuthToken authToken)
+        public UmbracoAuthToken GenerateAuthToken(UmbracoAuthToken authToken)
         {
             //Date Time
             var dateCreated = DateTime.UtcNow;
@@ -44,7 +46,7 @@ namespace OurUmbraco.Auth
         /// </summary>
         /// <param name="jwtToken">THe JWT string to decode to an authToken object</param>
         /// <returns>A decoded authToken object from the JWT</returns>
-        public static UmbracoAuthToken DecodeUserAuthToken(string jwtToken)
+        public UmbracoAuthToken DecodeUserAuthToken(string jwtToken)
         {
             //Decode & verify token was signed with our secret
             var userAuth = new JwtBuilder()
