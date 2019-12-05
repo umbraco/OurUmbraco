@@ -25,6 +25,14 @@ namespace OurUmbraco.Our.Controllers
     public class ProjectController : SurfaceController
     {
         private string _exceptionName = "uIntra";
+        private UmbracoAuthTokenFactory _umbracoAuthTokenFactory;
+        private UmbracoAuthTokenDbHelper _umbracoAuthTokenDbHelper;
+
+        public ProjectController()
+        {
+            _umbracoAuthTokenFactory = new UmbracoAuthTokenFactory();
+            _umbracoAuthTokenDbHelper = new UmbracoAuthTokenDbHelper();
+        }
 
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
@@ -59,7 +67,7 @@ namespace OurUmbraco.Our.Controllers
             var memberId = Members.GetCurrentMember().Id;
 
             //Check if we have an Auth Token for user
-            var hasAuthToken = UmbracoAuthTokenDbHelper.GetAuthToken(memberId, projectId);
+            var hasAuthToken = _umbracoAuthTokenDbHelper.GetAuthToken(memberId, projectId);
 
             //If the token already exists
             if (hasAuthToken != null)
@@ -76,13 +84,13 @@ namespace OurUmbraco.Our.Controllers
                 newToken.ProjectId = projectId;
 
                 //Generate a new token for the user
-                var authToken = UmbracoAuthTokenFactory.GenerateAuthToken(newToken);
+                var authToken = _umbracoAuthTokenFactory.GenerateAuthToken(newToken);
 
                 //We insert authToken as opposed to newToken
                 //As authToken now has DateTime & JWT token string on it now
 
                 //Store in DB (inserts or updates existing)
-                UmbracoAuthTokenDbHelper.InsertAuthToken(authToken);
+                _umbracoAuthTokenDbHelper.InsertAuthToken(authToken);
 
                 //Return the JWT token as the response
                 //This means valid login & client in our case mobile app stores token in local storage

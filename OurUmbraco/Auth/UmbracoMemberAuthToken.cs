@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http.Controllers;
@@ -13,11 +12,16 @@ namespace OurUmbraco.Auth
 {
     public class UmbracoMemberAuthToken : ActionFilterAttribute
     {
+        private UmbracoAuthTokenFactory _umbracoAuthTokenFactory;
+        private UmbracoAuthTokenDbHelper _umbracoAuthTokenDbHelper;
+
         /// <summary>
         /// Assign this attribute to protect a WebAPI call for an Umbraco member
         /// </summary>
         public UmbracoMemberAuthToken()
         {
+            _umbracoAuthTokenFactory = new UmbracoAuthTokenFactory();
+            _umbracoAuthTokenDbHelper = new UmbracoAuthTokenDbHelper();
         }
 
         /// <summary>
@@ -60,7 +64,7 @@ namespace OurUmbraco.Auth
         /// </summary>
         /// <param name="request"></param>
         /// <returns>If success auth'd return the associated Umbraco backoffice user</returns>
-        private static IMember Authenticate(HttpRequestMessage request, out int projectId)
+        private IMember Authenticate(HttpRequestMessage request, out int projectId)
         {
             //Try to get the Authorization header in the request
             var ah = request.Headers.Authorization;
@@ -79,7 +83,7 @@ namespace OurUmbraco.Auth
             try
             {
                 //Decode & verify token was signed with our secret
-                var decodeJwt = UmbracoAuthTokenFactory.DecodeUserAuthToken(jwtToken);
+                var decodeJwt = _umbracoAuthTokenFactory.DecodeUserAuthToken(jwtToken);
 
                 //Ensure our token is not null (was decoded & valid)
                 if (decodeJwt != null)
@@ -96,7 +100,7 @@ namespace OurUmbraco.Auth
                     }
 
                     //Verify token is what we have on the user
-                    var isTokenValid = UmbracoAuthTokenDbHelper.IsTokenValid(decodeJwt);
+                    var isTokenValid = _umbracoAuthTokenDbHelper.IsTokenValid(decodeJwt);
 
                     //Token matches what we have in DB
                     if (isTokenValid == false)
