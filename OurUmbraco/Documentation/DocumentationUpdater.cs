@@ -196,7 +196,7 @@ namespace OurUmbraco.Documentation
                             return 3;
                         case "starter-kit":
                             return 4;
-                        case "editor-manual":
+                        case "editors-manual":
                             return 5;
 
                         //Add ons
