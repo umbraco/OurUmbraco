@@ -26,29 +26,70 @@
     var pullRequestsGrouped = controller.GetPullRequestsGrouped(repository: repository, startYear: startYear, startMonth: startMonth)
         .ToList();
 
-    var firstHacktoberfestEligiblePullsPerUser = new Dictionary<string, Issue>();
+    var firstHacktoberfestEligiblePullsPerUser = new List<HacktoberFestEligible>();
 
     foreach (var group in pullRequestsGrouped)
     {
-        <p>@group.Period</p>
-        foreach (var user in group.Contributors)
+        foreach (var contribution in group.Contributors.Where(x => x.IsSwagHunter == false))
         {
+            // Don't add HQ contributions that have not been marked as eligible
+            if (contribution.IsHQ && contribution.Contributions.Any(x => x.IsHacktoberfestEligible) == false)
+            {
+                continue;
+            }
+
             if (group.Period.StartsWith(startYear.ToString()) && (group.Period.EndsWith("09") || group.Period.EndsWith("10")))
             {
-                if (firstHacktoberfestEligiblePullsPerUser.ContainsKey(user.User.Login))
+                foreach (var contrib in contribution.Contributions.Where(x => x.CloseState != "closed"))
                 {
-                    continue;
-                }
-
-                foreach (var contrib in user.Contributions.Where(contrib => contrib.IsHacktoberfestEligible))
-                {
-                    if (firstHacktoberfestEligiblePullsPerUser.ContainsKey(user.User.Login) == false)
+                    if (group.Period.EndsWith("10") || group.Period.EndsWith("09") && contrib.IsHacktoberfestEligible)
                     {
-                        firstHacktoberfestEligiblePullsPerUser.Add(user.User.Login, contrib);
+                        var existingUser = firstHacktoberfestEligiblePullsPerUser.FirstOrDefault(x => x.UserLogin == contribution.User.Login);
+
+                        if (existingUser != null)
+                        {
+                            existingUser.Issues.Add(contrib);
+                        }
+                        else
+                        {
+                            var hacktoberFestEligible = new HacktoberFestEligible
+                            {
+                                Issues = new List<Issue>(),
+                                UserLogin = contribution.User.Login
+                            };
+                            hacktoberFestEligible.Issues.Add(contrib);
+                            firstHacktoberfestEligiblePullsPerUser.Add(hacktoberFestEligible);
+                        }
                     }
                 }
             }
         }
+    }
+
+    var filteredPulls = new List<HacktoberFestEligible>();
+    foreach (var userContributions in firstHacktoberfestEligiblePullsPerUser)
+    {
+        var mergedIssues = userContributions.Issues.Where(x => x.CloseState == "merged").ToList();
+        if (mergedIssues.Count == userContributions.Issues.Count && userContributions.Issues.All(x => x.IsHacktoberfestEligible) == false)
+        {
+            continue;
+        }
+
+        filteredPulls.Add(userContributions);
+    }
+    var allUsers = new List<string>();
+    foreach (var hacktoberFestEligible in filteredPulls.OrderBy(x => x.UserLogin))
+    {
+        allUsers.Add(hacktoberFestEligible.UserLogin);
+    }
+}
+
+@functions
+{
+    private class HacktoberFestEligible
+    {
+        public string UserLogin { get; set; }
+        public List<Issue> Issues { get; set; }
     }
 }
 
@@ -62,13 +103,16 @@
         <div class="row">
             <div class="col-sm-12">
 
-                <p><strong>Unique contributors (no swaghunters): @(firstHacktoberfestEligiblePullsPerUser.Count)</strong></p>
+                <p>
+                    <strong>Unique contributors (no swaghunters): @(allUsers.Count)</strong>
+                    @* <br/>@(string.Join(",", allUsers)) *@
+                </p>
 
-                @foreach (var item in firstHacktoberfestEligiblePullsPerUser.OrderByDescending(x => x.Value.CreateDateTime))
+                @foreach (var item in filteredPulls.OrderBy(x => x.UserLogin))
                 {
                     <ul>
                         @{
-                            var contrib = item.Value;
+                            var contrib = item.Issues.OrderByDescending(x => x.IsHacktoberfestEligible).ThenBy(x => x.CreateDateTime).FirstOrDefault();
                             var stateColor = "orange";
                             if (contrib.CloseState == "merged")
                             {
@@ -82,7 +126,7 @@
                             var changesRequestedColor = contrib.ReviewChangesRequested > 0 ? "lightpink" : "";
                         }
                         <li>
-                            <strong>@(item.Key)</strong>
+                            <strong>@(item.UserLogin)</strong>
                             <span>| @contrib.CreateDateTime.ToString("yyyy-MM-dd")</span>
                             <span>| <a href="https://github.com/umbraco/@(contrib.RepositoryName)/pull/@(contrib.Number)" target="_blank">@(contrib.RepositoryName)/@(contrib.Number)</a></span>
                             <span>| <strong style="color: @stateColor">@contrib.CloseState</strong></span>
@@ -101,6 +145,53 @@
                             {
                                 <span style="font-size: 60%; font-weight: bold; color: white; background-color: red; padding: 4px">hacktoberfest</span>
                             }
+
+                            @*
+                                @if (item.Issues.Count > 1)
+                                {
+                                    <br/>
+                                    <span>
+                                        <em>Other PRs by this user</em>
+                                    </span>
+                                    <ul>
+                                        @foreach (var other in item.Issues.OrderBy(x => x.CreateDateTime).Where(x => x.Number != contrib.Number))
+                                        {
+                                            stateColor = "orange";
+                                            if (other.CloseState == "merged")
+                                            {
+                                                stateColor = "green";
+                                            }
+                                            if (other.CloseState == "closed")
+                                            {
+                                                stateColor = "red";
+                                            }
+                                            approvalColor = other.ReviewApprovals > 0 ? "lightgreen" : "";
+                                            changesRequestedColor = other.ReviewChangesRequested > 0 ? "lightpink" : "";
+
+                                            <li>
+                                                <span>@other.CreateDateTime.ToString("yyyy-MM-dd")</span>
+                                                <span>| <a href="https://github.com/umbraco/@(other.RepositoryName)/pull/@(other.Number)" target="_blank">@(other.RepositoryName)/@(other.Number)</a></span>
+                                                <span>| <strong style="color: @stateColor">@other.CloseState</strong></span>
+                                                <span>| @other.Title</span>
+                                                <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @approvalColor; padding: 4px">A: @other.ReviewApprovals</span></span>
+                                                <span>| <span style="font-size: 60%; font-weight: bold; color: black; background-color: @changesRequestedColor; padding: 4px">C: @other.ReviewChangesRequested</span></span>
+                                                @if (other.IsUsersFirstContributionToAnyUmbracoRepository)
+                                                {
+                                                    <span style="font-size: 60%; font-weight: bold; color: black; background-color: lightgreen; padding: 4px">first ever contrib</span>
+                                                }
+                                                @if (other.IsUsersFirstContributionToThisRepository)
+                                                {
+                                                    <span style="font-size: 60%; font-weight: bold; color: black; background-color: yellow; padding: 4px">first contrib to this repo</span>
+                                                }
+                                                @if (other.IsHacktoberfestEligible)
+                                                {
+                                                    <span style="font-size: 60%; font-weight: bold; color: white; background-color: red; padding: 4px">hacktoberfest</span>
+                                                }
+                                            </li>
+                                        }
+                                    </ul>
+                                }
+                            *@
                         </li>
 
                     </ul>
