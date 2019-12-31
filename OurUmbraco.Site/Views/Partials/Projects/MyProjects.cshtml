@@ -32,6 +32,9 @@
                 <div class="forum-thread-text">
                     <h3><a href="@project.NiceUrl">@project.Name</a></h3>
                     <p>
+                        <em>@(project.Live ? "This package is published and live for all to see" : "This is a draft package, and can not be found by others")</em>
+                    </p>
+                    <p>
                         @project.Description.StripHtmlAndLimit(45) ...
                         <br />
                         <a href="details?projectId=@project.Id">Edit</a>
