@@ -5,7 +5,11 @@
     <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
         @if (page.Name == "Contribute")
         {
-            <a href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md" target="_blank">@page.Name</a>
+            <a href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md" target="_blank" rel="noreferrer noopener">@page.Name</a>
+        }
+        else if (page.Name == "Packages")
+        {
+            <a href="/about-packages">@page.Name</a>
         }
         else
         {

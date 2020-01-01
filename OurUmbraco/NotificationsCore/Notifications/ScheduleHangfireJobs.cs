@@ -15,7 +15,6 @@ using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
-using Tweetinvi.Core.Events;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
@@ -147,6 +146,18 @@ namespace OurUmbraco.NotificationsCore.Notifications
             foreach (var repository in repositories)
             {
                 RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(5));
+            }
+        }
+
+        public void UpdateAllIssues(PerformContext context)
+        {
+            var repoManagementService = new RepositoryManagementService();
+            var repositories = repoManagementService.GetAllPublicRepositories();
+
+            var gitHubService = new GitHubService();
+            foreach (var repository in repositories)
+            {
+                RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
             }
         }
 

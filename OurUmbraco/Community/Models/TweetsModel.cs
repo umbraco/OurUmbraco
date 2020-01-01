@@ -1,10 +1,11 @@
-﻿using Tweetinvi.Models;
+﻿using System.Collections.Generic;
+using TweetSharp;
 
 namespace OurUmbraco.Community.Models
 {
     public class TweetsModel
     {
-        public ITweet[] Tweets { get; set; }
+        public IEnumerable<TwitterStatus> Tweets { get; set; }
         public bool ShowAdminOverView { get; set; }
     }
 }

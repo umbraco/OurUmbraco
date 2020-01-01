@@ -13,7 +13,16 @@
     var version = Request["version"];
     var term = Request["term"];
     var pageSize = 20;
-    var headline = orderMode == "updateDate" ? "latest" : "most popular";
+    var headline = "most popular";
+    if (orderMode == "createDate")
+    {
+        headline = "latest";
+    }
+    else if (orderMode == "updateDate")
+    {
+        headline = "recently updated";
+    }
+
     if (version != null)
     {
         headline = "version " + version;
@@ -141,7 +150,7 @@
         <div class="row">
             <div class="col-xs-2 col-md-1">
                 {[ if (image != null) { ]}
-                <img src="{{image}}?bgcolor=fff&width=64&height=64&format=png" srcset="{{image}}?bgcolor=fff&width=128&height=128&format=png 2x,{{image}}?bgcolor=fff&width=192&height=192&format=png 3x" alt="">
+                <img src="{{image}}?width=64&height=64&bgcolor=fff&format=png" srcset="{{image}}?width=128&height=128&bgcolor=fff&format=png 2x,{{image}}?width=192&height=192&bgcolor=fff&format=png 3x" alt="">
                 {[ } else { ]}
                 <i class='icon-Box'></i>
                 {[ } ]}
@@ -188,9 +197,9 @@
                                 defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
                             }
                         }
-                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=64&height=64&format=png"
-                             srcset="@Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=128&height=128&format=png 2x,
-             @Utils.GetScreenshotPath(defaultScreenshot)?bgcolor=fff&width=192&height=192&format=png 3x" />
+                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=64&height=64&bgcolor=fff&format=png"
+                             srcset="@Utils.GetScreenshotPath(defaultScreenshot)?width=128&height=128&bgcolor=fff&format=png 2x,
+             @Utils.GetScreenshotPath(defaultScreenshot)?width=192&height=192&bgcolor=fff&format=png 3x" />
                     </div>
                     <div class="col-xs-10 col-md-6">
                         <div class="forum-thread-text">

@@ -31,7 +31,7 @@
 
                         <div class="videos-item">
                             <div class="videos-details">
-                                <a href="@videoUrl" target="_blank" rel="noopener"><strong>@video.Snippet.Title</strong></a>
+                                <a href="@videoUrl" target="_blank" rel="noreferrer noopener"><strong>@video.Snippet.Title</strong></a>
                                 <div class="videos-meta">
                                     @video.Snippet.PublishedAt.ToString("MMM d, yyyy")
                                     &ndash;
@@ -61,7 +61,7 @@
                                     <div class="videos-description">@Html.Raw(html)</div>
                                 }
                             </div>
-                            <a href="@videoUrl" class="videos-thumbnail" target="_blank" rel="noopener">
+                            <a href="@videoUrl" class="videos-thumbnail" target="_blank" rel="noreferrer noopener">
                                 <div class="videos-thumbnail-overlay">
                                     <i class="icon-Video"></i>
                                 </div>

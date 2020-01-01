@@ -9,7 +9,7 @@
             var users = gitHubService.GetTeam(issue.RepositoryName).Members.Select(x => x.ToLower());
             var link = $"https://github.com/umbraco/{issue.RepositoryName}/pull/{issue.Number}";
 
-            <p><a href="@link" target="_blank">#@issue.Number (@issue.RepositoryName) | @issue.Title</a></p>
+            <p><a href="@link" target="_blank" rel="noreferrer noopener">#@issue.Number (@issue.RepositoryName) | @issue.Title</a></p>
 
             var firstTeamComment = issue.Comments.OrderBy(x => x.CreateDateTime).FirstOrDefault(x => x.User != null && users.Contains(x.User.Login.ToLowerInvariant()));
             if (firstTeamComment != null)

@@ -153,12 +153,12 @@
 <xsl:value-of select="$current/description" disable-output-escaping="yes"/>
   
 
-  <a href="{umbraco.library:NiceUrl($current/@id)}" target="_blank">View complete project page</a>
+  <a href="{umbraco.library:NiceUrl($current/@id)}" target="_blank" rel="noreferrer noopener">View complete project page</a>
 </p>
 
 <p class="guiDialogNormal" style="margin-top: 5px;">
   <strong>Author: </strong>
-    <a href="http://our.umbraco.org/member/{$current/owner}" target="_blank">
+    <a href="https://our.umbraco.com/member/{$current/owner}" target="_blank" rel="noreferrer noopener">
         <xsl:value-of select="umbraco.library:GetMemberName($current/owner)"/>
     </a>
 </p>
@@ -207,7 +207,7 @@ if(confirm('Are you sure you wish to download:\n\n<xsl:value-of select="$current
   
 <xsl:choose>
   <xsl:when test="count($currentDocumentation/wikiFile) &gt; 0">
-    <a href="/FileDownload?id={$currentDocumentation/wikiFile/@id}" title="Download Documentation (opens in new window)" target="_blank"><img src="/images/repository/documentation.png" align="absmiddle" alt="Download Documentation (opens in new window)"/>&nbsp;Documentation (opens in new window)</a>
+    <a href="/FileDownload?id={$currentDocumentation/wikiFile/@id}" title="Download Documentation (opens in new window)" target="_blank" rel="noreferrer noopener"><img src="/images/repository/documentation.png" align="absmiddle" alt="Download Documentation (opens in new window)"/>&nbsp;Documentation (opens in new window)</a>
   </xsl:when>
   <xsl:otherwise>
     <em>There's currently no documentation available</em>

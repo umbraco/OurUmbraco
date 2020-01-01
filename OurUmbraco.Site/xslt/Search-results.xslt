@@ -121,7 +121,7 @@ jQuery(document).ready(function(){
 <p>
 <xsl:value-of select="umbraco.library:Replace(umbraco.library:TruncateString($t/content, 250, '...'), $q, concat('&lt;em&gt;', $q ,'&lt;/em&gt;') )" disable-output-escaping="yes"/>
 </p>
-<cite>http://our.umbraco.org/<xsl:value-of select="uForum:NiceTopicUrl($t/id)"/></cite>
+<cite>https://our.umbraco.com/<xsl:value-of select="uForum:NiceTopicUrl($t/id)"/></cite>
 </div>
 </xsl:if>
 </xsl:template>
@@ -146,7 +146,7 @@ RE: <xsl:value-of select="umbraco.library:Replace($t/title, $q, concat('&lt;em&g
 <p>
 <xsl:value-of select="umbraco.library:Replace(umbraco.library:TruncateString($r/content, 250, '...'), $q, concat('&lt;em&gt;', $q ,'&lt;/em&gt;') )" disable-output-escaping="yes"/>
 </p>
-<cite>http://our.umbraco.org/<xsl:value-of select="uForum:NiceTopicUrl($t/id)"/></cite>
+<cite>https://our.umbraco.com/<xsl:value-of select="uForum:NiceTopicUrl($t/id)"/></cite>
 </div>
 
 </xsl:if>
@@ -168,7 +168,7 @@ RE: <xsl:value-of select="umbraco.library:Replace($t/title, $q, concat('&lt;em&g
 <p>
 <xsl:value-of select="umbraco.library:Replace( umbraco.library:TruncateString($r/content, 250, '...'), $q, concat('&lt;em&gt;', $q ,'&lt;/em&gt;') )" disable-output-escaping="yes"/>
 </p>
-<cite>http://our.umbraco.org<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
+<cite>https://our.umbraco.com<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
 </div>
 </xsl:template>
 
@@ -185,7 +185,7 @@ RE: <xsl:value-of select="umbraco.library:Replace($t/title, $q, concat('&lt;em&g
 <p>
 <xsl:value-of select="umbraco.library:Replace( umbraco.library:TruncateString($r/content, 250, '...'), $q, concat('&lt;em&gt;', $q ,'&lt;/em&gt;') )" disable-output-escaping="yes"/>
 </p>
-<cite>http://our.umbraco.org<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
+<cite>https://our.umbraco.com<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
   <p><xsl:copy-of select="$r"/></p>
 </div>
 
@@ -203,7 +203,7 @@ RE: <xsl:value-of select="umbraco.library:Replace($t/title, $q, concat('&lt;em&g
 <p>
 <xsl:value-of select="umbraco.library:Replace( umbraco.library:TruncateString($r/content, 250, '...'), $q, concat('&lt;em&gt;', $q ,'&lt;/em&gt;') )" disable-output-escaping="yes"/>
 </p>
-<cite>http://our.umbraco.org<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
+<cite>https://our.umbraco.com<xsl:value-of select="umbraco.library:NiceUrl($r/id)"/></cite>
 </div>
 </xsl:template>
 

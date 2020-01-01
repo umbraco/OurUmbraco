@@ -1,0 +1,54 @@
+.rte, ._form_6 {
+    ul {
+        display: block;
+        list-style-type: disc;
+        margin-block-start: 1em;
+        margin-block-end: 1em;
+        margin-inline-start: 0px;
+        margin-inline-end: 0px;
+        padding-inline-start: 40px;
+    }
+    h1,h2 {
+        font-size: 1.9rem;
+        position: relative;
+        z-index: 30;
+        text-align: center;
+        margin-bottom: 30px;
+        margin-top: 100px;
+        font-size: 26px;
+        font-weight: bold;
+    }
+
+    h1 {
+        @media (min-width: $md) {
+            font-size: 2.4rem;
+        }
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table th {
+        padding: 5px 15px;
+        border-bottom: 1px solid #e5e8ea;
+
+        p {
+            font-weight: 700;
+        }
+    }
+
+    table tbody td {
+        padding: 15px;
+        border-bottom: 1px solid #e5e8ea;
+        vertical-align: middle;
+    }
+
+    td {
+        padding-bottom: 30px;
+    }
+
+    p {
+        padding: 10px 0;
+    }
+}

@@ -2146,7 +2146,8 @@
                     pageNumber: 100,
                     filter: '',
                     orderDirection: 'Ascending',
-                    orderBy: 'SortOrder'
+                    orderBy: 'SortOrder',
+                    dataTypeId: null
                 };
                 if (options === undefined) {
                     options = {};

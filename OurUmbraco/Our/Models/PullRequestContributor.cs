@@ -1,4 +1,6 @@
-﻿namespace OurUmbraco.Our.Models
+﻿using System;
+
+namespace OurUmbraco.Our.Models
 {
     public class PullRequestContributor
     {
@@ -7,5 +9,6 @@
         public int OpenContributions { get; set; }
         public int ClosedContributions { get; set; }
         public int MergedContributions { get; set; }
+        public DateTime? FirstContribution { get; set; }
     }
 }

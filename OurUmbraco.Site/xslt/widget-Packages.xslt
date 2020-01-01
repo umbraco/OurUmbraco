@@ -29,7 +29,7 @@
 			<xsl:for-each select="umbraco.library:GetXmlNodeById(1113)/descendant::Project">
 				<xsl:sort select="@nodeName" order="ascending"/>
 				<li>
-					<a href="http://our.umbraco.org{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
+					<a href="https://our.umbraco.com{umbraco.library:NiceUrl(@id)}"><xsl:value-of select="@nodeName"/></a>
 					<xsl:value-of select="concat('Version: ', version, ', by ', umbraco.library:GetMemberName(owner))"/>
 				</li>
 			</xsl:for-each>

@@ -132,7 +132,7 @@ else
                     </div>
 
                     <div class="col-md-12 goto-forum">
-                        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
+                        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank" rel="noreferrer noopener">Join the conversation on Twitter &rarr;</a>
                     </div>
 
                 </div>
@@ -150,12 +150,15 @@ else
                         <p>
                             <small class="github-repo-list">
                                 Contributions to default branches for
-                                <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" title="Umbraco-CMS">Umbraco-CMS</a>,
-                                <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" title="UmbracoDocs">UmbracoDocs</a>,
-                                <a href="https://github.com/umbraco/OurUmbraco" target="_blank" title="OurUmbraco">OurUmbraco</a>,
-                                <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
-                                <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a> and
-                                <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a> repos
+                                <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" rel="noreferrer noopener" title="Umbraco-CMS">Umbraco-CMS</a>,
+                                <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" rel="noreferrer noopener" title="UmbracoDocs">UmbracoDocs</a>,
+                                <a href="https://github.com/umbraco/OurUmbraco" target="_blank" rel="noreferrer noopener" title="OurUmbraco">OurUmbraco</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank"`rel="noreferrer noopener" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" rel="noreferrer noopener" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a>,
+                                <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" rel="noreferrer noopener" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a>,
+                                <a href="https://github.com/umbraco/rfcs" target="_blank" rel="noreferrer noopener" title="RFCs">RFCs</a>,
+                                <a href="https://github.com/umbraco/The-Starter-Kit" target="_blank" rel="noreferrer noopener" title="The-Starter-Kit">The-Starter-Kit</a> and
+                                <a href="https://github.com/umbraco/organizer-guide" target="_blank" rel="noreferrer noopener" title="organizer-guide">organizer-guide</a> repos
                             </small>
                         </p>
                     </div>
@@ -173,7 +176,7 @@ else
                     </div>
 
                     <div class="col-md-12 goto-forum">
-                        <a class="button green" href="https://our.umbraco.org/contribute">Contribute to Umbraco &rarr;</a>
+                        <a class="button green" target="_blank" rel="noopener noreferrer" href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md">Contribute to Umbraco &rarr;</a>
                     </div>
 
                 </div>
@@ -206,17 +209,4 @@ else
                 </div>
             </div>
         </section>
-}
-
-@helper Gitter()
-    {
-        var featuresService = new UpcomingFeaturesService();
-        var allowed = featuresService.MemberHasAccessToFeature();
-
-        bool unhideGitter;
-        bool.TryParse(ConfigurationManager.AppSettings["UnhideGitter"], out unhideGitter);
-        if (unhideGitter || allowed)
-        {
-            @Html.Action("RenderGitterRoom", "GitterRoomSurface", new { roomName = "umbraco/Umbraco-CMS", viewName = "GitterHome.cshtml" })
-        }
 }

@@ -51,8 +51,9 @@
     <Reference Include="Bayeux, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Bayeux.0.1.0-preview0003\lib\netstandard1.1\Bayeux.dll</HintPath>
     </Reference>
-    <Reference Include="businesslogic, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\businesslogic.dll</HintPath>
+    <Reference Include="businesslogic, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\businesslogic.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ClientDependency.Core, Version=1.9.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency.1.9.7\lib\net45\ClientDependency.Core.dll</HintPath>
@@ -61,14 +62,16 @@
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="cms, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\cms.dll</HintPath>
+    <Reference Include="cms, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\cms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ColorCode, Version=1.0.1.62759, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ColorCode.1.0.1\lib\ColorCode.dll</HintPath>
     </Reference>
-    <Reference Include="controls, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\controls.dll</HintPath>
+    <Reference Include="controls, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\controls.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="CookComputing.XmlRpcV2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
@@ -76,9 +79,6 @@
     </Reference>
     <Reference Include="Examine, Version=0.1.90.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Examine.0.1.90\lib\net45\Examine.dll</HintPath>
-    </Reference>
-    <Reference Include="GitterSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\gitter-api-pcl.1.0.0-preview2\lib\netstandard1.1\GitterSharp.dll</HintPath>
     </Reference>
     <Reference Include="GraphQL, Version=2.4.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GraphQL.2.4.0\lib\net45\GraphQL.dll</HintPath>
@@ -88,6 +88,9 @@
     </Reference>
     <Reference Include="GraphQL.Common, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GraphQL.Common.1.0.3\lib\netstandard1.0\GraphQL.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetMoaSharp.6.0.0\lib\4.5\Hammock.ClientProfile.dll</HintPath>
     </Reference>
     <Reference Include="Hangfire.Console, Version=1.4.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Hangfire.Console.1.4.2\lib\net45\Hangfire.Console.dll</HintPath>
@@ -114,14 +117,16 @@
     <Reference Include="ImageProcessor.Web, Version=4.10.0.100, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.Web.4.10.0.100\lib\net452\ImageProcessor.Web.dll</HintPath>
     </Reference>
-    <Reference Include="interfaces, Version=1.0.7128.14444, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\interfaces.dll</HintPath>
+    <Reference Include="interfaces, Version=1.0.7180.24653, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\interfaces.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Log4Net.Async, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Log4Net.Async.2.0.4\lib\net40\Log4Net.Async.dll</HintPath>
@@ -141,8 +146,9 @@
       <HintPath>..\packages\Markdown.1.14.7\lib\net45\MarkdownSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -286,8 +292,9 @@
     <Reference Include="Skybrud.SyntaxHighlighter.Markdig, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.SyntaxHighlighter.Markdig.1.0.0-beta003\lib\net45\Skybrud.SyntaxHighlighter.Markdig.dll</HintPath>
     </Reference>
-    <Reference Include="SQLCE4Umbraco, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\SQLCE4Umbraco.dll</HintPath>
+    <Reference Include="SQLCE4Umbraco, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\SQLCE4Umbraco.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
@@ -295,11 +302,13 @@
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.Linq" />
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\System.Data.SqlServerCe.dll</HintPath>
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\System.Data.SqlServerCe.Entity.dll</HintPath>
+    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.Entity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
@@ -385,40 +394,48 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\TidyNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7247f14397bf67b9, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.1.2.0\lib\net45\Tweetinvi.dll</HintPath>
+    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\TidyNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco, Version=1.0.7128.14463, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.dll</HintPath>
+    <Reference Include="TweetSharp, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetMoaSharp.6.0.0\lib\4.5\TweetSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Core, Version=1.0.7128.14457, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Umbraco.Core.dll</HintPath>
+    <Reference Include="umbraco, Version=1.0.7180.24668, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.DataLayer, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.DataLayer.dll</HintPath>
+    <Reference Include="Umbraco.Core, Version=1.0.7180.24662, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.editorControls, Version=1.0.7128.14466, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.editorControls.dll</HintPath>
+    <Reference Include="umbraco.DataLayer, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.DataLayer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="umbraco.editorControls, Version=1.0.7180.24671, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.editorControls.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.IdentityExtensions, Version=1.0.5779.34109, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.IdentityExtensions.1.0.0\lib\net45\Umbraco.IdentityExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.MacroEngines, Version=1.0.7128.14467, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.MacroEngines.dll</HintPath>
+    <Reference Include="umbraco.MacroEngines, Version=1.0.7180.24672, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.MacroEngines.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.providers, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.providers.dll</HintPath>
+    <Reference Include="umbraco.providers, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.providers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Web.UI, Version=1.0.7128.14470, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Umbraco.Web.UI.dll</HintPath>
+    <Reference Include="Umbraco.Web.UI, Version=1.0.7180.24674, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Web.UI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="UmbracoExamine, Version=0.7.0.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\UmbracoExamine.dll</HintPath>
+    <Reference Include="UmbracoExamine, Version=0.7.0.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\UmbracoExamine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="UrlRewritingNet.UrlRewriter, Version=2.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
@@ -447,9 +464,11 @@
     <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
+    <Compile Include="Community\Controllers\CommunityHubPageController.cs" />
     <Compile Include="Community\Models\GraphQLModel.cs" />
     <Compile Include="Community\GitHub\Models\Comments\AddCommentResult.cs" />
     <Compile Include="Community\Models\Repository.cs" />
+    <Compile Include="Community\Models\ViewModels\CommunityBlogPostViewModel.cs" />
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\DashboardStatisticsController.cs" />
@@ -471,7 +490,6 @@
     <Compile Include="Community\Map\MapApiController.cs" />
     <Compile Include="Community\Map\MapEventHandler.cs" />
     <Compile Include="Community\Map\MemberLocation.cs" />
-    <Compile Include="Community\Map\RadarHangfireJobs.cs" />
     <Compile Include="Community\Meetup\MeetupService.cs" />
     <Compile Include="Community\Meetup\Models\MeetupCacheItem.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
@@ -521,6 +539,7 @@
     <Compile Include="Our\Models\GitHub\Issue.cs" />
     <Compile Include="Our\Models\GitHub\Label.cs" />
     <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyType.cs" />
+    <Compile Include="Our\Models\GitHub\Review.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\IssuesInPeriod.cs" />
@@ -568,12 +587,6 @@
     <Compile Include="Forum\Services\ForumService.cs" />
     <Compile Include="Forum\Services\TopicService.cs" />
     <Compile Include="Forum\Singleton.cs" />
-    <Compile Include="Gitter\GitterApiController.cs" />
-    <Compile Include="Gitter\GitterProxyHub.cs" />
-    <Compile Include="Gitter\GitterRoomSurfaceController.cs" />
-    <Compile Include="Gitter\GitterService.cs" />
-    <Compile Include="Gitter\GitterUmbracoEventHandler.cs" />
-    <Compile Include="Gitter\UmbracoMessage.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStep.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\ListingCreatorStepCollection.cs" />
     <Compile Include="MarketPlace\BusinessLogic\ListingCreator\StepDefinitions\Complete.cs" />

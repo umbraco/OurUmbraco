@@ -77,6 +77,41 @@ namespace OurUmbraco.Our.Services
 
             return issues;
         }
+        
+        public List<Issue> GetAllIssues(bool pulls, DateTime? since = null)
+        {
+            var issues = new List<Issue>();
+
+            foreach (var directory in Directory.EnumerateDirectories(IssuesBaseDirectory))
+            {
+                var directoryName = directory.Split('\\').Last();
+                var repositoryName = directoryName.Substring(directoryName.LastIndexOf("__", StringComparison.Ordinal) + 2);
+                var issuesDirectory = directory + "\\issues\\";
+
+                if (pulls)
+                    issuesDirectory = issuesDirectory + "\\pulls\\";
+
+                if (Directory.Exists(issuesDirectory) == false)
+                    continue;
+
+                var issueFiles = Directory.EnumerateFiles(issuesDirectory, "*.combined.json");
+
+                foreach (var file in issueFiles)
+                {
+
+                    // Skip the file if older than the specified timestamp
+                    if (since != null && File.GetLastWriteTimeUtc(file) < since.Value) continue;
+
+                    var fileContent = File.ReadAllText(file);
+                    var item = JsonConvert.DeserializeObject<Issue>(fileContent);
+                    item.RepositoryName = repositoryName;
+
+                    issues.Add(item);
+                }
+            }
+
+            return issues;
+        }
 
         public List<GitHubCategorizedIssues> GetAllOpenIssues(bool pulls)
         {

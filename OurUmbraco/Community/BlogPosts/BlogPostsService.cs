@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Text;
+using System.Threading.Tasks;
 using System.Web.Hosting;
 using System.Xml.Linq;
 using Hangfire.Console;
@@ -174,6 +176,58 @@ namespace OurUmbraco.Community.BlogPosts
             }
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
+        }
+
+        public async Task<IEnumerable<BlogRssItem>> GetUprofileBlogPosts()
+        {
+            var runtimeCache = ApplicationContext.Current.ApplicationCache.RuntimeCache;
+
+            var cached = (IEnumerable<BlogRssItem>) runtimeCache.GetCacheItem("CommunityUProfileBlogPosts");
+            if (cached != null) return cached;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var result = await client.GetStringAsync("https://umbraco.com/blog/rss-uprofile-feed/");
+                    if (result == null) return null;
+
+                    var feed = XElement.Parse(result);
+                    var posts = new List<BlogRssItem>();
+
+                    var channel = feed.Element("channel");
+
+                    var items = channel.GetElements("item");
+                    foreach (var post in items)
+                    {
+                        var title = post.GetElementValue<string>("title")?.Trim();
+                        var link = post.GetElementValue<string>("link")?.Trim();
+                        var description = post.GetElementValue<string>("description")?.Trim();
+
+                        var image = post.Element("image");
+                        var thumbnail = image?.GetElementValue<string>("url")?.Trim();
+
+                        var item = new BlogRssItem()
+                        {
+                            Title = title,
+                            Link = link,
+                            Thumbnail = thumbnail,
+                            Description = description
+                        };
+
+                        posts.Add(item);
+                    }
+
+                    runtimeCache.InsertCacheItem("CommunityUProfileBlogPosts", () => posts, TimeSpan.FromHours(2));
+                    return posts;
+                }
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<BlogPostsService>("Unable to fetch uprofile posts", ex);
+            }
+
+            return null;
         }
 
         private static string GetFileExtension(string blogLogoUrl)

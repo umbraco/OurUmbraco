@@ -4,26 +4,34 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var twitterService = new TwitterService();
-    var tweets = twitterService.GetTweets(30, false).Tweets;
+    var result = twitterService.GetTweets(30, false);
 }
 
-@foreach (var tweet in tweets)
+@if (result.Tweets != null && result.Tweets.Any())
 {
-    <a href="@tweet.Url" class="community-post">
-
-        <div class="avatar">
-            <img src="@tweet.CreatedBy.ProfileImageUrl400x400.Replace("http://", "https://")" />
-        </div>
-
-        <div class="meta">
-            <div class="forum-thread-text">
-                <h3>@tweet.Text</h3>
-                <p>@tweet.CreatedAt.ConvertToRelativeTime() by @@@tweet.CreatedBy.UserIdentifier.ScreenName (@tweet.CreatedBy.Name)</p>
-            </div>
-        </div>
-    </a>
+    @RenderTweets(result.Tweets)
 }
 
-<div class="col-md-12 goto-forum">
-    <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd">Join the conversation on Twitter &rarr;</a>
-</div>
+@helper RenderTweets(IEnumerable<TweetSharp.TwitterStatus> tweets)
+{
+    foreach (var tweet in tweets)
+    {
+        <a href="https://twitter.com/@tweet.Author.ScreenName/status/@tweet.Id" class="community-post">
+
+            <div class="avatar">
+                <img src="@tweet.Author.ProfileImageUrl.Replace("http://", "https://").Replace("_normal.", ".")" />
+            </div>
+
+            <div class="meta">
+                <div class="forum-thread-text">
+                    <h3>@tweet.Text</h3>
+                    <p>@tweet.CreatedDate.ConvertToRelativeTime() by @@@tweet.Author.ScreenName</p>
+                </div>
+            </div>
+        </a>
+    }
+
+    <div class="col-md-12 goto-forum">
+        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank" rel="noreferrer noopener">Join the conversation on Twitter &rarr;</a>
+    </div>
+}

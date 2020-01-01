@@ -828,7 +828,7 @@
             searchFromId: null,
             searchFromName: null,
             showSearch: false,
-            dataTypeId: $scope.model.dataTypeId,
+            dataTypeId: $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null,
             results: [],
             selectedSearchResults: []
         };
@@ -3226,17 +3226,21 @@
         if (!$scope.model.title) {
             $scope.model.title = localizationService.localize('defaultdialogs_selectLink');
         }
+        var dataTypeId = null;
+        if (dialogOptions && dialogOptions.dataTypeId) {
+            dataTypeId = dialogOptions.dataTypeId;
+        }
         $scope.dialogTreeEventHandler = $({});
         $scope.model.target = {};
         $scope.searchInfo = {
             searchFromId: null,
             searchFromName: null,
             showSearch: false,
-            dataTypeId: dialogOptions.dataTypeId,
+            dataTypeId: dataTypeId,
             results: [],
             selectedSearchResults: []
         };
-        $scope.customTreeParams = dialogOptions.dataTypeId ? 'dataTypeId=' + dialogOptions.dataTypeId : '';
+        $scope.customTreeParams = dataTypeId !== null ? 'dataTypeId=' + dataTypeId : '';
         $scope.showTarget = $scope.model.hideTarget !== true;
         if (dialogOptions.currentTarget) {
             // clone the current target so we don't accidentally update the caller's model while manipulating $scope.model.target
@@ -3320,7 +3324,7 @@
                     startNodeId: startNodeId,
                     startNodeIsVirtual: startNodeIsVirtual,
                     show: true,
-                    dataTypeId: dialogOptions.dataTypeId,
+                    dataTypeId: dataTypeId,
                     submit: function (model) {
                         var media = model.selectedImages[0];
                         $scope.model.target.id = media.id;
@@ -3516,13 +3520,17 @@
         mediaTypeHelper.getAllowedImagetypes($scope.startNodeId).then(function (types) {
             $scope.acceptedMediatypes = types;
         });
+        var dataTypeId = null;
+        if ($scope.model && $scope.model.dataTypeId) {
+            dataTypeId = $scope.model.dataTypeId;
+        }
         $scope.searchOptions = {
             pageNumber: 1,
             pageSize: 100,
             totalItems: 0,
             totalPages: 0,
             filter: '',
-            dataTypeId: $scope.model.dataTypeId
+            dataTypeId: dataTypeId
         };
         //preload selected item
         $scope.target = undefined;
@@ -3616,7 +3624,7 @@
                 };
             }
             if (folder.id > 0) {
-                entityResource.getAncestors(folder.id, 'media', { dataTypeId: $scope.model.dataTypeId }).then(function (anc) {
+                entityResource.getAncestors(folder.id, 'media', { dataTypeId: dataTypeId }).then(function (anc) {
                     $scope.path = _.filter(anc, function (f) {
                         return f.path.indexOf($scope.startNodeId) !== -1;
                     });
@@ -3759,7 +3767,7 @@
                         totalItems: 0,
                         totalPages: 0,
                         filter: '',
-                        dataTypeId: $scope.model.dataTypeId
+                        dataTypeId: dataTypeId
                     };
                     getChildren($scope.currentFolder.id);
                 }
@@ -4288,7 +4296,7 @@
             searchFromId: dialogOptions.startNodeId,
             searchFromName: null,
             showSearch: false,
-            dataTypeId: dialogOptions.dataTypeId,
+            dataTypeId: dialogOptions && dialogOptions.dataTypeId ? dialogOptions.dataTypeId : null,
             results: [],
             selectedSearchResults: []
         };
@@ -12100,7 +12108,7 @@
             $scope.contentPickerOverlay = dialogOptions;
             $scope.contentPickerOverlay.view = 'treepicker';
             $scope.contentPickerOverlay.show = true;
-            $scope.contentPickerOverlay.dataTypeId = $scope.model.dataTypeId;
+            $scope.contentPickerOverlay.dataTypeId = $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null;
             $scope.contentPickerOverlay.submit = function (model) {
                 if (angular.isArray(model.selection)) {
                     _.each(model.selection, function (item, i) {
@@ -13049,10 +13057,10 @@
         $scope.setImage = function () {
             $scope.mediaPickerOverlay = {};
             $scope.mediaPickerOverlay.view = 'mediapicker';
-            $scope.mediaPickerOverlay.startNodeId = $scope.model.config && $scope.model.config.startNodeId ? $scope.model.config.startNodeId : undefined;
-            $scope.mediaPickerOverlay.startNodeIsVirtual = $scope.mediaPickerOverlay.startNodeId ? $scope.model.config.startNodeIsVirtual : undefined;
-            $scope.mediaPickerOverlay.dataTypeId = $scope.model.dataTypeId;
-            $scope.mediaPickerOverlay.cropSize = $scope.control.editor.config && $scope.control.editor.config.size ? $scope.control.editor.config.size : undefined;
+            $scope.mediaPickerOverlay.startNodeId = $scope.model.config && $scope.model.config.startNodeId ? $scope.model.config.startNodeId : null;
+            $scope.mediaPickerOverlay.startNodeIsVirtual = $scope.mediaPickerOverlay.startNodeId ? $scope.model.config.startNodeIsVirtual : null;
+            $scope.mediaPickerOverlay.dataTypeId = $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null;
+            $scope.mediaPickerOverlay.cropSize = $scope.control.editor.config && $scope.control.editor.config.size ? $scope.control.editor.config.size : null;
             $scope.mediaPickerOverlay.showDetails = true;
             $scope.mediaPickerOverlay.disableFolderSelect = true;
             $scope.mediaPickerOverlay.onlyImages = true;
@@ -13110,13 +13118,14 @@
             vm.openMediaPicker = openMediaPicker;
             vm.openMacroPicker = openMacroPicker;
             vm.openEmbed = openEmbed;
+            var dataTypeId = $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null;
             function openLinkPicker(editor, currentTarget, anchorElement) {
                 entityResource.getAnchors(JSON.stringify($scope.model.value)).then(function (anchorValues) {
                     vm.linkPickerOverlay = {
                         view: 'linkpicker',
                         currentTarget: currentTarget,
                         anchors: anchorValues,
-                        dataTypeId: $scope.model.dataTypeId,
+                        dataTypeId: dataTypeId,
                         ignoreUserStartNodes: $scope.model.config.ignoreUserStartNodes,
                         show: true,
                         submit: function (model) {
@@ -13140,7 +13149,7 @@
                     showDetails: true,
                     startNodeId: startNodeId,
                     startNodeIsVirtual: startNodeIsVirtual,
-                    dataTypeId: $scope.model.dataTypeId,
+                    dataTypeId: dataTypeId,
                     view: 'mediapicker',
                     show: true,
                     submit: function (model) {
@@ -15760,7 +15769,7 @@
                 title: 'Select media',
                 startNodeId: $scope.model.config.startNodeId,
                 startNodeIsVirtual: $scope.model.config.startNodeIsVirtual,
-                dataTypeId: $scope.model.dataTypeId,
+                dataTypeId: $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null,
                 multiPicker: multiPicker,
                 onlyImages: onlyImages,
                 disableFolderSelect: disableFolderSelect,
@@ -16180,7 +16189,7 @@
             $scope.linkPickerOverlay = {
                 view: 'linkpicker',
                 currentTarget: target,
-                dataTypeId: $scope.model.dataTypeId,
+                dataTypeId: $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null,
                 ignoreUserStartNodes: $scope.model.config.ignoreUserStartNodes,
                 show: true,
                 submit: function (model) {
@@ -16693,13 +16702,14 @@
         $scope.addExternal = true;
         $scope.currentEditLink = null;
         $scope.hasError = false;
+        var dataTypeId = $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null;
         $scope.internal = function ($event) {
             $scope.currentEditLink = null;
             $scope.contentPickerOverlay = {};
             $scope.contentPickerOverlay.view = 'contentpicker';
             $scope.contentPickerOverlay.multiPicker = false;
             $scope.contentPickerOverlay.show = true;
-            $scope.contentPickerOverlay.dataTypeId = $scope.model.dataTypeId;
+            $scope.contentPickerOverlay.dataTypeId = dataTypeId;
             $scope.contentPickerOverlay.idType = $scope.model.config.idType ? $scope.model.config.idType : 'int';
             $scope.contentPickerOverlay.submit = function (model) {
                 select(model.selection[0]);
@@ -16718,7 +16728,7 @@
             $scope.contentPickerOverlay.view = 'contentpicker';
             $scope.contentPickerOverlay.multiPicker = false;
             $scope.contentPickerOverlay.show = true;
-            $scope.contentPickerOverlay.dataTypeId = $scope.model.dataTypeId;
+            $scope.contentPickerOverlay.dataTypeId = dataTypeId;
             $scope.contentPickerOverlay.idType = $scope.model.config.idType ? $scope.model.config.idType : 'int';
             $scope.contentPickerOverlay.submit = function (model) {
                 select(model.selection[0]);
@@ -16923,6 +16933,7 @@
             if (!editorConfig.maxImageSize && editorConfig.maxImageSize != 0) {
                 editorConfig.maxImageSize = tinyMceService.defaultPrevalues().maxImageSize;
             }
+            var dataTypeId = $scope.model && $scope.model.dataTypeId ? $scope.model.dataTypeId : null;
             //queue file loading
             if (typeof tinymce === 'undefined') {
                 // Don't reload tinymce if already loaded
@@ -17120,7 +17131,7 @@
                                 view: 'linkpicker',
                                 currentTarget: currentTarget,
                                 anchors: anchorValues,
-                                dataTypeId: $scope.model.dataTypeId,
+                                dataTypeId: dataTypeId,
                                 ignoreUserStartNodes: $scope.model.config.ignoreUserStartNodes,
                                 show: true,
                                 submit: function (model) {
@@ -17146,7 +17157,7 @@
                             disableFolderSelect: true,
                             startNodeId: startNodeId,
                             startNodeIsVirtual: startNodeIsVirtual,
-                            dataTypeId: $scope.model.dataTypeId,
+                            dataTypeId: dataTypeId,
                             view: 'mediapicker',
                             show: true,
                             submit: function (model) {

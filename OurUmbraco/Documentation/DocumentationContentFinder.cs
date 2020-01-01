@@ -62,7 +62,7 @@ namespace OurUmbraco.Documentation
             // set the context vars
             var httpContext = contentRequest.RoutingContext.UmbracoContext.HttpContext;
             httpContext.Items[MarkdownLogic.MarkdownPathKey] = mdFilepath;
-            httpContext.Items["topicTitle"] = string.Join(" - ", httpContext.Request.RawUrl
+            httpContext.Items["topicTitle"] = string.Join(" - ", httpContext.Request.Url.AbsolutePath
                 .Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)
                 .Skip(1)
                 .Reverse());

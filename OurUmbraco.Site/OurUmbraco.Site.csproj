@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\UmbracoCms.7.15.0\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.7.15.0\build\UmbracoCms.props')" />
+  <Import Project="..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -67,8 +67,9 @@
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="businesslogic, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\businesslogic.dll</HintPath>
+    <Reference Include="businesslogic, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\businesslogic.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ClientDependency.Core, Version=1.9.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency.1.9.7\lib\net45\ClientDependency.Core.dll</HintPath>
@@ -77,14 +78,16 @@
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="cms, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\cms.dll</HintPath>
+    <Reference Include="cms, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\cms.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="ColorCode, Version=1.0.1.62759, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ColorCode.1.0.1\lib\ColorCode.dll</HintPath>
     </Reference>
-    <Reference Include="controls, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\controls.dll</HintPath>
+    <Reference Include="controls, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\controls.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="CookComputing.XmlRpcV2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
@@ -102,6 +105,9 @@
     <Reference Include="GraphQL.Common, Version=1.0.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\GraphQL.Common.1.0.3\lib\netstandard1.0\GraphQL.Common.dll</HintPath>
     </Reference>
+    <Reference Include="Hammock.ClientProfile, Version=1.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetMoaSharp.6.0.0\lib\4.5\Hammock.ClientProfile.dll</HintPath>
+    </Reference>
     <Reference Include="HtmlAgilityPack, Version=1.8.8.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlAgilityPack.1.8.8\lib\Net45\HtmlAgilityPack.dll</HintPath>
     </Reference>
@@ -118,14 +124,16 @@
     <Reference Include="ImageProcessor.Web, Version=4.10.0.100, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.Web.4.10.0.100\lib\net452\ImageProcessor.Web.dll</HintPath>
     </Reference>
-    <Reference Include="interfaces, Version=1.0.7128.14444, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\interfaces.dll</HintPath>
+    <Reference Include="interfaces, Version=1.0.7180.24653, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\interfaces.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\log4net.dll</HintPath>
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\log4net.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Log4Net.Async, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Log4Net.Async.2.0.4\lib\net40\Log4Net.Async.dll</HintPath>
@@ -141,8 +149,9 @@
       <HintPath>..\packages\Markdown.1.14.7\lib\net45\MarkdownSharp.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Microsoft.ApplicationBlocks.Data.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -264,19 +273,22 @@
     <Reference Include="Skybrud.SyntaxHighlighter.Markdig, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.SyntaxHighlighter.Markdig.1.0.0-beta003\lib\net45\Skybrud.SyntaxHighlighter.Markdig.dll</HintPath>
     </Reference>
-    <Reference Include="SQLCE4Umbraco, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\SQLCE4Umbraco.dll</HintPath>
+    <Reference Include="SQLCE4Umbraco, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\SQLCE4Umbraco.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\System.Data.SqlServerCe.dll</HintPath>
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\System.Data.SqlServerCe.Entity.dll</HintPath>
+    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.Entity.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
@@ -346,43 +358,51 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\TidyNet.dll</HintPath>
-    </Reference>
-    <Reference Include="Tweetinvi, Version=1.2.0.0, Culture=neutral, PublicKeyToken=7247f14397bf67b9, processorArchitecture=MSIL">
-      <HintPath>..\packages\TweetinviAPI.1.2.0\lib\net45\Tweetinvi.dll</HintPath>
+    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\TidyNet.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco, Version=1.0.7128.14463, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.dll</HintPath>
+    <Reference Include="TweetSharp, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
+      <HintPath>..\packages\TweetMoaSharp.6.0.0\lib\4.5\TweetSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Umbraco.Core, Version=1.0.7128.14457, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Umbraco.Core.dll</HintPath>
+    <Reference Include="umbraco, Version=1.0.7180.24668, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.DataLayer, Version=1.0.7128.14461, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.DataLayer.dll</HintPath>
+    <Reference Include="Umbraco.Core, Version=1.0.7180.24662, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Core.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.editorControls, Version=1.0.7128.14466, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.editorControls.dll</HintPath>
+    <Reference Include="umbraco.DataLayer, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.DataLayer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="umbraco.editorControls, Version=1.0.7180.24671, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.editorControls.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.IdentityExtensions, Version=1.0.5779.34109, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.IdentityExtensions.1.0.0\lib\net45\Umbraco.IdentityExtensions.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.MacroEngines, Version=1.0.7128.14467, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.MacroEngines.dll</HintPath>
+    <Reference Include="umbraco.MacroEngines, Version=1.0.7180.24672, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.MacroEngines.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.ModelsBuilder, Version=3.0.10.102, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Umbraco.ModelsBuilder.3.0.10\lib\Umbraco.ModelsBuilder.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.providers, Version=1.0.7128.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\umbraco.providers.dll</HintPath>
+    <Reference Include="umbraco.providers, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.providers.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Web.UI, Version=1.0.7128.14470, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\Umbraco.Web.UI.dll</HintPath>
+    <Reference Include="Umbraco.Web.UI, Version=1.0.7180.24674, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Web.UI.dll</HintPath>
+      <Private>True</Private>
     </Reference>
-    <Reference Include="UmbracoExamine, Version=0.7.0.14462, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\UmbracoCms.Core.7.15.0\lib\net452\UmbracoExamine.dll</HintPath>
+    <Reference Include="UmbracoExamine, Version=0.7.0.24667, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\UmbracoExamine.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="UrlRewritingNet.UrlRewriter, Version=2.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
@@ -470,8 +490,6 @@
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
-    <Content Include="Assets\js\gitter\gitter.signalr.init.js" />
-    <Content Include="Assets\js\gitter\gitter.signalr.js" />
     <Content Include="Assets\js\jquery.ajaxfileupload.js" />
     <Content Include="Assets\js\lib\emojione.min.js" />
     <Content Include="Assets\js\lib\markerclusterer.js" />
@@ -503,25 +521,7 @@
     </Content>
     <Content Include="config\formHandlers.config" />
     <Content Include="config\githubhq.txt" />
-    <Content Include="config\grid.editors.config.js" />
-    <Content Include="config\Lang\cs-CZ.user.xml" />
-    <Content Include="config\Lang\da-DK.user.xml" />
-    <Content Include="config\Lang\de-DE.user.xml" />
-    <Content Include="config\Lang\en-GB.user.xml" />
-    <Content Include="config\Lang\en-US.user.xml" />
-    <Content Include="config\Lang\es-ES.user.xml" />
-    <Content Include="config\Lang\fr-FR.user.xml" />
-    <Content Include="config\Lang\he-IL.user.xml" />
-    <Content Include="config\Lang\it-IT.user.xml" />
-    <Content Include="config\Lang\ja-JP.user.xml" />
-    <Content Include="config\Lang\ko-KR.user.xml" />
-    <Content Include="config\Lang\nb-NO.user.xml" />
-    <Content Include="config\Lang\nl-NL.user.xml" />
-    <Content Include="config\Lang\pl-PL.user.xml" />
-    <Content Include="config\Lang\pt-BR.user.xml" />
-    <Content Include="config\Lang\ru-RU.user.xml" />
-    <Content Include="config\Lang\sv-SE.user.xml" />
-    <Content Include="config\Lang\zh-CN.user.xml" />
+    <Content Include="Config\grid.editors.config.js" />
     <Content Include="config\log4net.config" />
     <Content Include="config\MeetupUmbracoGroups.txt" />
     <Content Include="config\Notification.config" />
@@ -544,14 +544,32 @@
     <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
     <Content Include="config\Queries\GetUnmergeablePullRequests.json" />
-    <Content Include="config\tinyMceConfig.config" />
-    <Content Include="config\scripting.config" />
-    <Content Include="config\HealthChecks.config" />
-    <Content Include="config\FileSystemProviders.config" />
-    <Content Include="config\feedProxy.config" />
-    <Content Include="config\EmbeddedMedia.config" />
-    <Content Include="config\BaseRestExtensions.config" />
-    <Content Include="config\BackOfficeTours\getting-started.json" />
+    <None Include="Config\BackOfficeTours\getting-started.json" />
+    <None Include="Config\BaseRestExtensions.config" />
+    <None Include="Config\EmbeddedMedia.config" />
+    <None Include="Config\feedProxy.config" />
+    <None Include="Config\FileSystemProviders.config" />
+    <None Include="Config\HealthChecks.config" />
+    <None Include="Config\Lang\cs-CZ.user.xml" />
+    <None Include="Config\Lang\da-DK.user.xml" />
+    <None Include="Config\Lang\de-DE.user.xml" />
+    <None Include="Config\Lang\en-GB.user.xml" />
+    <None Include="Config\Lang\en-US.user.xml" />
+    <None Include="Config\Lang\es-ES.user.xml" />
+    <None Include="Config\Lang\fr-FR.user.xml" />
+    <None Include="Config\Lang\he-IL.user.xml" />
+    <None Include="Config\Lang\it-IT.user.xml" />
+    <None Include="Config\Lang\ja-JP.user.xml" />
+    <None Include="Config\Lang\ko-KR.user.xml" />
+    <None Include="Config\Lang\nb-NO.user.xml" />
+    <None Include="Config\Lang\nl-NL.user.xml" />
+    <None Include="Config\Lang\pl-PL.user.xml" />
+    <None Include="Config\Lang\pt-BR.user.xml" />
+    <None Include="Config\Lang\ru-RU.user.xml" />
+    <None Include="Config\Lang\sv-SE.user.xml" />
+    <None Include="Config\Lang\zh-CN.user.xml" />
+    <None Include="Config\scripting.config" />
+    <None Include="Config\tinyMceConfig.config" />
     <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
@@ -720,6 +738,7 @@
     <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.woff" />
     <Content Include="Assets\css\fonts\lato\LatoLatin-Regular.woff2" />
     <Content Include="config\CommunityBlogs.json" />
+    <None Include="Media\Web.config" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
     <Content Include="scripts\amcharts\CHANGELOG.md" />
     <Content Include="scripts\amcharts\LICENSE" />
@@ -1723,7 +1742,9 @@
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
+    <Content Include="Views\EnhancedTextPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
+    <Content Include="Views\Partials\Dashboards\PRData.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.svg" />
@@ -1738,6 +1759,16 @@
     <Content Include="Views\MacroPartials\Members\Profile.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileNotifications.cshtml" />
     <Content Include="Views\Partials\Documentation\Navigation.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
+    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
+    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Projects\ListCategories.cshtml" />
     <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNavigation.cshtml" />
@@ -4417,12 +4448,10 @@
     <Content Include="Views\ProjectGroup.cshtml" />
     <Content Include="Views\ProjectsTags.cshtml" />
     <Content Include="Views\CommunityVideos.cshtml" />
-    <Content Include="Views\Partials\Community\GitterHome.cshtml" />
     <Content Include="Views\Partials\Community\Videos.cshtml" />
     <Content Include="Views\Partials\Community\Map.cshtml" />
     <Content Include="Views\Partials\Community\Sidebar.cshtml" />
     <Content Include="Views\CommunityBadges.cshtml" />
-    <Content Include="Views\Partials\Community\GitterCommunity.cshtml" />
     <Content Include="Views\MacroPartials\Members\ResetPassword.cshtml" />
     <Content Include="Views\Partials\Members\ResetPassword.cshtml" />
     <Content Include="Views\Partials\Emails\EmailTemplateMaster.cshtml" />
@@ -4444,16 +4473,11 @@
     <Content Include="Views\Partials\Dashboards\Issues.cshtml" />
     <Content Include="Views\Partials\Dashboards\Pull Requests.cshtml" />
     <Content Include="Views\Partials\Dashboards\DebugInfo.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Macro.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Embed.cshtml" />
-    <Content Include="Views\Partials\Grid\Editors\Base.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap3.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap3-Fluid.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap2.cshtml" />
-    <Content Include="Views\Partials\Grid\Bootstrap2-Fluid.cshtml" />
+    <Content Include="Views\CommunityHubUProfileBlogPosts.cshtml" />
+    <Content Include="Views\Partials\Dashboards\Process.cshtml" />
+    <Content Include="Views\ProjectLanding.cshtml" />
+    <Content Include="Views\Minimal\GitHub\Error.cshtml" />
+    <Content Include="Views\Minimal\Master.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -4534,11 +4558,11 @@
     <Error Condition="!Exists('..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Bcl.Build.1.0.21\build\Microsoft.Bcl.Build.targets'))" />
     <Error Condition="!Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.7.15.0\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.0\build\UmbracoCms.props'))" />
-    <Error Condition="!Exists('..\packages\UmbracoCms.7.15.0\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.0\build\UmbracoCms.targets'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props'))" />
+    <Error Condition="!Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets'))" />
   </Target>
   <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
-  <Import Project="..\packages\UmbracoCms.7.15.0\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.15.0\build\UmbracoCms.targets')" />
+  <Import Project="..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="AfterBuild">

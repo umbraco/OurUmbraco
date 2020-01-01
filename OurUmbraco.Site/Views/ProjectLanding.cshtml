@@ -1,0 +1,81 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Layout = "~/Views/Master.cshtml";
+}
+
+<div class="page-content">
+    <div class="sidebar-area">
+        <div class="sidebar-content">
+            <div class="content-wrapper">
+                <nav>
+                    <ul class="level-1">
+                        <li class="filter-orderBy">
+                            <h3><a href="/packages"><i class="icon-Box"></i> Browse Packages</a></h3>
+                        </li>
+                    </ul>
+                </nav>
+
+            </div><!-- .content-wrapper -->
+        </div><!-- .sidebar-content -->
+    </div><!-- .sidebar-area -->
+
+    <div class="main-area">
+        <div class="main-content">
+            <div class="content-wrapper">
+                <div>
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
+                </div>
+                <div class="rte">
+                    @(Model.Content.GetPropertyValue<IHtmlString>("bodyText"))
+                </div>
+                <!-- This JS is for the newsletter form. The actual form is placed in the RTE by including <div class="_form_6"></div>-->
+                <script src="https://umbraco.activehosted.com/f/embed.php?id=6" type="text/javascript" charset="utf-8"></script>
+            </div><!-- .content-wrapper -->
+        </div><!-- .main-content -->
+    </div><!-- .main-area -->
+
+</div><!-- .page-content -->
+
+@section EndScripts
+{
+    <script type="text/javascript">
+        function getUrlVars() {
+            var vars = [], hash;
+            var location = window.location;
+            var queryIndex = location.href.indexOf('?');
+            if (queryIndex >= 0) {
+                var hashes = location.href.slice(queryIndex + 1).split('&');
+                for (var i = 0; i < hashes.length; i++) {
+                    hash = hashes[i].split('=');
+                    vars.push(hash[0]);
+                    vars[hash[0]] = hash[1];
+                }
+            }
+            return vars;
+        }
+
+        var query = getUrlVars();
+
+        // test if any parameters are available
+        if (query.length && query[0]) {
+            var filter = '.filter-' + query[0];
+            var filterElem = $(filter);
+
+            // test if element exists
+            if (filterElem.length) {
+                filterElem.addClass('active open');
+
+                var selectedMenuItem = filterElem.find('.param-' + decodeURIComponent(query[query[0]]).replace(' ', ''));
+
+                if (selectedMenuItem.length) {
+                    selectedMenuItem.addClass('active');
+                }
+            }
+        }
+
+        $('.level-1>li').on('click', function () {
+            $('.level-1>li').removeClass('active open');
+            $(this).addClass('active open');
+        });
+    </script>
+}

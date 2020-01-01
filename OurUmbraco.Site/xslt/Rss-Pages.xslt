@@ -17,7 +17,7 @@
   <!-- Update these variables to modify the feed -->
   <xsl:variable name="RSSNoItems" select="string('10')"/>
   <xsl:variable name="RSSTitle" select="/macro/title"/>
-  <xsl:variable name="SiteURL" select="string('http://our.umbraco.org')"/>
+  <xsl:variable name="SiteURL" select="string('https://our.umbraco.com')"/>
   <xsl:variable name="RSSDescription" select="/macro/description"/>
   <xsl:variable name="source" select="umbraco.library:GetXmlNodeById(/macro/source)"/>
   <xsl:variable name="content" select="/macro/content"/>
