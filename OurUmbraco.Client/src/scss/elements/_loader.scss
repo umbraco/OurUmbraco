@@ -11,9 +11,9 @@
     position: absolute;
     top: 0;
     width: 140px;
-    background-color: $color-blue;
+    background-color: rgba($color-blue, 1);
     height: 40px;
-    border-radius: 36px;
+    border-radius: 15px;
     display: none;
 }
 
