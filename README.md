@@ -18,7 +18,7 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: http://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.
 
 Restore the database to SQL Server 2017 (won't work on earlier versions) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
