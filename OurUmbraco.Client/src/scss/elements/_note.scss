@@ -7,4 +7,17 @@
     bottom: auto;
     margin-bottom: 30px;
     border-radius: 4px;
+
+    div {
+        text-align: center;
+    }
+
+    a {
+        padding: 10px;
+        border: 1px solid #fff;
+        text-decoration: none;
+        display: inline-block;
+        margin: 20px 10px 10px 10px;
+        border-radius: 4px;
+    }
 }

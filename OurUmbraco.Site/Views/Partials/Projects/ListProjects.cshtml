@@ -102,6 +102,13 @@
         <strong>Pages:</strong> @pages
     </p>
 }
+<div class="note">
+    <div>
+        <p>Want to learn more about the package initiative or sign up for the newsletter?</p>
+        
+        <a href="/about-packages">About packages</a><a href="/about-packages#package-newsletter">Newsletter</a><a href="/documentation/Extending/Packages/">Documentation</a>
+    </div>
+</div>
 <div class="search-big">
     <input type="search" class="project-search-input" required placeholder="Search for packages">
     <label for="search">Search packages</label>
@@ -138,7 +145,7 @@
         if (orderedVersions.Length == 1)
             return orderedVersions.First().ToString();
 
-        if(orderedVersions.Min() == orderedVersions.Max())
+        if (orderedVersions.Min() == orderedVersions.Max())
             return orderedVersions.Min().ToString();
 
         return orderedVersions.Min() + " - " + orderedVersions.Max();
@@ -228,8 +235,8 @@
                     </div>
                 </div>
             </div>
-                                }
-                            }
+        }
+    }
     <nav class="pagination" role="navigation">
         @if (page > 1)
         {
