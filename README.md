@@ -18,7 +18,7 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.  If you don't have the 7zip utility installed you can download it from [7-zip.org](https://www.7-zip.org/) 
 
 Restore the database to SQL Server 2017 (won't work on earlier versions) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
@@ -29,8 +29,9 @@ If your SQL Server instance has the 'containment' feature enabled you can use th
 
 All users and members use the same password: Not_A_Real_Password
 
-* Backoffice login to use: `root` / `Not_A_Real_Password`
-* Frontend login to use: `member_login@umbraco.org` / `Not_A_Real_Password`
+* To log into the backoffice use  `root` / `Not_A_Real_Password`.
+
+* To log into the frontend use `member_login@umbraco.org` / `Not_A_Real_Password`. You will be logging as Sebastiaan from Umbraco HQ.  All other profile information is anonymous.
 
 You will need to set requireSSL in the `Web.Config` to **false** to login to the frontend.
 
