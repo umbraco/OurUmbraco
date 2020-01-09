@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
+      "checkTitles": false,
+      "title": "Jacker.io Umbraco Articles",
+      "url": "https://jacker.io/tutorials-articles/",
+      "rss": "https://jacker.io/rss",
+      "logo": "https://jacker.io/jacker-io-umbraco-logo.png",
+      "memberId": 23434
+    },
+    {
       "id": "ad10ed4d-d22e-405f-8588-ba8a3d1592cf",
       "checkTitles": false,
       "title": "Rasolo's blog",
