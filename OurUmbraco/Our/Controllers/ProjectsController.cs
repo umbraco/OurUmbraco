@@ -14,7 +14,7 @@ namespace OurUmbraco.Our.Controllers
             var nodeListingProvider = new NodeListingProvider();
             var memberId = Members.GetCurrentMemberId();
 
-            var myProjects = nodeListingProvider.GetListingsByVendor(memberId).OrderBy(x => x.Name);
+            var myProjects = nodeListingProvider.GetListingsByVendor(memberId, false, true).OrderBy(x => x.Name);
             var contribProjects = nodeListingProvider.GetListingsForContributor(memberId).OrderBy(x => x.Name);
             var model = new MyProjectsModel
             {
