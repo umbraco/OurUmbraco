@@ -12,16 +12,18 @@
     var currentDateTime = DateTime.Now;
     var downloadsThisMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime, 30);
     var downloadsLastMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime.AddMonths(-1), 30);
+    var downloadsPastYear = packagesService.GetTopXYearlyPackageDownloads(30);
 }
 
-<div id="body" class="page markdown-syntax">
-    <div>
-        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
-    </div>
+    <div id="body" class="page markdown-syntax">
+        <div>
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
+        </div>
 
-    @RenderTable(0, downloadsThisMonth)
-    @RenderTable(-1, downloadsLastMonth)
-</div>
+        @RenderTable(@DateTime.Now.AddMonths(0).ToString("Y"), downloadsThisMonth)
+        @RenderTable(@DateTime.Now.AddMonths(-1).ToString("Y"), downloadsLastMonth)
+        @RenderTable($"{@DateTime.Now.AddMonths(-12):Y} - {@DateTime.Now.AddMonths(0):Y}", downloadsPastYear)
+    </div>
 
 <style type="text/css">
     .page, .container {
@@ -69,9 +71,9 @@
     }
 </style>
 
-@helper RenderTable(int amountOfMonthsAgo, IEnumerable<PackagesService.PackageDownloads> data)
+@helper RenderTable(string headlineTime, IEnumerable<PackagesService.PackageDownloads> data)
 {
-    <h1>Top 30 packages by downloads - @DateTime.Now.AddMonths(amountOfMonthsAgo).ToString("Y")</h1>
+    <h1>Top 30 packages by downloads - @headlineTime</h1>
     <section>
         <div class="container">
             <div class="row">

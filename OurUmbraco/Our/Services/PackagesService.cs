@@ -38,6 +38,19 @@ namespace OurUmbraco.Our.Services
             return packages;
         }
 
+        public IEnumerable<PackageDownloads> GetTopXYearlyPackageDownloads(int amountOfRecords)
+        {
+            var formattedDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
+
+            var packages = ApplicationContext.Current.DatabaseContext.Database.Fetch<PackageDownloads>($"SELECT TOP {amountOfRecords} projectId, COUNT(projectId) as downloadCount" +
+                                                                                                       $" FROM projectDownload" +
+                                                                                                       $" WHERE [timestamp] > DATEADD(year, -1, '{formattedDateTime}')" +
+                                                                                                       $" GROUP BY projectId" +
+                                                                                                       $" ORDER BY downloadCount DESC");
+
+            return packages;
+        }
+
         public class PackageDownloads
         {
             public int ProjectId { get; set; }
