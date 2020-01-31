@@ -28,7 +28,7 @@ namespace OurUmbraco.Our.Services
         {
             var formattedDateTime = dateTime.ToString("yyyy-MM-ddTHH:mm:ss");
 
-            var packages = ApplicationContext.Current.DatabaseContext.Database.Fetch<PackageDownloads>($"SELECT TOP {amountOfRecords} projectId, COUNT(projectId) as downloadCount" +
+            var packages = _database.Fetch<PackageDownloads>($"SELECT TOP {amountOfRecords} projectId, COUNT(projectId) as downloadCount" +
                                                                                   $" FROM projectDownload" +
                                                                                   $" WHERE DATEPART(m, [timestamp]) = DATEPART(m, '{formattedDateTime}')" +
                                                                                   $" AND DATEPART(yyyy, [timestamp]) = DATEPART(yyyy, '{formattedDateTime}')" +
@@ -42,7 +42,7 @@ namespace OurUmbraco.Our.Services
         {
             var formattedDateTime = DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
 
-            var packages = ApplicationContext.Current.DatabaseContext.Database.Fetch<PackageDownloads>($"SELECT TOP {amountOfRecords} projectId, COUNT(projectId) as downloadCount" +
+            var packages = _database.Fetch<PackageDownloads>($"SELECT TOP {amountOfRecords} projectId, COUNT(projectId) as downloadCount" +
                                                                                                        $" FROM projectDownload" +
                                                                                                        $" WHERE [timestamp] > DATEADD(year, -1, '{formattedDateTime}')" +
                                                                                                        $" GROUP BY projectId" +
