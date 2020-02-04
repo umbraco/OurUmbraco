@@ -1,4 +1,4 @@
-﻿@using OurUmbraco.Forum.Extensions
+﻿@using OurUmbraco.Forum.Extensions;
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <div class="markdown-spacer"></div>
@@ -28,19 +28,24 @@
                         <option class="@firstCategory.Name.ToLower().Replace(" ", "")" value="@firstCategory.Id">@firstCategory.Name</option>
                         @foreach (var cat in categories.Where(x => x.Id != firstCategory.Id))
                         {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id">@cat.Name</option>
+                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">@cat.Name</option>
                         }
                     </select>
                 </div>
             }
 
             <div class="col-sm-3 col-xs-6">
-                <select name="topic-version" id="topic-version" class="markdown-control">
+                <select name="topic-version" id="topic-version" class="markdown-control" style="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "display: none;": null)">
                     <option value="Choose a version" selected="" disabled="">Choose Umbraco version</option>
-                    <option value="8">Umbraco v8</option>
-                    <option value="7">Umbraco v7</option>
-                    <option value="6">Umbraco v6</option>
-                    <option value="4">Umbraco v4</option>
+                    <optgroup label="">
+                        <option value="8">Umbraco v8</option>
+                        <option value="@(OurUmbraco.Constants.Forum.HeartcoreVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">Umbraco @OurUmbraco.Constants.Forum.UmbracoHeadlessName</option>
+                    </optgroup>
+                    <optgroup label="">
+                        <option value="7">Umbraco v7</option>
+                        <option value="6">Umbraco v6</option>
+                        <option value="4">Umbraco v4</option>
+                    </optgroup>
                 </select>
             </div>
 

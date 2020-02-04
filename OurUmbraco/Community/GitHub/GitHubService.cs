@@ -67,6 +67,49 @@ namespace OurUmbraco.Community.GitHub
 
         private static int _gitHubUserIdPropertyTypeId;
 
+        /// <summary>
+        /// Gets the numeric IDs of all members with the specified <paramref name="githubId"/>.
+        ///
+        /// Ideally there should only ever be zero or one matches members.
+        ///
+        /// No matches indicate that the GitHub user is not linked to any Our members. More than one match indicates an
+        /// error, as there should not be more than one Our member linked to the same GitHub user.
+        /// </summary>
+        /// <param name="githubId">The ID of a GitHub user.</param>
+        /// <returns>Array if member IDs.</returns>
+        public int[] GetMemberIdsFromGitHubUserId(int githubId)
+        {
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+
+            const string propertyTypeAlias = "githubId";
+
+            // In order to lookup the GitHub user ID in the database, we first need the ID of the
+            // property type holding the value. To minimize calls to the database, the ID is stored
+            // in a static field once we have found it, ensuring we only have to look it up once
+            // during the application lifetime
+            if (_gitHubUserIdPropertyTypeId == 0)
+            {
+
+                // Declare a nice and raw SQL query
+                Sql sql1 = new Sql("SELECT [id] FROM [dbo].[cmsPropertyType] WHERE [Alias] = @0;", propertyTypeAlias);
+
+                // Fire it up in the database
+                _gitHubUserIdPropertyTypeId = db.FirstOrDefault<int>(sql1);
+
+                // The result will be "0" if a matching row isn't found (which should then trigger an exception)
+                if (_gitHubUserIdPropertyTypeId == 0) throw new Exception("Failed retrieving ID of property type with alias " + propertyTypeAlias);
+
+            }
+
+            // Declare another nice and raw SQL query
+            Sql sql2 = new Sql("SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1", _gitHubUserIdPropertyTypeId, githubId);
+
+            // Get the IDs of matching members
+            return db.Fetch<int>(sql2).ToArray();
+
+        }
+
         public TeamUmbraco GetTeam(string repository)
         {
             var teamUmbraco = new TeamUmbraco();

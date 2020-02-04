@@ -115,6 +115,8 @@ namespace OurUmbraco.Documentation
                             return 5;
                         case "umbraco-cloud":
                             return 6;
+                        case "umbraco-heartcore":
+                            return 7;
                     }
                     break;
 
