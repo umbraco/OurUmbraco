@@ -14,8 +14,6 @@
 
     using RestSharp;
 
-    using umbraco.editorControls.tinyMCE3.webcontrol.plugin;
-
     using Umbraco.Core;
     using Umbraco.Core.Configuration;
     using Umbraco.Core.Models;

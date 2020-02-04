@@ -203,7 +203,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var nugetService = new NugetPackageDownloadService();
 
-            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Hourly);
+            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
         }
 
     }
