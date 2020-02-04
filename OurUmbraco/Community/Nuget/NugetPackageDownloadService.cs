@@ -9,7 +9,7 @@
     using System.Web;
     using System.Web.Caching;
     using System.Web.Hosting;
-
+    using Examine;
     using Newtonsoft.Json;
 
     using RestSharp;
@@ -155,6 +155,8 @@
 
                             var rawJson = JsonConvert.SerializeObject(nugetPackageDownloads, Formatting.Indented);
                             File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson, Encoding.UTF8);
+
+                            ExamineManager.Instance.IndexProviderCollection["projectIndexer"].RebuildIndex();
                         }
                     }
                 }
