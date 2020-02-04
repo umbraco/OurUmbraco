@@ -37,7 +37,7 @@ namespace OurUmbraco.Our.Examine
             IDictionary<int, MonthlyProjectDownloads> projectDownloadStats,
             DateTime mostRecentUpdateDate,
             IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
-            int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
+            int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions, int? dailyNugetDownLoads = null)
         {
             var isLive = project.GetPropertyValue<bool>("projectLive");
             var isApproved = project.GetPropertyValue<bool>("approved");
@@ -97,7 +97,8 @@ namespace OurUmbraco.Our.Examine
                 project.GetPropertyValue<string>("sourceUrl").IsNullOrWhiteSpace() == false,
                 project.GetPropertyValue<bool>("openForCollab"),
                 downloads, 
-                projectVotes);
+                projectVotes,
+                dailyNugetDownLoads);
             var pop = points.Calculate();
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
@@ -153,6 +154,8 @@ namespace OurUmbraco.Our.Examine
 
                 var nugetPackageId = nugetService.GetNuGetPackageId(project);
 
+                int? dailyNugetDownLoads = null;
+
                 if (!string.IsNullOrWhiteSpace(nugetPackageId))
                 {
                     var packageInfo = nugetDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
@@ -160,13 +163,14 @@ namespace OurUmbraco.Our.Examine
                     if (packageInfo != null)
                     {
                         projectDownloads +=  packageInfo.TotalDownLoads;
+                        dailyNugetDownLoads = packageInfo.AverageDownloadPerDay;
                     }
                 }
 
                 yield return MapProjectToSimpleDataIndexItem(
                     downloadStats,
                     mostRecentDownloadDate,                    
-                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
+                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions, dailyNugetDownLoads);
             }
         }
 
