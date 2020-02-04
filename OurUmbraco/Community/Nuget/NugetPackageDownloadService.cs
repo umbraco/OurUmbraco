@@ -202,6 +202,18 @@
         {
             var nuGetPackageUrl = project.GetPropertyValue<string>("nuGetPackageUrl");
 
+            return GetNugetPackageIdFromUrl(nuGetPackageUrl);
+        }
+
+        public string GetNuGetPackageId(IContent project)
+        {
+            var nuGetPackageUrl = project.GetValue<string>("nuGetPackageUrl");
+
+            return GetNugetPackageIdFromUrl(nuGetPackageUrl);
+        }
+
+        private string GetNugetPackageIdFromUrl(string nuGetPackageUrl)
+        {
             string nuGetPackageCmd = string.Empty;
             if (!string.IsNullOrEmpty(nuGetPackageUrl))
             {
