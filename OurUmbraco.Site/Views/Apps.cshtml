@@ -8,53 +8,22 @@
         Response.Redirect("/");
     }
     var packagesService = new PackagesService();
-    var data = packagesService.GetPackageStatisticsData();
+
+    var currentDateTime = DateTime.Now;
+    var downloadsThisMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime, 30);
+    var downloadsLastMonth = packagesService.GetTopXMonthlyPackageDownloads(currentDateTime.AddMonths(-1), 30);
+    var downloadsPastYear = packagesService.GetTopXYearlyPackageDownloads(30);
 }
 
-<div id="body" class="page markdown-syntax">
-    <div>
-        @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
-    </div>
-
-    <h1>Packages data</h1>
-    <section>
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-                    <table class="overview">
-                        <tr>
-                            <td nowrap><strong>Name</strong></td>
-                            <td nowrap><strong>Owner</strong></td>
-                            <td nowrap><strong>Created</strong></td>
-                            <td nowrap><strong>Updated</strong></td>
-                            <td nowrap><strong>Version</strong></td>
-                            <td nowrap><strong>Compatibility</strong></td>
-                            <td nowrap><strong>License</strong></td>
-                            <td nowrap><strong>Documentation</strong></td>
-                            <td nowrap><strong>Votes</strong></td>
-                            <td nowrap><strong>Downloads</strong></td>
-                        </tr>
-                        @foreach (var package in data)
-                        {
-                            <tr>
-                                <td>@package.Name</td>
-                                <td nowrap>@package.Owner</td>
-                                <td nowrap>@package.Created</td>
-                                <td nowrap>@package.Updated</td>
-                                <td nowrap>@package.Version</td>
-                                <td nowrap>@package.Compatibility</td>
-                                <td nowrap>@package.License</td>
-                                <td nowrap>@package.HasDocumentation</td>
-                                <td nowrap>@package.Votes</td>
-                                <td nowrap>@package.Downloads</td>
-                            </tr>                            
-                        }
-                    </table>
-                </div>
-            </div>
+    <div id="body" class="page markdown-syntax">
+        <div>
+            @Html.Action("Render", "Breadcrumb", new { linkToCurrent = false })
         </div>
-    </section>
-</div>
+
+        @RenderTable(@DateTime.Now.AddMonths(0).ToString("Y"), downloadsThisMonth)
+        @RenderTable(@DateTime.Now.AddMonths(-1).ToString("Y"), downloadsLastMonth)
+        @RenderTable($"{@DateTime.Now.AddMonths(-12):Y} - {@DateTime.Now.AddMonths(0):Y}", downloadsPastYear)
+    </div>
 
 <style type="text/css">
     .page, .container {
@@ -64,6 +33,7 @@
     .overview {
         width: 1800px;
     }
+
     .overview td {
         font-size: 14px;
         vertical-align: top;
@@ -100,3 +70,37 @@
         font-size: 12px;
     }
 </style>
+
+@helper RenderTable(string headlineTime, IEnumerable<PackagesService.PackageDownloads> data)
+{
+    <h1>Top 30 packages by downloads - @headlineTime</h1>
+    <section>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="overview">
+                        <tr>
+                            <td nowrap><strong>Package ID</strong></td>
+                            <td nowrap><strong>Create Date</strong></td>
+                            <td nowrap><strong>Author</strong></td>
+                            <td nowrap><strong>Downloads</strong></td>
+                        </tr>
+                        @foreach (var package in data)
+                        {
+                            var node = Umbraco.TypedContent(package.ProjectId);
+                            var owner = "";
+                            owner = node.GetPropertyValue("owner") != null ? Members.GetById(node.GetPropertyValue<int>("owner")).Name : "Owner is not set";
+
+                            <tr>
+                                <td><a href="@node.Url" target="_blank">@node.Name</a></td>
+                                <td nowrap>@node.CreateDate</td>
+                                <td nowrap>@owner</td>
+                                <td nowrap>@package.DownloadCount</td>
+                            </tr>
+                        }
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+}
