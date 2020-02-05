@@ -157,7 +157,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             foreach (var repository in repositories)
             {
-                RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
+                //RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
             }
         }
 
