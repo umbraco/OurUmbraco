@@ -1,7 +1,7 @@
 [{
 	"TeamName": "Umbraco-CMS",
 	"Members": [
-		"abjerner", "dawoe", "emmaburstow", "poornimanayar"
+		"abjerner", "kjac", "emmaburstow", "poornimanayar", 
 	]
 }, {
 	"TeamName": "UmbracoDocs",
@@ -11,6 +11,6 @@
 }, {
 	"TeamName": "OurUmbraco",
 	"Members": [
-		"abjerner", "dawoe", "emmaburstow", "poornimanayar"
+		"abjerner", "kjac", "emmaburstow", "poornimanayar"
 	]
 }]
