@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Skybrud.Essentials.Http;
 using Skybrud.Social.Http;
 
 namespace OurUmbraco.Community.GitHub.Models.Comments
@@ -18,9 +19,9 @@ namespace OurUmbraco.Community.GitHub.Models.Comments
         /// <summary>
         /// Gets a reference to the response from the GitHub API.
         /// </summary>
-        public SocialHttpResponse Response { get; }
+        public IHttpResponse Response { get; }
 
-        public AddCommentResult(SocialHttpResponse response)
+        public AddCommentResult(IHttpResponse response)
         {
             Response = response;
             Success = response.StatusCode == HttpStatusCode.Created;
