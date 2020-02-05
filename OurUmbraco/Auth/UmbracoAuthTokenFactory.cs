@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using JWT;
 using JWT.Algorithms;
-using JWT.Builder;
+using JWT.Serializers;
 
 namespace OurUmbraco.Auth
 {
@@ -24,14 +26,20 @@ namespace OurUmbraco.Auth
             var dateCreated = DateTime.UtcNow;
             var dateCreatedToString = dateCreated.ToString("u");
 
-            //Encode the JWT token with JSON payload, algorithm & our secret in constant
-            var encodedToken = new JwtBuilder()
-                .WithAlgorithm(new HMACSHA256Algorithm())
-                .WithSecret(_secretKey)
-                .AddClaim("date_created", dateCreatedToString)
-                .AddClaim("member_id", authToken.MemberId)
-                .AddClaim("project_id", authToken.ProjectId)
-                .Build();
+            var payload = new Dictionary<string, object>
+            {
+                { "date_created", dateCreatedToString },
+                { "member_id", authToken.MemberId },
+                { "project_id", authToken.ProjectId }
+            };
+            var secret = _secretKey;
+
+            IJwtAlgorithm algorithm = new HMACSHA256Algorithm();
+            IJsonSerializer serializer = new JsonNetSerializer();
+            IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+            IJwtEncoder encoder = new JwtEncoder(algorithm, serializer, urlEncoder);
+
+            var encodedToken = encoder.Encode(payload, secret);
 
             //Return same object we passed in (Now with Date Created & Token properties updated)
             authToken.DateCreated = dateCreated;
@@ -48,11 +56,13 @@ namespace OurUmbraco.Auth
         /// <returns>A decoded authToken object from the JWT</returns>
         public UmbracoAuthToken DecodeUserAuthToken(string jwtToken)
         {
-            //Decode & verify token was signed with our secret
-            var userAuth = new JwtBuilder()
-                .WithSecret(_secretKey)
-                .MustVerifySignature() //Throws ex if not signed correctly or expired token
-                .Decode<UmbracoAuthToken>(jwtToken);
+            IJsonSerializer serializer = new JsonNetSerializer();
+            IDateTimeProvider provider = new UtcDateTimeProvider();
+            IJwtValidator validator = new JwtValidator(serializer, provider);
+            IBase64UrlEncoder urlEncoder = new JwtBase64UrlEncoder();
+            IJwtDecoder decoder = new JwtDecoder(serializer, validator, urlEncoder);
+
+            var userAuth = decoder.DecodeToObject<UmbracoAuthToken>(jwtToken, _secretKey, verify: true);
 
             // If we have not thrown - assign it back to object
             userAuth.AuthToken = jwtToken;
@@ -60,6 +70,5 @@ namespace OurUmbraco.Auth
             //Return the object
             return userAuth;
         }
-
     }
 }
