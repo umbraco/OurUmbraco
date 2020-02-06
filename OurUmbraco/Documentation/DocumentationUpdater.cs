@@ -198,6 +198,8 @@ namespace OurUmbraco.Documentation
                             return 3;
                         case "starter-kit":
                             return 4;
+                        case "editors-manual":
+                            return 5;
 
                         //Add ons
                         case "umbracoforms":
@@ -364,6 +366,20 @@ namespace OurUmbraco.Documentation
                             return 8;
                         case "conclusions-where-next":
                             return 9;
+                            
+                        //Tutorials - Editor Manual
+                        case "introduction":
+                            return 0;
+                        case "getting-started-with-umbraco":
+                            return 1;
+                        case "working-with-content":
+                            return 2;
+                        case "version-management":
+                            return 3;
+                        case "media-management":
+                            return 4;
+                        case "tips-and-tricks":
+                            return 5;
 
                         //Add Ons - UmbracoForms
                         case "installation":
