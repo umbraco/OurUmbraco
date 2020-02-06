@@ -68,6 +68,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.AddCommentToStateHQDiscussionIssues(null);
 
             scheduler.CheckContributorBadge(null);
+            scheduler.GetNugetDownloads(null);
         }
     }
 }

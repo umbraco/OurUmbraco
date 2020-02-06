@@ -80,7 +80,7 @@ namespace OurUmbraco.Our
 
         public static int GetProjectTotalDownloadCount(int projectId)
         {
-            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0", projectId);
+            var result = Umbraco.Core.ApplicationContext.Current.DatabaseContext.Database.ExecuteScalar<int?>("select SUM(downloads) from [wikiFiles] where nodeId = @0 and [type]= 'package'", projectId);
             return result ?? 0;
         }
 
