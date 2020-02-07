@@ -78,7 +78,7 @@
 
                             if (!string.IsNullOrWhiteSpace(packageQuery))
                             {
-                                var searchQuery = $"{searchUrl}?q={packageQuery.TrimEnd("+")}";
+                                var searchQuery = $"{searchUrl}?q={packageQuery.TrimEnd("+")}&prerelease=true";
 
                                 restClient = new RestClient(searchQuery);
 
