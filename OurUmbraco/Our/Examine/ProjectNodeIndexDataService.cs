@@ -24,6 +24,8 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
+    using OurUmbraco.Community.Nuget;
+
     /// <summary>
     /// Data service used for projects
     /// </summary>
@@ -35,7 +37,7 @@ namespace OurUmbraco.Our.Examine
             IDictionary<int, MonthlyProjectDownloads> projectDownloadStats,
             DateTime mostRecentUpdateDate,
             IPublishedContent project, SimpleDataSet simpleDataSet, string indexType,
-            int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions)
+            int projectVotes, WikiFile[] files, int downloads, IEnumerable<string> compatVersions, int? dailyNugetDownLoads = null)
         {
             var isLive = project.GetPropertyValue<bool>("projectLive");
             var isApproved = project.GetPropertyValue<bool>("approved");
@@ -54,6 +56,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("url", project.Url);
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
             simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
+            simpleDataSet.RowData.Add("isRetired", project.GetPropertyValue<bool>("isRetired", false) ? "1" : "0");
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))
@@ -95,7 +98,8 @@ namespace OurUmbraco.Our.Examine
                 project.GetPropertyValue<string>("sourceUrl").IsNullOrWhiteSpace() == false,
                 project.GetPropertyValue<bool>("openForCollab"),
                 downloads, 
-                projectVotes);
+                projectVotes,
+                dailyNugetDownLoads);
             var pop = points.Calculate();
 
             simpleDataSet.RowData.Add("popularity", pop.ToString());
@@ -126,6 +130,10 @@ namespace OurUmbraco.Our.Examine
 
             var projects = umbContxt.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
+            var nugetService = new NugetPackageDownloadService();
+
+            var nugetDownloads = nugetService.GetNugetPackageDownloads();
+
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
@@ -145,10 +153,25 @@ namespace OurUmbraco.Our.Examine
                 var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] { };
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
+                var nugetPackageId = nugetService.GetNuGetPackageId(project);
+
+                int? dailyNugetDownLoads = null;
+
+                if (!string.IsNullOrWhiteSpace(nugetPackageId))
+                {
+                    var packageInfo = nugetDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
+
+                    if (packageInfo != null)
+                    {
+                        projectDownloads +=  packageInfo.TotalDownLoads;
+                        dailyNugetDownLoads = packageInfo.AverageDownloadPerDay;
+                    }
+                }
+
                 yield return MapProjectToSimpleDataIndexItem(
                     downloadStats,
                     mostRecentDownloadDate,                    
-                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions);
+                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions, dailyNugetDownLoads);
             }
         }
 

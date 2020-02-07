@@ -23,6 +23,8 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
+    using OurUmbraco.Community.Nuget;
+
     public class ScheduleHangfireJobs
     {
         public void ScheduleTopics()
@@ -157,7 +159,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var gitHubService = new GitHubService();
             foreach (var repository in repositories)
             {
-                RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
+                //RecurringJob.AddOrUpdate($"[IssueTracker] FullUpdate {repository.Name}", () => gitHubService.UpdateReviews(context, repository), Cron.Yearly(2, 31));
             }
         }
 
@@ -195,6 +197,13 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var contributors = new ContributorBadgeService();
             RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
+        }
+
+        public void GetNugetDownloads(PerformContext content)
+        {
+            var nugetService = new NugetPackageDownloadService();
+
+            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
         }
 
     }

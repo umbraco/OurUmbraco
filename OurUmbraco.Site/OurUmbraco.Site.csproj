@@ -251,14 +251,20 @@
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Skybrud.Essentials, Version=1.1.5.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Essentials.1.1.5\lib\net45\Skybrud.Essentials.dll</HintPath>
+    <Reference Include="Skybrud.Essentials, Version=1.1.18.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Skybrud.Essentials.1.1.18\lib\net45\Skybrud.Essentials.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Skybrud.Essentials.Http, Version=1.0.12.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Skybrud.Essentials.Http.1.0.12\lib\net45\Skybrud.Essentials.Http.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Skybrud.Social.Core, Version=1.0.10.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Core.1.0.10\lib\net45\Skybrud.Social.Core.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta003\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
+    <Reference Include="Skybrud.Social.GitHub, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+      <HintPath>..\packages\Skybrud.Social.GitHub.1.0.0-beta005\lib\net45\Skybrud.Social.GitHub.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta003\lib\net45\Skybrud.Social.Meetup.dll</HintPath>

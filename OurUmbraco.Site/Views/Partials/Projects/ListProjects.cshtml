@@ -35,6 +35,12 @@
     var searchFilters = new SearchFilters(BooleanOperation.And);
     //MUST be live
     searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+
+    if(orderMode == "popularity")
+    {
+        searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
+    }
+
     var filters = new List<SearchFilters> { searchFilters };
 
     if (!string.IsNullOrEmpty(category))

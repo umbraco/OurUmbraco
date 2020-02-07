@@ -15,7 +15,7 @@ namespace OurUmbraco.Our.Examine
         public ProjectPopularityPoints(
             DateTime now,
             MonthlyProjectDownloads projectDownloads, 
-            DateTime createDate, DateTime updateDate, bool worksOnCloud, bool hasForum, bool hasSourceCodeLink, bool openForCollab, int downloads, int votes)
+            DateTime createDate, DateTime updateDate, bool worksOnCloud, bool hasForum, bool hasSourceCodeLink, bool openForCollab, int downloads, int votes, int? dailyNugetDownLoads)
         {
             _now = now;
             _projectDownloads = projectDownloads;
@@ -27,6 +27,7 @@ namespace OurUmbraco.Our.Examine
             _openForCollab = openForCollab;
             _downloads = downloads;
             _votes = votes;
+            _dailyNugetDownLoads = dailyNugetDownLoads;
         }
 
         private readonly DateTime _now;
@@ -39,6 +40,7 @@ namespace OurUmbraco.Our.Examine
         private readonly bool _openForCollab;
         private readonly int _downloads;
         private readonly int _votes;
+        private readonly int? _dailyNugetDownLoads;
 
         public DateTime CreateDate
         {
@@ -80,18 +82,33 @@ namespace OurUmbraco.Our.Examine
             get { return _votes; }
         }
 
+        public int? DailyNugetDownloads
+        {
+            get { return _dailyNugetDownLoads; }
+        }
+
         private int GetDownloadScore()
         {
             if (_projectDownloads == null) return 0;
 
             var score = 0;
 
-            var downloadsLast6Months = _projectDownloads.GetLatestDownloads(_now, 6);
+            var downloadsLast6Months = _projectDownloads.GetLatestDownloads(_now, 6);                   
             score += downloadsLast6Months;
 
             //get the previous 6 month downloads
             var downloadsLast12Months = _projectDownloads.GetLatestDownloads(_now, 12) - downloadsLast6Months;
             score += downloadsLast12Months;
+
+            // add the nuget downloads for the last 6 months
+            var nugetDownloads = 0;
+
+            if (_dailyNugetDownLoads.HasValue)
+            {
+                nugetDownloads = (_dailyNugetDownLoads.Value * (int)((_now - _now.AddDays(-6)).TotalDays));               
+            }
+
+            score += nugetDownloads;
 
             return score;
         }

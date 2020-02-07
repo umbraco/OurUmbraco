@@ -1008,7 +1008,7 @@ namespace OurUmbraco.Community.GitHub
                     catch (GitHubHttpException ex)
                     {
                         throw new Exception(
-                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.Response.ResponseUri}", ex);
+                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.ResponseUri}", ex);
                     }
                     catch (Exception ex)
                     {
@@ -1041,7 +1041,7 @@ namespace OurUmbraco.Community.GitHub
                         JArray events;
                         JArray reviews = null;
 
-                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.ToUniversalTime())
                         {
                             comments = JsonUtils.LoadJsonArray(issuesCommentFile);
                         }
@@ -1058,7 +1058,7 @@ namespace OurUmbraco.Community.GitHub
                             updated = true;
                         }
 
-                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.ToUniversalTime())
                         {
                             events = JsonUtils.LoadJsonArray(issuesEventsFile);
                         }
@@ -1077,7 +1077,7 @@ namespace OurUmbraco.Community.GitHub
                         // Only PRs have reviews, no need to check for them on issues
                         if (responseIsIssue == false)
                         {
-                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.ToUniversalTime())
                             {
                                 reviews = JsonUtils.LoadJsonArray(issuesReviewsFile);
                             }
@@ -1191,7 +1191,7 @@ namespace OurUmbraco.Community.GitHub
                     catch (GitHubHttpException ex)
                     {
                         throw new Exception(
-                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.Response.ResponseUri}", ex);
+                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.ResponseUri}", ex);
                     }
                     catch (Exception ex)
                     {
@@ -1224,7 +1224,7 @@ namespace OurUmbraco.Community.GitHub
                         JArray events;
                         JArray reviews = null;
 
-                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.ToUniversalTime())
                         {
                             comments = JsonUtils.LoadJsonArray(issuesCommentFile);
                         }
@@ -1241,7 +1241,7 @@ namespace OurUmbraco.Community.GitHub
                             updated = true;
                         }
 
-                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.ToUniversalTime())
                         {
                             events = JsonUtils.LoadJsonArray(issuesEventsFile);
                         }
@@ -1259,7 +1259,7 @@ namespace OurUmbraco.Community.GitHub
                         // Only PRs have reviews, no need to check for them on issues
                         if (responseIsIssue == false)
                         {
-                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.DateTime.ToUniversalTime())
+                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.ToUniversalTime())
                             {
                                 reviews = JsonUtils.LoadJsonArray(issuesReviewsFile);
                             }
