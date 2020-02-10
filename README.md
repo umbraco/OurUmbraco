@@ -33,13 +33,23 @@ All users and members use the same password: Not_A_Real_Password
 
 * To log into the frontend use `member_login@umbraco.org` / `Not_A_Real_Password`. You will be logging as Sebastiaan from Umbraco HQ.  All other profile information is anonymous.
 
-You will need to set requireSSL in the `Web.Config` to **false** to login to the frontend.
+⚠⚠⚠
+
+In the web.config you get when you first build the project, you will need to change the following appSetting, from true to false:
+
+```
+<add key="umbracoUseSSL" value="false" />
+```
+
+Additionally, you will need to set requireSSL in the `Web.Config` to **false** to be able to login to the frontend.
 
 ```
 <authentication mode="Forms">
     <forms requireSSL="false" name="yourAuthCookie" loginUrl="login.aspx" protection="All" path="/" slidingExpiration="true" timeout="525600" />
 </authentication>
 ```
+
+⚠⚠⚠
 
 ## Projects Area
 
