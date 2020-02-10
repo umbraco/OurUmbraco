@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using Umbraco.Core.Models;
-using Umbraco.Core.Models.EntityBase;
 
 namespace OurUmbraco.Project.Api
 {
@@ -71,23 +70,35 @@ namespace OurUmbraco.Project.Api
                     var umbracoVersions = JsonConvert.DeserializeObject<List<UmbracoVersion>>(provider.FormData["umbracoVersions"]);
                     var isCurrent = bool.Parse(provider.FormData["isCurrent"]);
 
+                    var contentService = ApplicationContext.Services.ContentService;
+
                     // get package guid from id
-                    IContent packageEntity = ApplicationContext.Services.ContentService.GetById(ProjectNodeId);
+                    IContent packageEntity = contentService.GetById(ProjectNodeId);
                     if (packageEntity != null)
                     {
                         var packageVersion = packageEntity.Version;
 
                         // create file
                         var file = WikiFile.Create(
-                        fileName,
-                        packageFileExtension,
-                        packageVersion,
-                        AuthorisedMember.Key,
-                        System.IO.File.ReadAllBytes(packageFile.LocalFileName),
-                        fileType,
-                        umbracoVersions);
+                            fileName,
+                            packageFileExtension,
+                            packageVersion,
+                            AuthorisedMember.Key,
+                            System.IO.File.ReadAllBytes(packageFile.LocalFileName),
+                            fileType,
+                            umbracoVersions
+                        );
 
                         file.Current = isCurrent;
+                        
+                        if (isCurrent)
+                            packageEntity.SetValue("file", file.Id);
+
+                        packageEntity.SetValue("dotNetVersion", dotNetVersion);
+
+                       
+
+                        contentService.SaveAndPublishWithStatus(packageEntity);
 
                         return Request.CreateResponse(HttpStatusCode.OK, "Package file updated");
                     }
