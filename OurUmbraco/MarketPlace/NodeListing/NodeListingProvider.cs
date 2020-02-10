@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Linq;
 using Examine;
+using Examine.SearchCriteria;
 using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
+using OurUmbraco.Our.Examine;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
@@ -101,10 +103,27 @@ namespace OurUmbraco.MarketPlace.NodeListing
         {
             try
             {
-                using (var sqlHelper = Application.SqlHelper)
+                var searchFilters = new SearchFilters(BooleanOperation.And);
+
+                searchFilters.Filters.Add(new SearchFilter("__NodeId", projectId));
+
+                var filters = new List<SearchFilters> { searchFilters };
+
+                var ourSearcher = new OurSearcher(null, "project", filters: filters);
+                            
+                var results = ourSearcher.Search("projectSearcher");
+
+                if(results.SearchResults.TotalItemCount > 0)
                 {
-                    return sqlHelper.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @id;", sqlHelper.CreateParameter("@id", projectId));
+                    var packageResult = results.SearchResults.First();
+
+                    if (packageResult.Fields.ContainsKey("downloads"))
+                    {
+                        return int.Parse(packageResult.Fields["downloads"]);
+                    }
                 }
+
+                return 0;
             }
             catch
             {
