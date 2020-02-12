@@ -2876,8 +2876,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-
-        private void AddEnhancedTextPage()
+	       private void AddEnhancedTextPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
