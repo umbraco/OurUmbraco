@@ -253,6 +253,11 @@ WHERE timestamp > @from";
 
         public static WikiFile Create(string fileName, string extension, Guid node, Guid memberGuid, byte[] file, string filetype, List<UmbracoVersion> versions)
         {
+            return Create(fileName, extension, node, memberGuid, file, filetype, versions, null);
+        }
+
+        public static WikiFile Create(string fileName, string extension, Guid node, Guid memberGuid, byte[] file, string filetype, List<UmbracoVersion> versions, string dotNetVersion)
+        {
             try
             {
                 if (ExtensionNotAllowed(extension))
@@ -263,19 +268,23 @@ WHERE timestamp > @from";
 
                 if (content != null)
                 {
-                    var wikiFile = new WikiFile
+                    var wikiFile = new WikiFile();
+
+                    if (dotNetVersion != null)
                     {
-                        Name = fileName,
-                        NodeId = content.Id,
-                        NodeVersion = content.Version,
-                        FileType = filetype,
-                        CreatedBy = member.Id,
-                        Downloads = 0,
-                        Archived = false,
-                        Versions = versions,
-                        Version = versions[0],
-                        Verified = false
-                    };
+                        wikiFile.DotNetVersion = dotNetVersion;
+                    }
+                    
+                    wikiFile.Name = fileName;
+                    wikiFile.NodeId = content.Id;
+                    wikiFile.NodeVersion = content.Version;
+                    wikiFile.FileType = filetype;
+                    wikiFile.CreatedBy = member.Id;
+                    wikiFile.Downloads = 0;
+                    wikiFile.Archived = false;
+                    wikiFile.Versions = versions;
+                    wikiFile.Version = versions[0];
+                    wikiFile.Verified = false;
 
                     var path = string.Format("/media/wiki/{0}", content.Id);
 

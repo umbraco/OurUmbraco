@@ -86,7 +86,8 @@ namespace OurUmbraco.Project.Api
                             AuthorisedMember.Key,
                             System.IO.File.ReadAllBytes(packageFile.LocalFileName),
                             fileType,
-                            umbracoVersions
+                            umbracoVersions,
+                            dotNetVersion
                         );
 
                         file.Current = isCurrent;
