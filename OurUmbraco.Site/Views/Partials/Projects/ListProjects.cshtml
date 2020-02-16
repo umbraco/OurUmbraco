@@ -165,7 +165,7 @@
     }
 }
 <h1>Browse @headline packages</h1>
-<p><em>A total of @total packages match your current criteria</em></p>
+<p><em>@( total == 1 ? $"{total} package found" : $"{total} packages found")</em></p>
 <script type="text/template" class="search-item-project">
     <div class="box">
         <div class="row">
