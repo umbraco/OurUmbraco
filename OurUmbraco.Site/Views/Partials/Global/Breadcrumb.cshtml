@@ -1,4 +1,7 @@
 ﻿@model List<IPublishedContent>
+@{
+    var currentUrl = Request.Url?.AbsolutePath;
+}
 <ul id="breadcrumb">
     <li>
         <a href="/">Our</a>
@@ -7,8 +10,11 @@
     {
         if (page.ContentType.Alias == "ProjectGroup")
         {
-            
             <li><a href="@page.Parent.Url?category=@HttpUtility.UrlPathEncode(page.Name)">@page.Name</a></li>
+        }
+        else if (!string.IsNullOrEmpty(currentUrl) && currentUrl.Equals(page.Url))
+        {
+            <li><a href="@Request.Url">@page.Name</a></li>
         }
         else
         {
