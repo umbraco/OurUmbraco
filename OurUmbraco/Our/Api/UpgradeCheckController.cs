@@ -167,7 +167,8 @@ namespace OurUmbraco.Our.Api
                     return Ok(JsonConvert.SerializeObject(new UpgradeResultModel(UpgradeType.Minor, $"{latestVersion} is released. Upgrade today - it's free!", $"http://our.umbraco.org/contribute/releases/{latestVersion.Major}{latestVersion.Minor}{latestVersion.Build}")));
             }
 
-            return ResponseMessage(new HttpResponseMessage(HttpStatusCode.NoContent));
+            // If nothing matches then it's probably a nightly or a very old version, no need to send upgrade message
+            return Ok(JsonConvert.SerializeObject(new UpgradeResultModel(UpgradeType.None, "", "")));
         }
 
         private void PersistUpdateCheck(string server, int majorVersion, int minorVersion, int patchVersion, string commentVersion)
