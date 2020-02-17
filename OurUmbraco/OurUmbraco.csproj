@@ -565,6 +565,7 @@
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Community\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Models\UpgradeModel.cs" />
+    <Compile Include="Our\Models\UpgradeResultModel.cs" />
     <Compile Include="Our\Services\ContributorBadgeService.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
