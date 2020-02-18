@@ -488,6 +488,7 @@
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\DashboardStatisticsController.cs" />
+    <Compile Include="Our\Api\InstallationController.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\IssuesStatisticsController.cs" />
@@ -542,6 +543,7 @@
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
     <Compile Include="Documentation\Controllers\DocfxController.cs" />
     <Compile Include="Our\Api\GitHubController.cs" />
+    <Compile Include="Our\Api\UpgradeCheckController.cs" />
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
     <Compile Include="Our\Extensions\HtmlHelperExtensions.cs" />
@@ -557,11 +559,14 @@
     <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyType.cs" />
     <Compile Include="Our\Models\GitHub\Review.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
+    <Compile Include="Our\Models\InstallationModel.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
     <Compile Include="Our\Models\IssuesInPeriod.cs" />
     <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Community\Models\TeamUmbraco.cs" />
+    <Compile Include="Our\Models\UpgradeModel.cs" />
+    <Compile Include="Our\Models\UpgradeResult.cs" />
     <Compile Include="Our\Services\ContributorBadgeService.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
