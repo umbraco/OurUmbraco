@@ -9,7 +9,6 @@ using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
-using OurUmbraco.Our.Controllers;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
