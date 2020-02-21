@@ -4484,6 +4484,9 @@
     <Content Include="Views\ProjectLanding.cshtml" />
     <Content Include="Views\Minimal\GitHub\Error.cshtml" />
     <Content Include="Views\Minimal\Master.cshtml" />
+    <Content Include="Views\Partials\Projects\ListProjects2.cshtml" />
+    <Content Include="Views\Partials\Projects\CategoryDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\VersionDropdown.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

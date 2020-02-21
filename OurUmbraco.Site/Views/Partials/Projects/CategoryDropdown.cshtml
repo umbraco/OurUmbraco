@@ -1,0 +1,24 @@
+﻿@using Umbraco.Web
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var category = Request["category"];
+}
+
+<label for="categories">Category</label>
+
+<select id="categories" name="categories">
+    <option value="">All categories</option>
+    @foreach (var childPage in Model.Content.Children().Where(
+    x => x.DocumentTypeAlias == "ProjectGroup"
+    && x.GetPropertyValue<bool>("umbracoNaviHide") == false))
+    {
+        var active = false;
+        if (category != null && category.InvariantEquals(childPage.Name))
+        {
+            active = true;
+        }
+        <option value="@childPage.Name" @Umbraco.If(active, "selected")>@childPage.Name</option>
+    }
+    <option value="uass">Umbraco Cloud</option>
+
+</select>
