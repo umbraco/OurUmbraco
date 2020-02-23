@@ -12,7 +12,8 @@
     if (page > 0 ||
             !string.IsNullOrWhiteSpace(category) ||
             !string.IsNullOrWhiteSpace(version) ||
-            !string.IsNullOrWhiteSpace(term))
+            !string.IsNullOrWhiteSpace(term) ||
+            orderMode != "popularity")
     {
         isHome = false;
     }
@@ -43,79 +44,96 @@
     }
 }
 
-<div class="packages-content">
-    <section class="packages">
-        <div class="container">
-            <div class="row">
-                <div class="col-xs-12 col-sm-10 col-sm-offset-1">
-                    <h2 class="text-center">Browse Packages for Umbraco</h2>
+<section class="packages">
 
-                    <div class="search-big">
-                        <input type="search" class="project-search-input" required placeholder="Search for packages">
-                        <label for="search">Search packages</label>
-                    </div>
-                    <p>&nbsp;</p>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="utilities">
+                    @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                 </div>
             </div>
+        </div>
+    </div>
 
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                <h2 class="text-center">Browse Packages for Umbraco</h2>
+
+                <div class="search-big">
+                    <input type="search" class="project-search-input" required placeholder="Search for packages">
+                    <label for="search">Search packages</label>
+                </div>
+                <p>&nbsp;</p>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="packages-filter-bar">
+                    <h3>@headline</h3>
+                    <div class="package-filters">
+                        <div>
+                            @Html.Partial("~/views/partials/projects/categorydropdown.cshtml", Model.Content)
+                        </div>
+                        <div>
+                            @Html.Partial("~/views/partials/projects/versiondropdown.cshtml", Model.Content)
+                        </div>
+                        <div>
+                            @Html.Partial("~/views/partials/projects/sortorderdropdown.cshtml", Model.Content)
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (isHome)
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "popularity" }, { "isHome", isHome } })
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="packages-filter-bar">
-                        <h3>@headline</h3>
-                        <div class="package-filters">
-                            <div>
-                                @Html.Partial("~/views/partials/projects/categorydropdown.cshtml", Model.Content)
-                            </div>
-                            <div>
-                                @Html.Partial("~/views/partials/projects/versiondropdown.cshtml", Model.Content)
-                            </div>
-                        </div>
+                    <h3 style="font-size: 1.4em; font-weight: 700;">Latest</h3>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "createDate" }, { "isHome", isHome } })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="categories">
+                        <h3>Filter by Category</h3>
+                        @Html.Partial("~/Views/Partials/Projects/ListCategories.cshtml")
                     </div>
                 </div>
             </div>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-xs-12">
+                    @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content,
+                            new ViewDataDictionary() { { "pageSize", 30 }, { "isHome", isHome } })
+                </div>
+            </div>
 
-            @if (isHome)
-            {
-                <div class="row">
-                    <div class="col-xs-12">
-                        @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "popularity" }, { "isHome", isHome } })
-                    </div>
-                </div>
+        }
 
-                <div class="row">
-                    <div class="col-xs-12">
-                        <h3 style="font-size: 1.4em; font-weight: 700;">Latest</h3>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "createDate" }, { "isHome", isHome } })
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="col-xs-12">
-                        <div class="categories">
-                            <h3>Filter by Category</h3>
-                            @Html.Partial("~/Views/Partials/Projects/ListCategories.cshtml")
-                        </div>
-                    </div>
-                </div>
-            }
-            else
-            {
-                <div class="row">
-                    <div class="col-xs-12">
-                        @Html.Partial("~/Views/Partials/Projects/ListProjects2.cshtml", Model.Content,
-                                new ViewDataDictionary() { { "pageSize", 30 }, { "isHome", isHome } })
-                    </div>
-                </div>
-
-            }
-
+        <div class="row">
+            <div class="col-xs-12">
+                @Html.Partial("~/Views/Partials/projects/projectactions.cshtml  ")
+            </div>
         </div>
-    </section>
-</div>
+    </div>
+</section>
 
 @section EndScripts
 {
@@ -189,6 +207,11 @@
         $('#version').change(function () {
             var cleanUrl = removeParams('page,orderBy', window.location.href);
             window.location.href = replaceQueryString(cleanUrl, 'version', $(this).val());
+        });
+
+        $('#orderBy').change(function () {
+            var cleanUrl = removeParams('page,orderBy', window.location.href);
+            window.location.href = replaceQueryString(cleanUrl, 'orderBy', $(this).val());
         });
     </script>
 }

@@ -4487,6 +4487,8 @@
     <Content Include="Views\Partials\Projects\ListProjects2.cshtml" />
     <Content Include="Views\Partials\Projects\CategoryDropdown.cshtml" />
     <Content Include="Views\Partials\Projects\VersionDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\SortOrderDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\projectactions.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

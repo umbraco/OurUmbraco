@@ -13,7 +13,7 @@
         isHome = (bool)ViewData["isHome"];
     }
 
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "popularity";
     var dataMode = (string)ViewData["orderBy"];
     if (dataMode != null)
     {
