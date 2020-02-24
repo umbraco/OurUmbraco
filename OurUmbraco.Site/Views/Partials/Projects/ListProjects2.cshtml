@@ -96,19 +96,6 @@
     var result = search.SearchResults.Skip((page - 1) * pageSize).Take(pageSize);
 
     var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
-
-    var packageService = new OurUmbraco.Repository.Services
-        .PackageRepositoryService(Umbraco, Members, ApplicationContext.Current.DatabaseContext);
-
-    var packages = packageService.GetPackages(page-1, pageSize, category, null,
-        version, OurUmbraco.Repository.Controllers.PackageSortOrder.Popular);
-
-    <ul>
-        @foreach (var package in packages.Packages)
-        {
-            <li>@package.Name</li>
-        }
-    </ul>
 }
 
 @functions{
