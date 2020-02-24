@@ -149,7 +149,6 @@ section.packages {
                 display: flex;
                 flex-basis: 33%;
                 align-items: center;
-                margin: 0 20px 0 0;
 
                 @media (max-width: $md) {
                     flex-basis: 100%;
@@ -169,6 +168,7 @@ section.packages {
         label {
             font-weight: 700;
             flex-basis: 25%;
+            text-align: right;
         }
 
         label, select {
