@@ -32,8 +32,6 @@ namespace OurUmbraco.Project.Api
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
         }
 
-
-        // TODO: Hartvig does his magic for upload
         [HttpPost]
         public async Task<HttpResponseMessage> UpdatePackage()
         {
@@ -111,7 +109,6 @@ namespace OurUmbraco.Project.Api
             }
 
             throw new HttpResponseException(HttpStatusCode.BadRequest);
-
         }
     }
 }
