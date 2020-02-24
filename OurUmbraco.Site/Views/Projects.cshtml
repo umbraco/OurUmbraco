@@ -22,27 +22,8 @@
     {
         page = 1;
     }
-
-    var headline = "Popular";
-    if (orderMode == "createDate")
-    {
-        headline = "latest";
-    }
-    else if (orderMode == "updateDate")
-    {
-        headline = "recently updated";
-    }
-
-    if (!string.IsNullOrWhiteSpace(category))
-    {
-        headline = category == "uaas" ? "Umbraco Cloud" : category.ToLowerInvariant();
-    }
-
-    if (!string.IsNullOrWhiteSpace(version))
-    {
-        headline += " for Umbraco " + version;
-    }
 }
+
 
 <section class="packages">
 
@@ -67,24 +48,30 @@
                 </div>
                 <p>&nbsp;</p>
             </div>
-        </div>
 
-
-        <div class="row">
             <div class="col-xs-12">
                 <div class="packages-filter-bar">
-                    <h3>@headline</h3>
-                    <div class="package-filters">
-                        <div>
-                            @Html.Partial("~/views/partials/projects/categorydropdown.cshtml", Model.Content)
+                    @if (isHome)
+                    {
+                        <h3>Popular</h3>
+                        <nav role="navigation">
+                            <a href="?page=1">See All</a>
+                        </nav>
+                    }
+                    else
+                    {
+                        <div class="package-filters">
+                            <div>
+                                @Html.Partial("~/views/partials/projects/categorydropdown.cshtml", Model.Content)
+                            </div>
+                            <div>
+                                @Html.Partial("~/views/partials/projects/versiondropdown.cshtml", Model.Content)
+                            </div>
+                            <div>
+                                @Html.Partial("~/views/partials/projects/sortorderdropdown.cshtml", Model.Content)
+                            </div>
                         </div>
-                        <div>
-                            @Html.Partial("~/views/partials/projects/versiondropdown.cshtml", Model.Content)
-                        </div>
-                        <div>
-                            @Html.Partial("~/views/partials/projects/sortorderdropdown.cshtml", Model.Content)
-                        </div>
-                    </div>
+                    }
                 </div>
             </div>
         </div>
