@@ -4,6 +4,8 @@ section.packages {
     .packages-listing {
         display: grid;
         grid-template-columns: repeat(5, 20%);
+        margin-left: -7px;
+        margin-right: -7px;
 
         @media (max-width: $md) {
             grid-template-columns: repeat(1, 100%);
@@ -127,7 +129,7 @@ section.packages {
         justify-content: space-between;
         align-items: center;
         flex-basis: 100%;
-        margin-bottom: 20px;
+        margin: 10px 0;
 
         h3 {
             font-size: 1.4em;
