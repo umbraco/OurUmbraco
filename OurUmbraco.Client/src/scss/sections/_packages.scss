@@ -1,14 +1,14 @@
-﻿section.packages {
+section.packages {
+
     padding: 0;
 
     .packages-listing {
         display: grid;
         grid-template-columns: repeat(5, 20%);
-        margin: 0 -7px;
+        @media (max-width: $md) {
+            grid-template-columns: repeat(1, 100%);
+        }
     }
-
-
-
 
     .package-box {
         display: block;
@@ -133,6 +133,10 @@
             font-size: 1.4em;
             font-weight: 700;
             text-transform: capitalize;
+
+            @media (max-width: $md) {
+                display: none;
+            }
         }
 
         .package-filters {
@@ -145,6 +149,10 @@
                 align-items: center;
                 margin: 0 20px 0 0;
             }
+        }
+
+        @media (max-width: $md) {
+            flex-direction: column;
         }
 
         & > div {
