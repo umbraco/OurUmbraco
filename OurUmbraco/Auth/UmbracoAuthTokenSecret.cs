@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System;
+using System.Configuration;
 using System.Web.Security;
 
 namespace OurUmbraco.Auth
@@ -6,17 +7,6 @@ namespace OurUmbraco.Auth
     public class UmbracoAuthTokenSecret
     {
         private const string SecretEnvVariable = "Umbraco.AuthToken";
-
-        /// <summary>
-        /// This sets the secret as an AppSetting
-        /// </summary>
-        /// <param name="secret">Secret string to set</param>
-        public void SetSecret(string secret)
-        {
-            //TODO: Don't think we can set/add
-            //For now ensure appSetting key exists with a value
-            ConfigurationManager.AppSettings.Add(SecretEnvVariable, secret);
-        }
 
         /// <summary>
         /// Goes & fetchs the secret from the Machine Environment Variables
@@ -29,11 +19,7 @@ namespace OurUmbraco.Auth
             //If it does not exist or is null/empty then we set a new one
             if (string.IsNullOrEmpty(secret))
             {
-                //Lets create a random strong password & set env variable
-                secret = Membership.GeneratePassword(50, 5);
-
-                //Set it as the Env Var
-                SetSecret(secret);
+                throw new InvalidOperationException("The app setting <add key=\"Umbraco.AuthToken\" value=\"#{PackageAuthToken}#\" /> is missing from your web.config");
             }
 
             //Return the secret
