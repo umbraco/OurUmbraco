@@ -1,4 +1,4 @@
-﻿section.packages {
+section.packages {
 
     padding: 0;
 
@@ -7,6 +7,10 @@
         grid-template-columns: repeat(5, 20%);
         margin-left: -7px;
         margin-right: 7px;
+
+        @media (max-width: $md) {
+            grid-template-columns: repeat(1, 100%);
+        }
     }
 
     label {
@@ -138,11 +142,19 @@
             font-size: 1.4em;
             font-weight: 700;
             text-transform: capitalize;
+
+            @media (max-width: $md) {
+                display: none;
+            }
         }
     }
 
     .package-filters {
         display: flex;
+
+        @media (max-width: $md) {
+            flex-direction: column;
+        }
 
         & > div {
             margin: 0 20px;
