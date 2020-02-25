@@ -12,6 +12,21 @@ section.packages {
         }
     }
 
+    .projects-search-listing {
+        display: grid;
+        grid-template-columns: repeat(1, 100%);
+        margin-left: -7px;
+        margin-right: -7px;
+
+        @media (max-width: $md) {
+            grid-template-columns: repeat(1, 100%);
+        }
+    }
+
+    .note {
+        margin-top: 30px;
+    }
+
     .package-box {
         display: block;
         flex-flow: column;
@@ -256,12 +271,12 @@ section.packages {
     }
 
 
-
-
-    .package-badge span.package-number {
-        background-color: #ddd;
-        color: #222;
-        transition: all .2s ease, border-color .2s ease;
+    .package-box {
+        .package-badge span.package-number {
+            background-color: #ddd;
+            color: #222;
+            transition: all .2s ease, border-color .2s ease;
+        }
     }
 
 

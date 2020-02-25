@@ -177,7 +177,6 @@ else
 }
 
 
-
 @helper RenderProjectBox(IPublishedContent projectContent, SearchResult projectResult)
 {
     <a class="package-box" href="@projectContent.Url">
@@ -190,14 +189,6 @@ else
             <p class="small">@Html.Raw(GetField(projectResult.Fields, "body", "No description available").StripHtml().Truncate(50))</p>
         </div>
 
-        <div class="other">
-            <div>
-
-                @{
-                    var keys = string.Join(",", projectResult.Fields.Keys);
-                }
-            </div>
-        </div>
         <div class="other">
             <div class="package-badge">
                 <span class="package-number">@ParseVersion(projectResult)</span>

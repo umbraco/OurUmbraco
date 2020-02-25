@@ -4488,6 +4488,7 @@
     <Content Include="Views\Partials\Projects\VersionDropdown.cshtml" />
     <Content Include="Views\Partials\Projects\SortOrderDropdown.cshtml" />
     <Content Include="Views\Partials\Projects\projectactions.cshtml" />
+    <Content Include="Views\Partials\Projects\searchtemplate.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
