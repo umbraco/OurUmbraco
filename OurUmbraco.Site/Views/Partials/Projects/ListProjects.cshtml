@@ -1,42 +1,41 @@
-@using Examine.SearchCriteria
+﻿@using Examine.SearchCriteria
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Examine
 @using OurUmbraco.Project
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     //This is the main Our project search
-
     const int pagesToShowLeft = 4;
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
+
+    var isHome = true;
+    if (ViewData["isHome"] != null)
+    {
+        isHome = (bool)ViewData["isHome"];
+    }
+
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "popularity";
+    var dataMode = (string)ViewData["orderBy"];
+    if (dataMode != null)
+    {
+        orderMode = dataMode;
+    }
+
+
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
     var version = Request["version"];
     var term = Request["term"];
-    var pageSize = 20;
-    var headline = "most popular";
-    if (orderMode == "createDate")
+    var pageSize = 10;
+    if (ViewData["pageSize"] != null)
     {
-        headline = "latest";
-    }
-    else if (orderMode == "updateDate")
-    {
-        headline = "recently updated";
-    }
-
-    if (version != null)
-    {
-        headline = "version " + version;
-    }
-    if (category != null)
-    {
-        headline = category == "uaas" ? "Umbraco Cloud" : category.ToLowerInvariant();
+        pageSize = (int)ViewData["pageSize"];
     }
 
     var searchFilters = new SearchFilters(BooleanOperation.And);
     //MUST be live
     searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
 
-    if(orderMode == "popularity")
+    if (orderMode == "popularity")
     {
         searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
     }
@@ -87,38 +86,18 @@
     //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
     //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);
     var searcher = new OurSearcher(term,
-        "project", null, examineOrder,
-        filters: filters, maxResults: pageSize * page);
+    "project", null, examineOrder,
+    filters: filters, maxResults: pageSize * page);
 
     var search = searcher.Search("projectSearcher");
     var total = search.SearchResults.TotalItemCount;
     var pages = (total / pageSize) + 1;
 
-    var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
     var result = search.SearchResults.Skip((page - 1) * pageSize).Take(pageSize);
+
+    var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
 }
-@if (Context.IsDebuggingEnabled)
-{
-    <p style="border: 1px solid orange;">
-        <strong>Debugging output</strong><br />
-        <strong>Query:</strong> @search.LuceneQuery<br />
-        <strong>Order by:</strong> @search.OrderBy<br />
-        <strong>Time elapsed:</strong> @search.Totalmilliseconds<br />
-        <strong>Total results:</strong> @total<br />
-        <strong>Pages:</strong> @pages
-    </p>
-}
-<div class="note">
-    <div>
-        <p>Want to learn more about the package initiative?</p>
-        
-        <a href="/about-packages">Package initiative</a><a href="/about-packages#package-newsletter">Sign up for newsletter</a><a href="/documentation/Extending/Packages/">Documentation</a>
-    </div>
-</div>
-<div class="search-big">
-    <input type="search" class="project-search-input" required placeholder="Search for packages">
-    <label for="search">Search packages</label>
-</div>
+
 @functions{
     public string GetField(IDictionary<string, string> fields, string field, string defaultVal = "")
     {
@@ -157,92 +136,19 @@
         return orderedVersions.Min() + " - " + orderedVersions.Max();
     }
 }
-<h1>Browse @headline packages</h1>
-<script type="text/template" class="search-item-project">
-    <div class="box">
-        <div class="row">
-            <div class="col-xs-2 col-md-1">
-                {[ if (image != null) { ]}
-                <img src="{{image}}?width=64&height=64&bgcolor=fff&format=png" srcset="{{image}}?width=128&height=128&bgcolor=fff&format=png 2x,{{image}}?width=192&height=192&bgcolor=fff&format=png 3x" alt="">
-                {[ } else { ]}
-                <i class='icon-Box'></i>
-                {[ } ]}
-            </div>
-            <div class="col-xs-10 col-md-6">
-                <div class="forum-thread-text">
-                    <h3><a href="{{url}}">{{nodeName}}</a></h3>
-                    <p>{{body}}</p>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-5">
-                <div class="other">
-                    <div class="package-badge">
-                        <span class="package-name">version</span>
-                        <span class="package-number">{{versions}}</span>
-                    </div>
-                    <span class="stats">
-                        <span class="downloads">
-                            {{downloads}}<span><i class="icon-Download-alt"></i></span>
-                        </span>
-                        <span class="karma">
-                            {{karma}}<span><i class="icon-Hearts"></i></span>
-                        </span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-<div class="projects-search-listing"></div>
-<div class="projects-default-listing">
+<div class="packages-listing">
     @foreach (var childPage in result)
     {
         var childContent = Umbraco.TypedContent(childPage.Id);
         if (childContent != null)
         {
-            <div class="box">
-                <div class="row">
-                    <div class="col-xs-2 col-md-1">
-                        @{
-                            var defaultScreenshot = "/css/img/package2.png";
-                            if (childContent != null)
-                            {
-                                defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
-                            }
-                        }
-                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=64&height=64&bgcolor=fff&format=png"
-                             srcset="@Utils.GetScreenshotPath(defaultScreenshot)?width=128&height=128&bgcolor=fff&format=png 2x,
-             @Utils.GetScreenshotPath(defaultScreenshot)?width=192&height=192&bgcolor=fff&format=png 3x" />
-                    </div>
-                    <div class="col-xs-10 col-md-6">
-                        <div class="forum-thread-text">
-                            <h3>
-                                <a href="@childContent.Url">@childContent.Name</a>
-                            </h3>
-                            <p>@Html.Raw(GetField(childPage.Fields, "body", "No description available").StripHtml().Truncate(150))</p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-5">
-
-                        <div class="other">
-                            <div class="package-badge">
-                                <span class="package-name">version</span>
-                                <span class="package-number">@ParseVersion(childPage)</span>
-                            </div>
-                            <span class="stats">
-                                <span class="downloads">
-                                    @GetField(childPage.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
-                                </span>
-                                <span class="karma">
-                                    @GetField(childPage.Fields, "karma", "0")<span><i class="icon-Hearts"></i></span>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @RenderProjectBox(childContent, childPage)
         }
     }
+</div>
+
+@if (!isHome)
+{
     <nav class="pagination" role="navigation">
         @if (page > 1)
         {
@@ -260,4 +166,55 @@
             <a class="next" href="?page=@(page + 1)&@url">Next</a>
         }
     </nav>
-</div>
+}
+else
+{
+    @*
+    <nav role="navigation">
+        <a href="?page=1&orderBy=@orderMode">See more &raquo;</a>
+    </nav>
+    *@
+}
+
+
+@helper RenderProjectBox(IPublishedContent projectContent, SearchResult projectResult)
+{
+    <a class="package-box" href="@projectContent.Url">
+        <div class="package-image">
+            @RenderProjectImage(projectContent)
+        </div>
+        <div class="package-info">
+            <h3>@projectContent.Name</h3>
+            <span class="text-fadeout"></span>
+            <p class="small">@Html.Raw(GetField(projectResult.Fields, "body", "No description available").StripHtml().Truncate(50))</p>
+        </div>
+
+        <div class="other">
+            <div class="package-badge">
+                <span class="package-number">@ParseVersion(projectResult)</span>
+            </div>
+            <div class="stats">
+                <span class="karma">
+                    @GetField(projectResult.Fields, "karma", "0")<span><i class="icon-Hearts color-red"></i></span>
+                </span>
+                <span class="downloads">
+                    @GetField(projectResult.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
+                </span>
+            </div>
+        </div>
+    </a>
+}
+
+@helper RenderProjectImage(IPublishedContent projectContent)
+{
+    var defaultScreenshot = "/css/img/package2.png";
+    if (projectContent != null)
+    {
+        defaultScreenshot = projectContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
+    }
+
+    <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=64&height=64&bgcolor=fff&format=png"
+         srcset="@Utils.GetScreenshotPath(defaultScreenshot)?width=128&height=128&bgcolor=fff&format=png 2x,
+             @Utils.GetScreenshotPath(defaultScreenshot)?width=192&height=192&bgcolor=fff&format=png 3x" />
+
+}

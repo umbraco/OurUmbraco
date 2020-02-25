@@ -1,97 +1,218 @@
 ﻿@inherits UmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
+
+    var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 0;
+    var category = Request["category"];
+    var version = Request["version"];
+    var term = Request["term"];
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "popularity";
+
+    var isHome = true;
+    if (page > 0 ||
+            !string.IsNullOrWhiteSpace(category) ||
+            !string.IsNullOrWhiteSpace(version) ||
+            !string.IsNullOrWhiteSpace(term) ||
+            orderMode != "popularity")
+    {
+        isHome = false;
+    }
+
+    if (page == 0)
+    {
+        page = 1;
+    }
 }
 
-<div class="page-content">
-    <div class="sidebar-area">
-        <div class="sidebar-content">
-            <div class="content-wrapper">
-                <nav>
-                    <ul class="level-1">
-                        <li class="filter-orderBy">
-                            <h3>Packages</h3>
-                            <ul class="level-2">
-                                <li class="param-updateDate"><h4><a href="?orderBy=updateDate">Updated packages</a></h4></li>
-                                <li class="param-popularity"><h4><a href="?orderBy=popularity">Popular packages</a></h4></li>
-                            </ul>
-                        </li>
-                        <li class="filter-version">
-                            <h3>By Version</h3>
-                            <ul class="level-2">
-                                <li class="param-8"><h4><a href="?version=8">Version 8</a></h4></li>
-                                <li class="param-7"><h4><a href="?version=7">Version 7</a></h4></li>
-                                <li class="param-6"><h4><a href="?version=6">Version 6</a></h4></li>
-                                <li class="param-4"><h4><a href="?version=4">Version 4</a></h4></li>
-                            </ul>
-                        </li>
-                        <li class="filter-category">
-                            <h3>By Category</h3>
-                            @Html.Partial("~/Views/Partials/Projects/ListCategories.cshtml")
-                        </li>
-                    </ul>
-                </nav>
 
-            </div><!-- .content-wrapper -->
-        </div><!-- .sidebar-content -->
-    </div><!-- .sidebar-area -->
+<section class="packages">
 
-    <div class="main-area">
-        <div class="main-content">
-            <div class="content-wrapper">
-                <div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="utilities">
                     @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
                 </div>
-                <div class="packages-content">
-                    @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml")
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                <h2 class="text-center">Browse Packages for Umbraco</h2>
+
+                <div class="search-big">
+                    <input type="search" class="project-search-input" required placeholder="Search for packages">
+                    <label for="search">Search packages</label>
                 </div>
 
-            </div><!-- .content-wrapper -->
-        </div><!-- .main-content -->
-    </div><!-- .main-area -->
+                <p>&nbsp;</p>
+                <div class="projects-search-listing packages-content"></div>
 
-</div><!-- .page-content -->
+            </div>
+
+            <div class="col-xs-12">
+                <div class="packages-filter-bar projects-default-listing">
+                    @if (isHome)
+                    {
+                        <h3>Popular</h3>
+                        <nav role="navigation">
+                            <a href="?page=1&orderBy=@orderMode">See more &raquo;</a>
+                        </nav>
+
+                    }
+                    else
+                    {
+                        <div class="package-filters">
+                            <div>
+                                @Html.Partial("~/views/partials/projects/categorydropdown.cshtml", Model.Content)
+                            </div>
+                            <div>
+                                @Html.Partial("~/views/partials/projects/versiondropdown.cshtml", Model.Content)
+                            </div>
+                            <div>
+                                @Html.Partial("~/views/partials/projects/sortorderdropdown.cshtml", Model.Content)
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <div class="projects-default-listing">
+            @if (isHome)
+            {
+                <div class="row">
+                    <div class="col-xs-12">
+                        @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "popularity" }, { "isHome", isHome } })
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="packages-filter-bar">
+                            <h3 style="font-size: 1.4em; font-weight: 700;">Latest</h3>
+                            <nav role="navigation">
+                                <a href="?page=1&orderBy=@orderMode">See more &raquo;</a>
+                            </nav>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "createDate" }, { "isHome", isHome } })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div class="categories">
+                            <h3>Filter by Category</h3>
+                            @Html.Partial("~/Views/Partials/Projects/ListCategories.cshtml")
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-xs-12">
+                        @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml", Model.Content,
+                                new ViewDataDictionary() { { "pageSize", 30 }, { "isHome", isHome } })
+                    </div>
+                </div>
+
+            }
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12">
+                @Html.Partial("~/Views/Partials/projects/projectactions.cshtml")
+            </div>
+        </div>
+    </div>
+</section>
 
 @section EndScripts
 {
+    @Html.Partial("~/Views/Partials/projects/searchtemplate.cshtml")
+
     <script type="text/javascript">
-        function getUrlVars() {
-            var vars = [], hash;
-            var location = window.location;
-            var queryIndex = location.href.indexOf('?');
-            if (queryIndex >= 0) {
-                var hashes = location.href.slice(queryIndex + 1).split('&');
-                for (var i = 0; i < hashes.length; i++) {
-                    hash = hashes[i].split('=');
-                    vars.push(hash[0]);
-                    vars[hash[0]] = hash[1];
+
+        function removeParams(values, url) {
+            var rtn = url.split("?")[0],
+                keys = values.split(","),
+                params,
+                params_arr = [],
+                queryString = (url.indexOf("?") !== -1) ? url.split("?")[1] : "";
+
+            if (queryString !== "") {
+                params_arr = queryString.split("&");
+                for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                    param = params_arr[i].split("=")[0];
+
+                    for (var k = 0; k < keys.length; k++) {
+                        if (param === keys[k]) {
+                            params_arr.splice(i, 1);
+                        }
+                    }
+                }
+
+                if (params_arr.length > 0) {
+                    rtn = rtn + "?" + params_arr.join("&");
                 }
             }
-            return vars;
+            return rtn;
         }
 
-        var query = getUrlVars();
+        function replaceQueryString(url, key, value) {
 
-        // test if any parameters are available
-        if (query.length && query[0]) { 
-            var filter = '.filter-' + query[0];
-            var filterElem = $(filter);
+            if (value !== '') {
 
-            // test if element exists
-            if (filterElem.length) {
-                filterElem.addClass('active open');
-
-                var selectedMenuItem = filterElem.find('.param-' + decodeURIComponent(query[query[0]]).replace(' ', ''));
-
-                if (selectedMenuItem.length) {
-                    selectedMenuItem.addClass('active');
+                var rtn = url.split("?")[0],
+                    found = false,
+                    param,
+                    params_arr = [],
+                    queryString = (url.indexOf("?") !== -1) ? url.split("?")[1] : "";
+                if (queryString !== "") {
+                    params_arr = queryString.split("&");
+                    for (var i = params_arr.length - 1; i >= 0; i -= 1) {
+                        param = params_arr[i].split("=")[0];
+                        if (param === key) {
+                            params_arr[i] = key + '=' + value;
+                            found = true;
+                            break;
+                        }
+                    }
                 }
+
+                if (found === false) {
+                    params_arr.push(key + '=' + value);
+                }
+
+                return rtn + "?" + params_arr.join("&");
+            }
+
+            else {
+                return removeParams(key, url);
             }
         }
 
-        $('.level-1>li').on('click', function () {
-            $('.level-1>li').removeClass('active open');
-            $(this).addClass('active open');
+
+        $('#categories').change(function () {
+            var cleanUrl = removeParams('page,orderBy', window.location.href);
+            window.location.href = replaceQueryString(cleanUrl, 'category', $(this).val());
+        });
+
+        $('#version').change(function () {
+            var cleanUrl = removeParams('page,orderBy', window.location.href);
+            window.location.href = replaceQueryString(cleanUrl, 'version', $(this).val());
+        });
+
+        $('#orderBy').change(function () {
+            var cleanUrl = removeParams('page,orderBy', window.location.href);
+            window.location.href = replaceQueryString(cleanUrl, 'orderBy', $(this).val());
         });
     </script>
 }
