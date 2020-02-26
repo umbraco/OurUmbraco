@@ -92,6 +92,7 @@ namespace OurUmbraco.Repository.Services
             {
                 //MUST be live
                 searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
+                searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
             }
 
             filters.Add(searchFilters);
@@ -123,13 +124,26 @@ namespace OurUmbraco.Repository.Services
                 case PackageSortOrder.Popular:
                     orderBy = "popularity[Type=INT]";
                     break;
+                case PackageSortOrder.Default:
+                    orderBy = "updateDate[Type=LONG]";
+                    break;
+                case PackageSortOrder.Downloads:
+                    orderBy = "downloads[Type=INT]";
+                    break;
             }
             
             //Return based on a query
             if (!string.IsNullOrWhiteSpace(category))
             {
                 var catFilters = new SearchFilters(BooleanOperation.And);
-                catFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
+                if (category.InvariantEquals("uaas"))
+                {
+                    catFilters.Filters.Add(new SearchFilter("worksOnUaaS", string.Format("\"{0}\"", "True")));
+                }
+                else
+                {
+                    catFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category)));
+                }
                 filters.Add(catFilters);
             }
 
@@ -149,10 +163,11 @@ namespace OurUmbraco.Repository.Services
             {
                 Packages = searchResult.SearchResults
                     .Skip(pageIndex * pageSize)
-                    .Select(x => UmbracoHelper.TypedContent(x.Id))
+                    .Select(MapContentToPackage)
                     //TODO: This will cause strangeness with paging if someething is actually null
-                    .WhereNotNull()
-                    .Select(MapContentToPackage).ToArray(),
+                    .WhereNotNull(),
+                
+                Pages = (searchResult.SearchResults.TotalItemCount / pageSize) + 1,
                 Total = searchResult.SearchResults.TotalItemCount
             };
         }
@@ -185,27 +200,117 @@ namespace OurUmbraco.Repository.Services
             return MapContentToPackageDetails(item, version);
         }
 
-        private Models.Package MapContentToPackage(IPublishedContent content)
+        private Models.Package MapContentToPackage(SearchResult result)
+        {
+            if (result == null) return null;
+
+            var content = UmbracoHelper.TypedContent(result.Id);
+            if (content == null) return null;
+
+            return MapContentToPackage(content, result);
+        }
+
+        private Models.Package MapContentToPackage(IPublishedContent content, SearchResult result)
         {
             if (content == null)
                 return null;
 
             var ownerId = content != null & content.HasProperty("owner") ? content.GetPropertyValue<int>("owner") : 0;
             var openForCollab = content != null && content.HasProperty("openForCollab") ? content.GetPropertyValue<bool>("openForCollab", false) : false;
+
+            var score = result != null ? GetScore(result.Fields) : 0;
+            var version = result != null ? ParseVersion(result) : "";
+            var downloads = result != null ? GetCombinedDownloads(result.Fields, Utils.GetProjectTotalDownloadCount(content.Id)) : Utils.GetProjectTotalDownloadCount(content.Id);
+
             return new Models.Package
             {
                 Category = content.Parent.Name,
                 Created = content.CreateDate,
                 Excerpt = GetPackageExcerpt(content, 12),
-                Downloads = Utils.GetProjectTotalDownloadCount(content.Id),
+                Downloads = downloads,
                 Id = content.GetPropertyValue<Guid>("packageGuid"),
                 Likes = Utils.GetProjectTotalVotes(content.Id),
                 Name = content.Name,
                 Icon = GetThumbnailUrl(BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"), 154, 281),
                 LatestVersion = content.GetPropertyValue<string>("version"),
                 OwnerInfo = ownerId != 0 ? GetPackageOwnerInfo(ownerId, openForCollab, content.Id) : new PackageOwnerInfo(),
-                Url = string.Concat(BASE_URL, content.Url)
+                Url = string.Concat(BASE_URL, content.Url),
+                // stuff added to combine the search between our.umbraco.com and the backoffice
+                Score = score,
+                VersionRange = version,
+                Image = BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"),
+                Summary = GetPackageSummary(content, 50)
             };
+        }
+
+
+        /// <summary>
+        ///  returns the popularity score for a project
+        /// </summary>
+        private long GetScore(IDictionary<string,string> fields)
+            => GetFieldValue(fields, "popularity", 0);
+
+        private int GetCombinedDownloads(IDictionary<string, string> fields, int defaultValue)
+            => GetFieldValue(fields, "downloads", defaultValue);
+
+        /// <summary>
+        ///  get a value from the search fields, and convert it to the required type
+        /// </summary>
+        /// <typeparam name="TObject">Type to convert to</typeparam>
+        /// <param name="fields">Collection of fields</param>
+        /// <param name="key">Key in collection</param>
+        /// <param name="defaultValue">Default value to return if item is missing or not a valid value</param>
+        /// <returns>the value converted to TObject or the defaultValue</returns>
+        public TObject GetFieldValue<TObject>(IDictionary<string, string> fields, string key, TObject defaultValue)
+        {
+            if (fields != null && fields.ContainsKey(key))
+            {
+                var value = fields[key];
+
+                var attempt = value.TryConvertTo<TObject>();
+                if (attempt.Success)
+                    return attempt.Result;
+            }
+
+            return defaultValue;
+        }
+
+
+        /// <summary>
+        ///  calculates the version range a package will work on
+        /// </summary>
+        /// <remarks>
+        ///  Moved from the partial view (listprojects) - so we can use one search
+        /// </remarks>
+        public string ParseVersion(SearchResult result)
+        {
+            if (result == null) return string.Empty;
+
+            var versions = result.GetValues("versions").ToList();
+            if (result.Fields.Keys.Contains("versions"))
+            {
+                versions.Add(result["versions"]);
+            }
+
+            var orderedVersions = versions
+                .Select(x =>
+                {
+                    System.Version v;
+                    return System.Version.TryParse(x, out v) ? v : null;
+                }).WhereNotNull()
+                .OrderByDescending(x => x)
+                .ToArray();
+
+            if (orderedVersions.Any() == false)
+                return "n/a";
+
+            if (orderedVersions.Length == 1)
+                return orderedVersions.First().ToString();
+
+            if (orderedVersions.Min() == orderedVersions.Max())
+                return orderedVersions.Min().ToString();
+
+            return orderedVersions.Min() + " - " + orderedVersions.Max();
         }
 
         /// <summary>
@@ -221,7 +326,7 @@ namespace OurUmbraco.Repository.Services
             if (currentUmbracoVersion == null) throw new ArgumentNullException("currentUmbracoVersion");
             if (content == null) return null;
 
-            var package = MapContentToPackage(content);
+            var package = MapContentToPackage(content, null);
             if (package == null)
                 return null;
 
@@ -540,6 +645,14 @@ namespace OurUmbraco.Repository.Services
             return string.Concat(string.Join(" ", words), "...");
         }
 
+        /// <summary>
+        ///  returns the short summary line that is shown on our.umbraco.com
+        /// </summary>
+        private string GetPackageSummary(IPublishedContent content, int count = 50)
+        {
+            var input = content.GetPropertyValue<string>("description");
+            return input.StripHtml().Truncate(count);
+        }
 
     }
 }
