@@ -206,7 +206,7 @@
         });
 
         $('#version').change(function () {
-            var cleanUrl = removeParams('page,orderBy', window.location.href);
+            var cleanUrl = removeParams('page', window.location.href);
             window.location.href = replaceQueryString(cleanUrl, 'version', $(this).val());
         });
 
