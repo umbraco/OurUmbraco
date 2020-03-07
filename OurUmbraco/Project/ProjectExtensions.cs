@@ -33,10 +33,11 @@ namespace OurUmbraco.Project
                 .Replace("v", "")
                 .Replace(".x", "")
                 .Trim(',');
+            var versions = new UVersion();
             if (!version.Contains(".") && version.Length > 0)
             {
                 //if there's no . then it stored the strange way like in uVersion.config
-                var uVersion = UVersion.GetAllVersions().FirstOrDefault(x => x.Key == $"v{version}");
+                var uVersion = versions.GetAllVersions().FirstOrDefault(x => x.Key == $"v{version}");
                 
                 if (uVersion != null)
                 {
@@ -70,7 +71,7 @@ namespace OurUmbraco.Project
             // no search results are returned because nothing would be tagged as compatible with 7.4.3, only 7.4.0
 
             // get all Version's configured order by latest
-            var allAsVersion = UVersion.GetAllAsVersions().ToArray();
+            var allAsVersion = versions.GetAllAsVersions().ToArray();
             //search for the latest compatible version to search on
             foreach (var v in allAsVersion)
                 if (result > v)

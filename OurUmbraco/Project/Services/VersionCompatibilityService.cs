@@ -34,7 +34,8 @@ namespace OurUmbraco.Project.Services
 
         public IEnumerable<VersionCompatibility> GetCompatibilityReport(int projectId)
         {
-            var uVersions = UVersion.GetAllVersions();
+            var versions = new UVersion();
+            var uVersions = versions.GetAllVersions();
             var projectProvider = new OurUmbraco.MarketPlace.NodeListing.NodeListingProvider();
             var project = projectProvider.GetListing(projectId, true);
 

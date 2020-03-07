@@ -542,10 +542,6 @@
     </Content>
     <Content Include="config\uPowers.config" />
     <Content Include="config\UrlRewriting.config" />
-    <Content Include="config\uVersion.backup.config" />
-    <Content Include="config\uVersion.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="config\TeamUmbraco.json" />
     <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
