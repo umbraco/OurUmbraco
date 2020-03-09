@@ -66,5 +66,8 @@ namespace OurUmbraco.Our.Models
         // This is the API key as a JWT to allow users to upload packages via CLI tool
         [Display(Name = "API Key")]
         public string ApiKey { get; set; }
+
+        [Display(Name = "Enable API key")]
+        public bool IsApiKeyEnabled { get; set; }
     }
 }

@@ -74,6 +74,7 @@ namespace OurUmbraco.Our.Controllers
             {
                 //Lets just return it in the request
                 model.ApiKey = hasAuthToken.AuthToken;
+                model.IsApiKeyEnabled = hasAuthToken.IsEnabled;
             }
             else
             {
@@ -82,6 +83,7 @@ namespace OurUmbraco.Our.Controllers
                 var newToken = new UmbracoAuthToken();
                 newToken.MemberId = memberId;
                 newToken.ProjectId = projectId;
+                newToken.IsEnabled = false;
 
                 //Generate a new token for the user
                 var authToken = _umbracoAuthTokenFactory.GenerateAuthToken(newToken);
@@ -95,6 +97,7 @@ namespace OurUmbraco.Our.Controllers
                 //Return the JWT token as the response
                 //This means valid login & client in our case mobile app stores token in local storage
                 model.ApiKey = authToken.AuthToken;
+                model.IsApiKeyEnabled = authToken.IsEnabled;
             }
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
@@ -157,6 +160,12 @@ namespace OurUmbraco.Our.Controllers
                 project.VendorId = Members.GetCurrentMemberId();
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
+
+            var authToken = _umbracoAuthTokenDbHelper.GetAuthToken(project.VendorId, model.Id);
+
+            authToken.IsEnabled = model.IsApiKeyEnabled;
+            
+            _umbracoAuthTokenDbHelper.InsertAuthToken(authToken);
 
             nodeListingProvider.SaveOrUpdate(project);
 

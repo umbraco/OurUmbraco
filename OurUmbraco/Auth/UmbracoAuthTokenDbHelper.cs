@@ -1,4 +1,5 @@
-﻿using Umbraco.Core;
+﻿using System.Linq;
+using Umbraco.Core;
 using Umbraco.Core.Persistence;
 
 namespace OurUmbraco.Auth
@@ -42,6 +43,7 @@ namespace OurUmbraco.Auth
                 //Update the existing record
                 existingRecord.AuthToken = authToken.AuthToken;
                 existingRecord.DateCreated = authToken.DateCreated;
+                existingRecord.IsEnabled = authToken.IsEnabled;
 
                 //Save the existing record we found
                 Database.Save(existingRecord);
@@ -65,7 +67,6 @@ namespace OurUmbraco.Auth
             }
         }
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -84,7 +85,8 @@ namespace OurUmbraco.Auth
             {
                 //Lets verify the token we have is the same on the DB record
                 //May not match as the user may have revoked the key & caused a new token to be generated
-                return authToken.AuthToken == lookupRecord.AuthToken;
+                //we will also check if he api token is enabled on Our
+                return authToken.AuthToken == lookupRecord.AuthToken && lookupRecord.IsEnabled;
             }
 
             //No record found in the DB - so return false

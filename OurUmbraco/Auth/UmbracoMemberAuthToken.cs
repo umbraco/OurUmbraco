@@ -51,7 +51,7 @@ namespace OurUmbraco.Auth
             catch (Exception ex)
             {
                 //Return a HTTP 401 Unauthorised header
-                actionContext.Response = new HttpResponseMessage(HttpStatusCode.Unauthorized);
+                actionContext.Response = actionContext.Request.CreateResponse(HttpStatusCode.Unauthorized, "Your API token is either invalid or not enabled on Our.");
             }
 
             //Continue as normal
