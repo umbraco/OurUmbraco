@@ -89,7 +89,7 @@ namespace OurUmbraco.Our
             AddEnhancedTextPageTemplate();
             AddGridDataType();
             AddGridToEnhancedTextPage();
-            AddJwtAuthTable();
+            AddIdentityAuthTokensTable();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -3030,7 +3030,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddJwtAuthTable()
+        private void AddIdentityAuthTokensTable()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
