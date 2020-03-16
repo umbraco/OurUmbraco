@@ -25,13 +25,11 @@ namespace OurUmbraco.Our.Controllers
     public class ProjectController : SurfaceController
     {
         private string _exceptionName = "uIntra";
-        private UmbracoAuthTokenFactory _umbracoAuthTokenFactory;
-        private UmbracoAuthTokenDbHelper _umbracoAuthTokenDbHelper;
+        private ProjectAuthKeyService _authKeyService;
 
         public ProjectController()
         {
-            _umbracoAuthTokenFactory = new UmbracoAuthTokenFactory();
-            _umbracoAuthTokenDbHelper = new UmbracoAuthTokenDbHelper();
+            _authKeyService = new ProjectAuthKeyService(DatabaseContext);
         }
 
         [ChildActionOnly]
@@ -67,37 +65,26 @@ namespace OurUmbraco.Our.Controllers
             var memberId = Members.GetCurrentMember().Id;
 
             //Check if we have an Auth Token for user
-            var hasAuthToken = _umbracoAuthTokenDbHelper.GetAuthToken(memberId, projectId);
+            var hasAuthToken = _authKeyService.GetAuthKey(memberId, projectId);
 
             //If the token already exists
             if (hasAuthToken != null)
             {
                 //Lets just return it in the request
-                model.ApiKey = hasAuthToken.AuthToken;
+                model.ApiKey = hasAuthToken.AuthKey;
                 model.IsApiKeyEnabled = hasAuthToken.IsEnabled;
             }
             else
             {
                 //Else user has no token yet - so let's create one
-                //Generate AuthToken DB object
-                var newToken = new UmbracoAuthToken();
-                newToken.MemberId = memberId;
-                newToken.ProjectId = projectId;
-                newToken.IsEnabled = false;
+                
+                //Generate a new token for the userand store in DB
+                var authKey = _authKeyService.CreateAuthKey(memberId, projectId);
 
-                //Generate a new token for the user
-                var authToken = _umbracoAuthTokenFactory.GenerateAuthToken(newToken);
-
-                //We insert authToken as opposed to newToken
-                //As authToken now has DateTime & JWT token string on it now
-
-                //Store in DB (inserts or updates existing)
-                _umbracoAuthTokenDbHelper.InsertAuthToken(authToken);
-
-                //Return the JWT token as the response
+                //Return the key as the response
                 //This means valid login & client in our case mobile app stores token in local storage
-                model.ApiKey = authToken.AuthToken;
-                model.IsApiKeyEnabled = authToken.IsEnabled;
+                model.ApiKey = authKey.AuthKey;
+                model.IsApiKeyEnabled = authKey.IsEnabled;
             }
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
@@ -161,11 +148,13 @@ namespace OurUmbraco.Our.Controllers
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
 
-            var authToken = _umbracoAuthTokenDbHelper.GetAuthToken(project.VendorId, model.Id);
+            var authKey = _authKeyService.GetAuthKey(project.VendorId, model.Id);
+            if (authKey == null)
+                throw new InvalidOperationException($"No auth key found for member {project.VendorId} and project {model.Id}");
 
-            authToken.IsEnabled = model.IsApiKeyEnabled;
+            authKey.IsEnabled = model.IsApiKeyEnabled;
             
-            _umbracoAuthTokenDbHelper.InsertAuthToken(authToken);
+            _authKeyService.UpdateAuthKey(authKey);
 
             nodeListingProvider.SaveOrUpdate(project);
 

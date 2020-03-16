@@ -4,6 +4,7 @@ using OurUmbraco.Our.Models;
 
 namespace OurUmbraco.Our.Extensions
 {
+
     public static class UrlExtensions
     {
         public static string GetProfileUrl(this UrlHelper helper, MemberData member)

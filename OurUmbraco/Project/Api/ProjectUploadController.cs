@@ -12,22 +12,19 @@ using System.Web.Http;
 using Umbraco.Core.Models;
 
 namespace OurUmbraco.Project.Api
-{
-    [UmbracoMemberAuthToken()]
+{    
     public class ProjectUploadController : UmbracoMemberAuthApiController
     {
         // http://localhost:24292/Umbraco/Api/ProjectUpload/GetPing
         // http://our.umbraco.local/Umbraco/Api/ProjectUpload/GetPing
         public string GetPing()
         {
-            return $"pong Member {AuthorisedMember.Id} {AuthorisedMember.Name} - ProjectNodeId: {ProjectNodeId}";
+            return $"pong Member {AuthenticatedMember.Id} {AuthenticatedMember.Name} - ProjectNodeId: {ProjectNodeId}";
         }
 
-        public List<WikiFile> GetProjectFiles()
+        public IEnumerable<WikiFile> GetProjectFiles()
         {
-            // No param of Project ID
-            // As this lives in the JWT which is decoded with the Auth Attribute
-
+            // The project/member id are exposed as base properties and are resolved from the identity created on the request
             var files = WikiFile.CurrentFiles(ProjectNodeId);
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
         }
@@ -81,7 +78,7 @@ namespace OurUmbraco.Project.Api
                             fileName,
                             packageFileExtension,
                             packageVersion,
-                            AuthorisedMember.Key,
+                            AuthenticatedMember.Key,
                             System.IO.File.ReadAllBytes(packageFile.LocalFileName),
                             fileType,
                             umbracoVersions,

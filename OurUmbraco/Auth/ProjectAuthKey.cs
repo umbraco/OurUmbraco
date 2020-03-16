@@ -5,10 +5,13 @@ using Umbraco.Core.Persistence.DatabaseAnnotations;
 
 namespace OurUmbraco.Auth
 {
-    [TableName("identityAuthTokens")]
+    /// <summary>
+    /// An authentication key used to authenticate members/projects
+    /// </summary>
+    [TableName("projectAuthKeys")]
     [PrimaryKey("pk")]
     [ExplicitColumns]
-    public class UmbracoAuthToken
+    public class ProjectAuthKey
     {
         [Column("pk")]
         [PrimaryKeyColumn]
@@ -27,9 +30,9 @@ namespace OurUmbraco.Auth
         [JsonProperty("date_created")]
         public DateTime DateCreated { get; set; }
 
-        [Column("authToken")]
+        [Column("authKey")]
         [JsonIgnore]
-        public string AuthToken { get; set; }
+        public string AuthKey { get; set; }
         
         [Column("isEnabled")]
         [JsonIgnore]
