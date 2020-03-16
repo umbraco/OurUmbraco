@@ -1,8 +1,11 @@
 ﻿using OurUmbraco.Our.Extensions;
 using System;
 using System.Globalization;
+using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
+using Umbraco.Core;
 
 namespace OurUmbraco.Auth
 {
@@ -12,6 +15,26 @@ namespace OurUmbraco.Auth
     /// </summary>
     public static class HMACAuthentication
     {
+        // EXAMPLE: How to create an authenticated request
+
+        //public static HttpRequestMessage CreateAuthRequest(HttpMethod method, string url, string apiKey, int memberId, int projectId)
+        //{
+        //    var request = new HttpRequestMessage(method, url);
+
+        //    var requestPath = request.RequestUri.CleanPathAndQuery();
+        //    var timestamp = DateTime.UtcNow;
+        //    var nonce = Guid.NewGuid();
+
+        //    var signature = HMACAuthentication.GetSignature(requestPath, timestamp, nonce, apiKey);
+        //    var headerToken = HMACAuthentication.GenerateAuthorizationHeader(signature, nonce, timestamp);
+
+        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", headerToken);
+        //    request.Headers.Add(ProjectAuthConstants.MemberIdClaim, memberId.ToInvariantString());
+        //    request.Headers.Add(ProjectAuthConstants.ProjectIdHeader, projectId.ToInvariantString());
+
+        //    return request;
+        //}
+
         /// <summary>
         /// Validates the input token
         /// </summary>
@@ -70,6 +93,11 @@ namespace OurUmbraco.Auth
             return decodedToken;
         }
 
+        public static string GetSignature(string requestUri, DateTime timestamp, Guid nonce, string secret)
+        {
+            return GetSignature(requestUri, timestamp.ToUnixTimestamp().ToString(CultureInfo.InvariantCulture), nonce.ToString(), secret);
+        }
+
         private static string GetSignature(string requestUri, string timestamp, string nonce, string secret)
         {
             var secretBytes = Encoding.UTF8.GetBytes(secret);
@@ -91,7 +119,7 @@ namespace OurUmbraco.Auth
         /// <param name="nonce"></param>
         /// <param name="timestamp"></param>
         /// <returns></returns>
-        private static string GenerateAuthorizationHeader(string signature, Guid nonce, DateTime timestamp)
+        public static string GenerateAuthorizationHeader(string signature, Guid nonce, DateTime timestamp)
         {
             return
                 Convert.ToBase64String(
