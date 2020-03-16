@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using OurUmbraco.Auth;
 using OurUmbraco.Wiki.BusinessLogic;
 using System.Collections.Generic;
 using System.IO;
@@ -12,7 +11,7 @@ using System.Web.Http;
 using Umbraco.Core.Models;
 
 namespace OurUmbraco.Project.Api
-{    
+{
     public class ProjectUploadController : UmbracoMemberAuthApiController
     {
         // http://localhost:24292/Umbraco/Api/ProjectUpload/GetPing

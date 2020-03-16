@@ -427,7 +427,7 @@
     <Compile Include="Auth\ProjectAuthKeyService.cs" />
     <Compile Include="Auth\ProjectAuthConstants.cs" />
     <Compile Include="Auth\HMACAuthentication.cs" />
-    <Compile Include="Auth\UmbracoMemberAuthApiController.cs" />
+    <Compile Include="Project\Api\UmbracoMemberAuthApiController.cs" />
     <Compile Include="Auth\UmbracoMemberAuthTokenAttribute.cs" />
     <Compile Include="CamelCaseFormatter.cs" />
     <Compile Include="Community\Banner\BannerService.cs" />

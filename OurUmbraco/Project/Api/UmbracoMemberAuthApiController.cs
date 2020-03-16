@@ -1,11 +1,12 @@
 ﻿using Microsoft.AspNet.Identity;
+using OurUmbraco.Auth;
 using System;
 using System.Security.Claims;
 using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web.WebApi;
 
-namespace OurUmbraco.Auth
+namespace OurUmbraco.Project.Api
 {
     /// <summary>
     /// Abstract controller ensuring that all endpoints are authorized with the correct Claims
@@ -60,6 +61,6 @@ namespace OurUmbraco.Auth
             }
         }
 
-        
+
     }
 }
