@@ -73,11 +73,6 @@ namespace OurUmbraco.Auth
             return decodedToken;
         }
 
-        public static string GetSignature(string requestUri, DateTime timestamp, Guid nonce, string secret)
-        {
-            return GetSignature(requestUri, timestamp.ToUnixTimestamp().ToString(CultureInfo.InvariantCulture), nonce.ToString(), secret);
-        }
-
         private static string GetSignature(string requestUri, string timestamp, string nonce, string secret)
         {
             var secretBytes = Encoding.UTF8.GetBytes(secret);
@@ -90,21 +85,6 @@ namespace OurUmbraco.Auth
                 var computedString = Convert.ToBase64String(computedHashBytes);
                 return computedString;
             }
-        }
-
-        /// <summary>
-        /// Returns the token authorization header value as a base64 encoded string
-        /// </summary>
-        /// <param name="signature"></param>
-        /// <param name="nonce"></param>
-        /// <param name="timestamp"></param>
-        /// <returns></returns>
-        public static string GenerateAuthorizationHeader(string signature, Guid nonce, DateTime timestamp)
-        {
-            return
-                Convert.ToBase64String(
-                    Encoding.UTF8.GetBytes(
-                        $"{signature}:{nonce}:{timestamp.ToUnixTimestamp().ToString(CultureInfo.InvariantCulture)}"));
         }
 
         private class DecodedToken
