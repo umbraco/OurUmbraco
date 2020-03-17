@@ -421,7 +421,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="App_Start\UmbracoStandardOwinStartup.cs" />
     <Compile Include="Auth\AppBuilderExtensions.cs" />
     <Compile Include="Auth\ProjectAuthKey.cs" />
     <Compile Include="Auth\ProjectAuthKeyService.cs" />
