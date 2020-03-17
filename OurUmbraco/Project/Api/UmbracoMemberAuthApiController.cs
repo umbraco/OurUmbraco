@@ -29,10 +29,11 @@ namespace OurUmbraco.Project.Api
                 var identity = RequestContext.Principal?.Identity as ClaimsIdentity;
                 if (identity == null) return null;
 
-                var memberId = identity.GetUserId<int>();
-                _authenticatedMember = Services.MemberService.GetById(memberId);
+                var membId = identity.FindFirstValue(ProjectAuthConstants.MemberIdClaim).TryConvertTo<int?>();
+                var memberId = membId.Success ? membId.Result : null;
+                _authenticatedMember = Services.MemberService.GetById(memberId.Value);
                 if (_authenticatedMember == null)
-                    throw new InvalidOperationException($"No member was found by id {memberId}");
+                    throw new InvalidOperationException($"No member was found by id {memberId.Value}");
 
                 return _authenticatedMember;
             }

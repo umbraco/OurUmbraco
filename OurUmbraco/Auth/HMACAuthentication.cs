@@ -15,26 +15,6 @@ namespace OurUmbraco.Auth
     /// </summary>
     public static class HMACAuthentication
     {
-        // EXAMPLE: How to create an authenticated request
-
-        //public static HttpRequestMessage CreateAuthRequest(HttpMethod method, string url, string apiKey, int memberId, int projectId)
-        //{
-        //    var request = new HttpRequestMessage(method, url);
-
-        //    var requestPath = request.RequestUri.CleanPathAndQuery();
-        //    var timestamp = DateTime.UtcNow;
-        //    var nonce = Guid.NewGuid();
-
-        //    var signature = HMACAuthentication.GetSignature(requestPath, timestamp, nonce, apiKey);
-        //    var headerToken = HMACAuthentication.GenerateAuthorizationHeader(signature, nonce, timestamp);
-
-        //    request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", headerToken);
-        //    request.Headers.Add(ProjectAuthConstants.MemberIdClaim, memberId.ToInvariantString());
-        //    request.Headers.Add(ProjectAuthConstants.ProjectIdHeader, projectId.ToInvariantString());
-
-        //    return request;
-        //}
-
         /// <summary>
         /// Validates the input token
         /// </summary>
