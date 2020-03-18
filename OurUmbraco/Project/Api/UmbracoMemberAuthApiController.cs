@@ -31,6 +31,10 @@ namespace OurUmbraco.Project.Api
 
                 var membId = identity.FindFirstValue(ProjectAuthConstants.MemberIdClaim).TryConvertTo<int?>();
                 var memberId = membId.Success ? membId.Result : null;
+                
+                if (memberId == null)
+                    throw new InvalidOperationException($"The member id: {identity.FindFirstValue(ProjectAuthConstants.MemberIdClaim)} is not a valid number");
+                
                 _authenticatedMember = Services.MemberService.GetById(memberId.Value);
                 if (_authenticatedMember == null)
                     throw new InvalidOperationException($"No member was found by id {memberId.Value}");
