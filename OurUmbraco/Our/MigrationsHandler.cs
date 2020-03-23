@@ -3094,7 +3094,9 @@ namespace OurUmbraco.Our
 
                 var contentService = ApplicationContext.Current.Services.ContentService;
                 var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
-                var packagesNode = rootNode.Children().FirstOrDefault(x => string.Equals(x.Name, "Packages", StringComparison.InvariantCultureIgnoreCase));
+                var memberNode = rootNode.Children().FirstOrDefault(x => string.Equals(x.Name, "Member", StringComparison.InvariantCultureIgnoreCase));
+                var packagesNode = memberNode.Descendants().FirstOrDefault(x => string.Equals(x.Name, "Packages", StringComparison.InvariantCultureIgnoreCase));
+                
 
                 var apiKeysPageName = "API Keys";
                 if (packagesNode != null && packagesNode.Children().Any(x => x.Name == apiKeysPageName) == false)
