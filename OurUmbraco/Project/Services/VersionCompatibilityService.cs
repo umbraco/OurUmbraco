@@ -47,7 +47,7 @@ namespace OurUmbraco.Project.Services
             foreach (var ver in uVersions)
             {
                 var ver1 = ver;
-                var reports = projectCompatibilities.Where(x => x.version == ver1.Name && x.projectId == project.Id).ToArray();
+                var reports = projectCompatibilities.Where(x => x.version == ver1.Name.Replace("Version ", string.Empty) && x.projectId == project.Id).ToArray();
 
                 if (reports.Any())
                 {
