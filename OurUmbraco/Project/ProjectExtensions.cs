@@ -41,8 +41,7 @@ namespace OurUmbraco.Project
                 
                 if (uVersion != null)
                 {
-                    version = uVersion.Name.Replace(".x", "");
-                    version = version.Replace("Version", "");
+                    version = uVersion.FullVersion.ToString();
                 }
                 else
                 {

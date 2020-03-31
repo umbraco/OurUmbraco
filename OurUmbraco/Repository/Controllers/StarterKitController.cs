@@ -136,9 +136,9 @@ namespace OurUmbraco.Repository.Controllers
 
                 if (configuredVersion.Key != "nan")
                 {
-                    var voteDescription = configuredVersion.VoteDescription;
-                    voteDescription = voteDescription.Replace("Version ", string.Empty).Replace(".x", ".0");
-                    compatibleVersionsList.Add(new System.Version(voteDescription));
+                    var versionName = configuredVersion.Name;
+                    versionName = versionName.Replace("Version ", string.Empty).Replace(".x", ".0");
+                    compatibleVersionsList.Add(new System.Version(versionName));
                 }
             }
 
