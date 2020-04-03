@@ -124,6 +124,8 @@
                 url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&contribId=" + contriId + "&description=" + description,
                 success: function(data) {
                     $("#key-description").val("");
+                    $(".manage-keys").append("<div class=\"profile-settings\" style=\"border: 1px #ccc solid; padding:20px\"> <strong>Key description: <i class=\"icon-Key\" style=\"font-size: 30px\"></i>" + description + "</strong> <div class=\"profile-settings-forms\"> <div class=\"profile-input\"> <label for=\"isEnabled\">Enable key</label> <input checked=\"checked\" id=\"isEnabled\" name=\"isEnabled\" type=\"checkbox\" data-id=\"" + projectId + "\"> </div><div> <span id=\"key-warning\" style=\"color: red\"></span><br/> <a class=\"button green tiny\" id=\"update-key\" data-proj-id=\"" + projectId + "\" data-memb-id=\"" + contriId + "\">Update</a> <a class=\"button green tiny\" id=\"delete-key\" data-proj-id=\"" + projectId + "\" data-memb-id=\"" + contriId + "\">Remove</a> </div></div></div>");
+                    $(".no-keys").text("");
                 },
                 error: function(xhr, textStatus, error){
                     $("#add-key-warning").text(xhr.responseText);
@@ -131,18 +133,27 @@
             });
         },
 
-        updateKey: function (projectId) {
-            $.post("/umbraco/api/ProjectApiKey/UpdateKey/?projectId=" + projectId, function (data) {
-
-
+        updateKey: function (projectId, contriId, isChecked) {
+            $.ajax({
+                type: "POST",
+                url: "/umbraco/api/ProjectApiKey/UpdateKey/?projectId=" + projectId + "&contribId=" + contriId + "&isChecked=" + isChecked,
+                success: function(xhr) {
+                    $("#key-message").text(xhr);
+                },
+                error: function(xhr, textStatus, error){
+                    $("#key-warning").text(xhr.responseText);
+                }
             });
         },
 
-        removeKey: function (projectId) {
-            $.post("/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId, function (data) {
-
-
-                $("#key-description").val("");
+        removeKey: function (projectId, contriId) {
+            $.ajax({
+                type: "POST",
+                url: "/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId + "&contribId=" + contriId,
+                success: function() {},
+                error: function(xhr, textStatus, error){
+                    $("#key-warning").text(xhr.responseText);
+                }
             });
         }
     };
@@ -593,5 +604,39 @@ $(function () {
 
             community.addKey(projectId, contriId, description);
         }        
+    });
+
+    $("#delete-key").on("click", function (e) {
+        e.preventDefault();
+
+        $("#key-warning").html("");
+
+        var data = $(this).data();
+        var projectId = parseInt(data.projId);
+        var contriId = parseInt(data.membId);
+
+        community.removeKey(projectId, contriId);    
+        
+        $(this).closest(".profile-settings").remove();
+    });
+
+    $("#update-key").on("click", function (e) {
+        e.preventDefault();
+
+        $("#key-warning").html("");
+
+        var data = $(this).data();
+        var projectId = parseInt(data.projId);
+        var contriId = parseInt(data.membId);
+        
+        var isChecked = $(this).closest(".profile-settings").find("#isEnabled")[0].checked;
+
+        community.updateKey(projectId, contriId, isChecked);  
+
+        if(isChecked){
+            $("#isEnabled").removeAttr('checked');
+        } else {
+            $("#isEnabled").attr('checked', 'checked');
+        }
     });
 });

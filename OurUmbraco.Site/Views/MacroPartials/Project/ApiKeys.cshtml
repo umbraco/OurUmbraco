@@ -30,43 +30,50 @@
         The API keys are used to push your package - <strong>@project.Name</strong> - to Our directly from a CI/CD pipeline or your own local machine. <br/>
         Read more on the documentation for the Package CLI tool.
     </p>
-
-    if(keysAreNotNull)
-    {
-        <div class="manage-keys">
-        <h2>Manage keys</h2>
-        @foreach (var key in keys)
-        {
-            <div class="profile-settings" style="border: 1px #ccc solid; padding:20px">
-                <strong>Key description: <i class="icon-Key" style="font-size: 30px"></i>@key.Description</strong>
-                <div class="profile-settings-forms">
-
-                    <div class="profile-input">
-                        <label for="isEnabled">Enable key</label>
-                        
-                        @if (key.IsEnabled)
-                        {
-                            <input checked="checked" id="isEnabled" name="open-for-collab" type="checkbox" data-id="@projectId">
-                        }
-                        else
-                        {
-                            <input id="isEnabled" name="open-for-collab" type="checkbox" data-id="@projectId">
-                        }
-
-                    </div>
-                    
-                    <div>
-                        <a class="button green tiny" id="update-key" data-proj-id="@projectId">Update</a>
-                        <a class="button green tiny" id="delete-key" data-proj-id="@projectId">Remove</a>
-                    </div>
-
-                </div>
-            </div>
-        }
-        </div>
-    }
-
     
+    <div class="manage-keys">
+        <h2>Manage keys</h2>
+        @if(keysAreNotNull)
+        {
+            foreach (var key in keys)
+            {
+                <div class="profile-settings" style="border: 1px #ccc solid; padding:20px">
+                    <p>
+                        <strong style="display:inline-block"><i class="icon-Key" style="font-size: 30px"></i>Key description: </strong> @key.Description
+                    </p>
+                    <div class="profile-settings-forms">
+
+                        <div class="profile-input">
+                            <label for="isEnabled">Enable key</label>
+
+                            @if (key.IsEnabled)
+                            {
+                                <input checked="checked" id="isEnabled" name="isEnabled" type="checkbox" data-id="@projectId">
+                            }
+                            else
+                            {
+                                <input id="isEnabled" name="isEnabled" type="checkbox" data-id="@projectId">
+                            }
+
+                        </div>
+
+                        <div>
+                            <span id="key-warning" style="color: red"></span><br/>
+                            <span id="key-message" style="color: green"></span><br/>
+                            <a class="button green tiny" id="update-key" data-proj-id="@projectId" data-memb-id="@key.MemberId">Update</a>
+                            <a class="button green tiny" id="delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId">Remove</a>
+                        </div>
+
+                    </div>
+                </div>
+            }
+        } else {
+            <p class="no-keys">You don't have any keys yet, you can make one below.</p>
+        }
+        
+    </div>
+
+
     <div class="create-key profile">
         <h2>Create a new key</h2>
         <div class="profile-settings">
@@ -86,7 +93,7 @@
                             var contributor = Members.GetById(contri.MemberId);
                             if (contributor != null)
                             {
-                                <option data-contri-id="@contri.MemberId">
+                                <option value="@contri.MemberId">
                                     @contributor.Name
                                 </option>
                             }

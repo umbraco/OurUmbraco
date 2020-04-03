@@ -25,12 +25,6 @@ namespace OurUmbraco.Our.Controllers
     public class ProjectController : SurfaceController
     {
         private string _exceptionName = "uIntra";
-        private ProjectAuthKeyService _authKeyService;
-
-        public ProjectController()
-        {
-            _authKeyService = new ProjectAuthKeyService(DatabaseContext);
-        }
 
         [ChildActionOnly]
         public ActionResult Index(int projectId = 0)
@@ -60,32 +54,6 @@ namespace OurUmbraco.Our.Controllers
             model.OpenForCollaboration = project.OpenForCollab;
             model.GoogleAnalyticsCode = project.GACode;
             model.Id = projectId;
-
-            //Current Member ID
-            var memberId = Members.GetCurrentMember().Id;
-
-            //Check if we have an Auth Token for user
-            var hasAuthToken = _authKeyService.GetAuthKey(memberId, projectId);
-
-            //If the token already exists
-            if (hasAuthToken != null)
-            {
-                //Lets just return it in the request
-                model.ApiKey = hasAuthToken.AuthKey;
-                model.IsApiKeyEnabled = hasAuthToken.IsEnabled;
-            }
-            else
-            {
-                //Else user has no token yet - so let's create one
-                
-                //Generate a new token for the userand store in DB
-                var authKey = _authKeyService.CreateAuthKey(memberId, projectId);
-
-                //Return the key as the response
-                //This means valid login & client in our case mobile app stores token in local storage
-                model.ApiKey = authKey.AuthKey;
-                model.IsApiKeyEnabled = authKey.IsEnabled;
-            }
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
         }
@@ -147,14 +115,6 @@ namespace OurUmbraco.Our.Controllers
                 project.VendorId = Members.GetCurrentMemberId();
 
             project.TermsAgreementDate = DateTime.Now.ToUniversalTime();
-
-            var authKey = _authKeyService.GetAuthKey(project.VendorId, model.Id);
-            if (authKey == null)
-                throw new InvalidOperationException($"No auth key found for member {project.VendorId} and project {model.Id}");
-
-            authKey.IsEnabled = model.IsApiKeyEnabled;
-            
-            _authKeyService.UpdateAuthKey(authKey);
 
             nodeListingProvider.SaveOrUpdate(project);
 
