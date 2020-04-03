@@ -3047,9 +3047,9 @@ namespace OurUmbraco.Our
                     ApplicationContext.Current.DatabaseContext.SqlSyntax
                 );
 
-                if (schema.TableExist<UmbracoAuthToken>() == false)
+                if (schema.TableExist<ProjectAuthKey>() == false)
                 {
-                    schema.CreateTable<UmbracoAuthToken>();
+                    schema.CreateTable<ProjectAuthKey>();
                 }
 
                 string[] lines = { "" };

@@ -5,6 +5,7 @@ using Hangfire;
 using Hangfire.Console;
 using Hangfire.SqlServer;
 using Microsoft.Owin;
+using OurUmbraco.Auth;
 using OurUmbraco.Community.Map;
 using OurUmbraco.NotificationsCore.Notifications;
 using OurUmbraco.Our.GoogleOAuth;
@@ -32,6 +33,10 @@ namespace OurUmbraco.Our.GoogleOAuth
             app.ConfigureBackOfficeGoogleAuth(clientId, secret);
 
             app.MapSignalR();
+            
+            // configure hmac authentication for these endpoints
+            var authPaths = new[] { "Api/ProjectUpload" };
+            app.ConfigureHmacBearerTokenAuthentication(authPaths);
 
             if (string.Equals(ConfigurationManager.AppSettings["HangFireEnabled"], "true", StringComparison.InvariantCultureIgnoreCase) == false)
                 return;

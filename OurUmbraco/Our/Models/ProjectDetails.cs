@@ -63,7 +63,7 @@ namespace OurUmbraco.Our.Models
 
         public List<SelectListItem> ProjectCategories { get; set; }
 
-        // This is the API key as a JWT to allow users to upload packages via CLI tool
+        // This is the API key to allow users to upload packages via CLI tool
         [Display(Name = "API Key")]
         public string ApiKey { get; set; }
 
