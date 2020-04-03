@@ -124,10 +124,10 @@
                 url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&contribId=" + contriId + "&description=" + description,
                 success: function(data) {
                     $("#key-description").val("");
-                    $(".manage-keys").append("<div class=\"profile-settings\" style=\"border: 1px #ccc solid; padding:20px\"> <strong>Key description: <i class=\"icon-Key\" style=\"font-size: 30px\"></i>" + description + "</strong> <div class=\"profile-settings-forms\"> <div class=\"profile-input\"> <label for=\"isEnabled\">Enable key</label> <input checked=\"checked\" id=\"isEnabled\" name=\"isEnabled\" type=\"checkbox\" data-id=\"" + projectId + "\"> </div><div> <span id=\"key-warning\" style=\"color: red\"></span><br/> <a class=\"button green tiny\" id=\"update-key\" data-proj-id=\"" + projectId + "\" data-memb-id=\"" + contriId + "\">Update</a> <a class=\"button green tiny\" id=\"delete-key\" data-proj-id=\"" + projectId + "\" data-memb-id=\"" + contriId + "\">Remove</a> </div></div></div>");
+                    $(".manage-keys").append("<div class=\"profile-settings\" style=\"border: 1px #ccc solid; padding:20px\"> <strong>Key description: <i class=\"icon-Key\" style=\"font-size: 30px\"></i>" + data.description + "</strong> <div class=\"profile-settings-forms\"> <div class=\"profile-input\"> <label for=\"isEnabled\">Enable key</label> <input checked=\"checked\" id=\"isEnabled\" name=\"isEnabled\" type=\"checkbox\" data-id=\"" + data.project_id + "\"> </div><div> <p> This is your generated API key. Make sure to copy it and save it now, when you leave this page you can't get it back! You will have to create a new one if you lose it. </p><textarea readonly style=\"font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;\">" + data.authKey + "</textarea> </div><div> <span id=\"remove-key-warning\" style=\"color: red\"></span><br/> <a class=\"button green tiny\" id=\"update-key\" data-proj-id=\"" + data.project_id + "\" data-memb-id=\"" + data.member_id + "\">Update</a> <a class=\"button green tiny\" id=\"delete-key\" data-proj-id=\"" + data.project_id + "\" data-memb-id=\"" + data.member_id + "\">Remove</a> </div></div></div>");
                     $(".no-keys").text("");
                 },
-                error: function(xhr, textStatus, error){
+                error: function(xhr){
                     $("#add-key-warning").text(xhr.responseText);
                 }
             });
@@ -140,7 +140,7 @@
                 success: function(xhr) {
                     $("#key-message").text(xhr);
                 },
-                error: function(xhr, textStatus, error){
+                error: function(xhr){
                     $("#key-warning").text(xhr.responseText);
                 }
             });
@@ -151,7 +151,7 @@
                 type: "POST",
                 url: "/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId + "&contribId=" + contriId,
                 success: function() {},
-                error: function(xhr, textStatus, error){
+                error: function(xhr){
                     $("#key-warning").text(xhr.responseText);
                 }
             });

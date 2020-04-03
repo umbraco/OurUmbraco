@@ -35,7 +35,7 @@ namespace OurUmbraco.Auth
         public string Description { get; set; }
 
         [Column("authKey")]
-        [JsonIgnore]
+        [JsonProperty("authKey")]
         public string AuthKey { get; set; }
         
         [Column("isEnabled")]
