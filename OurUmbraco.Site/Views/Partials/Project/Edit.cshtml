@@ -166,8 +166,10 @@
                     @Html.CheckBoxFor(m => m.IsApiKeyEnabled, new {id = "IsApiKeyEnabled"})
                 </p>
                 <p class="ApiKey">
-                    @Html.LabelFor(m => m.ApiKey)
-                    <textarea readonly style="font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;">@Model.ApiKey</textarea>
+                    
+                    
+                    @* @Html.LabelFor(m => m.ApiKey) *@
+                    @* <textarea readonly style="font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;">@Model.ApiKey</textarea> *@
                 </p>
             </fieldset>
 
@@ -192,6 +194,14 @@
             }
         });
         
+        if ($("#IsApiKeyEnabled")[0].checked){
+            $(".ApiKey").show();
+            $("#IsApiKeyEnabled").attr('checked', 'checked');
+        } else {
+            $(".ApiKey").hide();
+            $("#IsApiKeyEnabled").removeAttr('checked');
+        }
+            
         $("#IsApiKeyEnabled").change(
             function(e) {
                 var checked = $("#IsApiKeyEnabled").attr('checked');

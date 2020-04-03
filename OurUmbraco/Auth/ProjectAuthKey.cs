@@ -29,6 +29,10 @@ namespace OurUmbraco.Auth
         [Column("dateCreated")]
         [JsonProperty("date_created")]
         public DateTime DateCreated { get; set; }
+        
+        [Column("description")]
+        [JsonProperty("description")]
+        public string Description { get; set; }
 
         [Column("authKey")]
         [JsonIgnore]

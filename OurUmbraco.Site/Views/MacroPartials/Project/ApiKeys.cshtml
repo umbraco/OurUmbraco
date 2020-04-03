@@ -1,2 +1,105 @@
-﻿@model TModel
+﻿@using OurUmbraco.Auth
+@using OurUmbraco.Project.Services
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    
+    var projectId = Request["Id"];
+    int id = 0;
+}
 
+@if (!string.IsNullOrEmpty(projectId) && int.TryParse(projectId, out id))
+{
+    var project = Umbraco.TypedContent(id);
+    var member = Members.GetCurrentMember();
+
+
+    var authKeyService = new ProjectAuthKeyService(ApplicationContext.Current.DatabaseContext);
+    var keys = authKeyService.GetAllAuthKeys(member.Id, project.Id);
+
+    var keysAreNotNull = keys.Any();
+    
+    var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
+
+    var contris = cs.GetContributors(id).ToList();
+    
+    <style>
+        .profile-settings { margin-bottom: 50px; }
+    </style>
+    
+    <p>
+        The API keys are used to push your package - <strong>@project.Name</strong> - to Our directly from a CI/CD pipeline or your own local machine. <br/>
+        Read more on the documentation for the Package CLI tool.
+    </p>
+
+    if(keysAreNotNull)
+    {
+        <div class="manage-keys">
+        <h2>Manage keys</h2>
+        @foreach (var key in keys)
+        {
+            <div class="profile-settings" style="border: 1px #ccc solid; padding:20px">
+                <strong>Key description: <i class="icon-Key" style="font-size: 30px"></i>@key.Description</strong>
+                <div class="profile-settings-forms">
+
+                    <div class="profile-input">
+                        <label for="isEnabled">Enable key</label>
+                        
+                        @if (key.IsEnabled)
+                        {
+                            <input checked="checked" id="isEnabled" name="open-for-collab" type="checkbox" data-id="@projectId">
+                        }
+                        else
+                        {
+                            <input id="isEnabled" name="open-for-collab" type="checkbox" data-id="@projectId">
+                        }
+
+                    </div>
+                    
+                    <div>
+                        <a class="button green tiny" id="update-key" data-proj-id="@projectId">Update</a>
+                        <a class="button green tiny" id="delete-key" data-proj-id="@projectId">Remove</a>
+                    </div>
+
+                </div>
+            </div>
+        }
+        </div>
+    }
+
+    
+    <div class="create-key profile">
+        <h2>Create a new key</h2>
+        <div class="profile-settings">
+            <div class="profile-settings-forms">
+                
+                <div class="profile-input">
+                    <label for="key-description">Description</label>
+                    <input id="key-description" name="key-description" type="text">
+                </div>
+                
+                <div class="profile-input">
+                    <label for="key-member">Assign key to</label>
+                    <select>
+                        <option>@member.Name</option>
+                        @foreach (var contri in contris)
+                        {
+                            var contributor = Members.GetById(contri.MemberId);
+                            if (contributor != null)
+                            {
+                                <option>
+                                    @contributor.Name
+                                </option>
+                            }
+                        }
+                        <option></option>
+                    </select>
+                </div>
+
+                <div>
+                    <a class="button green tiny" id="add-key" data-proj-id="@projectId">Add</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

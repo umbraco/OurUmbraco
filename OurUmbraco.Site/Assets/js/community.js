@@ -116,6 +116,29 @@
         
         getTopicDataByWeek: function () {
           return $.get("/umbraco/api/Statistics/GetTopicDataByWeek");
+        },
+
+        addKey: function (projectId,  description) {
+            $.post("/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&description=" + description, function (data) {
+
+
+                $("#key-description").val("");
+            });
+        },
+
+        updateKey: function (projectId) {
+            $.post("/umbraco/api/ProjectApiKey/UpdateKey/?projectId=" + projectId, function (data) {
+
+
+            });
+        },
+
+        removeKey: function (projectId) {
+            $.post("/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId, function (data) {
+
+
+                $("#key-description").val("");
+            });
         }
     };
 }();
@@ -548,5 +571,21 @@ $(function () {
         document.cookie = "dismissAvatar" + "=" + true + "; " + expires + "; path=/";
 
         $(".avatarTooSmall").hide("fast");
+    });
+
+    /* profile project api keys*/
+    $("#add-key").on("click", function (e) {
+        e.preventDefault();
+
+        $("#api-key-feedback").html("");
+
+        if ($("#key-description").val()) {
+
+            var data = $(this).data();
+            var projectId = parseInt(data.projId);
+            var description = $("#key-description").val();
+
+            community.addKey(projectId, description);
+        }        
     });
 });
