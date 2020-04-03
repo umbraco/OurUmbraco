@@ -158,21 +158,6 @@
                 </p>
             </fieldset>
 
-            <fieldset>
-                <legend>API Key</legend>
-                <p>This is used to upload packages to our.umbraco.org with the CLI tool</p>
-                <p>
-                    @Html.LabelFor(m => m.IsApiKeyEnabled)
-                    @Html.CheckBoxFor(m => m.IsApiKeyEnabled, new {id = "IsApiKeyEnabled"})
-                </p>
-                <p class="ApiKey">
-                    
-                    
-                    @* @Html.LabelFor(m => m.ApiKey) *@
-                    @* <textarea readonly style="font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;">@Model.ApiKey</textarea> *@
-                </p>
-            </fieldset>
-
             @Html.HiddenFor(m => m.Id)
 
             <div class="buttons" style="margin-bottom:30px;">
@@ -192,28 +177,7 @@
                     validator.focusInvalid();
                 }
             }
-        });
-        
-        if ($("#IsApiKeyEnabled")[0].checked){
-            $(".ApiKey").show();
-            $("#IsApiKeyEnabled").attr('checked', 'checked');
-        } else {
-            $(".ApiKey").hide();
-            $("#IsApiKeyEnabled").removeAttr('checked');
-        }
-            
-        $("#IsApiKeyEnabled").change(
-            function(e) {
-                var checked = $("#IsApiKeyEnabled").attr('checked');
-                if(checked){
-                    $(".ApiKey").hide();
-                    $("#IsApiKeyEnabled").removeAttr('checked');
-                } else {
-                    $(".ApiKey").show();
-                    $("#IsApiKeyEnabled").attr('checked', 'checked');
-                }
-            }
-        );
+        });       
     });
 
     tinyMCE.init({
