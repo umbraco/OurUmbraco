@@ -14,7 +14,7 @@
 
 
     var authKeyService = new ProjectAuthKeyService(ApplicationContext.Current.DatabaseContext);
-    var keys = authKeyService.GetAllAuthKeys(member.Id, project.Id);
+    var keys = authKeyService.GetAllAuthKeysForProject(id);
 
     var keysAreNotNull = keys.Any();
     
@@ -79,14 +79,14 @@
                 
                 <div class="profile-input">
                     <label for="key-member">Assign key to</label>
-                    <select>
-                        <option>@member.Name</option>
+                    <select id="key-member">
+                        <option value="@member.Id">@member.Name</option>
                         @foreach (var contri in contris)
                         {
                             var contributor = Members.GetById(contri.MemberId);
                             if (contributor != null)
                             {
-                                <option>
+                                <option data-contri-id="@contri.MemberId">
                                     @contributor.Name
                                 </option>
                             }
@@ -96,6 +96,7 @@
                 </div>
 
                 <div>
+                    <span id="add-key-warning" style="color: red"></span><br/>
                     <a class="button green tiny" id="add-key" data-proj-id="@projectId">Add</a>
                 </div>
 

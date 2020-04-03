@@ -37,10 +37,10 @@ namespace OurUmbraco.Auth
             return findRecord;
         }
         
-        public List<ProjectAuthKey> GetAllAuthKeys(int memberId, int projectId)
+        public List<ProjectAuthKey> GetAllAuthKeysForProject(int projectId)
         {
-            //Try & find all records in the DB from the memberId and the projectId
-            var findRecords = _dbContext.Database.Fetch<ProjectAuthKey>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
+            //Try & find all records in the DB from the projectId
+            var findRecords = _dbContext.Database.Fetch<ProjectAuthKey>("WHERE ProjectId=@0", projectId);
 
             //Return the object (Will be null if can't find an item)
             return findRecords;
@@ -54,6 +54,10 @@ namespace OurUmbraco.Auth
         /// <returns></returns>
         public ProjectAuthKey CreateAuthKey(int memberId, int projectId, string description = "")
         {
+            var existing = GetAuthKey(memberId, projectId);
+            if (existing != null)
+                throw new InvalidOperationException($"An auth key already exists for the member {memberId} and {projectId}");
+            
             var key = new ProjectAuthKey
             {
                 DateCreated = DateTime.UtcNow,

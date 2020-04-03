@@ -118,11 +118,16 @@
           return $.get("/umbraco/api/Statistics/GetTopicDataByWeek");
         },
 
-        addKey: function (projectId,  description) {
-            $.post("/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&description=" + description, function (data) {
-
-
-                $("#key-description").val("");
+        addKey: function (projectId, contriId, description) {
+            $.ajax({
+                type: "POST",
+                url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&contribId=" + contriId + "&description=" + description,
+                success: function(data) {
+                    $("#key-description").val("");
+                },
+                error: function(xhr, textStatus, error){
+                    $("#add-key-warning").text(xhr.responseText);
+                }
             });
         },
 
@@ -577,15 +582,16 @@ $(function () {
     $("#add-key").on("click", function (e) {
         e.preventDefault();
 
-        $("#api-key-feedback").html("");
+        $("#add-key-warning").html("");
 
-        if ($("#key-description").val()) {
+        if ($("#key-description").val() && $("#key-member")) {
 
             var data = $(this).data();
             var projectId = parseInt(data.projId);
+            var contriId = parseInt($("#key-member").val());
             var description = $("#key-description").val();
 
-            community.addKey(projectId, description);
+            community.addKey(projectId, contriId, description);
         }        
     });
 });
