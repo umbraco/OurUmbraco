@@ -19,7 +19,7 @@ namespace OurUmbraco.Project.Api
         }
         
         [HttpPost]
-        public ProjectAuthKey AddKey(int projectId, int contribId, string description)
+        public ProjectAuthKey AddKey(int projectId, string description)
         {
             var project = Umbraco.TypedContent(projectId);
             var memberId = Members.GetCurrentMemberId();
@@ -28,7 +28,7 @@ namespace OurUmbraco.Project.Api
             {
                 try
                 {
-                    var authKey = _keyService.CreateAuthKey(contribId, projectId, description);
+                    var authKey = _keyService.CreateAuthKey(memberId, projectId, description);
                     return authKey;
                 }
                 catch (InvalidOperationException)
@@ -42,7 +42,7 @@ namespace OurUmbraco.Project.Api
         }
         
         [HttpPost]
-        public ProjectAuthKey RemoveKey(int projectId, int contribId)
+        public ProjectAuthKey RemoveKey(int projectId, int contribId, int primaryKey)
         {
             var project = Umbraco.TypedContent(projectId);
             var memberId = Members.GetCurrentMemberId();
@@ -51,7 +51,7 @@ namespace OurUmbraco.Project.Api
             {
                 try
                 {
-                    _keyService.DeleteAuthKey(contribId, projectId);
+                    _keyService.DeleteAuthKey(contribId, projectId, primaryKey);
                 }
                 catch (InvalidOperationException)
                 {

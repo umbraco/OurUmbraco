@@ -39,23 +39,26 @@
         <h2>Manage keys</h2>
         @if(keysAreNotNull)
         {
-            foreach (var key in keys)
-            {
-                <div class="profile-settings" style="border: 1px #ccc solid; padding:20px">
-                    <p>
-                        <strong style="display:inline-block"><i class="icon-Key" style="font-size: 30px"></i>Key description: </strong> @key.Description
-                    </p>
-                    <div class="profile-settings-forms">
-                        
-                        <div>
-                            <span id="key-warning" style="color: red"></span><br/>
-                            <span id="key-message" style="color: green"></span><br/>
-                            <a class="button green tiny" id="delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId">Remove</a>
-                        </div>
-
-                    </div>
-                </div>
-            }
+            <table>
+                <tr>
+                    <th><i class="icon-Key" style="font-size: 30px"></i>Key description</th>
+                    <th>Create Date</th>
+                    <th>Remove Key</th>
+                </tr>
+                @foreach (var key in keys)
+                {
+                    <tr>
+                        <td>@key.Description</td>
+                        <td>@key.DateCreated</td>
+                        <td>
+                            <div>
+                                <span id="key-warning" style="color: red"></span><br/>
+                                <a class="button green tiny delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId" data-pk="@key.PrimaryKey">Remove</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
         } else {
             <p class="no-keys">You don't have any keys yet, you can make one below.</p>
         }
@@ -70,24 +73,6 @@
                 <div class="profile-input">
                     <label for="key-description">Description</label>
                     <input id="key-description" name="key-description" type="text">
-                </div>
-                
-                <div class="profile-input">
-                    <label for="key-member">Assign key to</label>
-                    <select id="key-member">
-                        <option value="@member.Id">@member.Name</option>
-                        @foreach (var contri in contris)
-                        {
-                            var contributor = Members.GetById(contri.MemberId);
-                            if (contributor != null)
-                            {
-                                <option value="@contri.MemberId">
-                                    @contributor.Name
-                                </option>
-                            }
-                        }
-                        <option></option>
-                    </select>
                 </div>
 
                 <div>

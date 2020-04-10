@@ -37,6 +37,15 @@ namespace OurUmbraco.Auth
             return findRecord;
         }
         
+        public ProjectAuthKey GetAuthKey(int memberId, int projectId, int primaryKey)
+        {
+            //Try & find a record in the DB from the userId
+            var findRecord = _dbContext.Database.SingleOrDefault<ProjectAuthKey>("WHERE MemberId=@0 AND ProjectId=@1 AND pk=@2", memberId, projectId, primaryKey);
+
+            //Return the object (Will be null if can't find an item)
+            return findRecord;
+        }
+        
         public List<ProjectAuthKey> GetAllAuthKeysForProject(int projectId)
         {
             //Try & find all records in the DB from the projectId
@@ -54,10 +63,6 @@ namespace OurUmbraco.Auth
         /// <returns></returns>
         public ProjectAuthKey CreateAuthKey(int memberId, int projectId, string description = "")
         {
-            var existing = GetAuthKey(memberId, projectId);
-            if (existing != null)
-                throw new InvalidOperationException($"An auth key already exists for the member {memberId} and {projectId}");
-            
             var key = new ProjectAuthKey
             {
                 DateCreated = DateTime.UtcNow,
@@ -71,21 +76,20 @@ namespace OurUmbraco.Auth
 
             return key;
         }
-        
 
         /// <summary>
         /// Deletes the auth key for the member/project
         /// </summary>
         /// <param name="identityId"></param>
-        public void DeleteAuthKey(int memberId, int projectId)
+        public void DeleteAuthKey(int memberId, int projectId, int primaryKey)
         {
             //Just to be 100% sure for data sanity that a record for the user does not exist already
-            var existingRecord = GetAuthKey(memberId, projectId);
+            var existingRecord = GetAuthKey(memberId, projectId, primaryKey);
 
             if (existingRecord != null)
             {
                 //We found the record in the DB - let's remove/delete it
-                _dbContext.Database.Delete<ProjectAuthKey>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
+                _dbContext.Database.Delete<ProjectAuthKey>("WHERE MemberId=@0 AND ProjectId=@1 AND pk=@2", memberId, projectId, primaryKey);
             }
         }
 

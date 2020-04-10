@@ -118,10 +118,10 @@
           return $.get("/umbraco/api/Statistics/GetTopicDataByWeek");
         },
 
-        addKey: function (projectId, contriId, description) {
+        addKey: function (projectId, description) {
             $.ajax({
                 type: "POST",
-                url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&contribId=" + contriId + "&description=" + description,
+                url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&description=" + description,
                 success: function(data) {
                     $("#key-description").val("");
                     $(".manage-keys").append("<div class=\"profile-settings\" style=\"border: 1px #ccc solid; padding:20px\"> <strong>Key description: <i class=\"icon-Key\" style=\"font-size: 30px\"></i>" + data.description + "</strong> <div class=\"profile-settings-forms\"> <div class=\"profile-input\"> <label for=\"isEnabled\">Enable key</label> <input checked=\"checked\" id=\"isEnabled\" name=\"isEnabled\" type=\"checkbox\" data-id=\"" + data.project_id + "\"> </div><div> <p> This is your generated API key. Make sure to copy it and save it now, when you leave this page you can't get it back! You will have to create a new one if you lose it. </p><textarea readonly style=\"font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;\">" + data.authKey + "</textarea> </div><div> <span id=\"remove-key-warning\" style=\"color: red\"></span><br/> <a class=\"button green tiny\" id=\"update-key\" data-proj-id=\"" + data.project_id + "\" data-memb-id=\"" + data.member_id + "\">Update</a> <a class=\"button green tiny\" id=\"delete-key\" data-proj-id=\"" + data.project_id + "\" data-memb-id=\"" + data.member_id + "\">Remove</a> </div></div></div>");
@@ -133,10 +133,10 @@
             });
         },
 
-        removeKey: function (projectId, contriId) {
+        removeKey: function (projectId, contriId, pk) {
             $.ajax({
                 type: "POST",
-                url: "/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId + "&contribId=" + contriId,
+                url: "/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId + "&contribId=" + contriId + "&primaryKey=" + pk,
                 success: function() {},
                 error: function(xhr){
                     $("#key-warning").text(xhr.responseText);
@@ -586,14 +586,13 @@ $(function () {
 
             var data = $(this).data();
             var projectId = parseInt(data.projId);
-            var contriId = parseInt($("#key-member").val());
             var description = $("#key-description").val();
 
-            community.addKey(projectId, contriId, description);
+            community.addKey(projectId, description);
         }        
     });
 
-    $("#delete-key").on("click", function (e) {
+    $(".delete-key").on("click", function (e) {
         e.preventDefault();
 
         $("#key-warning").html("");
@@ -601,9 +600,10 @@ $(function () {
         var data = $(this).data();
         var projectId = parseInt(data.projId);
         var contriId = parseInt(data.membId);
+        var pk = parseInt(data.pk);
 
-        community.removeKey(projectId, contriId);    
+        community.removeKey(projectId, contriId, pk);    
         
-        $(this).closest(".profile-settings").remove();
+        $(this).closest("tr").remove();
     });
 });
