@@ -71,23 +71,7 @@ namespace OurUmbraco.Auth
 
             return key;
         }
-
-        /// <summary>
-        /// Insert a new Auth Token into the custom DB table OR
-        /// Update just the auth token if we find a record for the backoffice user already
-        /// </summary>
-        /// <param name="authKey"></param>
-        public void UpdateAuthKey(ProjectAuthKey authKey)
-        {
-            if (authKey is null)
-                throw new ArgumentNullException(nameof(authKey));
-
-            if (authKey.PrimaryKey == default)
-                throw new ArgumentException("The auth key instance has no primary key", nameof(authKey));
-
-            _dbContext.Database.Save(authKey);
-        }
-
+        
 
         /// <summary>
         /// Deletes the auth key for the member/project
