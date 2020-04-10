@@ -64,8 +64,7 @@ namespace OurUmbraco.Auth
                 AuthKey = GenerateKey(32),// generate a 256 bit random key
                 MemberId = memberId,
                 ProjectId = projectId,
-                Description = description,
-                IsEnabled = true
+                Description = description
             };
 
             _dbContext.Database.Save(key);

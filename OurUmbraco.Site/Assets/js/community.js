@@ -133,19 +133,6 @@
             });
         },
 
-        updateKey: function (projectId, contriId, isChecked) {
-            $.ajax({
-                type: "POST",
-                url: "/umbraco/api/ProjectApiKey/UpdateKey/?projectId=" + projectId + "&contribId=" + contriId + "&isChecked=" + isChecked,
-                success: function(xhr) {
-                    $("#key-message").text(xhr);
-                },
-                error: function(xhr){
-                    $("#key-warning").text(xhr.responseText);
-                }
-            });
-        },
-
         removeKey: function (projectId, contriId) {
             $.ajax({
                 type: "POST",
@@ -618,25 +605,5 @@ $(function () {
         community.removeKey(projectId, contriId);    
         
         $(this).closest(".profile-settings").remove();
-    });
-
-    $("#update-key").on("click", function (e) {
-        e.preventDefault();
-
-        $("#key-warning").html("");
-
-        var data = $(this).data();
-        var projectId = parseInt(data.projId);
-        var contriId = parseInt(data.membId);
-        
-        var isChecked = $(this).closest(".profile-settings").find("#isEnabled")[0].checked;
-
-        community.updateKey(projectId, contriId, isChecked);  
-
-        if(isChecked){
-            $("#isEnabled").removeAttr('checked');
-        } else {
-            $("#isEnabled").attr('checked', 'checked');
-        }
     });
 });

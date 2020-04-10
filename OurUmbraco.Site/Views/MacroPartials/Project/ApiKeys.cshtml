@@ -46,25 +46,10 @@
                         <strong style="display:inline-block"><i class="icon-Key" style="font-size: 30px"></i>Key description: </strong> @key.Description
                     </p>
                     <div class="profile-settings-forms">
-
-                        <div class="profile-input">
-                            <label for="isEnabled">Enable key</label>
-
-                            @if (key.IsEnabled)
-                            {
-                                <input checked="checked" id="isEnabled" name="isEnabled" type="checkbox" data-id="@projectId">
-                            }
-                            else
-                            {
-                                <input id="isEnabled" name="isEnabled" type="checkbox" data-id="@projectId">
-                            }
-
-                        </div>
-
+                        
                         <div>
                             <span id="key-warning" style="color: red"></span><br/>
                             <span id="key-message" style="color: green"></span><br/>
-                            <a class="button green tiny" id="update-key" data-proj-id="@projectId" data-memb-id="@key.MemberId">Update</a>
                             <a class="button green tiny" id="delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId">Remove</a>
                         </div>
 
