@@ -45,7 +45,7 @@ namespace OurUmbraco.Community.Twitter
                             };
 
                             var results = service.Search(options);
-                            return results.Statuses;
+                            return results?.Statuses;
 
                         }, TimeSpan.FromMinutes(2));
 
