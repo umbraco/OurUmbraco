@@ -137,7 +137,15 @@ namespace OurUmbraco.MarketPlace.NodeListing
             using (var reader = sqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId", sqlHelper.CreateParameter("@projectId", projectId)))
             {
                 if (reader.Read())
-                    return reader.GetInt("Karma");
+                {
+                    var karma = reader.GetInt("Karma");
+                    if (karma > 0) 
+                    {
+                        return karma;
+                    }
+                    return 0;
+                }
+                     
             }
 
             return 0;
