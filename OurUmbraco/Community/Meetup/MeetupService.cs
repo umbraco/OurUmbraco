@@ -148,7 +148,7 @@ namespace OurUmbraco.Community.Meetup
 
                         return items.OrderBy(x => x.Event.Time).ToArray();
 
-                    }, TimeSpan.FromMinutes(30));
+                    }, TimeSpan.FromMinutes(60));
             }
             catch (Exception ex)
             {
