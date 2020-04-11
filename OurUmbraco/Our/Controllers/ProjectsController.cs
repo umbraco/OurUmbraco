@@ -18,7 +18,9 @@ namespace OurUmbraco.Our.Controllers
             var contribProjects = nodeListingProvider.GetListingsForContributor(memberId).OrderBy(x => x.Name);
             var model = new MyProjectsModel
             {
-                Projects = myProjects,
+                LiveProjects = myProjects.Where(project => project.Live && !project.IsRetired),
+                RetiredProjects = myProjects.Where(project => project.Live && project.IsRetired),
+                DraftProjects = myProjects.Where(project => !project.Live),
                 ContribProjects = contribProjects
             };
 

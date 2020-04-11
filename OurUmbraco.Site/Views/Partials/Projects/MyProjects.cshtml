@@ -3,21 +3,49 @@
 @model OurUmbraco.Our.Models.MyProjectsModel
 
 <div class="profile-settings">
-    <strong>My Packages</strong>
     <div class="profile-settings-packages packages-content">
         <a href="/member/profile/projects/details?projectId=" class="button green"><i class="icon-Add"></i>Add package</a>
 
-        @foreach (var project in Model.Projects)
+        @if (Model.LiveProjects.Any())
         {
-            @RenderProject(project)
+            <strong>Active Packages</strong>
+            <em>Active packages are visible to everyone. If a package is no longer actively maintained please flag it as 'retired'.</em>
+            foreach (var project in Model.LiveProjects)
+            {
+                @RenderProject(project)
+            }
         }
-        
-        <strong>Package Contributions</strong>
-        @foreach (var project in Model.ContribProjects)
+
+        @if (Model.DraftProjects.Any())
         {
-            @RenderProject(project)
+            <strong>Draft Packages</strong>
+            <em>Draft packages are visible only to you, not anyone else.</em>
+            foreach (var project in Model.DraftProjects)
+            {
+                @RenderProject(project)
+            }
         }
-        
+
+        @if (Model.ContribProjects.Any())
+        {
+            <strong>Package Contributions</strong>
+            <em>You are flagged as a contributor on the following projects:</em>
+            foreach (var project in Model.ContribProjects)
+            {
+                @RenderProject(project)
+            }
+        }
+
+        @if (Model.RetiredProjects.Any())
+        {
+            <strong>Retired Packages</strong>
+            <em>You have indicated that there projects are no longer being maintained. They are still visible in searches so that people can read the reason why it has been retired.</em>
+            foreach (var project in Model.RetiredProjects)
+            {
+                @RenderProject(project)
+            }
+        }
+
     </div>
 </div>
 
@@ -31,9 +59,6 @@
             <div class="col-xs-10 col-md-6">
                 <div class="forum-thread-text">
                     <h3><a href="@project.NiceUrl">@project.Name</a></h3>
-                    <p>
-                        <em>@(project.Live ? "This package is published and live for all to see" : "This is a draft package, and can not be found by others")</em>
-                    </p>
                     <p>
                         @project.Description.StripHtmlAndLimit(45) ...
                         <br />
