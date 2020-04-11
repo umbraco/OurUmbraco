@@ -110,10 +110,10 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 var filters = new List<SearchFilters> { searchFilters };
 
                 var ourSearcher = new OurSearcher(null, "project", filters: filters);
-                            
+
                 var results = ourSearcher.Search("projectSearcher");
 
-                if(results.SearchResults.TotalItemCount > 0)
+                if (results.SearchResults.TotalItemCount > 0)
                 {
                     var packageResult = results.SearchResults.First();
 
@@ -137,15 +137,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             using (var reader = sqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId", sqlHelper.CreateParameter("@projectId", projectId)))
             {
                 if (reader.Read())
-                {
-                    var karma = reader.GetInt("Karma");
-                    if (karma > 0) 
-                    {
-                        return karma;
-                    }
-                    return 0;
-                }
-                     
+                    return reader.GetInt("Karma");
             }
 
             return 0;
@@ -195,7 +187,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("notAPackage", listingItem.NotAPackage);
             content.SetValue("packageGuid", packageGuidString);
             content.SetValue("approved", (listingItem.Approved) ? "1" : "0");
-            if(isUpdate == false)
+            if (isUpdate == false)
                 content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
             content.SetValue("owner", listingItem.VendorId);
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
@@ -254,7 +246,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
 
             var indexer = ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
-            if(indexer != null && listingItem.IsRetired)
+            if (indexer != null && listingItem.IsRetired)
                 indexer.DeleteFromIndex(listingItem.Id.ToString());
         }
 
