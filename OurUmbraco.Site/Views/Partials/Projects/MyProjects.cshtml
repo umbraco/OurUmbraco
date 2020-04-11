@@ -39,7 +39,7 @@
         @if (Model.RetiredProjects.Any())
         {
             <strong>Retired Packages</strong>
-            <em>You have indicated that there projects are no longer being maintained. They are still visible in searches so that people can read the reason why it has been retired.</em>
+            <em>You have indicated that these projects are no longer being maintained. They are still visible in searches so that people can read the reason why it has been retired.</em>
             foreach (var project in Model.RetiredProjects)
             {
                 @RenderProject(project)
