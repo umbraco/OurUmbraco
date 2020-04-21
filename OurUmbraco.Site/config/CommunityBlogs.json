@@ -293,7 +293,7 @@
       "checkTitles": false,
       "title": "My Umbraco Adventures",
       "url": "https://jvantroyen.blogspot.com/",
-      "rss": "http://jvantroyen.blogspot.com/feeds/posts/default",
+      "rss": "https://feeds.feedburner.com/MyUmbracoAdventures",
       "logo": "https://our.umbraco.com/media/upload/0e40926e-0884-42e4-abc4-ed72ab2f2c31/Jeroen%20Vantroyen.png?width=500&height=500&mode=crop&upscale=true",
       "memberId": 274827
     }

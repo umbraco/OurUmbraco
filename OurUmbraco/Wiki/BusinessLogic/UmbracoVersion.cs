@@ -19,7 +19,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
         public static UmbracoVersion DefaultVersion()
         {
-            return AvailableVersions()[UWikiFileVersion.DefaultKey()];
+            var versions = new UWikiFileVersion();
+            return AvailableVersions()[versions.DefaultKey()];
         }
 
         public static Dictionary<string, UmbracoVersion> AvailableVersions()
@@ -27,7 +28,8 @@ namespace OurUmbraco.Wiki.BusinessLogic
             Dictionary<string, UmbracoVersion> Versions = new Dictionary<string, UmbracoVersion>();
             
             //load the wikiFileVersions from the wikiFileVersions.config file
-            var wikiFileVersions = UWikiFileVersion.GetAllVersions();
+            var versions = new UWikiFileVersion();
+            var wikiFileVersions = versions.GetAllVersions();
 
             foreach (var v in wikiFileVersions)
             {

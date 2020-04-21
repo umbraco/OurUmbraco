@@ -75,7 +75,7 @@
             @foreach (var ver in Model.VersionCompatibilities)
             {
                 <div>
-                    <input type="hidden" value="@ver.Version" />
+                    <input type="hidden" value="@(ver.Version.Replace("Version ", string.Empty))" />
                     <span class="report-compat-item" style="display: none;">
                         <select>
                             <option value="0">Not sure</option>

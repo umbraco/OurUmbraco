@@ -1,0 +1,14 @@
+﻿@using Umbraco.Web
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var orderBy = Request["orderBy"];
+}
+
+<label for="orderBy">Sort By</label>
+
+<select id="orderBy" name="orderBy">
+    <option value="popularity" @Umbraco.If(orderBy == "popularity", "selected")>Popular</option>
+    <option value="createDate" @Umbraco.If(orderBy == "createDate", "selected")>Latest</option>
+    <option value="updateDate" @Umbraco.If(orderBy == "updateDate", "selected")>Updated</option>
+</select>
+

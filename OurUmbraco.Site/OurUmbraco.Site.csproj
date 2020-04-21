@@ -511,10 +511,6 @@
     </Content>
     <Content Include="config\uPowers.config" />
     <Content Include="config\UrlRewriting.config" />
-    <Content Include="config\uVersion.backup.config" />
-    <Content Include="config\uVersion.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="config\TeamUmbraco.json" />
     <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
@@ -667,6 +663,7 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageComplete.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
+    <Content Include="robots.txt" />
     <Content Include="scripts\amcharts\charts.js" />
     <Content Include="scripts\amcharts\core.js" />
     <Content Include="scripts\amcharts\deps\canvg.js" />
@@ -1746,7 +1743,6 @@
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Projects\ListCategories.cshtml" />
-    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNavigation.cshtml" />
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
@@ -4454,6 +4450,12 @@
     <Content Include="Views\ProjectLanding.cshtml" />
     <Content Include="Views\Minimal\GitHub\Error.cshtml" />
     <Content Include="Views\Minimal\Master.cshtml" />
+    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
+    <Content Include="Views\Partials\Projects\CategoryDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\VersionDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\SortOrderDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\projectactions.cshtml" />
+    <Content Include="Views\Partials\Projects\searchtemplate.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>

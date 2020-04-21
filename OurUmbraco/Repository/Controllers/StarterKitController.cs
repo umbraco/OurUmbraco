@@ -58,7 +58,8 @@ namespace OurUmbraco.Repository.Controllers
             var officialStarterKitGuidCollection =
                 ConfigurationManager.AppSettings["UmbracoStarterKits"].Split(',').ToList();
             var starterKits = new List<StarterKit>();
-            var allConfiguredVersions = UWikiFileVersion.GetAllVersions();
+            var versions = new UWikiFileVersion();
+            var allConfiguredVersions = versions.GetAllVersions();
 
             // for 7.6.4+ we change behavior and only provide one starter kit
             if (version >= new System.Version(7, 6, 5))
@@ -135,9 +136,9 @@ namespace OurUmbraco.Repository.Controllers
 
                 if (configuredVersion.Key != "nan")
                 {
-                    var voteDescription = configuredVersion.VoteDescription;
-                    voteDescription = voteDescription.Replace("Version ", string.Empty).Replace(".x", ".0");
-                    compatibleVersionsList.Add(new System.Version(voteDescription));
+                    var versionName = configuredVersion.Name;
+                    versionName = versionName.Replace("Version ", string.Empty).Replace(".x", ".0");
+                    compatibleVersionsList.Add(new System.Version(versionName));
                 }
             }
 
