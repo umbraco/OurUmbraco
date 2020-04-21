@@ -13,6 +13,9 @@ namespace OurUmbraco.Project.Api
 {
     public class ProjectUploadController : UmbracoMemberAuthApiController
     {
+        /// <summary>
+        /// Used by the package CLI tool, gets a list of project files to check if one already exists with the same name
+        /// </summary>
         public IEnumerable<WikiFile> GetProjectFiles()
         {
             // The project/member id are exposed as base properties and are resolved from the identity created on the request
@@ -20,6 +23,12 @@ namespace OurUmbraco.Project.Api
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
         }
 
+        /// <summary>
+        /// Posts a package file + some related meta data to update a package from the CLI package tool.
+        /// Includes the zip, whether it should be current, the compatible .NET and Umbraco versions.
+        /// </summary>
+        /// <returns>HttpResponseMessage</returns>
+        /// <exception cref="HttpResponseException"></exception>
         [HttpPost]
         public async Task<HttpResponseMessage> UpdatePackage()
         {

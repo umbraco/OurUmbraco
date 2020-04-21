@@ -65,31 +65,38 @@ namespace OurUmbraco.Auth
 
                         //Get the stored auth key for this project and member
                         var tokenService = new ProjectAuthKeyService(ApplicationContext.Current.DatabaseContext);
-                        var authKey = tokenService.GetAuthKey(memberId, projectId);
+                        var authKeys = tokenService.GetAllAuthKeysForProject(projectId);
 
-                        if (!HMACAuthentication.ValidateToken(context.Token, requestPath, authKey, out DateTime timestamp))
-                            throw new InvalidOperationException("Token validation failed");
+                        var timestamp = new DateTime();
 
-                        //If ok, create a ticket here with the Claims we need to check for in AuthZ
-                        var ticket = new AuthenticationTicket(
-                            new ClaimsIdentity(
-                                new List<Claim>
+                        if (authKeys.Any(authKey =>
+                            HMACAuthentication.ValidateToken(context.Token, requestPath, authKey, out timestamp)))
+                        {
+                            //If ok, create a ticket here with the Claims we need to check for in AuthZ
+                            var ticket = new AuthenticationTicket(
+                                new ClaimsIdentity(
+                                    new List<Claim>
+                                    {
+                                        new Claim(ProjectAuthConstants.BearerTokenClaimType, ProjectAuthConstants.BearerTokenClaimValue),
+                                        new Claim(ProjectAuthConstants.ProjectIdClaim, projectId.ToInvariantString()),
+                                        new Claim(ProjectAuthConstants.MemberIdClaim, memberId.ToInvariantString()),
+                                    },
+
+                                    //The authentication type = this is important, if not set
+                                    //then the ticket's IsAuthenticated property will be false
+                                    authenticationType: ProjectAuthConstants.BearerTokenAuthenticationType),
+                                new AuthenticationProperties
                                 {
-                                    new Claim(ProjectAuthConstants.BearerTokenClaimType, ProjectAuthConstants.BearerTokenClaimValue),
-                                    new Claim(ProjectAuthConstants.ProjectIdClaim, projectId.ToInvariantString()),
-                                    new Claim(ProjectAuthConstants.MemberIdClaim, memberId.ToInvariantString()),
-                                },
+                                    //Expires after 5 minutes in case there are some long running operations
+                                    ExpiresUtc = timestamp.AddMinutes(5)
+                                });
 
-                                //The authentication type = this is important, if not set
-                                //then the ticket's IsAuthenticated property will be false
-                                authenticationType: ProjectAuthConstants.BearerTokenAuthenticationType),
-                            new AuthenticationProperties
-                            {
-                                //Expires after 5 minutes in case there are some long running operations
-                                ExpiresUtc = timestamp.AddMinutes(5)
-                            });
-
-                        context.SetTicket(ticket);
+                            context.SetTicket(ticket);
+                        }
+                        else
+                        {
+                            throw new InvalidOperationException("Token validation failed");
+                        }
                     }
                 }
             });
