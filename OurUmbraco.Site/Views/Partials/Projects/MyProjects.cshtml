@@ -9,7 +9,7 @@
 
         @foreach (var project in Model.Projects)
         {
-            @RenderProject(project)
+            @RenderProject(project, true)
         }
         
         <strong>Package Contributions</strong>
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-@helper RenderProject(IListingItem project)
+@helper RenderProject(IListingItem project, bool owner = false)
 {
     <div class="box liked">
         <div class="row">
@@ -40,6 +40,10 @@
                         <a href="details?projectId=@project.Id">Edit</a>
                         <a href="manage-package-forums/?id=@project.Id">Forums</a>
                         <a href="manage-team/?id=@project.Id">Team</a>
+                        @if (owner)
+                        {
+                            <a href="api-keys/?id=@project.Id">API Keys</a>
+                        }
                     </p>
                 </div>
             </div>

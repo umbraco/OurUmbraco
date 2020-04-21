@@ -29,9 +29,6 @@ namespace OurUmbraco.Auth
             //assign MinValue to expire immediately if the TryParse were to fail
             timestamp = DateTime.MinValue;
 
-            if (!apiKey.IsEnabled)
-                return false;
-
             var decodedToken = GetDecodedToken(token, requestUrl);
             
             double timeStampDouble;
