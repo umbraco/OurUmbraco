@@ -224,13 +224,13 @@ namespace OurUmbraco.Documentation
                             return 6;
                         
                         //Umbraco Heartcore
-                        case "getting-started-cloud"
+                        case "getting-started-cloud":
                             return 0;
-                        case "api-documenation"
+                        case "api-documenation":
                             return 1;
-                        case "client-libraries"
+                        case "client-libraries":
                             return 2;
-                        case "versions-and-updates"
+                        case "versions-and-updates":
                             return 3;
                     }
                     break;
