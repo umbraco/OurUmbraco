@@ -2877,7 +2877,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-	       private void AddEnhancedTextPage()
+	    private void AddEnhancedTextPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -3040,8 +3040,6 @@ namespace OurUmbraco.Our
 
             try
             {
-
-
                 var schema = new DatabaseSchemaHelper(
                     ApplicationContext.Current.DatabaseContext.Database,
                     ApplicationContext.Current.ProfilingLogger.Logger,

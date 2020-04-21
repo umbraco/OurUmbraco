@@ -8,19 +8,11 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
-using Umbraco.Core.Models;
 
 namespace OurUmbraco.Project.Api
 {
     public class ProjectUploadController : UmbracoMemberAuthApiController
     {
-        // http://localhost:24292/Umbraco/Api/ProjectUpload/GetPing
-        // http://our.umbraco.local/Umbraco/Api/ProjectUpload/GetPing
-        public string GetPing()
-        {
-            return $"pong Member {AuthenticatedMember.Id} {AuthenticatedMember.Name} - ProjectNodeId: {ProjectNodeId}";
-        }
-
         public IEnumerable<WikiFile> GetProjectFiles()
         {
             // The project/member id are exposed as base properties and are resolved from the identity created on the request
@@ -67,7 +59,7 @@ namespace OurUmbraco.Project.Api
                     var contentService = ApplicationContext.Services.ContentService;
 
                     // get package guid from id
-                    IContent packageEntity = contentService.GetById(ProjectNodeId);
+                    var packageEntity = contentService.GetById(ProjectNodeId);
                     if (packageEntity != null)
                     {
                         var packageVersion = packageEntity.Version;

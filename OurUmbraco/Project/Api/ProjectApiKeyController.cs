@@ -34,11 +34,13 @@ namespace OurUmbraco.Project.Api
                 catch (InvalidOperationException)
                 {
                     var response = new HttpResponseMessage(HttpStatusCode.Forbidden);
-                    response.Content = new StringContent("A key already exists for the user");
+                    response.Content = new StringContent("We could not create a new key, please try again later");
                     throw new HttpResponseException(response);
                 }
             }
-            return null;
+            var resp = new HttpResponseMessage(HttpStatusCode.Forbidden);
+            resp.Content = new StringContent("Only the owner of the package are allowed to create keys");
+            throw new HttpResponseException(resp);
         }
         
         [HttpPost]
@@ -60,7 +62,9 @@ namespace OurUmbraco.Project.Api
                     throw new HttpResponseException(response);
                 }
             }
-            return null;
+            var resp = new HttpResponseMessage(HttpStatusCode.Forbidden);
+            resp.Content = new StringContent("Only the owner of the package can remove keys");
+            throw new HttpResponseException(resp);
         }
     }
 }

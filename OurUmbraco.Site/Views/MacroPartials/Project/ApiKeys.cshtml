@@ -1,5 +1,4 @@
 ﻿@using OurUmbraco.Auth
-@using OurUmbraco.Project.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
     
@@ -21,11 +20,7 @@
     var keys = authKeyService.GetAllAuthKeysForProject(id);
 
     var keysAreNotNull = keys.Any();
-    
-    var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
 
-    var contris = cs.GetContributors(id).ToList();
-    
     <style>
         .profile-settings { margin-bottom: 50px; }
     </style>

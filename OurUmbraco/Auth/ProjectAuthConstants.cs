@@ -10,6 +10,5 @@
 
         public const string ProjectIdHeader = "OurUmbraco-ProjectId";
         public const string MemberIdHeader = "OurUmbraco-MemberId";
-
     }
 }

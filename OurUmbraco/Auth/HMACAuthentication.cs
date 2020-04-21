@@ -1,11 +1,8 @@
 ﻿using OurUmbraco.Our.Extensions;
 using System;
 using System.Globalization;
-using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Security.Cryptography;
 using System.Text;
-using Umbraco.Core;
 
 namespace OurUmbraco.Auth
 {
