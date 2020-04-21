@@ -18,6 +18,13 @@ namespace OurUmbraco.Project.Api
             _keyService = new ProjectAuthKeyService(ApplicationContext.DatabaseContext);
         }
         
+        /// <summary>
+        /// Used by clientside code to create API keys for a member, a key needs a description, member id and project id
+        /// </summary>
+        /// <param name="projectId">The package id, corresponds to the content node id in the backoffice</param>
+        /// <param name="description">A description of the key set by the member to differentiate their keys</param>
+        /// <returns>Returns a ProjectAuthKey model which contains the key and other needed info</returns>
+        /// <exception cref="HttpResponseException">Returns exception if the member id is not registered as the owner of the package</exception>
         [HttpPost]
         public ProjectAuthKey AddKey(int projectId, string description)
         {
@@ -43,8 +50,16 @@ namespace OurUmbraco.Project.Api
             throw new HttpResponseException(resp);
         }
         
+        /// <summary>
+        /// Used by clientside code to remove API keys for a member
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <param name="contribId">This is the member id</param>
+        /// <param name="primaryKey">PK in the db table - used to differentiate several keys with the same member and project id</param>
+        /// <returns></returns>
+        /// <exception cref="HttpResponseException">Returns exception if the member id is not registered as the owner of the package</exception>
         [HttpPost]
-        public ProjectAuthKey RemoveKey(int projectId, int contribId, int primaryKey)
+        public void RemoveKey(int projectId, int contribId, int primaryKey)
         {
             var project = Umbraco.TypedContent(projectId);
             var memberId = Members.GetCurrentMemberId();

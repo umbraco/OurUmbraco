@@ -6,7 +6,6 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
-using OurUmbraco.Auth;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.ListingItem;
