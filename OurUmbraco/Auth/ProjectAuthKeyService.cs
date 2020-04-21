@@ -26,17 +26,8 @@ namespace OurUmbraco.Auth
         /// <summary>
         /// Try & see if we can find a record in the DB based off the User ID
         /// </summary>
-        /// <param name="identityId">The user or member ID to try and find in the DB</param>
+        /// <param name="memberId">The user or member ID to try and find in the DB</param>
         /// <returns>Returns Auth Token record/object in DB or null if not found</returns>
-        public ProjectAuthKey GetAuthKey(int memberId, int projectId)
-        {
-            //Try & find a record in the DB from the userId
-            var findRecord = _dbContext.Database.SingleOrDefault<ProjectAuthKey>("WHERE MemberId=@0 AND ProjectId=@1", memberId, projectId);
-
-            //Return the object (Will be null if can't find an item)
-            return findRecord;
-        }
-        
         public ProjectAuthKey GetAuthKey(int memberId, int projectId, int primaryKey)
         {
             //Try & find a record in the DB from the userId
@@ -46,6 +37,11 @@ namespace OurUmbraco.Auth
             return findRecord;
         }
         
+        /// <summary>
+        /// Get a list of keys for a project - this is to check against as we dont store a primary key in the api key
+        /// </summary>
+        /// <param name="projectId"></param>
+        /// <returns></returns>
         public List<ProjectAuthKey> GetAllAuthKeysForProject(int projectId)
         {
             //Try & find all records in the DB from the projectId
