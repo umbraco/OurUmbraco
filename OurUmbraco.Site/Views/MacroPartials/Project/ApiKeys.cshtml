@@ -21,10 +21,6 @@
 
     var keysAreNotNull = keys.Any();
 
-    <style>
-        .profile-settings { margin-bottom: 50px; }
-    </style>
-    
     <p>
         The API keys are used to push your package - <strong>@project.Name</strong> - to Our directly from a CI/CD pipeline or your own local machine. <br/>
         Read more on the documentation for the Package CLI tool.
@@ -36,7 +32,7 @@
         {
             <table>
                 <tr>
-                    <th><i class="icon-Key" style="font-size: 30px"></i>Key description</th>
+                    <th><i class="icon-Key"></i>Key description</th>
                     <th>Create Date</th>
                     <th>Remove Key</th>
                 </tr>
@@ -47,7 +43,7 @@
                         <td>@key.DateCreated</td>
                         <td>
                             <div>
-                                <span id="key-warning" style="color: red"></span><br/>
+                                <span id="key-warning"></span><br/>
                                 <a class="button green tiny delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId" data-pk="@key.PrimaryKey">Remove</a>
                             </div>
                         </td>
@@ -71,7 +67,7 @@
                 </div>
 
                 <div>
-                    <span id="add-key-warning" style="color: red"></span><br/>
+                    <span id="add-key-warning"></span><br/>
                     <a class="button green tiny" id="add-key" data-proj-id="@projectId">Add</a>
                 </div>
 

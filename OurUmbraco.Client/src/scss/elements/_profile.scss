@@ -612,3 +612,19 @@ small.notification {
 		}
 	}
 }
+
+.create-key.profile {
+	.profile-settings{
+		margin-bottom: 50px; 
+	}
+}
+
+.manage-keys {
+	.icon-key{
+		font-size: 30px;
+	}
+
+	.add-key-warning + .key-warning {
+		color: red;
+	}
+}
