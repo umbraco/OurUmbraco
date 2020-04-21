@@ -36,5 +36,20 @@ namespace OurUmbraco.Repository.Models
         public PackageOwnerInfo OwnerInfo { get; set; }
         
         public long Score { get; set; }
+
+        /// <summary>
+        ///  path to the image, our.umbraco.com - has multiple crops
+        /// </summary>
+        public string Image { get; set; }
+
+        /// <summary>
+        ///  version range (e.g 7.4 - 8.5) for package
+        /// </summary>
+        public string VersionRange { get; set; }
+
+        /// <summary>
+        ///  shorter summary shown on our.umbraco.com
+        /// </summary>
+        public string Summary { get; set; }
     }
 }
