@@ -4,6 +4,7 @@ namespace OurUmbraco.Repository.Controllers
     {
         Default,
         Latest,
-        Popular
+        Popular,
+        Downloads
     }
 }

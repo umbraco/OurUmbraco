@@ -427,6 +427,39 @@
 			margin-top: 0 !important;
 		}
 	}
+
+	.list-buttons {
+		display: inline-block;
+		margin-top: 10px;
+		white-space: nowrap;
+		&.category {
+			a {
+				white-space:normal;
+			}
+		}
+		a {
+			font-size: .8rem;
+			text-decoration: none;
+			margin-right: 1px;
+			i {
+				color:#fff;
+				font-size: 0.8rem;
+				margin-right: .2rem;
+			}
+			&:last-child {
+				margin-right: 0;
+			}
+		}
+		@media(min-width:$md) {
+			a{
+				font-size: .9rem;
+				margin-right: 8px;
+				i {
+					font-size: 1.1rem;
+				}
+			}
+		}
+	}
 }
 
 

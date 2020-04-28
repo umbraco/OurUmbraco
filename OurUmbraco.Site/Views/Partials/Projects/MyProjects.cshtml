@@ -1,4 +1,4 @@
-﻿@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.MarketPlace.Interfaces
 @using OurUmbraco.Project
 @model OurUmbraco.Our.Models.MyProjectsModel
 
@@ -36,15 +36,24 @@
                     </p>
                     <p>
                         @project.Description.StripHtmlAndLimit(45) ...
-                        <br />
-                        <a href="details?projectId=@project.Id">Edit</a>
-                        <a href="manage-package-forums/?id=@project.Id">Forums</a>
-                        <a href="manage-team/?id=@project.Id">Team</a>
+                    </p>
+                    <div class="list-buttons category">
+                        <a href="details?projectId=@project.Id">
+                            <i class="icon-Edit"></i><span>Edit</span>
+                        </a>
+                        <a href="manage-package-forums/?id=@project.Id" class="edit-post">
+                            <i class="icon-Chat"></i><span>Forums</span>
+                        </a>
+                        <a href="manage-team/?id=@project.Id" class="edit-post">
+                            <i class="icon-Users"></i><span>Team</span>
+                        </a>
                         @if (owner)
                         {
-                            <a href="api-keys/?id=@project.Id">API Keys</a>
+                          <a href="api-keys/?id=@project.Id" class="edit-post">
+                            <i class="icon-Key"></i><span>API Keys</span>
+                          </a>
                         }
-                    </p>
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-md-5">
