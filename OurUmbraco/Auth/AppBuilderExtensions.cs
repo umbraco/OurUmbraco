@@ -113,6 +113,7 @@ namespace OurUmbraco.Auth
         {
             foreach(var h in headers)
             {
+                // the _ var name is a discard - means it is a temp var we don't intend to use: https://docs.microsoft.com/en-us/dotnet/csharp/discards
                 if (!TryGetHeaderValue(context, h, out _))
                     return false;
             }
