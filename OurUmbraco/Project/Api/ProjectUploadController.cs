@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using OurUmbraco.Wiki.BusinessLogic;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +42,7 @@ namespace OurUmbraco.Project.Api
             string root = HttpContext.Current.Server.MapPath("~/App_Data/");
             var workingDir = CreateWorkingFolder(root, "TempPkgFiles");
             var provider = new MultipartFormDataStreamProvider(workingDir);
+            MultipartFileData packageFile = null;
 
             try
             {
@@ -58,7 +60,7 @@ namespace OurUmbraco.Project.Api
                 }
                 else
                 {
-                    var packageFile = provider.FileData.FirstOrDefault();
+                    packageFile = provider.FileData.FirstOrDefault();
                     var fileName = packageFile.Headers.ContentDisposition.FileName.Replace("\"", "");
                     var packageFileExtension = Path.GetExtension(fileName);
                     var fileType = provider.FormData["fileType"];
@@ -96,8 +98,8 @@ namespace OurUmbraco.Project.Api
                        
 
                         contentService.SaveAndPublishWithStatus(packageEntity);
-                        
-                        Directory.Delete(workingDir, true);
+
+                        DeleteTempFile(packageFile);
 
                         return Request.CreateResponse(HttpStatusCode.OK, "Package file updated");
                     }
@@ -107,10 +109,32 @@ namespace OurUmbraco.Project.Api
             {
                 return Request.CreateErrorResponse(HttpStatusCode.InternalServerError, e);
             }
-
+            finally
+            {
+                // if there's any errors, make sure to delete the temp file 
+                DeleteTempFile(packageFile);
+            }
+            
             throw new HttpResponseException(HttpStatusCode.BadRequest);
+
         }
-        
+
+        private static void DeleteTempFile(MultipartFileData packageFile)
+        {
+            try
+            {
+                if (packageFile != null)
+                {
+                    File.Delete(packageFile.LocalFileName);
+                }
+            }
+            catch (Exception e)
+            {
+                // if we can't delete the file then that's alright
+                // we'll monitor and see if we need to clean up at some point
+            }
+        }
+
         private static string CreateWorkingFolder(string path, string subFolder = "", bool clean = true) 
         {
             var folder = Path.Combine(path, subFolder);
