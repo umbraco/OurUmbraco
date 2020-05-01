@@ -38,8 +38,9 @@ namespace OurUmbraco.Project.Api
                 throw new HttpResponseException(HttpStatusCode.UnsupportedMediaType);
             }
 
-            string root = HttpContext.Current.Server.MapPath("~/App_Data");
-            var provider = new MultipartFormDataStreamProvider(root);
+            string root = HttpContext.Current.Server.MapPath("~/App_Data/");
+            var workingDir = CreateWorkingFolder(root, "TempPkgFiles");
+            var provider = new MultipartFormDataStreamProvider(workingDir);
 
             try
             {
@@ -95,6 +96,8 @@ namespace OurUmbraco.Project.Api
                        
 
                         contentService.SaveAndPublishWithStatus(packageEntity);
+                        
+                        Directory.Delete(workingDir, true);
 
                         return Request.CreateResponse(HttpStatusCode.OK, "Package file updated");
                     }
@@ -106,6 +109,17 @@ namespace OurUmbraco.Project.Api
             }
 
             throw new HttpResponseException(HttpStatusCode.BadRequest);
+        }
+        
+        private static string CreateWorkingFolder(string path, string subFolder = "", bool clean = true) 
+        {
+            var folder = Path.Combine(path, subFolder);
+            
+            if (clean && Directory.Exists(folder))
+                Directory.Delete(folder, true);
+
+            Directory.CreateDirectory(folder);
+            return folder;
         }
     }
 }
