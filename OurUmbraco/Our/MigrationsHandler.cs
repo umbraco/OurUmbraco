@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Web.Hosting;
 using System.Xml;
 using System.Xml.Linq;
+using OurUmbraco.Auth;
 using OurUmbraco.NotificationsCore;
 using OurUmbraco.Our.Models.GitHub.AutoReplies;
 using Umbraco.Core;
@@ -88,6 +89,8 @@ namespace OurUmbraco.Our
             AddEnhancedTextPageTemplate();
             AddGridDataType();
             AddGridToEnhancedTextPage();
+            AddIdentityAuthTokensTable();
+            AddApiKeyNodeAndMacro();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -2874,7 +2877,6 @@ namespace OurUmbraco.Our
                 LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
-
         private void AddEnhancedTextPage()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
@@ -3026,6 +3028,88 @@ namespace OurUmbraco.Our
             catch (Exception ex)
             {
                 LogHelper.Error<MigrationsHandler>($"Migration: {migrationName} failed", ex);
+            }
+        }
+
+        private void AddIdentityAuthTokensTable()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+            if (File.Exists(path)) return;
+
+            try
+            {
+                var schema = new DatabaseSchemaHelper(
+                    ApplicationContext.Current.DatabaseContext.Database,
+                    ApplicationContext.Current.ProfilingLogger.Logger,
+                    ApplicationContext.Current.DatabaseContext.SqlSyntax
+                );
+
+                if (schema.TableExist<ProjectAuthKey>() == false)
+                {
+                    schema.CreateTable<ProjectAuthKey>();
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+        
+        private void AddApiKeyNodeAndMacro()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+
+                if (File.Exists(path))
+                {
+                    return;
+                }
+
+                var macroService = ApplicationContext.Current.Services.MacroService;
+                const string macroAlias = "PackageApiKeys";
+                if (macroService.GetByAlias(macroAlias) == null)
+                {
+                    // Run migration
+
+                    var macro = new Macro
+                    {
+                        Name = "Package API Keys",
+                        Alias = macroAlias,
+                        ScriptingFile = "~/Views/MacroPartials/Project/ApiKeys.cshtml",
+                        UseInEditor = true
+                    };
+                    macro.Save();
+                }
+
+                var contentService = ApplicationContext.Current.Services.ContentService;
+                var rootNode = contentService.GetRootContent().OrderBy(x => x.SortOrder).First(x => x.ContentType.Alias == "Community");
+                var memberNode = rootNode.Children().FirstOrDefault(x => string.Equals(x.Name, "Member", StringComparison.InvariantCultureIgnoreCase));
+                var packagesNode = memberNode.Descendants().FirstOrDefault(x => string.Equals(x.Name, "Packages", StringComparison.InvariantCultureIgnoreCase));
+                
+
+                var apiKeysPageName = "API Keys";
+                if (packagesNode != null && packagesNode.Children().Any(x => x.Name == apiKeysPageName) == false)
+                {
+                    var content = contentService.CreateContent(apiKeysPageName, packagesNode.Id, "Textpage");
+                    content.SetValue("bodyText", string.Format("<?UMBRACO_MACRO macroAlias=\"{0}\" />", macroAlias));
+                    contentService.SaveAndPublishWithStatus(content);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
     }

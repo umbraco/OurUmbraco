@@ -1,4 +1,4 @@
-﻿@using OurUmbraco.MarketPlace.Interfaces
+@using OurUmbraco.MarketPlace.Interfaces
 @using OurUmbraco.Project
 @model OurUmbraco.Our.Models.MyProjectsModel
 
@@ -9,7 +9,7 @@
 
         @foreach (var project in Model.Projects)
         {
-            @RenderProject(project)
+            @RenderProject(project, true)
         }
         
         <strong>Package Contributions</strong>
@@ -21,7 +21,7 @@
     </div>
 </div>
 
-@helper RenderProject(IListingItem project)
+@helper RenderProject(IListingItem project, bool owner = false)
 {
     <div class="box liked">
         <div class="row">
@@ -47,6 +47,12 @@
                         <a href="manage-team/?id=@project.Id" class="edit-post">
                             <i class="icon-Users"></i><span>Team</span>
                         </a>
+                        @if (owner)
+                        {
+                          <a href="api-keys/?id=@project.Id" class="edit-post">
+                            <i class="icon-Key"></i><span>API Keys</span>
+                          </a>
+                        }
                     </div>
                 </div>
             </div>
