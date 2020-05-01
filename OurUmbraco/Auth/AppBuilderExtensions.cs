@@ -11,6 +11,7 @@ using Umbraco.Core;
 using umbraco;
 using OurUmbraco.Our.Extensions;
 using Microsoft.Owin.Security.Provider;
+using Umbraco.Web;
 
 namespace OurUmbraco.Auth
 {
@@ -61,7 +62,13 @@ namespace OurUmbraco.Auth
                         if (!TryGetHeaderValue(context, ProjectAuthConstants.ProjectIdHeader, out var projectId))
                             throw new InvalidOperationException("No project Id found in request"); // this will never happen
                         if (!TryGetHeaderValue(context, ProjectAuthConstants.MemberIdHeader, out var memberId))
-                            throw new InvalidOperationException("No project Id found in request"); // this will never happen
+                            throw new InvalidOperationException("No member Id found in request"); // this will never happen
+                        
+                        var umbracoHelper = new Umbraco.Web.UmbracoHelper(Umbraco.Web.UmbracoContext.Current);
+                        var project = umbracoHelper.TypedContent(projectId);
+                        
+                        if(project.GetPropertyValue<int>("owner") != memberId)
+                            throw new InvalidOperationException("The user does not have owner permissions of the package"); // we generate the key ourselves, so would only happen if people edited the key themselves
 
                         //Get the stored auth key for this project and member
                         var tokenService = new ProjectAuthKeyService(ApplicationContext.Current.DatabaseContext);
