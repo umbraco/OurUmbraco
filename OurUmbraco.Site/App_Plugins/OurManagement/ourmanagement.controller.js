@@ -142,4 +142,21 @@
                 notificationsService.error(vm.memberError);
             });
     };
+
+    $scope.getInvalidDocsArticles = function () {
+        var getInvalidDocsUrl = "backoffice/API/Docs/GetInvalidDocsArticles";
+        $http.get(getInvalidDocsUrl)
+            .success(function (data) {
+                if (data.length === 0) {
+                    vm.invalidDocsArticles = "No articles found with invalid YAML";
+                }
+                else {
+                    vm.invalidDocsArticles = data;
+                }
+            })
+            .error(function () {
+                vm.docsError = "❌ Problem with getting the invalid docs article results.";
+                notificationsService.error(vm.memberError);
+            });
+    };
 });

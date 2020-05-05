@@ -11,6 +11,7 @@ using System.Text;
 using YamlDotNet.Serialization;
 using OurUmbraco.Documentation.Busineslogic;
 using System.Configuration;
+using YamlDotNet.Core;
 
 namespace OurUmbraco.Our.Examine
 {
@@ -117,7 +118,7 @@ namespace OurUmbraco.Our.Examine
                 // But first trim all trailing spaces as this only creates issues which are hard to debug
                 // and unclear for users. Make sure you have a ToList because IEnumerable has no IndexOf()
                 secondYamlMarker = lines
-                    .Select(l=>l.TrimEnd())
+                    .Select(l => l.TrimEnd())
                     .ToList()
                     .IndexOf("---", 1);
 
@@ -137,7 +138,15 @@ namespace OurUmbraco.Our.Examine
                         .WithNamingConvention(new YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention())
                         .IgnoreUnmatchedProperties()
                         .Build();
-                    yamlMetaData = deserializer.Deserialize<YamlMetaData>(yamlInput.ToString());
+                    try
+                    {
+                        yamlMetaData = deserializer.Deserialize<YamlMetaData>(yamlInput.ToString());
+                    }
+                    catch (SemanticErrorException ex)
+                    {
+                        LogHelper.Error(typeof(ExamineHelper), "Could not parse the YAML meta data {0}" + yamlInput, ex);
+                        yamlMetaData.Tags = "yamlissue";
+                    }
                 }
 
                 // Add Yaml stuff to the LUCENE index
