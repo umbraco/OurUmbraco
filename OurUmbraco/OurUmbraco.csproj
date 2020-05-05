@@ -488,6 +488,7 @@
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\DashboardStatisticsController.cs" />
+    <Compile Include="Our\Api\DocsController.cs" />
     <Compile Include="Our\Api\InstallationController.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
