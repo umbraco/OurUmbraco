@@ -116,6 +116,32 @@
         
         getTopicDataByWeek: function () {
           return $.get("/umbraco/api/Statistics/GetTopicDataByWeek");
+        },
+
+        addKey: function (projectId, description) {
+            $.ajax({
+                type: "POST",
+                url: "/umbraco/api/ProjectApiKey/AddKey/?projectId=" + projectId + "&description=" + description,
+                success: function(data) {
+                    $("#key-description").val("");
+                    $(".manage-keys").append("<div class=\"profile-settings\" style=\"border: 1px #ccc solid; padding:20px\"> <strong>Key description: <i class=\"icon-Key\" style=\"font-size: 30px\"></i>" + data.description + "</strong> <div class=\"profile-settings-forms\"> <div> <p> This is your generated API key. Make sure to copy it and save it now, when you leave this page you can't get it back! You will have to create a new one if you lose it. </p><textarea readonly style=\"font-family:monospace; font-size:18px; background:#000; color:#fff; width: 100%; padding: 10px 20px 10px 8px; border-radius: 5px;\">" + data.project_id + "-" + data.member_id + "-" + data.authKey + "</textarea> </div></div></div>");
+                    $(".no-keys").text("");
+                },
+                error: function(xhr){
+                    $("#add-key-warning").text(xhr.responseText);
+                }
+            });
+        },
+
+        removeKey: function (projectId, contriId, pk) {
+            $.ajax({
+                type: "POST",
+                url: "/umbraco/api/ProjectApiKey/RemoveKey/?projectId=" + projectId + "&contribId=" + contriId + "&primaryKey=" + pk,
+                success: function() {},
+                error: function(xhr){
+                    $("#key-warning").text(xhr.responseText);
+                }
+            });
         }
     };
 }();
@@ -548,5 +574,36 @@ $(function () {
         document.cookie = "dismissAvatar" + "=" + true + "; " + expires + "; path=/";
 
         $(".avatarTooSmall").hide("fast");
+    });
+
+    /* profile project api keys*/
+    $("#add-key").on("click", function (e) {
+        e.preventDefault();
+
+        $("#add-key-warning").html("");
+
+        if ($("#key-description").val() && $("#key-member")) {
+
+            var data = $(this).data();
+            var projectId = parseInt(data.projId);
+            var description = $("#key-description").val();
+
+            community.addKey(projectId, description);
+        }        
+    });
+
+    $(".delete-key").on("click", function (e) {
+        e.preventDefault();
+
+        $("#key-warning").html("");
+
+        var data = $(this).data();
+        var projectId = parseInt(data.projId);
+        var contriId = parseInt(data.membId);
+        var pk = parseInt(data.pk);
+
+        community.removeKey(projectId, contriId, pk);    
+        
+        $(this).closest("tr").remove();
     });
 });
