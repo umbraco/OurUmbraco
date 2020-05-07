@@ -56,7 +56,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateMeetupStats()
         {
-            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.HourInterval(2));
+            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.HourInterval(4));
         }
 
         public void UpdateGitHubContributorsJsonFile()
