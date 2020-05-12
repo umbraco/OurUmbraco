@@ -2,4 +2,12 @@
     img {
         max-width: 100%;
     }
+
+    img + p.caption {
+        margin-top: -1.25rem;
+        padding-top: 0;
+
+        font-size: .8rem;
+        text-align: center;
+    }
 }
