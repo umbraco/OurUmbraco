@@ -47,12 +47,12 @@
                         <a href="manage-team/?id=@project.Id" class="edit-post">
                             <i class="icon-Users"></i><span>Team</span>
                         </a>
-@*                         @if (owner) *@
-@*                         { *@
-@*                           <a href="api-keys/?id=@project.Id" class="edit-post"> *@
-@*                             <i class="icon-Key"></i><span>API Keys</span> *@
-@*                           </a> *@
-@*                         } *@
+                         @if (owner)
+                         {
+                           <a href="api-keys/?id=@project.Id" class="edit-post">
+                             <i class="icon-Key"></i><span>API Keys</span>
+                           </a>
+                         }
                     </div>
                 </div>
             </div>
