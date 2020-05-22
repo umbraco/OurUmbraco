@@ -63,6 +63,12 @@
     "Alias": "Umbraco.Courier.Contrib",
     "Owner": "umbraco",
     "Slug": "Umbraco.Courier.Contrib",
-    "Name": "Umbraco Courier Contrib" 
+    "Name": "Umbraco Courier Contrib"
+  },
+  {
+    "Alias": "UmbPack",
+    "Owner": "umbraco",
+    "Slug": "UmbPack",
+    "Name": "UmbPack"
   }
 ]
