@@ -96,3 +96,5 @@ MahmoudUmbraco
 jonat123
 ctf-umbraco
 thomasandresen
+Jay-umbr
+hjaltedaniel-umbraco
