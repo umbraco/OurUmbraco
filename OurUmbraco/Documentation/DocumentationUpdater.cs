@@ -113,10 +113,14 @@ namespace OurUmbraco.Documentation
                             return 4;
                         case "add-ons":
                             return 5;
-                        case "umbraco-cloud":
+                        case "umbraco-uno":
                             return 6;
-                        case "umbraco-heartcore":
+                        case "umbraco-cloud":
                             return 7;
+                        case "umbraco-heartcore":
+                            return 8;
+                        case "contribute":
+                            return 9;
                     }
                     break;
 
