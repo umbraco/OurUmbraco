@@ -426,6 +426,9 @@
     <Compile Include="Auth\ProjectAuthKeyService.cs" />
     <Compile Include="Auth\ProjectAuthConstants.cs" />
     <Compile Include="Auth\HMACAuthentication.cs" />
+    <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
+    <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
+    <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Project\Api\ProjectApiKeyController.cs" />
     <Compile Include="Project\Api\UmbracoMemberAuthApiController.cs" />
     <Compile Include="Auth\UmbracoMemberAuthTokenAttribute.cs" />
@@ -513,13 +516,7 @@
     <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
     <Compile Include="Documentation\Controllers\IncomingWebHookAuthorizeFilterAttribute.cs" />
     <Compile Include="Documentation\Controllers\LessonsController.cs" />
-    <Compile Include="Documentation\Models\Artifact.cs" />
-    <Compile Include="Documentation\Models\Compilationmessage.cs" />
-    <Compile Include="Documentation\Models\DocFxUpdateModel.cs" />
-    <Compile Include="Documentation\Models\Eventdata.cs" />
-    <Compile Include="Documentation\Models\Job.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
-    <Compile Include="Documentation\Controllers\DocfxController.cs" />
     <Compile Include="Our\Api\GitHubController.cs" />
     <Compile Include="Our\Api\UpgradeCheckController.cs" />
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
