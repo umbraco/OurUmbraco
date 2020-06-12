@@ -511,7 +511,7 @@
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\Retry.cs" />
     <Compile Include="Documentation\DocumentationUpdater.cs" />
     <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
-    <Compile Include="Documentation\Controllers\AppVeyorAuthorizeFilterAttribute.cs" />
+    <Compile Include="Documentation\Controllers\IncomingWebHookAuthorizeFilterAttribute.cs" />
     <Compile Include="Documentation\Controllers\LessonsController.cs" />
     <Compile Include="Documentation\Models\Artifact.cs" />
     <Compile Include="Documentation\Models\Compilationmessage.cs" />

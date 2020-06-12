@@ -15,7 +15,7 @@ using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Documentation.Controllers
 {
-    [AppVeyorAuthorizeFilter]
+    [IncomingWebHookAuthorizeFilter]
     [PluginController("Documentation")]
     public class DocfxController : UmbracoApiController
     {
