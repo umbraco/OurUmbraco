@@ -55,6 +55,8 @@ jQuery(document).ready(function () {
         $([document.documentElement, document.body]).animate({
             scrollTop: $(target).offset().top - navigation.outerHeight()
         }, 400);
+
+        window.location.hash = target;
     });
 
     // Click effect
