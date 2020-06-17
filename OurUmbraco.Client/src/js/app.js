@@ -45,6 +45,18 @@ jQuery(document).ready(function () {
         $("#" + tab_id).addClass('current');
     });
 
+    // Bookmarks
+    $("a[href^='#']").on('click', function (e) {
+        e.preventDefault();
+
+        var target = $(this).attr('href');
+        var navigation = $('.wrapper > header > .navigation');
+
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(target).offset().top - navigation.outerHeight()
+        }, 400);
+    });
+
     // Click effect
     var ink, d, x, y;
     $(".button, .inked").click(function (e) {
