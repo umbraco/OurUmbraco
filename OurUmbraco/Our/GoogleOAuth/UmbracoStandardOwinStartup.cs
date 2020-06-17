@@ -74,6 +74,7 @@ namespace OurUmbraco.Our.GoogleOAuth
 
             scheduler.CheckContributorBadge(null);
             scheduler.GetNugetDownloads(null);
+            scheduler.FetchStaticApiDocumentation(null);
         }
     }
 }
