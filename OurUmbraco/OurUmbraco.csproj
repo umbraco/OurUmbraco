@@ -427,6 +427,7 @@
     <Compile Include="Auth\ProjectAuthConstants.cs" />
     <Compile Include="Auth\HMACAuthentication.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
+    <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Project\Api\ProjectApiKeyController.cs" />

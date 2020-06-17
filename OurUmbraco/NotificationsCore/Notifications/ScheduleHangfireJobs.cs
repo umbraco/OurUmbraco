@@ -13,6 +13,7 @@ using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Documentation;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
@@ -204,6 +205,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             var nugetService = new NugetPackageDownloadService();
 
             RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
+        }
+        
+        public void FetchStaticApiDocumentation(PerformContext context)
+        {
+            var staticApiDocumentationService = new StaticApiDocumentationService();
+            RecurringJob.AddOrUpdate(() => staticApiDocumentationService.FetchNewApiDocs(context), Cron.MinuteInterval(5));
         }
 
     }
