@@ -67,6 +67,7 @@ namespace OurUmbraco.Project.Api
                     var dotNetVersion = provider.FormData["dotNetVersion"];
                     var umbracoVersions = JsonConvert.DeserializeObject<List<UmbracoVersion>>(provider.FormData["umbracoVersions"]);
                     var isCurrent = bool.Parse(provider.FormData["isCurrent"]);
+                    var packageVersionNumber = provider.FormData["packageVersion"];
 
                     var contentService = ApplicationContext.Services.ContentService;
 
@@ -94,8 +95,8 @@ namespace OurUmbraco.Project.Api
                             packageEntity.SetValue("file", file.Id);
 
                         packageEntity.SetValue("dotNetVersion", dotNetVersion);
+                        packageEntity.SetValue("version", packageVersionNumber);
 
-                       
 
                         contentService.SaveAndPublishWithStatus(packageEntity);
 
