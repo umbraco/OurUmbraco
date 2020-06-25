@@ -67,6 +67,7 @@ namespace OurUmbraco.Project.Api
                     var dotNetVersion = provider.FormData["dotNetVersion"];
                     var umbracoVersions = JsonConvert.DeserializeObject<List<UmbracoVersion>>(provider.FormData["umbracoVersions"]);
                     var isCurrent = bool.Parse(provider.FormData["isCurrent"]);
+                    var packageVersionNumber = provider.FormData["packageVersion"];
 
                     var contentService = ApplicationContext.Services.ContentService;
 
@@ -89,14 +90,14 @@ namespace OurUmbraco.Project.Api
                         );
 
                         file.Current = isCurrent;
-                        
+
                         if (isCurrent)
+                        {
                             packageEntity.SetValue("file", file.Id);
+                            packageEntity.SetValue("version", packageVersionNumber);
+                        }
 
                         packageEntity.SetValue("dotNetVersion", dotNetVersion);
-
-                       
-
                         contentService.SaveAndPublishWithStatus(packageEntity);
 
                         DeleteTempFile(packageFile);
