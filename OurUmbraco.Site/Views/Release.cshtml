@@ -86,6 +86,55 @@
                             </li>
                         </ul>
                     </nav>
+                    <div class="release-hints">
+                        @if (currentPage.Name.StartsWith("8."))
+                        {
+                            <details>                                                        
+                                <summary>Frequently asked questions</summary>
+                                <p>We've put together some answers to often asked questions - <a href="https://our.umbraco.com/documentation/Umbraco8FAQ">you can find it in the Umbraco 8 - FAQ article</a>.</p>
+                            </details>
+                        }
+                        <details>                                                        
+                            <summary>Getting started</summary>
+                            
+                            <p>Make sure to give the <a href="https://our.umbraco.com/documentation/Getting-Started/Setup/Install/">installation instructions a read</a>.</p>
+                            @if (currentPage.Name.StartsWith("8."))
+                            {
+                                <p>Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v8/">foundation videos</a> on how to get started building Umbraco sites.</p>
+                            }
+                            else
+                            {
+                                <p>
+                                    Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
+                                    <ul>
+                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
+                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
+                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
+                                        <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
+                                    </ul>
+                                </p>
+                            }
+                        </details>
+                        <details>                                                        
+                            <summary>World's best community</summary>
+                            <p>You'll find our über active community working hard to help each other at Our Umbraco: <a href="https://our.umbraco.com">https://our.umbraco.com</a></p>
+                        </details>
+                        <details>                                                        
+                            <summary>Upgrading from older versions</summary>
+                            <p>Make sure to read the <a href="https://our.umbraco.com/documentation/getting-started/setup/upgrading/">upgrade instructions</a> before you attempt an upgrade.</p>
+                        </details>
+                        <details>                                                        
+                            <summary>Found a bug?</summary>
+                            <p>We're happy to help you with any problems you encounter, so please report them in <a href="https://github.com/umbraco/Umbraco-CMS/issues/new/choose">the issue tracker</a> and mention you're using version @Model.Content.Name. <br />Do a search first though, if the issue already exists, give it a "thumbs up".</p>
+                        </details>
+                        @if (Model.Content.HasValue("linkToChangeset"))
+                        {
+                            <details>                                                        
+                                <summary>Source code</summary>
+                                <p>The source for <a href="@(Model.Content.GetPropertyValue<string>("linkToChangeset"))">this specific release is available for download from the repository</a> (click the "ZIP" button).</p>
+                            </details>
+                        }
+                    </div>
                 </div><!-- .content-wrapper -->
             </div><!-- .sidebar-content -->
         </div>
@@ -136,17 +185,62 @@
                             list-style-type: none;
                         }
 
-                            .statuses ul li {
-                                position: relative;
-                                margin-bottom: 10px;
-                                padding-left: 10px;
-                            }
+                        .statuses ul li {
+                            position: relative;
+                            margin-bottom: 10px;
+                            padding-left: 10px;
+                        }
 
                         .statuses li:before {
                             position: absolute;
                             top: -4px;
                             left: -25px;
                             font-size: 1.5em;
+                        }
+                        summary {
+                            font-size: 1.1rem;
+                            font-weight: bold;
+                            margin-top: 12px;
+                            cursor: pointer;
+                        }
+                        details ul {
+                            list-style-type: none;
+                            padding-left: 0 !important;
+                            padding-top: 8px !important;
+                        }
+                        details p {
+                            padding-top: 6px;
+                        }
+                        .contrib-badge {
+                            background-color: #7682d6;
+                            color: white;
+                            padding: 5px;
+                            font-family: Lato,sans-serif;
+                            font-size: 0.7rem;
+                            font-weight: bold;
+                            border: 1px solid transparent;
+                            border-radius: 2em;
+                        }
+                        .release-hints {
+                            margin-top: 40px;
+                            margin-left: 20px;
+                            padding-right: 10px;
+                            font-size: 0.7rem;
+                        }
+                        .release-hints h3 {
+                            margin-top: 20px;
+                        }
+                        .release-hints ul {
+                            margin-top: 20px;
+                            list-style-type: none;
+                        }       
+                        .nuget {
+                            margin-left: 67px;
+                            margin-top: 20px;
+                        }
+                        .get-release { 
+                            padding-bottom: 10px !important;
+                            margin-bottom: 0 !important;
                         }
                     </style>
 
@@ -214,12 +308,23 @@
                                             <div style="display: none;"><a href="/ReleaseDownload?id=@item.Id" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', '@item.Name']);">@item.Name</a></div>
                                         }
                                     }
+                                    
+                                    <div class="release col-md-@(downloads.Length % 2 == 0 ? "7 nuget" : "6") package-detail-sidebar">
+                                        @if (Model.Content.GetPropertyValue<bool>("hasNuGet"))
+                                        {
+                                            <h3>Also available on NuGet</h3>
+                                            
+                                            <span class="pm-nuget">
+                                                <input class="pre nuget" value="Install-Package UmbracoCms -Version @Model.Content.Name" readonly="">
+                                            </span>
+                                        }
+                                    </div>
                                 </div>
                             }
                         }
                         <div class="row markdown-syntax">
 
-                            <div class="col-md-5">
+                            <div class="col-md-10">
 
                                 @if (release.ReleaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
                                 {
@@ -239,33 +344,63 @@
                                 <div class="panel-wrapper">
                                     <div class="panel-left">
                                         <!-- Columns for statuses -->
-                                        <div class="statuses group">
-                                            <div class="status features">
-                                                <h3>Features</h3>
-                                                @{
-                                                    var features = release.Features.ToList();
-                                                    if (features.Any())
+                                                
+                                                @if(release.FullVersion >= new Version(8, 7, 0))
+                                                {
+                                                    foreach (var category in release.CategorizedIssues.OrderBy(x => x.Priority).ThenBy(x => x.Name))
                                                     {
-                                                        foreach (var issue in features)
-                                                        {
-                                                            <ul>
-                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @{
-                                                                        var url = issue.Source == ReleaseSource.YouTrack 
-                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}" 
-                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
-                                                                    }
-                                                                    <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
-                                                                </li>
-                                                            </ul>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No items to display</p>
+                                                        <details open>                                                        
+                                                            <summary>@category.Name</summary>
+                                                            
+                                                            @foreach (var issue in category.Issues)
+                                                            {
+                                                                <ul>
+                                                                    <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                        @{
+                                                                            var url = issue.Source == ReleaseSource.YouTrack
+                                                                                ? $"https://issues.umbraco.org/issue/{issue.Id}"
+                                                                                : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+                                                                        }
+                                                                        <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Title</a>
+                                                                        @if (issue.CommunityContribution)
+                                                                        {
+                                                                            <span class="contrib-badge">contrib</span>
+                                                                        }
+                                                                    </li>
+                                                                </ul>
+                                                            }
+                                                        </details>
                                                     }
                                                 }
-                                            </div>
+                                                else 
+                                                {
+                                                    <div class="statuses group">
+                                                        <div class="status features">
+                                                            <h3>Features</h3>
+                                                            @{
+                                                                var features = release.Features.ToList();
+                                                                if (features.Any())
+                                                                {
+                                                                    foreach (var issue in features)
+                                                                    {
+                                                                        <ul>
+                                                                            <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                                @{
+                                                                                    var url = issue.Source == ReleaseSource.YouTrack
+                                                                                        ? $"https://issues.umbraco.org/issue/{issue.Id}"
+                                                                                        : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+                                                                                }
+                                                                                <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
+                                                                            </li>
+                                                                        </ul>
+                                                                    }
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p>No items to display</p>
+                                                                }
+                                                            }
+                                                        </div>
                                             <div class="status breaking">
                                                 <h3>Breaking Changes</h3>
                                                 @{
@@ -282,6 +417,10 @@
                                                                             : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                     }
                                                                     <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
+                                                                    @if (issue.CommunityContribution)
+                                                                    {
+                                                                        <span class="contrib-badge">contrib</span>
+                                                                    }
                                                                 </li>
                                                             </ul>
                                                         }
@@ -309,6 +448,10 @@
                                                                             : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                     }
                                                                     <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
+                                                                    @if (issue.CommunityContribution)
+                                                                    {
+                                                                        <span class="contrib-badge">contrib</span>
+                                                                    }                                                                    
                                                                 </li>
                                                             </ul>
                                                         }
@@ -320,61 +463,11 @@
                                                 }
                                             </div>
                                         </div>
+                                        }
                                     </div>
+                                   
                                 </div>
                             </div>
-
-                            <div class="col-md-5 col-md-offset-2">
-                                @if (currentPage.Name.StartsWith("8."))
-                                {
-                                    <h2>Frequently asked questions</h2>
-                                    <p>We've put together some answers to often asked questions - <a href="https://our.umbraco.com/documentation/Umbraco8FAQ">you can find it in the Umbraco 8 - FAQ article</a>.</p>
-                                }
-                                <h2>Getting started</h2>
-
-                                <p>Make sure to give the <a href="https://our.umbraco.com/documentation/Getting-Started/Setup/Install/">installation instructions a read</a>.</p>
-                                @if (currentPage.Name.StartsWith("8."))
-                                {
-                                    <p>Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v8/">foundation videos</a> on how to get started building Umbraco sites.</p>
-                                }
-                                else
-                                {
-                                    <p>
-                                        Check the <strong>free</strong> <a href="https://umbraco.tv/videos/umbraco-v7/implementor/">foundation videos</a> on how to get started building Umbraco sites. They're available from:<br />
-                                        <ul>
-                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/installation/">Installation</a></li>
-                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/document-types/">Document Types</a></li>
-                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/templating/">Templating</a></li>
-                                            <li><a href="https://umbraco.tv/videos/umbraco-v7/implementor/fundamentals/stylesheets-and-javascript/">Stylesheets and Javascript</a></li>
-                                        </ul>
-                                    </p>
-                                }
-                                <h2>World's best community</h2>
-                                <p>You'll find our über active community working hard to help each other at Our Umbraco: <a href="https://our.umbraco.com">https://our.umbraco.com</a></p>
-                                <h2>Upgrading from older versions</h2>
-                                <p>Make sure to read the <a href="https://our.umbraco.com/documentation/getting-started/setup/upgrading/">upgrade instructions</a> before you attempt an upgrade.</p>
-
-
-                                <h2>Found a bug?</h2>
-                                <p>We're happy to help you with any problems you encounter, so please report them in <a href="https://github.com/umbraco/Umbraco-CMS/issues/new/choose">the issue tracker</a> and mention you're using version @Model.Content.Name. <br />Do a search first though, if the issue already exists, give it a "thumbs up".</p>
-
-                                @if (Model.Content.HasValue("linkToChangeset"))
-                                {
-                                    <h2>Source code</h2>
-                                    <p>The source for <a href="@(Model.Content.GetPropertyValue<string>("linkToChangeset"))">this specific release is available for download from the repository</a> (click the "ZIP" button).</p>
-                                }
-
-                                @if (Model.Content.GetPropertyValue<bool>("hasNuGet"))
-                                {
-                                    <h2>Also available on NuGet</h2>
-
-                                    <div class="nuget-badge">
-                                        <a href="https://nuget.org/packages/UmbracoCms/@Model.Content.Name">
-                                            <p><code>PM&gt; Install-Package UmbracoCms -Version @Model.Content.Name</code></p>
-                                        </a>
-                                    </div>
-                                }
-                            </div><!-- col-md-5 col-md-offset-2 -->
                         </div><!-- .row .markdown-syntax -->
                     </div>
                 </div><!-- .content-wrapper -->

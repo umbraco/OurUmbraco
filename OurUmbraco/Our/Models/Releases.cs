@@ -63,7 +63,9 @@ namespace OurUmbraco.Our.Models
         [JsonIgnore]
         public IEnumerable<Issue> Features { get; set; }
 
-
+        [JsonProperty("categorizedIssues")]
+        public List<Category> CategorizedIssues { get; set; }
+        
         public class Issue
         {
             [JsonProperty("id")]
@@ -86,8 +88,28 @@ namespace OurUmbraco.Our.Models
 
             [JsonIgnore]
             public string Resolved { get; set; }
+            
+            [JsonProperty("contrib")]
+            public bool CommunityContribution { get; set; }
+        }
+        
+        public class Category
+        {
+            [JsonProperty("name")]
+            public string Name { get; set; }
+
+            [JsonIgnore]
+            public List<string> MatchingLabels { get; set; }
+
+            [JsonProperty("priority")]
+            public int Priority { get; set; }
+
+            [JsonProperty("issues")]
+            public List<Issue> Issues { get; set; }
         }
     }
+
+
     public enum ReleaseSource
     {
         YouTrack,
