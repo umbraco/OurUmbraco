@@ -94,7 +94,9 @@ namespace OurUmbraco.Project.Api
                         if (isCurrent)
                         {
                             packageEntity.SetValue("file", file.Id);
-                            packageEntity.SetValue("version", packageVersionNumber);
+                            
+                            if(!string.IsNullOrEmpty(packageVersionNumber)) // nessecary check for older versions of umbpack
+                                packageEntity.SetValue("version", packageVersionNumber);
                         }
 
                         packageEntity.SetValue("dotNetVersion", dotNetVersion);
