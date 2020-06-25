@@ -90,14 +90,14 @@ namespace OurUmbraco.Project.Api
                         );
 
                         file.Current = isCurrent;
-                        
+
                         if (isCurrent)
+                        {
                             packageEntity.SetValue("file", file.Id);
+                            packageEntity.SetValue("version", packageVersionNumber);
+                        }
 
                         packageEntity.SetValue("dotNetVersion", dotNetVersion);
-                        packageEntity.SetValue("version", packageVersionNumber);
-
-
                         contentService.SaveAndPublishWithStatus(packageEntity);
 
                         DeleteTempFile(packageFile);
