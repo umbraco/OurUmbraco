@@ -347,7 +347,6 @@
                                                 
                                                 @if(release.FullVersion >= new Version(8, 7, 0))
                                                 {
-                                                    var totalIssues = 0;
                                                     foreach (var category in release.CategorizedIssues.OrderBy(x => x.Priority).ThenBy(x => x.Name))
                                                     {
                                                         <details open>                                                        
@@ -355,7 +354,6 @@
                                                             
                                                             @foreach (var issue in category.Issues)
                                                             {
-                                                                totalIssues++;
                                                                 <ul>
                                                                     <li class="@issue.State.StateIcon()" title="@issue.State">
                                                                         @{
@@ -373,7 +371,6 @@
                                                             }
                                                         </details>
                                                     }
-                                                    <span>Total: @totalIssues</span>
                                                 }
                                                 else 
                                                 {
