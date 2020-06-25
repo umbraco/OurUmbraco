@@ -96,6 +96,7 @@ namespace OurUmbraco.Our.Extensions
                 case "open":
                     return "icon-Checkbox-empty";
                 case "review":
+                case "new":
                 case "inprogress":
                 case "in-progress":
                     return "icon-Paper-plane-alt";
