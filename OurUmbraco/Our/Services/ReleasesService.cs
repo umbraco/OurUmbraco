@@ -237,6 +237,10 @@ namespace OurUmbraco.Our.Services
                     if (label.Name.StartsWith("release/") == false)
                         continue;
 
+                    // this label makes sure the item doesn't show up in the release notes, it adds no value
+                    if(item.Labels.Any(x => x.Name == "release/no-notes"))
+                        continue;
+
                     var version = label.Name.Replace("release/", string.Empty);
                     var release = releases.FirstOrDefault(x => x.Version == version);
                     if (release == null)
@@ -253,7 +257,7 @@ namespace OurUmbraco.Our.Services
 
                     var breaking = item.Labels.Any(x => x.Name == "category/breaking");
                     var communityContrib = item.Labels.Any(x => x.Name == "community/pr");
-
+                    
                     var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
 
                     // default state

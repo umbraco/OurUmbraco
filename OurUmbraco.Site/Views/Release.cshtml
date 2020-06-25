@@ -347,6 +347,7 @@
                                                 
                                                 @if(release.FullVersion >= new Version(8, 7, 0))
                                                 {
+                                                    var totalIssues = 0;
                                                     foreach (var category in release.CategorizedIssues.OrderBy(x => x.Priority).ThenBy(x => x.Name))
                                                     {
                                                         <details open>                                                        
@@ -354,6 +355,7 @@
                                                             
                                                             @foreach (var issue in category.Issues)
                                                             {
+                                                                totalIssues++;
                                                                 <ul>
                                                                     <li class="@issue.State.StateIcon()" title="@issue.State">
                                                                         @{
@@ -364,13 +366,14 @@
                                                                         <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Title</a>
                                                                         @if (issue.CommunityContribution)
                                                                         {
-                                                                            <span class="contrib-badge">contrib</span>
+                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
                                                                         }
                                                                     </li>
                                                                 </ul>
                                                             }
                                                         </details>
                                                     }
+                                                    <span>Total: @totalIssues</span>
                                                 }
                                                 else 
                                                 {
@@ -391,6 +394,10 @@
                                                                                         : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                                 }
                                                                                 <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
+                                                                                @if (issue.CommunityContribution)
+                                                                                {
+                                                                                    <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
+                                                                                }                                                                                
                                                                             </li>
                                                                         </ul>
                                                                     }
@@ -419,7 +426,7 @@
                                                                     <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
                                                                     @if (issue.CommunityContribution)
                                                                     {
-                                                                        <span class="contrib-badge">contrib</span>
+                                                                        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
                                                                     }
                                                                 </li>
                                                             </ul>
@@ -450,7 +457,7 @@
                                                                     <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
                                                                     @if (issue.CommunityContribution)
                                                                     {
-                                                                        <span class="contrib-badge">contrib</span>
+                                                                        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
                                                                     }                                                                    
                                                                 </li>
                                                             </ul>
