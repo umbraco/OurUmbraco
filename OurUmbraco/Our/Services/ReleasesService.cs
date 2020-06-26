@@ -286,7 +286,8 @@ namespace OurUmbraco.Our.Services
                         Title = item.Title.Replace("v8: ", "").Replace("V8: ", "").Replace("v8:", "").Replace("v8:", ""),
                         Type = type,
                         Source = ReleaseSource.GitHub,
-                        CommunityContribution = communityContrib
+                        CommunityContribution = communityContrib,
+                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : ""
                     };
 
                     if (release.FullVersion >= new System.Version(8, 7, 0))

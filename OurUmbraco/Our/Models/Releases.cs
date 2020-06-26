@@ -91,6 +91,9 @@ namespace OurUmbraco.Our.Models
             
             [JsonProperty("contrib")]
             public bool CommunityContribution { get; set; }
+            
+            [JsonProperty("contrib-img")]
+            public string ContributorAvatar { get; set; }
         }
         
         public class Category

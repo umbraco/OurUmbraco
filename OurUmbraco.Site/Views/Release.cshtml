@@ -221,6 +221,13 @@
                             border: 1px solid transparent;
                             border-radius: 2em;
                         }
+                        .contrib-img {
+                            margin-right: -10px !important;
+                            margin-bottom: -10px !important;
+                            margin-left: 4px !important;
+                            border: 1px solid transparent;
+                            border-radius: 2em;
+                        }
                         .release-hints {
                             margin-top: 40px;
                             margin-left: 20px;
@@ -365,6 +372,10 @@
                                                                         @if (issue.CommunityContribution)
                                                                         {
                                                                             <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
+                                                                        }
+                                                                        @if (issue.CommunityContribution && issue.ContributorAvatar != string.Empty)
+                                                                        {
+                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib <img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img"/></span>
                                                                         }
                                                                     </li>
                                                                 </ul>
