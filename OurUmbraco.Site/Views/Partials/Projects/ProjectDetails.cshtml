@@ -67,8 +67,12 @@
     var isRetired = project.GetPropertyValue<bool>("isRetired");
 
     var avatarService = new AvatarService();
-    var img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
-
+    var img = string.Empty;
+    if (owner != null)
+    {
+        img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
+    }
+    
     var badges = owner.GetRoles().GetBadges();
 }
 
@@ -329,22 +333,26 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="package-creator-information">
-                                        @Html.Raw(img)
-                                        <div class="text">
-                                            <h3>
-                                                <a href="/member/@owner.Id">
-                                                    @owner.Name
-                                                </a>
-                                            </h3>
-                                            <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                        @if (owner != null)
+                                        {
+                                            @Html.Raw(img)
 
-                                            @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
-                                            {
-                                                <br />
-                                                <br />
-                                                <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
-                                            }
-                                        </div>
+                                            <div class="text">
+                                                <h3>
+                                                    <a href="/member/@owner.Id">
+                                                        @owner.Name
+                                                    </a>
+                                                </h3>
+                                                <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+
+                                                @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
+                                                {
+                                                    <br/>
+                                                    <br/>
+                                                    <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
+                                                }
+                                            </div>
+                                        }
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -381,9 +389,12 @@
                             <h3>Package Information</h3>
 
                             <ul>
-                                <li>
-                                    <span>Package owner:</span> @owner.Name
-                                </li>
+                                @if (owner != null)
+                                {
+                                    <li>
+                                        <span>Package owner:</span> @owner.Name
+                                    </li>
+                                }
 
                                 @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab"))
                                 {
@@ -427,7 +438,7 @@
                                 <li>
                                     <span>Downloads on Our:</span> @ourDownloads
                                 </li>
-                                
+
                                 @if (nugetDownloads > 0)
                                 {
                                     <li>

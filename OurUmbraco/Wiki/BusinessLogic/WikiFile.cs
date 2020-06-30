@@ -324,10 +324,17 @@ WHERE timestamp > @from";
                 using (var sqlHelper = Application.SqlHelper)
                 {
                     sqlHelper.ExecuteNonQuery(
-                        "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
+                        "INSERT INTO wikiFiles (path, name, createdBy, createDate, [current], nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @createDate, @current, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
                         sqlHelper.CreateParameter("@path", Path),
                         sqlHelper.CreateParameter("@name", Name),
                         sqlHelper.CreateParameter("@createdBy", CreatedBy),
+                        sqlHelper.CreateParameter("@createDate", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
+                        
+                        // Note: for some reason this has to be set to 1 else package uploads will fail
+                        // Interestingly, this property is never actually used, we use the currentFile
+                        // Note2: HACK! This is stored as a type `bit` and you need to pass "1" instead of a boolean 🤷‍♂️
+                        sqlHelper.CreateParameter("@current", "1"),
+                        
                         sqlHelper.CreateParameter("@nodeId", NodeId),
                         sqlHelper.CreateParameter("@type", FileType),
                         sqlHelper.CreateParameter("@nodeVersion", NodeVersion),
@@ -340,9 +347,7 @@ WHERE timestamp > @from";
                         sqlHelper.CreateParameter("@minimumVersionStrict",
                             string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
-
-                    CreateDate = DateTime.Now;
-
+                    
                     Id = sqlHelper.ExecuteScalar<int>(
                             "SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy",
                             sqlHelper.CreateParameter("@createdBy", CreatedBy));

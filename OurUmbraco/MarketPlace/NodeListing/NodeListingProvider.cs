@@ -276,7 +276,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
         private static IEnumerable<IPublishedContent> GetProjectsFromDeliProjectRoot(bool all)
         {
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-            var content = umbracoHelper.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+            var content = umbracoHelper.TypedContentAtRoot().First(x => string.Equals(x.DocumentTypeAlias, "community", StringComparison.CurrentCultureIgnoreCase))
+                .Children.First(x => string.Equals(x.DocumentTypeAlias, "projects", StringComparison.CurrentCultureIgnoreCase));
             if (content == null)
                 throw new Exception("Could not find the Deli project root.");
             var contents = content.Descendants().Where(c => c.DocumentTypeAlias == "Project");

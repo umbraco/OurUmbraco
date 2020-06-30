@@ -61,8 +61,9 @@
     var topics = ts.GetLatestTopicsForMember(member.Id);
 
     var badges = member.GetRoles().GetBadges();
-
-    var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+    
+    var content = Umbraco.TypedContentAtRoot().First(x => string.Equals(x.DocumentTypeAlias, "community", StringComparison.CurrentCultureIgnoreCase))
+        .Children.First(x => string.Equals(x.DocumentTypeAlias, "projects", StringComparison.CurrentCultureIgnoreCase));
     IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
     var contribProjects = new List<IPublishedContent>();
     if (content != null)
