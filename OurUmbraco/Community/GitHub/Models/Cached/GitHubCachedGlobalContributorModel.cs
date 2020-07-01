@@ -2,7 +2,7 @@ namespace OurUmbraco.Community.GitHub.Models.Cached
 {
     public class GitHubCachedGlobalContributorModel
     {
-        public int AuthorId { get; set; }
+        public long AuthorId { get; set; }
 
         public string AuthorLogin { get; set; }
 

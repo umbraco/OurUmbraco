@@ -68,7 +68,7 @@ namespace OurUmbraco.Community.GitHub.Models
     {
         public string Login { get; set; }
 
-        public int Id { get; set; }
+        public long Id { get; set; }
 
         [DataMember(Name = "avatar_url")]
         public string AvatarUrl { get; set; }

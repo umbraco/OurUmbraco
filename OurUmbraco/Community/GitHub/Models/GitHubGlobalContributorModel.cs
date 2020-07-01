@@ -7,7 +7,7 @@ namespace OurUmbraco.Community.GitHub.Models
     {
         public List<GitHubContributorModel> Items { get; set; }
 
-        public int Id
+        public long Id
         {
             get { return Author.Id; }
         }

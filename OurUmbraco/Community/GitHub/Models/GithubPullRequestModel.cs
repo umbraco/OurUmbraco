@@ -5,7 +5,7 @@ namespace OurUmbraco.Community.GitHub.Models
 {
     public class GithubPullRequestModel
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Repository { get; set; }
         public string State { get; set; }
         public string Title { get; set; }
@@ -23,13 +23,13 @@ namespace OurUmbraco.Community.GitHub.Models
 
     public class GithubPullRequestUser
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Login { get; set; }
     }
 
     public class GithubPullRequestComment
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public GithubPullRequestUser user { get; set; }
         public DateTime created_at { get; set; }
         public DateTime updated_at { get; set; }
