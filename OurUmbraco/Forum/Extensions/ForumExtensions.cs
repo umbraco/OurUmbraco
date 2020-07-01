@@ -222,6 +222,18 @@ namespace OurUmbraco.Forum.Extensions
             return GetBoolValueRecursive(forum, "Forum", archivedProperty);
         }
         
+        public static bool IsForumOwner(this IPublishedContent content, int memberId)
+        {
+            if (string.Equals(content.ContentType.Alias, "project", StringComparison.InvariantCultureIgnoreCase))
+            {
+                var packageOwnerId = content.GetPropertyValue<int>("owner");
+                if (memberId == packageOwnerId)
+                    return true;
+            }
+
+            return false;
+        }
+        
         private static bool GetBoolValueRecursive(IPublishedContent content, string contentTypeAlias, string propertyAlias)
         {
             if (content.Parent.ContentType.Alias != contentTypeAlias)
@@ -232,5 +244,6 @@ namespace OurUmbraco.Forum.Extensions
 
             return GetBoolValueRecursive(content.Parent, contentTypeAlias, propertyAlias);
         }
+
     }
 }

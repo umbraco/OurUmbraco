@@ -3,6 +3,7 @@
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
 @using OurUmbraco.Our.Extensions
+@using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Powers.Library
 
 @{
@@ -15,7 +16,13 @@
     var currentMemberIsAuthor = currentMember != null && commentAuthor != null && currentMember.Id == commentAuthor.Member.Id;
     var memberIsAdmin = Model.MemberData != null && Model.MemberData.IsAdmin;
     var canSeePost = Model.IsSpam == false || currentMemberIsAuthor || memberIsAdmin;
-
+    var memberIsPackageOwner = false;
+    if (currentMember != null)
+    {
+        var parentContent = Umbraco.AssignedContentItem.Parent;
+        memberIsPackageOwner = parentContent.IsForumOwner(currentMember.Id);
+    }
+        
     var forumReadOnly = Model.ForumNewTopicsAllowed == false;
 }
 @* If author exists and comment is either not spam or the viewer is a the author or an admin *@
@@ -140,7 +147,7 @@
                     <i class="icon-Flag"></i><span>Flag as spam</span>
                 </a>
 
-                if (Model.IsAnswer == false && (memberIsAdmin || currentMember.Id == Model.TopicAuthorId))
+                if (Model.IsAnswer == false && (memberIsAdmin || currentMember.Id == Model.TopicAuthorId || memberIsPackageOwner))
                 {
                     <a href="#" class="solved" data-id="@Model.Id">
                         <i class="icon-Check"></i><span>Mark as solution</span>
