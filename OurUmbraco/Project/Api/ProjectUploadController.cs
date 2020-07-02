@@ -26,6 +26,17 @@ namespace OurUmbraco.Project.Api
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
         }
 
+        [HttpGet]
+        public int GetCurrentPackageFileId()
+        {
+            var contentService = ApplicationContext.Services.ContentService;
+            var packageEntity = contentService.GetById(ProjectNodeId);
+            
+            var packageFileId = packageEntity.GetValue<int>("file");
+            
+            return packageFileId;
+        }
+
         /// <summary>
         /// Endpoint that takes a list of package file ids from UmbPack then archives them
         /// </summary>
@@ -41,7 +52,7 @@ namespace OurUmbraco.Project.Api
                 foreach (var archiveFileId in ids)
                 {
                     var archiveFile = mediaProvider.GetFileById(archiveFileId);
-                    archiveFile.Archived = !archiveFile.Archived;
+                    archiveFile.Archived = true;
                     mediaProvider.SaveOrUpdate(archiveFile);
                 }
 
