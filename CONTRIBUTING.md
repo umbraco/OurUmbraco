@@ -20,7 +20,7 @@ It's a good idea to pull in upstream changes, merge and commit to your own fork 
 And then each time you want to get the changes:
 
 	git fetch upstream
-	git rebase upstream/master
+	git rebase upstream/main
 
 There's more information on how this works [here](http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
 
