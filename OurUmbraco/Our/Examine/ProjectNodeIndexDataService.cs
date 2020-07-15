@@ -140,7 +140,11 @@ namespace OurUmbraco.Our.Examine
             var allProjectDownloads = Utils.GetProjectTotalPackageDownload();
             var allCompatVersions = Utils.GetProjectCompatibleVersions();
             var mostRecentDownloadDate = WikiFile.GetMostRecentDownloadDate();
-            var downloadStats = WikiFile.GetMonthlyDownloadStatsByProject(mostRecentDownloadDate.Subtract(TimeSpan.FromDays(365)));            
+
+            // if most recent download date is MinValue then there is no download data to query
+            var downloadStats = mostRecentDownloadDate == DateTime.MinValue
+                ? new Dictionary<int, MonthlyProjectDownloads>()
+                : WikiFile.GetMonthlyDownloadStatsByProject(mostRecentDownloadDate.Subtract(TimeSpan.FromDays(365)));
 
             foreach (var project in projects)
             {

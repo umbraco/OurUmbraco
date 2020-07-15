@@ -117,7 +117,7 @@ WHERE timestamp > @from";
                         Path = result.path,
                         Name = result.name,
                         FileType = result.type,
-                        RemovedBy = result.removedBy,
+                        RemovedBy = result.removedBy ?? 0,
                         CreatedBy = result.createdBy,
                         NodeVersion = result.version,
                         NodeId = result.nodeId,
