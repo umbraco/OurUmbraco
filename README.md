@@ -24,7 +24,7 @@ Restore the database to SQL Server 2017 (won't work on earlier versions) and upd
 
 ## Logging in
 
-* To log into the backoffice use  `admin@our.test` / `1234567890`.
+* To log into the backoffice use  `our@admin.test` / `1234567890`.
 
 * To log into the frontend use `member@our.test` / `1234567890`. 
 
