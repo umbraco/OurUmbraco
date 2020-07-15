@@ -18,20 +18,15 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.  If you don't have the 7zip utility installed you can download it from [7-zip.org](https://www.7-zip.org/) 
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200715.bacpac.
 
 Restore the database to SQL Server 2017 (won't work on earlier versions) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
-If your SQL Server instance has the 'containment' feature enabled you can use these credentials in your connection string:
-`user id=OurDevAnon;password=gQW435Jg32;`
-
 ## Logging in
 
-All users and members use the same password: Not_A_Real_Password
+* To log into the backoffice use  `admin@our.test` / `1234567890`.
 
-* To log into the backoffice use  `root` / `Not_A_Real_Password`.
-
-* To log into the frontend use `member_login@umbraco.org` / `Not_A_Real_Password`. You will be logging as Sebastiaan from Umbraco HQ.  All other profile information is anonymous.
+* To log into the frontend use `member@our.test` / `1234567890`. 
 
 ⚠⚠⚠
 
@@ -53,7 +48,7 @@ Additionally, you will need to set requireSSL in the `Web.Config` to **false** t
 
 ## Projects Area
 
-If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco.
+If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco. 
 
 ## Documentation Area
 
