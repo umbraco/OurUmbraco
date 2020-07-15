@@ -7,7 +7,7 @@ To contribute to the community site, you can fork & clone our repository, make y
  * [The simple guide to GIT](http://rogerdudler.github.io/git-guide/)
 
 ## Repository organisation
-All active work done on the documentation is currently being done on the `master` branch.
+All active work done on the documentation is currently being done on the `main` branch.
 
 ### Contributing
 First fork and clone the repository so that you have your own working copy. Then create a new branch on your local copy to make your changes. Once you are happy with your edits, use GitHub to issue a "pull request", which means your edits will be reviewed, and once accepted, merged into the main repository.
