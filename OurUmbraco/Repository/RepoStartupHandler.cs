@@ -21,6 +21,13 @@ namespace OurUmbraco.Repository
                 defaults: new { id = RouteParameter.Optional, controller = "StarterKit" },
                 constraints: new { }
             );
+            
+            RouteTable.Routes.MapHttpRoute(
+                name: "ReleasesApi",
+                routeTemplate: "webapi/releases/{id}",
+                defaults: new { id = RouteParameter.Optional, controller = "Releases" },
+                constraints: new { }
+            );
 
             GlobalConfiguration.Configuration.EnableCors();
         }
