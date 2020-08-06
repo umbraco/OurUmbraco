@@ -105,7 +105,7 @@ namespace OurUmbraco.Our.Examine
 
             if (_dailyNugetDownLoads.HasValue)
             {
-                nugetDownloads = (_dailyNugetDownLoads.Value * (int)((_now - _now.AddDays(-6)).TotalDays));               
+                nugetDownloads = (_dailyNugetDownLoads.Value * (int)((_now - _now.AddMonths(-6)).TotalDays));               
             }
 
             score += nugetDownloads;
