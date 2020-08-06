@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using Examine;
 using Examine.SearchCriteria;
@@ -13,6 +14,7 @@ using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -176,6 +178,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 : Guid.NewGuid().ToString();
 
             //set all the document properties
+            content.Name = listingItem.Name;
             content.SetValue("description", listingItem.Description);
             content.SetValue("version", listingItem.CurrentVersion);
             content.SetValue("file", listingItem.CurrentReleaseFile);
@@ -248,7 +251,18 @@ namespace OurUmbraco.MarketPlace.NodeListing
             if (listingItem.IsRetired)
                 listingItem.Live = false;
 
-            contentService.SaveAndPublishWithStatus(content);
+            try
+            {
+                contentService.SaveAndPublishWithStatus(content);
+            }
+            catch (SqlException e)
+            {
+                LogHelper.Error<NodeListingProvider>($"Hit error on package name: {content.Name} with id: {content.Id}.", e);
+                // we have some corrupt data that will once in a while give this error:
+                // The INSERT statement conflicted with the FOREIGN KEY constraint "FK_umbracoRedirectUrl". The conflict occurred in database "OurDevAnon2", table "dbo.umbracoNode", column 'uniqueID'.
+                // It seems to work anyways though, renames the node and creates the redirect.
+            }
+            
 
             listingItem.Id = content.Id;
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
