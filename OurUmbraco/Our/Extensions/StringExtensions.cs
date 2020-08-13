@@ -33,9 +33,13 @@ namespace OurUmbraco.Our.Extensions
             var badges = new List<Badge>();
             if (numberOfMvps != 0)
             {
+                var isLifetime = rolesList.Contains("lifetime-MVP", StringComparer.OrdinalIgnoreCase);
+                
                 var name = "MVP";
                 if (numberOfMvps > 1)
                     name = $"{name} {numberOfMvps}x";
+                if (isLifetime == true)
+                    name = $"{name} ∞x";
 
                 badges.Add(new Badge
                 {
