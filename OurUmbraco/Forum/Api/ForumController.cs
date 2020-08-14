@@ -213,7 +213,14 @@ namespace OurUmbraco.Forum.Api
             // If the chosen version is Umbraco Heartcore, overrule other categories
             if (model.Version == Constants.Forum.HeartcoreVersionNumber)
             {
-                var heartCodeForumId = GetHeartCoreForumId();
+                var heartCodeForumId = GetForumIdFromName(Constants.Forum.UmbracoHeadlessName);
+                t.ParentId = heartCodeForumId;
+            }
+            
+            // If the chosen version is Umbraco Uno, overrule other categories
+            if (model.Version == Constants.Forum.UnoVersionNumber)
+            {
+                var heartCodeForumId = GetForumIdFromName(Constants.Forum.UmbracoUnoName);
                 t.ParentId = heartCodeForumId;
             }
             
@@ -250,7 +257,14 @@ namespace OurUmbraco.Forum.Api
             // If the chosen version is Umbraco Heartcore, overrule other categories
             if (model.Version == Constants.Forum.HeartcoreVersionNumber)
             {
-                var heartCodeForumId = GetHeartCoreForumId();
+                var heartCodeForumId = GetForumIdFromName(Constants.Forum.UmbracoHeadlessName);
+                t.ParentId = heartCodeForumId;
+            }
+            
+            // If the chosen version is Umbraco Uno, overrule other categories
+            if (model.Version == Constants.Forum.UnoVersionNumber)
+            {
+                var heartCodeForumId = GetForumIdFromName(Constants.Forum.UmbracoUnoName);
                 t.ParentId = heartCodeForumId;
             }
             
@@ -261,26 +275,26 @@ namespace OurUmbraco.Forum.Api
             return o;
         }
 
-        private static int GetHeartCoreForumId()
+        private static int GetForumIdFromName(string name)
         {
-            var heartCoreForumId = 0;
+            var forumId = 0;
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var rootNode = umbracoHelper.TypedContentAtRoot()
                 .FirstOrDefault(x =>
                     string.Equals(x.DocumentTypeAlias, "Community", StringComparison.InvariantCultureIgnoreCase));
-            
-            if (rootNode != null)
+
+            if (rootNode == null) return forumId;
             {
                 var forumNode = rootNode.FirstChild(x => string.Equals(x.DocumentTypeAlias, "Forum"));
                 if (forumNode != null)
                 {
-                    var heartCoreForumNode = forumNode.FirstChild(x => x.Name.Contains(Constants.Forum.UmbracoHeadlessName));
-                    if (heartCoreForumNode != null)
-                        heartCoreForumId = heartCoreForumNode.Id;
+                    var foundForumNode = forumNode.FirstChild(x => x.Name.Contains(name));
+                    if (foundForumNode != null)
+                        forumId = foundForumNode.Id;
                 }
             }
 
-            return heartCoreForumId;
+            return forumId;
         }
 
 
