@@ -426,6 +426,7 @@
     <Compile Include="Auth\ProjectAuthKeyService.cs" />
     <Compile Include="Auth\ProjectAuthConstants.cs" />
     <Compile Include="Auth\HMACAuthentication.cs" />
+    <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
