@@ -354,7 +354,9 @@
                                                 
                                                 @if(release.FullVersion >= new Version(8, 7, 0))
                                                 {
-                                                    foreach (var category in release.CategorizedIssues.OrderBy(x => x.Priority).ThenBy(x => x.Name))
+                                                    foreach (var category in release.CategorizedIssues
+                                                        .Where(x => x.Issues.Count != 0)
+                                                        .OrderBy(x => x.Priority).ThenBy(x => x.Name))
                                                     {
                                                         <details open>                                                        
                                                             <summary>@category.Name</summary>
