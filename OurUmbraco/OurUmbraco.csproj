@@ -429,6 +429,8 @@
     <Compile Include="Community\Badges\Controllers\Http\BadgeController.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
+    <Compile Include="Community\Videos\Controllers\Http\VideoController.cs" />
+    <Compile Include="Community\Videos\Models\YouTubeVideoDto.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
