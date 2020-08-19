@@ -207,7 +207,7 @@ namespace OurUmbraco.Our.Services
                     }
 
                     var fullVersion = new System.Version();
-                    System.Version.TryParse(release.Version, out fullVersion);
+                    System.Version.TryParse(release.Version, out fullVersion); 
                     release.FullVersion = fullVersion;
                     if (release.CategorizedIssues == null)
                         release.CategorizedIssues = GetDefaultCategories();
