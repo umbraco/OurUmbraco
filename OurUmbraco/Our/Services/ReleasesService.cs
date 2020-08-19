@@ -182,7 +182,112 @@ namespace OurUmbraco.Our.Services
             context.WriteLine($"Processing {fileTypeName}s");
             var files = Directory.EnumerateFiles(directory, $"*.{fileTypeName}.combined.json").ToArray();
             context.WriteLine($"Found {files.Length} items");
+            
+            foreach (var file in files)
+            {
+                var fileContent = File.ReadAllText(file);
+                var item = JsonConvert.DeserializeObject<Issue>(fileContent);
+                
+                foreach (var label in item.Labels)
+                {
+                    if (label.Name.StartsWith("release/") == false)
+                        continue;
 
+                    // this label makes sure the item doesn't show up in the release notes, it adds no value
+                    if(item.Labels.Any(x => x.Name == "release/no-notes"))
+                        continue;
+
+                    var version = label.Name.Replace("release/", string.Empty);
+                    var release = releases.FirstOrDefault(x => x.Version == version);
+                    if (release == null)
+                    {
+                        context.WriteLine(
+                            $"Item {item.Number} is tagged with release version {version} but this release has no corresponding node in Our");
+                        continue;
+                    }
+
+                    var fullVersion = new System.Version();
+                    System.Version.TryParse(release.Version, out fullVersion);
+                    release.FullVersion = fullVersion;
+                    if (release.CategorizedIssues == null)
+                        release.CategorizedIssues = GetDefaultCategories();
+                    
+                    var breaking = item.Labels.Any(x => x.Name == "category/breaking");
+                    var communityContrib = item.Labels.Any(x => x.Name == "community/pr");
+                    
+                    var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
+
+                    // default state
+                    var state = "new";
+
+                    if (stateLabel != null)
+                        // if there's a label with a state then use that as the state
+                        state = stateLabel.Name.Replace("state/", string.Empty);
+                    else if (item.State == "closed" && item.Labels.Any(x => x.Name.StartsWith("release")))
+                        // there is no state label applied
+                        // if the item is closed and has a release label on it then we set it to fixed
+                        state = "fixed";
+
+                    var typeLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("type/"));
+                    var type = string.Empty;
+                    if (typeLabel != null)
+                        type = typeLabel.Name.Replace("type/", string.Empty);
+
+                    context.WriteLine($"Adding {fileTypeName} {item.Number} to release {release.Version}");
+
+                    var issue = new Release.Issue
+                    {
+                        Id = item.Number.ToString(),
+                        Breaking = breaking,
+                        State = state,
+                        Title = item.Title.Replace("v8: ", "").Replace("V8: ", "").Replace("v8:", "").Replace("v8:", ""),
+                        Type = type,
+                        Source = ReleaseSource.GitHub,
+                        CommunityContribution = communityContrib,
+                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : ""
+                    };
+
+                    if (release.FullVersion >= new System.Version(8, 7, 0))
+                        AddCategoriesToItems(release, item, issue);
+
+                    release.Issues.Add(issue);
+                }
+            }
+
+            foreach (var release in releases.Where(x => x.FullVersion >= new System.Version(8,7,0)))
+            {
+                // work on a local copy not the global/shared one
+                var releaseIssues = release.Issues; 
+                
+                var categorizedIssueIds = new HashSet<string>();
+                foreach (var issue in release.CategorizedIssues.SelectMany(category => category.Issues))
+                {
+                    categorizedIssueIds.Add(issue.Id);
+                    var removeItem = releaseIssues.FirstOrDefault(x => x.Id == issue.Id);
+                    if (removeItem != null)
+                        releaseIssues.Remove(removeItem);
+                }
+                
+                var bugs = releaseIssues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
+                if (bugs != null)
+                {
+                    var categoryBugFix = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Bugfixes");
+                    if (categoryBugFix != null)
+                        categoryBugFix.Issues.AddRange(bugs);
+                }
+
+                var features = bugs != null ? releaseIssues.Except(bugs) : releaseIssues;
+                if (features != null)
+                {
+                    var categoryOtherFeatures = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Other features");
+                    if (categoryOtherFeatures != null)
+                        categoryOtherFeatures.Issues.AddRange(features);
+                }
+            }
+        }
+
+        private static List<Release.Category> GetDefaultCategories()
+        {
             var categories = new List<Release.Category>
             {
                 new Release.Category
@@ -226,152 +331,56 @@ namespace OurUmbraco.Our.Services
                     Issues = new List<Release.Issue>()
                 }
             };
+            return categories;
+        }
 
-            foreach (var file in files)
+        private static void AddCategoriesToItems(Release release, Issue item, Release.Issue issue)
+        {
+            var specialCategoryLabels = new List<string>();
+            foreach (var issueCategory in release.CategorizedIssues)
             {
-                var fileContent = File.ReadAllText(file);
-                var item = JsonConvert.DeserializeObject<Issue>(fileContent);
-                
-                foreach (var label in item.Labels)
+                specialCategoryLabels.AddRange(issueCategory.MatchingLabels);
+                foreach (var itemLabel in item.Labels)
                 {
-                    if (label.Name.StartsWith("release/") == false)
+                    if (issueCategory.MatchingLabels.Contains(itemLabel.Name) == false)
                         continue;
 
-                    // this label makes sure the item doesn't show up in the release notes, it adds no value
-                    if(item.Labels.Any(x => x.Name == "release/no-notes"))
-                        continue;
-
-                    var version = label.Name.Replace("release/", string.Empty);
-                    var release = releases.FirstOrDefault(x => x.Version == version);
-                    if (release == null)
-                    {
-                        context.WriteLine(
-                            $"Item {item.Number} is tagged with release version {version} but this release has no corresponding node in Our");
-                        continue;
-                    }
-
-                    release.CategorizedIssues = categories;
-                    var fullVersion = new System.Version();
-                    System.Version.TryParse(release.Version, out fullVersion);
-                    release.FullVersion = fullVersion;
-
-                    var breaking = item.Labels.Any(x => x.Name == "category/breaking");
-                    var communityContrib = item.Labels.Any(x => x.Name == "community/pr");
-                    
-                    var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
-
-                    // default state
-                    var state = "new";
-
-                    if (stateLabel != null)
-                        // if there's a label with a state then use that as the state
-                        state = stateLabel.Name.Replace("state/", string.Empty);
-                    else if (item.State == "closed" && item.Labels.Any(x => x.Name.StartsWith("release")))
-                        // there is no state label applied
-                        // if the item is closed and has a release label on it then we set it to fixed
-                        state = "fixed";
-
-                    var typeLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("type/"));
-                    var type = string.Empty;
-                    if (typeLabel != null)
-                        type = typeLabel.Name.Replace("type/", string.Empty);
-
-                    context.WriteLine($"Adding {fileTypeName} {item.Number} to release {release.Version}");
-
-                    var issue = new Release.Issue
-                    {
-                        Id = item.Number.ToString(),
-                        Breaking = breaking,
-                        State = state,
-                        Title = item.Title.Replace("v8: ", "").Replace("V8: ", "").Replace("v8:", "").Replace("v8:", ""),
-                        Type = type,
-                        Source = ReleaseSource.GitHub,
-                        CommunityContribution = communityContrib,
-                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : ""
-                    };
-
-                    if (release.FullVersion >= new System.Version(8, 7, 0))
-                    {
-                        var specialCategoryLabels = new List<string>();
-                        foreach (var issueCategory in release.CategorizedIssues)
-                        {
-                            specialCategoryLabels.AddRange(issueCategory.MatchingLabels);
-                            foreach (var itemLabel in item.Labels)
-                            {
-                                if (issueCategory.MatchingLabels.Contains(itemLabel.Name) == false) 
-                                    continue;
-
-                                if (issueCategory.Issues.Contains(issue) == false)
-                                    issueCategory.Issues.Add(issue);
-                            }
-                        }
-
-                        foreach (var itemLabel in item.Labels)
-                        {
-                            var existingCategory = release.CategorizedIssues.FirstOrDefault(x => x.MatchingLabels.Any(y => y == itemLabel.Name));
-                            if (existingCategory != null)
-                            {
-                                // add to existing category
-                                if (existingCategory.Issues.Contains(issue) == false)
-                                    existingCategory.Issues.Add(issue);
-                            }
-                            else
-                            {
-                                // create new category and add the item
-                                var categoryName = string.Empty;
-                                var splitLabel = itemLabel.Name.Split('/');
-                                // skip if it's not one of the categories, projects or a dependency
-                                if (splitLabel.First() != "category" && splitLabel.First() != "project" &&
-                                    splitLabel.First() != "dependencies")
-                                    continue;
-
-                                categoryName = splitLabel.Length > 1 ? splitLabel[1] : splitLabel[0];
-                                categoryName = categoryName.Replace("angularjs", "AngularJS");
-                                categoryName = categoryName.Replace("net-core", ".NET Core");
-                                categoryName = categoryName.Replace("-", " ");
-                                categoryName = categoryName.ToFirstUpper(); 
-                                release.CategorizedIssues.Add(new Release.Category
-                                {
-                                    Name = categoryName,
-                                    MatchingLabels = new List<string> {itemLabel.Name},
-                                    Issues = new List<Release.Issue> { issue }
-                                });
-                            }
-                        }
-                    }
-
-                    release.Issues.Add(issue);
+                    if (issueCategory.Issues.Contains(issue) == false)
+                        issueCategory.Issues.Add(issue);
                 }
             }
 
-            foreach (var release in releases.Where(x => x.FullVersion >= new System.Version(8,7,0)))
+            foreach (var itemLabel in item.Labels)
             {
-                // work on a local copy not the global/shared one
-                var releaseIssues = release.Issues; 
-                
-                var categorizedIssueIds = new HashSet<string>();
-                foreach (var issue in release.CategorizedIssues.SelectMany(category => category.Issues))
+                var existingCategory = release.CategorizedIssues
+                    .FirstOrDefault(x => x.MatchingLabels.Any(y => y == itemLabel.Name));
+                if (existingCategory != null)
                 {
-                    categorizedIssueIds.Add(issue.Id);
-                    var removeItem = releaseIssues.FirstOrDefault(x => x.Id == issue.Id);
-                    if (removeItem != null)
-                        releaseIssues.Remove(removeItem);
+                    // add to existing category
+                    if (existingCategory.Issues.Contains(issue) == false)
+                        existingCategory.Issues.Add(issue);
                 }
-                
-                var bugs = releaseIssues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
-                if (bugs != null)
+                else
                 {
-                    var categoryBugFix = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Bugfixes");
-                    if (categoryBugFix != null)
-                        categoryBugFix.Issues.AddRange(bugs);
-                }
+                    // create new category and add the item
+                    var categoryName = string.Empty;
+                    var splitLabel = itemLabel.Name.Split('/');
+                    // skip if it's not one of the categories, projects or a dependency
+                    if (splitLabel.First() != "category" && splitLabel.First() != "project" &&
+                        splitLabel.First() != "dependencies")
+                        continue;
 
-                var features = bugs != null ? releaseIssues.Except(bugs) : releaseIssues;
-                if (features != null)
-                {
-                    var categoryOtherFeatures = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Other features");
-                    if (categoryOtherFeatures != null)
-                        categoryOtherFeatures.Issues.AddRange(features);
+                    categoryName = splitLabel.Length > 1 ? splitLabel[1] : splitLabel[0];
+                    categoryName = categoryName.Replace("angularjs", "AngularJS");
+                    categoryName = categoryName.Replace("net-core", ".NET Core");
+                    categoryName = categoryName.Replace("-", " ");
+                    categoryName = categoryName.ToFirstUpper();
+                    release.CategorizedIssues.Add(new Release.Category
+                    {
+                        Name = categoryName,
+                        MatchingLabels = new List<string> {itemLabel.Name},
+                        Issues = new List<Release.Issue> {issue}
+                    });
                 }
             }
         }
