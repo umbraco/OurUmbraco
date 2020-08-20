@@ -1,4 +1,4 @@
-﻿using OurUmbraco.Community.Controllers;
+﻿using System.Web.Http;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Community.Karma.Controllers.Http
@@ -12,11 +12,11 @@ namespace OurUmbraco.Community.Karma.Controllers.Http
             _karmaService = new KarmaService();
         }
 
-        public KarmaStatistics GetKarmaStatistics()
+        public IHttpActionResult GetKarmaStatistics()
         {
             var stats = _karmaService.GetCachedKarmaStatistics();
 
-            return stats;
+            return Ok(stats);
         }
     }
 }

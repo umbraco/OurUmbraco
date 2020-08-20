@@ -1,6 +1,7 @@
 ﻿using OurUmbraco.Community.People;
 using OurUmbraco.Community.People.Models;
 using System.Collections.Generic;
+using System.Web.Http;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Community.Badges.Controllers.Http
@@ -14,7 +15,7 @@ namespace OurUmbraco.Community.Badges.Controllers.Http
             _peopleService = new PeopleService();
         }
 
-        public List<BadgeGroup> GetBadgeGroups()
+        public IHttpActionResult GetBadgeGroups()
         {
             var badgeGroups = new List<BadgeGroup>();
 
@@ -49,7 +50,7 @@ namespace OurUmbraco.Community.Badges.Controllers.Http
 
             badgeGroups.Add(hqMembersGroup);
 
-            return badgeGroups;
+            return Ok(badgeGroups);
         }
     }
 }

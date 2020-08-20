@@ -1,5 +1,4 @@
-﻿using OurUmbraco.Community.People.Models;
-using System.Collections.Generic;
+﻿using System.Web.Http;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Community.People.Controllers.Http
@@ -13,11 +12,11 @@ namespace OurUmbraco.Community.People.Controllers.Http
             _peopleSerivce = new PeopleService();
         }
 
-        public List<MvpsPerYear> GetAll()
+        public IHttpActionResult GetAll()
         {
             var mvps = _peopleSerivce.GetMvps();
 
-            return mvps;
+            return Ok(mvps);
         }
     }
 }
