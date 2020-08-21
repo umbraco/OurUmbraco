@@ -176,7 +176,7 @@ namespace OurUmbraco.Our.Services
             AddItemsToReleases(context, releases, issuesDirectory, "issue");
             AddItemsToReleases(context, releases, pullsDirectory, "pull");
         }
-
+        
         private static void AddItemsToReleases(PerformContext context, List<Release> releases, string directory, string fileTypeName) 
         {
             context.WriteLine($"Processing {fileTypeName}s");
@@ -328,6 +328,12 @@ namespace OurUmbraco.Our.Services
                 {
                     Name = "API and API documentation updates",
                     MatchingLabels = new List<string> {"category/api", "category/api-documentation"},
+                    Issues = new List<Release.Issue>()
+                },
+                new Release.Category
+                {
+                    Name = "Developer experience",
+                    MatchingLabels = new List<string> {"category/dx"},
                     Issues = new List<Release.Issue>()
                 }
             };
