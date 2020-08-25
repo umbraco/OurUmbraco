@@ -219,5 +219,11 @@ html {
                 }
             }
         }
+
+        .level-1 li.active h3, 
+        .level-2 li.active h4, 
+        .level-3 li.active h5 {
+            font-weight: bold;
+        }
     }
 } 
