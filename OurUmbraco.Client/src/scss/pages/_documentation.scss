@@ -1,20 +1,16 @@
 .documentation {
     padding: 0;
 
-
     > .container {
         position: relative;
     }
 
-
     #body a {
         color: darken($color-our, 20%);
-
 
         &:hover {
             text-decoration: underline;
         }
-
 
         &.active h3 {
             color: darken($color-our, 10%) !important;
@@ -65,13 +61,11 @@
 .docs-overview {
     text-align: center;
 
-    
     h1 {
         font-size: 3rem;
         font-weight: 100;
         color: $color-headline;
     }
-
 
     .docs-section {
         display: inline-block;
@@ -80,7 +74,6 @@
         color: #000;
         transition: all .1s $cubicSearch;
 
-
         img {
             text-align: center;
             opacity: .8;
@@ -88,24 +81,20 @@
             transition: all .1s linear;
         }
 
-
         h2, p {
             transition: all .1s linear;
         }
         
-
         h2 {
             font-weight: 100;
             color: $color-headline;
             margin-bottom: 1rem;
         }
         
-        
         p {
             text-align: center;
             color: $color-text;
         }
-
         
         &:hover {
             cursor: pointer;
@@ -124,7 +113,6 @@
     .contributing {
        text-align: left;
        margin-top: 2rem;
-
         
         h3 {
             color: rgba(#000, .8);
@@ -132,7 +120,6 @@
             margin-bottom: .5rem;
         }
 
-       
         p {
             color: $color-text;
             font-size: .9rem;
@@ -140,14 +127,11 @@
         }        
     }
 
-
     h3 {
         font-weight: 100;
         margin-top: 80px;
     }
 }
-
-
 
 // Documentation markdown
 #markdown-docs {
@@ -162,10 +146,8 @@
     }
 
     
-    
     h1, h2, h3, h4, h5, h6 {
     
-        
         a {
             color: $color-headline;
             text-decoration: underline;
@@ -177,7 +159,6 @@
         }
     }
     
-
     @media (min-width: $md) {
         
         pre {
@@ -185,8 +166,6 @@
         }   
     }
 }
-
-
 
 // Section overview
 $color-overview: lighten($color-our, 20%);
@@ -198,11 +177,9 @@ $color-overview: lighten($color-our, 20%);
     background-color: $color-overview;
     border: solid 3px $color-overview;
 
-
     .line {
         display: block;
         position: absolute;
-
 
         &.h-line {
             border-top: solid 3px $color-overview;
@@ -212,13 +189,10 @@ $color-overview: lighten($color-our, 20%);
             }
         }
 
-
         &.v-line {
             border-left: solid 3px $color-overview;
         }
     }
-
-
 
     &.big {
         height: 60px;
@@ -230,22 +204,18 @@ $color-overview: lighten($color-our, 20%);
         text-indent: .7rem;
         color: darken($color-our, 30%);
 
-
         .h-line {
             left: 50px;
             top: 25px;
             width: 70px;
-            height: 1px;
-            
+            height: 1px;   
         }
-
 
         .v-line {
             left: 25px;
             top: 57px;
             width: 1px;
             height: 100px;
-
 
             &.top {
                 top: -80px;
@@ -254,20 +224,16 @@ $color-overview: lighten($color-our, 20%);
         }
     }
 
-
-
     &.small {
         height: 20px;
         width: 20px;
         border-radius: 30px;
         margin: 0 auto 115px;
 
-
         &.last {
             margin-top: 60px;
             margin-bottom: 5px;
         }
-
 
         .h-line {
             left: 17px;
@@ -277,13 +243,11 @@ $color-overview: lighten($color-our, 20%);
             border-width: 1px;
         }
 
-
         .v-line {
             top: 17px;
             left: 5px;
             width: 1px;
             height: 120px;
-
 
             &.top {
                 height: 100px;
@@ -293,25 +257,20 @@ $color-overview: lighten($color-our, 20%);
     }
 }
 
-
-
 .point {
     position: absolute;
     margin-left: 191px;
     margin-top: 21px;
     z-index: 100;
 
-
     a {
         color: #000 !important;
     }
-
 
     h4 {
         font-size: 2rem;
         margin-top: 13px;
     }
-
 
     small {
         margin-bottom: 10px;
@@ -323,11 +282,7 @@ $color-overview: lighten($color-our, 20%);
     }
 }
 
-
-
 .explain {
-
-
     small {
         margin-bottom: 10px;
         color: $color-text;
@@ -337,10 +292,8 @@ $color-overview: lighten($color-our, 20%);
         padding-right: 5px;
     }
 
-
     .col-xs-12 {
         min-height: 153px;
-
 
         h4 {
             margin-top: 12px;
@@ -348,8 +301,6 @@ $color-overview: lighten($color-our, 20%);
             margin-bottom: .3rem;
             color: rgba(#000, .8);
 
-
-
             a {
                 text-decoration: none;
 
@@ -360,11 +311,8 @@ $color-overview: lighten($color-our, 20%);
         }
     }
 
-
-
     .col-xs-6, .col-sm-6 {
         min-height: 133px;
-
 
         h5 {
             font-size: 1.1rem;
@@ -372,20 +320,15 @@ $color-overview: lighten($color-our, 20%);
             margin-bottom: .2rem;
             font-weight: 600;
             
-
             a {
                 color: rgba(#000, .8);
                 text-decoration: none;
-
 
                 &:hover {
                     color: $color-our;
                 }
             }
-
         }
-
-
 
         & > a {
             display: inline-block;
@@ -393,16 +336,12 @@ $color-overview: lighten($color-our, 20%);
             padding: 5px;
             color: white;
 
-
             &:hover {
                 cursor: pointer;
             }
         }
     }
 }
-
-
-
 
 .umbracoVersion {
     display: inline-block;
