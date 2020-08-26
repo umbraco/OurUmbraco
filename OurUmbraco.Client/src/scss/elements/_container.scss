@@ -1,0 +1,11 @@
+﻿.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+
+    &.is-narrow-tablet {
+        @include breakpoint('md') {
+            max-width: 760px;
+        }
+    }
+}
