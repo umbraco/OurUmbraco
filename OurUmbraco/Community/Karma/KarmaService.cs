@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -7,15 +6,16 @@ using System.Web.Hosting;
 using Examine;
 using Newtonsoft.Json;
 using OurUmbraco.Community.Controllers;
-using OurUmbraco.Community.Meetup.Models;
-using OurUmbraco.Our.Api;
-using Umbraco.Core.Cache;
+using OurUmbraco.Community.People;
+using OurUmbraco.Community.People.Models;
+using OurUmbraco.NotificationsCore;
 using Umbraco.Web;
 
 namespace OurUmbraco.Community.Karma
 {
     public class KarmaService
     {
+
         private readonly string _karmaStatisticsCacheFile = HostingEnvironment.MapPath("~/App_Data/TEMP/KarmaStatisticsCache.json");
 
         public KarmaStatistics GetCachedKarmaStatistics()
@@ -38,6 +38,17 @@ namespace OurUmbraco.Community.Karma
 
         public void RefreshKarmaStatistics()
         {
+            using (ContextHelper.EnsureHttpContext())
+            {
+                RefreshKarmaStatisticsInternally();
+            }
+        }
+
+        private void RefreshKarmaStatisticsInternally()
+        {
+            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+            var avatarService = new AvatarService();
+
             var lastweekStart = GetLastWeekStartDate();
             var karmaRecentStatistics = Our.Api.StatisticsController.GetPeopleData(lastweekStart, DateTime.Now);
 
@@ -45,8 +56,9 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
-                    var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"]
-                        .CreateSearchCriteria();
+                    AddAvatarToPerson(person, umbracoHelper, avatarService);
+
+                    var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance
                         .SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
@@ -57,7 +69,7 @@ namespace OurUmbraco.Community.Karma
                         person.TotalKarma = totalKarma;
                 }
             }
-            
+
             // Yearly karma counts from May 1st until May 1st each year. If the date in this year is before May 1st, shift back an extra year
             var yearShift = 1;
             if (DateTime.Now >= new DateTime(DateTime.Now.Year, 5, 1))
@@ -72,6 +84,8 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
+                    AddAvatarToPerson(person, umbracoHelper, avatarService);
+
                     var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
@@ -82,7 +96,7 @@ namespace OurUmbraco.Community.Karma
                         person.TotalKarma = totalKarma;
                 }
             }
-            
+
             var karmaThisYearStatistics = Our.Api.StatisticsController.GetPeopleData(
                 new DateTime(DateTime.Now.Year - 1, 5, 1),
                 new DateTime(DateTime.Now.Year, 5, 1));
@@ -91,6 +105,8 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
+                    AddAvatarToPerson(person, umbracoHelper, avatarService);
+
                     var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"]
@@ -112,6 +128,19 @@ namespace OurUmbraco.Community.Karma
 
             var rawJson = JsonConvert.SerializeObject(karmaStatistics, Formatting.Indented);
             File.WriteAllText(_karmaStatisticsCacheFile, rawJson, Encoding.UTF8);
+        }
+
+        private void AddAvatarToPerson(PeopleKarmaResult person, UmbracoHelper umbraco, AvatarService avatarService)
+        {
+            var member = umbraco.TypedMember(person.MemberId);
+            if (member == null)
+                return;
+
+            var avatar = avatarService.GetMemberAvatar(member);
+            if (string.IsNullOrEmpty(avatar))
+                return;
+
+            person.MemberAvatarUrl = avatar;
         }
 
         private static DateTime GetLastWeekStartDate()
