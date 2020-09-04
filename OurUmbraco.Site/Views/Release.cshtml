@@ -183,12 +183,15 @@
 
                         .statuses ul {
                             list-style-type: none;
+                            margin-top: 30px;;
                         }
 
                         .statuses ul li {
                             position: relative;
                             margin-bottom: 10px;
                             padding-left: 10px;
+                            text-indent: -45px;
+                            margin-left: 45px;                            
                         }
 
                         .statuses li:before {
@@ -200,19 +203,35 @@
                         summary {
                             font-size: 1.1rem;
                             font-weight: bold;
-                            margin-top: 12px;
+                            margin-top: 32px;
+                            margin-bottom: 10px;
                             cursor: pointer;
                         }
                         details ul {
                             list-style-type: none;
-                            padding-left: 0 !important;
                             padding-top: 8px !important;
+                        }
+                        details ul.unreleased {    
+                            padding-left: 20px !important;
+                        }                        
+                        details ul.released {
+                            padding-left: 10px !important;
+                        }
+                        details ul.unreleased li {
+                            text-indent: -70px;
+                            margin-left: 70px;
+                        }
+                        details ul.released li {
+                            text-indent: -43px;
+                            margin-left: 43px;
+                        }
+                        details a, .statuses a {
+                            text-decoration: none !important;
                         }
                         details p {
                             padding-top: 6px;
                         }
                         .contrib-badge {
-                            background-color: #7682d6;
                             color: white;
                             padding: 5px;
                             font-family: Lato,sans-serif;
@@ -222,9 +241,7 @@
                             border-radius: 2em;
                         }
                         .contrib-img {
-                            margin-right: -10px !important;
                             margin-bottom: -10px !important;
-                            margin-left: 4px !important;
                             border: 1px solid transparent;
                             border-radius: 2em;
                         }
@@ -351,7 +368,6 @@
                                 <div class="panel-wrapper">
                                     <div class="panel-left">
                                         <!-- Columns for statuses -->
-                                                
                                                 @if(release.FullVersion >= new Version(8, 7, 0))
                                                 {
                                                     foreach (var category in release.CategorizedIssues
@@ -361,32 +377,39 @@
                                                         <details open>                                                        
                                                             <summary>@category.Name</summary>
                                                             
-                                                            @foreach (var issue in category.Issues)
-                                                            {
-                                                                <ul>
-                                                                    <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                            <ul class="@(release.Released ? "released" : "unreleased")">
+                                                                @foreach (var issue in category.Issues)
+                                                                {
+                                                                    <li class="@(release.Released == false ? issue.State.StateIcon() : null)" title="@issue.State">
+                                                                        @if (issue.CommunityContribution && issue.ContributorAvatar == string.Empty)
+                                                                        {
+                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img"/></span>
+                                                                        }
+                                                                        @if (issue.CommunityContribution && issue.ContributorAvatar != string.Empty)
+                                                                        {
+                                                                            <span class="contrib-badge" title="A community contribution from helped close this issue #h5yr!"><img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img"/></span>
+                                                                        }
+                                                                        @if (issue.CommunityContribution == false)
+                                                                        {
+                                                                            <span class="contrib-badge"><img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img"/></span>
+                                                                        }
                                                                         @{
                                                                             var url = issue.Source == ReleaseSource.YouTrack
                                                                                 ? $"https://issues.umbraco.org/issue/{issue.Id}"
                                                                                 : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                         }
                                                                         <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Title</a>
-                                                                        @if (issue.CommunityContribution && issue.ContributorAvatar == string.Empty)
-                                                                        {
-                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
-                                                                        }
-                                                                        @if (issue.CommunityContribution && issue.ContributorAvatar != string.Empty)
-                                                                        {
-                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib <img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img"/></span>
-                                                                        }
                                                                     </li>
-                                                                </ul>
-                                                            }
+                                                                }
+                                                            </ul>
                                                         </details>
                                                     }
                                                 }
-                                                else 
+                                                else
                                                 {
+                                                    var anyContributions = release.Issues.Any(x => x.CommunityContribution)
+                                                                           || release.Features.Any(x => x.CommunityContribution);
+                                                    
                                                     <div class="statuses group">
                                                         <div class="status features">
                                                             <h3>Features</h3>
@@ -394,23 +417,20 @@
                                                                 var features = release.Features.ToList();
                                                                 if (features.Any())
                                                                 {
-                                                                    foreach (var issue in features)
-                                                                    {
-                                                                        <ul>
-                                                                            <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                    <ul>
+                                                                        @foreach (var issue in features)
+                                                                        {
+                                                                            <li class="@issue.State.StateIcon()" title="@issue.State">                                                                           
                                                                                 @{
                                                                                     var url = issue.Source == ReleaseSource.YouTrack
                                                                                         ? $"https://issues.umbraco.org/issue/{issue.Id}"
                                                                                         : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                                 }
+                                                                                @ContributionIcon(anyContributions, issue)
                                                                                 <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
-                                                                                @if (issue.CommunityContribution)
-                                                                                {
-                                                                                    <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
-                                                                                }                                                                                
                                                                             </li>
-                                                                        </ul>
-                                                                    }
+                                                                        }
+                                                                    </ul>
                                                                 }
                                                                 else
                                                                 {
@@ -418,69 +438,63 @@
                                                                 }
                                                             }
                                                         </div>
-                                            <div class="status breaking">
-                                                <h3>Breaking Changes</h3>
-                                                @{
-                                                    var breaking = release.Issues.Where(x => x.Breaking).ToList();
-                                                    if (breaking.Any())
-                                                    {
-                                                        foreach (var issue in breaking)
-                                                        {
-                                                            <ul>
-                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @{
-                                                                        var url = issue.Source == ReleaseSource.YouTrack
-                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}"
-                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
-                                                                    }
-                                                                    <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
-                                                                    @if (issue.CommunityContribution)
-                                                                    {
-                                                                        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
-                                                                    }
-                                                                </li>
-                                                            </ul>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No items to display</p>
-                                                    }
-                                                }
-                                            </div>
-                                            <div class="status issues">
-                                                <h3>Issues & Tasks</h3>
-                                                @{
-                                                    var issues = release.Issues.Where(x => x.Breaking == false).Except(release.Features).ToList();
-                                                    if (issues.Any())
-                                                    {
-                                                        foreach (var issue in issues)
-                                                        {
+                                                        <div class="status breaking">
+                                                            <h3>Breaking Changes</h3>
+                                                            @{
+                                                                var breaking = release.Issues.Where(x => x.Breaking).ToList();
+                                                                if (breaking.Any())
+                                                                {
+                                                                    <ul>
+                                                                        @foreach (var issue in breaking)
+                                                                        {
+                                                                            <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                                @{
+                                                                                    var url = issue.Source == ReleaseSource.YouTrack
+                                                                                        ? $"https://issues.umbraco.org/issue/{issue.Id}"
+                                                                                        : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+                                                                                }
+                                                                                @ContributionIcon(anyContributions, issue)                                                                
+                                                                                <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p>No items to display</p>
+                                                                }
+                                                            }
+                                                        </div>
+                                                        <div class="status issues">
+                                                            <h3>Issues & Tasks</h3>
+                                                            @{
+                                                                var issues = release.Issues.Where(x => x.Breaking == false).Except(release.Features).ToList();
+                                                                if (issues.Any())
+                                                                {
 
-                                                            <ul>
-                                                                <li class="@issue.State.StateIcon()" title="@issue.State">
-                                                                    @{
-                                                                        var url = issue.Source == ReleaseSource.YouTrack 
-                                                                            ? $"https://issues.umbraco.org/issue/{issue.Id}" 
-                                                                            : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
-                                                                    }
-                                                                    <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>
-                                                                    @if (issue.CommunityContribution)
-                                                                    {
-                                                                        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!">contrib</span>
-                                                                    }                                                                    
-                                                                </li>
-                                                            </ul>
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        <p>No items to display</p>
-                                                    }
+                                                                    <ul>                                                        
+                                                                        @foreach (var issue in issues)
+                                                                        {
+                                                                            <li class="@issue.State.StateIcon()" title="@issue.State">
+                                                                                @{
+                                                                                    var url = issue.Source == ReleaseSource.YouTrack 
+                                                                                        ? $"https://issues.umbraco.org/issue/{issue.Id}" 
+                                                                                        : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+                                                                                }
+                                                                                @ContributionIcon(anyContributions, issue)                                                                
+                                                                                <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Id - @issue.Title</a>                                                    
+                                                                            </li>
+                                                                        }
+                                                                    </ul>
+                                                                }
+                                                                else
+                                                                {
+                                                                    <p>No items to display</p>
+                                                                }
+                                                            }
+                                                        </div>
+                                                    </div>
                                                 }
-                                            </div>
-                                        </div>
-                                        }
                                     </div>
                                    
                                 </div>
@@ -492,6 +506,24 @@
         </div><!-- .main-area -->
     </div><!-- .page-content -->
 </div><!-- has-sidebar -->
+
+@helper ContributionIcon(bool anyContribution, Release.Issue issue) 
+{
+    if (anyContribution == false)
+    {
+        return;
+        
+    }
+    
+    if (issue.CommunityContribution)
+    {
+        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img"/></span>
+    }
+    else
+    {
+        <span class="contrib-badge"><img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img"/></span>
+    }
+}
 
 @section EndScripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/easy-pie-chart/2.1.4/jquery.easypiechart.min.js"></script>
