@@ -212,7 +212,7 @@
                 if (!Directory.Exists(this._storageDirectory))
                     Directory.CreateDirectory(this._storageDirectory);
 
-                var file = Path.Combine(_storageDirectory, $"{DateTime.Now:yyyyMMdd_HHmmss}_{_downloadsFile}");
+                var file = Path.Combine(_storageDirectory.EnsureEndsWith(Path.DirectorySeparatorChar), _downloadsFile);
 
                 var json = JsonConvert.SerializeObject(packages);
                 File.WriteAllText(file, json, Encoding.UTF8);
