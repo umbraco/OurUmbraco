@@ -105,7 +105,10 @@ namespace OurUmbraco.Our.Examine
 
             if (_dailyNugetDownLoads.HasValue)
             {
-                nugetDownloads = (_dailyNugetDownLoads.Value * (int)((_now - _now.AddMonths(-6)).TotalDays));               
+                // if the project is younger than 6 months, we count average * age)
+                var days = Math.Min((_now - _now.AddMonths(6)).TotalDays, (_now - _createDate).TotalDays);
+
+                nugetDownloads = (_dailyNugetDownLoads.Value * (int)days);               
             }
 
             score += nugetDownloads;

@@ -43,124 +43,188 @@
 
             if (projects.Any())
             {
-                // get the services from nuget service index
-                var restClient = new RestClient(this._nugetServiceUrl);
-
-                var result = restClient.Execute(new RestRequest());
-
-                var response = JsonConvert.DeserializeObject<NugetServiceIndexResponse>(result.Content);
-
-                if (response != null)
+                var searchUrl = GetNugetService("SearchQueryService");
+                if (!string.IsNullOrWhiteSpace(searchUrl))
                 {
-                    // get a url for the search service
-                    var searchUrl = response.Resources.FirstOrDefault(x => x.Type == "SearchQueryService")?.Id;
+                    var nugetPackageDownloads = new List<NugetPackageInfo>();
 
-                    if (!string.IsNullOrWhiteSpace(searchUrl))
+                    // we will loop trough our projects in groups of 5 so we can query for multiple packages at ones
+                    // the nuget api has a rate limit, so to avoid hitting that we query multiple packages at once
+
+                    foreach (var projectGroup in projects.InGroupsOf(5))
                     {
-                        var nugetPackageDownloads = new List<NugetPackageInfo>();
+                        var packageQuery = GetNugetPackageQuery(projectGroup);
 
-                        // we will loop trough our projects in groups of 5 so we can query for multiple packages at ones
-                        // the nuget api has a rate limit, so to avoid hitting that we query multiple packages at once
-
-                        foreach (var projectGroup in projects.InGroupsOf(5))
+                        if (!string.IsNullOrWhiteSpace(packageQuery))
                         {
-                            var packageQuery = string.Empty;
+                            var searchQuery = $"{searchUrl}?q={packageQuery.TrimEnd("+")}&prerelease=true";
+                            var packageSearchResult = GetNugetSearchResults(searchQuery);
 
-                            foreach (var project in projectGroup)
+                            if (packageSearchResult != null)
                             {
-                                var nuGetPackageCmd = GetNuGetPackageId(project);
-
-                                if (!string.IsNullOrWhiteSpace(nuGetPackageCmd))
+                                foreach (var package in packageSearchResult.Results)
                                 {
-                                    packageQuery += $"packageid:{nuGetPackageCmd}+";
-                                }
-                            }
-
-                            if (!string.IsNullOrWhiteSpace(packageQuery))
-                            {
-                                var searchQuery = $"{searchUrl}?q={packageQuery.TrimEnd("+")}&prerelease=true";
-
-                                restClient = new RestClient(searchQuery);
-
-                                var packageResponse = restClient.Execute(new RestRequest());
-
-                                var packageSearchResult =
-                                    JsonConvert.DeserializeObject<NugetSearchResponse>(packageResponse.Content);
-
-                                if (packageSearchResult != null)
-                                {
-                                    foreach (var package in packageSearchResult.Results)
+                                    var packageInfo = GetNugetPackageInfo(package);
+                                    if (packageInfo != null)
                                     {
-                                        var packageInfo = new NugetPackageInfo
-                                                              {
-                                                                  PackageId = package.Id,
-                                                                  TotalDownLoads = package.TotalDownloads
-                                                              };
-
-                                       
-
-                                        // try get details about downloads over time
-                                        // so we get the publish date of the package on nuget. And calculate the average downloads per day.
-                                        // we can use this data for the popular package query on our
-                                        // we can run into issues when a package has more than 128 versions. This call will return a different response then
-                                        // see https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
-
-                                        var registrationClient = new RestClient(package.PackageRegistrationUrl);
-
-                                        var registrationResponse = registrationClient.Execute(new RestRequest());
-
-                                        var registrationResult =
-                                            JsonConvert.DeserializeObject<NugetRegistrationResponse>(
-                                                registrationResponse.Content);
-
-                                        if (registrationResult != null)
-                                        {
-                                            // get the lowest publish date
-                                            var registrationItem = registrationResult.Items.FirstOrDefault();
-
-                                            if (registrationItem != null)
-                                            {
-                                                var publishedDate = registrationItem.Items.Select(x => x.CatalogEntry)
-                                                    .OrderBy(x => x.PublishedDate).FirstOrDefault(x => x.PublishedDate.Year > 1900)?.PublishedDate;
-
-                                                if (publishedDate.HasValue)
-                                                {
-                                                    var daysSincePublished =
-                                                        (DateTime.Now - publishedDate.Value).TotalDays;
-
-                                                    packageInfo.AverageDownloadPerDay = (int)Math.Ceiling(package.TotalDownloads / daysSincePublished);
-                                                }
-                                            }
-                                        }
-
-                                        if (!nugetPackageDownloads.Any(x => x.PackageId == packageInfo.PackageId))
-                                        {
-                                            nugetPackageDownloads.Add(packageInfo);
-                                        }
+                                        nugetPackageDownloads.Add(packageInfo);
                                     }
-
-                                   
                                 }
-                            
                             }
-                        }
-
-                        // store downloads if any
-                        if (nugetPackageDownloads.Any())
-                        {
-                            if (!Directory.Exists(this._storageDirectory))
-                            {
-                                Directory.CreateDirectory(this._storageDirectory);
-                            }
-
-                            var rawJson = JsonConvert.SerializeObject(nugetPackageDownloads, Formatting.Indented);
-                            File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson, Encoding.UTF8);
-
-                            ExamineManager.Instance.IndexProviderCollection["projectIndexer"].RebuildIndex();
                         }
                     }
+
+                    // store downloads if any
+                    if (nugetPackageDownloads.Any())
+                    {
+                        SavePackageInfo(nugetPackageDownloads);
+
+                        
+                    }
+
                 }
             }
+        }
+
+        /// <summary>
+        ///  calculate the nuget query for a group of packages (combines them +packageId:name1+packageId:name2}
+        /// </summary>
+        /// <param name="projects"></param>
+        /// <returns></returns>
+        private string GetNugetPackageQuery(IEnumerable<IPublishedContent> projects)
+        {
+            var packageIds = new List<string>();
+            foreach (var project in projects)
+            {
+                var nuGetPackageCmd = GetNuGetPackageId(project);
+                if (!string.IsNullOrWhiteSpace(nuGetPackageCmd))
+                {
+                    packageIds.Add($"packageid:{nuGetPackageCmd}");
+                }
+            }
+
+            if (packageIds.Any())
+            {
+                return string.Join("+", packageIds);
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        ///  Get the Id for a service offered by the nuget.org api
+        /// </summary>
+        /// <param name="serviceName">Name of the service you want</param>
+        /// <returns>Id value (url) of required service</returns>
+        private string GetNugetService(string serviceName)
+        {
+            var response = GetNugetResponse<NugetServiceIndexResponse>(this._nugetServiceUrl);
+            return response?.Resources?.FirstOrDefault(x => x.Type.Equals(serviceName))?.Id;
+        }
+
+        /// <summary>
+        ///  Get the search result json from nuget based on the query url
+        /// </summary>
+        /// <param name="queryUrl">URL of search query (including searchService url)</param>
+        /// <returns>NugetSearchResponse object with results</returns>
+        private NugetSearchResponse GetNugetSearchResults(string queryUrl)
+            => GetNugetResponse<NugetSearchResponse>(queryUrl);
+
+
+        /// <summary>
+        ///  Get Result of nuget query serialized into object based on type 
+        /// </summary>
+        /// <typeparam name="TResult">type of object you want results returned in</typeparam>
+        /// <param name="url">url for the request</param>
+        /// <returns>Results serialized from json into TResult object</returns>
+        private TResult GetNugetResponse<TResult>(string url)
+        {
+            var client = new RestClient(url);
+            var results = client.Execute(new RestRequest());
+            return JsonConvert.DeserializeObject<TResult>(results.Content);
+
+        }
+
+        /// <summary>
+        ///  calculate the information we need for a given nuget package
+        /// </summary>
+        /// <param name="nugetPackage">NugetSearchResult containing package info</param>
+        /// <returns>The info we require for a package NugetPackageInfo</returns>
+        private NugetPackageInfo GetNugetPackageInfo(NugetSearchResult nugetPackage)
+        {
+            var lastDate = DateTime.Now;
+
+            var packageInfo = GetNugetResponse<NugetRegistrationResponse>(nugetPackage.PackageRegistrationUrl);
+            if (packageInfo != null)
+            {
+                foreach (var item in packageInfo.Items)
+                {
+
+                    // workout the oldest date based on commit time stamp (when the package was uploaded not published)
+                    var date = item.Items
+                        .Select(x => x.CommitTimeStamp)
+                        .OrderBy(x => x)
+                        .FirstOrDefault();
+
+                    if (date != null && date < lastDate)
+                    {
+                        lastDate = date;
+                    }
+
+                }
+            }
+
+            return new NugetPackageInfo
+            {
+                TotalDownLoads = nugetPackage.TotalDownloads,
+                PackageId = nugetPackage.Id,
+                AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, lastDate)
+            };
+        }
+
+        /// <summary>
+        ///  Calculate the avarageDownloadsPerDay for a given total and date.
+        /// </summary>
+        /// <param name="total">total number of downloads</param>
+        /// <param name="published">date package was published</param>
+        /// <returns>Int: Avarage downloads per day (rounded)</returns>
+        private int GetAvarageDownloadsPerDay(int total, DateTime published)
+        {
+            var daysSincePublished = (DateTime.Now - published).TotalDays;
+            if (daysSincePublished > 1)
+            {
+                return (int)Math.Ceiling(total / daysSincePublished);
+            }
+            else
+            {
+                return total;
+            }
+        }
+
+        /// <summary>
+        ///  save the calculated package info to disk, so we can run the index from there.
+        /// </summary>
+        private void SavePackageInfo(IEnumerable<NugetPackageInfo> packages)
+        {
+            if (packages.Any())
+            {
+
+                if (!Directory.Exists(this._storageDirectory))
+                    Directory.CreateDirectory(this._storageDirectory);
+
+                var file = Path.Combine(_storageDirectory, $"{DateTime.Now:yyyyMMdd_HHmmss}_{_downloadsFile}");
+
+                var json = JsonConvert.SerializeObject(packages);
+                File.WriteAllText(file, json, Encoding.UTF8);
+            }
+        }
+
+        /// <summary>
+        ///  trigger the rebuild of the examine index for projects.
+        /// </summary>
+        private void RebuildProjectIndexer()
+        {
+            ExamineManager.Instance.IndexProviderCollection["projectIndexer"].RebuildIndex();
         }
 
         public List<NugetPackageInfo> GetNugetPackageDownloads()
