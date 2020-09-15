@@ -446,7 +446,7 @@
     <Compile Include="Community\Banner\BannerService.cs" />
     <Compile Include="Community\Banner\Controllers\BannersController.cs" />
     <Compile Include="Community\Banner\Models\Banner.cs" />
-    <Compile Include="Community\Banner\Models\Banners.cs" />
+    <Compile Include="Community\Banner\Models\BannersViewModel.cs" />
     <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogInfo.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
