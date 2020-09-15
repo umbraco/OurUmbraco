@@ -2,6 +2,7 @@
 using OurUmbraco.Location;
 using System.Linq;
 using System.Web.Mvc;
+using Umbraco.Core;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Community.Banner.Controllers
@@ -20,20 +21,21 @@ namespace OurUmbraco.Community.Banner.Controllers
         public ActionResult Render(int id)
         {
             var page = Umbraco.TypedContent(id);
-            if (page != null)
+            if (page == null) return null;
+
+            var banners = _bannerService.GetBannersByPage(page);
+            if (banners == null) return null;
+
+            var location = _locationService.GetLocationByIp(Request.UserHostAddress);
+
+            var relevantBanners = banners.Where(x => x.All || x.Countries.InvariantContains(location?.Country) || x.Continents.InvariantContains(location?.Continent)).ToList();
+
+            var vm = new BannersViewModel()
             {
-                var vm = new BannersViewModel();
-                var banners = _bannerService.GetBannersByPage(page);
-                if (banners != null && banners.Any())
-                {
-                    vm.Collection = banners;
-                    vm.Location = _locationService.GetLocationByIp(Request.UserHostAddress);
-                }
+                Collection = relevantBanners
+            };
 
-                return PartialView("Home/Banners", vm);
-            }
-
-            return null;
+            return PartialView("Home/Banners", vm);
         }
     }
 }
