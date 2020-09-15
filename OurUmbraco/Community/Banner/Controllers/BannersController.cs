@@ -22,7 +22,7 @@ namespace OurUmbraco.Community.Banner.Controllers
             var page = Umbraco.TypedContent(id);
             if (page != null)
             {
-                var vm = new Banners();
+                var vm = new BannersViewModel();
                 var banners = _bannerService.GetBannersByPage(page);
                 if (banners != null && banners.Any())
                 {
