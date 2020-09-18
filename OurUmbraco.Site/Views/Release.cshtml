@@ -393,10 +393,11 @@
                                                 {
                                                     foreach (var category in release.CategorizedIssues
                                                         .Where(x => x.Issues.Count != 0)
-                                                        .OrderBy(x => x.Priority).ThenBy(x => x.Name))
+                                                        .OrderBy(x => x.Priority).ThenBy(x => x.Name)
+                                                        .ToList())
                                                     {
                                                         <details open>                                                        
-                                                            <summary>@category.Name</summary>
+                                                            <summary>@category.Name (@category.Issues.Count)</summary>
                                                             
                                                             <ul class="@(release.Released ? "released" : "unreleased")">
                                                                 @foreach (var issue in category.Issues)
