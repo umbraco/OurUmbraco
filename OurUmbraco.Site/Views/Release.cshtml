@@ -408,7 +408,7 @@
                                                                         }
                                                                         @if (issue.CommunityContribution && issue.ContributorAvatar != string.Empty)
                                                                         {
-                                                                            <span class="contrib-badge" title="A community contribution from helped close this issue #h5yr!"><img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img"/></span>
+                                                                            <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img"/></span>
                                                                         }
                                                                         @if (issue.CommunityContribution == false)
                                                                         {
@@ -419,7 +419,7 @@
                                                                                 ? $"https://issues.umbraco.org/issue/{issue.Id}"
                                                                                 : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
                                                                         }
-                                                                        <a href="@url" target="_blank" rel="noreferrer noopener">@issue.Title</a>
+                                                                        <a href="@url" target="_blank" title="@(issue.CommunityContribution ? "A community contribution helped close this issue #h5yr!" : null)" rel="noreferrer noopener">@issue.Title</a>
                                                                     </li>
                                                                 }
                                                             </ul>
