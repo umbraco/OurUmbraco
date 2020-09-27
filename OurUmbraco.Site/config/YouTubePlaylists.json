@@ -1,33 +1,38 @@
 {
-  "playlists": [
-    {
-      "id": "PL8U_DpU2bvqeIGMNay5O7wjD5Fv16PzzI",
-      "title": "UmbraCoffee",
-      "members": [
-        144315,
-        152036
-      ]
-    },
-    {
-      "id": "PL90L_HquhD-8K6pAseMDJKPvoMcwu3bJb",
-      "title": "Paul Seal",
-      "members": [ 126488 ]
-    },
-    {
-      "id": "PLt2In-z2vNrEM4LgFWqkhLk1LjgcY7RgM",
-      "title": "uHangout",
-      "members": [ 1175 ] 
-    },
-    {
-      "id": "PLBhJTkSetty35s_17snA-a5d6dHiW--2y",
-      "title": "Umbraco Festival Deutschland",
-      "members": [ 69894 ] 
-    },
-     {
-      "id": "PLNsrAyBbMVsIVV0R_tmX-3jvjdJcRKzQd",
-      "title": "Tour de Back Officce de Umbraco",
-      "members": [ 272516 ] 
-    }
-    
-  ]
+    "playlists": [
+        {
+            "id": "PLzjlY-50t_3VQFKymxk3NnhPYaKkjK1nZ",
+            "title": "John Blair - How to do various useful tasks with Umbraco",
+            "members": [ 276986 ]
+        },
+        {
+            "id": "PL8U_DpU2bvqeIGMNay5O7wjD5Fv16PzzI",
+            "title": "UmbraCoffee",
+            "members": [
+                144315,
+                152036
+            ]
+        },
+        {
+            "id": "PL90L_HquhD-8K6pAseMDJKPvoMcwu3bJb",
+            "title": "Paul Seal",
+            "members": [ 126488 ]
+        },
+        {
+            "id": "PLt2In-z2vNrEM4LgFWqkhLk1LjgcY7RgM",
+            "title": "uHangout",
+            "members": [ 1175 ]
+        },
+        {
+            "id": "PLBhJTkSetty35s_17snA-a5d6dHiW--2y",
+            "title": "Umbraco Festival Deutschland",
+            "members": [ 69894 ]
+        },
+        {
+            "id": "PLNsrAyBbMVsIVV0R_tmX-3jvjdJcRKzQd",
+            "title": "Tour de Back Officce de Umbraco",
+            "members": [ 272516 ]
+        }
+
+    ]
 }
