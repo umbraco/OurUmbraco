@@ -55,10 +55,26 @@ namespace OurUmbraco.Our.Api
             if (member == null)
                 return false;
 
-            member.SetValue("reputationTotal", 71);
-            member.SetValue("reputationCurrent", 71);
-            memberService.Save(member);
-            
+            var saveMember = false;
+            var reputationTotal = member.GetValue<int>("reputationTotal");
+            if (reputationTotal < 71)
+            {
+                member.SetValue("reputationTotal", 71);
+                saveMember = true;
+            }
+
+            var reputationCurrent = member.GetValue<int>("reputationCurrent");
+            if (reputationCurrent < 71)
+            {
+                member.SetValue("reputationCurrent", 71);
+                saveMember = true;
+            }
+
+            if (saveMember)
+            {
+                memberService.Save(member);
+            }
+
             return true;
         }
     }
