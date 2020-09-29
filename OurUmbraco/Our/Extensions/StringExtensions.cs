@@ -116,7 +116,7 @@ namespace OurUmbraco.Our.Extensions
                 case "resolved":
                     return "icon-Check";
                 default:
-                    return "";
+                    return "icon-Checkbox-empty";
             }
         }
 
