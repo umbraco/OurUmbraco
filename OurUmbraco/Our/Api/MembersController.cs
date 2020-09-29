@@ -56,6 +56,8 @@ namespace OurUmbraco.Our.Api
                 return false;
 
             member.SetValue("reputationTotal", 31);
+            memberService.Save(member);
+            
             return true;
         }
     }
