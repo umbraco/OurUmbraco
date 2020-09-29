@@ -305,6 +305,15 @@
       "rss": "https://dev.to/feed/dawoe",
       "logo": "https://our.umbraco.com/media/upload/e325fd8a-d558-4c67-a1a1-e8d29a10b548/dave-woestenborghs.jpg?width=400&height=400&mode=crop&upscale=true",
       "memberId": 2054
+    },
+    {
+      "id": "d85c84b3-be47-4c54-aa29-cd53ca422611",
+      "checkTitles": false,
+      "title": "too orangey for crows",
+      "url": "http://tooorangey.co.uk/",
+      "rss": "http://tooorangey.co.uk/rssfeed",
+      "logo": "https://our.umbraco.com/media/upload/db50a722-9866-4efb-8fb3-b68dae6d2d77/marcemarc.jpg?width=400&height=400&mode=crop&upscale=true",
+      "memberId": 33401
     }
   ]
 }
