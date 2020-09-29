@@ -46,5 +46,20 @@ namespace OurUmbraco.Our.Api
             memberService.AssignRole(member.Id, "CoreContrib");
             return true;
         }
+        
+        [System.Web.Http.HttpGet]
+        public bool GrantKarmaForPackageUpload (int memberId)
+        {
+            var memberService = ApplicationContext.Services.MemberService;
+            var member = memberService.GetById(memberId);
+            if (member == null)
+                return false;
+
+            member.SetValue("reputationTotal", 71);
+            member.SetValue("reputationCurrent", 71);
+            memberService.Save(member);
+            
+            return true;
+        }
     }
 }
