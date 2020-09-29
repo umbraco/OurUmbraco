@@ -185,8 +185,8 @@
       "checkTitles": false,
       "title": "Code 101",
       "url": "https://code101.net/",
-      "rss": "https://code101.net/feed",
-      "logo": "https://pbs.twimg.com/profile_images/580012767815413760/19yrvSAF_400x400.png",
+      "rss": "https://code101.net/code-101?format=rss",
+      "logo": "https://images.squarespace-cdn.com/content/5c1fc525365f024b42163a20/1545678725906-MAU2ZNX57KZ79OQJ6X33/code101-logo.png",
       "memberId": 8882
     },
     {
@@ -305,6 +305,24 @@
       "rss": "https://dev.to/feed/dawoe",
       "logo": "https://our.umbraco.com/media/upload/e325fd8a-d558-4c67-a1a1-e8d29a10b548/dave-woestenborghs.jpg?width=400&height=400&mode=crop&upscale=true",
       "memberId": 2054
+    },
+    {
+      "id": "d85c84b3-be47-4c54-aa29-cd53ca422611",
+      "checkTitles": false,
+      "title": "too orangey for crows",
+      "url": "http://tooorangey.co.uk/",
+      "rss": "http://tooorangey.co.uk/rssfeed",
+      "logo": "https://our.umbraco.com/media/upload/db50a722-9866-4efb-8fb3-b68dae6d2d77/marcemarc.jpg?width=400&height=400&mode=crop&upscale=true",
+      "memberId": 33401
+    },
+    {
+      "id": "963192c7-ee15-4058-bb60-fefe2e4362bb",
+      "checkTitles": false,
+      "title": "AaronSadlerUK blog",
+      "url": "https://aaronsadler.dev",
+      "rss": "https://aaronsadler.dev/rss/?label=umbraco",
+      "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
+      "memberId": 279599
     }
   ]
 }
