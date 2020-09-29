@@ -430,6 +430,8 @@
     <Compile Include="Community\BlogPosts\Controllers\Http\BlogController.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
+    <Compile Include="Community\Twitter\Controllers\Http\TwitterController.cs" />
+    <Compile Include="Community\Twitter\Models\TweetDto.cs" />
     <Compile Include="Community\Videos\Controllers\Http\VideoController.cs" />
     <Compile Include="Community\Videos\Models\YouTubeVideoDto.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
@@ -444,7 +446,7 @@
     <Compile Include="Community\Banner\BannerService.cs" />
     <Compile Include="Community\Banner\Controllers\BannersController.cs" />
     <Compile Include="Community\Banner\Models\Banner.cs" />
-    <Compile Include="Community\Banner\Models\Banners.cs" />
+    <Compile Include="Community\Banner\Models\BannersViewModel.cs" />
     <Compile Include="Community\BlogPosts\BlogCachedRssItem.cs" />
     <Compile Include="Community\BlogPosts\BlogInfo.cs" />
     <Compile Include="Community\BlogPosts\BlogPostsService.cs" />
