@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+    - name: Packages Related?
+      url: https://github.com/umbraco/Umbraco.Packages/issues
+      about: If you want to report a bug or discuss a feature request relating to the packages section of the Our website, please do so over on the Package Team repository.
