@@ -5,14 +5,6 @@
 
 @{
     var profile = MemberData;
-
-    var homePage = Umbraco.TypedContentAtRoot().FirstOrDefault();
-    var profilePage = homePage.Descendants("Textpage").Where(x => x.Name == "Profile").ToList().FirstOrDefault();
-    IPublishedContent packagePage = null;
-    if (profilePage != null)
-    {
-        packagePage = profilePage.Descendants("Textpage").Where(x => x.Name == "Packages").ToList().FirstOrDefault();
-    }
 }
 <div class="quick-menu">
     <div class="container">
@@ -78,7 +70,7 @@
                         @if (packagePage != null)
                         {
                             <div class="public-profile">
-                                <a href="@packagePage.Url">View my packages</a>
+                                <a href="/member/profile/packages/">View my packages</a>
                             </div>
                         }
                         @if (profile.IsAdmin)
