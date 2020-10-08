@@ -44,6 +44,7 @@ namespace OurUmbraco.Our.Models
         public string SourceCodeUrl { get; set; }
 
         [Display(Name = "NuGet package URL")]
+        [RegularExpression("^(?:https?:\\/\\/)?(?:[^.]+\\.)?nuget\\.org(\\/.*)?$", ErrorMessage = "Please enter the full NuGet url")]
         public string NuGetPackageUrl { get; set; }
 
         [Display(Name = "Bug tracking URL")]
