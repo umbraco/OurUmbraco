@@ -428,6 +428,7 @@
     <Compile Include="Auth\HMACAuthentication.cs" />
     <Compile Include="Community\Badges\Controllers\Http\BadgeController.cs" />
     <Compile Include="Community\BlogPosts\Controllers\Http\BlogController.cs" />
+    <Compile Include="Community\Controllers\Http\MeetupController.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
     <Compile Include="Community\Twitter\Controllers\Http\TwitterController.cs" />
