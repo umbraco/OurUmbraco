@@ -1,6 +1,10 @@
-﻿@inherits UmbracoTemplatePage
+﻿@using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
+@inherits UmbracoTemplatePage
 @{
     Layout = "~/Views/Master.cshtml";
+    var releasesService = new ReleasesService();
+    var allReleases = releasesService.GetReleasesCache();
 }
 <div class="has-sidebar release">
     <div class="page-content">
@@ -9,6 +13,14 @@
                 <div class="content-wrapper">
                     <nav>
                         <ul class="level-1">
+                            @foreach (var currentRelease in allReleases.Where(x => x.Released && x.LatestRelease))
+                            {
+                                <li>
+                                    <a class="active" href="@Url.GetReleaseUrl(currentRelease)">
+                                        <h3>Latest Release - v@(currentRelease.Version)</h3>
+                                    </a>
+                                </li>
+                            }
                             <li>
                                 <a href="/contribute/progress">
                                     <h3>In Progress</h3>
