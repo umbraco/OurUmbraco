@@ -4,6 +4,7 @@ using System.Data.SqlClient;
 using System.Linq;
 using System.Web;
 using Examine;
+using OurUmbraco.Our.Models;
 using umbraco;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -17,12 +18,23 @@ namespace OurUmbraco.Our
             return HttpContext.Current.Server.HtmlEncode(result.Fields.ContainsKey("nodeName") ? result["nodeName"] : string.Empty);
         }
 
-        public static string GetBreadcrumb(this SearchResult result)
+        public static IEnumerable<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
         {
             var currentResult = new UmbracoHelper(UmbracoContext.Current).Content(result.Id) as IPublishedContent;
-            var ancestors = currentResult.Ancestors().Select( x => x.Name);
+            var ancestors = currentResult.Ancestors().ToList();
 
-            return string.Join(" / ", ancestors);
+            var breadcrumbItems = new List<SearchResultBreadcrumbModel>();
+
+            foreach (var ancestor in ancestors)
+            {
+                breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                {
+                    Name = ancestor.Name,
+                    Url = ancestor.Url
+                });
+            }
+
+            return breadcrumbItems;
         }
 
         public static string GetIcon(this SearchResult result)

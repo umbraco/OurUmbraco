@@ -1,6 +1,17 @@
 ﻿@using OurUmbraco.Our
 @model OurUmbraco.Our.Models.SearchResultContentModel
-
+<style>
+    .type-breadcrumb {
+        color: #71888e;
+        font-size: .95rem;
+    }
+    .type-breadcrumb > a {
+        display: inline-block !important
+    }
+        .type-breadcrumb > a:hover, .type-breadcrumb > a:focus {
+            text-decoration: underline !important;
+        }
+</style>
 <div class="plain">
     <!-- search OVERVIEW START -->
     <section class="search-results">
@@ -30,17 +41,18 @@
             <form action="/search">
                 <div class="search-big">
                     <input name="q" required value="@Model.Results.SearchTerm" placeholder="Search..">
-                    <input type="hidden" name="cat" value="@Request.QueryString["cat"]"/>
+                    <input type="hidden" name="cat" value="@Request.QueryString["cat"]" />
                     <label for="search">Search</label>
                     <select class="version-search-select" name="v" style="height: 60px; padding: 0; padding-left: 10px;">
                         <option value="8" selected="@(Request.QueryString["v"] == "8"? "selected" : null)">v8</option>
                         <option value="7" selected="@(Request.QueryString["v"] == "7"? "selected" : null)">v7</option>
-                        <option value="6" selected="@(Request.QueryString["v"] == "6"? "selected" : null)">v6</option>                        
+                        <option value="6" selected="@(Request.QueryString["v"] == "6"? "selected" : null)">v6</option>
                     </select>
                 </div>
             </form>
-    
-            @if(Request.QueryString["cat"] == "forum") {
+
+            @if (Request.QueryString["cat"] == "forum")
+            {
                 <div id="search-options" class="search-options">
                     <label>Sort by</label>
                     <div class="options">
@@ -67,17 +79,21 @@
                 </div>
             }
 
-            @if(Model.Results.SearchResults.Any() == false) {
+            @if (Model.Results.SearchResults.Any() == false)
+            {
                 <p class="message">No results</p>
             }
 
             <section>
-                @if(string.IsNullOrWhiteSpace(Model.Results.Category) == false) {
+                @if (string.IsNullOrWhiteSpace(Model.Results.Category) == false)
+                {
                     <h2 class="search-in">Results from category: @Model.Results.Category</h2>
                 }
 
                 <ul class="search-all-results docs-search-listing">
-                    @foreach(var result in Model.Results.SearchResults) { 
+                    @foreach (var result in Model.Results.SearchResults)
+                    {
+                        var resultBreadcrumbs = result.GetBreadcrumbs().ToList();
                         <li class="@result.SolvedClass()">
                             <a href="@result.FullUrl()">
                                 <div class="type-icon">
@@ -86,7 +102,18 @@
 
                                 <div class="type-context">
                                     <div class="type-name">@result.GetTitle()</div>
-                                    <div class="type-description">@result.GetBreadcrumb()</div>
+                                    <div class="type-breadcrumb">
+                                        @foreach (var breadcrumb in resultBreadcrumbs)
+                                        {
+                                            <a href="@breadcrumb.Url">
+                                                @breadcrumb.Name
+                                            </a>
+                                            if (breadcrumb != resultBreadcrumbs.Last())
+                                            {
+                                                <text> / </text>
+                                            }
+                                    }
+                                    </div>
                                     <span class="type-datetime">@result.GetDate()</span>
                                     <div class="type-description">@result.GenerateBlurb(300)</div>
                                 </div>
