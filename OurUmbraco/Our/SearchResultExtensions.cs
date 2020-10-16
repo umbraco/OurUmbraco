@@ -26,38 +26,43 @@ namespace OurUmbraco.Our
             var breadcrumbItems = new List<SearchResultBreadcrumbModel>();
             if (currentResult == null)
             {
-                if (result.Fields.Keys.Contains("url") && result["url"].Contains("forum"))
+                if (result.Fields.Keys.Contains("url"))
                 {
-                    breadcrumbItems.Add(new SearchResultBreadcrumbModel
-                    {
-                        Name = "Forum",
-                        Url = "/forum/"
-                    });
-
-                    breadcrumbItems.Add(new SearchResultBreadcrumbModel
-                    {
-                        Name = result["nodeName"],
-                        Url = result["url"]
-                    });
-                }
-
-                if (result.Fields.Keys.Contains("url") && result["url"].Contains("Documentation"))
-                {
-                    string baseurl = "/";
-                    string directoryName = Path.GetDirectoryName(result["url"]);
-                    directoryName = directoryName.Substring(1);
-                    string[] strDirs = directoryName.Split('\\');
-
-                    foreach (var page in strDirs)
+                    if (result["url"].Contains("forum"))
                     {
                         breadcrumbItems.Add(new SearchResultBreadcrumbModel
                         {
-                            Name = page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText(),
-                            Url = baseurl + page
+                            Name = "Forum",
+                            Url = "/forum/"
                         });
 
-                        baseurl += page + "/";
+                        breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                        {
+                            Name = result["nodeName"],
+                            Url = result["url"]
+                        });
+                        return breadcrumbItems;
                     }
+
+                    if (result["url"].Contains("Documentation"))
+                    {
+                        string baseurl = "/";
+                        string directoryName = Path.GetDirectoryName(result["url"]);
+                        directoryName = directoryName.Substring(1);
+                        string[] strDirs = directoryName.Split('\\');
+
+                        foreach (var page in strDirs)
+                        {
+                            breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                            {
+                                Name = page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText(),
+                                Url = baseurl + page
+                            });
+
+                            baseurl += page + "/";
+                        }
+                    }
+                    return breadcrumbItems;
                 }
 
                 return breadcrumbItems;
