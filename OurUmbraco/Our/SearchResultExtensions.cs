@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Web;
 using Examine;
 using umbraco;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace OurUmbraco.Our
@@ -13,6 +15,14 @@ namespace OurUmbraco.Our
         public static string GetTitle(this SearchResult result)
         {
             return HttpContext.Current.Server.HtmlEncode(result.Fields.ContainsKey("nodeName") ? result["nodeName"] : string.Empty);
+        }
+
+        public static string GetBreadcrumb(this SearchResult result)
+        {
+            var currentResult = new UmbracoHelper(UmbracoContext.Current).Content(result.Id) as IPublishedContent;
+            var ancestors = currentResult.Ancestors().Select( x => x.Name);
+
+            return string.Join(" / ", ancestors);
         }
 
         public static string GetIcon(this SearchResult result)
