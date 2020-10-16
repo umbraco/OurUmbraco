@@ -49,7 +49,14 @@ namespace OurUmbraco.Our
                         string baseurl = "/";
                         string directoryName = Path.GetDirectoryName(result["url"]);
                         directoryName = directoryName.Substring(1);
-                        string[] strDirs = directoryName.Split('\\');
+                        var strDirs = directoryName.Split('\\').ToList();
+                        if (!result["url"].Contains("-v"))
+                        {
+                            if (!result["url"].EndsWith("/"))
+                            {
+                                strDirs.Add(result["url"].Substring(result["url"].LastIndexOf('/') + 1));
+                            }
+                        }
 
                         foreach (var page in strDirs)
                         {
