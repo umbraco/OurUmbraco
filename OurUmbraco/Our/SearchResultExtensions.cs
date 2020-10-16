@@ -20,7 +20,7 @@ namespace OurUmbraco.Our
 
         public static List<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
         {
-            var currentResult = new UmbracoHelper(UmbracoContext.Current).Content(result.Id) as IPublishedContent;
+            var currentResult = UmbracoContext.Current.ContentCache.GetById(result.Id);
             var ancestors = currentResult.Ancestors().ToList();
 
             var breadcrumbItems = new List<SearchResultBreadcrumbModel>();
