@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -66,7 +66,7 @@ namespace OurUmbraco.Our.Examine
             // * docs version (MajorDocsVersion) supplied, give current version and NEGATE OTHERS
             // * no docs version (MajorDocsVersion) is not suplied, use it and NEGATE others
             // * all versions are requests, this is currently not implemented
-            var currentMajorVersions = new string[] { "6", "7", "8" };
+            var currentMajorVersions = new string[] { "4", "6", "7", "8", Constants.Forum.UnoVersionNumber.ToString(), Constants.Forum.UnoVersionNumber.ToString() };
 
             // add mandatory majorVersion is parameter is supplied
             string versionToFilterBy = MajorDocsVersion == null
