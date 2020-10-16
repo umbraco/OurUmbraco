@@ -81,7 +81,7 @@
                 <ul class="search-all-results docs-search-listing">
                     @foreach (var result in Model.Results.SearchResults)
                     {
-                        var resultBreadcrumbs = result.GetBreadcrumbs().ToList();
+                        var resultBreadcrumbs = result.GetBreadcrumbs();
                         <li class="@result.SolvedClass()">
                             <a href="@result.FullUrl()">
                                 <div class="type-icon">

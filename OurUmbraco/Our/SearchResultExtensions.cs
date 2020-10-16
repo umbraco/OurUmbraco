@@ -18,7 +18,7 @@ namespace OurUmbraco.Our
             return HttpContext.Current.Server.HtmlEncode(result.Fields.ContainsKey("nodeName") ? result["nodeName"] : string.Empty);
         }
 
-        public static IEnumerable<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
+        public static List<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
         {
             var currentResult = new UmbracoHelper(UmbracoContext.Current).Content(result.Id) as IPublishedContent;
             var ancestors = currentResult.Ancestors().ToList();
