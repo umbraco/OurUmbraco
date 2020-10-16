@@ -1,9 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
 using System.Linq;
 using System.Web;
 using Examine;
+using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Our.Models;
 using umbraco;
 using Umbraco.Web;
@@ -37,6 +39,25 @@ namespace OurUmbraco.Our
                         Name = result["nodeName"],
                         Url = result["url"]
                     });
+                }
+
+                if (result.Fields.Keys.Contains("url") && result["url"].Contains("Documentation"))
+                {
+                    string baseurl = "/";
+                    string directoryName = Path.GetDirectoryName(result["url"]);
+                    directoryName = directoryName.Substring(1);
+                    string[] strDirs = directoryName.Split('\\');
+
+                    foreach (var page in strDirs)
+                    {
+                        breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                        {
+                            Name = page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText(),
+                            Url = baseurl + page
+                        });
+
+                        baseurl += page + "/";
+                    }
                 }
 
                 return breadcrumbItems;
