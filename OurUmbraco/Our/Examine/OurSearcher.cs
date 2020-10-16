@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -80,6 +80,7 @@ namespace OurUmbraco.Our.Examine
                 foreach (var versionToNegate in versionsToNegate)
                 {
                     sb.AppendFormat("-majorVersion:{0} ", versionToNegate);
+                    sb.AppendFormat("-version:{0} ", versionToNegate);
                 }
             }
 
