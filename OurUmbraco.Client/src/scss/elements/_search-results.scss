@@ -356,7 +356,7 @@
 
 
 			a {
-				display: flex;
+				// display: flex; Is this required?
 				align-items: center;
 				text-decoration: none;
 			}
@@ -387,6 +387,15 @@
 					color: darken($color-space, 5%);
 					font-size: .95rem;
 				}
+
+				.type-breadcrumb {
+					color: #71888e;
+					font-size: .95rem;
+				}
+
+				.type-breadcrumb > a {
+					display: inline-block !important
+				}
 			}
 
 			&:hover {
@@ -402,6 +411,9 @@
 					}
 					.type-description {
 						color: darken($color-space, 25%);
+					}
+					.type-breadcrumb > a:hover, .type-breadcrumb > a:focus {
+						text-decoration: underline !important;
 					}
 				}
 			}
