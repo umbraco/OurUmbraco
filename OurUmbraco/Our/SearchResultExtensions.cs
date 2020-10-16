@@ -6,7 +6,6 @@ using System.Web;
 using Examine;
 using OurUmbraco.Our.Models;
 using umbraco;
-using Umbraco.Core.Models;
 using Umbraco.Web;
 
 namespace OurUmbraco.Our
@@ -20,10 +19,30 @@ namespace OurUmbraco.Our
 
         public static List<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
         {
-            var currentResult = UmbracoContext.Current.ContentCache.GetById(result.Id);
-            var ancestors = currentResult.Ancestors().ToList();
-
+            var currentContext = UmbracoContext.Current;
+            var currentResult = currentContext.ContentCache.GetById(result.Id);
             var breadcrumbItems = new List<SearchResultBreadcrumbModel>();
+            if (currentResult == null)
+            {
+                if (result.Fields.Keys.Contains("url") && result["url"].Contains("forum"))
+                {
+                    breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                    {
+                        Name = "Forum",
+                        Url = "/forum/"
+                    });
+
+                    breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                    {
+                        Name = result["nodeName"],
+                        Url = result["url"]
+                    });
+                }
+
+                return breadcrumbItems;
+            }
+
+            var ancestors = currentResult.Ancestors().ToList();
 
             foreach (var ancestor in ancestors)
             {
@@ -58,7 +77,7 @@ namespace OurUmbraco.Our
             {
                 return "solved";
             }
-            
+
             return string.Empty;
         }
 
@@ -114,7 +133,7 @@ namespace OurUmbraco.Our
                     ? string.Format("/{0}/{1}-{2}", url.Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"])
                     : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"]);
             }
-            
+
             return "TODO";
         }
 
