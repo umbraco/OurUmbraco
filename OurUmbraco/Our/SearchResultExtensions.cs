@@ -58,6 +58,11 @@ namespace OurUmbraco.Our
                             }
                         }
 
+                        if (strDirs.Last() == "index")
+                        {
+                            strDirs.Remove(strDirs.Last());
+                        }
+
                         foreach (var page in strDirs)
                         {
                             breadcrumbItems.Add(new SearchResultBreadcrumbModel
