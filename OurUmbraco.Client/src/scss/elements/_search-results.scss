@@ -310,11 +310,8 @@
 		input {
 			font-size: .95rem;
 			color: $color-space;
-
 			margin-bottom: 30px;
-
 			border: 2px solid rgba($color-space, .33);
-
 			transition: border 150ms ease;
 
 			&:hover {
@@ -331,7 +328,6 @@
 	.message {
 		margin-top: 40px;
 		font-size: 1.2rem;
-
 		color: darken($color-space, 45%);
 	}
 
@@ -347,7 +343,6 @@
 		li {
 			background: none;
 			border: 2px solid rgba($color-space, .33);
-
 			transition: border 150ms ease;
 
 			+ li {
@@ -390,7 +385,8 @@
 
 				.type-breadcrumb {
 					color: #71888e;
-					font-size: .95rem;
+					font-size: .85rem;
+					margin-bottom: 3px;
 				}
 
 				.type-breadcrumb > a {
@@ -409,9 +405,11 @@
 					.type-name {
 						color: darken($color-green, 5%);
 					}
+
 					.type-description {
 						color: darken($color-space, 25%);
 					}
+
 					.type-breadcrumb > a:hover, .type-breadcrumb > a:focus {
 						text-decoration: underline !important;
 					}
@@ -428,7 +426,7 @@
 						position: relative;
 
 						&::after {
-							content:"(Solved)";
+							content: "(Solved)";
 							font-size: .8rem;
 							color: rgba(#000, .55);
 						}
