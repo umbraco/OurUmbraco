@@ -1,16 +1,19 @@
 [{
 	"TeamName": "Umbraco-CMS",
-	"Members": [
-		"abjerner", "kjac", "emmaburstow", "poornimanayar", 
-	]
+	"Members": ["abjerner", "emmaburstow", "kjac", "poornimanayar"]
 }, {
 	"TeamName": "UmbracoDocs",
-	"Members": [
-		"busraparnell", "dampee", "jeavon", "marcemarc", "sophie-neale"
-	]
+	"Members": ["busraparnell", "dampee", "jeavon", "marcemarc", "sophie-neale"]
 }, {
 	"TeamName": "OurUmbraco",
-	"Members": [
-		"abjerner", "kjac", "emmaburstow", "poornimanayar"
-	]
+	"Members": ["abjerner", "emmaburstow", "kjac", "poornimanayar"]
+}, {
+	"TeamName": "UmbPack",
+	"Members": []
+}, {
+	"TeamName": "Umbraco.Packages",
+	"Members": []
+}, {
+	"TeamName": "Package.Templates",
+	"Members": []
 }]
