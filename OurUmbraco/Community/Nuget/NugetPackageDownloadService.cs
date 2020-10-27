@@ -152,7 +152,8 @@
         /// <returns>The info we require for a package NugetPackageInfo</returns>
         private NugetPackageInfo GetNugetPackageInfo(NugetSearchResult nugetPackage)
         {
-            var lastDate = DateTime.Now;
+            var blankDate = new DateTime(1900, 1, 1);
+            var oldestDate = DateTime.Now;
 
             var packageInfo = GetNugetResponse<NugetRegistrationResponse>(nugetPackage.PackageRegistrationUrl);
             if (packageInfo != null)
@@ -162,13 +163,15 @@
 
                     // workout the oldest date based on commit time stamp (when the package was uploaded not published)
                     var date = item.Items
-                        .Select(x => x.CommitTimeStamp)
+                        .Select(x => new[] { 
+                            x.CommitTimeStamp , 
+                            x.CatalogEntry.PublishedDate > blankDate ? x.CatalogEntry.PublishedDate : DateTime.Now }.Min())
                         .OrderBy(x => x)
                         .FirstOrDefault();
 
-                    if (date != null && date < lastDate)
+                    if (date != null && date < oldestDate)
                     {
-                        lastDate = date;
+                        oldestDate = date;
                     }
 
                 }
@@ -178,7 +181,7 @@
             {
                 TotalDownLoads = nugetPackage.TotalDownloads,
                 PackageId = nugetPackage.Id,
-                AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, lastDate)
+                AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, oldestDate)
             };
         }
 

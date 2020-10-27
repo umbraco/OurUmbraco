@@ -105,8 +105,11 @@ namespace OurUmbraco.Our.Examine
 
             if (_dailyNugetDownLoads.HasValue)
             {
-                // if the project is younger than 6 months, we count average * age)
-                var days = Math.Min((_now - _now.AddMonths(6)).TotalDays, (_now - _createDate).TotalDays);
+                // some confusion '_now' is not now, its the last update time of the package.
+                // we want to calculate from today. 
+                var today = DateTime.Now;
+
+                var days = Math.Min((today - today.AddMonths(-6)).TotalDays, (today - _createDate).TotalDays);
 
                 nugetDownloads = (_dailyNugetDownLoads.Value * (int)days);               
             }
