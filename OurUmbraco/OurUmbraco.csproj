@@ -440,6 +440,7 @@
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />
+    <Compile Include="Our\Models\SearchResultBreadcrumbModel.cs" />
     <Compile Include="Project\Api\ProjectApiKeyController.cs" />
     <Compile Include="Project\Api\UmbracoMemberAuthApiController.cs" />
     <Compile Include="Auth\UmbracoMemberAuthTokenAttribute.cs" />
