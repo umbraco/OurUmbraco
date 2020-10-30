@@ -1,8 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
+using System.IO;
+using System.Linq;
 using System.Web;
 using Examine;
+using OurUmbraco.Documentation.Busineslogic;
+using OurUmbraco.Our.Models;
 using umbraco;
 using Umbraco.Web;
 
@@ -13,6 +17,81 @@ namespace OurUmbraco.Our
         public static string GetTitle(this SearchResult result)
         {
             return HttpContext.Current.Server.HtmlEncode(result.Fields.ContainsKey("nodeName") ? result["nodeName"] : string.Empty);
+        }
+
+        public static List<SearchResultBreadcrumbModel> GetBreadcrumbs(this SearchResult result)
+        {
+            var currentContext = UmbracoContext.Current;
+            var currentResult = currentContext.ContentCache.GetById(result.Id);
+            var breadcrumbItems = new List<SearchResultBreadcrumbModel>();
+            if (currentResult == null)
+            {
+                if (result.Fields.Keys.Contains("url"))
+                {
+                    if (result["url"].Contains("forum"))
+                    {
+                        breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                        {
+                            Name = "Forum",
+                            Url = "/forum/"
+                        });
+
+                        breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                        {
+                            Name = result["nodeName"],
+                            Url = result["url"]
+                        });
+                        return breadcrumbItems;
+                    }
+
+                    if (result["url"].Contains("Documentation"))
+                    {
+                        string baseurl = "/";
+                        string directoryName = Path.GetDirectoryName(result["url"]);
+                        directoryName = directoryName.Substring(1);
+                        var strDirs = directoryName.Split('\\').ToList();
+                        if (!result["url"].Contains("-v"))
+                        {
+                            if (!result["url"].EndsWith("/"))
+                            {
+                                strDirs.Add(result["url"].Substring(result["url"].LastIndexOf('/') + 1));
+                            }
+                        }
+
+                        if (strDirs.Last() == "index")
+                        {
+                            strDirs.Remove(strDirs.Last());
+                        }
+
+                        foreach (var page in strDirs)
+                        {
+                            breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                            {
+                                Name = page.RemoveDash().UnderscoreToDot().EnsureCorrectDocumentationText(),
+                                Url = baseurl + page
+                            });
+
+                            baseurl += page + "/";
+                        }
+                    }
+                    return breadcrumbItems;
+                }
+
+                return breadcrumbItems;
+            }
+
+            var ancestors = currentResult.Ancestors().ToList();
+
+            foreach (var ancestor in ancestors)
+            {
+                breadcrumbItems.Add(new SearchResultBreadcrumbModel
+                {
+                    Name = ancestor.Name,
+                    Url = ancestor.Url
+                });
+            }
+
+            return breadcrumbItems;
         }
 
         public static string GetIcon(this SearchResult result)
@@ -36,7 +115,7 @@ namespace OurUmbraco.Our
             {
                 return "solved";
             }
-            
+
             return string.Empty;
         }
 
@@ -92,7 +171,7 @@ namespace OurUmbraco.Our
                     ? string.Format("/{0}/{1}-{2}", url.Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"])
                     : string.Format("/{0}/{1}-{2}.aspx", url.Substring(0, url.LastIndexOf('.')).Trim('/'), result.Fields["__NodeId"], result.Fields["urlName"]);
             }
-            
+
             return "TODO";
         }
 
