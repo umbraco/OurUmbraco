@@ -167,142 +167,16 @@
                             }
                             </text>
                         }
-
-                        .release-page .explain h2 {
-                            margin-top: 12px;
-                            font-size: 2em;
-                            margin-bottom: .3rem;
-                            color: rgba(0,0,0,.8);
-                        }
-
-                        .release-page .dot {
-                            border: none;
-                        }
-
-                            .release-page .dot.big {
-                                position: relative;
-                                text-indent: 0;
-                                margin: 15px auto 0;
-                            }
-
-                        .release-page .chart {
-                            height: 60px;
-                            width: 60px;
-                            top: initial;
-                            left: initial;
-                            text-align: center;
-                        }
-
-                            .release-page .chart p {
-                                vertical-align: middle;
-                                line-height: 3.7rem;
-                                display: inline-block;
-                            }
-
-                            .release-page .chart canvas {
-                                top: 0px;
-                                left: 0px;
-                            }
-
-                        .statuses ul {
-                            list-style-type: none;
-                            margin-top: 30px;;
-                        }
-
-                        .statuses ul li {
-                            position: relative;
-                            margin-bottom: 10px;
-                            padding-left: 10px;
-                            text-indent: -45px;
-                            margin-left: 45px;
-                        }
-
-                        .statuses li:before {
-                            position: absolute;
-                            top: -4px;
-                            left: -25px;
-                            font-size: 1.5em;
-                        }
-                        summary {
-                            font-size: 1.1rem;
-                            font-weight: bold;
-                            margin-top: 32px;
-                            margin-bottom: 10px;
-                            cursor: pointer;
-                        }
-                        details ul {
-                            list-style-type: none;
-                            padding-top: 8px !important;
-                        }
-                        details ul.unreleased {
-                            padding-left: 20px !important;
-                        }
-                        details ul.released {
-                            padding-left: 10px !important;
-                        }
-                        details ul.unreleased li {
-                            text-indent: -70px;
-                            margin-left: 70px;
-                        }
-                        details ul.released li {
-                            text-indent: -43px;
-                            margin-left: 43px;
-                        }
-                        details a, .statuses a {
-                            text-decoration: none !important;
-                        }
-                        details a:hover, .statuses a:hover {
-                            font-weight: bold;
-                        }
-                        details p {
-                            padding-top: 6px;
-                        }
-                        .contrib-badge {
-                            color: white;
-                            padding: 5px;
-                            font-family: Lato,sans-serif;
-                            font-size: 0.7rem;
-                            font-weight: bold;
-                            border: 1px solid transparent;
-                            border-radius: 2em;
-                        }
-                        .contrib-img {
-                            margin-bottom: -10px !important;
-                            border: 1px solid transparent;
-                            border-radius: 2em;
-                        }
-                        .release-hints {
-                            margin-top: 40px;
-                            margin-left: 20px;
-                            padding-right: 10px;
-                            font-size: 0.7rem;
-                        }
-                        .release-hints h3 {
-                            margin-top: 20px;
-                        }
-                        .release-hints ul {
-                            margin-top: 20px;
-                            list-style-type: none;
-                        }
-                        .nuget {
-                            margin-left: 67px;
-                            margin-top: 20px;
-                        }
-                        .get-release {
-                            padding-bottom: 10px !important;
-                            margin-bottom: 0 !important;
-                        }
+                        
                     </style>
 
-                    <div class="row explain">
-                        <div class="col-sm-2">
-                            <span class="dot big progress">
-                                <div class="chart" data-percent="@release.PercentComplete">
-                                    <p>@(release.PercentComplete)%</p>
-                                </div>
-                            </span>
+                    <div class="explain">
+                        <div class="dot big progress">
+                            <div class="chart" data-percent="@release.PercentComplete">
+                                <p>@(release.PercentComplete)%</p>
+                            </div>
                         </div>
-                        <div class="col-sm-10">
+                        <div class="content">
                             <h2>v@(Model.Content.Name)</h2>
                             <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
                             @if (release.Released == false)
@@ -369,6 +243,7 @@
                                         @if (Model.Content.GetPropertyValue<bool>("hasNuGet"))
                                         {
                                             <h3>Also available on NuGet</h3>
+                                            
                                             <span class="pm-nuget">
                                                 <input class="pre nuget" value="Install-Package UmbracoCms -Version @Model.Content.Name" readonly="">
                                             </span>
@@ -415,15 +290,15 @@
                                                             <li class="@(release.Released == false ? issue.State.StateIcon() : null)" title="@issue.State">
                                                                 @if (issue.CommunityContribution && issue.ContributorAvatar == string.Empty)
                                                                 {
-                                                                    <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img" /></span>
+                                                                    <img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img" alt="A community contribution helped close this issue #h5yr!" />
                                                                 }
                                                                 @if (issue.CommunityContribution && issue.ContributorAvatar != string.Empty)
                                                                 {
-                                                                    <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img" /></span>
+                                                                    <img src="/remote.axd?@(issue.ContributorAvatar)&width=25&upscale=true" class="contrib-img" alt="A community contribution helped close this issue #h5yr!" />
                                                                 }
                                                                 @if (issue.CommunityContribution == false)
                                                                 {
-                                                                    <span class="contrib-badge"><img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img" /></span>
+                                                                    <img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img" />
                                                                 }
                                                                 @{
                                                                     var url = issue.Source == ReleaseSource.YouTrack
@@ -549,11 +424,11 @@
 
     if (issue.CommunityContribution)
     {
-        <span class="contrib-badge" title="A community contribution helped close this issue #h5yr!"><img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img" /></span>
+        <img src="/Assets/images/925px-Unknown_person.jpg?width=25&upscale=true" class="contrib-img" alt="A community contribution helped close this issue #h5yr!" />
     }
     else
     {
-        <span class="contrib-badge"><img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img" /></span>
+        <img src="/Assets/images/umbraco-logo.png?width=25&upscale=true" class="contrib-img" alt="A community contribution helped close this issue #h5yr!" />
     }
 }
 

@@ -1,7 +1,5 @@
-﻿using System;
-using System.Web;
+﻿using System.Web;
 using System.Web.Http;
-using Newtonsoft.Json;
 using OurUmbraco.Our.Models;
 using Umbraco.Core.Persistence;
 using Umbraco.Web.WebApi;
@@ -16,17 +14,9 @@ namespace OurUmbraco.Our.Api
             if (!ModelState.IsValid)
                 throw new HttpResponseException(Request.CreateValidationErrorResponse(ModelState));
 
-            var hasError = string.IsNullOrEmpty(model.Error) == false;
-
-            var request = HttpContext.Current.Request;
-            var ipAddress = request.UserHostAddress;
-            var forwardedFor = request.ServerVariables["HTTP_X_FORWARDED_FOR"];
-            if (string.IsNullOrEmpty(forwardedFor) == false)
-                ipAddress = forwardedFor;
-            var domainName = request.UserHostName;
-
-            // CloudFlare identifies the country for us
-            var country = request.Params["HTTP_CF_IPCOUNTRY"];
+            var hasError = !string.IsNullOrEmpty(model.Error);
+            var ipAddress = HttpContext.Current.Request.UserHostAddress;
+            var domainName = HttpContext.Current.Request.UserHostName;
 
             if (string.IsNullOrWhiteSpace(model.VersionComment) == false)
             {
@@ -47,74 +37,38 @@ namespace OurUmbraco.Our.Api
                 }
             }
 
-            if (hasError)
-            {
-                // insert error
-
-                using (var umbracoUpdateDb = new Database("umbracoUpdate"))
-                {
-                    var cmd = @"INSERT INTO [installError]
-       ([installId]
-       ,[timestamp]
-       ,[error])
- VALUES
-       (@installId
-       ,@timestamp
-       ,@error)";
-
-                    var args = new
-                    {
-                        installId = model.InstallId,
-                        installEnd = model.Timestamp,
-                        dbProvider = model.DbProvider,
-                        error = model.Error
-                    };
-                    
-                    try
-                    {
-                        umbracoUpdateDb.Execute(cmd, args);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(typeof(InstallationController),$"Couldn't log installer error ping, SQL insert failed, values: {JsonConvert.SerializeObject(args)}", ex);
-                    }
-                }
-            }
-
             if (!model.InstallCompleted)
             {
                 using (var umbracoUpdateDb = new Database("umbracoUpdate"))
                 {
                     var insertCmd = @"INSERT INTO [installs]
-       ([completed]
-       ,[isUpgrade]
-       ,[errorLogged]
-       ,[installId]
-       ,[installStart]
-       ,[versionMajor]
-       ,[versionMinor]
-       ,[versionPatch]
-       ,[versionComment]
-       ,[ip]
-       ,[domain]
-       ,[userAgent]
-       ,[country])
- VALUES
-       (@completed
-       ,@isUpgrade
-       ,@errorLogged
-       ,@installId
-       ,@installStart
-       ,@versionMajor
-       ,@versionMinor
-       ,@versionPatch
-       ,@versionComment
-       ,@ip
-       ,@domain
-       ,@userAgent
-       ,@country)";
+           ([completed]
+           ,[isUpgrade]
+           ,[errorLogged]
+           ,[installId]
+           ,[installStart]
+           ,[versionMajor]
+           ,[versionMinor]
+           ,[versionPatch]
+           ,[versionComment]
+           ,[ip]
+           ,[domain]
+           ,[userAgent])
+     VALUES
+           (@completed
+           ,@isUpgrade
+           ,@errorLogged
+           ,@installId
+           ,@installStart
+           ,@versionMajor
+           ,@versionMinor
+           ,@versionPatch
+           ,@versionComment
+           ,@ip
+           ,@domain
+           ,@userAgent)";
 
-                    var args = new
+                    umbracoUpdateDb.Execute(insertCmd, new
                     {
                         completed = model.InstallCompleted,
                         isUpgrade = model.IsUpgrade,
@@ -127,17 +81,8 @@ namespace OurUmbraco.Our.Api
                         versionComment = model.VersionComment,
                         ip = ipAddress,
                         domain = domainName,
-                        userAgent = model.UserAgent,
-                        country = country
-                    };
-                    try
-                    {
-                        umbracoUpdateDb.Execute(insertCmd, args);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(typeof(InstallationController),$"Couldn't log installer ping, SQL insert failed, values: {JsonConvert.SerializeObject(args)}", ex);
-                    }
+                        userAgent = model.UserAgent
+                    });
                 }
             }
             else
@@ -145,28 +90,17 @@ namespace OurUmbraco.Our.Api
                 using (var umbracoUpdateDb = new Database("umbracoUpdate"))
                 {
                     var updateCmd = @"UPDATE [installs]
-       SET [completed] = 1, [installEnd] = @installEnd, [dbProvider] = @dbProvider, [country] = @country 
-        WHERE installId = @installId";
+           SET [completed] = 1, [installEnd] = @installEnd, [dbProvider] = @dbProvider 
+            WHERE installId = @installId";
 
-                    var args = new
+                    umbracoUpdateDb.Execute(updateCmd, new
                     {
                         installId = model.InstallId,
                         installEnd = model.Timestamp,
-                        dbProvider = model.DbProvider,
-                        country = country
-                    };
-                    try
-                    {
-                        umbracoUpdateDb.Execute(updateCmd, args);
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(typeof(InstallationController),$"Couldn't log installer update ping, SQL insert failed, values: {JsonConvert.SerializeObject(args)}", ex);
-                    }
-                    
+                        dbProvider = model.DbProvider
+                    });
                 }
             }
-
 
             return Ok();
         }
