@@ -304,6 +304,7 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Deploy.Contrib",
                 "Umbraco.Deploy.ValueConnectors",
                 "UmbPack",
+                "Package.Templates",
                 "rfcs",	
                 "organizer-guide",
                 "The-Starter-Kit"

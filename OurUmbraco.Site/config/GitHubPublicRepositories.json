@@ -70,5 +70,11 @@
     "Owner": "umbraco",
     "Slug": "UmbPack",
     "Name": "UmbPack"
+  },
+  {
+    "Alias": "Package.Templates",
+    "Owner": "umbraco",
+    "Slug": "Package.Templates",
+    "Name": "Package.Templates"
   }
 ]
