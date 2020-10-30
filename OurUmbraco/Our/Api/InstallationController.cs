@@ -65,7 +65,7 @@ namespace OurUmbraco.Our.Api
                     var args = new
                     {
                         installId = model.InstallId,
-                        installEnd = model.Timestamp,
+                        installEnd = DateTime.Now,
                         dbProvider = model.DbProvider,
                         error = model.Error
                     };
@@ -120,7 +120,7 @@ namespace OurUmbraco.Our.Api
                         isUpgrade = model.IsUpgrade,
                         errorLogged = hasError,
                         installId = model.InstallId,
-                        installStart = model.Timestamp,
+                        installStart = DateTime.Now,
                         versionMajor = model.VersionMajor,
                         versionMinor = model.VersionMinor,
                         versionPatch = model.VersionPatch,
@@ -151,7 +151,7 @@ namespace OurUmbraco.Our.Api
                     var args = new
                     {
                         installId = model.InstallId,
-                        installEnd = model.Timestamp,
+                        installEnd = DateTime.Now,
                         dbProvider = model.DbProvider,
                         country = country
                     };
