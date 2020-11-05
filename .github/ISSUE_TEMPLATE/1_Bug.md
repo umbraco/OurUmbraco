@@ -1,6 +1,6 @@
 ---
 name: Bug
-about: Use this issue type if you've discovered a problem on the Our website. If it relates to packages please see the note below.
+about: Use this issue type if you've discovered a problem on the Our website. **If it relates to packages please see the note below.**
 labels: type/bug
 ---
 
