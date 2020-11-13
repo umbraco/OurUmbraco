@@ -54,6 +54,10 @@ If the projects area seems empty then that's because you need to rebuild the Exa
 
 If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index. This will automatically download the latest documentation from GitHub.
 
+## Community Area
+
+Following a recent update we've moved the `/community` pages to another [website](https://community.umbraco.com/). You can read more about the decision [here](https://umbraco.com/blog/the-umbraco-community-website-revisited).
+
 ## Contributing
 
 Please read our [Contributing Guidelines](CONTRIBUTING.md) to learn how you can get involved and help with the Umbraco community site.

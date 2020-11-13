@@ -1,17 +1,21 @@
 ﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 <ul>
-    @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where("Visible"))
+    @foreach (var page in Model.Content.AncestorOrSelf(1).Children.Where(x => x.IsVisible()))
     {
-    <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
-        @if (page.Name == "Contribute")
-        {
-            <a href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md" target="_blank" rel="noreferrer noopener">@page.Name</a>
-        }
-        else
-        {
-            <a href="@page.Url">@page.Name</a>
-        }
-    </li>
+        <li class="@(page.IsAncestorOrSelf(Model.Content) ? "current" : null)">
+            @if (page.Name == "Contribute")
+            {
+                <a href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md" target="_blank" rel="noreferrer noopener">@page.Name</a>
+            }
+            else if (page.Name.ToLowerInvariant() == "community")
+            {
+                <a href="https://community.umbraco.com/">Community</a>
+            }
+            else
+            {
+                <a href="@page.Url">@page.Name</a>
+            }
+        </li>
     }
 
     <li>

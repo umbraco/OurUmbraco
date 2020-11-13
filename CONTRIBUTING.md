@@ -24,5 +24,17 @@ And then each time you want to get the changes:
 
 There's more information on how this works [here](http://robots.thoughtbot.com/post/5133345960/keeping-a-git-fork-updated)
 
+## Community Area
+
+As described in [README.md](README.md) parts of Our such as the karma leaderboard, current and previous MVPs, badges and Meetups has been moved to a new website. If you wish to help change, for example, the karma leaderboard, feel free to make a change to the data structure on Our and Umbraco will reflect the frontend changes on the new website.
+
+These are the endpoints used:
+- `/umbraco/api/badge/getbadgegroups` (`BadgeController.cs`)
+- `/umbraco/api/mvp/getall` (`MvpController.cs`)
+- `/umbraco/api/karma/getkarmastatistics` (`KarmaController.cs`)
+- `/umbraco/api/blog/getall` (`BlogController`)
+- `/umbraco/api/video/getall` (`VideoController.cs`)
+- `/umbraco/api/meetup/index` (`MeetupController.cs`)
+
 ## Planning & discussions
 Use [Github issues](https://github.com/umbraco/OurUmbraco/issues) for reporting and discussing issues.
