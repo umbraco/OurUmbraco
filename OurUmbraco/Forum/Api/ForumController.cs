@@ -370,24 +370,39 @@ namespace OurUmbraco.Forum.Api
 
                 Guid g = Guid.NewGuid();
 
+                var invalidFiles = false;
+                    
                 foreach (string file in httpRequest.Files)
                 {
-
-                    DirectoryInfo updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + g));
-
-                    if (!updir.Exists)
-                        updir.Create();
-
                     var postedFile = httpRequest.Files[file];
+                    if (new [] { ".gif", ".png", ".jpg", ".jpeg" }.InvariantContains(Path.GetExtension(postedFile.FileName)))
+                    {
+                        DirectoryInfo updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + g));
 
-                    var filePath = updir.FullName + "/" + Path.GetFileName(postedFile.FileName);
-                    postedFile.SaveAs(filePath);
-                    filename = Path.GetFileName(postedFile.FileName);
+                        if (!updir.Exists)
+                            updir.Create();
 
+                        var filePath = updir.FullName + "/" + Path.GetFileName(postedFile.FileName);
+
+                        postedFile.SaveAs(filePath);
+                        filename = Path.GetFileName(postedFile.FileName);
+                    }
+                    else
+                    {
+                        invalidFiles = true;
+                    }
                 }
 
-                result.success = true;
-                result.imagePath = "/media/upload/" + g + "/" + filename;
+                if (invalidFiles == false)
+                {
+                    result.success = true;
+                    result.imagePath = "/media/upload/" + g + "/" + filename;
+                }
+                else
+                {
+                    result.success = false;
+                    result.message = "No images found";
+                }
             }
             else
             {
