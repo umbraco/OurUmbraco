@@ -8,6 +8,7 @@ using System.Web.Http;
 using Newtonsoft.Json;
 using OurUmbraco.Our.Businesslogic;
 using umbraco.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
 
@@ -133,11 +134,14 @@ namespace OurUmbraco.Our.Api
                 foreach (string file in httpRequest.Files)
                 {
                     var postedFile = httpRequest.Files[file];
+                    
                     if(postedFile == null)
                         continue;
 
+                    var fileName = Path.GetFileName(postedFile.FileName);
+                    
                     // only allow files with certain extensions
-                    if(allowedSuffixes.Contains(postedFile.FileName.Substring(postedFile.FileName.LastIndexOf(".", StringComparison.Ordinal))) == false)
+                    if(allowedSuffixes.InvariantContains(fileName.Substring(postedFile.FileName.LastIndexOf(".", StringComparison.Ordinal))) == false)
                         continue;
 
                     var updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + guid));
@@ -145,9 +149,8 @@ namespace OurUmbraco.Our.Api
                     if (!updir.Exists)
                         updir.Create();
 
-                    var filePath = string.Format("{0}/{1}", updir.FullName, postedFile.FileName);
+                    var filePath = string.Format("{0}/{1}", updir.FullName, fileName);
                     postedFile.SaveAs(filePath);
-                    filename = postedFile.FileName;
                 }
 
                 result.success = true;
