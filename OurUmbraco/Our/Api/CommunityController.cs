@@ -127,7 +127,7 @@ namespace OurUmbraco.Our.Api
             dynamic result = new ExpandoObject();
             if (httpRequest.Files.Count > 0)
             {
-                var filename = string.Empty;
+                var fileName = string.Empty;
 
                 var guid = Guid.NewGuid();
 
@@ -138,10 +138,10 @@ namespace OurUmbraco.Our.Api
                     if(postedFile == null)
                         continue;
 
-                    var fileName = Path.GetFileName(postedFile.FileName);
+                    fileName = Path.GetFileName(postedFile.FileName);
                     
                     // only allow files with certain extensions
-                    if(allowedSuffixes.InvariantContains(fileName.Substring(postedFile.FileName.LastIndexOf(".", StringComparison.Ordinal))) == false)
+                    if(allowedSuffixes.InvariantContains(fileName.Substring(fileName.LastIndexOf(".", StringComparison.Ordinal))) == false)
                         continue;
 
                     var updir = new DirectoryInfo(HttpContext.Current.Server.MapPath("/media/upload/" + guid));
@@ -154,7 +154,7 @@ namespace OurUmbraco.Our.Api
                 }
 
                 result.success = true;
-                result.imagePath = string.Format("/media/upload/{0}/{1}", guid, filename);
+                result.imagePath = string.Format("/media/upload/{0}/{1}", guid, fileName);
             }
             else
             {
