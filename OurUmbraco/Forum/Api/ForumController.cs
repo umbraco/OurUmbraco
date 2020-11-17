@@ -380,9 +380,9 @@ namespace OurUmbraco.Forum.Api
 
                     var postedFile = httpRequest.Files[file];
 
-                    var filePath = updir.FullName + "/" + postedFile.FileName;
+                    var filePath = updir.FullName + "/" + Path.GetFileName(postedFile.FileName);
                     postedFile.SaveAs(filePath);
-                    filename = postedFile.FileName;
+                    filename = Path.GetFileName(postedFile.FileName);
 
                 }
 
