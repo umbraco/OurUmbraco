@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props" Condition="Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net45\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
@@ -664,33 +664,6 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
     <Content Include="robots.txt" />
-    <Content Include="scripts\amcharts\charts.js" />
-    <Content Include="scripts\amcharts\core.js" />
-    <Content Include="scripts\amcharts\deps\canvg.js" />
-    <Content Include="scripts\amcharts\deps\pdfmake.js" />
-    <Content Include="scripts\amcharts\deps\responsivedefaults.js" />
-    <Content Include="scripts\amcharts\deps\xlsx.js" />
-    <Content Include="scripts\amcharts\lang\de_CH.js" />
-    <Content Include="scripts\amcharts\lang\de_DE.js" />
-    <Content Include="scripts\amcharts\lang\en.js" />
-    <Content Include="scripts\amcharts\lang\en_CA.js" />
-    <Content Include="scripts\amcharts\lang\en_US.js" />
-    <Content Include="scripts\amcharts\lang\es_ES.js" />
-    <Content Include="scripts\amcharts\lang\lt_LT.js" />
-    <Content Include="scripts\amcharts\lang\nl_NL.js" />
-    <Content Include="scripts\amcharts\lang\pt_BR.js" />
-    <Content Include="scripts\amcharts\lang\pt_PT.js" />
-    <Content Include="scripts\amcharts\lang\ru_RU.js" />
-    <Content Include="scripts\amcharts\lang\sv_SV.js" />
-    <Content Include="scripts\amcharts\maps.js" />
-    <Content Include="scripts\amcharts\themes\animated.js" />
-    <Content Include="scripts\amcharts\themes\dark.js" />
-    <Content Include="scripts\amcharts\themes\dataviz.js" />
-    <Content Include="scripts\amcharts\themes\frozen.js" />
-    <Content Include="scripts\amcharts\themes\kelly.js" />
-    <Content Include="scripts\amcharts\themes\material.js" />
-    <Content Include="scripts\amcharts\themes\moonrisekingdom.js" />
-    <Content Include="scripts\amcharts\themes\spiritedaway.js" />
     <Content Include="scripts\anchorjs\anchorjs.custom.js" />
     <Content Include="scripts\forumsignalr.js" />
     <Content Include="scripts\forum\Markdown.App.js" />
@@ -712,9 +685,6 @@
     <Content Include="config\CommunityBlogs.json" />
     <None Include="Media\Web.config" />
     <None Include="Properties\PublishProfiles\Local.pubxml" />
-    <Content Include="scripts\amcharts\CHANGELOG.md" />
-    <Content Include="scripts\amcharts\LICENSE" />
-    <Content Include="scripts\amcharts\README.md" />
     <None Include="scripts\jquery-1.6.4-vsdoc.js" />
     <Content Include="scripts\jquery-1.6.4.js" />
     <Content Include="scripts\jquery-1.6.4.min.js" />

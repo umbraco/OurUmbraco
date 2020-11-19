@@ -215,7 +215,7 @@
             <div class="container">
                 <div class="row">
                     <h5>New contributors past 12 months</h5>
-                    @{ 
+                    @{
                         var firstContributors = firstContrib.Where(
                            x => x.FirstContribution != default(DateTime)
                                 && x.FirstContribution.Value > new DateTime(2018, 11, 01))
@@ -288,8 +288,8 @@
 
     @if (viewType == string.Empty)
     {
-        <script src="/scripts/amcharts/core.js"></script>
-        <script src="/scripts/amcharts/charts.js"></script>
+        <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
+        <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
 
         <style type="text/css">
             .gauge {
@@ -445,43 +445,43 @@
         </section>
 
         @*if (Members.IsHq())
-        {
+            {
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Forum data</h5>
-                        <div class="col-md-12">
-                            <div id="ForumData" class="chart"></div>
+                <section class="stats">
+                    <div class="container">
+                        <div class="row">
+                            <h5>Forum data</h5>
+                            <div class="col-md-12">
+                                <div id="ForumData" class="chart"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Our Members (in 1000s)</h5>
-                        <div class="col-md-12">
-                            <div id="OurMemberStats" class="chart"></div>
+                <section class="stats">
+                    <div class="container">
+                        <div class="row">
+                            <h5>Our Members (in 1000s)</h5>
+                            <div class="col-md-12">
+                                <div id="OurMemberStats" class="chart"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </section>
 
-            <section class="stats">
-                <div class="container">
-                    <div class="row">
-                        <h5>Our</h5>
-                        <div class="col-md-12">
-                            <div id="OurMemberStats2" class="chart"></div>
+                <section class="stats">
+                    <div class="container">
+                        <div class="row">
+                            <h5>Our</h5>
+                            <div class="col-md-12">
+                                <div id="OurMemberStats2" class="chart"></div>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        }*@
+                </section>
+            }*@
 
-        <script>
+<script>
             httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
                 function(response) {
                     var currentData = JSON.parse(response);
@@ -496,9 +496,10 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
+            var prCharts = [];
+
             var groupedPrsChart = am4core.create("GroupedPRs", am4charts.XYChart);
-            groupedPrsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+            prCharts.push({ chart: groupedPrsChart });
 
             groupedPrsChart.scrollbarX = new am4core.Scrollbar();
             groupedPrsChart.legend = new am4charts.Legend();
@@ -507,6 +508,14 @@
             var categoryAxis = groupedPrsChart.xAxes.push(new am4charts.CategoryAxis());
             categoryAxis.dataFields.category = "GroupName";
             categoryAxis.renderer.grid.template.location = 0;
+            var categoryAxisValidatedEvent = categoryAxis.events.on("dataitemsvalidated", function () {
+                if (categoryAxis.dataItems.length > 0) {
+                    var min = groupedPrsChart.data.find(function (el) { return el.MonthYear == "@(fromYear)@(fromMonth.ToString("00"))" }) || groupedPrsChart.data[0];
+                    var max = groupedPrsChart.data.find(function (el) { return el.MonthYear == "@(toYear)@(toMonth.ToString("00"))" }) || groupedPrsChart.data[groupedPrsChart.data.length - 1];
+                    categoryAxis.zoomToCategories(min.GroupName, max.GroupName);
+                    categoryAxisValidatedEvent.dispose();
+                }
+            });
 
             var valueAxis = groupedPrsChart.yAxes.push(new am4charts.ValueAxis());
             valueAxis.min = 0;
@@ -551,8 +560,7 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var contributorsChart = am4core.create("Contributors", am4charts.XYChart);
-            contributorsChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+            prCharts.push({ chart: contributorsChart });
 
             contributorsChart.scrollbarX = new am4core.Scrollbar();
             contributorsChart.legend = new am4charts.Legend();
@@ -585,8 +593,8 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var openPRsAllTimeChart = am4core.create("OpenPRsAllTime", am4charts.XYChart);
-            openPRsAllTimeChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=01&fromYear=2012&&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            prCharts.push({ chart: openPRsAllTimeChart });
 
             openPRsAllTimeChart.legend = new am4charts.Legend();
 
@@ -610,11 +618,19 @@
             {
                 <text>
                     var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsAfterCG18", am4charts.XYChart);
-                    activeContributorsAfterCg18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    prCharts.push({ chart: activeContributorsAfterCg18Chart });
 
                     activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
                     var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+                    var activeContributorsAfterCg18DateAxisValidatedEvent = activeContributorsAfterCg18DateAxis.events.on("dataitemsvalidated", function () {
+                        if (activeContributorsAfterCg18DateAxis.dataItems.length > 0) {
+                            activeContributorsAfterCg18DateAxis.zoomToDates(new Date(2018, 5, 23), new Date(@toYear, @toMonth, 1));
+                            activeContributorsAfterCg18DateAxisValidatedEvent.dispose();
+                        }
+                    });
+
                     var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
 
                     var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
@@ -647,11 +663,19 @@
             {
                 <text>
                     var activeContributorsAfterCg18Chart = am4core.create("ActiveContributorsSinceJan18", am4charts.XYChart);
-                    activeContributorsAfterCg18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    prCharts.push({ chart: activeContributorsAfterCg18Chart });
 
                     activeContributorsAfterCg18Chart.legend = new am4charts.Legend();
 
-                    var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+                        var activeContributorsAfterCg18DateAxis = activeContributorsAfterCg18Chart.xAxes.push(new am4charts.DateAxis());
+                        var activeContributorsAfterCg18DateAxisValidatedEvent = activeContributorsAfterCg18DateAxis.events.on("dataitemsvalidated", function () {
+                            if (activeContributorsAfterCg18DateAxis.dataItems.length > 0) {
+                                activeContributorsAfterCg18DateAxis.zoomToDates(new Date(2018, 5, 23), new Date(@toYear, @toMonth, 1));
+                                activeContributorsAfterCg18DateAxisValidatedEvent.dispose();
+                            }
+                        });
+
                     var activeContributorsAfterCg18ValueAxis = activeContributorsAfterCg18Chart.yAxes.push(new am4charts.ValueAxis());
 
                     var activeContributorsAfterCg18Series = activeContributorsAfterCg18Chart.series.push(new am4charts.LineSeries());
@@ -684,11 +708,19 @@
             {
                 <text>
                     var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceCG18", am4charts.XYChart);
-                    openPRsSinceCG18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=23&fromMonth=05&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    prCharts.push({ chart: openPRsSinceCG18Chart });
 
                     openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
                     var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+                    var openPRsSinceCG18DateAxisValidatedEvent = openPRsSinceCG18DateAxis.events.on("dataitemsvalidated", function () {
+                        if (openPRsSinceCG18DateAxis.dataItems.length > 0) {
+                            openPRsSinceCG18DateAxis.zoomToDates(new Date(2018, 5, 23), new Date(@toYear, @toMonth, 1));
+                            openPRsSinceCG18DateAxisValidatedEvent.dispose();
+                        }
+                    });
+
                     var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
 
                     var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
@@ -722,11 +754,19 @@
             {
                 <text>
                     var openPRsSinceCG18Chart = am4core.create("OpenPRsSinceJan18", am4charts.XYChart);
-                    openPRsSinceCG18Chart.dataSource.url = "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2018&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+                    prCharts.push({ chart: openPRsSinceCG18Chart });
 
                     openPRsSinceCG18Chart.legend = new am4charts.Legend();
 
                     var openPRsSinceCG18DateAxis = openPRsSinceCG18Chart.xAxes.push(new am4charts.DateAxis());
+                    var openPRsSinceCG18DateAxisValidatedEvent = openPRsSinceCG18DateAxis.events.on("dataitemsvalidated", function () {
+                        if (openPRsSinceCG18DateAxis.dataItems.length > 0) {
+                            openPRsSinceCG18DateAxis.zoomToDates(new Date(2018, 1, 1), new Date(@toYear, @toMonth, 1));
+                            openPRsSinceCG18DateAxisValidatedEvent.dispose();
+                        }
+                    });
+
                     var openPRsSinceCG18ValueAxis = openPRsSinceCG18Chart.yAxes.push(new am4charts.ValueAxis());
 
                     var openPRsSinceCG18Series = openPRsSinceCG18Chart.series.push(new am4charts.LineSeries());
@@ -757,12 +797,19 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var mergeTimeInHoursChart = am4core.create("MedianPRMergeTime", am4charts.XYChart);
-            mergeTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            prCharts.push({ chart: mergeTimeInHoursChart });
+
 
             mergeTimeInHoursChart.legend = new am4charts.Legend();
 
             var mergeTimeInHoursDateAxis = mergeTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var mergeTimeInHoursDateAxisValidatedEvent = mergeTimeInHoursDateAxis.events.on("dataitemsvalidated", function () {
+                if (mergeTimeInHoursDateAxis.dataItems.length > 0) {
+                    mergeTimeInHoursDateAxis.zoomToDates(new Date(@fromYear, @fromMonth, 1), new Date(@toYear, @toMonth, 1));
+                    mergeTimeInHoursDateAxisValidatedEvent.dispose();
+                }
+            });
             var mergeTimeInHoursValueAxis = mergeTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
             var mergeTimeInHoursSeries = mergeTimeInHoursChart.series.push(new am4charts.LineSeries());
@@ -797,12 +844,19 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
             var firstTeamCommentTimeInHoursChart = am4core.create("MedianFirstTeamCommentTime", am4charts.XYChart);
-            firstTeamCommentTimeInHoursChart.dataSource.url =
-                "/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=0&fromMonth=@(fromMonth)&fromYear=@(fromYear)&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)";
+
+            prCharts.push({ chart: firstTeamCommentTimeInHoursChart });
+
 
            firstTeamCommentTimeInHoursChart.legend = new am4charts.Legend();
 
             var firstTeamCommentTimeInHoursDateAxis = firstTeamCommentTimeInHoursChart.xAxes.push(new am4charts.DateAxis());
+            var firstTeamCommentTimeInHoursDateAxisValidatedEvent = firstTeamCommentTimeInHoursDateAxis.events.on("dataitemsvalidated", function () {
+                if (firstTeamCommentTimeInHoursDateAxis.dataItems.length > 0) {
+                    firstTeamCommentTimeInHoursDateAxis.zoomToDates(new Date(@fromYear, @fromMonth, 1), new Date(@toYear, @toMonth, 1));
+                    firstTeamCommentTimeInHoursDateAxisValidatedEvent.dispose();
+                }
+            });
             var firstTeamCommentTimeInHoursValueAxis = firstTeamCommentTimeInHoursChart.yAxes.push(new am4charts.ValueAxis());
 
             var firstTeamCommentTimeInHoursSeries = firstTeamCommentTimeInHoursChart.series.push(new am4charts.LineSeries());
@@ -935,6 +989,16 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2012&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)",
+                function (response) {
+                    var data = JSON.parse(response);
+                    for (var i = 0; i < prCharts.length; i++) {
+                        var prChart = prCharts[i];
+                        prChart.chart.data = data;
+                    }
+                }
+            );
+
             function httpGetAsync(url, callback) {
                 var xmlHttp = new XMLHttpRequest();
                 xmlHttp.onreadystatechange = function() {
@@ -962,7 +1026,7 @@
             }
 
             setTimeout(refresh, 10000);
-        </script>
+</script>
     }
 </div>
 
