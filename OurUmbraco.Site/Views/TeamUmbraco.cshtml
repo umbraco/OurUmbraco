@@ -482,17 +482,15 @@
             }*@
 
 <script>
-            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
-                function(response) {
-                    var currentData = JSON.parse(response);
                     var colorSet = new am4core.ColorSet();
+                    var gaugeHands = [];
 
-                    @AddGauge("OpenPRs", "Open", "currentData.TotalNumberOpen", "150")
-                    @AddGauge("CreatedPRs", "Created", "currentData.NumberCreated", "175")
-                    @AddGauge("MergedPRs", "Merged", "currentData.NumberMerged", "130")
-                    @AddGauge("ClosedPRs", "Closed", "currentData.NumberClosed", "50")
-                    @AddGauge("NewContributors", "New contributors", "currentData.NumberOfNewContributors", "20")
-                });
+                    @AddGauge("OpenPRs", "Open", "TotalNumberOpen", "300")
+                    @AddGauge("CreatedPRs", "Created", "NumberCreated", "175")
+                    @AddGauge("MergedPRs", "Merged", "NumberMerged", "130")
+                    @AddGauge("ClosedPRs", "Closed", "NumberClosed", "50")
+                    @AddGauge("NewContributors", "New contributors", "NumberOfNewContributors", "20")
+
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -988,16 +986,35 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
-            httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2012&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)",
-                function (response) {
-                    var data = JSON.parse(response);
-                    for (var i = 0; i < prCharts.length; i++) {
-                        var prChart = prCharts[i];
-                        prChart.chart.data = data;
+            function loadData() {
+                httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetGroupedPullRequestData/?fromDay=01&fromMonth=01&fromYear=2012&toDay=0&toMonth=@(toMonth)&toYear=@(toYear)&repository=@(repository)",
+                    function (response) {
+                        var data = JSON.parse(response);
+                        for (var i = 0; i < prCharts.length; i++) {
+                            var prChart = prCharts[i];
+                            prChart.chart.data = data;
+                        }
+                        console.log("Graph data reload complete");
+                        time = new Date().getTime();
                     }
-                }
-            );
+                );
+                httpGetAsync("/umbraco/api/TeamUmbracoStatistics/GetPullRequestDataCurrentPeriod/?previousPeriod=@(showLastMonth)&repository=@(repository)&",
+                function(response) {
+                    var data = JSON.parse(response);
+                    for (var i = 0; i < gaugeHands.length; i++) {
+                        var gaugeHand = gaugeHands[i];
+                        var value = data[gaugeHand.key];
+                        gaugeHand.hand.showValue(value);
+                        gaugeHand.label.text = gaugeHand.labelPrefix + value;
+                    }
+                    console.log("Gauge data reload complete");
+                    time = new Date().getTime();
+                    }
+                );
+                setTimeout(refresh, 10000);
+            }
+
+            loadData();
 
             function httpGetAsync(url, callback) {
                 var xmlHttp = new XMLHttpRequest();
@@ -1019,13 +1036,14 @@
                 // Refreshes every 300 seconds, set value
                 // below to something other than 300000
                 // to vary the number of seconds
-                if (new Date().getTime() - time >= 300000)
-                    window.location.reload();
+                if (new Date().getTime() - time >= 300000) {
+                    loadData();
+                    console.log("Data reload initiated");
+                }
                 else
                     setTimeout(refresh, 10000);
             }
 
-            setTimeout(refresh, 10000);
 </script>
     }
 </div>
@@ -1034,6 +1052,7 @@
 {
     <text>
         var chart@(chartSuffix) = am4core.create("@chartSuffix", am4charts.GaugeChart);
+
         chart@(chartSuffix).innerRadius = -25;
 
         var axis@(chartSuffix) = chart@(chartSuffix).xAxes.push(new am4charts.ValueAxis());
@@ -1054,7 +1073,6 @@
         clockHand@(chartSuffix).startWidth = 10;
         clockHand@(chartSuffix).pin.radius = 10;
         var hand@(chartSuffix) = chart@(chartSuffix).hands.push(clockHand@(chartSuffix));
-        hand@(chartSuffix).showValue(@value);
 
         var label@(chartSuffix) = chart@(chartSuffix).radarContainer.createChild(am4core.Label);
         label@(chartSuffix).isMeasured = false;
@@ -1063,8 +1081,10 @@
         label@(chartSuffix).y = am4core.percent(100);
         label@(chartSuffix).horizontalCenter = "middle";
         label@(chartSuffix).verticalCenter = "bottom";
-        label@(chartSuffix).text = "@(label): " + @value;
         label@(chartSuffix).paddingBottom = -50;
+
+        gaugeHands.push({ hand: hand@(chartSuffix), key: "@value", label: label@(chartSuffix), labelPrefix: "@(label): " });
+
     </text>
 }
 
