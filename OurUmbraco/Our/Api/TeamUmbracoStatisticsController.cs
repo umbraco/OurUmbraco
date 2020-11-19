@@ -42,6 +42,15 @@ namespace OurUmbraco.Our.Api
             if (toDay == 0)
                 toDay = DateTime.DaysInMonth(toYear, toMonth);
 
+            var runtimeCache = ApplicationContext.ApplicationCache.RuntimeCache;
+            var cacheKey = $"GroupedPullRequestData-{fromYear:0000}{fromMonth:00}{fromDay:00}-{toYear:0000}{toMonth:00}{toDay:00}-{repository}";
+
+            var res = runtimeCache.GetCacheItem(cacheKey) as List<PullRequestsInPeriod>;
+            if (res != null)
+            {
+                return res;
+            }
+
             var fromDate = DateTime.Parse($"{fromYear}-{fromMonth}-{fromDay} 00:00:00");
             var toDate = DateTime.Parse($"{toYear}-{toMonth}-{toDay} 23:59:59");
 
@@ -310,7 +319,11 @@ namespace OurUmbraco.Our.Api
                 }
             }
 
-            return groupedPrs.OrderBy(x => x.MonthYear).ToList();
+            res = groupedPrs.OrderBy(x => x.MonthYear).ToList();
+
+            runtimeCache.InsertCacheItem(cacheKey, () => res, TimeSpan.FromMinutes(1));
+
+            return res;
         }
 
         [MemberAuthorize(AllowGroup = "HQ")]
@@ -384,7 +397,7 @@ namespace OurUmbraco.Our.Api
                         commenters = commenters + 1;
                     }
                 }
-                
+
                 forumData.Add(new GroupedForumMemberStatistics
                 {
                     GroupName = from.ToString("MMM yyy"),
