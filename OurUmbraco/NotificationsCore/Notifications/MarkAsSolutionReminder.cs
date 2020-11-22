@@ -24,7 +24,10 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 {
                     var memberShipHelper = new MembershipHelper(UmbracoContext.Current);
                     var member = memberShipHelper.GetById(memberId);
-                    
+
+                    if (member == null)
+                        return;
+
                     using (var smtpClient = new SmtpClient())
                     {
                         var fromMailAddress = new MailAddress(notificationMail.FromMail, notificationMail.FromName);
