@@ -1,5 +1,7 @@
 ﻿namespace OurUmbraco.Community.Nuget
 {
+    using System;
+
     using Newtonsoft.Json;
 
     public class NugetPackageInfo
@@ -9,5 +11,7 @@
         public int TotalDownLoads { get; set; }
 
         public int AverageDownloadPerDay { get; set; }
+
+        public DateTime PackageDate { get; set; }
     }
 }

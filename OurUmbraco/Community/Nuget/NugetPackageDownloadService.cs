@@ -181,7 +181,8 @@
             {
                 TotalDownLoads = nugetPackage.TotalDownloads,
                 PackageId = nugetPackage.Id,
-                AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, oldestDate)
+                AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, oldestDate),
+                PackageDate = oldestDate
             };
         }
 
@@ -217,7 +218,7 @@
 
                 var file = Path.Combine(_storageDirectory.EnsureEndsWith(Path.DirectorySeparatorChar), _downloadsFile);
 
-                var json = JsonConvert.SerializeObject(packages);
+                var json = JsonConvert.SerializeObject(packages, Formatting.Indented);
                 File.WriteAllText(file, json, Encoding.UTF8);
             }
         }
