@@ -58,7 +58,7 @@
             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
         }
 
-        @if (page < results.Total)
+        @if (page < results.Pages)
         {
             <span>&hellip;</span>
             <a class="next" href="?page=@(page + 1)&@url">Next</a>
