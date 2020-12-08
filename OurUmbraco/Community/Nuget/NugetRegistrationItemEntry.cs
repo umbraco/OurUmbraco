@@ -3,6 +3,7 @@
     using System;
 
     using Newtonsoft.Json;
+    using Newtonsoft.Json.Converters;
 
     public class NugetRegistrationItemEntry
     {
@@ -10,6 +11,7 @@
         public NugetRegistrationCatalogEntry CatalogEntry { get; set; }
 
         [JsonProperty("commitTimeStamp")]
+        [JsonConverter(typeof(IsoDateTimeConverter))]
         public DateTime CommitTimeStamp { get; set; }
 
     }

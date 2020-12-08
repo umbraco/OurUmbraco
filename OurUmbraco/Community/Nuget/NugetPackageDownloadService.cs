@@ -164,7 +164,7 @@
                     // workout the oldest date based on commit time stamp (when the package was uploaded not published)
                     var date = item.Items
                         .Select(x => new[] { 
-                            x.CommitTimeStamp , 
+                            x.CommitTimeStamp > blankDate ? x.CommitTimeStamp : DateTime.Now, 
                             x.CatalogEntry.PublishedDate > blankDate ? x.CatalogEntry.PublishedDate : DateTime.Now }.Min())
                         .OrderBy(x => x)
                         .FirstOrDefault();
