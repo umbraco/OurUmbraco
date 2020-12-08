@@ -152,7 +152,6 @@
         /// <returns>The info we require for a package NugetPackageInfo</returns>
         private NugetPackageInfo GetNugetPackageInfo(NugetSearchResult nugetPackage)
         {
-            var blankDate = new DateTime(1900, 1, 1);
             var oldestDate = DateTime.Now;
 
             var packageInfo = GetNugetResponse<NugetRegistrationResponse>(nugetPackage.PackageRegistrationUrl);
@@ -160,20 +159,11 @@
             {
                 foreach (var item in packageInfo.Items)
                 {
-
-                    // workout the oldest date based on commit time stamp (when the package was uploaded not published)
-                    var date = item.Items
-                        .Select(x => new[] { 
-                            x.CommitTimeStamp > blankDate ? x.CommitTimeStamp : DateTime.Now, 
-                            x.CatalogEntry.PublishedDate > blankDate ? x.CatalogEntry.PublishedDate : DateTime.Now }.Min())
-                        .OrderBy(x => x)
-                        .FirstOrDefault();
-
-                    if (date != null && date < oldestDate)
+                    var date = GetOldestDateFromEntries(item.Items);
+                    if (date < oldestDate)
                     {
                         oldestDate = date;
                     }
-
                 }
             }
 
@@ -184,6 +174,38 @@
                 AverageDownloadPerDay = GetAvarageDownloadsPerDay(nugetPackage.TotalDownloads, oldestDate),
                 PackageDate = oldestDate
             };
+        }
+
+        private DateTime blankDate = new DateTime(1900, 1, 1);
+
+
+        /// <summary>
+        ///  Get the oldest date in a list of Nuget RegistrationEntries.
+        /// </summary>
+        private DateTime GetOldestDateFromEntries(IEnumerable<NugetRegistrationItemEntry> items)
+        {
+            var oldestDate = DateTime.Now;
+
+            foreach(var item in items)
+            {
+                var minDate = new[] { GetDateFromNugetField(item.CommitTimeStamp), GetDateFromNugetField(item.CatalogEntry?.PublishedDate) }.Min();
+
+                if (minDate < oldestDate)
+                {
+                    oldestDate = minDate;
+                }
+            }
+
+            return oldestDate;
+        }
+
+        /// <summary>
+        ///  get the date from a nuget field, if date is blank, you get DateTime.Now
+        /// </summary>
+        private DateTime GetDateFromNugetField(DateTime? nugetDate)
+        {
+            if (!nugetDate.HasValue) return DateTime.Now;
+            return nugetDate > blankDate ? nugetDate.Value : DateTime.Now;
         }
 
         /// <summary>
