@@ -95,8 +95,8 @@ else
                 <span class="karma">
                     @projectContent.Likes <span><i class="icon-Hearts color-red"></i></span>
                 </span>
-                <span class="downloads">
-                    @projectContent.Downloads <span><i class="icon-Download-alt"></i></span>
+                <span class="downloads" title="@projectContent.Downloads total downloads">
+                    @FormatDownloadNumber(projectContent.Downloads) <span><i class="icon-Download-alt"></i></span>
                 </span>
             </div>
         </div>
@@ -126,5 +126,25 @@ else
         }
 
         return PackageSortOrder.Popular;
+    }
+
+    public string FormatDownloadNumber(int downloads)
+    {
+        if (downloads > 999999999)
+        {
+            return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999999)
+        {
+            return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999)
+        {
+            return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 }
