@@ -1,5 +1,7 @@
 ﻿@using OurUmbraco.Repository.Controllers
 @using OurUmbraco.Repository.Models
+@using OurUmbraco.Project
+
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     //This is the main Our project search
@@ -29,7 +31,7 @@
     }
 
     var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
-    
+
     var searchOrder = GetSortOrder(orderMode);
 
     var packageService = new OurUmbraco.Repository.Services
@@ -84,7 +86,7 @@ else
         <div class="package-info">
             <h3>@projectContent.Name</h3>
             <span class="text-fadeout"></span>
-            <p class="small">@projectContent.Summary</p>
+            <p class="small">@Html.Raw(projectContent.Summary.CleanHtmlAttributes())</p>
         </div>
 
         <div class="other">
