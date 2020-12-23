@@ -1,5 +1,7 @@
 ﻿@using OurUmbraco.Repository.Controllers
 @using OurUmbraco.Repository.Models
+@using OurUmbraco.Project
+
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     //This is the main Our project search
@@ -29,7 +31,7 @@
     }
 
     var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
-    
+
     var searchOrder = GetSortOrder(orderMode);
 
     var packageService = new OurUmbraco.Repository.Services
@@ -84,7 +86,7 @@ else
         <div class="package-info">
             <h3>@projectContent.Name</h3>
             <span class="text-fadeout"></span>
-            <p class="small">@projectContent.Summary</p>
+            <p class="small">@Html.Raw(projectContent.Summary.CleanHtmlAttributes())</p>
         </div>
 
         <div class="other">
@@ -95,8 +97,8 @@ else
                 <span class="karma">
                     @projectContent.Likes <span><i class="icon-Hearts color-red"></i></span>
                 </span>
-                <span class="downloads">
-                    @projectContent.Downloads <span><i class="icon-Download-alt"></i></span>
+                <span class="downloads" title="@projectContent.Downloads total downloads">
+                    @FormatDownloadNumber(projectContent.Downloads) <span><i class="icon-Download-alt"></i></span>
                 </span>
             </div>
         </div>
@@ -126,5 +128,25 @@ else
         }
 
         return PackageSortOrder.Popular;
+    }
+
+    public string FormatDownloadNumber(int downloads)
+    {
+        if (downloads > 999999999)
+        {
+            return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999999)
+        {
+            return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999)
+        {
+            return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 }

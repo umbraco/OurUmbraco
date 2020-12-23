@@ -28,9 +28,9 @@ section.packages {
     }
 
     .package-box {
-        display: block;
+        display: flex;
         flex-flow: column;
-        align-items: center;
+        align-items: stretch;
         border: 1px solid darken(#f6f6f6, 5%);
         transition: box-shadow .2s ease, border-color .2s ease;
         margin: 0px 7px 15px;
@@ -44,6 +44,7 @@ section.packages {
         .package-info {
             text-align: center;
             margin: 0 10px 20px;
+            flex-grow: 2;
 
             .small {
                 font-size: 14px;
