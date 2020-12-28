@@ -24,7 +24,7 @@
                     <em>Active packages are visible to everyone.</em>
                     @foreach (var project in Model.MyLiveProjects)
                     {
-                        @RenderProject(project)
+                        @RenderProject(project, true)
                     }
                 </div>
 
@@ -33,7 +33,7 @@
                     <em>Draft packages are visible only to you (and your team).</em>
                     @foreach (var project in Model.MyDraftProjects)
                     {
-                        @RenderProject(project)
+                        @RenderProject(project, true)
                     }
                 </div>
 
@@ -42,7 +42,7 @@
                     <em>Retired packages are still visible in searches so that people can see the reason for its retirement.</em>
                     @foreach (var project in Model.MyRetiredProjects)
                     {
-                        @RenderProject(project)
+                        @RenderProject(project, true)
                     }
                 </div>
 
