@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Drawing;
 using System.Dynamic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
 using System.Web;
 using System.Web.Http;
+using ImageProcessor.Imaging;
 using Newtonsoft.Json;
 using OurUmbraco.Our.Businesslogic;
 using umbraco.BusinessLogic;
@@ -150,7 +151,13 @@ namespace OurUmbraco.Our.Api
                         updir.Create();
 
                     var filePath = string.Format("{0}/{1}", updir.FullName, fileName);
-                    postedFile.SaveAs(filePath);
+                    
+                    // Note: resizing with ImageProcessor also removes all Exif data, which is a good thing
+                    var imageFactory = new ImageProcessor.ImageFactory();
+                    imageFactory.Load(postedFile.InputStream);
+                    var resizeLayer = new ResizeLayer(resizeMode: ResizeMode.Crop, upscale: true, size: new Size(500, 500));
+                    imageFactory.Resize(resizeLayer);
+                    imageFactory.Save(filePath);
                 }
 
                 result.success = true;

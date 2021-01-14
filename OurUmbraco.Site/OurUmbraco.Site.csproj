@@ -1797,7 +1797,6 @@
     <Content Include="xslt\_PaginationHelper.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config\splashes\booting.aspx" />
     <Content Include="config\splashes\noNodes.aspx" />
     <Content Include="css\badges\admin.png" />
     <Content Include="css\badges\core-contrib.png" />
