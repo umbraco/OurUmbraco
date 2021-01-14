@@ -6,5 +6,6 @@ namespace OurUmbraco.Repository.Models
     {
         public IEnumerable<Package> Packages { get; set; }
         public int Total { get; set; }
+        public int Pages { get; set; }
     }
 }

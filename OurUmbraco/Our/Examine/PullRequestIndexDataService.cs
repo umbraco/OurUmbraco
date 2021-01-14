@@ -53,19 +53,11 @@ namespace OurUmbraco.Our.Examine
             return contributors;
         }
 
-        public void UpdateIndex(GithubPullRequestModel pullRequest, IEnumerable<SearchResult> contributors)
-        {
-            var simpleDataSet = ToSimpleDataSet(pullRequest, contributors, IndexType);
-            var examineNode = simpleDataSet.RowData.ToExamineXml(pullRequest.Id, IndexType);
-            ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].ReIndexNode(examineNode, IndexType);
-        }
-
         private static SimpleDataSet ToSimpleDataSet(GithubPullRequestModel pullRequest, IEnumerable<SearchResult> contributors, string indexType)
         {
             var simpleDataSet = new SimpleDataSet
             {
-                RowData = new Dictionary<string, string>(),
-                NodeDefinition = new IndexedNode { NodeId = pullRequest.Id, Type = indexType }
+                RowData = new Dictionary<string, string>()
             };
 
             simpleDataSet.RowData.Add("repository", pullRequest.Repository ?? string.Empty);

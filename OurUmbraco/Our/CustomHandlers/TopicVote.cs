@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Linq;
 using System.Web.Security;
+using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Services;
 using OurUmbraco.Powers.BusinessLogic;
 using OurUmbraco.Powers.Library;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Web;
 using Action = OurUmbraco.Powers.BusinessLogic.Action;
 
 namespace OurUmbraco.Our.CustomHandlers
@@ -38,11 +40,15 @@ namespace OurUmbraco.Our.CustomHandlers
                 if (c != null)
                 {
                     var t = ts.GetById(c.TopicId);
-
+                    
+                    // Check if this is a package forum and if so, if this user is the owner of the package
+                    var forumId = t.ParentId;
+                    var content = UmbracoContext.Current.ContentCache.GetById(forumId).Parent;
+                    var forumOwner = content.IsForumOwner(e.PerformerId);
+                    
                     //if performer and author of the topic is the same... go ahead..
-                    if ((e.PerformerId == t.MemberId || ModeratorRoles.Split(',').Any(x => Roles.IsUserInRole(x))) && t.Answer == 0)
+                    if ((e.PerformerId == t.MemberId || ModeratorRoles.Split(',').Any(x => Roles.IsUserInRole(x)) || forumOwner) && t.Answer == 0)
                     {
-
                         //receiver of points is the comment author.
                         e.ReceiverId = c.MemberId;
 
@@ -53,9 +59,7 @@ namespace OurUmbraco.Our.CustomHandlers
                         t.Answer = c.Id;
                         ts.Save(t);
                     }
-
                 }
-
             }
         }
 

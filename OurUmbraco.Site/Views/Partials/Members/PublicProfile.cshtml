@@ -11,9 +11,8 @@
 @{
     var memberId = Request["id"];
     int id = 0;
-
     var username = Request.QueryString["username"];
-
+    
     IPublishedContent member = null;
     if (!string.IsNullOrEmpty(memberId) && int.TryParse(memberId, out id))
     {
@@ -44,25 +43,23 @@
         }
     
     }
-
+    
     if (member == null)
     {
         <p>Member does not exist</p>
         return;
     }
 
-
-
-
-
+    var currentMember = MemberData != null ? MemberData.Member : null;
 
     var ts = new TopicService(ApplicationContext.DatabaseContext);
 
     var topics = ts.GetLatestTopicsForMember(member.Id);
 
     var badges = member.GetRoles().GetBadges();
-
-    var content = Umbraco.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+    
+    var content = Umbraco.TypedContentAtRoot().First(x => string.Equals(x.DocumentTypeAlias, "community", StringComparison.CurrentCultureIgnoreCase))
+        .Children.First(x => string.Equals(x.DocumentTypeAlias, "projects", StringComparison.CurrentCultureIgnoreCase));
     IEnumerable<IPublishedContent> projects = new List<IPublishedContent>();
     var contribProjects = new List<IPublishedContent>();
     if (content != null)
@@ -144,6 +141,17 @@
                         </div>
                     </div>
                 </div>
+
+				@if (currentMember != null && member != null && member.Id == currentMember.Id)
+				{
+				    <div class="row">
+                        <div class="col-md-12">
+                            <div class="member-details">
+                                <p>Your member id: @currentMember.Id</p>
+                            </div>
+                        </div>
+                    </div>
+				}
                 <div class="row">
                     <div class="col-md-12">
                         <div class="member-details">
@@ -340,7 +348,7 @@
         </div>
     }
     <br /><br />
-    var currentMember = MemberData != null ? MemberData.Member : null;
+    
     if (currentMember != null && currentMember.IsHq())
     {
         <div style="border: 1px solid red; padding: 4px;">

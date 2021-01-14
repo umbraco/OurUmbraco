@@ -14,7 +14,8 @@ namespace OurUmbraco.MarketPlace.Providers
         public IEnumerable<ICategory> GetAllCategories()
         {
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-            var content = umbracoHelper.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+            var content = umbracoHelper.TypedContentAtRoot().First(x => string.Equals(x.DocumentTypeAlias, "community", StringComparison.CurrentCultureIgnoreCase))
+                .Children.First(x => string.Equals(x.DocumentTypeAlias, "projects", StringComparison.CurrentCultureIgnoreCase));
             var contents = content.Descendants().Where(x => x.DocumentTypeAlias == "ProjectGroup");
 
             return contents.ToICategoryList();

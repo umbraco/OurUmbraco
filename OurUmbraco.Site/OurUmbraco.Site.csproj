@@ -61,33 +61,27 @@
     </Reference>
     <Reference Include="AutoMapper, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="AutoMapper.Net4, Version=3.3.1.0, Culture=neutral, PublicKeyToken=be96cd2c38ef1005, processorArchitecture=MSIL">
       <HintPath>..\packages\AutoMapper.3.3.1\lib\net40\AutoMapper.Net4.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="businesslogic, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="businesslogic, Version=1.0.7180.24666, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\businesslogic.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ClientDependency.Core, Version=1.9.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency.1.9.7\lib\net45\ClientDependency.Core.dll</HintPath>
     </Reference>
     <Reference Include="ClientDependency.Core.Mvc, Version=1.8.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ClientDependency-Mvc5.1.8.0.0\lib\net45\ClientDependency.Core.Mvc.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="cms, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="cms, Version=1.0.7180.24666, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\cms.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ColorCode, Version=1.0.1.62759, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ColorCode.1.0.1\lib\ColorCode.dll</HintPath>
     </Reference>
-    <Reference Include="controls, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="controls, Version=1.0.7180.24667, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\controls.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="CookComputing.XmlRpcV2, Version=2.5.0.0, Culture=neutral, PublicKeyToken=a7d6e17aa302004d, processorArchitecture=MSIL">
       <HintPath>..\packages\xmlrpcnet.2.5.0\lib\net20\CookComputing.XmlRpcV2.dll</HintPath>
@@ -116,7 +110,6 @@
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="ImageProcessor, Version=2.7.0.100, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.2.7.0.100\lib\net452\ImageProcessor.dll</HintPath>
@@ -124,34 +117,29 @@
     <Reference Include="ImageProcessor.Web, Version=4.10.0.100, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ImageProcessor.Web.4.10.0.100\lib\net452\ImageProcessor.Web.dll</HintPath>
     </Reference>
-    <Reference Include="interfaces, Version=1.0.7180.24653, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="interfaces, Version=1.0.7180.24653, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\interfaces.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="LibGit2Sharp, Version=0.24.1.0, Culture=neutral, PublicKeyToken=7cbde695407f0333, processorArchitecture=MSIL">
       <HintPath>..\packages\LibGit2Sharp.0.24.1\lib\net40\LibGit2Sharp.dll</HintPath>
     </Reference>
-    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a">
+    <Reference Include="log4net, Version=2.0.8.0, Culture=neutral, PublicKeyToken=669e0ddf0bb1aa2a, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\log4net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Log4Net.Async, Version=2.0.4.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Log4Net.Async.2.0.4\lib\net40\Log4Net.Async.dll</HintPath>
     </Reference>
     <Reference Include="Lucene.Net, Version=2.9.4.1, Culture=neutral, PublicKeyToken=85089178b9ac3181, processorArchitecture=MSIL">
       <HintPath>..\packages\Lucene.Net.2.9.4.1\lib\net40\Lucene.Net.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Markdig, Version=0.15.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdig.0.15.0\lib\net40\Markdig.dll</HintPath>
     </Reference>
     <Reference Include="MarkdownSharp, Version=1.14.5.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Markdown.1.14.7\lib\net45\MarkdownSharp.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Microsoft.ApplicationBlocks.Data, Version=1.0.1559.20655, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Microsoft.ApplicationBlocks.Data.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.AspNet.Identity.Core, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.2\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
@@ -182,7 +170,6 @@
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=1.2.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.1.2.2\lib\net45\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Owin, Version=4.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Owin.4.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
@@ -220,11 +207,9 @@
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MiniProfiler, Version=2.1.0.0, Culture=neutral, PublicKeyToken=b44f9351044011a3, processorArchitecture=MSIL">
       <HintPath>..\packages\MiniProfiler.2.1.0\lib\net40\MiniProfiler.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="MySql.Data, Version=6.9.9.0, Culture=neutral, PublicKeyToken=c5687fc88969c44d, processorArchitecture=MSIL">
       <HintPath>..\packages\MySql.Data.6.9.9\lib\net45\MySql.Data.dll</HintPath>
@@ -237,7 +222,6 @@
     </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="reCAPTCHA.MVC, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\reCAPTCH.MVC.1.0.1\lib\net45\reCAPTCHA.MVC.dll</HintPath>
@@ -249,7 +233,6 @@
     </Reference>
     <Reference Include="Semver, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Skybrud.Essentials, Version=1.1.18.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Skybrud.Essentials.1.1.18\lib\net45\Skybrud.Essentials.dll</HintPath>
@@ -279,22 +262,19 @@
     <Reference Include="Skybrud.SyntaxHighlighter.Markdig, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.SyntaxHighlighter.Markdig.1.0.0-beta003\lib\net45\Skybrud.SyntaxHighlighter.Markdig.dll</HintPath>
     </Reference>
-    <Reference Include="SQLCE4Umbraco, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="SQLCE4Umbraco, Version=1.0.7180.24667, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\SQLCE4Umbraco.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Collections.Immutable, Version=1.1.36.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Collections.Immutable.1.1.36\lib\portable-net45+win8+wp8+wpa81\System.Collections.Immutable.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+    <Reference Include="System.Data.SqlServerCe, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91">
+    <Reference Include="System.Data.SqlServerCe.Entity, Version=4.0.0.1, Culture=neutral, PublicKeyToken=89845dcd8080cc91, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\System.Data.SqlServerCe.Entity.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Net" />
@@ -324,7 +304,6 @@
     </Reference>
     <Reference Include="System.Web.Cors, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.Cors.5.2.3\lib\net45\System.Web.Cors.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
@@ -364,51 +343,41 @@
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Xml.Linq" />
-    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="TidyNet, Version=1.0.0.0, Culture=neutral">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\TidyNet.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="TweetSharp, Version=6.0.0.0, Culture=neutral, PublicKeyToken=c148cfba29ed1a4d, processorArchitecture=MSIL">
       <HintPath>..\packages\TweetMoaSharp.6.0.0\lib\4.5\TweetSharp.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco, Version=1.0.7180.24668, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="umbraco, Version=1.0.7180.24668, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Core, Version=1.0.7180.24662, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Umbraco.Core, Version=1.0.7180.24662, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Core.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.DataLayer, Version=1.0.7180.24666, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="umbraco.DataLayer, Version=1.0.7180.24666, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.DataLayer.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.editorControls, Version=1.0.7180.24671, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="umbraco.editorControls, Version=1.0.7180.24671, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.editorControls.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.IdentityExtensions, Version=1.0.5779.34109, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.IdentityExtensions.1.0.0\lib\net45\Umbraco.IdentityExtensions.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="umbraco.MacroEngines, Version=1.0.7180.24672, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="umbraco.MacroEngines, Version=1.0.7180.24672, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.MacroEngines.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="Umbraco.ModelsBuilder, Version=3.0.10.102, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Umbraco.ModelsBuilder.3.0.10\lib\Umbraco.ModelsBuilder.dll</HintPath>
     </Reference>
-    <Reference Include="umbraco.providers, Version=1.0.7180.24667, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="umbraco.providers, Version=1.0.7180.24667, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\umbraco.providers.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="Umbraco.Web.UI, Version=1.0.7180.24674, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="Umbraco.Web.UI, Version=1.0.7180.24674, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\Umbraco.Web.UI.dll</HintPath>
-      <Private>True</Private>
     </Reference>
-    <Reference Include="UmbracoExamine, Version=0.7.0.24667, Culture=neutral, PublicKeyToken=null">
+    <Reference Include="UmbracoExamine, Version=0.7.0.24667, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UmbracoCms.Core.7.15.3\lib\net452\UmbracoExamine.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="UrlRewritingNet.UrlRewriter, Version=2.0.7.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\UrlRewritingNet.2.0.7\lib\UrlRewritingNet.UrlRewriter.dll</HintPath>
@@ -542,10 +511,6 @@
     </Content>
     <Content Include="config\uPowers.config" />
     <Content Include="config\UrlRewriting.config" />
-    <Content Include="config\uVersion.backup.config" />
-    <Content Include="config\uVersion.config">
-      <SubType>Designer</SubType>
-    </Content>
     <Content Include="config\TeamUmbraco.json" />
     <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
@@ -698,6 +663,7 @@
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageComplete.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageStatus.png" />
     <Content Include="projects\umbraco-pro\contour\Documentation\Installation\DeveloperSectionPackageRepoContourInstallPackageWait.png" />
+    <Content Include="robots.txt" />
     <Content Include="scripts\amcharts\charts.js" />
     <Content Include="scripts\amcharts\core.js" />
     <Content Include="scripts\amcharts\deps\canvg.js" />
@@ -1750,6 +1716,7 @@
     <Content Include="Views\DisplayTopic.cshtml" />
     <Content Include="Views\EnhancedTextPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\HeaderProfile.cshtml" />
+    <Content Include="Views\MacroPartials\Project\ApiKeys.cshtml" />
     <Content Include="Views\Partials\Dashboards\PRData.cshtml" />
     <Content Include="Views\Partials\Forum\Comment.cshtml" />
     <Content Include="Assets\css\fonts\our-icon\our-umbraco.eot" />
@@ -1776,7 +1743,6 @@
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Projects\ListCategories.cshtml" />
-    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
     <Content Include="Views\Partials\Members\ProfileNavigation.cshtml" />
     <Content Include="Views\MacroPartials\Search\GlobalSearchPage.cshtml" />
     <Content Include="Views\MacroPartials\Members\ProfileProjectTeam.cshtml" />
@@ -1831,7 +1797,6 @@
     <Content Include="xslt\_PaginationHelper.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="config\splashes\booting.aspx" />
     <Content Include="config\splashes\noNodes.aspx" />
     <Content Include="css\badges\admin.png" />
     <Content Include="css\badges\core-contrib.png" />
@@ -4484,6 +4449,12 @@
     <Content Include="Views\ProjectLanding.cshtml" />
     <Content Include="Views\Minimal\GitHub\Error.cshtml" />
     <Content Include="Views\Minimal\Master.cshtml" />
+    <Content Include="Views\Partials\Projects\ListProjects.cshtml" />
+    <Content Include="Views\Partials\Projects\CategoryDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\VersionDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\SortOrderDropdown.cshtml" />
+    <Content Include="Views\Partials\Projects\projectactions.cshtml" />
+    <Content Include="Views\Partials\Projects\searchtemplate.cshtml" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -4567,8 +4538,8 @@
     <Error Condition="!Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.3\build\UmbracoCms.props'))" />
     <Error Condition="!Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets'))" />
   </Target>
-  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <Import Project="..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets" Condition="Exists('..\packages\UmbracoCms.7.15.3\build\UmbracoCms.targets')" />
+  <Import Project="..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets" Condition="Exists('..\packages\AutoMapper.3.3.1\tools\AutoMapper.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="AfterBuild">

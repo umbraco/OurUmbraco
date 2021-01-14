@@ -117,7 +117,7 @@ WHERE timestamp > @from";
                         Path = result.path,
                         Name = result.name,
                         FileType = result.type,
-                        RemovedBy = result.removedBy,
+                        RemovedBy = result.removedBy ?? 0,
                         CreatedBy = result.createdBy,
                         NodeVersion = result.version,
                         NodeId = result.nodeId,
@@ -253,6 +253,11 @@ WHERE timestamp > @from";
 
         public static WikiFile Create(string fileName, string extension, Guid node, Guid memberGuid, byte[] file, string filetype, List<UmbracoVersion> versions)
         {
+            return Create(fileName, extension, node, memberGuid, file, filetype, versions, null);
+        }
+
+        public static WikiFile Create(string fileName, string extension, Guid node, Guid memberGuid, byte[] file, string filetype, List<UmbracoVersion> versions, string dotNetVersion)
+        {
             try
             {
                 if (ExtensionNotAllowed(extension))
@@ -263,21 +268,24 @@ WHERE timestamp > @from";
 
                 if (content != null)
                 {
-                    var wikiFile = new WikiFile
-                    {
-                        Name = fileName,
-                        NodeId = content.Id,
-                        NodeVersion = content.Version,
-                        FileType = filetype,
-                        CreatedBy = member.Id,
-                        Downloads = 0,
-                        Archived = false,
-                        Versions = versions,
-                        Version = versions[0],
-                        Verified = false
-                    };
+                    var wikiFile = new WikiFile();
 
-                    wikiFile.SetMinimumUmbracoVersion();
+                    if (dotNetVersion != null)
+                    {
+                        wikiFile.DotNetVersion = dotNetVersion;
+                    }
+                    
+                    wikiFile.Name = fileName;
+                    wikiFile.NodeId = content.Id;
+                    wikiFile.NodeVersion = content.Version;
+                    wikiFile.FileType = filetype;
+                    wikiFile.CreatedBy = member.Id;
+                    wikiFile.Downloads = 0;
+                    wikiFile.Archived = false;
+                    wikiFile.Versions = versions;
+                    wikiFile.Version = versions[0];
+                    wikiFile.Verified = false;
+
                     var path = string.Format("/media/wiki/{0}", content.Id);
 
                     if (Directory.Exists(HttpContext.Current.Server.MapPath(path)) == false)
@@ -290,6 +298,7 @@ WHERE timestamp > @from";
                         fileStream.Write(file, 0, file.Length);
 
                     wikiFile.Path = path;
+                    wikiFile.SetMinimumUmbracoVersion();
                     wikiFile.Save();
 
                     return wikiFile;
@@ -315,10 +324,17 @@ WHERE timestamp > @from";
                 using (var sqlHelper = Application.SqlHelper)
                 {
                     sqlHelper.ExecuteNonQuery(
-                        "INSERT INTO wikiFiles (path, name, createdBy, nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
+                        "INSERT INTO wikiFiles (path, name, createdBy, createDate, [current], nodeId, version, type, downloads, archived, umbracoVersion, verified, dotNetVersion, minimumVersionStrict) VALUES(@path, @name, @createdBy, @createDate, @current, @nodeId, @nodeVersion, @type, @downloads, @archived, @umbracoVersion, @verified, @dotNetVersion, @minimumVersionStrict)",
                         sqlHelper.CreateParameter("@path", Path),
                         sqlHelper.CreateParameter("@name", Name),
                         sqlHelper.CreateParameter("@createdBy", CreatedBy),
+                        sqlHelper.CreateParameter("@createDate", DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss")),
+                        
+                        // Note: for some reason this has to be set to 1 else package uploads will fail
+                        // Interestingly, this property is never actually used, we use the currentFile
+                        // Note2: HACK! This is stored as a type `bit` and you need to pass "1" instead of a boolean 🤷‍♂️
+                        sqlHelper.CreateParameter("@current", "1"),
+                        
                         sqlHelper.CreateParameter("@nodeId", NodeId),
                         sqlHelper.CreateParameter("@type", FileType),
                         sqlHelper.CreateParameter("@nodeVersion", NodeVersion),
@@ -331,9 +347,7 @@ WHERE timestamp > @from";
                         sqlHelper.CreateParameter("@minimumVersionStrict",
                             string.IsNullOrWhiteSpace(MinimumVersionStrict) ? "" : MinimumVersionStrict)
                     );
-
-                    CreateDate = DateTime.Now;
-
+                    
                     Id = sqlHelper.ExecuteScalar<int>(
                             "SELECT MAX(id) FROM wikiFiles WHERE createdBy = @createdBy",
                             sqlHelper.CreateParameter("@createdBy", CreatedBy));

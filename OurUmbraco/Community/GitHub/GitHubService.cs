@@ -302,7 +302,8 @@ namespace OurUmbraco.Community.GitHub
                 "OurUmbraco",
                 "Umbraco.Courier.Contrib",
                 "Umbraco.Deploy.Contrib",
-                "Umbraco.Deploy.ValueConnectors" ,
+                "Umbraco.Deploy.ValueConnectors",
+                "UmbPack",
                 "rfcs",	
                 "organizer-guide",
                 "The-Starter-Kit"
@@ -369,6 +370,8 @@ namespace OurUmbraco.Community.GitHub
 
                 IsLocked = false;
             }
+            
+            ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
         }
 
         private List<Issue> GetExistingPullsFromDisk(string alias)
@@ -1619,7 +1622,7 @@ namespace OurUmbraco.Community.GitHub
     public class Label
     {
         [JsonProperty("id")]
-        public int Id { get; set; }
+        public long Id { get; set; }
         [JsonProperty("node_id")]
         public string NodeId { get; set; }
         [JsonProperty("url")]

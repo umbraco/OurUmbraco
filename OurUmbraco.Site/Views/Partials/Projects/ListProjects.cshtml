@@ -1,263 +1,152 @@
-@using Examine.SearchCriteria
-@using OurUmbraco.Our
-@using OurUmbraco.Our.Examine
+﻿@using OurUmbraco.Repository.Controllers
+@using OurUmbraco.Repository.Models
 @using OurUmbraco.Project
+
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     //This is the main Our project search
-
     const int pagesToShowLeft = 4;
-    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "createDate";
+
+    var isHome = true;
+    if (ViewData["isHome"] != null)
+    {
+        isHome = (bool)ViewData["isHome"];
+    }
+
+    var orderMode = !string.IsNullOrEmpty(Request["orderBy"]) ? Request["orderBy"] : "popularity";
+    var dataMode = (string)ViewData["orderBy"];
+    if (dataMode != null)
+    {
+        orderMode = dataMode;
+    }
+
     var page = !string.IsNullOrEmpty(Request["page"]) ? int.Parse(Request["page"]) : 1;
     var category = Request["category"];
     var version = Request["version"];
     var term = Request["term"];
-    var pageSize = 20;
-    var headline = "most popular";
-    if (orderMode == "createDate")
+    var pageSize = 10;
+    if (ViewData["pageSize"] != null)
     {
-        headline = "latest";
+        pageSize = (int)ViewData["pageSize"];
     }
-    else if (orderMode == "updateDate")
-    {
-        headline = "recently updated";
-    }
-
-    if (version != null)
-    {
-        headline = "version " + version;
-    }
-    if (category != null)
-    {
-        headline = category == "uaas" ? "Umbraco Cloud" : category.ToLowerInvariant();
-    }
-
-    var searchFilters = new SearchFilters(BooleanOperation.And);
-    //MUST be live
-    searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
-
-    if(orderMode == "popularity")
-    {
-        searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
-    }
-
-    var filters = new List<SearchFilters> { searchFilters };
-
-    if (!string.IsNullOrEmpty(category))
-    {
-        var categoryFilters = new SearchFilters(BooleanOperation.Or);
-        //NOTE: categories are indexed as lower case and are not tokenized so must be an exact match and therefore require quotes
-
-        if (category.ToLowerInvariant() == "uaas".ToLowerInvariant())
-        {
-            categoryFilters.Filters.Add(new SearchFilter("worksOnUaaS", string.Format("\"{0}\"", "True")));
-        }
-        else
-        {
-            categoryFilters.Filters.Add(new SearchFilter("categoryFolder", string.Format("\"{0}\"", category.ToLowerInvariant().Trim())));
-        }
-
-        filters.Add(categoryFilters);
-    }
-
-    if (!string.IsNullOrEmpty(version))
-    {
-        //need to clean up this string, it could be all sorts of things
-        var parsedVersion = version.GetFromUmbracoString();
-        if (parsedVersion != null)
-        {
-            var fromVersion = parsedVersion.GetNumericalValue();
-            var toVersion = new Version(parsedVersion.Major, 999, 999).GetNumericalValue();
-            var versionFilters = new SearchFilters(BooleanOperation.Or);
-            versionFilters.Filters.Add(new RangeSearchFilter("num_version", fromVersion, toVersion));
-            filters.Add(versionFilters);
-        }
-    }
-
-    var examineOrder = orderMode;
-    if (examineOrder == "popularity")
-    {
-        examineOrder = string.Concat(orderMode, "[Type=INT]");
-    }
-    else if (examineOrder == "createDate")
-    {
-        examineOrder = string.Concat(orderMode, "[Type=LONG]");
-    }
-
-    //TODO: cache for 1 minute with this key just need to ensure the enumerable in the result is finalized
-    //var key = string.Format("ListProjects.{0}.{1}.{2}.{3}.{4}", page, orderMode, term, version, category);
-    var searcher = new OurSearcher(term,
-        "project", null, examineOrder,
-        filters: filters, maxResults: pageSize * page);
-
-    var search = searcher.Search("projectSearcher");
-    var total = search.SearchResults.TotalItemCount;
-    var pages = (total / pageSize) + 1;
 
     var url = string.Format("orderBy={0}&q={1}&version={2}&category={3}", orderMode, term, version, category);
-    var result = search.SearchResults.Skip((page - 1) * pageSize).Take(pageSize);
+
+    var searchOrder = GetSortOrder(orderMode);
+
+    var packageService = new OurUmbraco.Repository.Services
+        .PackageRepositoryService(Umbraco, Members, ApplicationContext.Current.DatabaseContext);
+
+    var results = packageService.GetPackages(page - 1, pageSize, category, term, version, searchOrder, false);
 }
-@if (Context.IsDebuggingEnabled)
+
+<div class="packages-listing">
+    @foreach (var childContent in results.Packages)
+    {
+        @RenderProjectBox(childContent)
+    }
+</div>
+
+@if (!isHome)
 {
-    <p style="border: 1px solid orange;">
-        <strong>Debugging output</strong><br />
-        <strong>Query:</strong> @search.LuceneQuery<br />
-        <strong>Order by:</strong> @search.OrderBy<br />
-        <strong>Time elapsed:</strong> @search.Totalmilliseconds<br />
-        <strong>Total results:</strong> @total<br />
-        <strong>Pages:</strong> @pages
-    </p>
-}
-<div class="note">
-    <div>
-        <p>Want to learn more about the package initiative?</p>
-        
-        <a href="/about-packages">Package initiative</a><a href="/about-packages#package-newsletter">Sign up for newsletter</a><a href="/documentation/Extending/Packages/">Documentation</a>
-    </div>
-</div>
-<div class="search-big">
-    <input type="search" class="project-search-input" required placeholder="Search for packages">
-    <label for="search">Search packages</label>
-</div>
-@functions{
-    public string GetField(IDictionary<string, string> fields, string field, string defaultVal = "")
-    {
-        if (fields != null && fields.ContainsKey(field))
-            return fields[field];
-
-        return defaultVal;
-    }
-
-    public string ParseVersion(SearchResult result)
-    {
-        var versions = result.GetValues("versions").ToList();
-        if (result.Fields.Keys.Contains("versions"))
-        {
-            versions.Add(result["versions"]);
-        }
-
-        var orderedVersions = versions
-            .Select(x =>
-            {
-                Version v;
-                return Version.TryParse(x, out v) ? v : null;
-            }).WhereNotNull()
-            .OrderByDescending(x => x)
-            .ToArray();
-
-        if (orderedVersions.Any() == false)
-            return "n/a";
-
-        if (orderedVersions.Length == 1)
-            return orderedVersions.First().ToString();
-
-        if (orderedVersions.Min() == orderedVersions.Max())
-            return orderedVersions.Min().ToString();
-
-        return orderedVersions.Min() + " - " + orderedVersions.Max();
-    }
-}
-<h1>Browse @headline packages</h1>
-<script type="text/template" class="search-item-project">
-    <div class="box">
-        <div class="row">
-            <div class="col-xs-2 col-md-1">
-                {[ if (image != null) { ]}
-                <img src="{{image}}?width=64&height=64&bgcolor=fff&format=png" srcset="{{image}}?width=128&height=128&bgcolor=fff&format=png 2x,{{image}}?width=192&height=192&bgcolor=fff&format=png 3x" alt="">
-                {[ } else { ]}
-                <i class='icon-Box'></i>
-                {[ } ]}
-            </div>
-            <div class="col-xs-10 col-md-6">
-                <div class="forum-thread-text">
-                    <h3><a href="{{url}}">{{nodeName}}</a></h3>
-                    <p>{{body}}</p>
-                </div>
-            </div>
-            <div class="col-xs-12 col-md-5">
-                <div class="other">
-                    <div class="package-badge">
-                        <span class="package-name">version</span>
-                        <span class="package-number">{{versions}}</span>
-                    </div>
-                    <span class="stats">
-                        <span class="downloads">
-                            {{downloads}}<span><i class="icon-Download-alt"></i></span>
-                        </span>
-                        <span class="karma">
-                            {{karma}}<span><i class="icon-Hearts"></i></span>
-                        </span>
-                    </span>
-                </div>
-            </div>
-        </div>
-    </div>
-</script>
-<div class="projects-search-listing"></div>
-<div class="projects-default-listing">
-    @foreach (var childPage in result)
-    {
-        var childContent = Umbraco.TypedContent(childPage.Id);
-        if (childContent != null)
-        {
-            <div class="box">
-                <div class="row">
-                    <div class="col-xs-2 col-md-1">
-                        @{
-                            var defaultScreenshot = "/css/img/package2.png";
-                            if (childContent != null)
-                            {
-                                defaultScreenshot = childContent.GetPropertyValue("defaultScreenshotPath", false, "/css/img/package2.png");
-                            }
-                        }
-                        <img src="@Utils.GetScreenshotPath(defaultScreenshot)?width=64&height=64&bgcolor=fff&format=png"
-                             srcset="@Utils.GetScreenshotPath(defaultScreenshot)?width=128&height=128&bgcolor=fff&format=png 2x,
-             @Utils.GetScreenshotPath(defaultScreenshot)?width=192&height=192&bgcolor=fff&format=png 3x" />
-                    </div>
-                    <div class="col-xs-10 col-md-6">
-                        <div class="forum-thread-text">
-                            <h3>
-                                <a href="@childContent.Url">@childContent.Name</a>
-                            </h3>
-                            <p>@Html.Raw(GetField(childPage.Fields, "body", "No description available").StripHtml().Truncate(150))</p>
-                        </div>
-                    </div>
-                    <div class="col-xs-12 col-md-5">
-
-                        <div class="other">
-                            <div class="package-badge">
-                                <span class="package-name">version</span>
-                                <span class="package-number">@ParseVersion(childPage)</span>
-                            </div>
-                            <span class="stats">
-                                <span class="downloads">
-                                    @GetField(childPage.Fields, "downloads", "0")<span><i class="icon-Download-alt"></i></span>
-                                </span>
-                                <span class="karma">
-                                    @GetField(childPage.Fields, "karma", "0")<span><i class="icon-Hearts"></i></span>
-                                </span>
-                            </span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        }
-    }
     <nav class="pagination" role="navigation">
         @if (page > 1)
         {
             <a class="prev" href="?page=@(page - 1)&@url">Prev</a>
         }
 
-        @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= pages; i++)
+        @for (var i = (page - 1 > 0 ? page - 1 : 1); i < (page + (pagesToShowLeft - (page - 1 > 0 ? 1 : 0))) && i <= results.Pages; i++)
         {
             <a class="@Umbraco.If(i == page, "active")" href="?page=@i&@url">@i</a>
         }
 
-        @if (page < pages)
+        @if (page < results.Pages)
         {
             <span>&hellip;</span>
             <a class="next" href="?page=@(page + 1)&@url">Next</a>
         }
     </nav>
-</div>
+}
+else
+{
+    @*
+        <nav role="navigation">
+            <a href="?page=1&orderBy=@orderMode">See more &raquo;</a>
+        </nav>
+    *@
+}
+
+
+@helper RenderProjectBox(Package projectContent)
+{
+    <a class="package-box" href="@projectContent.Url">
+        <div class="package-image">
+            @RenderProjectImage(projectContent.Image)
+        </div>
+        <div class="package-info">
+            <h3>@projectContent.Name</h3>
+            <span class="text-fadeout"></span>
+            <p class="small">@Html.Raw(projectContent.Summary.CleanHtmlAttributes())</p>
+        </div>
+
+        <div class="other">
+            <div class="package-badge">
+                <span class="package-number">@projectContent.VersionRange</span>
+            </div>
+            <div class="stats">
+                <span class="karma">
+                    @projectContent.Likes <span><i class="icon-Hearts color-red"></i></span>
+                </span>
+                <span class="downloads" title="@projectContent.Downloads total downloads">
+                    @FormatDownloadNumber(projectContent.Downloads) <span><i class="icon-Download-alt"></i></span>
+                </span>
+            </div>
+        </div>
+    </a>
+}
+
+@helper RenderProjectImage(string defaultScreenshot)
+{
+    <img src="@defaultScreenshot?width=64&height=64&bgcolor=fff&format=png"
+         srcset="@defaultScreenshot?width=128&height=128&bgcolor=fff&format=png 2x,
+             @defaultScreenshot?width=192&height=192&bgcolor=fff&format=png 3x" />
+}
+
+@functions{
+    public PackageSortOrder GetSortOrder(string orderMode)
+    {
+        switch (orderMode.ToLower())
+        {
+            case "popularity":
+                return PackageSortOrder.Popular;
+            case "createdate":
+                return PackageSortOrder.Latest;
+            case "updatedate":
+                return PackageSortOrder.Default;
+            case "downloads":
+                return PackageSortOrder.Downloads;
+        }
+
+        return PackageSortOrder.Popular;
+    }
+
+    public string FormatDownloadNumber(int downloads)
+    {
+        if (downloads > 999999999)
+        {
+            return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999999)
+        {
+            return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999)
+        {
+            return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
+    }
+}

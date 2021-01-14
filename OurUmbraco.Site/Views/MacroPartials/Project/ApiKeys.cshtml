@@ -1,0 +1,77 @@
+﻿@using OurUmbraco.Auth
+@inherits Umbraco.Web.Macros.PartialViewMacroPage
+@{
+    
+    var projectId = Request["Id"];
+    int id = 0;
+}
+
+@if (!string.IsNullOrEmpty(projectId) && int.TryParse(projectId, out id))
+{
+    var project = Umbraco.TypedContent(id);
+    var member = Members.GetCurrentMember();
+
+    if (project.GetPropertyValue<int>("owner") != member.Id)
+    {
+        Response.Redirect("/");
+    }
+
+    var authKeyService = new ProjectAuthKeyService(ApplicationContext.Current.DatabaseContext);
+    var keys = authKeyService.GetAllAuthKeysForProject(id);
+
+    var keysAreNotNull = keys.Any();
+
+    <p>
+        The API keys are used to push your package - <strong>@project.Name</strong> - to Our directly from a CI/CD pipeline or your own local machine. <br/>
+        Read more on the <a href="https://our.umbraco.com/documentation/Extending/Packages/UmbPack" target="_blank">documentation for UmbPack</a>.
+    </p>
+    
+    <div class="manage-keys">
+        <h2>Manage keys</h2>
+        @if(keysAreNotNull)
+        {
+            <table>
+                <tr>
+                    <th><i class="icon-Key"></i>Key description</th>
+                    <th>Create Date</th>
+                    <th>Remove Key</th>
+                </tr>
+                @foreach (var key in keys)
+                {
+                    <tr>
+                        <td>@key.Description</td>
+                        <td>@key.DateCreated</td>
+                        <td>
+                            <div>
+                                <span id="key-warning"></span><br/>
+                                <a class="button green tiny delete-key" data-proj-id="@projectId" data-memb-id="@key.MemberId" data-pk="@key.PrimaryKey">Remove</a>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </table>
+        } else {
+            <p class="no-keys">You don't have any keys yet, you can make one below.</p>
+        }
+        
+    </div>
+
+    <div class="create-key profile">
+        <h2>Create a new key</h2>
+        <div class="profile-settings">
+            <div class="profile-settings-forms">
+                
+                <div class="profile-input">
+                    <label for="key-description">Description</label>
+                    <input id="key-description" name="key-description" type="text">
+                </div>
+
+                <div>
+                    <span id="add-key-warning"></span><br/>
+                    <a class="button green tiny" id="add-key" data-proj-id="@projectId">Add</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+}

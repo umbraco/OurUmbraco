@@ -1,0 +1,15 @@
+﻿@using Umbraco.Web
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var version = Request["version"];
+}
+
+<label for="version">Version</label>
+
+<select id="version" name="version">
+    <option value="">Any</option>
+    <option value="8" @Umbraco.If(version == "8", "selected")>Version 8</option>
+    <option value="7" @Umbraco.If(version == "7", "selected")>Version 7</option>
+    <option value="6" @Umbraco.If(version == "6", "selected")>Version 6</option>
+    <option value="4" @Umbraco.If(version == "4", "selected")>Version 4</option>
+</select>

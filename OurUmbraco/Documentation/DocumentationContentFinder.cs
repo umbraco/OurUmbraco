@@ -143,7 +143,7 @@ namespace OurUmbraco.Documentation
     {
         public static string MarkdownFileEditLink()
         {
-            string branchName = "master";
+            string branchName = "main";
             string baseUrl = "https://github.com/umbraco/UmbracoDocs/edit/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();

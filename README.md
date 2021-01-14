@@ -18,22 +18,25 @@ gulp
 
 ## Database Restore
 
-Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200107.7z.  If you don't have the 7zip utility installed you can download it from [7-zip.org](https://www.7-zip.org/) 
+Download the SQL Server Database from: https://umbracoreleases.blob.core.windows.net/ourumbraco/OurDev20200720.bacpac.
 
 Restore the database to SQL Server 2017 (won't work on earlier versions) and update the connection strings (`umbracoDbDSN`) in `OurUmbraco.Site/web.config`.
 
-If your SQL Server instance has the 'containment' feature enabled you can use these credentials in your connection string:
-`user id=OurDevAnon;password=gQW435Jg32;`
-
 ## Logging in
 
-All users and members use the same password: Not_A_Real_Password
+* To log into the backoffice use  `admin@our.test` / `1234567890`.
 
-* To log into the backoffice use  `root` / `Not_A_Real_Password`.
+* To log into the frontend use `member@our.test` / `1234567890`. 
 
-* To log into the frontend use `member_login@umbraco.org` / `Not_A_Real_Password`. You will be logging as Sebastiaan from Umbraco HQ.  All other profile information is anonymous.
+⚠⚠⚠
 
-You will need to set requireSSL in the `Web.Config` to **false** to login to the frontend.
+In the web.config you get when you first build the project, you will need to change the following appSetting, from true to false:
+
+```
+<add key="umbracoUseSSL" value="false" />
+```
+
+Additionally, you will need to set requireSSL in the `Web.Config` to **false** to be able to login to the frontend.
 
 ```
 <authentication mode="Forms">
@@ -41,13 +44,19 @@ You will need to set requireSSL in the `Web.Config` to **false** to login to the
 </authentication>
 ```
 
+⚠⚠⚠
+
 ## Projects Area
 
-If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco.
+If the projects area seems empty then that's because you need to rebuild the Examine indexes for it through the Developer section of Umbraco. 
 
 ## Documentation Area
 
 If the documentation area seems empty then that's because you need to download the documentation, look for the `documentationIndexer` in the Examine dashboard in the Developer section of Umbraco and Rebuild the index. This will automatically download the latest documentation from GitHub.
+
+## Community Area
+
+Following a recent update we've moved the `/community` pages to another [website](https://community.umbraco.com/). You can read more about the decision [here](https://umbraco.com/blog/the-umbraco-community-website-revisited).
 
 ## Contributing
 

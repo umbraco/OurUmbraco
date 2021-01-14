@@ -44,13 +44,12 @@ namespace OurUmbraco.Our.Services
         {
             var fileContent = File.ReadAllText(CacheFile);
             var releases = JsonConvert.DeserializeObject<List<Release>>(fileContent);
+            
             foreach (var release in releases)
             {
                 release.FullVersion = release.Version.AsFullVersion();
                 release.TotalIssueCount = release.Issues.Count;
-                release.Bugs = release.Issues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
-                release.Features = release.Issues.Except(release.Bugs);
-
+                
                 release.IssuesCompleted = release.Issues.Where(x => 
                     x.State.ToLowerInvariant() == "duplicate"
                     || x.State.ToLowerInvariant() == "fixed"
@@ -63,6 +62,9 @@ namespace OurUmbraco.Our.Services
                 if (release.PercentComplete == 0) { 
                     release.PercentComplete = ReleasePercentComplete(release);
                 }
+            
+                release.Bugs = release.Issues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
+                release.Features = release.Issues.Except(release.Bugs);
             }
 
             return releases;
@@ -119,7 +121,7 @@ namespace OurUmbraco.Our.Services
             PopulateGitHubIssues(context, releases);
             PopulateYouTrackIssues(context, releases);
 
-            var releasesCache = JsonConvert.SerializeObject(releases, Formatting.Indented);
+            var releasesCache = JsonConvert.SerializeObject(releases, Formatting.None);
             File.WriteAllText(CacheFile, releasesCache, Encoding.UTF8);
 
             // Clear cache so it will be fetched again the next time someone asks for it
@@ -174,21 +176,25 @@ namespace OurUmbraco.Our.Services
             AddItemsToReleases(context, releases, issuesDirectory, "issue");
             AddItemsToReleases(context, releases, pullsDirectory, "pull");
         }
-
+        
         private static void AddItemsToReleases(PerformContext context, List<Release> releases, string directory, string fileTypeName) 
         {
             context.WriteLine($"Processing {fileTypeName}s");
             var files = Directory.EnumerateFiles(directory, $"*.{fileTypeName}.combined.json").ToArray();
             context.WriteLine($"Found {files.Length} items");
-
+            
             foreach (var file in files)
             {
                 var fileContent = File.ReadAllText(file);
                 var item = JsonConvert.DeserializeObject<Issue>(fileContent);
-
+                
                 foreach (var label in item.Labels)
                 {
                     if (label.Name.StartsWith("release/") == false)
+                        continue;
+
+                    // this label makes sure the item doesn't show up in the release notes, it adds no value
+                    if(item.Labels.Any(x => x.Name == "release/no-notes"))
                         continue;
 
                     var version = label.Name.Replace("release/", string.Empty);
@@ -200,8 +206,15 @@ namespace OurUmbraco.Our.Services
                         continue;
                     }
 
+                    var fullVersion = new System.Version();
+                    System.Version.TryParse(release.Version, out fullVersion); 
+                    release.FullVersion = fullVersion;
+                    if (release.CategorizedIssues == null)
+                        release.CategorizedIssues = GetDefaultCategories();
+                    
                     var breaking = item.Labels.Any(x => x.Name == "category/breaking");
-
+                    var communityContrib = item.Labels.Any(x => x.Name == "community/pr");
+                    
                     var stateLabel = item.Labels.FirstOrDefault(x => x.Name.StartsWith("state/"));
 
                     // default state
@@ -222,14 +235,157 @@ namespace OurUmbraco.Our.Services
 
                     context.WriteLine($"Adding {fileTypeName} {item.Number} to release {release.Version}");
 
-                    release.Issues.Add(new Release.Issue
+                    var issue = new Release.Issue
                     {
                         Id = item.Number.ToString(),
                         Breaking = breaking,
                         State = state,
-                        Title = item.Title,
+                        Title = item.Title.Replace("v8: ", "").Replace("V8: ", "").Replace("v8:", "").Replace("v8:", ""),
                         Type = type,
-                        Source = ReleaseSource.GitHub
+                        Source = ReleaseSource.GitHub,
+                        CommunityContribution = communityContrib,
+                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : ""
+                    };
+
+                    if (release.FullVersion >= new System.Version(8, 7, 0))
+                        AddCategoriesToItems(release, item, issue);
+
+                    release.Issues.Add(issue);
+                }
+            }
+
+            foreach (var release in releases.Where(x => x.FullVersion >= new System.Version(8,7,0)))
+            {
+                // work on a local copy not the global/shared one
+                var releaseIssues = release.Issues; 
+                
+                var categorizedIssueIds = new HashSet<string>();
+                foreach (var issue in release.CategorizedIssues.SelectMany(category => category.Issues))
+                {
+                    categorizedIssueIds.Add(issue.Id);
+                    var removeItem = releaseIssues.FirstOrDefault(x => x.Id == issue.Id);
+                    if (removeItem != null)
+                        releaseIssues.Remove(removeItem);
+                }
+                
+                var bugs = releaseIssues.Where(x => x.Type == "type/bug" || x.Type.InvariantContains("Feature") == false);
+                if (bugs != null)
+                {
+                    var categoryBugFix = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Bugfixes");
+                    if (categoryBugFix != null)
+                        categoryBugFix.Issues.AddRange(bugs);
+                }
+
+                var features = bugs != null ? releaseIssues.Except(bugs) : releaseIssues;
+                if (features != null)
+                {
+                    var categoryOtherFeatures = release.CategorizedIssues.FirstOrDefault(x => x.Name == "Other features");
+                    if (categoryOtherFeatures != null)
+                        categoryOtherFeatures.Issues.AddRange(features);
+                }
+            }
+        }
+
+        private static List<Release.Category> GetDefaultCategories()
+        {
+            var categories = new List<Release.Category>
+            {
+                new Release.Category
+                {
+                    Name = "Notable features",
+                    MatchingLabels = new List<string> {"category/notable"},
+                    Issues = new List<Release.Issue>(),
+                    Priority = -40
+                },
+                new Release.Category
+                {
+                    Name = "Other features",
+                    MatchingLabels = new List<string>(),
+                    Issues = new List<Release.Issue>(),
+                    Priority = 100
+                },
+                new Release.Category
+                {
+                    Name = "Bugfixes",
+                    MatchingLabels = new List<string>(),
+                    Issues = new List<Release.Issue>(),
+                    Priority = 110
+                },
+                new Release.Category
+                {
+                    Name = "Breaking changes",
+                    MatchingLabels = new List<string> {"category/breaking"},
+                    Issues = new List<Release.Issue>(),
+                    Priority = -10
+                },
+                new Release.Category
+                {
+                    Name = "UI and UX updates",
+                    MatchingLabels = new List<string> {"category/ui", "category/ux"},
+                    Issues = new List<Release.Issue>()
+                },
+                new Release.Category
+                {
+                    Name = "API and API documentation updates",
+                    MatchingLabels = new List<string> {"category/api", "category/api-documentation"},
+                    Issues = new List<Release.Issue>()
+                },
+                new Release.Category
+                {
+                    Name = "Developer experience",
+                    MatchingLabels = new List<string> {"category/dx"},
+                    Issues = new List<Release.Issue>()
+                }
+            };
+            return categories;
+        }
+
+        private static void AddCategoriesToItems(Release release, Issue item, Release.Issue issue)
+        {
+            var specialCategoryLabels = new List<string>();
+            foreach (var issueCategory in release.CategorizedIssues)
+            {
+                specialCategoryLabels.AddRange(issueCategory.MatchingLabels);
+                foreach (var itemLabel in item.Labels)
+                {
+                    if (issueCategory.MatchingLabels.Contains(itemLabel.Name) == false)
+                        continue;
+
+                    if (issueCategory.Issues.Contains(issue) == false)
+                        issueCategory.Issues.Add(issue);
+                }
+            }
+
+            foreach (var itemLabel in item.Labels)
+            {
+                var existingCategory = release.CategorizedIssues
+                    .FirstOrDefault(x => x.MatchingLabels.Any(y => y == itemLabel.Name));
+                if (existingCategory != null)
+                {
+                    // add to existing category
+                    if (existingCategory.Issues.Contains(issue) == false)
+                        existingCategory.Issues.Add(issue);
+                }
+                else
+                {
+                    // create new category and add the item
+                    var categoryName = string.Empty;
+                    var splitLabel = itemLabel.Name.Split('/');
+                    // skip if it's not one of the categories, projects or a dependency
+                    if (splitLabel.First() != "category" && splitLabel.First() != "project" &&
+                        splitLabel.First() != "dependencies")
+                        continue;
+
+                    categoryName = splitLabel.Length > 1 ? splitLabel[1] : splitLabel[0];
+                    categoryName = categoryName.Replace("angularjs", "AngularJS");
+                    categoryName = categoryName.Replace("net-core", ".NET Core");
+                    categoryName = categoryName.Replace("-", " ");
+                    categoryName = categoryName.ToFirstUpper();
+                    release.CategorizedIssues.Add(new Release.Category
+                    {
+                        Name = categoryName,
+                        MatchingLabels = new List<string> {itemLabel.Name},
+                        Issues = new List<Release.Issue> {issue}
                     });
                 }
             }

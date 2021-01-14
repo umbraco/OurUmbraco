@@ -1,16 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Data.SqlClient;
 using System.Linq;
 using Examine;
+using Examine.SearchCriteria;
 using OurUmbraco.MarketPlace.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.Providers;
 using OurUmbraco.Our;
+using OurUmbraco.Our.Examine;
 using OurUmbraco.Wiki.Extensions;
 using umbraco;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 
@@ -101,10 +105,27 @@ namespace OurUmbraco.MarketPlace.NodeListing
         {
             try
             {
-                using (var sqlHelper = Application.SqlHelper)
+                var searchFilters = new SearchFilters(BooleanOperation.And);
+
+                searchFilters.Filters.Add(new SearchFilter("__NodeId", projectId));
+
+                var filters = new List<SearchFilters> { searchFilters };
+
+                var ourSearcher = new OurSearcher(null, "project", filters: filters);
+
+                var results = ourSearcher.Search("projectSearcher");
+
+                if (results.SearchResults.TotalItemCount > 0)
                 {
-                    return sqlHelper.ExecuteScalar<int>("select count(*) from projectDownload where projectId = @id;", sqlHelper.CreateParameter("@id", projectId));
+                    var packageResult = results.SearchResults.First();
+
+                    if (packageResult.Fields.ContainsKey("downloads"))
+                    {
+                        return int.Parse(packageResult.Fields["downloads"]);
+                    }
                 }
+
+                return 0;
             }
             catch
             {
@@ -118,7 +139,15 @@ namespace OurUmbraco.MarketPlace.NodeListing
             using (var reader = sqlHelper.ExecuteReader("SELECT SUM([points]) AS Karma FROM powersProject WHERE id = @projectId", sqlHelper.CreateParameter("@projectId", projectId)))
             {
                 if (reader.Read())
-                    return reader.GetInt("Karma");
+                {
+                    var karma = reader.GetInt("Karma");
+                    if (karma > 0) 
+                    {
+                        return karma;
+                    }
+                    return 0;
+                }
+                     
             }
 
             return 0;
@@ -149,6 +178,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
                 : Guid.NewGuid().ToString();
 
             //set all the document properties
+            content.Name = listingItem.Name;
             content.SetValue("description", listingItem.Description);
             content.SetValue("version", listingItem.CurrentVersion);
             content.SetValue("file", listingItem.CurrentReleaseFile);
@@ -168,7 +198,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("notAPackage", listingItem.NotAPackage);
             content.SetValue("packageGuid", packageGuidString);
             content.SetValue("approved", (listingItem.Approved) ? "1" : "0");
-            if(isUpdate == false)
+            if (isUpdate == false)
                 content.SetValue("termsAgreementDate", listingItem.TermsAgreementDate);
             content.SetValue("owner", listingItem.VendorId);
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
@@ -221,13 +251,24 @@ namespace OurUmbraco.MarketPlace.NodeListing
             if (listingItem.IsRetired)
                 listingItem.Live = false;
 
-            contentService.SaveAndPublishWithStatus(content);
+            try
+            {
+                contentService.SaveAndPublishWithStatus(content);
+            }
+            catch (SqlException e)
+            {
+                LogHelper.Error<NodeListingProvider>($"Hit error on package name: {content.Name} with id: {content.Id}.", e);
+                // we have some corrupt data that will once in a while give this error:
+                // The INSERT statement conflicted with the FOREIGN KEY constraint "FK_umbracoRedirectUrl". The conflict occurred in database "OurDevAnon2", table "dbo.umbracoNode", column 'uniqueID'.
+                // It seems to work anyways though, renames the node and creates the redirect.
+            }
+            
 
             listingItem.Id = content.Id;
             listingItem.NiceUrl = library.NiceUrl(listingItem.Id);
 
             var indexer = ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
-            if(indexer != null && listingItem.IsRetired)
+            if (indexer != null && listingItem.IsRetired)
                 indexer.DeleteFromIndex(listingItem.Id.ToString());
         }
 
@@ -249,7 +290,8 @@ namespace OurUmbraco.MarketPlace.NodeListing
         private static IEnumerable<IPublishedContent> GetProjectsFromDeliProjectRoot(bool all)
         {
             var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-            var content = umbracoHelper.TypedContent(int.Parse(ConfigurationManager.AppSettings["deliProjectRoot"]));
+            var content = umbracoHelper.TypedContentAtRoot().First(x => string.Equals(x.DocumentTypeAlias, "community", StringComparison.CurrentCultureIgnoreCase))
+                .Children.First(x => string.Equals(x.DocumentTypeAlias, "projects", StringComparison.CurrentCultureIgnoreCase));
             if (content == null)
                 throw new Exception("Could not find the Deli project root.");
             var contents = content.Descendants().Where(c => c.DocumentTypeAlias == "Project");

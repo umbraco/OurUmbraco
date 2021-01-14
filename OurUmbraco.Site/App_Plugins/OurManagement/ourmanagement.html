@@ -8,6 +8,13 @@
         <umb-load-indicator ng-if="vm.docsLoading"></umb-load-indicator>
     </p>
 
+    <button type="button" ng-click="getInvalidDocsArticles()">
+        Check invalid YAML
+    </button>
+    <p ng-repeat="invalidDocsArticle in vm.invalidDocsArticles">
+        {{invalidDocsArticle}}<br />
+    </p>
+
     <h3>Members - contrib / profile</h3>
     <p>Here you can search for members to go to them in the members section or to add a contrib badge to their Our profile.<br />
     <p>Search for a member Id or a part of a member's name, email address, twitter profile or github profile</p>
@@ -28,6 +35,10 @@
         <br />
         <button type="button" ng-click="addContribBadgeToMember(vm.memberId)">
             Add contrib badge to {{vm.memberName}}
+        </button>
+        <br />
+        <button type="button" ng-click="addKarmaToMember(vm.memberId)">
+            Add karma to {{vm.memberName}}
         </button>
         <br />
     <p ng-if="vm.addBadgeMessage">{{vm.addBadgeMessage}}</p>

@@ -215,6 +215,9 @@ namespace OurUmbraco.Community.People
 
         internal static string GetCleanImagePath(string imgPath)
         {
+            if (imgPath == null) 
+                return string.Empty;
+                
             var cleanImagePath = imgPath.Replace(" ", "%20").TrimStart("~");
             if (cleanImagePath.Contains("?"))
                 cleanImagePath = cleanImagePath.Substring(0, cleanImagePath.IndexOf("?", StringComparison.Ordinal));

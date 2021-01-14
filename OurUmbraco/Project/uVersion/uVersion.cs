@@ -1,50 +1,43 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Xml;
+using OurUmbraco.Our.Extensions;
+using OurUmbraco.Our.Services;
 using Umbraco.Core;
 
 namespace OurUmbraco.Project.uVersion
 {
     public class UVersion
     {
-        public string Key { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public bool Exists { get; set; }
+        public string Key { get; private set; }
+        public string Name { get; private set; }
 
-        public UVersion(string name)
+        public System.Version FullVersion { get; private set; }
+        
+        public IEnumerable<UVersion> GetAllVersions()
         {
-            var xmlNode = UVersionConfig.GetKeyAsNode("/configuration/versions/version [@voteName = '" + name + "']");
-            if (xmlNode?.Attributes != null)
+            var releasesService = new ReleasesService();
+            var releases = releasesService.GetReleasesCache()
+                .Where(x => x.FullVersion.Major >= 6 && x.FullVersion.Build == 0 && x.Released)
+                .OrderByDescending(x => x.FullVersion).ToList();
+            
+            var versions = new List<UVersion>();
+            foreach (var release in releases)
             {
-                Name = name;
-                Key = xmlNode.Attributes.GetNamedItem("key").Value;
-                Description = xmlNode.Attributes.GetNamedItem("voteDescription").Value;
-                Exists = true;
+                versions.Add(new UVersion
+                {
+                    Name = release.FullVersion.VersionName(),
+                    Key = release.FullVersion.VersionKey(),
+                    FullVersion = release.FullVersion
+                });
             }
-            else
-            {
-                Exists = false;
-            }
+            
+            return versions;
         }
 
-        public static List<UVersion> GetAllVersions()
+        public IEnumerable<System.Version> GetAllAsVersions()
         {
-            var xmlNode = UVersionConfig.GetKeyAsNode("/configuration/versions");
-            var allVersions = new List<UVersion>();
-            foreach (XmlNode cx in xmlNode.ChildNodes)
-            {
-                if (cx.Attributes?.GetNamedItem("vote") != null && cx.Attributes.GetNamedItem("vote").Value == "true")
-                    if (cx.Attributes.GetNamedItem("voteName") != null)
-                        allVersions.Add(new UVersion(cx.Attributes.GetNamedItem("voteName").Value));
-            }
-
-            return allVersions;
-        }
-
-        public static IEnumerable<System.Version> GetAllAsVersions()
-        {
-            var all = UVersion.GetAllVersions()
+            var versions = new UVersion();
+            var all = versions.GetAllVersions()
                 .Select(x => x.Name.Replace(".x", ""))
                 .Select(x =>
                 {

@@ -1,27 +1,98 @@
-﻿@using OurUmbraco.MarketPlace.Interfaces
+@using LibGit2Sharp
+@using OurUmbraco.MarketPlace.Interfaces
 @using OurUmbraco.Project
 @model OurUmbraco.Our.Models.MyProjectsModel
 
 <div class="profile-settings">
-    <strong>My Packages</strong>
     <div class="profile-settings-packages packages-content">
         <a href="/member/profile/projects/details?projectId=" class="button green"><i class="icon-Add"></i>Add package</a>
 
-        @foreach (var project in Model.Projects)
-        {
-            @RenderProject(project)
-        }
-        
-        <strong>Package Contributions</strong>
-        @foreach (var project in Model.ContribProjects)
-        {
-            @RenderProject(project)
-        }
-        
+        <div class="packages-listing">
+            
+            <div>
+
+                <strong>My Packages</strong>
+
+                <ul class="tabs">
+                    <li class="tab-link current" data-tab="tab-my-active">Active (@Model.MyLiveProjects.Count())</li>
+                    <li class="tab-link" data-tab="tab-my-draft">Draft (@Model.MyDraftProjects.Count())</li>
+                    <li class="tab-link" data-tab="tab-my-retired">Retired (@Model.MyRetiredProjects.Count())</li>
+                </ul>
+
+                <div id="tab-my-active" class="tab-content current">
+                    <h3>My Active Packages</h3>
+                    <em>Active packages are visible to everyone.</em>
+                    @foreach (var project in Model.MyLiveProjects)
+                    {
+                        @RenderProject(project, true)
+                    }
+                </div>
+
+                <div id="tab-my-draft" class="tab-content">
+                    <h3>My Draft Packages</h3>
+                    <em>Draft packages are visible only to you (and your team).</em>
+                    @foreach (var project in Model.MyDraftProjects)
+                    {
+                        @RenderProject(project, true)
+                    }
+                </div>
+
+                <div id="tab-my-retired" class="tab-content">
+                    <h3>My Retired Packages</h3>
+                    <em>Retired packages are still visible in searches so that people can see the reason for its retirement.</em>
+                    @foreach (var project in Model.MyRetiredProjects)
+                    {
+                        @RenderProject(project, true)
+                    }
+                </div>
+
+            </div>
+            
+            <div>
+
+                <strong>Package Contributions</strong>
+
+                <ul class="tabs">
+                    <li class="tab-link current" data-tab="tab-contrib-active">Active (@Model.ContribLiveProjects.Count())</li>
+                    <li class="tab-link" data-tab="tab-contrib-draft">Draft (@Model.ContribDraftProjects.Count())</li>
+                    <li class="tab-link" data-tab="tab-contrib-retired">Retired (@Model.ContribRetiredProjects.Count())</li>
+                </ul>
+
+                <div id="tab-contrib-active" class="tab-content current">
+                    <h3>Active Package Contributions</h3>
+                    <em>Active packages are visible to everyone.</em>
+                    @foreach (var project in Model.ContribLiveProjects)
+                    {
+                        @RenderProject(project)
+                    }
+                </div>
+
+                <div id="tab-contrib-draft" class="tab-content">
+                    <h3>Draft Package Contributions</h3>
+                    <em>Draft packages are visible only to the owner and the team.</em>
+                    @foreach (var project in Model.ContribDraftProjects)
+                    {
+                        @RenderProject(project)
+                    }
+                </div>
+
+                <div id="tab-contrib-retired" class="tab-content">
+                    <h3>Retired Package Contributions</h3>
+                    <em>Retired packages are still visible in searches so that people can see the reason for its retirement.</em>
+                    @foreach (var project in Model.ContribRetiredProjects)
+                    {
+                        @RenderProject(project)
+                    }
+                </div>
+
+            </div>
+
+        </div>
+
     </div>
 </div>
 
-@helper RenderProject(IListingItem project)
+@helper RenderProject(IListingItem project, bool owner = false)
 {
     <div class="box liked">
         <div class="row">
@@ -32,15 +103,25 @@
                 <div class="forum-thread-text">
                     <h3><a href="@project.NiceUrl">@project.Name</a></h3>
                     <p>
-                        <em>@(project.Live ? "This package is published and live for all to see" : "This is a draft package, and can not be found by others")</em>
-                    </p>
-                    <p>
                         @project.Description.StripHtmlAndLimit(45) ...
-                        <br />
-                        <a href="details?projectId=@project.Id">Edit</a>
-                        <a href="manage-package-forums/?id=@project.Id">Forums</a>
-                        <a href="manage-team/?id=@project.Id">Team</a>
                     </p>
+                    <div class="list-buttons category">
+                        <a href="details?projectId=@project.Id">
+                            <i class="icon-Edit"></i><span>Edit</span>
+                        </a>
+                        <a href="manage-package-forums/?id=@project.Id" class="edit-post">
+                            <i class="icon-Chat"></i><span>Forums</span>
+                        </a>
+                        <a href="manage-team/?id=@project.Id" class="edit-post">
+                            <i class="icon-Users"></i><span>Team</span>
+                        </a>
+                         @if (owner)
+                         {
+                           <a href="api-keys/?id=@project.Id" class="edit-post">
+                             <i class="icon-Key"></i><span>API Keys</span>
+                           </a>
+                         }
+                    </div>
                 </div>
             </div>
             <div class="col-xs-12 col-md-5">

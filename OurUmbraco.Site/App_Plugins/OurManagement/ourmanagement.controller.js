@@ -142,4 +142,38 @@
                 notificationsService.error(vm.memberError);
             });
     };
+
+    $scope.addKarmaToMember = function (memberId) {
+        var getKarmaGrantingUrl = "backoffice/API/Members/GrantKarmaForPackageUpload/?memberId=" + memberId;
+        $http.get(getKarmaGrantingUrl)
+            .success(function (data) {
+                if (data === "true") {
+                    vm.addBadgeMessage = "✔ " + vm.memberName + " now has enough karma to create a package.";
+                    notificationsService.success(vm.addBadgeMessage);
+                } else {
+                    notificationsService.error("❌ Problem with adding karma to the member.");
+                }
+            })
+            .error(function () {
+                vm.memberError = "❌ Problem with getting the member.";
+                notificationsService.error(vm.memberError);
+            });
+    };
+
+    $scope.getInvalidDocsArticles = function () {
+        var getInvalidDocsUrl = "backoffice/API/Docs/GetInvalidDocsArticles";
+        $http.get(getInvalidDocsUrl)
+            .success(function (data) {
+                if (data.length === 0) {
+                    vm.invalidDocsArticles = "No articles found with invalid YAML";
+                }
+                else {
+                    vm.invalidDocsArticles = data;
+                }
+            })
+            .error(function () {
+                vm.docsError = "❌ Problem with getting the invalid docs article results.";
+                notificationsService.error(vm.memberError);
+            });
+    };
 });

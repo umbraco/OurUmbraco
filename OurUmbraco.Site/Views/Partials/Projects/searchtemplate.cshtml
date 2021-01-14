@@ -1,0 +1,39 @@
+﻿@*
+   search box javascript uses this to render the search results in page.    
+*@
+<script type="text/template" class="search-item-project">
+    <div class="box">
+        <div class="row">
+            <div class="col-xs-2 col-md-1">
+                {[ if (image != null) { ]}
+                <img src="https://our.umbraco.com/{{image}}?width=64&height=64&bgcolor=fff&format=png" srcset="{{image}}?width=128&height=128&bgcolor=fff&format=png 2x,{{image}}?width=192&height=192&bgcolor=fff&format=png 3x" alt="">
+                {[ } else { ]}
+                <i class='icon-Box'></i>
+                {[ } ]}
+            </div>
+            <div class="col-xs-10 col-md-6">
+                <div class="forum-thread-text">
+                    <h3><a href="{{url}}">{{nodeName}}</a></h3>
+                    <p>{{body}}</p>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-5">
+                <div class="other">
+                    <div class="package-badge">
+                        <span class="package-name">version</span>
+                        <span class="package-number">{{versions}}</span>
+                    </div>
+                    <span class="stats">
+                        <span class="downloads">
+                            {{downloads}}<span><i class="icon-Download-alt"></i></span>
+                        </span>
+                        <span class="karma">
+                            {{karma}}<span><i class="icon-Hearts"></i></span>
+                        </span>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</script>
+

@@ -1,29 +1,21 @@
-/**
-/* CORE
-**/
-
+// Core
+@import 'core/variables';
 @import 'core/reset';
 @import 'core/bootstrap';
 @import 'core/helpers';
 @import 'core/animations';
 
+// Mixins
+@import 'mixins/responsiveness';
 
-/**
-/* Random
-**/
-
+// Random
 @import 'playground';
 
 
-/**
-/* Utilities
-**/
+// Utilities
 @import 'utilities/flexbox';
 
-/**
-/* Elements
-**/
-
+// Elements
 @import 'elements/icons';
 @import 'elements/loader';
 @import 'elements/buttons';
@@ -57,21 +49,17 @@
 @import 'elements/umb-load-indicator';
 @import 'elements/note';
 @import 'elements/rte';
+@import 'elements/container';
 
-/**
-/* Sections
-**/
-
+// Sections
 @import 'sections/docs';
 @import 'sections/forum';
 @import 'sections/people';
 @import 'sections/events';
 @import 'sections/contributors';
+@import 'sections/packages';
 
-/**
-/* Pages
-**/
-
+// Pages
 @import 'elements/wrap-old-our';
 @import 'pages/frontpage';
 @import 'pages/map';
@@ -82,5 +70,6 @@
 @import 'pages/forum';
 @import 'pages/community';
 @import 'pages/packages';
+@import 'pages/enhanced-text-page';
 
 @import 'elements/wrap-old-our';

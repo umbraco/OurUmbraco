@@ -1,30 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Web;
 using System.Web.Hosting;
-using Examine;
 using Hangfire;
 using Hangfire.Server;
 using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
+using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.Videos;
+using OurUmbraco.Documentation;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Videos;
 using Umbraco.Core;
-using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
-using Umbraco.Web;
-using Umbraco.Web.Security;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
-    using OurUmbraco.Community.Nuget;
-
     public class ScheduleHangfireJobs
     {
         public void ScheduleTopics()
@@ -44,6 +36,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
             }
         }
 
+        public class ReminderTopic
+        {
+            public int Id { get; set; }
+            public int MemberId { get; set; }
+        }
+        
         public void MarkAsSolvedReminder()
         {
             RecurringJob.AddOrUpdate(() => ScheduleTopics(), Cron.HourInterval(12));
@@ -56,7 +54,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
         public void UpdateMeetupStats()
         {
-            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.MinuteInterval(15));
+            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.HourInterval(12));
         }
 
         public void UpdateGitHubContributorsJsonFile()
@@ -102,7 +100,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
             System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
         }
 
-
         public void UpdateCommunityVideos()
         {
             RecurringJob.AddOrUpdate(() => UpdateCommunityVideosOnDisk(), Cron.HourInterval(1));
@@ -124,7 +121,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var service = new GitHubService();
             service.UpdateAllPullRequestsForRepository();
-            ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
         }
 
         public void RefreshKarmaStatistics()
@@ -205,12 +201,11 @@ namespace OurUmbraco.NotificationsCore.Notifications
 
             RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
         }
-
-    }
-
-    public class ReminderTopic
-    {
-        public int Id { get; set; }
-        public int MemberId { get; set; }
+        
+        public void FetchStaticApiDocumentation(PerformContext context)
+        {
+            var staticApiDocumentationService = new StaticApiDocumentationService();
+            RecurringJob.AddOrUpdate(() => staticApiDocumentationService.FetchNewApiDocs(context), Cron.MinuteInterval(5));
+        }
     }
 }

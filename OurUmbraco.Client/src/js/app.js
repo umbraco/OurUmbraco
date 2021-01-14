@@ -37,12 +37,27 @@ jQuery(document).ready(function () {
     // Tab
     $('.tabs li').click(function () {
         var tab_id = $(this).attr('data-tab');
+        var tab_container = $(this).closest("div");
 
-        $('.tabs li').removeClass('current');
-        $('.tab-content').removeClass('current');
+        $(tab_container).find('.tabs li').removeClass('current');
+        $(tab_container).find('.tab-content').removeClass('current');
 
         $(this).addClass('current');
         $("#" + tab_id).addClass('current');
+    });
+
+    // Bookmarks
+    $("a[href^='#']").on('click', function (e) {
+        e.preventDefault();
+
+        var target = $(this).attr('href');
+        var navigation = $('.wrapper > header > .navigation');
+
+        $([document.documentElement, document.body]).animate({
+            scrollTop: $(target).offset().top - navigation.outerHeight()
+        }, 400);
+
+        window.location.hash = target;
     });
 
     // Click effect

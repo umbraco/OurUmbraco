@@ -67,8 +67,12 @@
     var isRetired = project.GetPropertyValue<bool>("isRetired");
 
     var avatarService = new AvatarService();
-    var img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
-
+    var img = string.Empty;
+    if (owner != null)
+    {
+        img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
+    }
+    
     var badges = owner.GetRoles().GetBadges();
 }
 
@@ -315,7 +319,7 @@
                             @if (!string.IsNullOrEmpty(nugetPackageId))
                             {
 
-                                <p class="small">or, install via <a href="@nuGetPackageUrl">nuget</a></p>
+                                <p class="small">or, install via <a href="@nuGetPackageUrl">NuGet</a></p>
                                 <span class="pm-nuget">
                                     <input class="pre nuget" value="Install-Package @nugetPackageId" readonly>
                                 </span>
@@ -329,22 +333,26 @@
                             <div class="row">
                                 <div class="col-xs-12">
                                     <div class="package-creator-information">
-                                        @Html.Raw(img)
-                                        <div class="text">
-                                            <h3>
-                                                <a href="/member/@owner.Id">
-                                                    @owner.Name
-                                                </a>
-                                            </h3>
-                                            <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+                                        @if (owner != null)
+                                        {
+                                            @Html.Raw(img)
 
-                                            @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
-                                            {
-                                                <br />
-                                                <br />
-                                                <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
-                                            }
-                                        </div>
+                                            <div class="text">
+                                                <h3>
+                                                    <a href="/member/@owner.Id">
+                                                        @owner.Name
+                                                    </a>
+                                                </h3>
+                                                <small>@owner.Name.Split(' ').First() has @owner.Karma() karma points</small>
+
+                                                @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
+                                                {
+                                                    <br/>
+                                                    <br/>
+                                                    <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
+                                                }
+                                            </div>
+                                        }
                                     </div>
                                     <div class="row">
                                         <div class="col-xs-12">
@@ -381,9 +389,12 @@
                             <h3>Package Information</h3>
 
                             <ul>
-                                <li>
-                                    <span>Package owner:</span> @owner.Name
-                                </li>
+                                @if (owner != null)
+                                {
+                                    <li>
+                                        <span>Package owner:</span> @owner.Name
+                                    </li>
+                                }
 
                                 @if (project.HasValue("openForCollab") && project.GetPropertyValue<bool>("openForCollab"))
                                 {
@@ -416,7 +427,7 @@
                                 @if (project.HasValue("dotNetVersion"))
                                 {
                                     <li>
-                                        <span>.net Version</span> @project.GetPropertyValue("dotNetVersion")
+                                        <span>.NET version</span> @project.GetPropertyValue("dotNetVersion")
                                     </li>
                                 }
 
@@ -424,17 +435,17 @@
                                     <span>License</span> <a href="@licenseUrl" target="_blank" rel="noreferrer noopener">@project.GetPropertyValue("licenseName")</a>
                                 </li>
 
-                                <li>
-                                    <span>Downloads on our:</span> @ourDownloads
+                                <li title="@ourDownloads on our.umbraco.com">
+                                    <span>Downloads on Our:</span> @FormatDownloadNumber(ourDownloads) 
                                 </li>
-                                
+
                                 @if (nugetDownloads > 0)
                                 {
-                                    <li>
-                                        <span>Downloads on nuget:</span> @nugetDownloads
+                                    <li title="@nugetDownloads downloads on nuget">
+                                        <span>Downloads on NuGet:</span> @FormatDownloadNumber(nugetDownloads)
                                     </li>
-                                    <li>
-                                        <span>Total downloads : </span> @(nugetDownloads + ourDownloads)
+                                    <li title="@(nugetDownloads + ourDownloads) total downloads">
+                                        <span>Total downloads : </span> @FormatDownloadNumber(nugetDownloads + ourDownloads)
                                     </li>
                                 }
                             </ul>
@@ -518,5 +529,27 @@ else
     else
     {
         <text>@count @pluralValue</text>
+    }
+}
+
+@functions {
+    public string FormatDownloadNumber(int downloads)
+    {
+        if (downloads > 999999999)
+        {
+            return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999999)
+        {
+            return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999)
+        {
+            return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 }
