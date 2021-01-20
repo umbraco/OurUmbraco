@@ -323,6 +323,15 @@
       "rss": "https://aaronsadler.dev/rss/?label=umbraco",
       "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
       "memberId": 279599
+    },
+    {
+      "id": "5ce41c5d-2386-4516-8db3-4a14f38a19c8",
+      "checkTitles": false,
+      "title": "Søren Kottal",
+      "url": "https://dev.to/skttl",
+      "rss": "https://dev.to/feed/skttl",
+      "logo": "https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png",
+      "memberId": 109985
     }
   ]
 }
