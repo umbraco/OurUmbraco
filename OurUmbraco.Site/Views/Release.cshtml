@@ -40,7 +40,7 @@
             release.ReleaseDescription = releaseContent.GetPropertyValue<string>("bodyText");
         }
         var overrideReleaseDate = releaseContent.GetPropertyValue<DateTime>("overrideYouTrackReleaseDate");
-        if (overrideReleaseDate != default(DateTime))
+        if (overrideReleaseDate != default(DateTime) && overrideReleaseDate != null)
         {
             release.ReleaseDate = overrideReleaseDate;
         }
@@ -399,7 +399,7 @@
                                 <div class="panel-wrapper">
                                     <div class="panel-left">
                                         <!-- Columns for statuses -->
-                                        @if (release.FullVersion >= new Version(8, 7, 0))
+                                        @if (release.FullVersion >= new Version(8, 7, 0) && release.CategorizedIssues != null)
                                         {
                                             foreach (var category in release.CategorizedIssues
                                                 .Where(x => x.Issues.Count != 0)
