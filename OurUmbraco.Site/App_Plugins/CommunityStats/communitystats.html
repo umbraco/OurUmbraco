@@ -36,42 +36,41 @@
             <p>⚠ The dates could not be parsed</p>
         </div>
         
-        <div ng-if="vm.ourForumStats.Topics && vm.ourForumStats.Topics.length > 0">
-            <p><strong>Topics</strong></p>
-            <p>Members who started at least 1 new topic: {{vm.ourForumStats.Topics.length}}</p>
-            <table>
-                <tr>
-                    <td><strong>MemberId</strong></td>
-                    <td><strong>KarmaCurrent</strong></td>
-                </tr>
-                <tr ng-repeat="stat in vm.ourForumStatsTopics">
-                    <td>
-                        {{stat.MemberId}}
-                    </td>
-                    <td>
-                        {{stat.KarmaCurrent}}
-                    </td>
-                </tr>
-            </table>
+    </div>
+    
+    <h3>Contributors</h3>
+    <div>
+        <p>Number of unique contributors in the given period</p>
+        
+        Start date: <input type="text" name="prStatsStartDate" id="prStatsStartDate" ng-model="vm.startDate" /><br/>
+        End date: <input type="text" name="prStatsEndDate" id="prStatsEndDate" ng-model="vm.endDate" /><br/>
+        <button type="button" ng-click="getContributorStatistics(vm.startDate, vm.endDate)">
+            Get contributor statistics data
+        </button>
+        <br />
+
+        <div ng-if="vm.prStats.length !== 0">
+            <p>Unique contributors in this period: {{vm.prStats.length}}</p>
         </div>
-        <div ng-if="vm.ourForumStats.Comments && vm.ourForumStats.Comments.length > 0">
-            <p><strong>Comments</strong></p>
-            <p>Members who commented at least once: {{vm.ourForumStats.Comments.length}}</p>
-            <table>
-                <tr>
-                    <td><strong>MemberId</strong></td>
-                    <td><strong>KarmaCurrent</strong></td>
-                </tr>
-                <tr ng-repeat="stat in vm.ourForumStats.Comments">
-                    <td>
-                        {{stat.MemberId}}
-                    </td>
-                    <td>
-                        {{stat.KarmaCurrent}}
-                    </td>
-                </tr>
-            </table>
+        
+    </div>    
+    
+    <h3>Packages</h3>
+    <div>
+        <p>Number of created and updated packages in the given period</p>
+        
+        Start date: <input type="text" name="packageStatsStartDate" id="packageStatsStartDate" ng-model="vm.startDate" /><br/>
+        End date: <input type="text" name="packageStatsEndDate" id="packageStatsEndDate" ng-model="vm.endDate" /><br/>
+        <button type="button" ng-click="getPackageStatistics(vm.startDate, vm.endDate)">
+            Get package statistics data
+        </button>
+        <br />
+
+        <div ng-if="vm.packageStats.length !== 0">
+            <p>People who created/updated new packages in this period: {{vm.packageStats.CreatorNames.length}}</p>
+            <p>Contributors to packages created/updated in this period (does not include the creators above): {{vm.packageStats.ContributorNames.length}}</p>
         </div>
+        
     </div>
 </div>
 

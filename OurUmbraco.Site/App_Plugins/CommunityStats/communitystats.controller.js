@@ -48,4 +48,30 @@
                 notificationsService.error("❌ Problem retrieving Our Forum statistics data");
             });
     };
+    
+    $scope.getContributorStatistics = function (startDate, endDate) {
+        vm.prStats = [];        
+        var ourContributorStatsUrl = "backoffice/API/OurCommunityStatistics/GetPullRequestStats/?startDate=" + startDate + "&endDate=" + endDate;
+        $http.get(ourContributorStatsUrl)
+            .success(function (data) {
+                vm.prStats = data;
+                notificationsService.success("✔ PR data retrieved.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem retrieving PR statistics data");
+            });
+    };
+    
+    $scope.getPackageStatistics = function (startDate, endDate) {
+        vm.packageStats = [];        
+        var ourPackagesStatsUrl = "backoffice/API/OurCommunityStatistics/GetPackageStats/?startDate=" + startDate + "&endDate=" + endDate;
+        $http.get(ourPackagesStatsUrl)
+            .success(function (data) {
+                vm.packageStats = data;
+                notificationsService.success("✔ Package data retrieved.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem retrieving Package statistics data");
+            });
+    };
 });

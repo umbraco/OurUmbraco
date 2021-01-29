@@ -40,7 +40,7 @@ WHERE propertytypeid = 32 AND contentNodeId IN (
             var file = ForumTopicStatistics(startDate, endDate, commentDataSql, "comments");
             return file;
         }
-
+        
         private FileContentResult ForumTopicStatistics(string startDate, string endDate, string topicDataSql, string typeName)
         {
             if (DateTime.TryParse(startDate, out var start) == false)
