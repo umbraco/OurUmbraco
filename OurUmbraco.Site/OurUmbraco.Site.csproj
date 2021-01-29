@@ -399,6 +399,8 @@
     <Content Include="App_Browsers\Form.browser" />
     <Content Include="App_Browsers\w3cvalidator.browser" />
     <Content Include="App_Data\YouTrack\dummy.txt" />
+    <Content Include="App_Plugins\CommunityStats\communitystats.controller.js" />
+    <Content Include="App_Plugins\CommunityStats\communitystats.html" />
     <Content Include="App_Plugins\Hangfire\index.html" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.controller.js" />
     <Content Include="App_Plugins\ModelsBuilder\modelsbuilder.htm" />
@@ -515,6 +517,7 @@
     <Content Include="App_Plugins\Our\package.manifest" />
     <Content Include="config\GitHubPublicRepositories.json" />
     <Content Include="config\Queries\GetUnmergeablePullRequests.json" />
+    <None Include="App_Plugins\CommunityStats\package.manifest" />
     <None Include="Config\BackOfficeTours\getting-started.json" />
     <None Include="Config\BaseRestExtensions.config" />
     <None Include="Config\EmbeddedMedia.config" />

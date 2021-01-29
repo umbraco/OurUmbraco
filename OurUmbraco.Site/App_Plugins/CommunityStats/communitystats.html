@@ -1,0 +1,92 @@
+﻿<div class="communityStatsDashboard" ng-controller="communityStatsController as vm">
+    <h3>Members</h3>
+    <button type="button" ng-click="getOurMemberStatistics()">
+        Get member statistics data
+    </button>
+
+    <div ng-if="vm.ourMemberStats">
+        <p>Total number of members (non-spam): {{vm.ourMemberStats.TotalNonSpamMembers}}</p>
+        <p>Total number of members (non-spam with at least 1 login): {{vm.ourMemberStats.TotalNonSpamMembersWithLogin}}</p>
+        <p>Total number of blocked members: {{vm.ourMemberStats.TotalBlockedMembers}}</p>
+        <p>Total number of active members (earned karma at least once): {{vm.ourMemberStats.TotalMembersEarningKarma}}</p>
+        <p>Total number of members: {{vm.ourMemberStats.TotalMembers}}</p>
+    </div>
+    <br />
+    
+    <hr/>
+
+    <h3>Forum</h3>
+    <div>
+        <p>This will download a CSV with "MemberId","CurrentKarma" as the columns. <br />
+            This is a list of each unique member who's started a topic or added a comment (depending which button you press below) in the time period specified. <br />
+            The "CurrentKarma" column shows the amount of the karma they have in total at the time you press the buttons below.</p>
+        
+        Start date: <input type="text" name="forumStatsStartDate" id="forumStatsStartDate" ng-model="vm.startDate" /><br/>
+        End date: <input type="text" name="forumStatsEndDate" id="forumStatsEndDate" ng-model="vm.endDate" /><br/>
+        <button type="button" ng-click="getOurForumTopicStatistics(vm.startDate, vm.endDate)">
+            Get topic statistics data
+        </button>
+        <button type="button" ng-click="getOurForumCommentStatistics(vm.startDate, vm.endDate)">
+            Get comment statistics data
+        </button>
+        <br />
+        <br />
+
+        <div ng-if="vm.ourForumStats === 'null'">
+            <p>⚠ The dates could not be parsed</p>
+        </div>
+        
+        <div ng-if="vm.ourForumStats.Topics && vm.ourForumStats.Topics.length > 0">
+            <p><strong>Topics</strong></p>
+            <p>Members who started at least 1 new topic: {{vm.ourForumStats.Topics.length}}</p>
+            <table>
+                <tr>
+                    <td><strong>MemberId</strong></td>
+                    <td><strong>KarmaCurrent</strong></td>
+                </tr>
+                <tr ng-repeat="stat in vm.ourForumStatsTopics">
+                    <td>
+                        {{stat.MemberId}}
+                    </td>
+                    <td>
+                        {{stat.KarmaCurrent}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div ng-if="vm.ourForumStats.Comments && vm.ourForumStats.Comments.length > 0">
+            <p><strong>Comments</strong></p>
+            <p>Members who commented at least once: {{vm.ourForumStats.Comments.length}}</p>
+            <table>
+                <tr>
+                    <td><strong>MemberId</strong></td>
+                    <td><strong>KarmaCurrent</strong></td>
+                </tr>
+                <tr ng-repeat="stat in vm.ourForumStats.Comments">
+                    <td>
+                        {{stat.MemberId}}
+                    </td>
+                    <td>
+                        {{stat.KarmaCurrent}}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    table, th, td, tr {
+        border: 1px solid black;
+    }
+
+    .umb-load-indicator {
+        display: inline-block;
+        left: 43px;
+        margin-top: 24px;
+    }
+
+    .labels span:last-child .list-comma {
+        display: none;
+    }
+</style>
