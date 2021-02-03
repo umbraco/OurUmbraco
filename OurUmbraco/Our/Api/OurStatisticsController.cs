@@ -15,9 +15,10 @@ namespace OurUmbraco.Our.Api
                 @"SELECT contentNodeId as memberId, dataInt AS karmaCurrent
 FROM cmsPropertyData
 WHERE propertytypeid = 32 AND contentNodeId IN (
-	SELECT DISTINCT memberId 
-	FROM forumTopics
-	WHERE created >= @startDate and created < @endDate
+    SELECT DISTINCT memberId
+    FROM forumComments
+    WHERE isSpam = 0 AND
+    created >=  @startDate and created <= @endDate
 ) ORDER BY memberId";
             var typeName = "topics";
             
@@ -32,9 +33,10 @@ WHERE propertytypeid = 32 AND contentNodeId IN (
 @"SELECT contentNodeId as memberId, dataInt AS karmaCurrent
 FROM cmsPropertyData
 WHERE propertytypeid = 32 AND contentNodeId IN (
-	SELECT DISTINCT memberId 
-	FROM forumComments
-	WHERE created >= @startDate and created < @endDate
+    SELECT DISTINCT memberId
+    FROM forumTopics
+    WHERE isSpam = 0 AND
+    created >=  @startDate and created <= @endDate
 ) ORDER BY memberId";
           
             var file = ForumTopicStatistics(startDate, endDate, commentDataSql, "comments");
