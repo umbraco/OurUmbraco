@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Web.Hosting;
 using System.Web.Http;
 using OurUmbraco.Community.GitHub;
@@ -136,6 +137,66 @@ namespace OurUmbraco.Our.Api
             }
             
             return packageStats;
+        }
+
+        [HttpGet]
+        public List<string> GetPackagesByUser(int ownerId)
+        {
+            var queryResults = GetPackageIdsByOwnerId(ownerId);
+
+            var results = new HashSet<string>();
+            foreach (var id in queryResults)
+            {
+                var node = Umbraco.TypedContent(id);
+                if (node != null)
+                {
+                    var name = node.Name;
+                    var url = string.Empty;
+                    if (node.Url != null)
+                        url = node.Url;
+                    results.Add($"{name} - {url}");
+                }
+            }
+            
+            return results.ToList();
+        }
+        
+        [HttpGet]
+        public string UnpublishPackagesByUser(int ownerId)
+        {
+            var queryResults = GetPackageIdsByOwnerId(ownerId);
+
+            var contentService = ApplicationContext.Services.ContentService;
+
+            foreach (var id in queryResults)
+            {
+                contentService.UnPublish(contentService.GetById(id));
+            }
+            
+            return "OK";
+        }
+
+        private List<int> GetPackageIdsByOwnerId(int ownerId)
+        {
+            const string packagesSql =
+                @"SELECT id FROM umbracoNode WHERE id IN (
+	SELECT DISTINCT contentNodeId
+	FROM cmsPropertyData
+	WHERE dataInt = @ownerId AND propertyTypeId IN (
+	  SELECT id FROM cmsPropertyType
+	  WHERE alias = 'owner' AND contentTypeId IN (
+		  SELECT nodeId
+		  FROM cmsContentType
+		  WHERE alias = 'project'
+	  )
+	)
+)";
+            var queryResults = ApplicationContext.DatabaseContext.Database.Fetch<int>(packagesSql,
+                new
+                {
+                    ownerId = ownerId,
+                });
+            return queryResults;
         }
 
         private IEnumerable<string> GetContributorNames(IPublishedContent package)

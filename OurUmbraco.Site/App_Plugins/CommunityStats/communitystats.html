@@ -71,6 +71,24 @@
         </div>
         
     </div>
+    
+    Packages user Id (int):  <input type="text" name="packageOwnerId" id="packageOwnerId" ng-model="vm.packageOwnerId" /><br/>
+    <button type="button" ng-click="getPackagesByUser(vm.packageOwnerId)">
+        Get packages
+    </button>
+    
+    <div ng-if="vm.packagesByUser.length !== 0">
+        <p>Total found: {{vm.packagesByUser.length}}
+        <ul>
+            <li ng-repeat="package in vm.packagesByUser">
+                {{package}}
+            </li>
+        </ul>
+
+        <button type="button" ng-click="unpublishPackagesByUser(vm.packageOwnerId)">
+            Unpublish all
+        </button>
+    </div>
 </div>
 
 <style>

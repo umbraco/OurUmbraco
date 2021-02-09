@@ -1,5 +1,6 @@
 ﻿angular.module("umbraco").controller("communityStatsController", function ($scope, $http, notificationsService) {
     var vm = this;
+    vm.packagesByUser = [];
     
     $scope.getOurMemberStatistics = function () {
         vm.ourMemberStats = [];
@@ -72,6 +73,30 @@
             })
             .error(function () {
                 notificationsService.error("❌ Problem retrieving Package statistics data");
+            });
+    };
+    
+    $scope.getPackagesByUser = function (ownerId) {
+        vm.packagesByUser = [];        
+        var ourPackagesByUserUrl = "backoffice/API/OurCommunityStatistics/GetPackagesByUser/?ownerId=" + ownerId;
+        $http.get(ourPackagesByUserUrl)
+            .success(function (data) {
+                vm.packagesByUser = data;
+                notificationsService.success("✔ Package data retrieved.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem retrieving package data.");
+            });
+    };
+    
+    $scope.unpublishPackagesByUser = function (ownerId) {
+        var ourunpublishPackagesByUserUrl = "backoffice/API/OurCommunityStatistics/UnpublishPackagesByUser/?ownerId=" + ownerId;
+        $http.get(ourunpublishPackagesByUserUrl)
+            .success(function (data) {
+                notificationsService.success("✔ Packages unpublished.");
+            })
+            .error(function () {
+                notificationsService.error("❌ Problem unpublishing packages.");
             });
     };
 });
