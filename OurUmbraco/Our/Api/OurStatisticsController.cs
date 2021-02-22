@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web.Mvc;
+using Umbraco.Core;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.Api
@@ -66,6 +67,72 @@ WHERE propertytypeid = 32 AND contentNodeId IN (
             var fileBytes = System.Text.Encoding.UTF8.GetBytes(csvResult);
             var file = File(fileBytes, "text/csv", fileName);
             return file;
+        }
+        
+        
+        [System.Web.Mvc.HttpGetAttribute]
+        public ActionResult GetActiveMemberSignupStatistics()
+        {
+            const string sql = @"SELECT id FROM umbracoNode WHERE CONVERT(VARCHAR(4), createDate, 112) != 2016 AND id IN (SELECT cmsPropertyData.contentNodeId FROM cmsPropertyData WHERE (propertyTypeId = 211  AND dataDate IS NOT NULL) OR (propertyTypeId = 69 AND dataNvarchar IS NOT NULL) AND contentNodeId IN (SELECT nodeId FROM cmsMember))";
+            var membersLoggedIn = ApplicationContext.DatabaseContext.Database.Fetch<int>(sql);
+
+            var forumSubscribers = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM forumSubscribers");
+            var forumTopicSubscribers = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM forumTopicSubscribers");
+            var powersComment = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM powersComment");
+            var powersTopic = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM powersTopic");
+            var powersProject = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM powersProject");
+            var powersProjectVersion = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM powersProjectVersion");
+            var powersWiki = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM powersWiki");
+            var projectContributors = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM projectContributors");
+            var projectDownload = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(memberId) FROM projectDownload");
+            var wikiFilesCreated = ApplicationContext.DatabaseContext.Database.Fetch<int>(@"SELECT DISTINCT(createdBy) FROM wikiFiles");
+
+            var uniqueActiveMembers = new HashSet<int>();
+            foreach (var id in forumSubscribers)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in forumTopicSubscribers)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in powersComment)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in powersTopic)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in powersProject)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in powersProjectVersion)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in powersWiki)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in projectContributors)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in projectDownload)
+                uniqueActiveMembers.Add(id);
+            foreach (var id in membersLoggedIn)
+                 uniqueActiveMembers.Add(id);
+
+            var createDates2 = new List<DateTime>();
+            foreach (var memberGroup in uniqueActiveMembers.InGroupsOf(20000))
+            {
+                var sql2 = $"SELECT createDate FROM umbracoNode WHERE id IN ({string.Join(",", memberGroup.ToList())})";
+                createDates2.AddRange(ApplicationContext.DatabaseContext.Database.Fetch<DateTime>(sql2));
+            }
+
+            var groupedYears = createDates2.GroupBy(p => new {year = p.Year})
+                .Select(d => new YearStat() { Year = d.Key.year, Count = d.Count()}).ToList();
+
+            var resultsCsv = new List<string> { "Year,Signups" };
+            resultsCsv.AddRange(groupedYears.Select(x => $"{x.Year},{x.Count}"));
+            var csvResult = string.Join(Environment.NewLine, resultsCsv);
+            
+            var fileBytes = System.Text.Encoding.UTF8.GetBytes(csvResult);
+            var file = File(fileBytes, "text/csv", "membersignups.csv");
+            return file;
+        }
+        
+        
+        public class YearStat
+        {
+            public int Year { get; set; }
+            public int Count { get; set; }
         }
     }
 

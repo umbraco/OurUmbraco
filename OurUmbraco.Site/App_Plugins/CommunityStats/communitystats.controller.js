@@ -17,7 +17,12 @@
             });
     };
 
-
+    $scope.getOurMemberCreatedStatistics = function () {
+        vm.ourMemberCreatedStats = [];
+        var ourMemberCreatedStatsUrl = "backoffice/CommunityData/GetActiveMemberSignupStatistics/"
+        window.open(ourMemberCreatedStatsUrl, '_blank', '');
+    };
+    
     var date = new Date();
     var defaultStartDate =  new Date(date.getFullYear(), date.getMonth(), 1);
 
@@ -27,27 +32,13 @@
     $scope.getOurForumTopicStatistics = function (startDate, endDate) {
         vm.ourForumStats = [];
         var ourForumStatsUrl = "backoffice/CommunityData/GetForumTopicStatistics/?startDate=" + startDate + "&endDate=" + endDate;
-        $http.get(ourForumStatsUrl)
-            .success(function (data) {
-                window.open(ourForumStatsUrl, '_blank', '');          
-                notificationsService.success("✔ Forum data retrieved.");
-            })
-            .error(function () {
-                notificationsService.error("❌ Problem retrieving Our Forum statistics data");
-            });
+        window.open(ourForumStatsUrl, '_blank', '');
     };    
     
     $scope.getOurForumCommentStatistics = function (startDate, endDate) {
         vm.ourForumStats = [];        
         var ourForumStatsUrl = "backoffice/CommunityData/GetForumCommentStatistics/?startDate=" + startDate + "&endDate=" + endDate;
-        $http.get(ourForumStatsUrl)
-            .success(function (data) {
-                window.open(ourForumStatsUrl, '_blank', '');
-                notificationsService.success("✔ Forum data retrieved.");
-            })
-            .error(function () {
-                notificationsService.error("❌ Problem retrieving Our Forum statistics data");
-            });
+        window.open(ourForumStatsUrl, '_blank', '');
     };
     
     $scope.getContributorStatistics = function (startDate, endDate) {
