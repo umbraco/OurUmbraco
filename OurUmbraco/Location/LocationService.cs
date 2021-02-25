@@ -24,6 +24,14 @@ namespace OurUmbraco.Location
                     {
                         using (var client = new WebClient())
                         {
+                            // From https://stackoverflow.com/a/62336888
+                            // Remove insecure protocols (SSL3, TLS 1.0, TLS 1.1)
+                            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Ssl3;
+                            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls;
+                            ServicePointManager.SecurityProtocol &= ~SecurityProtocolType.Tls11;
+                            // Add TLS 1.2
+                            ServicePointManager.SecurityProtocol |= SecurityProtocolType.Tls12;
+                            
                             var response = client.DownloadString(
                                 $"https://api.ipstack.com/{ip}?access_key={AccessKey}&fields=ip,continent_code,continent_name,country_code,country_name");
                             var output = JsonConvert.DeserializeObject<Models.Location>(response);
