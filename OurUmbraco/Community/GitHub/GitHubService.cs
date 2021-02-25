@@ -32,6 +32,7 @@ using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
@@ -529,9 +530,7 @@ namespace OurUmbraco.Community.GitHub
         public IRestResponse<List<GitHubContributorModel>> GetRepositoryContributors(string repo)
         {
             // Initialize the request
-            var username = ConfigurationManager.AppSettings["GitHubUsername"];
-            var password = ConfigurationManager.AppSettings["GitHubPassword"];
-            var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
+            var client = new RestClient(GitHubApiClient);
             var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
             client.UserAgent = UserAgent;
 
@@ -805,9 +804,7 @@ namespace OurUmbraco.Community.GitHub
         /// <returns></returns>
         public IRestResponse<List<GitHubContributorModel>> GetAllRepoContributors(string repo)
         {
-            var username = ConfigurationManager.AppSettings["GitHubUsername"];
-            var password = ConfigurationManager.AppSettings["GitHubPassword"];
-            var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
+            var client = new RestClient(GitHubApiClient);
             var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
             client.UserAgent = UserAgent;
             var response = client.Execute<List<GitHubContributorModel>>(request);
