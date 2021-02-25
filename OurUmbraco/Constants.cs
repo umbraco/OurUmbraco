@@ -11,7 +11,7 @@ namespace OurUmbraco
         public static class AppSettings
         {
             /// <summary>
-            /// The current major version of documentationto display to the user.
+            /// The current major version of documentation to display to the user.
             /// </summary>
             public const string DocumentationCurrentMajorVersion = "Documentation:CurrentMajorVersion";
         }
@@ -26,7 +26,10 @@ namespace OurUmbraco
         public static class Forum
         {
             public const int HeartcoreVersionNumber = 9999;
-            public const string UmbracoHeadlessName = "Heartcore";
+            public const string UmbracoHeadlessName = "Umbraco Heartcore";
+            
+            public const int UnoVersionNumber = 10000;
+            public const string UmbracoUnoName = "Umbraco Uno";
         }
     }
 }

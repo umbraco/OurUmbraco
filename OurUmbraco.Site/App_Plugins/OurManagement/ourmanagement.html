@@ -37,22 +37,12 @@
             Add contrib badge to {{vm.memberName}}
         </button>
         <br />
+        <button type="button" ng-click="addKarmaToMember(vm.memberId)">
+            Add karma to {{vm.memberName}}
+        </button>
+        <br />
     <p ng-if="vm.addBadgeMessage">{{vm.addBadgeMessage}}</p>
     </p>
-
-    <h3>Our Statistics</h3>
-    <button type="button" ng-click="getOurMemberStatistics()">
-        Get Our member statistics data
-    </button>
-
-    <div ng-if="vm.ourMemberStats">
-        <p>Total number of members (non-spam): {{vm.ourMemberStats.TotalNonSpamMembers}}</p>
-        <p>Total number of members (non-spam with at least 1 login): {{vm.ourMemberStats.TotalNonSpamMembersWithLogin}}</p>
-        <p>Total number of blocked members: {{vm.ourMemberStats.TotalBlockedMembers}}</p>
-        <p>Total number of active members (earned karma at least once): {{vm.ourMemberStats.TotalMembersEarningKarma}}</p>
-        <p>Total number of members: {{vm.ourMemberStats.TotalMembers}}</p>
-    </div>
-    <br />
 
     <h3>PR Statistics</h3>
     <button type="button" ng-click="getPullRequestStatisticsCms()">

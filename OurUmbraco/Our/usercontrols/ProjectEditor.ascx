@@ -1,7 +1,7 @@
 ﻿<%@ Control Language="C#" AutoEventWireup="true" CodeBehind="ProjectEditor.ascx.cs" Inherits="OurUmbraco.Our.usercontrols.ProjectEditor" %>
 
 <asp:PlaceHolder runat="server" ID="notallowed" Visible="False">
-    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/about-us/team">get in touch with us</a> to get this restriction lifted.</h2>
+    <h2>Sorry, your account is too new to create projects! If you're human, make sure to <a href="https://umbraco.com/contact-us/">get in touch with us</a> to get this restriction lifted.</h2>
 </asp:PlaceHolder>
 
 <asp:PlaceHolder ID="holder" runat="server">

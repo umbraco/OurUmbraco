@@ -35,22 +35,7 @@
                 notificationsService.error("Problem retrieving Documentation PR statistics data");
             });
     };
-
-    $scope.getOurMemberStatistics = function () {
-        vm.ourMemberStats = [];
-        var ourMemberStatsUrl = "backoffice/API/OurMemberStatistics/GetOurMemberStatistics/";
-        notificationsService.success("Downloading member data, hold on...");
-
-        $http.get(ourMemberStatsUrl)
-            .success(function (data) {
-                vm.ourMemberStats = data;
-                notificationsService.success("✔ Member data retrieved.");
-            })
-            .error(function () {
-                notificationsService.error("❌ Problem retrieving Our Member statistics data");
-            });
-    };
-
+    
     $scope.getGitHubLabelReport = function () {
         vm.gitHubLabelReport = [];
         var ourLabelReportUrl = "backoffice/API/GitHub/GetLabelReport/";
@@ -135,6 +120,23 @@
                     notificationsService.success(vm.addBadgeMessage);
                 } else {
                     notificationsService.error("❌ Problem with adding contrib badge to the member.");
+                }
+            })
+            .error(function () {
+                vm.memberError = "❌ Problem with getting the member.";
+                notificationsService.error(vm.memberError);
+            });
+    };
+
+    $scope.addKarmaToMember = function (memberId) {
+        var getKarmaGrantingUrl = "backoffice/API/Members/GrantKarmaForPackageUpload/?memberId=" + memberId;
+        $http.get(getKarmaGrantingUrl)
+            .success(function (data) {
+                if (data === "true") {
+                    vm.addBadgeMessage = "✔ " + vm.memberName + " now has enough karma to create a package.";
+                    notificationsService.success(vm.addBadgeMessage);
+                } else {
+                    notificationsService.error("❌ Problem with adding karma to the member.");
                 }
             })
             .error(function () {

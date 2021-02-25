@@ -9,6 +9,8 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
+using OurUmbraco.MarketPlace.Providers;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Project.Api
 {
@@ -22,6 +24,48 @@ namespace OurUmbraco.Project.Api
             // The project/member id are exposed as base properties and are resolved from the identity created on the request
             var files = WikiFile.CurrentFiles(ProjectNodeId);
             return files.Where(x => x.FileType == "package" || x.FileType == "hotfix").OrderByDescending(x => x.Version.Version).ToList();
+        }
+
+        [HttpGet]
+        public int GetCurrentPackageFileId()
+        {
+            var contentService = ApplicationContext.Services.ContentService;
+            var packageEntity = contentService.GetById(ProjectNodeId);
+            
+            var packageFileId = packageEntity.GetValue<int>("file");
+            
+            return packageFileId;
+        }
+
+        /// <summary>
+        /// Endpoint that takes a list of package file ids from UmbPack then archives them
+        /// </summary>
+        /// <param name="ids">Ids for package files that needs to be archived</param>
+        /// <returns></returns>
+        [HttpPost]
+        public HttpResponseMessage ArchiveProjectFiles(IEnumerable<int> ids)
+        {
+            var mediaProvider = new MediaProvider();
+
+            try
+            {
+                foreach (var archiveFileId in ids)
+                {
+                    var archiveFile = mediaProvider.GetFileById(archiveFileId);
+                    archiveFile.Archived = true;
+                    mediaProvider.SaveOrUpdate(archiveFile);
+                }
+
+                return Request.CreateResponse(HttpStatusCode.OK,
+                    $"All {ids.Count()} file(s) that matches the archive pattern has been archived.");
+            }
+            catch (Exception e)
+            {
+                LogHelper.Error<ProjectUploadController>("Error while trying to archive packages", e);
+                
+                return Request.CreateResponse(HttpStatusCode.BadRequest,
+                    "An error occured while trying to archive the files.");
+            }
         }
 
         /// <summary>
@@ -95,7 +139,7 @@ namespace OurUmbraco.Project.Api
                         {
                             packageEntity.SetValue("file", file.Id);
                             
-                            if(!string.IsNullOrEmpty(packageVersionNumber)) // nessecary check for older versions of umbpack
+                            if(!string.IsNullOrEmpty(packageVersionNumber)) // necessary check for older versions of umbpack
                                 packageEntity.SetValue("version", packageVersionNumber);
                         }
 

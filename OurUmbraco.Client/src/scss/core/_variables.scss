@@ -1,0 +1,25 @@
+﻿// Variables related to Umbraco brand identity
+$color-identity-blue: #3544b1;
+$color-identity-dark: #1b264f;
+$color-identity-darkest: #162335;
+$color-identity-brown: #9d8057;
+$color-identity-smoke: #f2ebe6;
+$color-identity-white: #f9f7f4;
+$color-identity-orange: #f79c37;
+$color-identity-yellow: #fad634;
+$color-identity-pink: #f5c1bc;
+
+// Variables related to responsive design
+$screen-xs: 768px;
+$screen-sm: 769px;
+$screen-md: 992px;
+$screen-lg: 1216px;
+$screen-xl: 1408px;
+
+$breakpoints: ( 
+    'xs': $screen-xs,
+    'sm': $screen-sm,
+    'md': $screen-md,
+    'lg': $screen-lg,
+    'xl': $screen-xl
+);

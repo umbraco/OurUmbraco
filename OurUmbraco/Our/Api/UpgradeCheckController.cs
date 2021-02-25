@@ -80,10 +80,13 @@ namespace OurUmbraco.Our.Api
                 commentVersion = commentVersion.Substring(0, 47) + "...";
             }
 
+            // CloudFlare identifies the country for us
+            var country = HttpContext.Current.Request.Params["HTTP_CF_IPCOUNTRY"];
+            
             using (var umbracoUpdateDb = new Database("umbracoUpdate"))
             {
                 var insertCmd = @"EXEC [UpdatePing]
-           @pinger, @major, @minor, @patch, @comment";
+           @pinger, @major, @minor, @patch, @comment, @country";
 
                 umbracoUpdateDb.Execute(insertCmd, new
                 {
@@ -91,7 +94,8 @@ namespace OurUmbraco.Our.Api
                     major = majorVersion,
                     minor = minorVersion,
                     patch = patchVersion,
-                    comment = commentVersion
+                    comment = commentVersion,
+                    country = country
                 });
             }
         }

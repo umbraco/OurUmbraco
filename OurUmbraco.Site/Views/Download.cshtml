@@ -57,7 +57,7 @@
 
                 <p class="large-margin-bottom">
                     Current Version:
-                    <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)">Download @(latestRelease.FullVersion)</a>
+                    <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a>
                     -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
 

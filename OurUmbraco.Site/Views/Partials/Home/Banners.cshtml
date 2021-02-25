@@ -1,22 +1,15 @@
 ﻿@using Umbraco.Web.Models
-@model OurUmbraco.Community.Banner.Models.Banners
-@{
-    if (Model?.Collection == null)
-    {
-        return;
-    }
+@model OurUmbraco.Community.Banner.Models.BannersViewModel
 
-    var banners = Model.Collection.Where(x => x.All || x.Countries.InvariantContains(Model.Location.Country) || x.Continents.InvariantContains(Model.Location.Continent)).ToList();
-}
-
-@if (banners.Any())
+@if (Model.Collection.Any())
 {
-    foreach (var banner in banners)
+    foreach (var banner in Model.Collection)
     {
         <div class="alertbar__white">
             <a href="@banner.Link" target="_blank" rel="noreferrer noopener">
-                <img src="@banner.Image.GetCropUrl(height: 150, width: 1000, imageCropMode: ImageCropMode.Max)" alt="@banner.Name" />
+                <img src="@banner.Image.GetCropUrl(height: 250, width: 1000, imageCropMode: ImageCropMode.Max)" alt="@banner.Name" />
             </a>
+
             @(banner.GetPropertyValue<IHtmlString>("bodyText"))
         </div>
     }

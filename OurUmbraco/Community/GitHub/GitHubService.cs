@@ -374,7 +374,7 @@ namespace OurUmbraco.Community.GitHub
             ExamineManager.Instance.IndexProviderCollection["PullRequestIndexer"].RebuildIndex();
         }
 
-        private List<Issue> GetExistingPullsFromDisk(string alias)
+        internal List<Issue> GetExistingPullsFromDisk(string alias)
         {
             var repository = new Community.Models.Repository(alias, "umbraco", alias, alias);
             var dir = HostingEnvironment.MapPath(repository.PullsStorageDirectory());

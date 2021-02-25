@@ -435,17 +435,17 @@
                                     <span>License</span> <a href="@licenseUrl" target="_blank" rel="noreferrer noopener">@project.GetPropertyValue("licenseName")</a>
                                 </li>
 
-                                <li>
-                                    <span>Downloads on Our:</span> @ourDownloads
+                                <li title="@ourDownloads on our.umbraco.com">
+                                    <span>Downloads on Our:</span> @FormatDownloadNumber(ourDownloads) 
                                 </li>
 
                                 @if (nugetDownloads > 0)
                                 {
-                                    <li>
-                                        <span>Downloads on NuGet:</span> @nugetDownloads
+                                    <li title="@nugetDownloads downloads on nuget">
+                                        <span>Downloads on NuGet:</span> @FormatDownloadNumber(nugetDownloads)
                                     </li>
-                                    <li>
-                                        <span>Total downloads : </span> @(nugetDownloads + ourDownloads)
+                                    <li title="@(nugetDownloads + ourDownloads) total downloads">
+                                        <span>Total downloads : </span> @FormatDownloadNumber(nugetDownloads + ourDownloads)
                                     </li>
                                 }
                             </ul>
@@ -529,5 +529,27 @@ else
     else
     {
         <text>@count @pluralValue</text>
+    }
+}
+
+@functions {
+    public string FormatDownloadNumber(int downloads)
+    {
+        if (downloads > 999999999)
+        {
+            return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999999)
+        {
+            return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else if (downloads > 999)
+        {
+            return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+        }
+        else
+        {
+            return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+        }
     }
 }

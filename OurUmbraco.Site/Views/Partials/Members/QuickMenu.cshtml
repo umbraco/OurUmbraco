@@ -2,6 +2,7 @@
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Models
+
 @{
     var profile = MemberData;
 }
@@ -65,6 +66,9 @@
                         }
                         <div class="public-profile">
                             <a href="@Url.GetProfileUrl(profile)">View my public profile</a>
+                        </div>
+                        <div class="public-profile">
+                            <a href="/member/profile/packages/">View my packages</a>
                         </div>
                         @if (profile.IsAdmin)
                         {
