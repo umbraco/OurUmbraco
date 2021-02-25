@@ -274,9 +274,9 @@
       "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
       "checkTitles": false,
       "title": "Owain Codes",
-      "url": "https://www.owain.codes/",
-      "rss": "https://www.owain.codes/blog/rss",
-      "logo": "https://www.owain.codes/media/1033/hoodie_front.png",
+      "url": "https://owain.codes/",
+      "rss": "https://owain.codes/rss",
+      "logo": "https://owain.codes/media/8d8b61b2c635655/owaincodeslogo_sml.png",
       "memberId": 144571
     },	
     {
@@ -323,6 +323,15 @@
       "rss": "https://aaronsadler.dev/rss/?label=umbraco",
       "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
       "memberId": 279599
+    },
+    {
+      "id": "2dbd524e-3474-47f0-9b1c-4d8933db6c99",
+      "checkTitles": true,
+      "title": "Rick Butterfield",
+      "url": "https://rickbutterfield.com",
+      "rss": "https://rickbutterfield.com/feed.xml",
+      "logo": "https://our.umbraco.com/media/upload/3da3028d-2cb2-45fc-a759-f66338643d93/DSC04052.jpg?width=400&height=400&mode=crop&upscale=true",
+      "memberId": 282597
     },
     {
       "id": "5ce41c5d-2386-4516-8db3-4a14f38a19c8",

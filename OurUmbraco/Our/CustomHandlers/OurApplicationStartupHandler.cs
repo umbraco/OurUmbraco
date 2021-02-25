@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Net;
 using System.Web;
+using System.Web.Mvc;
+using System.Web.Routing;
 using Examine;
 using Examine.LuceneEngine;
 using Examine.LuceneEngine.Providers;
@@ -13,6 +15,7 @@ using OurUmbraco.Documentation.Busineslogic;
 using OurUmbraco.Documentation.Busineslogic.GithubSourcePull;
 using OurUmbraco.Our.Controllers;
 using OurUmbraco.Our.Examine;
+using umbraco;
 using Umbraco.Core;
 using Umbraco.Web.Mvc;
 
@@ -37,6 +40,15 @@ namespace OurUmbraco.Our.CustomHandlers
         {
             BindExamineEvents();
             ImageProcessingModule.ValidatingRequest += ImageProcessingModule_ValidatingRequest;
+            RouteTable.Routes.MapRoute(
+                name: "communitydata",
+                url: GlobalSettings.UmbracoMvcArea + "/backoffice/CommunityData/{action}/{id}",
+                defaults: new
+                {
+                    controller = "OurStatistics",
+                    id = UrlParameter.Optional
+                    
+                });
         }
 
         private void ImageProcessingModule_ValidatingRequest(object sender, ImageProcessor.Web.Helpers.ValidatingRequestEventArgs e)

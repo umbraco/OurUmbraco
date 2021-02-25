@@ -129,11 +129,11 @@
                                     {
                                         if (string.IsNullOrWhiteSpace(badge.Link))
                                         {
-                                            <span class="@badge.CssClass">@badge.Name</span>
+                                            <span class="@badge.CssClass" title="@badge.Title">@badge.Name</span>
                                         }
                                         else
                                         {
-                                            <span class="@badge.CssClass"><a href="@badge.Link">@badge.Name</a></span>
+                                            <span class="@badge.CssClass"><a href="@badge.Link" title="@badge.Title">@badge.Name</a></span>
                                         }
                                     }
                                 </span>
