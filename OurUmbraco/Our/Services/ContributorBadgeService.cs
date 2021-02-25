@@ -1,13 +1,13 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
-using Hangfire.Console;
+﻿using Hangfire.Console;
 using Hangfire.Server;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Our.Models.GitHub;
 using OurUmbraco.Our.Models.GitHub.AutoReplies;
-using Umbraco.Core;
+using System;
+using System.Configuration;
+using System.Linq;
+using System.Text;
+using System.Web.Security;
 using Umbraco.Core.Models;
 
 namespace OurUmbraco.Our.Services
@@ -24,9 +24,9 @@ namespace OurUmbraco.Our.Services
         private readonly GitHubService _github;
 
         /// <summary>
-        /// Indicates whether live mode is activated. If <c>false</c>, the service will not post comments to GitHub.
+        /// If <c>true</c>, the service will post comments to GitHub, otherwise member profiles are updated silently
         /// </summary>
-        public bool IsLive = false;
+        public bool EnableComments;
 
         public ContributorBadgeService()
         {
@@ -40,6 +40,13 @@ namespace OurUmbraco.Our.Services
         /// <param name="hangfire">A reference to the Hangfire context if running from Hangfire.</param>
         public void CheckContributorBadges(PerformContext hangfire = null)
         {
+            bool.TryParse(ConfigurationManager.AppSettings["EnableContribBadgeBot"], out bool enabled);
+            if (!enabled)
+                return;
+
+            bool.TryParse(ConfigurationManager.AppSettings["EnableContribBadgeBotComments"], out bool enableComments);
+            EnableComments = enableComments;
+
             CheckContributorBadges(DateTime.UtcNow.Subtract(TimeSpan.FromDays(10)), hangfire);
         }
 
@@ -72,10 +79,6 @@ namespace OurUmbraco.Our.Services
         /// <param name="hangfire">A reference to the Hangfire context if running from Hangfire.</param>
         public void CheckContributorBadges(Issue pr, PerformContext hangfire = null)
         {
-
-            if (IsLive == false)
-                return;
-
             string prefix = $"[{pr.RepoSlug}/{pr.Number}]";
 
             // Look for a "merged" event in the list of events
@@ -110,7 +113,7 @@ namespace OurUmbraco.Our.Services
                 }
 
                 // Add the comment to the issue on GitHub
-                if (IsLive) _github.AddCommentToIssue(pr, GitHubAutoReplyType.ContributorsBadgeMemberNotFound, GetContributorBadgeMemberNotFoundMessage(pr));
+                if (EnableComments) _github.AddCommentToIssue(pr, GitHubAutoReplyType.ContributorsBadgeMemberNotFound, GetContributorBadgeMemberNotFoundMessage(pr));
 
                 return;
             }
@@ -126,7 +129,7 @@ namespace OurUmbraco.Our.Services
             Roles.AddUserToRole(creator.Email, Constants.MemberGroups.Contributor);
 
             // Add the comment to the issue on GitHub
-            if (IsLive) _github.AddCommentToIssue(pr, GitHubAutoReplyType.ContributorsBadgeAdded, GetContributorBadgeAddedMessage(pr, creator));
+            if (EnableComments) _github.AddCommentToIssue(pr, GitHubAutoReplyType.ContributorsBadgeAdded, GetContributorBadgeAddedMessage(pr, creator));
 
             hangfire.WriteLine($"{prefix} Creator {pr.User.Login} has successfully been given the contributors badge");
 
@@ -144,7 +147,7 @@ namespace OurUmbraco.Our.Services
             sb.AppendLine("Hi @" + issue.User.Login + ",");
             sb.AppendLine();
 
-            sb.Append($"We really wish to give you the [**Contributors badge**]({ourBadgeUrl}) badge on **Our Umbraco**, ");
+            sb.Append($"We'd loved to give you the [**Contributors badge**]({ourBadgeUrl}) badge on **Our Umbraco**, ");
             sb.Append("but we haven't been able to find an account on Our Umbraco matching your GitHub ID.");
             sb.AppendLine();
             sb.AppendLine();
@@ -173,7 +176,7 @@ namespace OurUmbraco.Our.Services
             sb.AppendLine("Hi @" + issue.User.Login + ",");
             sb.AppendLine();
 
-            sb.Append("As a appreciation for your merged PR, you have now been given the");
+            sb.Append("As a token of appreciation for your merged PR, you have now been given the");
             sb.Append($"[**Contributors badge**]({ourBadgeUrl}) badge on **Our Umbraco** - the official Umbraco community forum.");
             sb.AppendLine();
             sb.AppendLine();
