@@ -118,7 +118,7 @@
                                             // get the lowest publish date
                                             var registrationItem = registrationResult.Items.FirstOrDefault();
 
-                                            if (registrationItem != null)
+                                            if (registrationItem != null && registrationItem.Items != null)
                                             {
                                                 var publishedDate = registrationItem.Items.Select(x => x.CatalogEntry)
                                                     .OrderBy(x => x.PublishedDate).FirstOrDefault(x => x.PublishedDate.Year > 1900)?.PublishedDate;
@@ -130,6 +130,10 @@
 
                                                     packageInfo.AverageDownloadPerDay = (int)Math.Ceiling(package.TotalDownloads / daysSincePublished);
                                                 }
+                                            }
+                                            else
+                                            {
+                                                umbContxt.Application.ProfilingLogger.Logger.Warn(typeof(NugetPackageDownloadService), "Could not retrieve average downloads from nuget for package " + package.Id);
                                             }
                                         }
 
