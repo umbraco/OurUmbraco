@@ -39,6 +39,7 @@
                     <option value="Choose a version" selected="" disabled="">Choose Umbraco version</option>
                     <optgroup label="">
                         <option value="8">Umbraco v8</option>
+                        <option value="9">Umbraco v9</option>
                         <option value="@(OurUmbraco.Constants.Forum.HeartcoreVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">@OurUmbraco.Constants.Forum.UmbracoHeadlessName</option>
                         <option value="@(OurUmbraco.Constants.Forum.UnoVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoUnoName) ? "selected": null)">@OurUmbraco.Constants.Forum.UmbracoUnoName</option>
                     </optgroup>
