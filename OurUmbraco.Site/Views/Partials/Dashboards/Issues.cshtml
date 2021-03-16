@@ -3,7 +3,7 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var repoService = new RepositoryManagementService();
-    var repositories = repoService.GetAllPublicRepositories();
+    var repositories = repoService.GetAllPublicRepositories().Where(x => x.InDashboard);
 
     var repository = "";
     if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
@@ -40,7 +40,8 @@
     var startDate = new DateTime(startYear, startMonth, 1);
 
     var controller = new DashboardStatisticsController();
-    var issueStatistics = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: monthly);
+    var stats = controller.GetIssueStatistics(repository: repository, startYear: startYear, startMonth: startMonth, monthly: monthly);
+    var issueStatistics = stats.Stats;
     var oldUpForGrabsIssues = controller.GetOldUpForGrabsIssues();
     var ideasIssues = controller.GetIdeasIssues();
     var noCommentIssues = controller.GetNoCommentIssues();
@@ -55,50 +56,6 @@
 
     <div class="card-body">
 
-        @*<div class="row">
-            <div class="col-xl-8 col-lg-7">
-
-                <!-- Area Chart -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Area Chart</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-area">
-                            <div class="chartjs-size-monitor">
-                                <div class="chartjs-size-monitor-expand">
-                                    <div class=""></div>
-                                </div>
-                                <div class="chartjs-size-monitor-shrink">
-                                    <div class=""></div>
-                                </div>
-                            </div>
-                            <canvas id="myAreaChart" style="display: block; width: 1037px; height: 320px;" width="1037" height="320" class="chartjs-render-monitor"></canvas>
-                        </div>
-                        <hr>
-                        Styling for the area chart can be found in the <code>/js/demo/chart-area-demo.js</code> file.
-                    </div>
-                </div>
-
-
-                <!-- Bar Chart -->
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary">Bar Chart</h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="chart-bar">
-                            <div class="chartjs-size-monitor"><div class="chartjs-size-monitor-expand"><div class=""></div></div><div class="chartjs-size-monitor-shrink"><div class=""></div></div></div>
-                            <canvas id="myBarChart" width="1037" height="320" class="chartjs-render-monitor" style="display: block; width: 1037px; height: 320px;"></canvas>
-                        </div>
-                        <hr>
-                        Styling for the bar chart can be found in the <code>/js/demo/chart-bar-demo.js</code> file.
-                    </div>
-                </div>
-            </div>
-        </div>*@
-
-
         <div class="row">
             <div class="col-sm-12">
                 <form method="get">
@@ -107,9 +64,9 @@
                             Show
                             <select name="repository">
                                 <option value="" @(repository == "" ? "selected" : null)>All repositories</option>
-                                @foreach (var repo in repositories)
+                                @foreach (var repo in stats.Repositories)
                                 {
-                                    <option value="@repo.Alias" @(repository == repo.Alias ? "selected" : null)>@repo.Alias</option>
+                                    <option value="@repo" @(repository == repo ? "selected" : null)>@repo</option>
                                 }
                             </select>
                         </label>
@@ -192,6 +149,36 @@
                         }
                     }
                 </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="card shadow mb-4">
+    <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Issues with missing replies (@stats.NoCommentIssues.Count in total)</h6>
+    </div>
+
+    <div class="card-body">
+        <div class="col-sm-12">
+            <table class="table table-bordered dataTable" id="dataTable" width="100%" cellspacing="0" role="grid" aria-describedby="dataTable_info" style="width: 100%;">
+
+                <thead>
+                    <tr role="row">
+                        <th>Repo / number</th>
+                        <th>Created</th>
+                        <th>Title</th>
+                    </tr>
+                </thead>
+
+                @foreach (var issue in stats.NoCommentIssues.OrderByDescending(x => x.CreateDateTime))
+                {
+                    <tr>
+                        <td>[@issue.RepositoryName/@issue.Number]</td>
+                        <td>@(Math.Round((DateTime.Now - issue.CreateDateTime).TotalDays, 0)) days ago</td>
+                        <td><a href="https://github.com/@issue.RepoOwner/@issue.RepositoryName/issues/@issue.Number" target="_blank" rel="noreferrer noopener">@issue.Title</a></td>
+                    </tr>
+                }
             </table>
         </div>
     </div>

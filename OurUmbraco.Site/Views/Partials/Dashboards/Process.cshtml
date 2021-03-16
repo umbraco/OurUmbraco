@@ -1,10 +1,6 @@
 ﻿@using OurUmbraco.Our.Api
-@using OurUmbraco.Our.Services
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
-    var repoService = new RepositoryManagementService();
-    var repositories = repoService.GetAllPublicRepositories();
-
     var repository = "";
     if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)
     {
@@ -21,7 +17,6 @@
     var awaitingFeedbackLabel = "status/awaiting-feedback";
     var awaitingFeedbackIssues = controller.GetIssuesWithLabel(awaitingFeedbackLabel);
     var openPulls = controller.GetOpenPulls();
-    var openIssues = controller.GetAllOpenIssues("none");
 }
 
 <div class="card shadow mb-4">

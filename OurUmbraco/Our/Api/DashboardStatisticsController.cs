@@ -212,15 +212,22 @@ namespace OurUmbraco.Our.Api
 
         [MemberAuthorize(AllowGroup = "HQ")]
         [HttpGet]
-        public List<IssueStatistics> GetIssueStatistics(int startMonth = 6, int startYear = 2010, string repository = "", bool monthly = true)
+        public IssueStatistics GetIssueStatistics(int startMonth = 6, int startYear = 2010, string repository = "", bool monthly = true)
         {
             var repoService = new RepositoryManagementService();
+            var repositories = repoService.GetAllPublicRepositories().Where(x => x.InDashboard);
+
+            var stats = new IssueStatistics
+            {
+                NoCommentIssues = new List<Issue>(),
+                Repositories = new HashSet<string>(),
+                Stats = new List<Statistics>()
+            };
 
             var allCommunityIssues = string.IsNullOrWhiteSpace(repository)
-                ? repoService.GetAllCommunityIssues(false).ToList()
+                ? repoService.GetAllCommunityIssues(false).Where(x => repositories.Any(r => r.Alias == x.RepositoryName)).ToList()
                 : repoService.GetAllCommunityIssues(false).Where(x => x.RepositoryName == repository).ToList();
 
-            var issueStatistics = new List<IssueStatistics>();
             var date = new DateTime(startYear, startMonth, 1);
             while (date < DateTime.Now)
             {
@@ -235,7 +242,7 @@ namespace OurUmbraco.Our.Api
                 var issuesInPeriod = allCommunityIssues.Where(x => x.CreateDateTime >= startDate && x.CreateDateTime < endDate).ToList();
                 var issuesClosedInPeriod = issuesInPeriod.Where(x => x.State == "closed" && x.ClosedDateTime >= startDate && x.ClosedDateTime < endDate).ToList();
 
-                var yearStatistics = new IssueStatistics
+                var yearStatistics = new Statistics
                 {
                     CodegardenYear = year,
                     Title = date.ToString(monthly ? "yyyyMM" : "yyyy"),
@@ -250,7 +257,13 @@ namespace OurUmbraco.Our.Api
 
                 foreach (var issue in issuesInPeriod)
                 {
+                    stats.Repositories.Add(issue.RepositoryName);
+                    
                     var firstCommentStatistics = GetFirstEventStatistics(issue);
+                    foreach (var noCommentIssue in firstCommentStatistics.IssuesNoComments)
+                        if(stats.NoCommentIssues.Contains(noCommentIssue) == false)
+                            stats.NoCommentIssues.Add(noCommentIssue);
+                
                     yearStatistics.FirstCommentStatistics.FirstEventOnTime += firstCommentStatistics.FirstEventOnTime;
                     yearStatistics.FirstCommentStatistics.FirstEventLate += firstCommentStatistics.FirstEventLate;
                     yearStatistics.FirstCommentStatistics.TeamEventMissing += firstCommentStatistics.TeamEventMissing;
@@ -278,12 +291,12 @@ namespace OurUmbraco.Our.Api
                     yearStatistics.MedianHoursToClose = (int)Math.Round(allClosingTimesInHours.Median());
                 }
 
-                issueStatistics.Add(yearStatistics);
+                stats.Stats.Add(yearStatistics);
 
                 date = monthly ? date.AddMonths(1) : date.AddYears(1);
             }
 
-            return issueStatistics;
+            return stats;
         }
 
         private FirstCommentStatistics GetFirstEventStatistics(Issue issue)
@@ -567,6 +580,13 @@ public class ApproveddPullRequest
 }
 
 public class IssueStatistics
+{
+    public List<Statistics> Stats { get; set; }
+    public List<Issue> NoCommentIssues { get; set; }
+    public HashSet<string> Repositories { get; set; }
+}
+
+public class Statistics
 {
     public string Title { get; set; }
     public int CodegardenYear { get; set; }

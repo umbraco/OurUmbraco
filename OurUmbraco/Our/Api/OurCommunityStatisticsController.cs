@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http;
 using System.Web.Hosting;
 using System.Web.Http;
 using OurUmbraco.Community.GitHub;
@@ -25,7 +24,7 @@ namespace OurUmbraco.Our.Api
                 return null;
 
             var repoManagementService = new RepositoryManagementService();
-            var repositories = repoManagementService.GetAllPublicRepositories();
+            var repositories = repoManagementService.GetAllPublicRepositories().Where(x => x.InDashboard);
 
             var githubService = new GitHubService();
             var contributors = new HashSet<string>();
