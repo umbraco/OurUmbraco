@@ -13,7 +13,7 @@
 
         if (content != null)
         {
-            var link = content.GetProperty("downloadLink").Value.ToString().Trim();
+            var link = content.GetProperty("downloadLink").Value.ToString().Replace("http://","https://").Trim();
 
             var currentMember = 0;
             var memberShipHelper = new Umbraco.Web.Security.MembershipHelper(UmbracoContext.Current);
