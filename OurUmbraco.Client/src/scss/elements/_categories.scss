@@ -1,24 +1,20 @@
-.category, .version {
+.category,
+.version {
 	display: inline-block;
 	margin: 0;
 
 	a,
 	span.cat {
 		display: inline-block;
-
-		font-weight: bold;
 		text-decoration: none;
 		text-transform: capitalize;
-		font-size: .7rem;
+		font-size: $font-size-small;
 		line-height: 1.25em;
-
-		background: #4ea7ff;
-		color: #fff;
-
-		border-radius: 36px;
+		border-radius: $base-border-radius;
 		padding: 6px 12px;
-
 		max-width: 100%;
+		background: $color-identity-grey;
+		color: $color-identity-dark;
 		word-wrap: break-word;
 		white-space: pre-wrap;
 		text-overflow: ellipsis;
@@ -26,92 +22,23 @@
 	}
 
 	a {
-		@include transition(background, .1s);
-
-		&:hover {
-			background: lighten(#4ea7ff, 5%);
-		}
+		@include transition(background, 0.1s);
 	}
 
-
-
-	&.default {
-		a,
-		span.cat {
-			background: #4ea7ff;
-			color: #fff;
-
-			&:hover {
-				background: lighten(#4ea7ff, 5%);
-			}
-		}
-	}
-
-
-	&.frontend {
-		a,
-		span.cat {
-			background: #4ea7ff;
-			color: #fff;
-
-			&:hover {
-				background: lighten(#4ea7ff, 5%);
-				color: #fff;
-			}
-		}
-	}
-
-
+	&.frontend,
 	&.core {
 		a,
 		span.cat {
-			background: #ff661b;
-			color: #fff;
-
 			&:hover {
-				background: lighten(#ff661b, 10%);
+				opacity: 0.9;
 			}
 		}
 	}
 
-
-	&.azure {
+	.version {
 		a,
 		span.cat {
-			background: #1ed45c;
-			color: #fff;
-
-			&:hover {
-				background: lighten(#1ed45c, 5%);
-			}
-		}
-	}
-}
-
-
-
-.version {
-	a,
-	span.cat {
-		background: rgba($color-space, .22);
-		color: $color-space;
-
-		&:hover {
-			background: #fff;
-		}
-	}
-
-	&.default {
-		a,
-		span.cat {
-			background: transparent;
-			border: 1px solid #cbcbcb;
-			color: darken(#cbcbcb, 10%);
-
-			&:hover {
-				color: darken(#cbcbcb, 20%);
-				background: transparent;
-			}
+			cursor: auto;
 		}
 	}
 }
