@@ -208,8 +208,10 @@ namespace OurUmbraco.Documentation
                         //Add ons
                         case "umbracoforms":
                             return 0;
-                        case "umbracocourier":
+                        case "umbraco-deploy":
                             return 1;
+                        case "umbracocourier":
+                            return 2;
 
                         //Umbraco Cloud
                         case "getting-started":
@@ -401,6 +403,18 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "developer":
                             return 2;
+                            
+                        //Add ons - Umbraco Deploy
+                        case "getting-started":
+                            return 0; 
+                        case "deployments":
+                            return 1;
+                        case "deploy-settings":
+                            return 2;
+                        case "upgrades":
+                            return 3;
+                        case "troubleshooting":
+                            return 4;
 
                         //Add ons - UmbracoCourier
                         case "architechture":
