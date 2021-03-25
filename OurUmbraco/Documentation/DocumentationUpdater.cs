@@ -408,13 +408,15 @@ namespace OurUmbraco.Documentation
                         case "getting-started":
                             return 0; 
                         case "deployments":
-                            return 1;
-                        case "deploy-settings":
                             return 2;
-                        case "upgrades":
+                        case "deployments":
                             return 3;
-                        case "troubleshooting":
+                        case "deploy-settings":
                             return 4;
+                        case "upgrades":
+                            return 5;
+                        case "troubleshooting":
+                            return 6;
 
                         //Add ons - UmbracoCourier
                         case "architechture":
