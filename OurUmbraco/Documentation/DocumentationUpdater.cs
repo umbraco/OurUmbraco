@@ -403,20 +403,20 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "developer":
                             return 2;
-                            
-                        //Add ons - Umbraco Deploy
+
+                       //Add ons - Umbraco Deploy
                         case "getting-started":
                             return 0; 
+                        case "installation":
+                            return 1;
                         case "deployments":
                             return 2;
-                        case "deployments":
-                            return 3;
                         case "deploy-settings":
-                            return 4;
+                            return 3;
                         case "upgrades":
-                            return 5;
+                            return 4;
                         case "troubleshooting":
-                            return 6;
+                            return 5;
 
                         //Add ons - UmbracoCourier
                         case "architechture":
