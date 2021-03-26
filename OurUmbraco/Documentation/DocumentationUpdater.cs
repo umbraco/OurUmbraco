@@ -405,11 +405,11 @@ namespace OurUmbraco.Documentation
                             return 2;
 
                        //Add ons - Umbraco Deploy
-                        case "getting-started":
+                        case "get-started-with-deploy":
                             return 0; 
-                        case "installation":
+                        case "installing-deploy":
                             return 1;
-                        case "deployments":
+                        case "deployment-workflow":
                             return 2;
                         case "deploy-settings":
                             return 3;
