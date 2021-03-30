@@ -126,7 +126,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void RefreshKarmaStatistics()
         {
             var karmaService = new KarmaService();
-            RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(10));
+            RecurringJob.AddOrUpdate(() => karmaService.RefreshKarmaStatistics(), Cron.MinuteInterval(60));
         }
 
         public void GenerateReleasesCache(PerformContext context)
