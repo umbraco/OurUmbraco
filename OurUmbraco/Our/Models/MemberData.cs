@@ -20,7 +20,6 @@ namespace OurUmbraco.Our.Models
         public int NumberOfForumPosts { get; set; }
         public string AvatarHtml { get; set; }
         public string AvatarPath { get; set; }
-        public Image AvatarImage { get; set; }
         public bool AvatarImageTooSmall { get; set; }
         public bool IsBlocked { get; set; }
         public bool NewTosAccepted { get; set; }

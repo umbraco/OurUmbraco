@@ -245,7 +245,11 @@ namespace OurUmbraco.Community.People
         {
             if (imgPath == null) 
                 return string.Empty;
-                
+
+            var siteDirectory = HostingEnvironment.MapPath("~");
+            if (imgPath.StartsWith(siteDirectory))
+                imgPath = imgPath.Replace(siteDirectory, string.Empty).Replace("\\", "/");
+            
             var cleanImagePath = imgPath.Replace(" ", "%20").TrimStart("~");
             if (cleanImagePath.Contains("?"))
                 cleanImagePath = cleanImagePath.Substring(0, cleanImagePath.IndexOf("?", StringComparison.Ordinal));
