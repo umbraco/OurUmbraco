@@ -1,11 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
+using System.Text;
 using System.Web.Hosting;
-using System.Web.Http;
+using System.Web.Mvc;
+using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
+using OurUmbraco.Community.Nuget;
 using OurUmbraco.Our.Services;
 using OurUmbraco.Wiki.BusinessLogic;
+using Umbraco.Core;
 using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.WebApi;
@@ -14,7 +19,7 @@ namespace OurUmbraco.Our.Api
 {
     public class OurCommunityStatisticsController : UmbracoAuthorizedApiController
     {
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public List<string> GetPullRequestStats(string startDate, string endDate)
         {
             if (DateTime.TryParse(startDate, out var start) == false)
@@ -54,7 +59,7 @@ namespace OurUmbraco.Our.Api
             return contribFiltered;
         }
         
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public PackageStats GetPackageStats(string startDate, string endDate)
         {  
             if (DateTime.TryParse(startDate, out var start) == false)
@@ -62,10 +67,6 @@ namespace OurUmbraco.Our.Api
 
             if (DateTime.TryParse(endDate, out var end) == false)
                 return null;
-            
-            var packagesRoot = Umbraco.TypedContentAtRoot()
-                .First()
-                .Children.FirstOrDefault(x => string.Equals(x.DocumentTypeAlias, "Projects", StringComparison.InvariantCultureIgnoreCase));
             
             var packageStats = new PackageStats
             {
@@ -78,56 +79,51 @@ namespace OurUmbraco.Our.Api
 
             var contributorNames = new HashSet<string>();
             
-            if (packagesRoot != null)
+            var allPackages = GetAllPackages();
+
+            var createdPackages = allPackages
+                .Where(x => x.CreateDate >= start && x.CreateDate <= end)
+                .ToList();
+
+            foreach (var package in createdPackages)
             {
-                var allPackages = packagesRoot
-                    .Descendants()
-                    .Where(x => string.Equals(x.DocumentTypeAlias, "Project", StringComparison.InvariantCultureIgnoreCase))
-                    .ToList();
+                packageStats.CreatorNames.Add(GetOwnerName(package));
 
-                var createdPackages = allPackages
-                    .Where(x => x.CreateDate >= start && x.CreateDate <= end)
-                    .ToList();
-
-                foreach (var package in createdPackages)
-                {
-                    packageStats.CreatorNames.Add(GetOwnerName(package));
-
-                    foreach (var contributorName in GetContributorNames(package))
-                        contributorNames.Add(contributorName);
-                }
-
-                var updatedPackages = new List<IPublishedContent>();
-                foreach (var package in allPackages)
-                {
-                    var wikiFiles = WikiFile.CurrentFiles(package.Id);
-                    
-                    if (wikiFiles.Any(x => x.CreateDate >= start && x.CreateDate < end) == false) continue;
-                    if (createdPackages.Any(x => x.Id == package.Id)) continue;
-                    
-                    updatedPackages.Add(package);
-                    
-                    packageStats.CreatorNames.Add(GetOwnerName(package));
-
-                    foreach (var contributorName in GetContributorNames(package))
-                        contributorNames.Add(contributorName);
-                }
-
-                foreach (var package in createdPackages)
-                {
-                    packageStats.Created.Add(package.Name);
-                }
-                
-                foreach (var package in updatedPackages)
-                {
-                    packageStats.Updated.Add(package.Name);
-                }
-
-                foreach (var package in allPackages)
-                {
-                    packageStats.All.Add(package.Name);
-                }
+                foreach (var contributorName in GetContributorNames(package))
+                    contributorNames.Add(contributorName);
             }
+
+            var updatedPackages = new List<IPublishedContent>();
+            foreach (var package in allPackages)
+            {
+                var wikiFiles = WikiFile.CurrentFiles(package.Id);
+                
+                if (wikiFiles.Any(x => x.CreateDate >= start && x.CreateDate < end) == false) continue;
+                if (createdPackages.Any(x => x.Id == package.Id)) continue;
+                
+                updatedPackages.Add(package);
+                
+                packageStats.CreatorNames.Add(GetOwnerName(package));
+
+                foreach (var contributorName in GetContributorNames(package))
+                    contributorNames.Add(contributorName);
+            }
+
+            foreach (var package in createdPackages)
+            {
+                packageStats.Created.Add(package.Name);
+            }
+            
+            foreach (var package in updatedPackages)
+            {
+                packageStats.Updated.Add(package.Name);
+            }
+
+            foreach (var package in allPackages)
+            {
+                packageStats.All.Add(package.Name);
+            }
+        
 
             foreach (var name in contributorNames)
             {
@@ -138,7 +134,19 @@ namespace OurUmbraco.Our.Api
             return packageStats;
         }
 
-        [HttpGet]
+        private List<IPublishedContent> GetAllPackages()
+        {
+            var packagesRoot = Umbraco.TypedContentAtRoot()
+                .First()
+                .Children.FirstOrDefault(x =>
+                    string.Equals(x.DocumentTypeAlias, "Projects", StringComparison.InvariantCultureIgnoreCase));
+
+            return packagesRoot?.Descendants()
+                .Where(x => string.Equals(x.DocumentTypeAlias, "Project", StringComparison.InvariantCultureIgnoreCase))
+                .ToList();
+        }
+
+        [System.Web.Http.HttpGet]
         public List<string> GetPackagesByUser(int ownerId)
         {
             var queryResults = GetPackageIdsByOwnerId(ownerId);
@@ -160,7 +168,7 @@ namespace OurUmbraco.Our.Api
             return results.ToList();
         }
         
-        [HttpGet]
+        [System.Web.Http.HttpGet]
         public string UnpublishPackagesByUser(int ownerId)
         {
             var queryResults = GetPackageIdsByOwnerId(ownerId);

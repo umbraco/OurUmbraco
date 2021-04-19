@@ -66,6 +66,12 @@
                 notificationsService.error("❌ Problem retrieving Package statistics data");
             });
     };
+
+    $scope.getPackageInfos = function () {
+        vm.packageInfos = [];
+        var packageInfosUrl = "backoffice/CommunityData/GetPackageInfos/"
+        window.open(packageInfosUrl, '_blank', '');
+    };
     
     $scope.getPackagesByUser = function (ownerId) {
         vm.packagesByUser = [];        
