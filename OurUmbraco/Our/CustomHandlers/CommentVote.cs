@@ -55,13 +55,6 @@ namespace OurUmbraco.Our.CustomHandlers
                     e.ReceiverId = c.MemberId;
                 }
             }
-            else if (a.Alias == "TopicSolved")
-            {
-                var c = cs.GetById(e.ItemId);
-                var t = ts.GetById(c.TopicId);
-            }
-
         }
-
     }
 }
