@@ -59,7 +59,6 @@ namespace OurUmbraco.Our.CustomHandlers
             {
                 var c = cs.GetById(e.ItemId);
                 var t = ts.GetById(c.TopicId);
-                e.Cancel = t.Answer > 0;
             }
 
         }
