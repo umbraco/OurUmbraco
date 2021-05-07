@@ -92,16 +92,17 @@
     var currentUmbracoVersion = int.Parse(docVersionService.GetCurrentMajorVersion());
 }
 
-@if (hasAltVersions)
-{
-    <aside>
-        <div class="info-box docs-version-panel">
-            <dl>
-                @*<dt>Applies to</dt>
-                    <dd>v8.0.0</dd>*@
 
-                <dt>@*Alternate*@ Versions</dt>
-                @foreach (var version in altVersions)
+<aside>
+    <div class="info-box docs-version-panel">
+        <dl>
+            @*<dt>Applies to</dt>
+                <dd>v8.0.0</dd>*@
+
+            <dt>@*Alternate*@ Versions</dt>
+            @if (hasAltVersions)
+            {
+                foreach (var version in altVersions)
                 {
                     <dd class="@Umbraco.If(version.IsCurrentVersion, "current-version") @Umbraco.If(version.IsCurrentPage, "selected-version")">
                         @if (version.IsCurrentPage)
@@ -118,11 +119,17 @@
                         }
                     </dd>
                 }
+            }
+            else if (currentVersion != null)
+            {
+                <dd class="current-version selected-version">
+                    @(currentVersion.Version)
+                </dd>
+            }
+        </dl>
+    </div>
+</aside>
 
-            </dl>
-        </div>
-    </aside>
-}
 
 @if (string.IsNullOrWhiteSpace(Request.QueryString["debug"]) == false)
 {
