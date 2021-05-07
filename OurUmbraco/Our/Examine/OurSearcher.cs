@@ -86,11 +86,11 @@ namespace OurUmbraco.Our.Examine
             // do it the other way around for documentation
             if (NodeTypeAlias.InvariantEquals("documentation"))
             {
-                //we filter by this version by using the major versions
-                var versionToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
-                foreach (var versionToNegate in versionToFind)
+                 //we filter by this version by using the major versions
+                var versionsToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
+                foreach (var versionToFind in versionsToFind)
                 {
-                    sb.AppendFormat("+majorVersion:{0} ", versionToNegate);
+                    sb.AppendFormat("+majorVersion:{0} ", versionToFind);
                 }
             }
 
