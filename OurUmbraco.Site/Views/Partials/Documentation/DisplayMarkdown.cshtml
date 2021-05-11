@@ -92,6 +92,7 @@
     var currentUmbracoVersion = int.Parse(docVersionService.GetCurrentMajorVersion());
 }
 
+@if (hasAltVersions)
 {
     <aside>
         <div class="info-box docs-version-panel">
