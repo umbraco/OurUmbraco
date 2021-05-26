@@ -383,20 +383,22 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "creating-your-first-template-and-content-node":
                             return 2;
-                        case "css-and-javascript":
+                        case "css-and-images":
                             return 3;
-                        case "outputting-the-document-type-properties":
+                        case "displaying-the-document-type-properties":
                             return 4;
                         case "creating-master-template-part-1":
                             return 5;
                         case "creating-master-template-part-2":
                             return 6;
-                        case "master-template-the-navigation-menu":
+                        case "setting-the-navigation-menu":
                             return 7;
                         case "articles-parent-and-article-items":
                             return 8;
-                        case "conclusions-where-next":
+                        case "adding-language-variants":
                             return 9;
+                        case "conclusions-where-next":
+                            return 10;
                             
                         //Tutorials - Editor Manual
                         case "introduction":
