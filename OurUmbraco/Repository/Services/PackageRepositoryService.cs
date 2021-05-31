@@ -239,7 +239,8 @@ namespace OurUmbraco.Repository.Services
                 Score = score,
                 VersionRange = version,
                 Image = BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"),
-                Summary = GetPackageSummary(content, 50)
+                Summary = GetPackageSummary(content, 50),
+                CertifiedToWorkOnUmbracoCloud = content.GetPropertyValue<bool>("worksOnUaaS"),
             };
         }
 
