@@ -51,5 +51,10 @@ namespace OurUmbraco.Repository.Models
         ///  shorter summary shown on our.umbraco.com
         /// </summary>
         public string Summary { get; set; }
+
+        /// <summary>
+        /// A flag indicating whether the package has been certified to work on Umbraco Cloud.
+        /// </summary>
+        public bool CertifiedToWorkOnUmbracoCloud { get; set; }
     }
 }
