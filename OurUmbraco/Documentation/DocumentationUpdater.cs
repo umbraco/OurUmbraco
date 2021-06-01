@@ -136,7 +136,7 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "creating-websites-with-umbraco":
                             return 2;
-                        case "developer-websites-with-umbraco":
+                        case "developing-websites-with-umbraco":
                             return 3;
                         case "hosting-an-umbraco-infrastructure":
                             return 4;
