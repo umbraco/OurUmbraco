@@ -66,7 +66,7 @@ namespace OurUmbraco.Our.Examine
             // * docs version (MajorDocsVersion) supplied, give current version and NEGATE OTHERS
             // * no docs version (MajorDocsVersion) is not suplied, use it and NEGATE others
             // * all versions are requests, this is currently not implemented
-            var currentMajorVersions = new string[] { "6", "7", "8" };
+            var currentMajorVersions = new string[] { "6", "7", "8", "9" };
 
             // add mandatory majorVersion is parameter is supplied
             string versionToFilterBy = MajorDocsVersion == null
@@ -86,11 +86,11 @@ namespace OurUmbraco.Our.Examine
             // do it the other way around for documentation
             if (NodeTypeAlias.InvariantEquals("documentation"))
             {
-                //we filter by this version by using the major versions
-                var versionToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
-                foreach (var versionToNegate in versionToFind)
+                 //we filter by this version by using the major versions
+                var versionsToFind = currentMajorVersions.Where(f => f == versionToFilterBy).ToArray<string>();
+                foreach (var versionToFind in versionsToFind)
                 {
-                    sb.AppendFormat("+majorVersion:{0} ", versionToNegate);
+                    sb.AppendFormat("+majorVersion:{0} ", versionToFind);
                 }
             }
 
