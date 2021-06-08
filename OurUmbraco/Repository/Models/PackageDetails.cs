@@ -26,6 +26,7 @@ namespace OurUmbraco.Repository.Models
                 this.Icon = package.Icon;
                 this.LatestVersion = package.LatestVersion;
                 this.OwnerInfo = package.OwnerInfo;
+                this.CertifiedToWorkOnUmbracoCloud = package.CertifiedToWorkOnUmbracoCloud;
             }
         }
 
