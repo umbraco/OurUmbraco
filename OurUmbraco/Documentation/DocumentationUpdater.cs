@@ -103,31 +103,47 @@ namespace OurUmbraco.Documentation
                     {
                         case "getting-started":
                             return 0;
-                        case "implementation":
+                        case "fundamentals":
                             return 1;
-                        case "extending":
+                        case "implementation":
                             return 2;
-                        case "reference":
+                        case "extending":
                             return 3;
-                        case "tutorials":
+                        case "reference":
                             return 4;
-                        case "add-ons":
+                        case "tutorials":
                             return 5;
-                        case "umbraco-uno":
+                        case "add-ons":
                             return 6;
-                        case "umbraco-cloud":
+                        case "umbraco-uno":
                             return 7;
-                        case "umbraco-heartcore":
+                        case "umbraco-cloud":
                             return 8;
-                        case "contribute":
+                        case "umbraco-heartcore":
                             return 9;
+                        case "contribute":
+                            return 10;
                     }
                     break;
 
                 case 2:
                     switch (name.ToLowerInvariant())
                     {
-                        //Getting Started
+                        //Getting-Started
+                        case "managing-an-umbraco-project":
+                            return 0;
+                        case "editing-websites-with-umbraco":
+                            return 1;
+                        case "creating-websites-with-umbraco":
+                            return 2;
+                        case "developing-websites-with-umbraco":
+                            return 3;
+                        case "hosting-an-umbraco-infrastructure":
+                            return 4;
+                        case "where-can-i-get-help":
+                            return 5;
+                            
+                        //Fundamentals
                         case "setup":
                             return 0;
                         case "backoffice":
@@ -208,8 +224,10 @@ namespace OurUmbraco.Documentation
                         //Add ons
                         case "umbracoforms":
                             return 0;
-                        case "umbracocourier":
+                        case "umbraco-deploy":
                             return 1;
+                        case "umbracocourier":
+                            return 2;
 
                         //Umbraco Cloud
                         case "getting-started":
@@ -242,7 +260,7 @@ namespace OurUmbraco.Documentation
                 case 3:
                     switch (name.ToLowerInvariant())
                     {
-                        //Getting Started - Setup
+                        //Fundamentals - Setup
                         case "requirements":
                             return 0;
                         case "install":
@@ -252,7 +270,7 @@ namespace OurUmbraco.Documentation
                         case "server-setup":
                             return 3;
 
-                        //Getting Started - Backoffice
+                        //Fundamentals - Backoffice
                         case "sections":
                             return 0;
                         case "property-editors":
@@ -260,7 +278,7 @@ namespace OurUmbraco.Documentation
                         case "login":
                             return 2;
 
-                        //Getting Started - Data
+                        //fundamentals - Data
                         case "defining-content":
                             return 0;
                         case "creating-media":
@@ -272,7 +290,7 @@ namespace OurUmbraco.Documentation
                         case "scheduled-publishing":
                             return 4;
 
-                        //Getting Started - Design
+                        //Fundamentals - Design
                         case "templates":
                             return 0;
                         case "rendering-content":
@@ -282,7 +300,7 @@ namespace OurUmbraco.Documentation
                         case "stylesheets-javascript":
                             return 3;
 
-                        //Getting Started - Code
+                        //Fundamentals - Code
                         case "umbraco-services":
                             return 0;
                         case "subscribing-to-events":
@@ -365,20 +383,22 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "creating-your-first-template-and-content-node":
                             return 2;
-                        case "css-and-javascript":
+                        case "css-and-images":
                             return 3;
-                        case "outputting-the-document-type-properties":
+                        case "displaying-the-document-type-properties":
                             return 4;
                         case "creating-master-template-part-1":
                             return 5;
                         case "creating-master-template-part-2":
                             return 6;
-                        case "master-template-the-navigation-menu":
+                        case "setting-the-navigation-menu":
                             return 7;
                         case "articles-parent-and-article-items":
                             return 8;
-                        case "conclusions-where-next":
+                        case "adding-language-variants":
                             return 9;
+                        case "conclusions-where-next":
+                            return 10;
                             
                         //Tutorials - Editor Manual
                         case "introduction":
@@ -401,6 +421,20 @@ namespace OurUmbraco.Documentation
                             return 1;
                         case "developer":
                             return 2;
+
+                       //Add ons - Umbraco Deploy
+                        case "get-started-with-deploy":
+                            return 0; 
+                        case "installing-deploy":
+                            return 1;
+                        case "deployment-workflow":
+                            return 2;
+                        case "deploy-settings":
+                            return 3;
+                        case "upgrades":
+                            return 4;
+                        case "troubleshooting":
+                            return 5;
 
                         //Add ons - UmbracoCourier
                         case "architechture":

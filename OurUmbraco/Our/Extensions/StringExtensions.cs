@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using Umbraco.Core;
 
 namespace OurUmbraco.Our.Extensions
 {
@@ -33,15 +34,20 @@ namespace OurUmbraco.Our.Extensions
             var badges = new List<Badge>();
             if (numberOfMvps != 0)
             {
+                var isLifetime = rolesList.Any(x => x.InvariantContains("lifetime mvp"));
+                
                 var name = "MVP";
-                if (numberOfMvps > 1)
-                    name = $"{name} {numberOfMvps}x";
+                if (isLifetime)
+                    name = $"{name} ∞";
+                else if (numberOfMvps > 1)
+                    name = $"{name} {numberOfMvps}x"; 
 
                 badges.Add(new Badge
                 {
                     Name = name,
                     Link = "/community/most-valuable-people/",
-                    CssClass = "mvp"
+                    CssClass = "mvp",
+                    Title = isLifetime ? "Lifetime MVP" : name
                 });
             }
 
@@ -50,7 +56,8 @@ namespace OurUmbraco.Our.Extensions
                 {
                     Name = role,
                     CssClass = role.ToLowerInvariant(),
-                    Link = $"/community/badges/#{role.ToLowerInvariant()}"
+                    Link = $"/community/badges/#{role.ToLowerInvariant()}",
+                    Title = role == "c-trib" ? "Umbraco Contributor" : role
                 });
 
             return badges;
@@ -134,5 +141,7 @@ namespace OurUmbraco.Our.Extensions
         public string Name { get; set; }
         public string Link { get; set; }
         public string CssClass { get; set; }
+        
+        public string Title { get; set; }
     }
 }

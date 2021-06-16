@@ -7,9 +7,7 @@ using Examine;
 using Newtonsoft.Json;
 using OurUmbraco.Community.Controllers;
 using OurUmbraco.Community.People;
-using OurUmbraco.Community.People.Models;
 using OurUmbraco.NotificationsCore;
-using Umbraco.Web;
 
 namespace OurUmbraco.Community.Karma
 {
@@ -46,7 +44,6 @@ namespace OurUmbraco.Community.Karma
 
         private void RefreshKarmaStatisticsInternally()
         {
-            var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
             var avatarService = new AvatarService();
 
             var lastweekStart = GetLastWeekStartDate();
@@ -56,17 +53,17 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
-                    AddAvatarToPerson(person, umbracoHelper, avatarService);
-
                     var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance
                         .SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
                     if (searchResult == null)
                         continue;
-
+                    
                     if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
                         person.TotalKarma = totalKarma;
+                    
+                    person.MemberAvatarUrl = avatarService.GetMemberAvatar(searchResult);
                 }
             }
 
@@ -84,8 +81,6 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
-                    AddAvatarToPerson(person, umbracoHelper, avatarService);
-
                     var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].Search(filter).FirstOrDefault();
@@ -94,6 +89,8 @@ namespace OurUmbraco.Community.Karma
 
                     if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
                         person.TotalKarma = totalKarma;
+                    
+                    person.MemberAvatarUrl = avatarService.GetMemberAvatar(searchResult);
                 }
             }
 
@@ -105,8 +102,6 @@ namespace OurUmbraco.Community.Karma
             {
                 foreach (var person in period.MostActive)
                 {
-                    AddAvatarToPerson(person, umbracoHelper, avatarService);
-
                     var criteria = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"].CreateSearchCriteria();
                     var filter = criteria.RawQuery("__NodeId: " + person.MemberId);
                     var searchResult = ExamineManager.Instance.SearchProviderCollection["InternalMemberSearcher"]
@@ -116,6 +111,8 @@ namespace OurUmbraco.Community.Karma
 
                     if (int.TryParse(searchResult.Fields["reputationTotal"], out var totalKarma))
                         person.TotalKarma = totalKarma;
+                    
+                    person.MemberAvatarUrl = avatarService.GetMemberAvatar(searchResult);
                 }
             }
 
@@ -130,18 +127,6 @@ namespace OurUmbraco.Community.Karma
             File.WriteAllText(_karmaStatisticsCacheFile, rawJson, Encoding.UTF8);
         }
 
-        private void AddAvatarToPerson(PeopleKarmaResult person, UmbracoHelper umbraco, AvatarService avatarService)
-        {
-            var member = umbraco.TypedMember(person.MemberId);
-            if (member == null)
-                return;
-
-            var avatar = avatarService.GetMemberAvatar(member);
-            if (string.IsNullOrEmpty(avatar))
-                return;
-
-            person.MemberAvatarUrl = avatar;
-        }
 
         private static DateTime GetLastWeekStartDate()
         {

@@ -1,0 +1,46 @@
+﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@using Umbraco.Core.Cache
+@{
+    Layout = "Master.cshtml";
+
+    const string url = "https://raw.githubusercontent.com/umbraco/OurUmbraco/main/CODE_OF_CONDUCT.md";
+    var html = GetGitHubCodeOfConduct(url);
+}
+
+<div id="body" class="page markdown-syntax">
+    <div>
+        @Html.Action("Render", "Breadcrumb", new {linkToCurrent = false})
+    </div>
+    @if (string.IsNullOrWhiteSpace(html))
+    {
+        <h1>Umbraco Code of Conduct</h1>
+        <p>There was a problem fetching the latest version of the code of conduct from <a href="@url" target="_blank" rel="noreferrer noopener">@url</a>.</p>
+    }
+    else
+    {
+        @Html.Raw(HttpUtility.HtmlDecode(html))
+    }
+</div>
+
+@functions
+{
+    public static string GetGitHubCodeOfConduct(string url)
+    {
+        try
+        {
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<string>("GitHubCodeOfConduct", () =>
+            {
+                string markdownContent;
+                using (var client = new WebClient())
+                {
+                    markdownContent = client.DownloadString(url);
+                }
+                return Markdig.Markdown.ToHtml(markdownContent);
+            }, TimeSpan.FromHours(1));
+        }
+        catch (Exception e)
+        {
+            return string.Empty;
+        }
+    }
+}

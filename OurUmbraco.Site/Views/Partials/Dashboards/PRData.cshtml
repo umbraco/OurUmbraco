@@ -3,7 +3,7 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
     var repoService = new RepositoryManagementService();
-    var repositories = repoService.GetAllPublicRepositories();
+    var repositories = repoService.GetAllPublicRepositories().Where(x => x.InDashboard);
 
     var repository = "";
     if (string.IsNullOrWhiteSpace(Request.QueryString["repository"]) == false)

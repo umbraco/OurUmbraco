@@ -35,22 +35,7 @@
                 notificationsService.error("Problem retrieving Documentation PR statistics data");
             });
     };
-
-    $scope.getOurMemberStatistics = function () {
-        vm.ourMemberStats = [];
-        var ourMemberStatsUrl = "backoffice/API/OurMemberStatistics/GetOurMemberStatistics/";
-        notificationsService.success("Downloading member data, hold on...");
-
-        $http.get(ourMemberStatsUrl)
-            .success(function (data) {
-                vm.ourMemberStats = data;
-                notificationsService.success("✔ Member data retrieved.");
-            })
-            .error(function () {
-                notificationsService.error("❌ Problem retrieving Our Member statistics data");
-            });
-    };
-
+    
     $scope.getGitHubLabelReport = function () {
         vm.gitHubLabelReport = [];
         var ourLabelReportUrl = "backoffice/API/GitHub/GetLabelReport/";

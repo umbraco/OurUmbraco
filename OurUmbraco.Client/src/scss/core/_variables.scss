@@ -8,6 +8,7 @@ $color-identity-white: #f9f7f4;
 $color-identity-orange: #f79c37;
 $color-identity-yellow: #fad634;
 $color-identity-pink: #f5c1bc;
+$color-identity-grey: #eceaea;
 
 // Variables related to responsive design
 $screen-xs: 768px;
@@ -16,10 +17,14 @@ $screen-md: 992px;
 $screen-lg: 1216px;
 $screen-xl: 1408px;
 
-$breakpoints: ( 
-    'xs': $screen-xs,
-    'sm': $screen-sm,
-    'md': $screen-md,
-    'lg': $screen-lg,
-    'xl': $screen-xl
+$breakpoints: (
+	'xs': $screen-xs,
+	'sm': $screen-sm,
+	'md': $screen-md,
+	'lg': $screen-lg,
+	'xl': $screen-xl
 );
+
+// Variables to keep consistency
+$base-border-radius: 3px;
+$base-box-shadow: 2px 5px 10px rgba(0, 0, 0, 0.1);

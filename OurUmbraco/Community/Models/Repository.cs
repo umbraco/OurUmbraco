@@ -9,6 +9,8 @@
         public string Slug { get; }
 
         public string Name { get; }
+        
+        public bool InDashboard { get; set; }
 
         public Repository(string alias, string owner, string slug, string name)
         {

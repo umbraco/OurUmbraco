@@ -27,8 +27,11 @@ namespace OurUmbraco.Community.Banner.Controllers
             if (banners == null) return null;
 
             var location = _locationService.GetLocationByIp(Request.UserHostAddress);
+            if (location == null) return null;
 
-            var relevantBanners = banners.Where(x => x.All || x.Countries.InvariantContains(location?.Country) || x.Continents.InvariantContains(location?.Continent)).ToList();
+            var relevantBanners = banners.Where(x =>
+                x.All || x.Countries.InvariantContains(location?.Country) ||
+                x.Continents.InvariantContains(location?.Continent)).ToList();
 
             var vm = new BannersViewModel()
             {

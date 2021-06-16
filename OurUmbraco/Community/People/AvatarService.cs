@@ -8,6 +8,7 @@ using System.Text;
 using System.Web.Hosting;
 using Devcorner.NIdenticon;
 using Devcorner.NIdenticon.BrushGenerators;
+using Examine;
 using OurUmbraco.Our;
 using OurUmbraco.Our.Extensions;
 using umbraco;
@@ -33,6 +34,22 @@ namespace OurUmbraco.Community.People
             var memberAvatarPath = MemberAvatarPath(member);
             if (memberAvatarPath == string.Empty)
                 memberAvatarPath = GenerateIdenticon(member);
+
+            return GetCleanImagePath(memberAvatarPath);
+        }
+
+        public string GetMemberAvatar(SearchResult examineMember)
+        {
+            int.TryParse(examineMember.Fields["id"], out var memberId);
+            var memberEmail = examineMember.Fields["email"];
+            var memberAvatarPath =  examineMember.Fields["avatar"];
+            if(string.IsNullOrWhiteSpace(memberAvatarPath) == false)
+                // Profiles with an avatar previously set to gravatar.com will get a new avatar
+                if (memberAvatarPath.IsLocalPath() == false)
+                    memberAvatarPath = string.Empty;
+            
+            if (memberAvatarPath == string.Empty)
+                memberAvatarPath = GenerateIdenticon(memberId, memberEmail);
 
             return GetCleanImagePath(memberAvatarPath);
         }
@@ -136,26 +153,37 @@ namespace OurUmbraco.Community.People
             if (memberContent != null)
             {
                 var memberPublishedContent = (MemberPublishedContent) memberContent;
-                if (memberPublishedContent != null && memberPublishedContent.Email != null)
+                
+                if (memberPublishedContent != null)
                 {
-                    avatarPath = $"/media/avatar/{memberPublishedContent.Id}.png";
-                    var emailHash = CreateMd5Hash(memberPublishedContent.Email);
-
-                    var savePath = HostingEnvironment.MapPath($"~{avatarPath}");
-
-                    if (savePath == null)
-                        throw new InvalidOperationException();
-
-                    if (System.IO.File.Exists(savePath))
-                        return avatarPath;
-
-                    var identiconGenerator = GetIdenticonGenerator();
-                    using (var output = identiconGenerator.Create(emailHash))
-                        output.Save(savePath, ImageFormat.Png);
+                    var memberId = memberPublishedContent.Id;
+                    var memberEmail = memberPublishedContent.Email;
+                    
+                    avatarPath = GenerateIdenticon(memberId, memberEmail);
                 }
             }
 
             return avatarPath;
+        }
+
+        private string GenerateIdenticon(int memberId, string memberEmail)
+        {
+            var avatarPath = $"/media/avatar/{memberId}.png";
+            var emailHash = CreateMd5Hash(memberEmail);
+
+            var savePath = HostingEnvironment.MapPath($"~{avatarPath}");
+
+            if (savePath == null)
+                throw new InvalidOperationException();
+
+            if (System.IO.File.Exists(savePath))
+                return savePath;
+
+            var identiconGenerator = GetIdenticonGenerator();
+            using (var output = identiconGenerator.Create(emailHash))
+                output.Save(savePath, ImageFormat.Png);
+            
+            return savePath;
         }
 
         private IdenticonGenerator GetIdenticonGenerator()
@@ -217,7 +245,11 @@ namespace OurUmbraco.Community.People
         {
             if (imgPath == null) 
                 return string.Empty;
-                
+
+            var siteDirectory = HostingEnvironment.MapPath("~");
+            if (imgPath.StartsWith(siteDirectory))
+                imgPath = imgPath.Replace(siteDirectory, string.Empty).Replace("\\", "/");
+            
             var cleanImagePath = imgPath.Replace(" ", "%20").TrimStart("~");
             if (cleanImagePath.Contains("?"))
                 cleanImagePath = cleanImagePath.Substring(0, cleanImagePath.IndexOf("?", StringComparison.Ordinal));
