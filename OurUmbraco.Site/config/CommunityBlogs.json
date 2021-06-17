@@ -350,6 +350,15 @@
       "rss": "https://dev.to/feed/skttl",
       "logo": "https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png",
       "memberId": 109985
+    },
+    {
+      "id": "7e4bc3a8-04fe-2e56-a1b5-3ce98a89a201",
+      "checkTitles": false,
+      "title": "Piotr Bach",
+      "url": "https://piotrbach.com",
+      "rss": "https://piotrbach.com/rss/umbraco",
+      "logo": "https://piotrbach.com/media/ffvpgoxn/piotrbach-logo-square.jpg",
+      "memberId": 155740
     }
   ]
 }
