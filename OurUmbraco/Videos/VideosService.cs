@@ -9,6 +9,7 @@ using Skybrud.Essentials.Strings;
 using Skybrud.Social.Vimeo;
 using Skybrud.Social.Vimeo.Models.Videos;
 using Umbraco.Core.IO;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Videos
 {
@@ -18,68 +19,75 @@ namespace OurUmbraco.Videos
 
         public void UpdateVimeoVideos(string username)
         {
-            if (ConfigurationManager.AppSettings["VimeoAccessToken"] == "it's a secret.. and no, this is not the secret, this key will transformed on the build server")
+            try
             {
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException("username");
-
-            // Map the path to the directory
-            var savePath = IOHelper.MapPath(SaveDirectory);
-            if (Directory.Exists(savePath) == false)
-                Directory.CreateDirectory(savePath);
-
-            // Map the path to the JSON file
-            var path = savePath + "VimeoVideos_" + username + ".json";
-
-            // Initialize a new service from an OAuth 2.0 access token
-            var vimeo = VimeoService.CreateFromAccessToken(ConfigurationManager.AppSettings["VimeoAccessToken"]);
-
-            var page = 1;
-            const int maxPages = 10;
-
-            // Initialize a list for all the videos
-            var videos = new List<VimeoVideo>();
-
-            // Create a loop for the pages
-            while (page <= maxPages)
-            {
-                // Make the request to the Vimeo API
-                var response = vimeo.Videos.GetVideos(username, page, 100);
-
-                // Append the videos of the response to the list
-                videos.AddRange(response.Body.Data);
-
-                // Download the thumnails for each video
-                foreach (var video in videos)
+                if (ConfigurationManager.AppSettings["VimeoAccessToken"] == "it's a secret.. and no, this is not the secret, this key will transformed on the build server")
                 {
-                    var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
-
-                    const string mediaRoot = "~/media/Vimeo";
-                    var thumbnailFile = IOHelper.MapPath($"{mediaRoot}/{video.Id}.jpg");
-
-                    var mediaPath = IOHelper.MapPath(mediaRoot);
-                    if (Directory.Exists(mediaPath) == false)
-                        Directory.CreateDirectory(mediaPath);
-
-                    if (File.Exists(thumbnailFile))
-                        continue;
-
-                    using (var client = new WebClient())
-                        client.DownloadFile(thumbnail.Link, thumbnailFile);
+                    return;
                 }
 
-                // Break the loop if there are no further pages
-                if (response.Body.Paging.Next == null)
-                    break;
+                if (string.IsNullOrWhiteSpace(username)) throw new ArgumentNullException("username");
 
-                // Increment the page count
-                page++;
+                // Map the path to the directory
+                var savePath = IOHelper.MapPath(SaveDirectory);
+                if (Directory.Exists(savePath) == false)
+                    Directory.CreateDirectory(savePath);
+
+                // Map the path to the JSON file
+                var path = savePath + "VimeoVideos_" + username + ".json";
+
+                // Initialize a new service from an OAuth 2.0 access token
+                var vimeo = VimeoService.CreateFromAccessToken(ConfigurationManager.AppSettings["VimeoAccessToken"]);
+
+                var page = 1;
+                const int maxPages = 10;
+
+                // Initialize a list for all the videos
+                var videos = new List<VimeoVideo>();
+
+                // Create a loop for the pages
+                while (page <= maxPages)
+                {
+                    // Make the request to the Vimeo API
+                    var response = vimeo.Videos.GetVideos(username, page, 100);
+
+                    // Append the videos of the response to the list
+                    videos.AddRange(response.Body.Data);
+
+                    // Download the thumnails for each video
+                    foreach (var video in videos)
+                    {
+                        var thumbnail = video.Pictures.Sizes.FirstOrDefault(x => x.Width >= 350);
+
+                        const string mediaRoot = "~/media/Vimeo";
+                        var thumbnailFile = IOHelper.MapPath($"{mediaRoot}/{video.Id}.jpg");
+
+                        var mediaPath = IOHelper.MapPath(mediaRoot);
+                        if (Directory.Exists(mediaPath) == false)
+                            Directory.CreateDirectory(mediaPath);
+
+                        if (File.Exists(thumbnailFile))
+                            continue;
+
+                        using (var client = new WebClient())
+                            client.DownloadFile(thumbnail.Link, thumbnailFile);
+                    }
+
+                    // Break the loop if there are no further pages
+                    if (response.Body.Paging.Next == null)
+                        break;
+
+                    // Increment the page count
+                    page++;
+                }
+
+                // Save the videos as a JSON file
+                JsonUtils.SaveJsonArray(path, videos);
             }
-
-            // Save the videos as a JSON file
-            JsonUtils.SaveJsonArray(path, videos);
+            catch (Exception ex)
+            {
+                LogHelper.Error<VideosService>("Could not get data from Vimeo", ex);
+            }
         }
 
         public VimeoVideo[] GetVimeoVideosFromDisk(string username)
