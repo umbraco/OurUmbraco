@@ -25,7 +25,7 @@
             var replyPlaceholder = $("#reply-is-coming");
 
             // update meta data
-            replyPlaceholder.find(".author").text(name);
+            replyPlaceholder.find(".author").html(name);
             $.ajax({
                 url: "/umbraco/api/Avatar/GetMemberAvatar/?memberId=" + memberId,
                 type: "GET"
