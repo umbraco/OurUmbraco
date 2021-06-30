@@ -1,8 +1,13 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Web.Hosting;
 using Newtonsoft.Json;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using File = System.IO.File;
 
 namespace OurUmbraco.Our
 {
@@ -15,6 +20,7 @@ namespace OurUmbraco.Our
         {
             EnsureMigrationsMarkerPathExists();
             GetReleasesJson();
+            AddNewPackageFormatToggleToPackages();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -37,6 +43,41 @@ namespace OurUmbraco.Our
                     File.WriteAllText(releasesCacheFile, rawString);
 
                 }
+            }
+        }
+        
+        private void AddNewPackageFormatToggleToPackages()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var projectContentType = contentTypeService.GetContentType("Project");
+                var propertyTypeAlias = "isNuGetFormat";
+                
+                if (projectContentType != null && projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias)
+                    {
+                        Name = "Is v9+ compatible?",
+                        Description = "The package is in the new NuGet format and compatible with v9+"
+                    };
+                    projectContentType.AddPropertyType(checkboxPropertyType, "Project");
+                    contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
             }
         }
     }

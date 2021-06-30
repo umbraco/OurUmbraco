@@ -27,6 +27,8 @@ namespace OurUmbraco.Repository.Models
                 this.LatestVersion = package.LatestVersion;
                 this.OwnerInfo = package.OwnerInfo;
                 this.CertifiedToWorkOnUmbracoCloud = package.CertifiedToWorkOnUmbracoCloud;
+                this.NuGetPackageId = package.NuGetPackageId;
+                this.IsNuGetFormat = package.IsNuGetFormat;
             }
         }
 
