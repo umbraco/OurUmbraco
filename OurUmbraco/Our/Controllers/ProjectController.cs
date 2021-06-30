@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
+using GraphQL;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Interfaces;
 using OurUmbraco.MarketPlace.ListingItem;
@@ -53,6 +54,7 @@ namespace OurUmbraco.Our.Controllers
             model.OpenForCollaboration = project.OpenForCollab;
             model.GoogleAnalyticsCode = project.GACode;
             model.Id = projectId;
+            model.IsNuGetFormat = project.IsNuGetFormat;
 
             return PartialView("~/Views/Partials/Project/Edit.cshtml", model);
         }
@@ -108,6 +110,7 @@ namespace OurUmbraco.Our.Controllers
             project.ListingType = ListingType.free;
             project.IsRetired = model.IsRetired;
             project.RetiredMessage = model.RetiredMessage;
+            project.IsNuGetFormat = model.IsNuGetFormat;
 
             // only set memberId when saving for the first time, else collaborators will cause it to switch the owner of the package
             if (model.Id == 0)
@@ -177,25 +180,44 @@ namespace OurUmbraco.Our.Controllers
 
             var errorMessage = string.Empty;
             var currentPackage = packages.FirstOrDefault(x => x.Current && x.Archived == false);
-
+            var contentService = Services.ContentService;
+            var content = contentService.GetById(project.Id);
+            var isNuGetFormat = content.GetValue<bool>("isNuGetFormat");
+            var nuGetUrl = content.GetValue<string>("nuGetPackageUrl");
+            
             // Special exception
             var isExceptionPackage = string.Equals(project.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase);
-
-            if (isExceptionPackage == false && currentPackage == null)
-                errorMessage = "None of the package files are marked as the current package, please make one current.";
-
-            if (isExceptionPackage == false && currentPackage != null && ZipFileContainsPackageXml(currentPackage) == false)
+            
+            if (isNuGetFormat == false)
             {
-                var contentService = Services.ContentService;
-                var content = contentService.GetById(project.Id);
-                var projectIsLive = content.GetValue<bool>("projectLive");
-
-                if (projectIsLive)
+                if (isExceptionPackage == false && currentPackage == null)
+                    errorMessage = 
+                        "None of the package files are marked as the current package, please make one current.";
+                
+                if (isExceptionPackage == false && currentPackage != null &&
+                    ZipFileContainsPackageXml(currentPackage) == false)
                 {
-                    content.SetValue("projectLive", false);
-                    contentService.SaveAndPublishWithStatus(content);
+                    var projectIsLive = content.GetValue<bool>("projectLive");
+
+                    if (projectIsLive)
+                    {
+                        content.SetValue("projectLive", false);
+                        contentService.SaveAndPublishWithStatus(content);
+                    }
+
+                    errorMessage =  string.Format(
+                        "The current package file {0} is not a valid Umbraco Package, please upload a package",
+                            currentPackage.Name);
                 }
-                errorMessage = string.Format("The current package file {0} is not a valid Umbraco Package, please upload a package", currentPackage.Name);
+            }
+            else
+            {
+                // NuGet URL needs to be provided 
+                if (string.IsNullOrEmpty(nuGetUrl))
+                {
+                    errorMessage =
+                        "Please provide a NuGet URL if your package is in the v9+ NuGet format";
+                }
             }
 
             var model = new ProjectCompleteModel { Id = project.Id, Name = project.Name, ProjectLive = project.Live, ErrorMessage = errorMessage };
@@ -237,8 +259,11 @@ namespace OurUmbraco.Our.Controllers
             }
             else
             {
-                // Special exception
-                if (string.Equals(model.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase))
+                bool isNuGetFormat;
+                bool.TryParse(project.GetPropertyValue("isNuGetFormat").ToString(), out isNuGetFormat);
+                    
+                // Special exception (< v9) or new package format (v9+)
+                if (string.Equals(model.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase) || isNuGetFormat)
                 {
                     project.Live = true;
                     nodeListingProvider.SaveOrUpdate(project);

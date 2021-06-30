@@ -55,6 +55,9 @@ namespace OurUmbraco.Our.Models
 
         [Display(Name = "This package is open for collaboration")]
         public bool OpenForCollaboration { get; set; }
+        
+        [Display(Name = "This package is in the new (v9+) NuGet format")]
+        public bool IsNuGetFormat { get; set; }
 
         [Display(Name = "This package is retired")]
         public bool IsRetired { get; set; }
