@@ -459,6 +459,13 @@
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
+    <Compile Include="NuGet\Models\Context.cs" />
+    <Compile Include="NuGet\Models\VersionOverview.cs" />
+    <Compile Include="NuGet\Models\VersionDetails.cs" />
+    <Compile Include="NuGet\Models\PackageType.cs" />
+    <Compile Include="NuGet\Models\SearchResult.cs" />
+    <Compile Include="NuGet\Models\ApiResponse.cs" />
+    <Compile Include="NuGet\Services\SearchService.cs" />
     <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />
