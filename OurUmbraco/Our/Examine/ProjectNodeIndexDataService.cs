@@ -57,6 +57,7 @@ namespace OurUmbraco.Our.Examine
             simpleDataSet.RowData.Add("uniqueId", project.GetPropertyValue<string>("packageGuid"));
             simpleDataSet.RowData.Add("worksOnUaaS", project.GetPropertyValue<string>("worksOnUaaS"));
             simpleDataSet.RowData.Add("isRetired", project.GetPropertyValue<bool>("isRetired", false) ? "1" : "0");
+            simpleDataSet.RowData.Add("isNuGetFormat", project.GetPropertyValue<bool>("isNuGetFormat", false) ? "1" : "0");
 
             var imageFile = string.Empty;
             if (project.HasValue("defaultScreenshotPath"))

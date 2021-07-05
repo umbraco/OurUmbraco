@@ -56,6 +56,7 @@ namespace OurUmbraco.MarketPlace.ListingItem
             LicenseKey = content.GetPropertyValue<string>("licenseKey", "");
             IsRetired = content.GetPropertyValue<bool>("isRetired", false);
             RetiredMessage = content.GetPropertyValue<string>("retiredMessage", "");
+            IsNuGetFormat = content.GetPropertyValue<bool>("isNuGetFormat", false);
         }
 
         public PublishedContentListingItem()
@@ -127,5 +128,6 @@ namespace OurUmbraco.MarketPlace.ListingItem
         public DateTime CreateDate { get; set; }
         public bool IsRetired { get; set; }
         public string RetiredMessage { get; set; }
+        public bool IsNuGetFormat { get; set; }
     }
 }

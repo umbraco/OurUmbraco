@@ -294,31 +294,40 @@
                         }
                     </style>
 
-                    <div class="row explain">
-                        <div class="col-sm-2">
-                            <span class="dot big progress">
-                                <div class="chart" data-percent="@release.PercentComplete">
-                                    <p>@(release.PercentComplete)%</p>
+                        <div class="row explain">
+                            @if (release != null)
+                            {
+                                
+                                <div class="col-sm-2">
+                                    <spa class="dot big progress">
+
+                                        <div class="chart" data-percent="@release.PercentComplete">
+                                            <p>@(release.PercentComplete)%</p>
+                                        </div>
+                                    
+                                    </spa>
                                 </div>
-                            </span>
-                        </div>
+                            }
+                        
                         <div class="col-sm-10">
                             <h2>v@(Model.Content.Name)</h2>
-                            <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
-                            @if (release.Released == false)
+                            @if (release != null)
                             {
-                                <h3>
-                                    <span>@(release.PercentComplete)% complete</span>
-                                    <span>@(100 - release.PercentComplete)% in progress</span>
-                                </h3>
+                                <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
+                                if (release.Released == false)
+                                {
+                                    <h3>
+                                        <span>@(release.PercentComplete)% complete</span>
+                                        <span>@(100 - release.PercentComplete)% in progress</span>
+                                    </h3>
 
-                                <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
+                                    <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
+                                }
+                                else
+                                {
+                                    <h3>Released on <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
+                                }
                             }
-                            else
-                            {
-                                <h3>Released on <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
-                            }
-                            
 
                             @if (version2 > version1)
                             {
@@ -381,7 +390,7 @@
 
                             <div class="col-md-10">
 
-                                @if (release.ReleaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
+                                @if (release != null && release.ReleaseDescription != string.Empty && currentPage.HasValue("bodyText") == false)
                                 {
                                     <span>
                                         <h2>Summary</h2>
@@ -395,11 +404,14 @@
                                     @Html.Raw(Model.Content.GetPropertyValue<string>("bodyText"))
                                 }
 
-                                <h2>Related changes from the issue tracker</h2>
+                                @if (release != null)
+                                {
+                                    <h2>Related changes from the issue tracker</h2>
+                                }
                                 <div class="panel-wrapper">
                                     <div class="panel-left">
                                         <!-- Columns for statuses -->
-                                        @if (release.FullVersion >= new Version(8, 7, 0) && release.CategorizedIssues != null)
+                                        @if (release != null && release.FullVersion >= new Version(8, 7, 0) && release.CategorizedIssues != null)
                                         {
                                             foreach (var category in release.CategorizedIssues
                                                 .Where(x => x.Issues.Count != 0)
@@ -437,7 +449,7 @@
                                                 </details>
                                             }
                                         }
-                                        else
+                                        else if(release != null)
                                         {
                                             var anyContributions = release.Issues.Any(x => x.CommunityContribution)
                                                                    || release.Features.Any(x => x.CommunityContribution);

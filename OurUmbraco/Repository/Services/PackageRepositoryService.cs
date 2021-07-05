@@ -8,6 +8,7 @@ using Examine;
 using Examine.LuceneEngine;
 using Examine.SearchCriteria;
 using Lucene.Net.Documents;
+using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.MarketPlace.Providers;
@@ -95,24 +96,34 @@ namespace OurUmbraco.Repository.Services
                 searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
             }
 
-            filters.Add(searchFilters);
             if (version.IsNullOrWhiteSpace() == false)
             {
                 //need to clean up this string, it could be all sorts of things
                 var parsedVersion = version.GetFromUmbracoString(reduceToConfigured: false);
                 if (parsedVersion != null)
                 {
-                    var numericalVersion = parsedVersion.GetNumericalValue();
-                    var versionFilters = new SearchFilters(BooleanOperation.Or);
+                    // As of version 9, there will no longer be package files - those are on NuGet.org only so don't check file compatibility
+                    if (parsedVersion.Major >= 9)
+                    {
+                        searchFilters.Filters.Add(new SearchFilter("isNuGetFormat", "1"));
+                    }
+                    else
+                    {
+                        var numericalVersion = parsedVersion.GetNumericalValue();
+                        var versionFilters = new SearchFilters(BooleanOperation.Or);
 
-                    //search for all versions from the current major to the version passed in
-                    var currMajor = new System.Version(parsedVersion.Major, 0, 0).GetNumericalValue();
+                        //search for all versions from the current major to the version passed in
+                        var currMajor = new System.Version(parsedVersion.Major, 0, 0).GetNumericalValue();
 
-                    versionFilters.Filters.Add(new RangeSearchFilter("num_version", currMajor, numericalVersion));
-                    filters.Add(versionFilters);
+                        versionFilters.Filters.Add(
+                            new RangeSearchFilter("num_version", currMajor, numericalVersion));
+                        filters.Add(versionFilters);
+                    }
                 }
             }
-
+            
+            filters.Add(searchFilters);
+            
             query = string.IsNullOrWhiteSpace(query) ? string.Empty : query;
 
             var orderBy = string.Empty;
@@ -221,7 +232,9 @@ namespace OurUmbraco.Repository.Services
             var score = result != null ? GetScore(result.Fields) : 0;
             var version = result != null ? ParseVersion(result) : "";
             var downloads = result != null ? GetCombinedDownloads(result.Fields, Utils.GetProjectTotalDownloadCount(content.Id)) : Utils.GetProjectTotalDownloadCount(content.Id);
-
+            var nugetService = new NugetPackageDownloadService();
+            var nuGetPackageId = nugetService.GetNuGetPackageId(content);
+            
             return new Models.Package
             {
                 Category = content.Parent.Name,
@@ -241,6 +254,8 @@ namespace OurUmbraco.Repository.Services
                 Image = BASE_URL + content.GetPropertyValue<string>("defaultScreenshotPath", "/css/img/package2.png"),
                 Summary = GetPackageSummary(content, 50),
                 CertifiedToWorkOnUmbracoCloud = content.GetPropertyValue<bool>("worksOnUaaS"),
+                NuGetPackageId = nuGetPackageId,
+                IsNuGetFormat =  content.GetPropertyValue<bool>("isNuGetFormat")
             };
         }
 
@@ -342,7 +357,9 @@ namespace OurUmbraco.Repository.Services
             var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();
             //these are ordered by package version desc
             var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(allPackageFiles).ToArray();
-
+            var nugetService = new NugetPackageDownloadService();
+            var nuGetPackageId = nugetService.GetNuGetPackageId(content);
+            
             var packageDetails = new PackageDetails(package)
             {
                 TargetedUmbracoVersions = GetAllFilePackageVersions(allPackageFiles).Select(x => {
@@ -366,7 +383,9 @@ namespace OurUmbraco.Repository.Services
                 LicenseUrl = content.GetPropertyValue<string>("licenseUrl"),
                 Description = content.GetPropertyValue<string>("description").CleanHtmlAttributes(),
                 Images = GetPackageImages(wikiFiles.Where(x => x.FileType.InvariantEquals("screenshot")), 154, 281),
-                ExternalSources = GetExternalSources(content)
+                ExternalSources = GetExternalSources(content),
+                NuGetPackageId = nuGetPackageId,
+                IsNuGetFormat =  content.GetPropertyValue<bool>("isNuGetFormat")
             };   
 
             var version75 = new System.Version(7, 5, 0);
