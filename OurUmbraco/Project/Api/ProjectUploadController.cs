@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Web;
 using System.Web.Http;
 using OurUmbraco.MarketPlace.Providers;
+using OurUmbraco.Project.uVersion;
 using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Project.Api
@@ -109,11 +110,29 @@ namespace OurUmbraco.Project.Api
                     var packageFileExtension = Path.GetExtension(fileName);
                     var fileType = provider.FormData["fileType"];
                     var dotNetVersion = provider.FormData["dotNetVersion"];
-                    var umbracoVersions = JsonConvert.DeserializeObject<List<UmbracoVersion>>(provider.FormData["umbracoVersions"]);
+                    var versions = provider.FormData["umbracoVersions"];
                     var isCurrent = bool.Parse(provider.FormData["isCurrent"]);
                     var packageVersionNumber = provider.FormData["packageVersion"];
 
                     var contentService = ApplicationContext.Services.ContentService;
+
+                    var umbracoVersions = new List<UmbracoVersion>();
+                    if (versions == null)
+                    {
+                        var uVersion = new UVersion();
+
+                        var allVersions = uVersion.GetAllVersions();
+
+                        umbracoVersions = new List<UmbracoVersion>()
+                        {
+                            new UmbracoVersion(allVersions.FirstOrDefault().Key, "", "")
+                        };
+
+                    }
+                    else
+                    {
+                        umbracoVersions = JsonConvert.DeserializeObject<List<UmbracoVersion>>(versions);
+                    }
 
                     // get package guid from id
                     var packageEntity = contentService.GetById(ProjectNodeId);
