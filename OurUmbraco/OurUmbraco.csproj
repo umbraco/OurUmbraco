@@ -459,6 +459,7 @@
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
+    <Compile Include="Forum\Slack.cs" />
     <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />

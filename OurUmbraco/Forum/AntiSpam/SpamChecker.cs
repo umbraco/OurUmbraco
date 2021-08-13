@@ -5,11 +5,10 @@ using System.Configuration;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Web;
 using System.Web.Security;
 using HtmlAgilityPack;
+using Newtonsoft.Json;
 using OurUmbraco.Forum.Extensions;
-using OurUmbraco.Forum.Library;
 using OurUmbraco.Forum.Models;
 using OurUmbraco.Forum.Services;
 using umbraco.BusinessLogic;
@@ -49,35 +48,17 @@ namespace OurUmbraco.Forum.AntiSpam
         public static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
-            using (var client = new WebClient())
-            {
-                var topic = ts.GetById(topicId);
-                var post = string.Format("Topic title: *{0}*\n\n Link to topic: https://our.umbraco.com{1}\n\n", topic.Title, topic.GetUrl());
-                post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
-                post = post + string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
+            
+            var topic = ts.GetById(topicId);
+            var post = string.Format("Topic title: *{0}*\n\n Link to topic: https://our.umbraco.com{1}\n\n", topic.Title, topic.GetUrl());
+            post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
+            post = post + string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
 
-                var body = string.Format("The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}", post);
-                body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+            var body = string.Format("The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}", post);
+            body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-                var values = new NameValueCollection
-                             {
-                                 {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
-                                 {"token", ConfigurationManager.AppSettings["SlackToken"]},
-                                 {"username", ConfigurationManager.AppSettings["SlackUsername"]},
-                                 { "icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
-                                 {"text", body}
-                             };
-
-                try
-                {
-                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                    var response = client.Encoding.GetString(data);
-                }
-                catch (Exception ex)
-                {
-                    Log.Add(LogTypes.Error, new User(0), -1, string.Format("Posting update to Slack failed {0} {1}", ex.Message, ex.StackTrace));
-                }
-            }
+            var slack = new Slack();
+            slack.PostSlackMessage(body);
         }
 
         // Remember this one only kicks in if a user has < 50 karma
