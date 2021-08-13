@@ -71,7 +71,7 @@
         vm.docsMessage = "Downloading documentation, hold on...";
         notificationsService.success(vm.docsMessage);
 
-        var downloadUrl = "/html/githubpulltrigger";
+        var downloadUrl = "backoffice/API/Docs/DownloadDocs";
         $http.get(downloadUrl)
             .success(function () {
                 vm.docsLoading = false;
