@@ -307,23 +307,33 @@
                     <div class="package-detail-sidebar">
 
                         <div class="package-download">
-                            @if (currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package")
+							@{ 
+								var hasCurrentRelease = currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package";
+								var hasNuGetRelease = string.IsNullOrEmpty(nugetPackageId) == false;
+							    var isNuGetFormat = project.GetPropertyValue<bool>("isNuGetFormat");
+							    var installCopy = "Install-Package";
+							    if (hasNuGetRelease && isNuGetFormat)
+							    {
+							        installCopy = "dotnet add package";
+							    }
+							}
+                            
+                            @if (hasCurrentRelease)
                             {
                                 <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
                             }
-                            else if(project.GetPropertyValue<bool>("isNuGetFormat") == false || string.IsNullOrEmpty(nugetPackageId) == false)
+                            
+							@if(hasCurrentRelease == false && hasNuGetRelease == false)
                             {
                                 <div class="button green">No current release</div>
                             }
 
-                            @if (string.IsNullOrEmpty(nugetPackageId) == false)
+                            @if (hasNuGetRelease)
                             {
-
-                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> installation</p>
-                                <span class="pm-nuget">
-                                    <input class="pre nuget" value="Install-Package @nugetPackageId" readonly>
+                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions</p>
+                                <span class="dotnet-nuget pre">
+                                    @installCopy <span class="package-name">@nugetPackageId</span>
                                 </span>
-
                             }
                         </div>
 
