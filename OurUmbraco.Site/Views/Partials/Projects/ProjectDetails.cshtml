@@ -309,17 +309,17 @@
                         <div class="package-download">
                             @if (currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package")
                             {
-                                <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br /><small>version @project.GetPropertyValue("version")</small></a>
+                                <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
                             }
-                            else
+                            else if(project.GetPropertyValue<bool>("isNuGetFormat") == false || string.IsNullOrEmpty(nugetPackageId) == false)
                             {
                                 <div class="button green">No current release</div>
                             }
 
-                            @if (!string.IsNullOrEmpty(nugetPackageId))
+                            @if (string.IsNullOrEmpty(nugetPackageId) == false)
                             {
 
-                                <p class="small">or, install via <a href="@nuGetPackageUrl">NuGet</a></p>
+                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> installation</p>
                                 <span class="pm-nuget">
                                     <input class="pre nuget" value="Install-Package @nugetPackageId" readonly>
                                 </span>
