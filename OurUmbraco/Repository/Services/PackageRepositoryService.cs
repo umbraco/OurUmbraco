@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Linq;
 using Examine;
 using Examine.SearchCriteria;
+using GraphQL;
 using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Extensions;
@@ -309,7 +310,13 @@ namespace OurUmbraco.Repository.Services
                 .ToArray();
 
             if (orderedVersions.Any() == false)
-                return "n/a";
+            {
+                var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+                var node = umbHelper.TypedContent(result.Id);
+
+                var isVersion9 = node.GetPropertyValue<bool>("isNuGetFormat");
+                return isVersion9 ? "9+" : "n/a";
+            }
 
             if (orderedVersions.Length == 1)
                 return orderedVersions.First().ToString();
