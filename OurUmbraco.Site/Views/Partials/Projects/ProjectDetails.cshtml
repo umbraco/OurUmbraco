@@ -307,15 +307,11 @@
                     <div class="package-detail-sidebar">
 
                         <div class="package-download">
-							@{ 
-								var hasCurrentRelease = currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package";
+							@{
+							    var hasCurrentRelease = currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package";
 								var hasNuGetRelease = string.IsNullOrEmpty(nugetPackageId) == false;
 							    var isNuGetFormat = project.GetPropertyValue<bool>("isNuGetFormat");
 							    var installCopy = "Install-Package";
-							    if (hasNuGetRelease && isNuGetFormat)
-							    {
-							        installCopy = "dotnet add package";
-							    }
 							}
                             
                             @if (hasCurrentRelease)
@@ -328,13 +324,22 @@
                                 <div class="button green">No current release</div>
                             }
 
-                            @if (hasNuGetRelease)
+                            @if (hasNuGetRelease && hasCurrentRelease)
                             {
-                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions</p>
+                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions for Umbraco 8 and lower</p>
                                 <span class="dotnet-nuget pre">
-                                    @installCopy <span class="package-name">@nugetPackageId</span>
+                                    Install-Package <span class="package-name">@nugetPackageId</span>
                                 </span>
                             }
+                            
+                            @if (hasNuGetRelease && isNuGetFormat)
+                            {
+                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions for Umbraco 9+</p>
+                                <span class="dotnet-nuget pre">
+                                    dotnet add package <span class="package-name">@nugetPackageId</span>
+                                </span>
+                            }
+                            
                         </div>
 
                         <div class="package-creator">
