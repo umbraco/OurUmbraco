@@ -39,6 +39,12 @@ namespace OurUmbraco.Our.Services
             var cache = GetReleasesCache();
             return cache.FirstOrDefault(x => x.LatestRelease);
         }
+        
+        public Release GetLatestVersion8Release()
+        {
+            var cache = GetReleasesCache();
+            return cache.OrderBy(x => x.FullVersion).LastOrDefault(x => x.Released && x.FullVersion.Major == 8);
+        }
 
         internal List<Release> ReleasesCache()
         {

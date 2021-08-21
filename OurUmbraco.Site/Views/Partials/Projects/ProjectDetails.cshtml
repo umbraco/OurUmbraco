@@ -4,16 +4,63 @@
 @using OurUmbraco.Project
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
-@using System.Text.RegularExpressions;
 @using OurUmbraco.Community.Nuget
 @using OurUmbraco.Community.People
 @using OurUmbraco.Our.Extensions
+@using OurUmbraco.Our.Services
+@using OurUmbraco.Repository.Services
 
 @{
     var nugetService = new NugetPackageDownloadService();
 
     var project = Model.Content;
 
+    var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
+    var query = searcher.CreateSearchCriteria().Field("__NodeId", project.Id.ToString()).Compile();
+    var searchResult = searcher.Search(query).FirstOrDefault();
+
+    var supportedUmbracoVersions = "  versions below 9";
+    
+    if (searchResult != null)
+    {
+        var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
+        var packageRepoService = new PackageRepositoryService(umbracoHelper, umbracoHelper.MembershipHelper, ApplicationContext.Current.DatabaseContext);
+        var resultVersions = packageRepoService.ParseVersion(searchResult);
+        if (resultVersions != "n/a")
+        {
+            supportedUmbracoVersions = resultVersions.Replace(" - ", "-");
+            var versionRange = supportedUmbracoVersions.Split(new []{ '-' });
+            var upperVersion = versionRange.LastOrDefault();
+            if (upperVersion != null)
+            {
+                Version upperVersionValue;
+                if (Version.TryParse(upperVersion, out upperVersionValue))
+                {
+                    var releasesService = new ReleasesService();
+                    var latestRelease = releasesService.GetLatestVersion8Release();
+                    Version latestReleaseVersion;
+                    
+                    if (Version.TryParse(latestRelease.Version, out latestReleaseVersion))
+                    {
+                        // show up until latest released Umbraco version
+                        if (upperVersionValue.Major >= 9)
+                        {
+                            supportedUmbracoVersions = $"{versionRange.First()}-{latestRelease.Version}";
+                        }
+
+                        // Show download for latest version since package probably supports that just fine
+                        if (upperVersionValue.Major == 8)
+                        {
+                            supportedUmbracoVersions = upperVersionValue > latestReleaseVersion
+                                ? $"{versionRange.First()}-{upperVersion}"
+                                : $"{versionRange.First()}-{latestRelease.Version}";
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
     var owner = Members.GetById(Model.Content.GetPropertyValue<int>("owner"));
 
     var files = WikiFile.CurrentFiles(project.Id);
@@ -326,7 +373,7 @@
 
                             @if (hasNuGetRelease && hasCurrentRelease)
                             {
-                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions for Umbraco 8 and lower</p>
+                                <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions for Umbraco @supportedUmbracoVersions</p>
                                 <span class="dotnet-nuget pre">
                                     Install-Package <span class="package-name">@nugetPackageId</span>
                                 </span>
