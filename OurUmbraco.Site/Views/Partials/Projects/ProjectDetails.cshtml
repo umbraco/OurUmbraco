@@ -187,7 +187,7 @@
                             </div>
                         }
 
-                    @if(packages.Any() || source.Any() || docs.Any()) 
+                    @if(packages.Any() || source.Any() || docs.Any(x => !x.Archived)) 
                     {
                         <div class="package-misc">
                                 <ul class="tabs">
