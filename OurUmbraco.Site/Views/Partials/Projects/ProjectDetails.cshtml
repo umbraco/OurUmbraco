@@ -66,8 +66,8 @@
     var files = WikiFile.CurrentFiles(project.Id);
     var screenshots = files.Where(x => x.FileType == "screenshot").ToArray();
     var packages = files.Where(x => x.FileType == "package" || x.FileType == "hotfix").ToList();
-    var docs = files.Where(x => x.FileType == "docs");
-    var source = files.Where(x => x.FileType == "source");
+    var docs = files.Where(x => x.FileType == "docs").ToList();
+    var source = files.Where(x => x.FileType == "source").ToList();
 
     var file = project.GetPropertyValue<int>("file");
     WikiFile currentRelease = null;
@@ -187,137 +187,139 @@
                             </div>
                         }
 
+                    @if(packages.Any() || source.Any() || docs.Any()) 
+                    {
                         <div class="package-misc">
-                            <ul class="tabs">
-                                <li class="tab-link current" data-tab="tab-package">Package Files</li>
-                                <li class="tab-link" data-tab="tab-docs">Documentation</li>
-                                @if (source.Any())
-                                {
-                                    <li class="tab-link" data-tab="tab-source">Source code</li>
-                                }
-                                <li class="tab-link" data-tab="tab-archive">Archived Files</li>
-                            </ul>
-
-                            <div id="tab-package" class="tab-content current">
-                                <h3>Package files</h3>
-
-                                <ul class="search-all-results">
-
-                                    @foreach (var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version))
+                                <ul class="tabs">
+                                    <li class="tab-link current" data-tab="tab-package">Package Files</li>
+                                    <li class="tab-link" data-tab="tab-docs">Documentation</li>
+                                    @if (source.Any())
                                     {
-                                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
-                                        <li>
-                                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(release.Name.Replace("'", ""))')">
-                                                <div class="type-icon">
-                                                    <i class="icon-Box"></i>
-                                                </div>
-
-                                                <div class="type-context">
-                                                    <div class="type-name">
-                                                        @release.Name
-                                                    </div>
-                                                    <div class="type-description">
-                                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
-                                                        <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
-                                                        @if (string.IsNullOrWhiteSpace(release.MinimumVersionStrict) == false)
-                                                        {
-                                                            <span><strong>Note that the minimum version required to install this package is @release.MinimumVersionStrict</strong></span>
-                                                        }
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
+                                        <li class="tab-link" data-tab="tab-source">Source code</li>
                                     }
+                                    <li class="tab-link" data-tab="tab-archive">Archived Files</li>
                                 </ul>
+
+                                <div id="tab-package" class="tab-content current">
+                                    <h3>Package files</h3>
+
+                                    <ul class="search-all-results">
+
+                                        @foreach (var release in packages.Where(x => x.Current && !x.Archived).OrderByDescending(x => x.Version.Version))
+                                        {
+                                            var uploader = Members.GetById(release.CreatedBy) ?? owner;
+                                            <li>
+                                                <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(release.Name.Replace("'", ""))')">
+                                                    <div class="type-icon">
+                                                        <i class="icon-Box"></i>
+                                                    </div>
+
+                                                    <div class="type-context">
+                                                        <div class="type-name">
+                                                            @release.Name
+                                                        </div>
+                                                        <div class="type-description">
+                                                            uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
+                                                            <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
+                                                            @if (string.IsNullOrWhiteSpace(release.MinimumVersionStrict) == false)
+                                                            {
+                                                                <span><strong>Note that the minimum version required to install this package is @release.MinimumVersionStrict</strong></span>
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <div id="tab-archive" class="tab-content">
+                                    <h3>Archived files</h3>
+
+                                    <ul class="search-all-results">
+
+                                        @foreach (var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version))
+                                        {
+                                            var uploader = Members.GetById(release.CreatedBy) ?? owner;
+                                            <li>
+                                                <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/archived-files/@(release.Name.Replace("'", ""))')">
+                                                    <div class="type-icon">
+                                                        <i class="icon-Box"></i>
+                                                    </div>
+
+                                                    <div class="type-context">
+                                                        <div class="type-name">
+                                                            @release.Name
+                                                        </div>
+                                                        <div class="type-description">
+                                                            uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
+                                                            <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <div id="tab-docs" class="tab-content">
+                                    <h3>Documentation</h3>
+
+                                    <ul class="search-all-results">
+
+                                        @foreach (var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
+                                        {
+                                            var uploader = Members.GetById(release.CreatedBy) ?? owner;
+                                            <li>
+                                                <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/documentation/@(release.Name.Replace("'", ""))')">
+                                                    <div class="type-icon">
+                                                        <i class="icon-Box"></i>
+                                                    </div>
+
+                                                    <div class="type-context">
+                                                        <div class="type-name">
+                                                            @release.Name
+                                                        </div>
+                                                        <div class="type-description">
+                                                            uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
+
+                                <div id="tab-source" class="tab-content">
+                                    <h3>Source code</h3>
+
+                                    <ul class="search-all-results">
+
+                                        @foreach (var release in source.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
+                                        {
+                                            var uploader = Members.GetById(release.CreatedBy) ?? owner;
+                                            <li>
+                                                <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/source-code/@(release.Name.Replace("'", ""))')">
+                                                    <div class="type-icon">
+                                                        <i class="icon-Box"></i>
+                                                    </div>
+
+                                                    <div class="type-context">
+                                                        <div class="type-name">
+                                                            @release.Name
+                                                        </div>
+                                                        <div class="type-description">
+                                                            uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
+                                                        </div>
+                                                    </div>
+                                                </a>
+                                            </li>
+                                        }
+                                    </ul>
+                                </div>
                             </div>
-
-                            <div id="tab-archive" class="tab-content">
-                                <h3>Archived files</h3>
-
-                                <ul class="search-all-results">
-
-                                    @foreach (var release in packages.Where(x => x.Archived).OrderByDescending(x => x.Version.Version))
-                                    {
-                                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
-                                        <li>
-                                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/archived-files/@(release.Name.Replace("'", ""))')">
-                                                <div class="type-icon">
-                                                    <i class="icon-Box"></i>
-                                                </div>
-
-                                                <div class="type-context">
-                                                    <div class="type-name">
-                                                        @release.Name
-                                                    </div>
-                                                    <div class="type-description">
-                                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
-                                                        <span>For Umbraco: @string.Join(", ", release.Versions.Select(x => x.Name)) & .NET Version: @release.DotNetVersion</span>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-
-                            <div id="tab-docs" class="tab-content">
-                                <h3>Documentation</h3>
-
-                                <ul class="search-all-results">
-
-                                    @foreach (var release in docs.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
-                                    {
-                                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
-                                        <li>
-                                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/documentation/@(release.Name.Replace("'", ""))')">
-                                                <div class="type-icon">
-                                                    <i class="icon-Box"></i>
-                                                </div>
-
-                                                <div class="type-context">
-                                                    <div class="type-name">
-                                                        @release.Name
-                                                    </div>
-                                                    <div class="type-description">
-                                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-
-                            <div id="tab-source" class="tab-content">
-                                <h3>Source code</h3>
-
-                                <ul class="search-all-results">
-
-                                    @foreach (var release in source.Where(x => !x.Archived).OrderByDescending(x => x.Version.Version))
-                                    {
-                                        var uploader = Members.GetById(release.CreatedBy) ?? owner;
-                                        <li>
-                                            <a href="/FileDownload?id=@release.Id" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/source-code/@(release.Name.Replace("'", ""))')">
-                                                <div class="type-icon">
-                                                    <i class="icon-Box"></i>
-                                                </div>
-
-                                                <div class="type-context">
-                                                    <div class="type-name">
-                                                        @release.Name
-                                                    </div>
-                                                    <div class="type-description">
-                                                        uploaded @release.CreateDate.ToShortDateString() by @uploader.Name<br>
-                                                    </div>
-                                                </div>
-                                            </a>
-                                        </li>
-                                    }
-                                </ul>
-                            </div>
-
-                        </div>
-
+                        }
+                    
                         <div class="package-forum-activity">
                             @{
                                 var forums = CurrentPage.Children.Where("Visible");
