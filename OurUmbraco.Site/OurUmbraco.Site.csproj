@@ -1735,6 +1735,7 @@
     <Content Include="umbraco_client\tinymce3\langs\ru.js" />
     <Content Include="usercontrols\dashboard\ForceDocumentationDownload.ascx" />
     <Content Include="Views\CodeOfConduct.cshtml" />
+    <Content Include="Views\CommunityBlogsRss.cshtml" />
     <Content Include="Views\ContentLanding.cshtml" />
     <Content Include="Views\Blank.cshtml" />
     <Content Include="Views\DisplayTopic.cshtml" />
