@@ -368,6 +368,15 @@
       "rss": "https://piotrbach.com/rss/umbraco",
       "logo": "https://piotrbach.com/media/ffvpgoxn/piotrbach-logo-square.jpg",
       "memberId": 155740
+    },
+    {
+      "id": "574d8335-d429-4ff7-8877-dcd863206eae",
+      "checkTitles": false,
+      "title": "Michaels uGarage",
+      "url": "https://michaels-ugarage.cyber-solutions.at",
+      "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
+      "logo": "https://michaels-ugarage.cyber-solutions.at/img/logos/logo.png",
+      "memberId": 286196
     }
   ]
 }
