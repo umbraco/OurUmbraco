@@ -118,16 +118,17 @@
                         }
                     </dd>
                 }
-            }
             else if (currentVersion != null)
             {
                 <dd class="current-version selected-version">
                     @(currentVersion.Version)
                 </dd>
             }
-        </dl>
-    </div>
-</aside>
+            </dl>
+        </div>
+    </aside>
+}
+
 
 @if (string.IsNullOrWhiteSpace(Request.QueryString["debug"]) == false)
 {
