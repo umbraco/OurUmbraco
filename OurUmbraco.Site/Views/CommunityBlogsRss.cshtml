@@ -1,0 +1,51 @@
+﻿@using OurUmbraco.Community.BlogPosts
+@using OurUmbraco.Community.People
+@{
+    Response.Clear();
+    Response.ContentType = "application/rss+xml";
+    var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
+    var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
+    
+    var service = new BlogPostsService();
+
+    var items = service.GetCachedBlogPosts(60, 4).ToArray();
+
+    if (items.Length == 0)
+    {
+        return;
+    }
+    
+    var helper = new UmbracoHelper(UmbracoContext.Current);
+    
+    var avatarService = new AvatarService();
+    string img;
+}<?xml version="1.0" encoding="UTF-8" ?>
+ <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+     <channel>
+         <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
+         <title>Community Blog Posts</title>
+         @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
+         <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
+         <generator>umbraco</generator>
+         <description>Latest blog posts from the Umbraco commmunity</description>
+         <language>en</language>
+         @foreach (var blogPost in items)
+         {
+             var memberName = string.Empty;
+             var member = helper.MembershipHelper.GetById(blogPost.Blog.MemberId);
+             if (member != null)
+             {
+                 memberName = member.Name;
+             }
+             <item>
+                 <title>@blogPost.Title</title>
+                 @Html.Raw(string.Format("<link>{0}</link>", blogPost.Link))
+                 <guid isPermaLink="true">@blogPost.Link</guid>
+                 <description><![CDATA[@blogPost.Item.Description]]></description>
+                <content:encoded><![CDATA[@blogPost.Item.Description]]></content:encoded>
+                 <dc:creator>@memberName</dc:creator>
+                 <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", blogPost.Item.PublishedDate)</pubDate>
+             </item>
+         }
+     </channel>
+ </rss>

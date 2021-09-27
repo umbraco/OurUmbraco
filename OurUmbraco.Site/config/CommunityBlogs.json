@@ -350,6 +350,24 @@
       "rss": "https://dev.to/feed/skttl",
       "logo": "https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png",
       "memberId": 109985
+    },
+    {
+      "id": "6c1dbd96-c0e8-432d-a75a-e91571dd3288",
+      "checkTitles": false,
+      "title": "Jesper Mayntzhusen",
+      "url": "https://dev.to/jemayn",
+      "rss": "https://dev.to/feed/jemayn",
+      "logo": "https://our.umbraco.com/media/upload/29c5acd3-bf71-49df-a012-9eeeb2ad5ad9/IMG_3884%20(2).jpg",
+      "memberId": 274921
+    },
+    {
+      "id": "7e4bc3a8-04fe-2e56-a1b5-3ce98a89a201",
+      "checkTitles": false,
+      "title": "Piotr Bach",
+      "url": "https://piotrbach.com",
+      "rss": "https://piotrbach.com/rss/umbraco",
+      "logo": "https://piotrbach.com/media/ffvpgoxn/piotrbach-logo-square.jpg",
+      "memberId": 155740
     }
   ]
 }

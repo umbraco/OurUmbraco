@@ -56,5 +56,6 @@ namespace OurUmbraco.MarketPlace.Interfaces
         int ProjectViews { get; }
         bool IsRetired { get; set; }
         string RetiredMessage { get; set; }
+        bool IsNuGetFormat { get; set; }
     }
 }

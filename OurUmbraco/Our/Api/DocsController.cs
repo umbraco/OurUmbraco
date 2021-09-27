@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Web.Http;
 using Examine;
+using OurUmbraco.Documentation;
 using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Our.Api
@@ -24,6 +25,14 @@ namespace OurUmbraco.Our.Api
             }
 
             return articleList;
+        }
+
+        [HttpGet]
+        public bool DownloadDocs()
+        {
+            var docsUpdater = new DocumentationUpdater();
+            docsUpdater.EnsureGitHubDocs();
+            return true;
         }
     }
 }

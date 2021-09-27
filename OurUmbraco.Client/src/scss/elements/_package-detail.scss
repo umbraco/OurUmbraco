@@ -117,7 +117,24 @@
         }
 
         .pre {
-            padding-left: 45px;
+            padding: 21px 0 20px 45px;
+        }
+    }
+
+    .dotnet-nuget {
+        position: relative;
+        display: block;
+        margin: 10px auto 25px auto;
+        height: 100%;
+        width: auto;
+        color: #fff;
+		font-size: 0.9rem;
+		font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+		padding: 20px 0 20px 20px;
+		overflow: hidden;
+		        
+        .package-name {
+			color: #6ab4f0;
         }
     }
 

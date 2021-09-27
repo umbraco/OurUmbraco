@@ -204,6 +204,7 @@ namespace OurUmbraco.MarketPlace.NodeListing
             content.SetValue("websiteUrl", listingItem.ProjectUrl);
             content.SetValue("licenseKey", listingItem.LicenseKey);
             content.SetValue("isRetired", listingItem.IsRetired);
+            content.SetValue("isNuGetFormat", listingItem.IsNuGetFormat);
             content.SetValue("retiredMessage", listingItem.RetiredMessage);
 
             if (listingItem.PackageFile != null)

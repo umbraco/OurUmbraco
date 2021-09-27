@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using OurUmbraco.Forum;
 using OurUmbraco.Our.Models;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
@@ -86,26 +87,8 @@ namespace OurUmbraco.Our.Services
 
         private void SendSlackNotification(string body)
         {
-            using (var client = new WebClient())
-            {
-                var values = new NameValueCollection
-                {
-                    {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
-                    {"token", ConfigurationManager.AppSettings["SlackToken"]},
-                    {"username", ConfigurationManager.AppSettings["SlackUsername"]},
-                    {"icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
-                    {"text", body}
-                };
-
-                try
-                {
-                    client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<Forum.Library.Utils>("Posting update to Slack failed", ex);
-                }
-            }
+            var slack = new Slack();
+            slack.PostSlackMessage(body);
         }
     }
 }

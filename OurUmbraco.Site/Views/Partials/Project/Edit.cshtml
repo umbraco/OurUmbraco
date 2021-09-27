@@ -115,6 +115,14 @@
                     <br />
                     <small>url to the NuGet package if any available</small>
                 </p>
+                <fieldset>
+                    <p>
+                        @Html.CheckBoxFor(m => m.IsNuGetFormat)
+                        @Html.LabelFor(m => m.IsNuGetFormat)
+                        <br/>
+                        <small>If your package is compatible with older versions as well as v9+, make sure to still enable this checkbox</small>
+                    </p>
+                </fieldset>
                 <p>
                     @Html.LabelFor(m => m.BugTrackingUrl)
                     @Html.TextBoxFor(m => m.BugTrackingUrl)
@@ -137,8 +145,8 @@
                 <legend>Collaboration</legend>
                 <p>Are you looking for help making this package great? Why not open it up for collaboration?</p>
                 <p>
-                    @Html.LabelFor(m => m.OpenForCollaboration)
                     @Html.CheckBoxFor(m => m.OpenForCollaboration)
+                    @Html.LabelFor(m => m.OpenForCollaboration)
                     @Html.ValidationMessageFor(m => m.OpenForCollaboration)
                 </p>
             </fieldset>
@@ -147,13 +155,15 @@
                 <legend>Package status</legend>
                 <p>Is this package still actively maintained?</p>
                 <p>
-                    @Html.LabelFor(m => m.IsRetired)
                     @Html.CheckBoxFor(m => m.IsRetired)
+                    @Html.LabelFor(m => m.IsRetired)
                     @Html.ValidationMessageFor(m => m.IsRetired)
                 </p>
                 <p>
                     @Html.LabelFor(m => m.RetiredMessage)
+                    <br />
                     @Html.TextAreaFor(m => m.RetiredMessage)
+                    <br />
                     @Html.ValidationMessageFor(m => m.RetiredMessage)
                     <small>the reason why this package is no longer maintained (e.g. there's a new better package)</small>
                 </p>

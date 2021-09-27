@@ -136,7 +136,7 @@ namespace OurUmbraco.Community.People
 
                     return mvpsPerYear;
 
-                }, TimeSpan.FromHours(48));
+                }, TimeSpan.FromMinutes(48));
             
             return ourMvps;
         }

@@ -613,29 +613,9 @@ namespace OurUmbraco.Forum.Api
 
         private static void SendSlackNotification(string post)
         {
-            using (var client = new WebClient())
-            {
-                post = post.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
-
-                var values = new NameValueCollection
-                             {
-                                 {"channel", ConfigurationManager.AppSettings["SlackChannel"]},
-                                 {"token", ConfigurationManager.AppSettings["SlackToken"]},
-                                 {"username", ConfigurationManager.AppSettings["SlackUsername"]},
-                                 {"icon_url", ConfigurationManager.AppSettings["SlackIconUrl"]},
-                                 {"text", post}
-                             };
-
-                try
-                {
-                    var data = client.UploadValues("https://slack.com/api/chat.postMessage", "POST", values);
-                    var response = client.Encoding.GetString(data);
-                }
-                catch (Exception ex)
-                {
-                    LogHelper.Error<ForumController>("Posting update to Slack failed", ex);
-                }
-            }
+            post = post.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
+            var slack = new Slack();
+            slack.PostSlackMessage(post);
         }
     }
 

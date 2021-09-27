@@ -22,6 +22,7 @@ _ReSharper*/
 [sS]andbox
 
 umbraco.config
+*.vscode
 *.vs10x
 *OurUmbraco.Site/web.config
 *OurUmbraco.Site/App_Data/TEMP*/
