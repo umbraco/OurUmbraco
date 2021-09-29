@@ -308,13 +308,13 @@ namespace OurUmbraco.Repository.Services
                 }).WhereNotNull()
                 .OrderByDescending(x => x)
                 .ToArray();
-
+            
+            var umbHelper = new UmbracoHelper(UmbracoContext.Current);
+            var node = umbHelper.TypedContent(result.Id);
+            var isVersion9 = node.GetPropertyValue<bool>("isNuGetFormat");
+            
             if (orderedVersions.Any() == false)
             {
-                var umbHelper = new UmbracoHelper(UmbracoContext.Current);
-                var node = umbHelper.TypedContent(result.Id);
-
-                var isVersion9 = node.GetPropertyValue<bool>("isNuGetFormat");
                 return isVersion9 ? "9+" : "n/a";
             }
 
@@ -323,6 +323,11 @@ namespace OurUmbraco.Repository.Services
 
             if (orderedVersions.Min() == orderedVersions.Max())
                 return orderedVersions.Min().ToString();
+
+            if (isVersion9)
+            {
+                return orderedVersions.Min() + " - 9+";
+            }
 
             return orderedVersions.Min() + " - " + orderedVersions.Max();
         }
