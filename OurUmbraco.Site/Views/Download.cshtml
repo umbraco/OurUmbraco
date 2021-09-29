@@ -46,35 +46,27 @@
 
             <!-- Download Umbraco Column -->
             <div class="col-md-6 col-padding">
-                <h2>Download Umbraco</h2>
+                <h2>Install Umbraco</h2>
                 <p class="download-teaser large-margin-bottom">
-                    If you want to DIY you can download Umbraco either as a ZIP file or via NuGet.
+                    If you want to DIY you can install Umbraco via NuGet.
                     It's the same version of Umbraco CMS that powers Umbraco cloud, but you'll need to find
                     a place to host yourself and handling deployments and upgrades is all down to you.
                 </p>
                 <p>
-                    <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
 
                 <p class="large-margin-bottom">
-                    Current Version:
-                    <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a>
-                    -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
+                    <span class="dotnet-nuget pre">
+                        dotnet add package Umbraco.Cms --version @(latestRelease.FullVersion)
+                    </span>    <br />                
+        
+                    @* Current Version: *@
+                    @* <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a> *@
+                    - See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
 
                 <p class="medium-margin-bottom">
-                    We recommend using Microsoft Visual Studio 2017 (15.9.7+) or Microsoft Visual Studio Code
-                    with the IIS Express plugin. Make sure to check the full <a href="/documentation/Getting-Started/Setup/Install/">installation guide</a>
+                    Make sure to check the full <a href="/Documentation/Fundamentals/Setup/Install/">installation guide</a>
                 </p>
-
-                <div class="requirements large-margin-bottom">
-                    <strong>Requirements:</strong>
-                    <ul>
-                        <li>Microsoft Windows 7+ or Microsoft Windows Server 2012+</li>
-                        <li>Microsoft IIS or Microsoft IIS Express</li>
-                        <li>Microsoft SQL Express 2012+</li>
-                        <li>Microsoft ASP.NET 4.7.2</li>
-                    </ul>
-                </div>
             </div>
         </div>
     </div>
