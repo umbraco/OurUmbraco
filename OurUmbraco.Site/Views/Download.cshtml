@@ -46,23 +46,27 @@
 
             <!-- Download Umbraco Column -->
             <div class="col-md-6 col-padding">
-                <h2>Download Umbraco</h2>
+                <h2>Install Umbraco</h2>
                 <p class="download-teaser large-margin-bottom">
-                    If you want to DIY you can download Umbraco either as a ZIP file or via NuGet.
+                    If you want to DIY you can install Umbraco via NuGet.
                     It's the same version of Umbraco CMS that powers Umbraco cloud, but you'll need to find
                     a place to host yourself and handling deployments and upgrades is all down to you.
                 </p>
                 <p>
-                    <pre class="pre small-margin-bottom"><span>PM></span> Install-Package UmbracoCms</pre>
 
                 <p class="large-margin-bottom">
-                    Current Version:
-                    <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a>
-                    -  See all <a class="download-link" href="/contribute/releases/">previous releases</a>
+                    <span class="dotnet-nuget pre">
+                        dotnet add package Umbraco.Cms --version @(latestRelease.FullVersion)
+                    </span>    <br />                
+        
+                    @* Current Version: *@
+                    @* <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a> *@
+                    - See all <a class="download-link" href="/contribute/releases/">previous releases</a>
                 </p>
 
                 <p class="medium-margin-bottom">
-                    We recommend using on or more of the following .NET Tools or Editors: <a href="https://code.visualstudio.com/">Visual Studio Code</a> with the <a href="https://marketplace.visualstudio.com/items?itemName=warren-buckley.iis-express">IISExpress extension<a>, <a href="https://www.visualstudio.com/" >Microsoft Visual Studio 2019</a> version 16.8 and higher, <a href="https://www.jetbrains.com/rider">JetBrains Rider</a> version 2020.3 and higher or <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/">.NET Core CLI</a>
+                    We recommend using on or more of the following .NET Tools or Editors: <a href="https://code.visualstudio.com/">Visual Studio Code</a> with the <a href="https://marketplace.visualstudio.com/items?itemName=warren-buckley.iis-express">IISExpress extension<a>, <a href="https://www.visualstudio.com/" >Microsoft Visual Studio 2019</a> version 16.8 and higher, <a href="https://www.jetbrains.com/rider">JetBrains Rider</a> version 2020.3 and higher or <a href="https://docs.microsoft.com/en-us/dotnet/core/tools/">.NET Core CLI</a><br/>
+                    Make sure to check the full <a href="/Documentation/Fundamentals/Setup/Install/">installation guide</a>
                 </p>
 
                 <div class="requirements large-margin-bottom">
@@ -75,6 +79,7 @@
                         <li>Ability to set file permissions to include create/read/write (or better) for the user that "owns" the Application Pool for your site (NETWORK SERVICE, typically)</li>
                     </ul>
                 </div>
+                </p>
             </div>
         </div>
     </div>
