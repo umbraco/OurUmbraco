@@ -1,13 +1,13 @@
-﻿﻿@inherits UmbracoTemplatePage
+﻿@inherits UmbracoTemplatePage
 @using OurUmbraco.Repository.Services
 @{
     Layout = "~/Views/Master.cshtml";
 
     var docVersionService = new DocumentationVersionService();
     var currentVersion = docVersionService.GetCurrentMajorVersion();
-    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true);
+    var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).ToList();
 
-    var currentDocVersion = altVersions.Where(x => x.IsCurrentPage).FirstOrDefault();
+    var currentDocVersion = altVersions.FirstOrDefault(x => x.IsCurrentPage);
 }
 @section SeoMetaData {
     @if (currentDocVersion != null)
@@ -103,7 +103,7 @@
                         </div>
                         <ul class="search-all-results docs-search-listing"></ul>
                         <div id="markdown-docs" class="docs-default-listing markdown-syntax">
-                            @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml")
+                            @Html.Partial("~/Views/Partials/Documentation/DisplayMarkdown.cshtml", null, new ViewDataDictionary { { "AltVersions", altVersions } })
                         </div>
                     </div><!-- .content-wrapper -->
                 </div><!-- .main-content -->
