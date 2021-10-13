@@ -130,7 +130,13 @@ namespace OurUmbraco.Our.Examine
                     var yamlInput = new StringBuilder();
                     for (int i = 1; i < secondYamlMarker; i++)
                     {
-                        yamlInput.AppendLine(lines.ElementAt(i));
+                        // the line must contain some valid yaml, key-value pairs are
+                        // separated by a ":" so only add lines that have that
+                        var line = lines.ElementAt(i);
+                        if (line.InvariantContains(":"))
+                        {
+                            yamlInput.AppendLine(line);
+                        }
                     };
 
                     // Try to convert the YAML text to a strongly typed model using YamlDotNet
