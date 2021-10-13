@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
+      "checkTitles": false,
+      "title": "Enkel Media Blog",
+      "url": "https://www.enkelmedia.se/blogg/",
+      "rss": "https://www.enkelmedia.se/blogg/rss/",
+      "logo": "https://www.enkelmedia.se/img/enkel-media-logotype-180x74.png",
+      "memberId": 2535
+    },
+    {
       "id": "9e3bc5a8-06fe-4e56-b3b6-1be88a49a101",
       "checkTitles": false,
       "title": "Adolfi.dev Blog",
