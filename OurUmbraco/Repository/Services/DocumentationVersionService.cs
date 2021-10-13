@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Text.RegularExpressions;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using OurUmbraco.Repository.Models;
@@ -22,38 +20,57 @@ namespace OurUmbraco.Repository.Services
         public IEnumerable<DocumentationVersion> GetAlternateDocumentationVersions(Uri uri, bool allVersions = false)
         {
             var alternativeDocs = new List<DocumentationVersion>();
+            
             // first off we have the path, do we need to strip the version number from the file name
             var isFolder = uri.ToString().EndsWith("/");
-            string currentFileName = isFolder ? "index" : uri.Segments.LastOrDefault();
+            var currentFileName = isFolder ? "index" : uri.Segments.LastOrDefault();
+            
+            if (currentFileName == null) 
+                return alternativeDocs;
+            
             // does current filename include version number
-            bool isCurrentDocumentationPage = !currentFileName.Contains("-v");//better way?
-            List<string> pathParts = new List<string>();
-
+            // if it ends with a number preceded by "-v", remove the version suffix
+            // for example -v7, -v8, -v9, or -v10
+            const string pattern = @"-v([0-9]{0,})$";
+            var match = Regex.Match(currentFileName, pattern, RegexOptions.IgnoreCase);
+            var isCurrentDocumentationPage = match.Success == false;
+            
+            var pathParts = new List<string>();
             var maxSegments = uri.Segments.Length;
             if (!isCurrentDocumentationPage)
             {
                 maxSegments -= 1;
             }
 
-            for (int i = 0; i < maxSegments; i++)
+            for (var i = 0; i < maxSegments; i++)
             {
                 pathParts.Add(uri.Segments[i]);
             }
 
-            string baseFileName = String.Empty;
-            int positionToStripUpTo = isCurrentDocumentationPage ? currentFileName.LastIndexOf(".") : currentFileName.LastIndexOf("-v");
-            if (positionToStripUpTo > -1)
+            var baseFileName = string.Empty;
+            
+            if (isCurrentDocumentationPage)
             {
-                baseFileName = currentFileName.Substring(0, positionToStripUpTo);
+                var positionToStripUpTo = currentFileName.LastIndexOf(".", StringComparison.OrdinalIgnoreCase);
+                if (positionToStripUpTo > -1)
+                {
+                    baseFileName = currentFileName.Substring(0, positionToStripUpTo);
+                }
+                else if (isFolder)
+                {
+                    baseFileName = "index";
+                }
             }
-            else if (isFolder)
+            else
             {
-                baseFileName = "index";
+                baseFileName = match.Success 
+                    ? Regex.Replace(currentFileName, pattern, "") 
+                    : currentFileName;
             }
 
-            string currentUrl = string.Join("", pathParts) + baseFileName;
-            string currentPageUrl = (string.Join("", pathParts) + currentFileName).ToLowerInvariant();
-            
+            var joinedPathParts = string.Join("", pathParts);  
+            var currentUrl = joinedPathParts.EndsWith(baseFileName) ? joinedPathParts : joinedPathParts + baseFileName;
+            var currentPageUrl = joinedPathParts.EndsWith(currentFileName) ? joinedPathParts : joinedPathParts + currentFileName;
 
             //Now we go off to examine, and search for all entries
             //with path beginning with currentFilePath
@@ -64,27 +81,29 @@ namespace OurUmbraco.Repository.Services
             //path beginning with current filename
             var query = searchCriteria.Field("__fullUrl", currentUrl.ToLowerInvariant().MultipleCharacterWildcard()).Compile();
             var searchResults = searcher.Search(query);
-            if (searchResults.TotalItemCount > 1 || allVersions)
-            {
-                var versionInfo = searchResults.Select(f =>
-                    new DocumentationVersion()
-                    {
-                        Url = f["url"],
-                        Version = CalculateVersionInfo(f["versionFrom"], f["versionTo"]),
-                        VersionFrom = string.IsNullOrWhiteSpace( f["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionFrom"]),
-                        VersionTo = string.IsNullOrWhiteSpace(f["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(f["versionTo"]),
-                        VersionRemoved = f["versionRemoved"],
-                        IsCurrentVersion = f["url"].ToLowerInvariant() == currentUrl.ToLowerInvariant(),
-                        IsCurrentPage = f["url"].ToLowerInvariant() == currentPageUrl,
-                        MetaDescription = f["meta.Description"],
-                        MetaTitle = f["meta.Title"],
-                        NeedsV8Update = f["needsV8Update"]
-                    })
-                    .OrderByDescending(v=> v.VersionFrom)
-                    .ThenBy(v=>v.VersionTo);
+            
+            if (searchResults.TotalItemCount <= 1 && !allVersions) 
+                return alternativeDocs;
+            
+            var versionInfo = searchResults.Select(result =>
+                {
+                    var version = new DocumentationVersion();
+                    version.Url = result["url"];
+                    version.Version = CalculateVersionInfo(result["versionFrom"], result["versionTo"]);
+                    version.VersionFrom = string.IsNullOrWhiteSpace( result["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(result["versionFrom"]);
+                    version.VersionTo = string.IsNullOrWhiteSpace(result["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(result["versionTo"]);
+                    version.VersionRemoved = result["versionRemoved"];
+                    version.IsCurrentVersion = string.Equals(result["url"], currentUrl, StringComparison.InvariantCultureIgnoreCase);
+                    version.IsCurrentPage = string.Equals(result["url"], currentPageUrl, StringComparison.InvariantCultureIgnoreCase);
+                    version.MetaDescription = result["meta.Description"];
+                    version.MetaTitle = result["meta.Title"];
+                    version.NeedsV8Update = result["needsV8Update"];
+                    return version;
+                })
+                .OrderByDescending(v=> v.VersionFrom)
+                .ThenBy(v=>v.VersionTo);
 
-                alternativeDocs.AddRange(versionInfo);
-            }
+            alternativeDocs.AddRange(versionInfo);
 
             return alternativeDocs;
         }
