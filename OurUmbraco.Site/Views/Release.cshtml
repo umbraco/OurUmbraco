@@ -155,19 +155,6 @@
                             var currentUrl = uri.Scheme + Uri.SchemeDelimiter + uri.Host;
                         }
 
-                        @if(currentUrl.StartsWith("https://our.umbraco.com", StringComparison.InvariantCultureIgnoreCase)) {
-                            // SJ: I know, this is NUTS! But for some reason..
-                            // on live..
-                            // we need to reset these because it looks different 🤷‍♂️
-
-                            <text>
-                            .release .markdown-syntax ul li {
-                                margin-bottom: 0;
-                                line-height: 1.0;
-                            }
-                            </text>
-                        }
-
                         .release-page .explain h2 {
                             margin-top: 12px;
                             font-size: 2em;
