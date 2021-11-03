@@ -377,6 +377,15 @@
       "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
       "logo": "https://michaels-ugarage.cyber-solutions.at/img/logos/logo.png",
       "memberId": 286196
+    },
+    {
+      "id": "836bd4cf-4dd7-455b-98f2-3e2217b6e27c",
+      "checkTitles": false,
+      "title": "Patrick de Mooij",
+      "url": "https://patrickdemooij.hashnode.dev/",
+      "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
+      "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
+      "memberId": 271921
     }
   ]
 }
