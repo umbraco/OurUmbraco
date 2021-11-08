@@ -25,60 +25,67 @@ namespace OurUmbraco.Community.Meetup
     {
         public void UpdateMeetupStats()
         {
-            var configPath = HostingEnvironment.MapPath("~/config/MeetupUmbracoGroups.txt");
-            // Get the alias (urlname) of each group from the config file
-            var aliases = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
-
-            var counterPath = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCounter.txt");
-            var counter = 0;
-            if (File.Exists(counterPath))
+            try
             {
-                var savedCounter = File.ReadAllLines(counterPath).First();
-                int.TryParse(savedCounter, out counter);
-            }
+                var configPath = HostingEnvironment.MapPath("~/config/MeetupUmbracoGroups.txt");
+                // Get the alias (urlname) of each group from the config file
+                var aliases = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
 
-            var newCounter = aliases.Length <= counter ? 0 : counter + 1;
-            File.WriteAllText(counterPath, newCounter.ToString(), Encoding.UTF8);
-
-            var client = new MeetupOAuth2Client();
-            var response = client.DoHttpGetRequest(string.Format("https://api.meetup.com/{0}/events?page=1000&status=past", aliases[counter]));
-            var events = MeetupGetEventsResponse.ParseResponse(response).Body;
-
-            var meetupCache = new List<MeetupCacheItem>();
-            var meetupCacheFile = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCache.json");
-            if (File.Exists(meetupCacheFile))
-            {
-                var json = File.ReadAllText(meetupCacheFile);
-                using (var stringReader = new StringReader(json))
-                using (var jsonTextReader = new JsonTextReader(stringReader))
+                var counterPath = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCounter.txt");
+                var counter = 0;
+                if (File.Exists(counterPath))
                 {
-                    var jsonSerializer = new JsonSerializer();
-                    meetupCache = jsonSerializer.Deserialize<List<MeetupCacheItem>>(jsonTextReader);
+                    var savedCounter = File.ReadAllLines(counterPath).First();
+                    int.TryParse(savedCounter, out counter);
                 }
-            }
 
-            foreach (var meetupEvent in events)
-            {
-                if (meetupCache.Any(x => x.Id == meetupEvent.Id))
-                    continue;
+                var newCounter = aliases.Length <= counter ? 0 : counter + 1;
+                File.WriteAllText(counterPath, newCounter.ToString(), Encoding.UTF8);
 
-                var meetupCacheItem = new MeetupCacheItem
+                var client = new MeetupOAuth2Client();
+                var response = client.DoHttpGetRequest(string.Format("https://api.meetup.com/{0}/events?page=1000&status=past", aliases[counter]));
+                var events = MeetupGetEventsResponse.ParseResponse(response).Body;
+
+                var meetupCache = new List<MeetupCacheItem>();
+                var meetupCacheFile = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCache.json");
+                if (File.Exists(meetupCacheFile))
                 {
-                    Time = meetupEvent.Time,
-                    Created = meetupEvent.Created,
-                    Description = meetupEvent.Description,
-                    HasVenue = meetupEvent.HasVenue,
-                    Id = meetupEvent.Id,
-                    Link = meetupEvent.Link,
-                    Name = meetupEvent.Name,
-                    Updated = meetupEvent.Updated,
-                    Visibility = meetupEvent.Visibility
-                };
-                meetupCache.Add(meetupCacheItem);
-            }
+                    var json = File.ReadAllText(meetupCacheFile);
+                    using (var stringReader = new StringReader(json))
+                    using (var jsonTextReader = new JsonTextReader(stringReader))
+                    {
+                        var jsonSerializer = new JsonSerializer();
+                        meetupCache = jsonSerializer.Deserialize<List<MeetupCacheItem>>(jsonTextReader);
+                    }
+                }
 
-            var rawJson = JsonConvert.SerializeObject(meetupCache, Formatting.Indented);
-            File.WriteAllText(meetupCacheFile, rawJson, Encoding.UTF8);
+                foreach (var meetupEvent in events)
+                {
+                    if (meetupCache.Any(x => x.Id == meetupEvent.Id))
+                        continue;
+
+                    var meetupCacheItem = new MeetupCacheItem
+                    {
+                        Time = meetupEvent.Time,
+                        Created = meetupEvent.Created,
+                        Description = meetupEvent.Description,
+                        HasVenue = meetupEvent.HasVenue,
+                        Id = meetupEvent.Id,
+                        Link = meetupEvent.Link,
+                        Name = meetupEvent.Name,
+                        Updated = meetupEvent.Updated,
+                        Visibility = meetupEvent.Visibility
+                    };
+                    meetupCache.Add(meetupCacheItem);
+                }
+
+                var rawJson = JsonConvert.SerializeObject(meetupCache, Formatting.Indented);
+                File.WriteAllText(meetupCacheFile, rawJson, Encoding.UTF8);
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MeetupsController>("Could not get events from meetup.com", ex);
+            }
         }
 
 
@@ -95,6 +102,7 @@ namespace OurUmbraco.Community.Meetup
                 if (File.Exists(configPath) == false)
                 {
                     LogHelper.Debug<MeetupsController>("Config file was not found: " + configPath);
+
                     return meetups;
                 }
 
@@ -106,7 +114,6 @@ namespace OurUmbraco.Community.Meetup
                     {
                         // Initialize a new service instance (we don't specify an API key since we're accessing public data) 
                         var service = new Skybrud.Social.Meetup.MeetupService();
-
                         var items = new List<MeetupItem>();
 
                         foreach (var alias in aliases)
@@ -119,17 +126,19 @@ namespace OurUmbraco.Community.Meetup
                                 if (meetupGroup.JObject.HasValue("next_event") == false)
                                     continue;
 
-                                var nextEventId = meetupGroup.JObject.GetString("next_event.id");
-
                                 // Make the call to the Meetup.com API to get upcoming events
                                 var events = service.Events.GetEvents(alias);
 
-                                // Get the next event(s)
-                                var nextEvent = events.Body.FirstOrDefault(x => x.Id == nextEventId);
+                                // Get the events in the next 30 days
+                                var nextEvents = events.Body.Where(x => x.Time < DateTime.Now.AddDays(30) );
 
-                                // Append the first event of the group
-                                if (nextEvent != null)
-                                    items.Add(new MeetupItem(meetupGroup, nextEvent));
+                                if (nextEvents.Any())
+                                {
+                                    foreach (var item in nextEvents)
+                                    {
+                                        items.Add(new MeetupItem(meetupGroup, item));
+                                    }
+                                }
                             }
                             catch (Exception ex)
                             {
@@ -139,7 +148,7 @@ namespace OurUmbraco.Community.Meetup
 
                         return items.OrderBy(x => x.Event.Time).ToArray();
 
-                    }, TimeSpan.FromMinutes(30));
+                    }, TimeSpan.FromMinutes(60));
             }
             catch (Exception ex)
             {
