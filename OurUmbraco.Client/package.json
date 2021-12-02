@@ -23,7 +23,10 @@
     "node-sass": "4.14.1"
   },
   "scripts": {
-    "test": "gulp build --verbose"
+    "test": "echo Use npm run build instead",
+	"start": "gulp",
+	"build": "gulp build"
+	
   },
   "author": "umbraco",
   "license": "MIT"
