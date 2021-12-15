@@ -224,13 +224,6 @@ namespace OurUmbraco.Forum.Api
                 t.ParentId = heartCodeForumId;
             }
             
-            // If the chosen version is Umbraco 9, overrule other categories
-            if (model.Version == 9)
-            {
-                var heartCodeForumId = GetForumIdFromName("Umbraco 9");
-                t.ParentId = heartCodeForumId;
-            }
-            
             TopicService.Save(t);
 
             if (t.IsSpam)
