@@ -256,6 +256,7 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Headless.Client.Net",
                 "Umbraco-Ecom",
                 "Umbraco-CMS",
+                "Umbraco.UI",
                 "Umbraco.Forms.Issues",
 
                 // Cloud.Infrastructure
@@ -303,6 +304,7 @@ namespace OurUmbraco.Community.GitHub
                 "Umbraco.Courier.Contrib",
                 "Umbraco.Deploy.Contrib",
                 "Umbraco.Deploy.ValueConnectors",
+                "Umbraco.UI",
                 "UmbPack",
                 "Package.Templates",
                 "rfcs",	
