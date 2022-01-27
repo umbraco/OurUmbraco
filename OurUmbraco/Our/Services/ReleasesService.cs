@@ -137,7 +137,7 @@ namespace OurUmbraco.Our.Services
         private static void PopulateYouTrackIssues(PerformContext context, List<Release> releases)
         {
             var httpClient = new HttpClient();
-            const string issuesUrlPrefix = "https://issues.s1.umbraco.io/Umbraco/Api/Releases";
+            const string issuesUrlPrefix = "https://issues.umbraco.org/Umbraco/Api/Releases";
 
             foreach (var release in releases)
             {
