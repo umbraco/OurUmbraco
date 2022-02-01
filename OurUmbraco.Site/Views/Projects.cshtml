@@ -60,7 +60,6 @@
                         <nav role="navigation">
                             <a href="?page=1&orderBy=@orderMode">See more &raquo;</a>
                         </nav>
-
                     }
                     else
                     {
@@ -88,6 +87,8 @@
                         @Html.Partial("~/Views/Partials/Projects/ListProjects.cshtml", Model.Content, new ViewDataDictionary() { { "orderBy", "popularity" }, { "isHome", isHome } })
                     </div>
                 </div>
+
+                @Html.Partial("~/Views/Partials/Projects/ListPromotedProjects.cshtml", Model.Content)
 
                 <div class="row">
                     <div class="col-xs-12">

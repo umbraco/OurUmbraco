@@ -41,6 +41,7 @@ namespace OurUmbraco.Our.Examine
         {
             var isLive = project.GetPropertyValue<bool>("projectLive");
             var isApproved = project.GetPropertyValue<bool>("approved");
+            var isPromoted = project.GetPropertyValue<bool>("isPromoted");
 
             var strictPackageFiles = PackageRepositoryService.GetAllStrictSupportedPackageVersions(files);
             
@@ -113,6 +114,7 @@ namespace OurUmbraco.Our.Examine
 
             simpleDataSet.RowData.Add("projectLive", isLive ? "1" : "0");
             simpleDataSet.RowData.Add("approved", isApproved ? "1" : "0");
+            simpleDataSet.RowData.Add("isPromoted", isPromoted ? "1" : "0");
 
             //now we need to add the versions and compat versions
             // first, this is the versions that the project has files tagged against
