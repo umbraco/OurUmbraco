@@ -22,6 +22,7 @@ namespace OurUmbraco.Our
             GetReleasesJson();
             AddNewPackageFormatToggleToPackages();
             AddBannerPurposeToggleToPackages();
+            AddIsPromotedToggleToPackages();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -105,6 +106,41 @@ namespace OurUmbraco.Our
                         Mandatory = true
                     };
                     projectContentType.AddPropertyType(checkboxPropertyType, "Banner");
+                    contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddIsPromotedToggleToPackages()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var projectContentType = contentTypeService.GetContentType("Project");
+                var propertyTypeAlias = "isPromoted";
+
+                if (projectContentType != null && projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias)
+                    {
+                        Name = "Is Promoted?",
+                        Description = "The package is selected for promotion (HQ, technical partner or selected community package)."
+                    };
+                    projectContentType.AddPropertyType(checkboxPropertyType, "Project");
                     contentTypeService.Save(projectContentType);
                 }
 
