@@ -1,0 +1,35 @@
+﻿@using OurUmbraco.Repository.Controllers
+
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var pageSize = 20;
+
+    var packageService = new OurUmbraco.Repository.Services
+        .PackageRepositoryService(Umbraco, Members, ApplicationContext.Current.DatabaseContext);
+
+    var results = packageService.GetPackages(0, pageSize, order: PackageSortOrder.Popular, onlyPromoted: true);
+    if (results.Total == 0)
+    {
+        // Don't display the section if there are no promoted packages.
+        return;
+    }
+}
+
+<div class="row">
+    <div class="col-xs-12">
+        <div class="packages-filter-bar">
+            <h3 style="font-size: 1.4em; font-weight: 700;">Promoted</h3>
+        </div>
+    </div>
+</div>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="packages-listing">
+            @foreach (var childContent in results.Packages)
+            {
+                @RenderProjectHelpers.RenderProjectBox(childContent)
+            }
+        </div>
+    </div>
+</div>
+
