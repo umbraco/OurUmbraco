@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Hosting;
 using Hangfire.Console;
 using Hangfire.Server;
@@ -136,42 +137,18 @@ namespace OurUmbraco.Our.Services
 
         private static void PopulateYouTrackIssues(PerformContext context, List<Release> releases)
         {
-            var httpClient = new HttpClient();
-            const string issuesUrlPrefix = "https://issues.euwest01.umbraco.io/Umbraco/Api/Releases";
+            var youTrackArchiveFile = HostingEnvironment.MapPath("~/config/YouTrackArchive.json");
+            var text = File.ReadAllText(youTrackArchiveFile);
+            var youTrackArchive = JsonConvert.DeserializeObject<List<Release.Issue>>(text);
 
             foreach (var release in releases)
             {
-                var url = $"{issuesUrlPrefix}/GetIssuesForRelease?release={release.Version}";
-                var response = httpClient.GetAsync(url).Result;
-                if (response.IsSuccessStatusCode)
-                {
-                    var releaseIssues = response.Content.ReadAsAsync<ReleaseIssues>().Result;
-                    context.WriteLine($"Found {releaseIssues.Issues.Count} issues for release {release.Version}");
-                    release.ReleaseDate = releaseIssues.ReleaseDate;
-                    foreach (var issue in releaseIssues.Issues)
-                    {
-                        // Anything from the old issue tracker that's not set to
-                        // fixed should not appear in the release notes of v8
-                        if(release.Version == "8.0.0" && issue.State != "Fixed")
-                            continue;
+                if(release.Version == "8.0.0")
+                    continue;
 
-                        release.Issues.Add(new Release.Issue
-                        {
-                            Id = issue.IssueNumber,
-                            Breaking = issue.Breaking,
-                            State = issue.State,
-                            Title = issue.IssueTitle,
-                            Type = issue.Type,
-                            Source = ReleaseSource.YouTrack
-                        });
-                    }
-                }
-                else
-                {
-                    context.WriteLine($"Release {release.Version} could not be found on YouTrack");
-                }
+                var issues = youTrackArchive.Where(x => x.Version == release.Version);
+                release.Issues.AddRange(issues);
             }
-
         }
 
         private static void PopulateGitHubIssues(PerformContext context, List<Release> releases)

@@ -82,13 +82,14 @@ namespace OurUmbraco.Repository.Controllers
             string category = null,
             string query = null,
             string version = null,
-            PackageSortOrder order = PackageSortOrder.Latest)
+            PackageSortOrder order = PackageSortOrder.Latest,
+            bool onlyPromoted = false)
         {
             //return the results, but cache for 1 minute
-            var key = string.Format("PackageRepositoryController.GetCategories.{0}.{1}.{2}.{3}.{4}.{5}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, version ?? string.Empty, order);
+            var key = string.Format("PackageRepositoryController.GetCategories.{0}.{1}.{2}.{3}.{4}.{5}.{6}", pageIndex, pageSize, category ?? string.Empty, query ?? string.Empty, version ?? string.Empty, order, onlyPromoted);
             return ApplicationContext.ApplicationCache.RuntimeCache.GetCacheItem<PagedPackages>
                 (key,
-                    () => Service.GetPackages(pageIndex, pageSize, category, query, version, order),
+                    () => Service.GetPackages(pageIndex, pageSize, category, query, version, order, onlyPromoted: onlyPromoted),
                     TimeSpan.FromMinutes(1)); //cache for 1 min    
         }
 
