@@ -102,39 +102,18 @@
                                         // try get details about downloads over time
                                         // so we get the publish date of the package on nuget. And calculate the average downloads per day.
                                         // we can use this data for the popular package query on our
-                                        // we can run into issues when a package has more than 128 versions. This call will return a different response then
-                                        // see https://docs.microsoft.com/en-us/nuget/api/registration-base-url-resource
+                                        // when a package has more than 128 release the response is paged,
+                                        // the getNugetPackageEntries method manages this and returns a list of packageItems.
 
-                                        var registrationClient = new RestClient(package.PackageRegistrationUrl);
+                                        var packageEntries = GetNugetPackageEntries(package.PackageRegistrationUrl);
 
-                                        var registrationResponse = registrationClient.Execute(new RestRequest());
-
-                                        var registrationResult =
-                                            JsonConvert.DeserializeObject<NugetRegistrationResponse>(
-                                                registrationResponse.Content);
-
-                                        if (registrationResult != null)
+                                        if (packageEntries.Any())
                                         {
-                                            // get the lowest publish date
-                                            var registrationItem = registrationResult.Items.FirstOrDefault();
-
-                                            if (registrationItem != null && registrationItem.Items != null)
-                                            {
-                                                var publishedDate = registrationItem.Items.Select(x => x.CatalogEntry)
-                                                    .OrderBy(x => x.PublishedDate).FirstOrDefault(x => x.PublishedDate.Year > 1900)?.PublishedDate;
-
-                                                if (publishedDate.HasValue)
-                                                {
-                                                    var daysSincePublished =
-                                                        (DateTime.Now - publishedDate.Value).TotalDays;
-
-                                                    packageInfo.AverageDownloadPerDay = (int)Math.Ceiling(package.TotalDownloads / daysSincePublished);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                umbContxt.Application.ProfilingLogger.Logger.Warn(typeof(NugetPackageDownloadService), "Could not retrieve average downloads from nuget for package " + package.Id);
-                                            }
+                                            packageInfo.AverageDownloadPerDay = CalculateAverageDownloadsPerDay(packageEntries, package.TotalDownloads);
+                                        }
+                                        else
+                                        {
+                                            umbContxt.Application.ProfilingLogger.Logger.Warn(typeof(NugetPackageDownloadService), "Could not retrieve average downloads from nuget for package " + package.Id);
                                         }
 
                                         if (!nugetPackageDownloads.Any(x => x.PackageId == packageInfo.PackageId))
@@ -166,6 +145,94 @@
                 }
             }
         }
+
+        /// <summary>
+        ///  Get all of the nuget package entries for a package 
+        /// </summary>
+        /// <remarks>
+        ///  if there are more than 128 entries for a package, then nuget will return a list of paged urls
+        ///  you can call to get all the package entries. 
+        ///  
+        ///  this method will then call the GetPagedNugetPackageEntries to get these pages and put them
+        ///  into a single list for us to test. 
+        /// </remarks>
+        /// <param name="packageRegistrationUrl">the package Url</param>
+        /// <returns>A list of package entries for the package</returns>
+        private IEnumerable<NugetRegistrationItemEntry> GetNugetPackageEntries(string packageRegistrationUrl)
+        {
+            var registrationClient = new RestClient(packageRegistrationUrl);
+            var registrationResponse = registrationClient.Execute(new RestRequest());
+            if (!registrationResponse.IsSuccessful)
+            {
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            }
+
+            var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationResponse>(registrationResponse.Content);
+            if (registrationResult == null || registrationResult.Items == null) 
+            { 
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            }
+
+            List<NugetRegistrationItemEntry> registrationEntries = new List<NugetRegistrationItemEntry>();
+            foreach (var item in registrationResult.Items)
+            {
+                if (item.Items == null && !string.IsNullOrWhiteSpace(item.Id))
+                {
+                    registrationEntries.AddRange(GetPagedNugetPackageEntries(item.Id));
+                }
+                else
+                {
+                    registrationEntries.AddRange(item.Items);
+                }
+            }
+            return registrationEntries;
+        }
+
+        /// <summary>
+        ///  get the package entries from a paged package url 
+        /// </summary>
+        /// <param name="packageRegistrationPagedUrl">The url to a page of package entries for a package</param>
+        /// <returns></returns>
+        private IEnumerable<NugetRegistrationItemEntry> GetPagedNugetPackageEntries(string packageRegistrationPagedUrl)
+        {
+            var registrationClient = new RestClient(packageRegistrationPagedUrl);
+            var registrationResponse = registrationClient.Execute(new RestRequest());
+            if (!registrationResponse.IsSuccessful)
+            {
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            }
+
+            var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationItem>(registrationResponse.Content);
+            return registrationResult.Items ?? Enumerable.Empty<NugetRegistrationItemEntry>();
+        }
+
+
+        /// <summary>
+        ///  calculate the avergate number of downloads per day for a nuget package.
+        /// </summary>
+        /// <remarks>
+        ///  the average number of downloads is not something exposed by the api, 
+        ///  and neigher is the package creation date, so we have to get the earliest package publication date
+        ///  and then use that to get downloads per day. 
+        ///  
+        ///  this isn't perfect because if someone unlists a package, the publication date is wiped, so a newer
+        ///  publication date will be used and the averages will be higher, but there doesn't appear to be another
+        ///  trustable date we can get from the api. 
+        /// </remarks>
+        private int CalculateAverageDownloadsPerDay(IEnumerable<NugetRegistrationItemEntry> items, int totalDownloads)
+        {
+                var publishedDate = items.Select(x => x.CatalogEntry)
+                    .OrderBy(x => x.PublishedDate).FirstOrDefault(x => x.PublishedDate.Year > 1900)?.PublishedDate;
+
+                if (publishedDate.HasValue)
+                {
+                    var daysSincePublished = (DateTime.Now - publishedDate.Value).TotalDays;
+
+                    return (int)Math.Ceiling(totalDownloads / daysSincePublished);
+                }
+            return 0;
+        }
+    
 
         public List<NugetPackageInfo> GetNugetPackageDownloads()
         {
