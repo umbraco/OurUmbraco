@@ -377,6 +377,15 @@
       "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
       "logo": "https://michaels-ugarage.cyber-solutions.at/img/logos/logo.png",
       "memberId": 286196
+    },  
+    {
+      "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
+      "checkTitles": true,
+      "title": "Nikolaj Brask-Nielsen",
+      "url": "https://dev.to/nikcio",
+      "rss": "https://dev.to/feed/nikcio",
+      "logo": "https://github.com/nikcio.png",
+      "memberId": 284921
     }
   ]
 }
