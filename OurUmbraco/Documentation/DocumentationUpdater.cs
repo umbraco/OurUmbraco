@@ -206,7 +206,25 @@ namespace OurUmbraco.Documentation
                             return 10;
                         case "common-pitfalls":
                             return 11;
-
+                        case "angular":
+                            return 12;
+                        case "api-documentation":
+                            return 13;
+                        case "debugging":
+                            return 14;
+                        case "language-variation":
+                            return 15;
+                        case "mapping":
+                            return 16;
+                        case "notifications":
+                            return 17;
+                        case "scheduling":
+                            return 18;
+                        case "using-loc":
+                            return 19;
+                        case "v9-config":
+                            return 20;
+                        
                         //Tutorials
                         case "creating-basic-site":
                             return 0;
@@ -317,64 +335,136 @@ namespace OurUmbraco.Documentation
                             return 2;
 
                         //Reference - Config
-                        case "webconfig":
-                            return 0;
                         case "404handlers":
-                            return 1;
+                            return 0;
                         case "applications":
-                            return 2;
-                        case "embeddedmedia":
-                            return 3;
-                        case "examineindex":
-                            return 4;
-                        case "examinesettings":
-                            return 5;
-                        case "filesystemproviders":
-                            return 6;
+                            return 1;
                         case "baserestextensions":
-                            return 7;
-                        case "tinymceconfig":
-                            return 8;
-                        case "trees":
-                            return 9;
-                        case "umbracosettings":
-                            return 10;
+                            return 2;
                         case "dashboard":
-                            return 11;
+                            return 3;
+                        case "embeddedmedia":
+                            return 4;
+                        case "examineindex":
+                            return 5;
+                        case "examinesettings":
+                            return 6;
+                        case "filesystemproviders":
+                            return 7;
                         case "healthchecks":
+                            return 8;
+                        case "serilog":
+                            return 9;
+                        case "tinymceconfig":
+                            return 10;
+                        case "trees":
+                            return 11;
+                        case "umbracosettings":
                             return 12;
+                        case "webconfig":
+                            return 13;
 
                         //Reference - Templating
-                        case "mvc":
+                        case "macros":
                             return 0;
                         case "masterpages":
                             return 1;
-                        case "macros":
-                            return 2;
                         case "modelsbuilder":
+                            return 2;
+                        case "mvc":
                             return 3;
 
                         //Reference - Querying
-                        case "ipublishedcontent":
-                            return 0;
                         case "dynamicpublishedcontent":
+                            return 0;
+                        case "imembermanager":
                             return 1;
-                        case "umbracohelper":
+                        case "ipublishedcontent":
                             return 2;
-                        case "membershiphelper":
+                        case "ipublishedcontentquery":
                             return 3;
+                        case "itagquery":
+                            return 4;
+                        case "membershiphelper":
+                            return 5;
+                        case "umbracohelper":
+                            return 6;
 
                         //Reference - Routing
                         case "authorized":
                             return 0;
-                        case "request-pipeline":
-                            return 1;
-                        case "webapi":
-                            return 2;
                         case "iisrewriterules":
-                            return 3;
+                            return 1;
+                        case "request-pipeline":
+                            return 2;
                         case "url-tracking":
+                            return 3;
+                        case "webapi":
                             return 4;
+                        
+                        //Reference - Events
+                        case "editormodel-events":
+                            return 0;
+                        case "memberservice-events":
+                            return 1;
+                            
+                        //Reference - V9 Config
+                        case "basicauthsettings":
+                            return 0;
+                        case "connectionstringssettings":
+                            return 1;
+                        case "contentsettings":
+                            return 2;
+                        case "debugsettings":
+                            return 3;
+                        case "examinesettings":
+                            return 4;
+                        case "exceptionfiltersettings":
+                            return 5;
+                        case "globalsettings":
+                            return 6;
+                        case "healthchecks":
+                            return 7;
+                        case "hostingsettings":
+                            return 8;
+                        case "imagingsettings":
+                            return 9;
+                        case "keepalivesettings":
+                            return 10;
+                        case "loggingsettings":
+                            return 11;
+                        case "maximumuploadsizesettings":
+                            return 12;
+                        case "modelsbuildersettings":
+                            return 13;
+                        case "nucachesettings":
+                            return 14;
+                        case "packagemigrationsettings":
+                            return 15;
+                        case "pluginssettings":
+                            return 16;
+                        case "requesthandlersettings":
+                            return 17;
+                        case "richtexteditorsettings":
+                            return 18;
+                        case "runtimeminificationsettings":
+                            return 19;
+                        case "runtimesettings":
+                            return 20;
+                        case "securitysettings":
+                            return 21;
+                        case "serilog":
+                            return 22;
+                        case "tourssettings":
+                            return 23;
+                        case "typefindersettings":
+                            return 24;
+                        case "umbracosettings":
+                            return 25;
+                        case "unattendedsettings":
+                            return 26;
+                        case "webroutingsettings":
+                            return 27;
                             
                         //Tutorials - Basic site from scratch
                         case "getting-started":
