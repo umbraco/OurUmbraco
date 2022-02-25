@@ -4448,7 +4448,6 @@
     <Content Include="Views\Partials\Projects\projectactions.cshtml" />
     <Content Include="Views\Partials\Projects\searchtemplate.cshtml" />
     <Content Include="Views\Partials\Projects\ListPromotedProjects.cshtml" />
-    <Content Include="App_Code\RenderProjectHelpers.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Textstring.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Rte.cshtml" />
     <Content Include="Views\Partials\Grid\Editors\Media.cshtml" />
