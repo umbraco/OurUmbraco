@@ -1,4 +1,6 @@
-﻿namespace OurUmbraco.Community.Nuget
+﻿using Umbraco.Core.Logging;
+
+namespace OurUmbraco.Community.Nuget
 {
     using System;
     using System.Collections.Generic;
@@ -160,7 +162,15 @@
                             var rawJson = JsonConvert.SerializeObject(nugetPackageDownloads, Formatting.Indented);
                             File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson, Encoding.UTF8);
 
-                            ExamineManager.Instance.IndexProviderCollection["projectIndexer"].RebuildIndex();
+                            try
+                            {
+                                ExamineManager.Instance.IndexProviderCollection["projectIndexer"].RebuildIndex();
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.Error<NugetPackageDownloadService>("Rebuilding package index failed", ex);
+                                throw;
+                            }
                         }
                     }
                 }
