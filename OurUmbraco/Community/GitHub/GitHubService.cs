@@ -307,7 +307,8 @@ namespace OurUmbraco.Community.GitHub
                 "Package.Templates",
                 "rfcs",	
                 "organizer-guide",
-                "The-Starter-Kit"
+                "The-Starter-Kit",
+                "Umbraco.UI"
             };
         }
 
