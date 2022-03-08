@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31424.327
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco.Site", "OurUmbraco.Site\OurUmbraco.Site.csproj", "{911907FB-3B9D-4E5F-9A45-16700A451A54}"
 EndProject
@@ -21,7 +21,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco", "OurUmbraco\Ou
 EndProject
 Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "OurUmbraco.Client", "OurUmbraco.Client\", "{1B63C7B3-6FCF-4961-9933-53A591CD16E4}"
 	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.0"
+		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
 		Debug.AspNetCompiler.VirtualPath = "/localhost_59200"
 		Debug.AspNetCompiler.PhysicalPath = "OurUmbraco.Client\"
 		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_59200\"
