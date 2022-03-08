@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26730.16
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31424.327
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OurUmbraco.Site", "OurUmbraco.Site\OurUmbraco.Site.csproj", "{911907FB-3B9D-4E5F-9A45-16700A451A54}"
 EndProject
@@ -46,6 +46,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{7347182D
 		commands.json = commands.json
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OurUmbraco.Standard", "OurUmbraco.Standard\OurUmbraco.Standard.csproj", "{95932396-6F45-4006-ABFC-70EE48939809}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Jering.Markdig.Extensions.FlexiBlocks", "FlexiBlocks\Jering.Markdig.Extensions.FlexiBlocks.csproj", "{0BC75389-C44A-493A-9E02-214CA6D6C332}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -88,6 +92,30 @@ Global
 		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|Mixed Platforms.Build.0 = Debug|Any CPU
 		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|x86.ActiveCfg = Debug|Any CPU
 		{1B63C7B3-6FCF-4961-9933-53A591CD16E4}.Release|x86.Build.0 = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Debug|x86.Build.0 = Debug|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|x86.ActiveCfg = Release|Any CPU
+		{95932396-6F45-4006-ABFC-70EE48939809}.Release|x86.Build.0 = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Debug|x86.Build.0 = Debug|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|x86.ActiveCfg = Release|Any CPU
+		{0BC75389-C44A-493A-9E02-214CA6D6C332}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

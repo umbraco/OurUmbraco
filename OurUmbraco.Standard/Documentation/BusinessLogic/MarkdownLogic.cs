@@ -1,15 +1,14 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text.RegularExpressions;
 using Markdig;
 using Markdig.Extensions.AutoIdentifiers;
 using Skybrud.SyntaxHighlighter;
 using Skybrud.SyntaxHighlighter.Markdig;
+using Jering.Markdig.Extensions.FlexiBlocks;
+using Jering.Markdig.Extensions.FlexiBlocks.FlexiTabsBlocks;
 
-
-namespace OurUmbraco.Documentation.Busineslogic
+namespace OurUmbraco.Standard.Documentation.Businesslogic
 {
-    [Obsolete("Moved to the .net standard library")]
     public class MarkdownLogic
     {
         private readonly string _filePath;
@@ -47,6 +46,7 @@ namespace OurUmbraco.Documentation.Busineslogic
                     RegexOptions.Singleline | RegexOptions.IgnorePatternWhitespace);
 
                 var pipeline = new MarkdownPipelineBuilder()
+       
                     .UseAbbreviations()
                     .UseAutoIdentifiers(AutoIdentifierOptions.GitHub)
                     .UseCitations()
@@ -64,8 +64,12 @@ namespace OurUmbraco.Documentation.Busineslogic
                     .UseListExtras()
                     .UseTaskLists()
                     .UseDiagrams()
-                    .UseAutoLinks()
-                    .UseSyntaxHighlighter(out SyntaxHighlighterOptions highligther)
+                    .UseAutoLinks()                    
+                   .UseSyntaxHighlighter(out SyntaxHighlighterOptions highligther)
+                   .UseFlexiBlocks()
+                   // .UseFlexiCodeBlocks()
+            
+                    .UseFlexiTabsBlocks()
                     .Build();
 
                 highligther.AddAlias("json5", Language.Json);

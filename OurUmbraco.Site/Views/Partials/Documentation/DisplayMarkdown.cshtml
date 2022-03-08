@@ -55,7 +55,7 @@
 
 @{
     var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
-    var ml = new MarkdownLogic(path) { PrefixLinks = false };
+    var ml = new OurUmbraco.Standard.Documentation.Businesslogic.MarkdownLogic(path) { PrefixLinks = false };
     if (path.ToLowerInvariant().EndsWith("index.md".ToLowerInvariant()) || path.ToLowerInvariant().EndsWith("readme.md".ToLowerInvariant()))
     {
         if (Request.Url.AbsoluteUri.EndsWith("/") == false)

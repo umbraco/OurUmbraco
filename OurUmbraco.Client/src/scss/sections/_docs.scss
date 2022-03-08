@@ -146,3 +146,39 @@
         }
     }
 }
+
+  .flexi-tabs .flexi-tabs__tab-panel_hidden {
+            display: none;
+        }
+
+        .flexi-tabs__tab-panel .active {
+            display: block;
+        }
+
+        /* Style the tab */
+        .flexi-tabs__tab-list {
+            overflow: hidden;
+            border: 1px solid #ccc;
+            background-color: #f1f1f1;
+        }
+
+            /* Style the buttons that are used to open the tab content */
+            .flexi-tabs__tab-list button {
+                background-color: inherit;
+                float: left;
+                border: none;
+                outline: none;
+                cursor: pointer;
+                padding: 14px 16px;
+                transition: 0.3s;
+            }
+
+                /* Change background color of buttons on hover */
+                .flexi-tabs__tab-list button:hover {
+                    background-color: #ddd;
+                }
+
+                /* Create an active/current tablink class */
+                .flexi-tabs__tab-list button.flexi-tabs__tab_selected {
+                    background-color: #ccc;
+                }

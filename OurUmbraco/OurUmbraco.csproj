@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props" Condition="Exists('..\packages\LibGit2Sharp.NativeBinaries.1.0.205\build\LibGit2Sharp.NativeBinaries.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -543,6 +543,7 @@
     <Compile Include="Community\Twitter\Models\TweetDto.cs" />
     <Compile Include="Community\Videos\Controllers\Http\VideoController.cs" />
     <Compile Include="Community\Videos\Models\YouTubeVideoDto.cs" />
+    <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
@@ -636,7 +637,6 @@
     <Compile Include="Documentation\Busineslogic\Events.cs" />
     <Compile Include="Documentation\Busineslogic\GithubSourcePull\Retry.cs" />
     <Compile Include="Documentation\DocumentationUpdater.cs" />
-    <Compile Include="Documentation\Busineslogic\MarkdownLogic.cs" />
     <Compile Include="Documentation\Controllers\IncomingWebHookAuthorizeFilterAttribute.cs" />
     <Compile Include="Documentation\Controllers\LessonsController.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
@@ -1057,6 +1057,12 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\OurUmbraco.Standard\OurUmbraco.Standard.csproj">
+      <Project>{95932396-6f45-4006-abfc-70ee48939809}</Project>
+      <Name>OurUmbraco.Standard</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
