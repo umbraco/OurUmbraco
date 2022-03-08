@@ -1,0 +1,329 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="ArgumentException_Shared_ValueCannotBeNullWhitespaceOrAnEmptyString" xml:space="preserve">
+    <value>Value cannot be null, whitespace or an empty string.</value>
+  </data>
+  <data name="OptionsException_LineRange_EndLineBeStartLineOrALineAfterIt" xml:space="preserve">
+    <value>The options "Start" and "End" are invalid: The end line cannot occur before the start line. The combination of start "{0}" and end "{1}" is invalid. </value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeIntegerGreaterThan0" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected an integer greater than 0.</value>
+  </data>
+  <data name="ArgumentOutOfRangeException_Shared_ValueCannotBeNegative" xml:space="preserve">
+    <value>Value cannot be negative. The specified value "{0}" is invalid.</value>
+  </data>
+  <data name="ArgumentOutOfRangeException_Shared_ValueMustBeWithinRange" xml:space="preserve">
+    <value>Value must be within range {0}. The specified value "{1}" is invalid.</value>
+  </data>
+  <data name="ArgumentException_ContentRetrieverService_FailedAfterMultipleAttempts" xml:space="preserve">
+    <value>Multiple attempts to retrieve content from the remote URI "{0}" have failed. Please ensure that the URI is valid and that your network connection is stable. Enable debug level logging and try again for more information on why requests are failing.</value>
+  </data>
+  <data name="ArgumentException_ContentRetrieverService_RemoteUriAccessForbidden" xml:space="preserve">
+    <value>Access to the remote URI "{0}" is forbidden.</value>
+  </data>
+  <data name="ArgumentException_ContentRetrieverService_RemoteUriDoesNotExist" xml:space="preserve">
+    <value>The remote URI "{0}" does not exist.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeAValidUri" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected a valid URI.</value>
+  </data>
+  <data name="BlockException_BlockException_InvalidBlock" xml:space="preserve">
+    <value>The {0} at line "{1}", column "{2}", is invalid:
+{3}</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeAnAbsoluteUri" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected an absolute URI.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeAValidEnumValue" xml:space="preserve">
+    <value>The value "{0}" is not within the range of valid values for the enum {1}.</value>
+  </data>
+  <data name="OptionsException_BlockOptionsFactory_InvalidJson" xml:space="preserve">
+    <value>Invalid JSON "{0}". Refer to the inner exception for more details.</value>
+  </data>
+  <data name="BlockException_FlexiOptionsBlockParser_UnconsumedBlock" xml:space="preserve">
+    <value>FlexiOptionsBlock must be consumed.</value>
+  </data>
+  <data name="BlockException_BlockException_ExceptionOccurredWhileProcessingBlock" xml:space="preserve">
+    <value>An exception occurred while processing the block. Refer to the inner exception for more details.</value>
+  </data>
+  <data name="BlockException_BlockParser_ExceptionOccurredWhileAttemptingToOpenBlock" xml:space="preserve">
+    <value>An exception occurred in "{0}" while attempting to open a block. Refer to the inner exception for more details.</value>
+  </data>
+  <data name="InvalidOperationException_FlexiIncludeBlockFactory_CycleFound" xml:space="preserve">
+    <value>The following FlexiIncludeBlocks cycle was found: 
+{0}</value>
+  </data>
+  <data name="OptionsException_FlexiIncludeBlockFactory_NoLineContainsEndString" xml:space="preserve">
+    <value>No line after the start line contains the string "{0}".</value>
+  </data>
+  <data name="OptionsException_FlexiIncludeBlockFactory_NoLineContainsStartString" xml:space="preserve">
+    <value>No line contains the string "{0}".</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeAUriWithASupportedScheme" xml:space="preserve">
+    <value>The value "{0}" with scheme "{1}" is invalid. Expected a URI with scheme {2}.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustBeWithinRange" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected a number within the range {1}.</value>
+  </data>
+  <data name="InvalidOperationException_DiskCacheService_InvalidDiskCacheDirectory" xml:space="preserve">
+    <value>The disk cache directory "{0}" is invalid. Refer to the inner exception for more details.</value>
+  </data>
+  <data name="InvalidOperationException_DiskCacheService_UnexpectedDiskCacheException" xml:space="preserve">
+    <value>An unexpected exception occurred when attempting to retrieve the source for "{0}", from the disk cache at "{1}". Refer to the inner exception for more information.</value>
+  </data>
+  <data name="ArgumentException_Shared_InvalidLocalUri" xml:space="preserve">
+    <value>The local URI "{0}" is invalid. Refer to the inner exception for more details.</value>
+  </data>
+  <data name="BlockException_FlexiIncludeBlockFactory_ExceptionOccurredWhileProcessingContent" xml:space="preserve">
+    <value>An exception occurred while processing content from the FlexiIncludeBlock's source, "{0}". Refer to the inner exception for more details.</value>
+  </data>
+  <data name="LogWarning_ContentRetrieverService_FailureStatusCode" xml:space="preserve">
+    <value>Http request to "{0}" failed with status code "{1}", {2} tries remaining.</value>
+  </data>
+  <data name="LogWarning_ContentRetrieverService_HttpRequestException" xml:space="preserve">
+    <value>A HttpRequestException with message "{0}" occurred when attempting to retrieve content from "{1}", {2} tries remaining.</value>
+  </data>
+  <data name="LogWarning_ContentRetrieverService_Timeout" xml:space="preserve">
+    <value>Attempt to retrieve content from "{0}" timed out, {1} tries remaining.</value>
+  </data>
+  <data name="LogWarning_DiskCacheService_FileInUse" xml:space="preserve">
+    <value>The file "{0}" is in use. {1} tries remaining.</value>
+  </data>
+  <data name="ArgumentException_Shared_ValueMustBeOfExpectedType" xml:space="preserve">
+    <value>The parameter "{0}" must be of type "{1}". A value of type "{2}" was specified.</value>
+  </data>
+  <data name="OptionsException_Shared_InvalidValue" xml:space="preserve">
+    <value>The value "{0}" is invalid.</value>
+  </data>
+  <data name="OptionsException_PhraseGroup_IncludedMatchIndexOutOfRange" xml:space="preserve">
+    <value>The "Included" array for phrase group "{0}" is invalid. Only {1} matches were found for the regex expression, the included index "{2}" is out of range.</value>
+  </data>
+  <data name="ArgumentException_Shared_InvalidOffLen" xml:space="preserve">
+    <value>Offset and length were out of bounds for the array or count is greater than the number of elements from index to the end of the source collection.</value>
+  </data>
+  <data name="ArgumentNullException_Shared_Buffer" xml:space="preserve">
+    <value>Buffer cannot be null.</value>
+  </data>
+  <data name="ObjectDisposedException_Shared_ReaderClosed" xml:space="preserve">
+    <value>Cannot read from a closed TextReader.</value>
+  </data>
+  <data name="OptionsException_FlexiCodeBlocks_OverlappingLineNumbers" xml:space="preserve">
+    <value>The line number ranges "{0}" and "{1}" overlap.</value>
+  </data>
+  <data name="OptionsException_LineRange_UnableToNormalize" xml:space="preserve">
+    <value>The options "Start" and "End" are invalid: Unable to normalize "{0}" for {1} lines. After normalization, start is "{2}" and end is "{3}", which is invalid. </value>
+  </data>
+  <data name="JsonException_Shared_InvalidJson" xml:space="preserve">
+    <value>Invalid JSON "{0}".</value>
+  </data>
+  <data name="OptionsException_OptionsException_InvalidOption" xml:space="preserve">
+    <value>Invalid value for option "{0}": "{1}"</value>
+  </data>
+  <data name="ArgumentOutOfRangeException_Shared_ValueMustNotBeLessThanOtherValue" xml:space="preserve">
+    <value>The value "{0}" is invalid because it is less than the "{1}" value "{2}".</value>
+  </data>
+  <data name="OptionsException_Shared_DirectoryDoesNotExist" xml:space="preserve">
+    <value>The directory "{0}" does not exist.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustNotBeNull" xml:space="preserve">
+    <value>The value must not be null.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustNotBeNegative" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected a non-negative integer.</value>
+  </data>
+  <data name="ArgumentException_ContentRetrieverService_UnsupportedScheme" xml:space="preserve">
+    <value>The URI "{0}" has unsupported scheme "{1}".</value>
+  </data>
+  <data name="OptionsException_FlexiTableBlockFactory_TypeInvalidForTablesWithMultipleHeaderRows" xml:space="preserve">
+    <value>The value "{0}" is invalid for tables with multiple header rows.</value>
+  </data>
+  <data name="ArgumentOutOfRangeException_Shared_ValueMustBeGreaterThanOtherValue" xml:space="preserve">
+    <value>The value "{0}" is invalid because it is not greater than the "{1}" value "{2}".</value>
+  </data>
+  <data name="OptionsException_FlexiTableBlockFactory_TypeInvalidForTablesWithCellsThatHaveRowspanOrColspan" xml:space="preserve">
+    <value>The value "{0}" is invalid for tables with cells that have rowspan or colspan.</value>
+  </data>
+  <data name="BlockException_Shared_ExceptionOccurredWhileCreatingBlock" xml:space="preserve">
+    <value>An exception occurred while creating the block. Refer to the inner exception for more details.</value>
+  </data>
+  <data name="BlockException_Shared_BlockMustOnlyContainASpecificTypeOfBlock" xml:space="preserve">
+    <value>The {0} must only contain {1}s. A {2} was found. </value>
+  </data>
+  <data name="BlockException_Shared_BlockCanOnlyExistWithinASpecificTypeOfBlock" xml:space="preserve">
+    <value>The {0} must exist within a {1}.</value>
+  </data>
+  <data name="BlockException_MultipartBlockParser_IncorrectNumberOfParts" xml:space="preserve">
+    <value>The {0} must have "{1}" part(s), found "{2}" part(s).</value>
+  </data>
+  <data name="OptionsException_FlexiQuoteBlockFactory_UnableToNormalize" xml:space="preserve">
+    <value>Unable to normalize "{0}" for {1} links.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustPointToAFile" xml:space="preserve">
+    <value>The value "{0}" is invalid, expected a URI that points to a file.</value>
+  </data>
+  <data name="OptionsException_Shared_ValueMustNotBeNullWhitespaceOrAnEmptyString" xml:space="preserve">
+    <value>The value must not be null, whitespace or an empty string.</value>
+  </data>
+  <data name="InvalidOperationException_VideoService_FfmpegRequired" xml:space="preserve">
+    <value>FFmpeg is required for file operations like retrieving a video's duration and dimensions or generating a poster:
+
+1. Download FFmpeg from https://ffmpeg.org.
+2. Add the executable's directory to the path environment variable.
+
+Alternatively, disable file operations by setting "EnableFileOperations" to false for all FlexiVideoBlocks.</value>
+  </data>
+  <data name="InvalidOperationException_ProcessService_ExecutableRunFailed" xml:space="preserve">
+    <value>The attempt to run "{0}" with arguments "{1}" failed with exit code "{2}".
+
+Standard output: {3}
+
+Error output: {4}</value>
+  </data>
+  <data name="OptionsException_Shared_FileNotFoundInDirectory" xml:space="preserve">
+    <value>The file "{0}" was not found in directory "{1}".</value>
+  </data>
+  <data name="OptionsException_Shared_MultipleFilesFoundInDirectory" xml:space="preserve">
+    <value>Expected 1 file, but "{0}" files with name "{1}" were found in directory "{2}":
+{3}</value>
+  </data>
+  <data name="OptionsException_Shared_UnableToRetrieveFilesFromDirectory" xml:space="preserve">
+    <value>Unable to retrieve files from directory "{0}". Refer to the inner exception for more details.</value>
+  </data>
+  <data name="OptionsException_Shared_UriContainsInvalidCharacters" xml:space="preserve">
+    <value>The URI "{0}" contains invalid characters.</value>
+  </data>
+  <data name="InvalidOperationsException_ImageService_ExceptionThrownWhileAttemptingToReadDimensionsFromLocalImageFile" xml:space="preserve">
+    <value>Unable to read dimensions from the local image file "{0}". Refer to the inner exception for more details.</value>
+  </data>
+  <data name="InvalidOperationException_ImageService_UnableToReadDimensionsFromImageFile" xml:space="preserve">
+    <value>Unable to read dimensions from local image file "{0}". The file is either corrupted or encoded in an unsupported format.</value>
+  </data>
+  <data name="InvalidOperationException_ProcessService_ExceptionThrownWhileAttemptingToRunExecutable" xml:space="preserve">
+    <value>The attempt to run "{0}" with arguments "{1}" and timeout "{2}" failed.
+
+Standard output: {3}
+
+Refer to the inner exception for more details.</value>
+  </data>
+  <data name="InvalidOperationException_VideoService_InvalidVideoMetadata" xml:space="preserve">
+    <value>The video "{0}" has invalid metadata. The following was returned when trying to retrieve its width, height and duration: 
+{1}</value>
+  </data>
+</root>

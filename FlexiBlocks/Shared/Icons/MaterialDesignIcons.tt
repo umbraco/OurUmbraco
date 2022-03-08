@@ -1,0 +1,70 @@
+<#@ template debug="false" hostspecific="true" language="C#" #><#@ output extension=".cs" #><#@ 
+assembly name="System.Core" #><#@ 
+assembly name="System.Net.Http" #><#@ 
+import namespace="System.Net.Http" #><#@ 
+import namespace="System.Collections.Generic" #><#
+    // Empty style = default (baseline)
+    var icons = new List<Icon>() { 
+        new Icon { Name = "info", Style = "" },
+        new Icon { Name = "warning", Style = "" },
+        new Icon { Name = "error", Style = "" }, 
+        new Icon { Name = "link", Style = "" },
+        new Icon { Name = "clear", Style = "" },
+        new Icon { Name = "play_arrow", Style = "" }
+    };   
+#>namespace Jering.Markdig.Extensions.FlexiBlocks
+{
+    // These icons are from the material design icons collection. 
+    // They are licensed under an Apache License Version 2 license - https://www.apache.org/licenses/LICENSE-2.0.html.
+    internal static class MaterialDesignIcons
+    {
+<#
+Helper helper = new Helper();
+bool firstIcon = true;
+foreach (Icon icon in icons)
+{
+    helper.LoadIcon(icon);
+#><#= !firstIcon ? "\n" : string.Empty #>        public const string <#= icon.NormalizedName #> = "<#= icon.Svg #>";<#
+    firstIcon = false;
+}
+#>
+    }
+}
+
+<#+
+public class Icon
+{
+    public string Name { get; set; }
+    public string Style { get; set; }
+    public string Svg { get; set; }
+    public string NormalizedName { get; set; }
+}
+
+public class Helper
+{
+    private string _materialUrlFormat = "https://fonts.gstatic.com/s/i/materialicons{0}/{1}/v1/24px.svg";
+    private HttpClient _httpClient;
+
+    public Helper()
+    {
+        _httpClient = new HttpClient();
+    }
+
+    public void LoadIcon(Icon icon)
+    {
+        string url = string.Format(_materialUrlFormat, icon.Style, icon.Name);
+
+        icon.Svg = _httpClient.
+            GetAsync(url).
+            GetAwaiter().
+            GetResult().
+            Content.
+            ReadAsStringAsync().
+            GetAwaiter().
+            GetResult().
+            Replace("\"", "\\\"");
+
+        icon.NormalizedName = "MATERIAL_DESIGN_" + icon.Name.ToUpperInvariant();
+    }
+}
+#>

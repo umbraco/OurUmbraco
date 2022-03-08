@@ -1,0 +1,89 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.0;net461</TargetFrameworks>
+        <TargetFrameworks Condition="'$(OS)' != 'Windows_NT'">netstandard2.0</TargetFrameworks>
+        <PackageId>Jering.Markdig.Extensions.FlexiBlocks</PackageId>
+        <Title>Markdig Extensions for Configurable Markdown</Title>
+        <Authors>JeremyTCD</Authors>
+        <Description>Jering.Markdig.Extensions.FlexiBlocks is a collection of Markdig extensions for configurable markdown.
+
+    • FlexiAlertBlocks: Alerts with configurable icons and more.
+    • FlexiBannerBlocks: Headlines you'd like to draw attention to.
+    • FlexiCardsBlocks: Cards for displaying and/or linking to information.
+    • FlexiCodeBlocks: Code with syntax highlighting, line numbers and more.
+    • FlexiFigureBlocks: Figures with smartly generated IDs for easy linking.
+    • FlexiIncludeBlocks: Include content from both local and remote sources.
+    • FlexiOptionsBlocks: Create your own configurable markdown extensions.
+    • FlexiPictureBlocks: Images with lazy loading and fullscreen mode.
+    • FlexiQuoteBlocks: Quotes with HTML spec compliant markup structure.
+    • FlexiSectionsBlocks: Split articles into sections demarcated by ATX headings and render headings with configurable icons.
+    • FlexiTableBlocks: Responsive tables.
+    • FlexiTabsBlocks: Tabs built with accessibility in mind.
+    • FlexiVideoBlocks: Videos with lazy loading, fullscreen mode and customizable controls.
+  
+Note: Some functionality, like picture lazy loading, requires frontend scripts and styles. We're working on packaging frontend assets for easy usage.</Description>
+        <Copyright>© 2018-2019 Jering. All rights reserved.</Copyright>
+        <PackageProjectUrl>https://www.jering.tech/utilities/jering.markdig.extensions.flexiblocks/index</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/JeringTech/Markdig.Extensions.FlexiBlocks</RepositoryUrl>
+        <PackageLicenseUrl>$(RepositoryUrl)/blob/master/License.md</PackageLicenseUrl>
+        <PackageReleaseNotes>$(RepositoryUrl)/blob/master/Changelog.md</PackageReleaseNotes>
+        <PackageTags>markdown markdig extension</PackageTags>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+        <AllowedOutputExtensionsInPackageBuildOutputFolder>$(AllowedOutputExtensionsInPackageBuildOutputFolder);.pdb</AllowedOutputExtensionsInPackageBuildOutputFolder>
+        <RepositoryType>git</RepositoryType>
+        <LangVersion>7.3</LangVersion>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageIconUrl>https://raw.githubusercontent.com/JeringTech/Markdig.Extensions.FlexiBlocks/master/nuget_icon.png</PackageIconUrl>
+        <CodeAnalysisRuleSet>..\..\Jering.Markdig.Extensions.FlexiBlocks.ruleset</CodeAnalysisRuleSet>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Jering.IocServices.Newtonsoft.Json" Version="0.3.0" />
+        <PackageReference Include="Jering.IocServices.System.IO" Version="0.3.0" />
+        <PackageReference Include="Jering.IocServices.System.Net.Http" Version="0.3.0" />
+        <PackageReference Include="Jering.Web.SyntaxHighlighters.HighlightJS" Version="3.3.0" />
+        <PackageReference Include="Jering.Web.SyntaxHighlighters.Prism" Version="4.3.0" />
+        <PackageReference Include="Markdig" Version="0.16.0" />
+        <!-- Requires libcurl-openssl for build to work on Linux "sudo apt install libcurl3 libcurl-openssl1.0-dev"-->
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0-beta2-19554-01">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.Analyzers" Version="2.2.0" PrivateAssets="all" ExcludeAssets="Runtime">
+          <IncludeAssets>compile; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Roslynator.CodeFixes" Version="2.0.0" PrivateAssets="all" ExcludeAssets="Runtime">
+          <IncludeAssets>compile; build; native; contentfiles; analyzers</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
+        <PackageReference Include="System.Collections.Immutable" Version="1.6.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Update="Shared\Icons\MaterialDesignIcons.cs">
+          <DependentUpon>MaterialDesignIcons.tt</DependentUpon>
+          <DesignTime>True</DesignTime>
+          <AutoGen>True</AutoGen>
+        </Compile>
+        <None Update="Shared\Icons\MaterialDesignIcons.tt">
+            <LastGenOutput>MaterialDesignIcons.cs</LastGenOutput>
+            <Generator>TextTemplatingFileGenerator</Generator>
+        </None>
+        <Compile Update="Strings.Designer.cs">
+            <DesignTime>True</DesignTime>
+            <AutoGen>True</AutoGen>
+            <DependentUpon>Strings.resx</DependentUpon>
+        </Compile>
+        <EmbeddedResource Update="Strings.resx">
+            <Generator>ResXFileCodeGenerator</Generator>
+            <LastGenOutput>Strings.Designer.cs</LastGenOutput>
+        </EmbeddedResource>
+    </ItemGroup>
+    
+    <ItemGroup>
+      <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+    </ItemGroup>
+
+</Project>
