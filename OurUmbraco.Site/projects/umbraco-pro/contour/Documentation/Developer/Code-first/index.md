@@ -1,5 +1,5 @@
 #Designing forms in Visual studio (code first)
-Since Contour 3.0 it has been possible to use the code first feature to design your forms in visual studio (no need to touch the UI). Making it possible to have source controlled Contour forms and automated deployments of those forms.
+Since Contour 3.0 it has been possible to use the code first feature to design your forms in Visual Studio (no need to touch the UI). Making it possible to have source controlled Contour forms and automated deployments of those forms.
 ##Add references
 To get started you'll need to reference
 
@@ -9,7 +9,7 @@ To get started you'll need to reference
 
 Once those are in place you can start designing forms.
 ##Create new form class
-Add new class to your visual studio project and inherit from FormBase, it's also necesary to mark the class with the Form attribute (providing it with a name for your form.
+Add new class to your Visual Studio project and inherit from FormBase, it's also necesary to mark the class with the Form attribute (providing it with a name for your form.
 
 	[Form("Registration")]
 	public class Registration: FormBase

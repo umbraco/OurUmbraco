@@ -2,7 +2,7 @@
 
 *This builds on the "[adding a type to the provider model](Adding-a-Type.md)" chapter*
 
-Add a new class to the visual studio solution and make it inherit from Umbraco.Forms.Core.FieldType and override the Editor property.
+Add a new class to the Visual Studio solution and make it inherit from Umbraco.Forms.Core.FieldType and override the Editor property.
 
 In the empty constructor add the following information:
 

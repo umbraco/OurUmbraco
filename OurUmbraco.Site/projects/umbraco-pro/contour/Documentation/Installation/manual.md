@@ -22,11 +22,11 @@ must be placed in the websites /bin directory to be registered
 ##Installing the database
 
 To install the database we need to execute a sql script against the database umbraco is installed on.
-Contour currently supports SQL server (from version 2005), SQL CE and MySQL.
+Contour currently supports SQL Server (from version 2005), SQL CE and MySQL.
 
-###SQL server
+###SQL Server
 - Download the [create script](resources/createsqlserver.md)
-- Open Microsoft Sql Server Management Studio and connect to your database.
+- Open Microsoft SQL Server Management Studio and connect to your database.
 - Right click your umbraco database and choose "new query"
 - Copy the contents of the createSQLServer.txt to the query window
 - Execute the script
