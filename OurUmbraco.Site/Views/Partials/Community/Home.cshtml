@@ -58,6 +58,7 @@
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()
+    @Meetups()
     @GitHubContributors()
     @TwitterSearch()
     @Html.Partial("home/documentation")
@@ -66,6 +67,7 @@ else
 {
     @Html.Partial("home/documentation")
     @ForumActivity()
+    @Meetups()
     @GitHubContributors()
     @TwitterSearch()
 }

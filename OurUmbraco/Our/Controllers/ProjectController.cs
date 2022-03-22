@@ -260,7 +260,7 @@ namespace OurUmbraco.Our.Controllers
             else
             {
                 bool isNuGetFormat;
-                bool.TryParse(project.GetPropertyValue("isNuGetFormat").ToString(), out isNuGetFormat);
+                bool.TryParse(project.IsNuGetFormat.ToString(), out isNuGetFormat);
                     
                 // Special exception (< v9) or new package format (v9+)
                 if (string.Equals(model.Name, _exceptionName, StringComparison.InvariantCultureIgnoreCase) || isNuGetFormat)

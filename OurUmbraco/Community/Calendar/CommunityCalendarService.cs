@@ -14,7 +14,7 @@ namespace OurUmbraco.Community.Calendar
 
         public CommunityCalendarItem[] GetUpcomingItems(int parentId)
         {
-            return GetAllItems(parentId).Where(x => x.StartDate >= EssentialsDateTime.Today).ToArray();
+            return GetAllItems(parentId).Where(x => x.StartDate >= EssentialsTime.Today).ToArray();
         }
 
         public CommunityCalendarItem[] GetItemsByYear(int year, int parentId)
@@ -36,7 +36,25 @@ namespace OurUmbraco.Community.Calendar
 
             var items = new List<CommunityCalendarItem>();
             items.AddRange(parentNode.Children.Select(x => new ContentCalendarItem(x)));
-            items.AddRange(meetupService.GetUpcomingMeetups().Items.Select(x => new MeetupCalendarItem(x)));
+            foreach (var meetup in meetupService.GetUpcomingMeetups())
+            {
+                var meetupGroup = meetup.Data.GroupByUrlname;
+                var nextMeetup = meetupGroup.UpcomingEvents.Edges.OrderByDescending(x => x.Node.DateTime).FirstOrDefault();
+                if (nextMeetup != null)
+                {
+                    var plannedMeetup = nextMeetup.Node;
+                    var calendarItem = new CommunityCalendarItem()
+                    {
+                        
+                        Description = plannedMeetup.Description,
+                        Title = plannedMeetup.Title,
+                        Url = plannedMeetup.EventUrl
+                        
+
+                    };
+                    items.Add(calendarItem);
+                }
+            }
             
             return items.OrderBy(x => x.StartDate);
         }
