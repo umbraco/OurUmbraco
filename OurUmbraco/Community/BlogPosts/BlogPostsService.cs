@@ -170,7 +170,7 @@ namespace OurUmbraco.Community.BlogPosts
                 catch (Exception ex)
                 {
                     context.SetTextColor(ConsoleTextColor.Red);
-                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl + " because of " + ex.Message, ex);
                     context.ResetTextColor();
                 }
             }
