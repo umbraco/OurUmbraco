@@ -11,10 +11,11 @@ Upon build a `web.config` file will be copied into the `OurUmbraco.Site` project
 If you're working on the frontend (the js/css/etc parts in `~/OurUmbraco.Client`) then you can either run `~/build/BuildClientFiles.bat` to build them and have them copied into the site. Or if you have npm/gulp installed on your machine you can run the usual commands in the `~/OurUmbraco.Client` folder:
 
 ```
-npm install
-npm install gulp -g
-gulp
+npm ci
+npm run build
 ```
+
+When you're working on frontend you can run `npm start` to start watching js/css files for changes. When you save changes they will be copied into the site by the watcher.
 
 ## Database Restore
 
@@ -26,25 +27,7 @@ Restore the database to SQL Server 2017 (won't work on earlier versions) and upd
 
 * To log into the backoffice use  `admin@our.test` / `1234567890`.
 
-* To log into the frontend use `member@our.test` / `1234567890`. 
-
-⚠⚠⚠
-
-In the web.config you get when you first build the project, you will need to change the following appSetting, from true to false:
-
-```
-<add key="umbracoUseSSL" value="false" />
-```
-
-Additionally, you will need to set requireSSL in the `Web.Config` to **false** to be able to login to the frontend.
-
-```
-<authentication mode="Forms">
-    <forms requireSSL="false" name="yourAuthCookie" loginUrl="login.aspx" protection="All" path="/" slidingExpiration="true" timeout="525600" />
-</authentication>
-```
-
-⚠⚠⚠
+* To log into the frontend use `member@our.test` / `1234567890`.
 
 ## Projects Area
 

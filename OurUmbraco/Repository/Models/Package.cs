@@ -66,5 +66,10 @@ namespace OurUmbraco.Repository.Models
         /// Package is in the new NuGet-only format for v9+ sites
         /// </summary>
         public bool IsNuGetFormat { get; set; }
+
+        /// <summary>
+        /// The package is selected for promotion (HQ, technical partner or selected community package).
+        /// </summary>
+        public bool IsPromoted { get; set; }
     }
 }

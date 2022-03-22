@@ -56,7 +56,6 @@ OurUmbraco.Site/usercontrols/Deli/
 OurUmbraco.Site/App_Data/mail/
 OurUmbraco.Client/build/assets/
 OurUmbraco.Client/node_modules/
-OurUmbraco.Client/package-lock.json
 npm-debug.log
 OurUmbraco.Site/[Ww]eb.config
 OurUmbraco.Site/[Aa]ssets/css/style.min.css

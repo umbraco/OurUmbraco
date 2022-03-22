@@ -43,28 +43,40 @@ namespace OurUmbraco.Community.Twitter
                                 Resulttype = TwitterSearchResultType.Recent,
                                 Q = "umbraco"
                             };
-
-                            var results = service.Search(options);
-                            return results.Statuses;
-
+                            
+                            TwitterSearchResult results = null;
+                            try
+                            {
+                                results = service.Search(options);
+                            }
+                            catch (Exception ex)
+                            {
+                                LogHelper.Error<TwitterService>("Searching Twitter did not work", ex);
+                            }
+                            return results?.Statuses;
+                            
                         }, TimeSpan.FromMinutes(2));
 
-                var settingsNode = umbracoHelper.TypedContentAtRoot().FirstOrDefault();
-                if (settingsNode != null)
+                if (tweets != null)
                 {
-                    var usernameFilter = settingsNode.GetPropertyValue<string>("twitterFilterAccounts")
-                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty).ToArray();
-                    var wordFilter = settingsNode.GetPropertyValue<string>("twitterFilterWords")
-                        .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
+                    
+                    var settingsNode = umbracoHelper.TypedContentAtRoot().FirstOrDefault();
+                    if (settingsNode != null)
+                    {
+                        var usernameFilter = settingsNode.GetPropertyValue<string>("twitterFilterAccounts")
+                            .ToLowerInvariant().Split(',').Where(x => x != string.Empty).ToArray();
+                        var wordFilter = settingsNode.GetPropertyValue<string>("twitterFilterWords")
+                            .ToLowerInvariant().Split(',').Where(x => x != string.Empty);
 
-                    filteredTweets = tweets.Where(x =>
-                            x.Author.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
-                            && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false
-                            && x.Text.StartsWith("RT ") == false)
-                        .Take(numberOfResults)
-                        .ToList();
+                        filteredTweets = tweets.Where(x =>
+                                x.Author.ScreenName.ToLowerInvariant().ContainsAny(usernameFilter) == false
+                                && x.Text.ToLowerInvariant().ContainsAny(wordFilter) == false
+                                && x.Text.StartsWith("RT ") == false)
+                            .Take(numberOfResults)
+                            .ToList();
+                    }
                 }
-
+                
                 tweetsModel.Tweets = filteredTweets;
             }
             catch (Exception ex)

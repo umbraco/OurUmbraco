@@ -186,5 +186,25 @@ namespace OurUmbraco.Project
 
             return newParent;
         }
+        
+        public static string FormatDownloadNumber(this int downloads)
+        {
+            if (downloads > 999999999)
+            {
+                return downloads.ToString("0,,,.###B", System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else if (downloads > 999999)
+            {
+                return downloads.ToString("0,,.##M", System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else if (downloads > 999)
+            {
+                return downloads.ToString("0,.#K", System.Globalization.CultureInfo.InvariantCulture);
+            }
+            else
+            {
+                return downloads.ToString(System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
     }
 }

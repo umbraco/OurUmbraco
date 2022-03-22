@@ -65,6 +65,7 @@ namespace OurUmbraco.Repository.Services
         /// <param name="version"></param>
         /// <param name="order"></param>
         /// <param name="includeHidden">Some packages are hidden (i.e. projectLive), set to true to ignore this switch (i.e. for starter kits)</param>
+        /// <param name="onlyPromoted">When flag set only promoted packages are returned.</param>
         /// <returns></returns>
         /// <remarks>
         /// This caches each query for 2 minutes (non-sliding)
@@ -76,7 +77,8 @@ namespace OurUmbraco.Repository.Services
             string query = null,
             string version = null,
             PackageSortOrder order = PackageSortOrder.Default,
-            bool? includeHidden = false)
+            bool? includeHidden = false,
+            bool? onlyPromoted = false)
         {
             var filters = new List<SearchFilters>();
             var searchFilters = new SearchFilters(BooleanOperation.And);
@@ -86,6 +88,11 @@ namespace OurUmbraco.Repository.Services
                 //MUST be live
                 searchFilters.Filters.Add(new SearchFilter("projectLive", "1"));
                 searchFilters.Filters.Add(new SearchFilter("isRetired", "0"));
+            }
+
+            if (onlyPromoted.HasValue && onlyPromoted.Value)
+            {
+                searchFilters.Filters.Add(new SearchFilter("isPromoted", "1"));
             }
 
             if (version.IsNullOrWhiteSpace() == false)
@@ -247,7 +254,8 @@ namespace OurUmbraco.Repository.Services
                 Summary = GetPackageSummary(content, 50),
                 CertifiedToWorkOnUmbracoCloud = content.GetPropertyValue<bool>("worksOnUaaS"),
                 NuGetPackageId = nuGetPackageId,
-                IsNuGetFormat =  content.GetPropertyValue<bool>("isNuGetFormat")
+                IsNuGetFormat =  content.GetPropertyValue<bool>("isNuGetFormat"),
+                IsPromoted = content.GetPropertyValue<bool>("isPromoted")
             };
         }
 

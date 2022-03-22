@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
+      "checkTitles": false,
+      "title": "Enkel Media Blog",
+      "url": "https://www.enkelmedia.se/blogg/",
+      "rss": "https://www.enkelmedia.se/blogg/rss/",
+      "logo": "https://www.enkelmedia.se/img/enkel-media-logotype-180x74.png",
+      "memberId": 2535
+    },
+    {
       "id": "9e3bc5a8-06fe-4e56-b3b6-1be88a49a101",
       "checkTitles": false,
       "title": "Adolfi.dev Blog",
@@ -386,6 +395,15 @@
       "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
       "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
       "memberId": 271921
+    },  
+    {
+      "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
+      "checkTitles": true,
+      "title": "Nikolaj Brask-Nielsen",
+      "url": "https://dev.to/nikcio",
+      "rss": "https://dev.to/feed/nikcio",
+      "logo": "https://github.com/nikcio.png",
+      "memberId": 284921
     }
   ]
 }

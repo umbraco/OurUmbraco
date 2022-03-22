@@ -252,7 +252,7 @@ namespace OurUmbraco.Our
                 LogHelper.Error<Utils>("Could not get Screenshot", ex);
             }
 
-            return "https://lorempixel.com/600/600/?" + rnd.Next();
+            return "https://picsum.photos/600/600/?" + rnd.Next();
         }
     }
 
