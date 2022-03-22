@@ -120,22 +120,23 @@ namespace OurUmbraco.Repository.Services
             {
                 return "current";
             }
-            else if (string.IsNullOrWhiteSpace(from))
+
+            if (string.IsNullOrWhiteSpace(from))
             {
                 return "pre " + to;
             }
-            else if (string.IsNullOrWhiteSpace(to))
+
+            if (string.IsNullOrWhiteSpace(to))
             {
                 return from + " +";
             }
-            else if (to == from)
+
+            if (to == from)
             {
                 return from;
             }
-            else
-            {
-                return from + " - " + to;
-            }
+
+            return from + " - " + to;
         }
     }
 }
