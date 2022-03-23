@@ -179,8 +179,6 @@ namespace OurUmbraco.Community.BlogPosts
         {
             using var client = new HttpClient(IgnoreTlsErrorsHandler());
             
-            // Request XML response explicitly, otherwise you might get a prettified webpage
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/xml"));
             // Pretend to be the Edge browser, v99 because otherwise some RSS feed providers block you as a bot 
             client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36 Edg/99.0.1150.36");
             
