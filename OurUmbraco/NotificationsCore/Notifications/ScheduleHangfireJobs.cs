@@ -69,9 +69,10 @@ namespace OurUmbraco.NotificationsCore.Notifications
             service.UpdateMeetupStats();
         }
 
-        public void UpdateCommunityBlogPosts()
+        public void UpdateCommunityBlogPosts(PerformContext context)
         {
-            RecurringJob.AddOrUpdate(() => UpdateBlogPostsJsonFile(null), Cron.HourInterval(1));
+            var service = new BlogPostsService();
+            RecurringJob.AddOrUpdate(() => service.UpdateBlogPostsJsonFile(context), Cron.HourInterval(1));
         }
 
         public void UpdateVimeoVideos()
@@ -83,21 +84,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var vimeoVideoService = new VideosService();
             vimeoVideoService.UpdateVimeoVideos("umbraco");
-        }
-
-        public void UpdateBlogPostsJsonFile(PerformContext context)
-        {
-            // Initialize a new service
-            var service = new BlogPostsService();
-
-            // Determine the path to the JSON file
-            var jsonPath = HostingEnvironment.MapPath("~/App_Data/TEMP/CommunityBlogPosts.json");
-
-            // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(context), Formatting.Indented);
-
-            // Save the JSON to disk
-            System.IO.File.WriteAllText(jsonPath, rawJson, Encoding.UTF8);
         }
 
         public void UpdateCommunityVideos()

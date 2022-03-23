@@ -58,7 +58,7 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.MarkAsSolvedReminder();
             scheduler.UpdateGitHubContributors();
             scheduler.UpdateMeetupStats();
-            scheduler.UpdateCommunityBlogPosts();
+            scheduler.UpdateCommunityBlogPosts(null);
             scheduler.UpdateCommunityVideos();
             scheduler.UpdateVimeoVideos();
             scheduler.GetGitHubPullRequests();
