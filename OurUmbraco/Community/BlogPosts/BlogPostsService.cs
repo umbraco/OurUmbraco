@@ -65,6 +65,8 @@ namespace OurUmbraco.Community.BlogPosts
                     // Initialize a new web client (with the encoding specified for the blog)
                     using (var wc = new WebClient())
                     {
+                        ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
+
                         wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
                         wc.Encoding = blog.Encoding;
 
