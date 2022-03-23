@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
@@ -161,10 +162,16 @@ namespace OurUmbraco.Community.BlogPosts
 
         private static HttpClientHandler IgnoreTlsErrorsHandler()
         {
+            if (ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
+            {
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
+            }
+            
             var handler = new HttpClientHandler();
             handler.ClientCertificateOptions = ClientCertificateOption.Manual;
             handler.ServerCertificateCustomValidationCallback =
                 (httpRequestMessage, cert, cetChain, policyErrors) => { return true; };
+            
             return handler;
         }
 
@@ -358,15 +365,11 @@ namespace OurUmbraco.Community.BlogPosts
             }
         }
 
-        public void UpdateBlogPostsJsonFile(PerformContext context)
+        public async Task UpdateBlogPostsJsonFile(PerformContext context)
         {
-            // Initialize a new service
             var service = new BlogPostsService();
-
-            // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(context), Formatting.Indented);
-
-            // Save the JSON to disk
+            var posts = await service.GetBlogPosts(context);
+            var rawJson = JsonConvert.SerializeObject(posts, Formatting.Indented);
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);
         }
     }
