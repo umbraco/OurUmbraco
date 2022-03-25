@@ -320,8 +320,8 @@
       "checkTitles": false,
       "title": "Piotr Bach",
       "url": "https://piotrbach.com",
-      "rss": "https://piotrbach.com/rss/umbraco",
-      "logo": "https://piotrbach.com/media/ffvpgoxn/piotrbach-logo-square.jpg",
+      "rss": "https://piotrbach.com/umbraco-cms/feed/",
+      "logo": "https://pbs.twimg.com/profile_images/1236754298459095041/V2KPeDZP_400x400.jpg",
       "memberId": 155740
     },
     {
