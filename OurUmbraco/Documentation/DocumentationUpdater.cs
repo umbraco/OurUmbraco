@@ -81,7 +81,7 @@ namespace OurUmbraco.Documentation
                 Name = dir.Name.Replace("-", " "),
                 Path = dir.FullName.Substring(rootPath.Length).Replace('\\', '/'),
                 Level = level,
-                Sort = GetSort(dir.Name, level) ?? 100,
+                Sort = GetSort(dir.Parent.Name + "/" + dir.Name, level) ?? 100,
                 Directories = list,
                 HasChildren = dir.GetDirectories().Any()
             };
@@ -101,28 +101,26 @@ namespace OurUmbraco.Documentation
                 case 1:
                     switch (name.ToLowerInvariant())
                     {
-                        case "getting-started":
+                        case "documentation/getting-started":
                             return 0;
-                        case "fundamentals":
+                        case "documentation/fundamentals":
                             return 1;
-                        case "implementation":
+                        case "documentation/implementation":
                             return 2;
-                        case "extending":
+                        case "documentation/extending":
                             return 3;
-                        case "reference":
+                        case "documentation/reference":
                             return 4;
-                        case "tutorials":
+                        case "documentation/tutorials":
                             return 5;
-                        case "add-ons":
+                        case "documentation/add-ons":
                             return 6;
-                        case "umbraco-uno":
+                        case "documentation/umbraco-cloud":
                             return 7;
-                        case "umbraco-cloud":
+                        case "documentation/umbraco-heartcore":
                             return 8;
-                        case "umbraco-heartcore":
+                        case "documentation/contribute":
                             return 9;
-                        case "contribute":
-                            return 10;
                     }
                     break;
 
@@ -130,129 +128,145 @@ namespace OurUmbraco.Documentation
                     switch (name.ToLowerInvariant())
                     {
                         //Getting-Started
-                        case "managing-an-umbraco-project":
+                        case "getting-started/managing-an-umbraco-project":
                             return 0;
-                        case "editing-websites-with-umbraco":
+                        case "getting-started/editing-websites-with-umbraco":
                             return 1;
-                        case "creating-websites-with-umbraco":
+                        case "getting-started/creating-websites-with-umbraco":
                             return 2;
-                        case "developing-websites-with-umbraco":
+                        case "getting-started/developing-websites-with-umbraco":
                             return 3;
-                        case "hosting-an-umbraco-infrastructure":
+                        case "getting-started/hosting-an-umbraco-infrastructure":
                             return 4;
-                        case "where-can-i-get-help":
+                        case "getting-started/where-can-i-get-help":
                             return 5;
                             
                         //Fundamentals
-                        case "setup":
+                        case "fundamentals/setup":
                             return 0;
-                        case "backoffice":
+                        case "fundamentals/backoffice":
                             return 1;
-                        case "data":
+                        case "fundamentals/data":
                             return 2;
-                        case "design":
+                        case "fundamentals/design":
                             return 3;
-                        case "code":
+                        case "fundamentals/code":
                             return 4;
 
                         //Implementation
-                        case "default-routing":
+                        case "implementation/default-routing":
                             return 0;
-                        case "custom-routing":
+                        case "implementation/custom-routing":
                             return 1;
-                        case "controllers":
+                        case "implementation/controllers":
                             return 2;
-                        case "data-persistence":
+                        case "implementation/data-persistence":
                             return 3;
-                        case "rest-api":
+                        case "implementation/rest-api":
                             return 4;
 
                         //Extending
-                        case "dashboards":
+                        case "extending/dashboards":
                             return 0;
-                        case "section-trees":
+                        case "extending/section-trees":
                             return 1;
-                        case "property-editors":
+                        case "extending/property-editors":
                             return 2;
-                        case "macro-parameter-editors":
+                        case "extending/macro-parameter-editors":
                             return 3;
-                        case "healthcheck":
+                        case "extending/health-check":
                             return 4;
-                        case "language-files":
+                        case "extending/language-files":
                             return 5;
 
                         //Reference
-                        case "config":
+                        case "reference/config":
                             return 0;
-                        case "templating":
+                        case "reference/templating":
                             return 1;
-                        case "querying":
+                        case "reference/querying":
                             return 2;
-                        case "routing":
+                        case "reference/routing":
                             return 3;
-                        case "searching":
+                        case "reference/searching":
                             return 4;
-                        case "events":
+                        case "reference/events":
                             return 5;
-                        case "management":
+                        case "reference/management":
                             return 6;
-                        case "plugins":
+                        case "reference/plugins":
                             return 7;
-                        case "cache":
+                        case "reference/cache":
                             return 8;
-                        case "packaging":
+                        case "reference/security":
                             return 9;
-                        case "security":
+                        case "reference/common-pitfalls":
                             return 10;
-                        case "common-pitfalls":
+                        case "reference/angular":
                             return 11;
-
+                        case "reference/api-documentation":
+                            return 12;
+                        case "reference/debugging":
+                            return 13;
+                        case "reference/language-variation":
+                            return 14;
+                        case "reference/mapping":
+                            return 15;
+                        case "reference/notifications":
+                            return 16;
+                        case "reference/scheduling":
+                            return 17;
+                        case "reference/using-ioc":
+                            return 18;
+                        case "reference/v9-config":
+                            return 19;
+                        
                         //Tutorials
-                        case "creating-basic-site":
+                        case "tutorials/creating-basic-site":
                             return 0;
-                        case "creating-a-custom-dashboard":
+                        case "tutorials/creating-a-custom-dashboard":
                             return 1;
-                        case "creating-a-property-editor":
+                        case "tutorials/creating-a-property-editor":
                             return 2;
-                        case "multilanguage-setup":
+                        case "tutorials/multilanguage-setup":
                             return 3;
-                        case "starter-kit":
+                        case "tutorials/starter-kit":
                             return 4;
-                        case "editors-manual":
+                        case "tutorials/editors-manual":
                             return 5;
 
                         //Add ons
-                        case "umbracoforms":
+                        case "add-ons/umbracoforms":
                             return 0;
-                        case "umbraco-deploy":
+                        case "add-ons/umbraco-deploy":
                             return 1;
-                        case "umbracocourier":
+                        case "add-ons/umbracocourier":
                             return 2;
 
                         //Umbraco Cloud
-                        case "getting-started":
+                        case "umbraco-cloud/getting-started":
                             return 0;
-                        case "set-up":
+                        case "umbraco-cloud/set-up":
                             return 1;
-                        case "deployment":
+                        case "umbraco-cloud/deployment":
                             return 2;
-                        case "databases":
+                        case "umbraco-cloud/databases":
                             return 3;
-                        case "upgrades":
+                        case "umbraco-cloud/upgrades":
                             return 4;
-                        case "troubleshooting":
+                        case "umbraco-cloud/troubleshooting":
                             return 5;
-                        case "frequently-asked-questions":
+                        case "umbraco-cloud/frequently-asked-questions":
                             return 6;
                         
                         //Umbraco Heartcore
-                        case "getting-started-cloud":
+                        case "umbraco-heartcore/getting-started-cloud":
                             return 0;
-                        case "api-documenation":
+                        case "umbraco-heartcore/api-documentation":
                             return 1;
-                        case "client-libraries":
+                        case "umbraco-heartcore/client-libraries":
                             return 2;
-                        case "versions-and-updates":
+                        case "umbraco-heartcore/versions-and-updates":
                             return 3;
                     }
                     break;
@@ -261,241 +275,249 @@ namespace OurUmbraco.Documentation
                     switch (name.ToLowerInvariant())
                     {
                         //Fundamentals - Setup
-                        case "requirements":
+                        case "setup/requirements":
                             return 0;
-                        case "install":
+                        case "setup/install":
                             return 1;
-                        case "upgrading":
+                        case "setup/upgrading":
                             return 2;
-                        case "server-setup":
+                        case "setup/server-setup":
                             return 3;
 
                         //Fundamentals - Backoffice
-                        case "sections":
+                        case "backoffice/sections":
                             return 0;
-                        case "property-editors":
+                        case "backoffice/property-editors":
                             return 1;
-                        case "login":
+                        case "backoffice/login":
                             return 2;
 
                         //fundamentals - Data
-                        case "defining-content":
+                        case "data/defining-content":
                             return 0;
-                        case "creating-media":
+                        case "data/creating-media":
                             return 1;
-                        case "members":
+                        case "data/members":
                             return 2;
-                        case "data-types":
+                        case "data/data-types":
                             return 3;
-                        case "scheduled-publishing":
+                        case "data/scheduled-publishing":
                             return 4;
 
                         //Fundamentals - Design
-                        case "templates":
+                        case "design/templates":
                             return 0;
-                        case "rendering-content":
+                        case "design/rendering-content":
                             return 1;
-                        case "rendering-media":
+                        case "design/rendering-media":
                             return 2;
-                        case "stylesheets-javascript":
+                        case "design/stylesheets-javascript":
                             return 3;
 
                         //Fundamentals - Code
-                        case "umbraco-services":
+                        case "code/umbraco-services":
                             return 0;
-                        case "subscribing-to-events":
+                        case "code/subscribing-to-events":
                             return 1;
-                        case "creating-forms":
+                        case "code/creating-forms":
                             return 2;
 
                         //Implementation - Default Routing
-                        case "inbound-pipeline":
+                        case "default-routing/inbound-pipeline":
                             return 0;
-                        case "controller-selection":
+                        case "default-routing/controller-selection":
                             return 1;
-                        case "execute-request":
+                        case "default-routing/execute-request":
                             return 2;
 
                         //Reference - Config
-                        case "webconfig":
+                        case "config/404handlers":
                             return 0;
-                        case "404handlers":
+                        case "config/applications":
                             return 1;
-                        case "applications":
+                        case "config/baserestextensions":
                             return 2;
-                        case "embeddedmedia":
+                        case "config/dashboard":
                             return 3;
-                        case "examineindex":
+                        case "config/embeddedmedia":
                             return 4;
-                        case "examinesettings":
+                        case "config/examineindex":
                             return 5;
-                        case "filesystemproviders":
+                        case "config/examinesettings":
                             return 6;
-                        case "baserestextensions":
+                        case "config/filesystemproviders":
                             return 7;
-                        case "tinymceconfig":
+                        case "config/healthchecks":
                             return 8;
-                        case "trees":
+                        case "config/serilog":
                             return 9;
-                        case "umbracosettings":
+                        case "config/tinymceconfig":
                             return 10;
-                        case "dashboard":
+                        case "config/trees":
                             return 11;
-                        case "healthchecks":
+                        case "config/umbracosettings":
                             return 12;
+                        case "config/webconfig":
+                            return 13;
 
                         //Reference - Templating
-                        case "mvc":
+                        case "templating/macros":
                             return 0;
-                        case "masterpages":
+                        case "templating/masterpages":
                             return 1;
-                        case "macros":
+                        case "templating/modelsbuilder":
                             return 2;
-                        case "modelsbuilder":
+                        case "templating/mvc":
                             return 3;
 
                         //Reference - Querying
-                        case "ipublishedcontent":
+                        case "querying/dynamicpublishedcontent":
                             return 0;
-                        case "dynamicpublishedcontent":
+                        case "querying/imembermanager":
                             return 1;
-                        case "umbracohelper":
+                        case "querying/ipublishedcontent":
                             return 2;
-                        case "membershiphelper":
+                        case "querying/ipublishedcontentquery":
                             return 3;
+                        case "querying/itagquery":
+                            return 4;
+                        case "querying/membershiphelper":
+                            return 5;
+                        case "querying/umbracohelper":
+                            return 6;
 
                         //Reference - Routing
-                        case "authorized":
+                        case "routing/authorized":
                             return 0;
-                        case "request-pipeline":
+                        case "routing/iisrewriterules":
                             return 1;
-                        case "webapi":
+                        case "routing/request-pipeline":
                             return 2;
-                        case "iisrewriterules":
+                        case "routing/url-tracking":
                             return 3;
-                        case "url-tracking":
+                        case "routing/webapi":
                             return 4;
+                        
+                        //Reference - Events
+                        case "events/editormodel-events":
+                            return 0;
+                        case "events/memberservice-events":
+                            return 1;
                             
                         //Tutorials - Basic site from scratch
-                        case "getting-started":
+                        case "creating-basic-site/getting-started":
                             return 0;
-                        case "document-types":
+                        case "creating-basic-site/document-types":
                             return 1;
-                        case "creating-your-first-template-and-content-node":
+                        case "creating-basic-site/creating-your-first-template-and-content-node":
                             return 2;
-                        case "css-and-images":
+                        case "creating-basic-site/css-and-images":
                             return 3;
-                        case "displaying-the-document-type-properties":
+                        case "creating-basic-site/displaying-the-document-type-properties":
                             return 4;
-                        case "creating-master-template-part-1":
+                        case "creating-basic-site/creating-master-template-part-1":
                             return 5;
-                        case "creating-master-template-part-2":
+                        case "creating-basic-site/creating-master-template-part-2":
                             return 6;
-                        case "setting-the-navigation-menu":
+                        case "creating-basic-site/setting-the-navigation-menu":
                             return 7;
-                        case "articles-parent-and-article-items":
+                        case "creating-basic-site/articles-parent-and-article-items":
                             return 8;
-                        case "adding-language-variants":
+                        case "creating-basic-site/adding-language-variants":
                             return 9;
-                        case "conclusions-where-next":
+                        case "creating-basic-site/conclusions-where-next":
                             return 10;
                             
                         //Tutorials - Editor Manual
-                        case "introduction":
+                        case "editors-manual/getting-started-with-umbraco":
                             return 0;
-                        case "getting-started-with-umbraco":
+                        case "editors-manual/working-with-content":
                             return 1;
-                        case "working-with-content":
+                        case "editors-manual/version-management":
                             return 2;
-                        case "version-management":
+                        case "editors-manual/media-management":
                             return 3;
-                        case "media-management":
+                        case "editors-manual/tips-and-tricks":
                             return 4;
-                        case "tips-and-tricks":
-                            return 5;
 
                         //Add Ons - UmbracoForms
-                        case "installation":
+                        case "umbracoforms/installation":
                             return 0;
-                        case "editor":
+                        case "umbracoforms/editor":
                             return 1;
-                        case "developer":
+                        case "umbracoforms/developer":
                             return 2;
 
                        //Add ons - Umbraco Deploy
-                        case "get-started-with-deploy":
+                        case "umbraco-deploy/get-started-with-deploy":
                             return 0; 
-                        case "installing-deploy":
+                        case "umbraco-deploy/installing-deploy":
                             return 1;
-                        case "deployment-workflow":
+                        case "umbraco-deploy/deployment-workflow":
                             return 2;
-                        case "deploy-settings":
+                        case "umbraco-deploy/deploy-settings":
                             return 3;
-                        case "upgrades":
+                        case "umbraco-deploy/upgrades":
                             return 4;
-                        case "troubleshooting":
+                        case "umbraco-deploy/troubleshooting":
                             return 5;
 
-                        //Add ons - UmbracoCourier
-                        case "architechture":
-                            return 1;
-
                         //Umbraco Cloud - Getting Started
-                        case "project-overview":
+                        case "getting-started/project-overview":
                             return 0;
-                        case "environments":
+                        case "getting-started/environments":
                             return 1;
-                        case "the-umbraco-cloud-portal":
+                        case "getting-started/the-umbraco-cloud-portal":
                             return 2;
-                        case "baselines":
+                        case "getting-started/baselines":
                             return 3;
-                        case "migrate-existing-site":
+                        case "getting-started/migrate-existing-site":
                             return 4;
 
                         //Umbraco Cloud - Set Up
-                        case "working-locally":
+                        case "set-up/working-locally":
                             return 0;
-                        case "visual-studio":
+                        case "set-up/visual-studio":
                             return 1;
-                        case "working-with-visual-studio":
+                        case "set-up/working-with-visual-studio":
                             return 2;
-                        case "working-with-uaas-cli":
+                        case "set-up/working-with-uaas-cli":
                             return 3;
-                        case "project-settings":
+                        case "set-up/project-settings":
                             return 4;
-                        case "team-members":
+                        case "set-up/team-members":
                             return 5;
-                        case "media":
+                        case "set-up/media":
                             return 6;
-                        case "smtp-settings":
+                        case "set-up/smtp-settings":
                             return 7;
-                        case "manage-hostnames":
+                        case "set-up/manage-hostnames":
                             return 8;
-                        case "config-transforms":
+                        case "set-up/config-transforms":
                             return 9;
-                        case "power-tools":
+                        case "set-up/power-tools":
                             return 10;
 
                         //Umbraco Cloud - Deployment
-                        case "local-to-cloud":
+                        case "deployment/local-to-cloud":
                             return 0;
-                        case "cloud-to-cloud":
+                        case "deployment/cloud-to-cloud":
                             return 1;
-                        case "content-transfer":
+                        case "deployment/content-transfer":
                             return 2;
-                        case "restoring-content":
+                        case "deployment/restoring-content":
                             return 3;
-                        case "deployment-webhook":
+                        case "deployment/deployment-webhook":
                             return 4;
 
                         //Umbraco Cloud - Troubleshooting
-                        case "deployments":
+                        case "troubleshooting/deployments":
                             return 0;
-                        case "log-files":
+                        case "troubleshooting/log-files":
                             return 1;
-                        case "faq":
+                        case "troubleshooting/faq":
                             return 2;
-                        case "courier":
+                        case "troubleshooting/courier":
                             return 3;
 
                     }
