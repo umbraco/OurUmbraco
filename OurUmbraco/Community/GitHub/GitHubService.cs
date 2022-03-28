@@ -12,6 +12,8 @@ using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
 using GraphQL.Client;
+using GraphQL.Client.Http;
+using GraphQL.Client.Serializer.Newtonsoft;
 using GraphQL.Common.Request;
 using Hangfire.Console;
 using Hangfire.Server;
@@ -307,7 +309,8 @@ namespace OurUmbraco.Community.GitHub
                 "Package.Templates",
                 "rfcs",	
                 "organizer-guide",
-                "The-Starter-Kit"
+                "The-Starter-Kit",
+                "Umbraco.UI"
             };
         }
 
@@ -746,12 +749,12 @@ namespace OurUmbraco.Community.GitHub
                 {
                     var graphClient = GetGraphQlClient();
                     var request = string.IsNullOrEmpty(cursor)
-                        ? new GraphQLRequest { Query = query, Variables = $"{{ \"repository\": \"{repositoryName}\" }}" }
-                        : new GraphQLRequest { Query = query, Variables = $"{{ \"cursor\": \"{cursor}\", \"repository\": \"{repositoryName}\" }}" };
+                        ? new GraphQL.GraphQLRequest { Query = query, Variables = $"{{ \"repository\": \"{repositoryName}\" }}" }
+                        : new GraphQL.GraphQLRequest { Query = query, Variables = $"{{ \"cursor\": \"{cursor}\", \"repository\": \"{repositoryName}\" }}" };
 
                     try
                     {
-                        var response = await graphClient.PostAsync(request).ConfigureAwait(false);
+                        var response = await graphClient.SendQueryAsync<GraphQLModel.Repository>(request).ConfigureAwait(false);
 
                         if (response.Errors != null)
                             foreach (var error in response.Errors)
@@ -761,7 +764,7 @@ namespace OurUmbraco.Community.GitHub
                                 context.ResetTextColor();
                             }
 
-                        var repository = response.GetDataFieldAs<GraphQLModel.Repository>("repository");
+                        var repository = response.Data;
                         if (repository.PullRequests.Edges.Any() == false)
                             break;
 
@@ -787,12 +790,12 @@ namespace OurUmbraco.Community.GitHub
             return query;
         }
 
-        private static GraphQLClient GetGraphQlClient()
+        private static GraphQLHttpClient GetGraphQlClient()
         {
             var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubAccessToken"];
-            var graphClient = new GraphQLClient("https://api.github.com/graphql");
-            graphClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {gitHubAccessToken}");
-            graphClient.DefaultRequestHeaders.Add("User-Agent", "OurUmbraco");
+            var graphClient = new GraphQLHttpClient("https://api.github.com/graphql",  new NewtonsoftJsonSerializer());
+            graphClient.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {gitHubAccessToken}");
+            graphClient.HttpClient.DefaultRequestHeaders.Add("User-Agent", "OurUmbraco");
             return graphClient;
         }
 

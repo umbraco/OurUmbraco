@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Hosting;
@@ -48,7 +49,7 @@ namespace OurUmbraco.Community.BlogPosts
             }
         }
 
-        public BlogRssItem[] GetBlogPosts(PerformContext context)
+        public async Task<BlogRssItem[]> GetBlogPosts(PerformContext context)
         {
             var posts = new List<BlogRssItem>();
 
@@ -59,29 +60,22 @@ namespace OurUmbraco.Community.BlogPosts
             {
                 try
                 {
-                    string raw;
-                    const string userAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3393.4 Safari/537.36";
                     context.WriteLine($"Processing blog {blog.Title}");
-                    // Initialize a new web client (with the encoding specified for the blog)
-                    using (var wc = new WebClient())
+                    
+                    var raw = await GetRawRssFeedResponse(context, blog.RssUrl);
+                    if (string.IsNullOrWhiteSpace(raw))
                     {
-                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-                        wc.Encoding = blog.Encoding;
-
-                        // Download the raw XML
-                        raw = wc.DownloadString(blog.RssUrl);
-                        raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+                        // Go to the next item, the feed is empty indicating it couldn't be fetched
+                        continue;
                     }
+                    
                     // Parse the XML into a new instance of XElement
                     var feed = XElement.Parse(raw);
 
                     var channel = feed.Element("channel");
                     var channelTitle = channel.GetElementValue("title");
                     var channelLink = channel.GetElementValue("link");
-                    var channelDescription = channel.GetElementValue("description");
-                    var channelLastBuildDate = channel.GetElementValue("lastBuildDate");
-                    var channelLangauge = channel.GetElementValue("language");
-
+                    
                     var rssChannel = new BlogRssChannel
                     {
                         Id = blog.Id,
@@ -153,29 +147,83 @@ namespace OurUmbraco.Community.BlogPosts
                         posts.Add(blogPost);
                     }
 
-                    // Get the avatar locally so that we can use ImageProcessor and serve it over https
-                    using (var wc = new WebClient())
-                    {
-                        wc.Headers.Add(HttpRequestHeader.UserAgent, userAgent);
-                        var baseLogoPath = HostingEnvironment.MapPath("~/media/blogs/");
-                        if (Directory.Exists(baseLogoPath) == false)
-                            Directory.CreateDirectory(baseLogoPath);
-                        
-                        var logoExtension = GetFileExtension(blog.LogoUrl);
-                        var logoPath = baseLogoPath + blog.Id + logoExtension;
-                        
-                        wc.DownloadFile(blog.LogoUrl, logoPath);
-                    }
+                    var logoPath = await GetBlogLogo(context, blog);
                 }
                 catch (Exception ex)
                 {
                     context.SetTextColor(ConsoleTextColor.Red);
-                    context.WriteLine("Unable to get blog posts for: " + blog.RssUrl, ex);
+                    context.WriteLine($"Unable to get blog posts for: {blog.RssUrl} because of {ex.Message} {ex.StackTrace}");
                     context.ResetTextColor();
                 }
             }
 
             return posts.OrderByDescending(x => x.PublishedDate).ToArray();
+        }
+
+        private static HttpClientHandler IgnoreTlsErrorsHandler()
+        {
+            if (ServicePointManager.SecurityProtocol.HasFlag(SecurityProtocolType.Tls12) == false)
+            {
+                ServicePointManager.SecurityProtocol = ServicePointManager.SecurityProtocol | SecurityProtocolType.Tls12;
+            }
+            
+            var handler = new HttpClientHandler();
+            handler.ClientCertificateOptions = ClientCertificateOption.Manual;
+            handler.ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) => { return true; };
+            
+            return handler;
+        }
+
+        private static async Task<string> GetRawRssFeedResponse(PerformContext context, string rssUrl)
+        {
+            using var client = new HttpClient(IgnoreTlsErrorsHandler());
+            
+            // Pretend to be the Edge browser, v99 because otherwise some RSS feed providers block you as a bot 
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36 Edg/99.0.1150.36");
+            
+            using var result = await client.GetAsync(rssUrl);
+            if (result.IsSuccessStatusCode == false)
+            {
+                context.SetTextColor(ConsoleTextColor.Red);
+                context.WriteLine($"Getting {rssUrl} not successful, status: {result.StatusCode}, reason: {result.ReasonPhrase}");
+                context.ResetTextColor();
+                return string.Empty;
+            }
+            
+            // Force read with UTF-8 encoding
+            var buffer = await result.Content.ReadAsByteArrayAsync();
+            var byteArray = buffer.ToArray();
+            var raw = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+            raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+            return raw;
+        }
+
+        private static async Task<string> GetBlogLogo(PerformContext context, BlogInfo blog)
+        {
+            // Get the avatar locally so that we can use ImageProcessor and serve it over https
+            var baseLogoPath = HostingEnvironment.MapPath("~/media/blogs/");
+            if (Directory.Exists(baseLogoPath) == false)
+                Directory.CreateDirectory(baseLogoPath);
+            var logoExtension = GetFileExtension(blog.LogoUrl);
+            var logoPath = baseLogoPath + blog.Id + logoExtension;
+
+            try
+            {
+                using var downloader = new HttpClient(IgnoreTlsErrorsHandler());
+                var result = await downloader.GetStreamAsync(blog.LogoUrl);
+            
+                using var fs = new FileStream(logoPath, FileMode.Create, FileAccess.Write, FileShare.None);
+                await result.CopyToAsync(fs);
+            }
+            catch (Exception ex)
+            {
+                context.SetTextColor(ConsoleTextColor.Yellow);
+                context.WriteLine($"Getting {blog.LogoUrl} not successful " + ex.Message, ex.StackTrace);
+                context.ResetTextColor();
+            }
+
+            return logoPath;
         }
 
         public async Task<IEnumerable<BlogRssItem>> GetUprofileBlogPosts()
@@ -315,15 +363,11 @@ namespace OurUmbraco.Community.BlogPosts
             }
         }
 
-        public void UpdateBlogPostsJsonFile()
+        public async Task UpdateBlogPostsJsonFile(PerformContext context)
         {
-            // Initialize a new service
             var service = new BlogPostsService();
-
-            // Generate the raw JSON
-            var rawJson = JsonConvert.SerializeObject(service.GetBlogPosts(null), Formatting.Indented);
-
-            // Save the JSON to disk
+            var posts = await service.GetBlogPosts(context);
+            var rawJson = JsonConvert.SerializeObject(posts, Formatting.Indented);
             File.WriteAllText(JsonFile, rawJson, Encoding.UTF8);
         }
     }

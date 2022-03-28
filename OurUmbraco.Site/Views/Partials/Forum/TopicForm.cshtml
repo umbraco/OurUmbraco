@@ -21,17 +21,20 @@
             @if (CurrentPage.Parent.DocumentTypeAlias != "Project")
             {
                 var categories = Model.Content.AncestorOrSelf(2).Children.Where(m => m.NewTopicsAllowed()).ToList();
-                var firstCategory = categories.First();
+                if(categories.Any()) 
+                {
+                    var firstCategory = categories.First();
 
-                <div class="col-sm-3 col-xs-6" style="display: none;">
-                    <select name="topic-category" id="topic-category" class="markdown-control">
-                        <option class="@firstCategory.Name.ToLower().Replace(" ", "")" value="@firstCategory.Id">@firstCategory.Name</option>
-                        @foreach (var cat in categories.Where(x => x.Id != firstCategory.Id))
-                        {
-                            <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) || CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoUnoName) ? "selected": null)">@cat.Name</option>
-                        }
-                    </select>
-                </div>
+                    <div class="col-sm-3 col-xs-6" style="display: none;">
+                        <select name="topic-category" id="topic-category" class="markdown-control">
+                            <option class="@firstCategory.Name.ToLower().Replace(" ", "")" value="@firstCategory.Id">@firstCategory.Name</option>
+                            @foreach (var cat in categories.Where(x => x.Id != firstCategory.Id))
+                            {
+                                <option class="@cat.Name.ToLower().Replace(" ", "")" value="@cat.Id" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) || CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoUnoName) ? "selected": null)">@cat.Name</option>
+                            }
+                        </select>
+                    </div>
+                }
             }
 
             <div class="col-sm-3 col-xs-6">
