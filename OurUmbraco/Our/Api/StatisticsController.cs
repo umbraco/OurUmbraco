@@ -89,37 +89,6 @@ namespace OurUmbraco.Our.Api
             return projectData;
         }
 
-
-        [System.Web.Http.HttpGet]
-        public MeetupData GetMeetupData(DateTime fromDate, DateTime toDate)
-        {
-            var meetupData = new MeetupData();
-            
-            var meetupCache = new List<MeetupCacheItem>();
-            var meetupCacheFile = HttpContext.Current.Server.MapPath("~/App_Data/TEMP/MeetupStatisticsCache.json");
-            if (File.Exists(meetupCacheFile))
-            {
-                var json = File.ReadAllText(meetupCacheFile);
-                using (var stringReader = new StringReader(json))
-                using (var jsonTextReader = new JsonTextReader(stringReader))
-                {
-                    var jsonSerializer = new JsonSerializer();
-                    meetupCache = jsonSerializer.Deserialize<List<MeetupCacheItem>>(jsonTextReader);
-                }
-            }
-
-            var eventsDateRange = meetupCache.Where(x => x.Time > fromDate && x.Time < toDate);
-            meetupData.MeetupEventsDateRange = eventsDateRange.Count();
-
-
-            string configPath = HttpContext.Current.Server.MapPath("~/config/MeetupUmbracoGroups.txt");
-            // Get the alias (urlname) of each group from the config file
-            string[] aliases = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
-            meetupData.AllMeetupGroups = aliases.Length;
-
-            return meetupData;
-        }
-
         [System.Web.Http.HttpGet]
         public static PeopleData GetPeopleData(DateTime fromDate, DateTime toDate)
         {

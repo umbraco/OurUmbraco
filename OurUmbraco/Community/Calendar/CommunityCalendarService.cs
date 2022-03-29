@@ -36,24 +36,23 @@ namespace OurUmbraco.Community.Calendar
 
             var items = new List<CommunityCalendarItem>();
             items.AddRange(parentNode.Children.Select(x => new ContentCalendarItem(x)));
-            foreach (var meetup in meetupService.GetUpcomingMeetups())
+            foreach (var meetup in meetupService.GetCachedUpcomingMeetups())
             {
-                var meetupGroup = meetup.Data.GroupByUrlname;
-                var nextMeetup = meetupGroup.UpcomingEvents.Edges.OrderByDescending(x => x.Node.DateTime).FirstOrDefault();
-                if (nextMeetup != null)
+                var nextMeetup = meetup.Events.OrderBy(x => x.DateTime).FirstOrDefault();
+                
+                if (nextMeetup == null) 
+                    continue;
+                
+                var calendarItem = new CommunityCalendarItem()
                 {
-                    var plannedMeetup = nextMeetup.Node;
-                    var calendarItem = new CommunityCalendarItem()
-                    {
                         
-                        Description = plannedMeetup.Description,
-                        Title = plannedMeetup.Title,
-                        Url = plannedMeetup.EventUrl
+                    Description = nextMeetup.Description,
+                    Title = nextMeetup.Title,
+                    Url = nextMeetup.Url
                         
 
-                    };
-                    items.Add(calendarItem);
-                }
+                };
+                items.Add(calendarItem);
             }
             
             return items.OrderBy(x => x.StartDate);

@@ -16,7 +16,7 @@ namespace OurUmbraco.Community.Controllers.Http
         [HttpGet]
         public IHttpActionResult Index()
         {
-            var meetups = _meetupService.GetUpcomingMeetups();
+            var meetups = _meetupService.GetCachedUpcomingMeetups();
 
             return Ok(meetups);
         }

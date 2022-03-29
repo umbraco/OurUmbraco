@@ -67,7 +67,7 @@ namespace Skybrud.Social.Meetup.Models.GraphQl.Events
         /// <summary>
         /// Gets the time status of the event.
         /// </summary>
-        [JsonProperty("status")]
+        [JsonProperty("timeStatus")]
         public MeetupEventTimeStatus? TimeStatus { get; }
 
         /// <summary>

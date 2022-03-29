@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Text;
-using System.Web.Hosting;
 using Hangfire;
 using Hangfire.Server;
-using Newtonsoft.Json;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
+using OurUmbraco.Community.Meetup;
 using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.Videos;
 using OurUmbraco.Documentation;
@@ -52,21 +50,16 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => UpdateGitHubContributorsJsonFile(), Cron.HourInterval(12));
         }
 
-        public void UpdateMeetupStats()
+        public void CacheUpcomingMeetups(PerformContext context)
         {
-            RecurringJob.AddOrUpdate(() => UpdateMeetupStatsJsonFile(), Cron.HourInterval(12));
+            var meetupService = new MeetupService();
+            RecurringJob.AddOrUpdate(() => meetupService.CacheUpcomingMeetups(), Cron.MinuteInterval(30));
         }
 
         public void UpdateGitHubContributorsJsonFile()
         {
             var service = new GitHubService();
             service.UpdateOverallContributors();
-        }
-
-        public void UpdateMeetupStatsJsonFile()
-        {
-            var service = new Community.Meetup.MeetupService();
-            service.UpdateMeetupStats();
         }
 
         public void UpdateCommunityBlogPosts(PerformContext context)

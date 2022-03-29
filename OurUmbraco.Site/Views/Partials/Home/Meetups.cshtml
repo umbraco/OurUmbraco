@@ -21,36 +21,36 @@
     var upcomingEvents = Model.Where(x => x.Events.Any()).OrderBy(x => x.Events.OrderBy(y => y.DateTime).First().DateTime).ToList();
 }
 
-@foreach (var groupEvent in upcomingEvents) {
+@foreach (var group in upcomingEvents) {
    
     double distance = -1;
-    var upcomingEvent = groupEvent.Events.OrderBy(x => x.DateTime).FirstOrDefault();
+    var upcomingEvent = group.Events.OrderBy(x => x.DateTime).FirstOrDefault();
     if (upcomingEvent == null)
     {
         return;
     }
    
-   if (memberLocation != null) {
-       if (upcomingEvent != null && upcomingEvent.Venue != null)
+   if (memberLocation != null) 
+   {
        {
-           var venueLocation = new Point(upcomingEvent.Venue.Latitude, upcomingEvent.Venue.Longitude);
+           var venueLocation = new Point(upcomingEvent.Latitude, upcomingEvent.Longitude);
            distance = memberLocation.GetDistance(venueLocation);
        }
    }
   
-   <a href="@upcomingEvent.EventUrl" class="forum-thread" target="_blank" rel="noreferrer noopener">
-       @if (groupEvent.Group.Logo != null)
+   <a href="@upcomingEvent.Url" class="forum-thread" target="_blank" rel="noreferrer noopener">
+       @if (string.IsNullOrWhiteSpace(group.LogoBaseUrl) == false)
        {
            <div class="avatar">
-               <img src="@(groupEvent.Group.Logo.BaseUrl)@(groupEvent.Group.Logo.Id)/80x80.png" alt="" />
+               <img src="@(group.LogoBaseUrl)/80x80.png" alt="" />
            </div>
        }
        else
        {
-           var fakeHash = SecurityUtils.GetMd5Hash(groupEvent.Group.Id + "");
+           var fakeHash = SecurityUtils.GetMd5Hash(group.Id + "");
            var avatarService = new AvatarService();
            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
-           var img = avatarService.GetImgWithSrcSet(avatarPath, groupEvent.Group.Name, 100);
+           var img = avatarService.GetImgWithSrcSet(avatarPath, group.Name, 100);
   
            <div class="avatar">
                @Html.Raw(img)
@@ -60,10 +60,10 @@
            <div class="forum-thread-text">
                @if (distance >= 0 && distance <= 50000) {
                    //<span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
-                   <span style="float: right; color: red; font-weight: bold;" title="Distance: @String.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
+                   <span style="float: right; color: red; font-weight: bold;" title="Distance: @string.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
                }
-               <h3>@groupEvent.Group.Name</h3>
-               <p>@upcomingEvent.DateTime.ToString("MMM d, yyyy") by @groupEvent.Group.Name</p>
+               <h3>@group.Name</h3>
+               <p>@upcomingEvent.DateTime.ToString("MMM d, yyyy") by @group.Name</p>
            </div>
        </div>
    </a>

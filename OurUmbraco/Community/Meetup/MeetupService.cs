@@ -8,84 +8,77 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.Controllers;
 using OurUmbraco.Community.Meetup.Models;
-using OurUmbraco.Community.Models;
 using Skybrud.Essentials.Http;
-using Skybrud.Social.Meetup.Models.Events;
 using Skybrud.Social.Meetup.Models.GraphQl;
-using Skybrud.Social.Meetup.Models.Groups;
-using Skybrud.Social.Meetup.OAuth;
-using Skybrud.Social.Meetup.Responses.Events;
-using Umbraco.Core.Cache;
 using Umbraco.Core.Logging;
-using Umbraco.Web;
 
 namespace OurUmbraco.Community.Meetup
 {
     public class MeetupService
     {
-        public void UpdateMeetupStats()
+        private readonly string _meetupEventsCachePath = HostingEnvironment.MapPath("~/App_Data/TEMP/UpcomingMeetups.json");
+
+        public List<OurMeetupGroup> GetCachedUpcomingMeetups()
         {
-            var configPath = HostingEnvironment.MapPath("~/config/MeetupUmbracoGroups.txt");
-            // Get the alias (urlname) of each group from the config file
-            var aliases = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
-
-            var counterPath = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCounter.txt");
-            var counter = 0;
-            if (File.Exists(counterPath))
+            if (File.Exists(_meetupEventsCachePath) == false)
             {
-                var savedCounter = File.ReadAllLines(counterPath).First();
-                int.TryParse(savedCounter, out counter);
+                CacheUpcomingMeetups();
             }
-
-            var newCounter = aliases.Length <= counter ? 0 : counter + 1;
-            File.WriteAllText(counterPath, newCounter.ToString(), Encoding.UTF8);
-
-            var client = new MeetupOAuth2Client();
-            var response = client.DoHttpGetRequest(string.Format("https://api.meetup.com/{0}/events?page=1000&status=past", aliases[counter]));
-            var events = MeetupGetEventsResponse.ParseResponse(response).Body;
-
-            var meetupCache = new List<MeetupCacheItem>();
-            var meetupCacheFile = HostingEnvironment.MapPath("~/App_Data/TEMP/MeetupStatisticsCache.json");
-            if (File.Exists(meetupCacheFile))
-            {
-                var json = File.ReadAllText(meetupCacheFile);
-                using (var stringReader = new StringReader(json))
-                using (var jsonTextReader = new JsonTextReader(stringReader))
-                {
-                    var jsonSerializer = new JsonSerializer();
-                    meetupCache = jsonSerializer.Deserialize<List<MeetupCacheItem>>(jsonTextReader);
-                }
-            }
-
-            foreach (var meetupEvent in events)
-            {
-                if (meetupCache.Any(x => x.Id == meetupEvent.Id))
-                    continue;
-
-                var meetupCacheItem = new MeetupCacheItem
-                {
-                    Time = meetupEvent.Time,
-                    Created = meetupEvent.Created,
-                    Description = meetupEvent.Description,
-                    HasVenue = meetupEvent.HasVenue,
-                    Id = meetupEvent.Id,
-                    Link = meetupEvent.Link,
-                    Name = meetupEvent.Name,
-                    Updated = meetupEvent.Updated,
-                    Visibility = meetupEvent.Visibility
-                };
-                meetupCache.Add(meetupCacheItem);
-            }
-
-            var rawJson = JsonConvert.SerializeObject(meetupCache, Formatting.Indented);
-            File.WriteAllText(meetupCacheFile, rawJson, Encoding.UTF8);
+        
+            var meetupCache = File.ReadAllText(_meetupEventsCachePath);
+            var deserializedCache = JsonConvert.DeserializeObject<List<OurMeetupGroup>>(meetupCache);
+            return deserializedCache;
         }
 
+        public void CacheUpcomingMeetups()
+        {
+            var meetupService = new MeetupService();
+            var meetupGroups = meetupService.GetUpcomingMeetups();
 
-        public List<MeetupGraphQlGroupResult> GetUpcomingMeetups()
+            var meetupEvents = new List<OurMeetupGroup>();
+
+            foreach (var groupResult in meetupGroups.Where(x => x.Data.GroupByUrlname != null))
+            {
+                var group = groupResult.Data.GroupByUrlname;
+                
+                var meetupGroup = new OurMeetupGroup
+                {
+                    Id = group.Id,
+                    Name = group.Name,
+                    LogoBaseUrl = group.Logo.BaseUrl + group.Logo.Id,
+                    Events = new List<OurMeetupEvent>()
+                };
+                
+                foreach (var eventsEdge in group.UpcomingEvents.Edges)
+                {
+                    var edgeNode = eventsEdge.Node;
+                    meetupGroup.Events.Add(new OurMeetupEvent
+                    {
+                        Title = edgeNode.Title,
+                        Description = edgeNode.Description,
+                        Url = edgeNode.EventUrl,
+                        Latitude = edgeNode.Venue.Latitude,
+                        Longitude = edgeNode.Venue.Longitude,
+                        VenueName = edgeNode.Venue.Name,
+                        DateTime = edgeNode.DateTime
+                    });
+                }
+                
+                meetupEvents.Add(meetupGroup);
+            }
+
+            var rawJson = JsonConvert.SerializeObject(meetupEvents, Formatting.Indented);
+            File.WriteAllText(_meetupEventsCachePath, rawJson, Encoding.UTF8);
+
+            // WIP 
+            //var cosmosService = new CosmosService();
+            //var  result = await cosmosService.CreateMeetup(meetupEvents.First(x => x.Events.Count > 0).Events.First());
+        }
+
+        private List<MeetupGraphQlGroupResult> GetUpcomingMeetups()
         {
             var groups = new List<MeetupGraphQlGroupResult>();
-            
+
             try
             {
                 var configPath = HostingEnvironment.MapPath("~/config/MeetupUmbracoGroups.txt");
@@ -95,23 +88,18 @@ namespace OurUmbraco.Community.Meetup
                     return null;
                 }
 
-                //var groups = new List<MeetupGraphQlGroupResult>();
-                
                 // Get the alias (urlname) of each group from the config file
                 var aliases = File.ReadAllLines(configPath).Where(x => x.Trim() != "").Distinct().ToArray();
-                
-                groups = UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<MeetupGraphQlGroupResult>>("UmbracoSearchedMeetups",
-                    () =>
-                    {
-                        var meetupGroups = new List<MeetupGraphQlGroupResult>();
-                        // Initialize a new service instance (we don't specify an API key since we're accessing public data) 
-                        var service = new Skybrud.Social.Meetup.MeetupService();
 
-                        foreach (var alias in aliases)
-                        {
-                            try
-                            {
-                                var query = @"query($urlname: String!) {
+                var meetupGroups = new List<MeetupGraphQlGroupResult>();
+                // Initialize a new service instance (we don't specify an API key since we're accessing public data) 
+                var service = new Skybrud.Social.Meetup.MeetupService();
+
+                foreach (var alias in aliases)
+                {
+                    try
+                    {
+                        var query = @"query($urlname: String!) {
   groupByUrlname(urlname: $urlname) {
     id
     name
@@ -158,31 +146,33 @@ namespace OurUmbraco.Community.Meetup
   }
 }";
 
-                                var variables = new JObject {
-                                    {"urlname", alias },
-                                }.ToString();
+                        var variables = new JObject
+                        {
+                            { "urlname", alias },
+                        }.ToString();
 
-                                var request = HttpRequest.Post("/gql", new JObject {
-                                    {"query", query},
-                                    {"variables", variables}
-                                });
+                        var request = HttpRequest.Post("/gql", new JObject
+                        {
+                            { "query", query },
+                            { "variables", variables }
+                        });
 
-                                var response = service.Client.GetResponse(request);
+                        var response = service.Client.GetResponse(request);
 
-                                // Raw JSON string in response.Body
-                                var jObject = JObject.Parse(response.Body);
-                                var groupResult = MeetupGraphQlGroupResult.Parse(jObject);
-                                if(groupResult != null)
-                                    meetupGroups.Add(groupResult);
-                            }
-                            catch (Exception ex)
-                            {
-                                LogHelper.Error<MeetupsController>("Could not get events from meetup.com for group with alias: " + alias, ex);
-                            }
-                        }
+                        // Raw JSON string in response.Body
+                        var jObject = JObject.Parse(response.Body);
+                        var groupResult = MeetupGraphQlGroupResult.Parse(jObject);
+                        if (groupResult != null)
+                            meetupGroups.Add(groupResult);
+                    }
+                    catch (Exception ex)
+                    {
+                        LogHelper.Error<MeetupsController>(
+                            "Could not get events from meetup.com for group with alias: " + alias, ex);
+                    }
+                }
 
-                        return meetupGroups;
-                    }, TimeSpan.FromMinutes(30));
+                groups = meetupGroups;
             }
             catch (Exception ex)
             {
@@ -192,7 +182,7 @@ namespace OurUmbraco.Community.Meetup
             return groups;
         }
     }
-    
+
     // Root myDeserializedClass = JsonConvert.DeserializeObject<Root>(myJsonResponse);
     public class Logo
     {
@@ -286,6 +276,4 @@ namespace OurUmbraco.Community.Meetup
     {
         public Data data { get; set; }
     }
-
-
 }
