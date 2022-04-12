@@ -306,9 +306,9 @@ namespace OurUmbraco.Community.Nuget
 
                 var nuGetPackageUri = new Uri(nuGetPackageUrl);
 
-                if (nuGetPackageUri.Segments.Length >= 2)
+                if (nuGetPackageUri.Segments.Length >= 3)
                 {
-                    nuGetPackageCmd = nuGetPackageUri.Segments[2].Trim("/");
+                    nuGetPackageCmd = nuGetPackageUri.Segments[2].Trim('/');
                 }
             }
 
