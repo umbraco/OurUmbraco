@@ -292,13 +292,6 @@ namespace OurUmbraco.Community.Nuget
             return GetNugetPackageIdFromUrl(nuGetPackageUrl);
         }
 
-        public string GetNuGetPackageId(IContent project)
-        {
-            var nuGetPackageUrl = project.GetValue<string>("nuGetPackageUrl");
-
-            return GetNugetPackageIdFromUrl(nuGetPackageUrl);
-        }
-
         private string GetNugetPackageIdFromUrl(string nuGetPackageUrl)
         {
             string nuGetPackageCmd = string.Empty;
