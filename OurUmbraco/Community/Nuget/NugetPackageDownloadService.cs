@@ -191,7 +191,8 @@ namespace OurUmbraco.Community.Nuget
                 }
                 else
                 {
-                    registrationEntries.AddRange(item.Items);
+                    if (item.Items != null)
+                        registrationEntries.AddRange(item.Items);
                 }
             }
 
