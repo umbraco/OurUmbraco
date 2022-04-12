@@ -174,11 +174,11 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
         }
 
-        public void GetNugetDownloads(PerformContext content)
+        public void GetNugetDownloads(PerformContext context)
         {
             var nugetService = new NugetPackageDownloadService();
 
-            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(), Cron.Daily);
+            RecurringJob.AddOrUpdate(() => nugetService.ImportNugetPackageDownloads(context), Cron.Daily);
         }
         
         public void FetchStaticApiDocumentation(PerformContext context)

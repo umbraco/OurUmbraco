@@ -34,7 +34,7 @@ namespace OurUmbraco.Community.Nuget
 
         private string _downloadsFile = "downloads.json";
 
-        public void ImportNugetPackageDownloads()
+        public void ImportNugetPackageDownloads(PerformContext context)
         {
             // get all packages that have a nuget url specified
             var umbContxt = EnsureUmbracoContext();
@@ -74,7 +74,9 @@ namespace OurUmbraco.Community.Nuget
                 foreach (var project in projectGroup)
                 {
                     var nuGetPackageCmd = GetNuGetPackageId(project);
-
+                    
+                    context.WriteLine($"Getting package statistics for package {project.Name}, NuGet: {nuGetPackageCmd}");
+                    
                     if (!string.IsNullOrWhiteSpace(nuGetPackageCmd))
                     {
                         packageQuery += $"packageid:{nuGetPackageCmd}+";
