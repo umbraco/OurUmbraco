@@ -1147,7 +1147,6 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Repository\webservices\repository.asmx" />
-    <Content Include="ThirdPartyNotice.txt" />
     <Content Include="Wiki\usercontrols\FileUpload.ascx">
       <SubType>ASPXCodeBehind</SubType>
     </Content>
