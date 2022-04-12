@@ -1,27 +1,28 @@
-﻿using Umbraco.Core.Logging;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web;
+using System.Web.Caching;
+using System.Web.Hosting;
+using Examine;
+using Hangfire.Console;
+using Hangfire.Server;
+using Newtonsoft.Json;
+using RestSharp;
+using Umbraco.Core;
+using Umbraco.Core.Configuration;
+using Umbraco.Core.Logging;
+using Umbraco.Core.Models;
+using Umbraco.Web;
+using Umbraco.Web.Routing;
+using Umbraco.Web.Security;
+using File = System.IO.File;
 
 namespace OurUmbraco.Community.Nuget
 {
-    using System;
-    using System.Collections.Generic;
-    using System.IO;
-    using System.Linq;
-    using System.Text;
-    using System.Text.RegularExpressions;
-    using System.Web;
-    using System.Web.Caching;
-    using System.Web.Hosting;
-    using Examine;
-    using Newtonsoft.Json;
-    using RestSharp;
-    using Umbraco.Core;
-    using Umbraco.Core.Configuration;
-    using Umbraco.Core.Models;
-    using Umbraco.Web;
-    using Umbraco.Web.Routing;
-    using Umbraco.Web.Security;
-    using File = System.IO.File;
-
     /// <summary>
     /// Represents nuget package download service.
     /// </summary>
@@ -45,7 +46,7 @@ namespace OurUmbraco.Community.Nuget
                 return;
 
             // get the services from nuget service index
-            var restClient = new RestClient(this._nugetServiceUrl);
+            var restClient = new RestClient(_nugetServiceUrl);
 
             var result = restClient.Execute(new RestRequest());
 
@@ -134,13 +135,13 @@ namespace OurUmbraco.Community.Nuget
             if (nugetPackageDownloads.Any() == false) 
                 return;
             
-            if (!Directory.Exists(this._storageDirectory))
+            if (!Directory.Exists(_storageDirectory))
             {
-                Directory.CreateDirectory(this._storageDirectory);
+                Directory.CreateDirectory(_storageDirectory);
             }
 
             var rawJson = JsonConvert.SerializeObject(nugetPackageDownloads, Formatting.Indented);
-            File.WriteAllText($"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}", rawJson,
+            File.WriteAllText($"{_storageDirectory.EnsureEndsWith("/")}{_downloadsFile}", rawJson,
                 Encoding.UTF8);
 
             try
@@ -248,7 +249,7 @@ namespace OurUmbraco.Community.Nuget
 
         public List<NugetPackageInfo> GetNugetPackageDownloads()
         {
-            var downloadsFile = $"{this._storageDirectory.EnsureEndsWith("/")}{this._downloadsFile}";
+            var downloadsFile = $"{_storageDirectory.EnsureEndsWith("/")}{_downloadsFile}";
 
             return (List<NugetPackageInfo>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
                 "NugetDownloads",
