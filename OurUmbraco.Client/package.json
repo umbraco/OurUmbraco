@@ -20,13 +20,12 @@
     "gulp-watch": "5.0.1",
     "jshint": "^2.9.7",
     "jshint-stylish": "2.2.1",
-    "node-sass": "4.14.1"
+    "node-sass": "7.0.0"
   },
   "scripts": {
     "test": "echo Use npm run build instead",
-	"start": "gulp",
-	"build": "gulp build"
-	
+    "start": "gulp",
+    "build": "gulp build"
   },
   "author": "umbraco",
   "license": "MIT"

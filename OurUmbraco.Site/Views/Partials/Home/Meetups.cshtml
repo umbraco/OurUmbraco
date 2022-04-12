@@ -1,10 +1,9 @@
-﻿@using OurUmbraco.Community.Models
-@using OurUmbraco.Community.People
-@using Skybrud.Essentials.Locations
-@using Skybrud.Essentials.Locations.Extensions
+﻿@using OurUmbraco.Community.People
+@using Skybrud.Essentials.Maps
+@using Skybrud.Essentials.Maps.Geometry
 @using Skybrud.Essentials.Security
 
-@inherits UmbracoViewPage<MeetupEventsModel>
+@inherits UmbracoViewPage<List<OurUmbraco.Community.Meetup.Models.OurMeetupGroup>>
 
 @{
 
@@ -12,63 +11,67 @@
     IPublishedContent member = Members.GetCurrentMember();
 
     // Get the location of the current member (if logged in and a location is present)
-    EssentialsLocation memberLocation = null;
+    Point memberLocation = null;
     if (member != null && member.HasValue("latitude") && member.HasValue("longitude")) {
-        memberLocation = new EssentialsLocation(
+        memberLocation = new Point(
             member.GetPropertyValue<double>("latitude"),
             member.GetPropertyValue<double>("longitude")
         );
     }
+    var upcomingEvents = Model.Where(x => x.Events.Any()).OrderBy(x => x.Events.OrderBy(y => y.DateTime).First().DateTime).ToList();
 }
 
-@foreach (MeetupItem item in Model.Items) {
-
+@foreach (var group in upcomingEvents) {
+   
     double distance = -1;
-
-    if (memberLocation != null) {
-        if (item.Event.HasVenue) {
-            distance = memberLocation.GetDistance(item.Event.Venue);
-        } else {
-            distance = memberLocation.GetDistance(item.Group);
-        }
+    var upcomingEvent = group.Events.OrderBy(x => x.DateTime).FirstOrDefault();
+    if (upcomingEvent == null)
+    {
+        return;
     }
-
-    <a href="@item.Event.Link" class="forum-thread" target="_blank" rel="noreferrer noopener">
-        @if (item.Group.GroupPhoto != null)
-        {
-            <div class="avatar">
-                <img src="@item.Group.GroupPhoto.ThumbLink" alt="" />
-            </div>
-        }
-        else
-        {
-            var fakeHash = SecurityUtils.GetMd5Hash(item.Group.Id + "");
-            var avatarService = new AvatarService();
-            var avatarPath = avatarService.GetFakeAvatar(fakeHash);
-            var img = avatarService.GetImgWithSrcSet(avatarPath, item.Group.Name, 100);
-
-            <div class="avatar">
-                @Html.Raw(img)
-            </div>   
-        }
-        <div class="meta">
-            <div class="forum-thread-text">
-                @if (distance >= 0 && distance <= 50000) {
-                    //<span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
-                    <span style="float: right; color: red; font-weight: bold;" title="Distance: @String.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
-                }
-                <h3>@item.Event.Name</h3>
-                <p>@item.Event.Time.DateTime.ToString("MMM d, yyyy") by @item.Group.Name</p>
-            </div>
-        </div>
-    </a>
+   
+   if (memberLocation != null) 
+   {
+       {
+           var venueLocation = new Point(upcomingEvent.Latitude, upcomingEvent.Longitude);
+           distance = memberLocation.GetDistance(venueLocation);
+       }
+   }
+  
+   <a href="@upcomingEvent.Url" class="forum-thread" target="_blank" rel="noreferrer noopener">
+       @if (string.IsNullOrWhiteSpace(group.LogoBaseUrl) == false)
+       {
+           <div class="avatar">
+               <img src="@(group.LogoBaseUrl)/80x80.png" alt="" />
+           </div>
+       }
+       else
+       {
+           var fakeHash = SecurityUtils.GetMd5Hash(group.Id + "");
+           var avatarService = new AvatarService();
+           var avatarPath = avatarService.GetFakeAvatar(fakeHash);
+           var img = avatarService.GetImgWithSrcSet(avatarPath, group.Name, 100);
+  
+           <div class="avatar">
+               @Html.Raw(img)
+           </div>   
+       }
+       <div class="meta">
+           <div class="forum-thread-text">
+               @if (distance >= 0 && distance <= 50000) {
+                   //<span style="float: right; color: red;">@String.Format("~{0:N0}", distance / 1000) km</span>
+                   <span style="float: right; color: red; font-weight: bold;" title="Distance: @string.Format("~{0:N0}", distance / 1000) km">NEAR YOU</span>
+               }
+               <h3>@group.Name</h3>
+               <p>@upcomingEvent.DateTime.ToString("MMM d, yyyy") by @group.Name</p>
+           </div>
+       </div>
+   </a>
 }
-
-@if (Model.Items.Length % 2 == 1) {
+@if (upcomingEvents.Count % 2 == 1) {
     // If there is an odd amount of events, we add a invisible div so the last event doesn't take up the full width
     <div class="forum-thread" style="visibility: hidden;"></div>
 }
-
-@if (Model.Items.Any() == false) {
+@if (upcomingEvents.Any() == false) {
     <h2>Could not load upcoming meetups.</h2>
 }

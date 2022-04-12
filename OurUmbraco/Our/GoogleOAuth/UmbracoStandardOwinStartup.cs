@@ -57,8 +57,8 @@ namespace OurUmbraco.Our.GoogleOAuth
             var scheduler = new ScheduleHangfireJobs();
             scheduler.MarkAsSolvedReminder();
             scheduler.UpdateGitHubContributors();
-            scheduler.UpdateMeetupStats();
-            scheduler.UpdateCommunityBlogPosts();
+            scheduler.CacheUpcomingMeetups(null);
+            scheduler.UpdateCommunityBlogPosts(null);
             scheduler.UpdateCommunityVideos();
             scheduler.UpdateVimeoVideos();
             scheduler.GetGitHubPullRequests();

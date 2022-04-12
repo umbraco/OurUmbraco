@@ -1,4 +1,7 @@
 ﻿@using OurUmbraco.Repository.Controllers
+@using OurUmbraco.Repository.Models
+@using OurUmbraco.Our
+@using OurUmbraco.Project
 
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 @{
@@ -41,7 +44,7 @@
 <div class="packages-listing">
     @foreach (var childContent in results.Packages)
     {
-        @RenderProjectHelpers.RenderProjectBox(childContent)
+        @RenderProjectBox(childContent)
     }
 </div>
 
@@ -92,4 +95,40 @@ else
 
         return PackageSortOrder.Popular;
     }
+}
+
+@helper RenderProjectBox(Package projectContent)
+{
+    <a class="package-box" href="@projectContent.Url">
+        <div class="package-image">
+            @RenderProjectImage(Utils.GetScreenshotPath(projectContent.Image))
+        </div>
+        <div class="package-info">
+            <h3>@projectContent.Name</h3>
+            <span class="text-fadeout"></span>
+            <p class="small">@(new HtmlString(projectContent.Summary.CleanHtmlAttributes()))</p>
+        </div>
+
+        <div class="other">
+            <div class="package-badge">
+                <span class="package-number">@projectContent.VersionRange</span>
+            </div>
+            <div class="stats">
+                <span class="karma">
+                    @projectContent.Likes <span><i class="icon-Hearts color-red"></i></span>
+                </span>
+                <span class="downloads" title="@projectContent.Downloads total downloads">
+                    @projectContent.Downloads.FormatDownloadNumber() <span><i class="icon-Download-alt"></i></span>
+                </span>
+            </div>
+        </div>
+    </a>
+}
+
+
+@helper RenderProjectImage(string defaultScreenshot)
+{
+    <img src="@defaultScreenshot?width=64&height=64&bgcolor=fff&format=png"
+         srcset="@defaultScreenshot?width=128&height=128&bgcolor=fff&format=png 2x,
+             @defaultScreenshot?width=192&height=192&bgcolor=fff&format=png 3x" />
 }

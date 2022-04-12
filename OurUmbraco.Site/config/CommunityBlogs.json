@@ -1,6 +1,15 @@
 ﻿{
   "blogs": [
     {
+      "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
+      "checkTitles": false,
+      "title": "Enkel Media Blog",
+      "url": "https://www.enkelmedia.se/blogg/",
+      "rss": "https://www.enkelmedia.se/blogg/rss/",
+      "logo": "https://www.enkelmedia.se/img/enkel-media-logotype-180x74.png",
+      "memberId": 2535
+    },
+    {
       "id": "9e3bc5a8-06fe-4e56-b3b6-1be88a49a101",
       "checkTitles": false,
       "title": "Adolfi.dev Blog",
@@ -37,30 +46,12 @@
       "memberId": 126488
     },
     {
-      "id": "8331444E-D061-4833-889D-4304515CD74D",
-      "checkTitles": false,
-      "title": "Offroadcode Journal",
-      "url": "https://offroadcode.com/journal/",
-      "rss": "https://offroadcode.com/journal/rss/",
-      "logo": "https://pbs.twimg.com/profile_images/938413689098719232/JD4bm6jK_400x400.jpg",
-      "memberId": null
-    },
-    {
       "id": "1D769116-B595-475E-B1C9-8B2B33A1548C",
       "checkTitles": false,
       "title": "24 Days In Umbraco",
       "url": "https://24days.in/umbraco-cms",
       "rss": "https://24days.in/umbraco-cms/rss/",
       "logo": "https://pbs.twimg.com/profile_images/803704047769419776/wIJwpK82_400x400.jpg",
-      "memberId": null
-    },
-    {
-      "id": "7753D2AA-E80B-4DF8-B1C5-3CBC5C9A5200",
-      "checkTitles": false,
-      "title": "Yuri Burger",
-      "url": "https://yuriburger.net/",
-      "rss": "https://yuriburger.net/feed/",
-      "logo": "https://pbs.twimg.com/profile_images/2218895203/burger_400x400.png",
       "memberId": null
     },
     {
@@ -136,15 +127,6 @@
       "memberId": 3042
     },
     {
-      "id": "573408F9-59D0-4010-87E8-9355ABF48335",
-      "checkTitles": false,
-      "title": "Skrift",
-      "url": "http://skrift.io/",
-      "rss": "http://skrift.io/articles/rss",
-      "logo": "https://pbs.twimg.com/profile_images/826839762216513536/zsGRhwaW_400x400.jpg",
-      "memberId": null
-    },
-    {
       "id": "B8AAE362-4344-47C5-8C91-C6960ABFC3DF",
       "checkTitles": true,
       "title": "John D Jones",
@@ -152,15 +134,6 @@
       "rss": "http://jondjones.com/rss/",
       "logo": "http://www.jondjones.com/images/logo.png",
       "memberId": 153060
-    },
-    {
-      "id": "D2D254D0-DE05-4B6C-A78A-E8C6D24C8AFD",
-      "checkTitles": false,
-      "title": "Cultiv",
-      "url": "https://cultiv.nl/",
-      "rss": "http://feeds.feedburner.com/blog-cultiv",
-      "logo": "https://cultiv.nl/images/logo.png",
-      "memberId": 4576
     },
     {
       "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
@@ -253,15 +226,6 @@
       "memberId": null
     },
     {
-      "id": "91766318-8FA5-4F26-B876-EC991DEAF0CF",
-      "checkTitles": false,
-      "title": "The Cogworks' Blog",
-      "url": "https://thecogworks.com/blog/",
-      "rss": "https://thecogworks.com/blog/rss?category=umbraco",
-      "logo": "https://pbs.twimg.com/profile_images/892329860680601600/yGSwtpdM_400x400.jpg",
-      "memberId": null
-    },
-    {
       "id": "345597EE-CA65-4588-A6CC-8EA3012A25BB",
       "checkTitles": false,
       "title": "Aaron Powell - LINQ to fail",
@@ -269,15 +233,6 @@
       "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
       "logo": "https://www.aaron-powell.com/images/logo.png",
       "memberId": 3497
-    },
-    {
-      "id": "9A00F003-F0A9-413C-8C13-7D3A6ED51887",
-      "checkTitles": false,
-      "title": "Peter Stokes Blog",
-      "url": "https://pstokes.co.uk/",
-      "rss": "https://pstokes.co.uk/rss",
-      "logo": "https://pstokes.co.uk/media/1017/img_2254-3.jpg",
-      "memberId": 146507
     },
     {
       "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
@@ -365,8 +320,8 @@
       "checkTitles": false,
       "title": "Piotr Bach",
       "url": "https://piotrbach.com",
-      "rss": "https://piotrbach.com/rss/umbraco",
-      "logo": "https://piotrbach.com/media/ffvpgoxn/piotrbach-logo-square.jpg",
+      "rss": "https://piotrbach.com/umbraco-cms/feed/",
+      "logo": "https://pbs.twimg.com/profile_images/1236754298459095041/V2KPeDZP_400x400.jpg",
       "memberId": 155740
     },
     {
@@ -377,6 +332,24 @@
       "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
       "logo": "https://michaels-ugarage.cyber-solutions.at/img/logos/logo.png",
       "memberId": 286196
+    },
+    {
+      "id": "836bd4cf-4dd7-455b-98f2-3e2217b6e27c",
+      "checkTitles": false,
+      "title": "Patrick de Mooij",
+      "url": "https://patrickdemooij.hashnode.dev/",
+      "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
+      "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
+      "memberId": 271921
+    },  
+    {
+      "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
+      "checkTitles": true,
+      "title": "Nikolaj Brask-Nielsen",
+      "url": "https://dev.to/nikcio",
+      "rss": "https://dev.to/feed/nikcio",
+      "logo": "https://github.com/nikcio.png",
+      "memberId": 284921
     }
   ]
 }

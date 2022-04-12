@@ -10,8 +10,8 @@ namespace OurUmbraco.Community.Controllers
         public ActionResult GetEvents()
         {
             var meetupService = new MeetupService();
-            var model = meetupService.GetUpcomingMeetups();
-            return PartialView("~/Views/Partials/Home/Meetups.cshtml", model);
+            var meetups = meetupService.GetCachedUpcomingMeetups();
+            return PartialView("~/Views/Partials/Home/Meetups.cshtml", meetups);
         }
     }
 }

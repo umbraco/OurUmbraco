@@ -7,7 +7,7 @@ namespace OurUmbraco.Community.Calendar
     {
         public CommunityCalendarItemType Type { get; protected set; }
 
-        public EssentialsDateTime StartDate { get; set; }
+        public EssentialsTime StartDate { get; set; }
 
         public EssentialsDateTime EndDate { get; set; }
 

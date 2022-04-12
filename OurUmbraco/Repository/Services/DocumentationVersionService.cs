@@ -89,15 +89,21 @@ namespace OurUmbraco.Repository.Services
                 {
                     var version = new DocumentationVersion();
                     version.Url = result["url"];
-                    version.Version = CalculateVersionInfo(result["versionFrom"], result["versionTo"]);
-                    version.VersionFrom = string.IsNullOrWhiteSpace( result["versionFrom"] ) ?  new Semver.SemVersion(0) : Semver.SemVersion.Parse(result["versionFrom"]);
-                    version.VersionTo = string.IsNullOrWhiteSpace(result["versionTo"]) ? new Semver.SemVersion(0) : Semver.SemVersion.Parse(result["versionTo"]);
+                    var versionFrom = result["versionFrom"];
+                    var versionTo = result["versionTo"];
+                    Semver.SemVersion.TryParse(versionFrom, out var versionFromSemver);
+                    Semver.SemVersion.TryParse(versionTo, out var versionToSemver);
+                    
+                    version.Version = CalculateVersionInfo(versionFrom, versionTo);
+                    version.VersionFrom = string.IsNullOrWhiteSpace(versionFrom) ?  new Semver.SemVersion(0) : versionFromSemver;
+                    version.VersionTo = string.IsNullOrWhiteSpace(versionTo) ? new Semver.SemVersion(0) : versionToSemver;
                     version.VersionRemoved = result["versionRemoved"];
                     version.IsCurrentVersion = string.Equals(result["url"], currentUrl, StringComparison.InvariantCultureIgnoreCase);
                     version.IsCurrentPage = string.Equals(result["url"], currentPageUrl, StringComparison.InvariantCultureIgnoreCase);
                     version.MetaDescription = result["meta.Description"];
                     version.MetaTitle = result["meta.Title"];
                     version.NeedsV8Update = result["needsV8Update"];
+                    
                     return version;
                 })
                 .OrderByDescending(v=> v.VersionFrom)
@@ -114,22 +120,23 @@ namespace OurUmbraco.Repository.Services
             {
                 return "current";
             }
-            else if (string.IsNullOrWhiteSpace(from))
+
+            if (string.IsNullOrWhiteSpace(from))
             {
                 return "pre " + to;
             }
-            else if (string.IsNullOrWhiteSpace(to))
+
+            if (string.IsNullOrWhiteSpace(to))
             {
                 return from + " +";
             }
-            else if (to == from)
+
+            if (to == from)
             {
                 return from;
             }
-            else
-            {
-                return from + " - " + to;
-            }
+
+            return from + " - " + to;
         }
     }
 }
