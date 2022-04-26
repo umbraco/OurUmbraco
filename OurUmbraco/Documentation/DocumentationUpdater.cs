@@ -86,7 +86,7 @@ namespace OurUmbraco.Documentation
                 HasChildren = dir.GetDirectories().Any()
             };
 
-            foreach (var child in dir.GetDirectories().Where(x => x.Name != "images" && x.Name != ".git" && x.Name != ".github" && x.Name != "Old-Courier-versions" && x.Name != "Umbraco-Uno"))
+            foreach (var child in dir.GetDirectories().Where(x => x.Name != "images" && x.Name != ".git" && x.Name != ".github" && x.Name != "Old-Courier-versions" && x.Name != "Umbraco-Uno" && x.Name != "UmbracoCourier"))
                 list.Add(GetFolderStructure(child, rootPath, level + 1));
 
             siteMapItem.Directories = list.OrderBy(x => x.Sort).ToList();
