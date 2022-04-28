@@ -5,6 +5,17 @@
     if (string.IsNullOrWhiteSpace(memberGuid) == false)
     {
         var memberService = ApplicationContext.Current.Services.MemberService;
+        if (memberGuid.StartsWith("3D") && memberGuid.Length == 38)
+        {
+            // I think email programs are adding a "3D" in front of the GUID sometimes, this fixes a leading "3D"
+            memberGuid = memberGuid.Substring(2);
+        }
+        if (memberGuid.Length > 36)
+        {
+            // Sometimes we see stuff appended to the guid as well, try to take just the first 36 chars
+            memberGuid = memberGuid.Substring(0, 36);
+        }
+        
         var member = memberService.GetByKey(new Guid(memberGuid));
 
         if (member == null)
