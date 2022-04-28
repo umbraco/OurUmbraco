@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -49,10 +50,9 @@ namespace OurUmbraco.Community.Nuget
             }
 
             // get the services from nuget service index
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
             var restClient = new RestClient(_nugetServiceUrl);
-
             var result = restClient.Execute(new RestRequest());
-
             var response = JsonConvert.DeserializeObject<NugetServiceIndexResponse>(result.Content);
 
             if (response == null)
