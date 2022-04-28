@@ -57,7 +57,7 @@ namespace OurUmbraco.Community.Nuget
 
             if (response == null)
             {
-                context.WriteLine("NuGet service response was null");
+                context.WriteLine($"NuGet service response was null, the request's status code was : {result.StatusCode} - error message {result.ErrorMessage}");
                 return;
             }
 
