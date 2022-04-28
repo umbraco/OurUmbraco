@@ -42,8 +42,11 @@ namespace OurUmbraco.Community.Nuget
             var projects = umbContxt.ContentCache.GetByXPath("//Community/Projects//Project [nuGetPackageUrl!='']")
                 .ToList();
 
-            if (projects.Any() == false) 
+            if (projects.Any() == false)
+            {
+                context.WriteLine("Found no packages with a `nuGetPackageUrl`");
                 return;
+            }
 
             // get the services from nuget service index
             var restClient = new RestClient(_nugetServiceUrl);
@@ -52,14 +55,20 @@ namespace OurUmbraco.Community.Nuget
 
             var response = JsonConvert.DeserializeObject<NugetServiceIndexResponse>(result.Content);
 
-            if (response == null) 
+            if (response == null)
+            {
+                context.WriteLine("NuGet service response was null");
                 return;
-                
+            }
+
             // get a url for the search service
             var searchUrl = response.Resources.FirstOrDefault(x => x.Type == "SearchQueryService")?.Id;
 
             if (string.IsNullOrWhiteSpace(searchUrl))
+            {
+                context.WriteLine("Search URL was null");
                 return;
+            }
 
 
             var nugetPackageDownloads = new List<NugetPackageInfo>();
