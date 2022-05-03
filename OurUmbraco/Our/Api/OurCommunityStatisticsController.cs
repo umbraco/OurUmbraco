@@ -44,9 +44,9 @@ namespace OurUmbraco.Our.Api
                     contributors.Add(pull.User.Login);
                 }
             }
-
-            var hqUsersFile = HostingEnvironment.MapPath("~/Config/githubhq.txt");
-            var hqList = System.IO.File.ReadAllLines(hqUsersFile).Where(x => x.Trim() != "").Distinct().ToArray();
+            
+            var usersService = new UsersService();
+            var hqList = usersService.GetIgnoredGitHubUsers().Result.ToArray();
 
             var contribFiltered = new List<string>();
             foreach (var contributor in contributors)

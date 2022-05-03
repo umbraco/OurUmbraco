@@ -52,9 +52,9 @@ namespace OurUmbraco.Our.Services
         {
             var content = File.ReadAllText(_jsonPath);
             var pulls = JsonConvert.DeserializeObject<List<GithubPullRequestModel>>(content).Where(x => x.Repository == repository);
-            var gitHubService = new GitHubService();
-            var hqList = gitHubService.GetHqMembers();
-
+            var usersService = new UsersService();
+            var hqList = usersService.GetIgnoredGitHubUsers().Result;
+            
             var pullsNonHq = new List<GithubPullRequestModel>();
             foreach (var pull in pulls)
             {

@@ -624,6 +624,7 @@
     <Compile Include="Community\Badges\Controllers\Http\BadgeController.cs" />
     <Compile Include="Community\BlogPosts\Controllers\Http\BlogController.cs" />
     <Compile Include="Community\Controllers\Http\MeetupController.cs" />
+    <Compile Include="Community\GitHub\UsersService.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\Meetup\CosmosService.cs" />
     <Compile Include="Community\Meetup\Models\OurMeetupGroup.cs" />

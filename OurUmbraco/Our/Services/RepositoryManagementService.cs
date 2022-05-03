@@ -22,7 +22,10 @@ namespace OurUmbraco.Our.Services
             var issues = new List<Issue>();
 
             var pullRequestService = new GitHubService();
-            var hqMembers = pullRequestService.GetHqMembers();
+            
+            var usersService = new UsersService();
+            var hqMembers = usersService.GetIgnoredGitHubUsers().Result.ToArray();
+            
             var teamMembers = pullRequestService.GetTeamMembers();
 
             foreach (var directory in Directory.EnumerateDirectories(IssuesBaseDirectory))
@@ -162,8 +165,9 @@ namespace OurUmbraco.Our.Services
             };
 
 
+            var usersService = new UsersService();
+            var hqMembers = usersService.GetIgnoredGitHubUsers().Result;
             var pullRequestService = new GitHubService();
-            var hqMembers = pullRequestService.GetHqMembers();
             var teamMembers = pullRequestService.GetTeamMembers();
             var teamUmbraco = hqMembers;
 
