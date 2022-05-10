@@ -26,15 +26,15 @@ public class UsersService
         var httpContent = new StringContent("[]", System.Text.Encoding.UTF8, "application/json");
         
         var response = await httpClient.PostAsync(url, httpContent);
-        if (response.IsSuccessStatusCode)
-        {
-            var result = response.Content.ReadAsStringAsync().Result;
-            var users = JsonConvert.DeserializeObject<HashSet<string>>(result);
-            return users;
-        }
-        else
+        if (response.IsSuccessStatusCode == false)
         {
             return new HashSet<string>();
         }
+        
+        
+        var result = response.Content.ReadAsStringAsync().Result;
+        var users = JsonConvert.DeserializeObject<HashSet<string>>(result);
+        return users;
+
     }
 }
