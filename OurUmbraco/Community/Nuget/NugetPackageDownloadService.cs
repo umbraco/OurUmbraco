@@ -239,7 +239,7 @@ namespace OurUmbraco.Community.Nuget
         {
             using (var httpClient = new HttpClient())
             {
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls13 |SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
                 var result = await httpClient.GetAsync(url);
                 if (result.IsSuccessStatusCode == false)
                 {
