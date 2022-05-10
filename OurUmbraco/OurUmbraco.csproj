@@ -670,14 +670,6 @@
     <Compile Include="Community\Models\ViewModels\CommunityBlogPostViewModel.cs" />
     <Compile Include="Community\Nuget\NugetPackageDownloadService.cs" />
     <Compile Include="Community\Nuget\NugetPackageInfo.cs" />
-    <Compile Include="Community\Nuget\NugetRegistrationCatalogEntry.cs" />
-    <Compile Include="Community\Nuget\NugetRegistrationItem.cs" />
-    <Compile Include="Community\Nuget\NugetRegistrationItemEntry.cs" />
-    <Compile Include="Community\Nuget\NugetRegistrationResponse.cs" />
-    <Compile Include="Community\Nuget\NugetSearchResponse.cs" />
-    <Compile Include="Community\Nuget\NugetSearchResult.cs" />
-    <Compile Include="Community\Nuget\NugetServiceIndexResource.cs" />
-    <Compile Include="Community\Nuget\NugetServiceIndexResponse.cs" />
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
     <Compile Include="Our\Api\DashboardStatisticsController.cs" />

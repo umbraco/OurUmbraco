@@ -1,9 +1,8 @@
 ﻿namespace OurUmbraco.Community.Nuget
 {
-    using Newtonsoft.Json;
-
     public class NugetPackageInfo
     {
+        public string Name { get; set; }
         public string PackageId { get; set; }
 
         public int TotalDownLoads { get; set; }
