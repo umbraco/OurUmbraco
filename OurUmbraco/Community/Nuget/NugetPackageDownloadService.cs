@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -50,36 +51,26 @@ namespace OurUmbraco.Community.Nuget
                 return;
             }
 
-            string searchUrl;
-            using (var restClient = new HttpClient())
+            var serviceUrlResponse = await GetJsonResponse(context, _nugetServiceUrl);
+            if(serviceUrlResponse == null)
+                return;
+            
+            var response = JsonConvert.DeserializeObject<NugetServiceIndexResponse>(serviceUrlResponse);
+
+            if (response == null)
             {
-                var result = await restClient.GetAsync(_nugetServiceUrl);
-                
-                if (result.IsSuccessStatusCode == false)
-                {
-                    context.WriteLine($"Request to {_nugetServiceUrl} failed. Error code {result.StatusCode} - message {result.ReasonPhrase}");
-                    return;
-                }
-
-                var value = await result.Content.ReadAsStringAsync();
-                var response = JsonConvert.DeserializeObject<NugetServiceIndexResponse>(value);
-
-                if (response == null)
-                {
-                    context.WriteLine($"NuGet service response from {_nugetServiceUrl} was null. Raw JSON data: {value}");
-                    return;
-                }
-                
-                // get a url for the search service
-                searchUrl = response.Resources.FirstOrDefault(x => x.Type == "SearchQueryService")?.Id;
+                context.WriteLine($"NuGet service response from {_nugetServiceUrl} was null. Raw JSON data: {serviceUrlResponse}");
+                return;
             }
-
+            
+            // get a url for the search service
+            var searchUrl = response.Resources.FirstOrDefault(x => x.Type == "SearchQueryService")?.Id;
+        
             if (string.IsNullOrWhiteSpace(searchUrl))
             {
                 context.WriteLine("Search URL was null");
                 return;
             }
-
 
             var nugetPackageDownloads = new List<NugetPackageInfo>();
 
@@ -106,57 +97,50 @@ namespace OurUmbraco.Community.Nuget
                     continue;
 
                 var searchQuery = $"{searchUrl}?q={packageQuery.TrimEnd("+")}&prerelease=true";
+                    
+                var value = await GetJsonResponse(context, searchQuery);
+                if(value == null)
+                    return;
+                
+                var packageSearchResult = JsonConvert.DeserializeObject<NugetSearchResponse>(value);
 
-                using (var restClient = new HttpClient())
+                if (packageSearchResult == null)
                 {
-                    var result = await restClient.GetAsync(searchQuery);
-                    if (result.IsSuccessStatusCode == false)
+                    context.WriteLine($"NuGet service response from {searchQuery} was null. Raw JSON data: {value}");
+                    return;
+                }
+                
+                foreach (var package in packageSearchResult.Results)
+                {
+                    var packageInfo = new NugetPackageInfo
                     {
-                        context.WriteLine($"Request to {searchQuery} failed. Error code {result.StatusCode} - message {result.ReasonPhrase}");
-                        return;
+                        PackageId = package.Id,
+                        TotalDownLoads = package.TotalDownloads
+                    };
+
+
+                    // try get details about downloads over time
+                    // so we get the publish date of the package on nuget. And calculate the average downloads per day.
+                    // we can use this data for the popular package query on our
+                    // when a package has more than 128 release the response is paged,
+                    // the getNugetPackageEntries method manages this and returns a list of packageItems.
+
+                    var packageEntries = await GetNugetPackageEntries(context, package.PackageRegistrationUrl);
+                    packageEntries = packageEntries.ToList();
+
+                    if (packageEntries.Any())
+                    {
+                        packageInfo.AverageDownloadPerDay = CalculateAverageDownloadsPerDay(packageEntries, package.TotalDownloads);
                     }
-                    
-                    var value = await result.Content.ReadAsStringAsync();
-                    var packageSearchResult = JsonConvert.DeserializeObject<NugetSearchResponse>(value);
-
-                    if (packageSearchResult == null)
+                    else
                     {
-                        context.WriteLine($"NuGet service response from {searchQuery} was null. Raw JSON data: {value}");
-                        return;
+                        umbContxt.Application.ProfilingLogger.Logger.Warn(typeof(NugetPackageDownloadService),
+                            "Could not retrieve average downloads from nuget for package " + package.Id);
                     }
-                    
-                    foreach (var package in packageSearchResult.Results)
+
+                    if (nugetPackageDownloads.All(x => x.PackageId != packageInfo.PackageId))
                     {
-                        var packageInfo = new NugetPackageInfo
-                        {
-                            PackageId = package.Id,
-                            TotalDownLoads = package.TotalDownloads
-                        };
-
-
-                        // try get details about downloads over time
-                        // so we get the publish date of the package on nuget. And calculate the average downloads per day.
-                        // we can use this data for the popular package query on our
-                        // when a package has more than 128 release the response is paged,
-                        // the getNugetPackageEntries method manages this and returns a list of packageItems.
-
-                        var packageEntries = await GetNugetPackageEntries(context, package.PackageRegistrationUrl);
-                        packageEntries = packageEntries.ToList();
-
-                        if (packageEntries.Any())
-                        {
-                            packageInfo.AverageDownloadPerDay = CalculateAverageDownloadsPerDay(packageEntries, package.TotalDownloads);
-                        }
-                        else
-                        {
-                            umbContxt.Application.ProfilingLogger.Logger.Warn(typeof(NugetPackageDownloadService),
-                                "Could not retrieve average downloads from nuget for package " + package.Id);
-                        }
-
-                        if (nugetPackageDownloads.All(x => x.PackageId != packageInfo.PackageId))
-                        {
-                            nugetPackageDownloads.Add(packageInfo);
-                        }
+                        nugetPackageDownloads.Add(packageInfo);
                     }
                 }
             }
@@ -199,40 +183,33 @@ namespace OurUmbraco.Community.Nuget
         /// <returns>A list of package entries for the package</returns>
         private async Task<IEnumerable<NugetRegistrationItemEntry>> GetNugetPackageEntries(PerformContext context, string packageRegistrationUrl)
         {
-            using (var restClient = new HttpClient())
+            var value = await GetJsonResponse(context, packageRegistrationUrl);
+            if(value == null)
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            
+            var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationResponse>(value);
+
+            if (registrationResult == null || registrationResult.Items == null)
             {
-                var result = await restClient.GetAsync(packageRegistrationUrl);
-                if (result.IsSuccessStatusCode == false)
-                {
-                    context.WriteLine($"Request to {packageRegistrationUrl} failed. Error code {result.StatusCode} - message {result.ReasonPhrase}");
-                    return Enumerable.Empty<NugetRegistrationItemEntry>();
-                }
-                    
-                var value = await result.Content.ReadAsStringAsync();
-                var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationResponse>(value);
-
-                if (registrationResult == null || registrationResult.Items == null)
-                {
-                    context.WriteLine($"NuGet service response from {packageRegistrationUrl} was null. Raw JSON data: {value}");
-                    return Enumerable.Empty<NugetRegistrationItemEntry>();
-                }
-
-                var registrationEntries = new List<NugetRegistrationItemEntry>();
-                foreach (var item in registrationResult.Items)
-                {
-                    if (item.Items == null && !string.IsNullOrWhiteSpace(item.Id))
-                    {
-                        registrationEntries.AddRange(await GetPagedNugetPackageEntries(context, item.Id));
-                    }
-                    else
-                    {
-                        if (item.Items != null)
-                            registrationEntries.AddRange(item.Items);
-                    }
-                }
-
-                return registrationEntries;
+                context.WriteLine($"NuGet service response from {packageRegistrationUrl} was null. Raw JSON data: {value}");
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
             }
+
+            var registrationEntries = new List<NugetRegistrationItemEntry>();
+            foreach (var item in registrationResult.Items)
+            {
+                if (item.Items == null && !string.IsNullOrWhiteSpace(item.Id))
+                {
+                    registrationEntries.AddRange(await GetPagedNugetPackageEntries(context, item.Id));
+                }
+                else
+                {
+                    if (item.Items != null)
+                        registrationEntries.AddRange(item.Items);
+                }
+            }
+
+            return registrationEntries;
         }
 
         /// <summary>
@@ -242,28 +219,38 @@ namespace OurUmbraco.Community.Nuget
         /// <returns></returns>
         private async Task<IEnumerable<NugetRegistrationItemEntry>> GetPagedNugetPackageEntries(PerformContext context, string packageRegistrationPagedUrl)
         {
-            using (var restClient = new HttpClient())
+
+            var value = await GetJsonResponse(context, packageRegistrationPagedUrl);
+            if(value == null)
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            
+            var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationItem>(value);
+
+            if (registrationResult == null || registrationResult.Items == null)
             {
-                var result = await restClient.GetAsync(packageRegistrationPagedUrl);
+                context.WriteLine($"NuGet service response from {packageRegistrationPagedUrl} was null. Raw JSON data: {value}");
+                return Enumerable.Empty<NugetRegistrationItemEntry>();
+            }
+
+            return registrationResult.Items;
+        }
+
+        private async Task<string> GetJsonResponse(PerformContext context, string url)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+                var result = await httpClient.GetAsync(url);
                 if (result.IsSuccessStatusCode == false)
                 {
-                    context.WriteLine($"Request to {packageRegistrationPagedUrl} failed. Error code {result.StatusCode} - message {result.ReasonPhrase}");
-                    return Enumerable.Empty<NugetRegistrationItemEntry>();
+                    context.WriteLine($"Request to {url} failed. Error code {result.StatusCode} - message {result.ReasonPhrase}");
+                    return null;
                 }
 
                 var value = await result.Content.ReadAsStringAsync();
-                var registrationResult = JsonConvert.DeserializeObject<NugetRegistrationItem>(value);
-
-                if (registrationResult == null || registrationResult.Items == null)
-                {
-                    context.WriteLine($"NuGet service response from {packageRegistrationPagedUrl} was null. Raw JSON data: {value}");
-                    return Enumerable.Empty<NugetRegistrationItemEntry>();
-                }
-                
-                return registrationResult.Items;
+                return value;
             }
         }
-
 
         /// <summary>
         ///  calculate the avergate number of downloads per day for a nuget package.
