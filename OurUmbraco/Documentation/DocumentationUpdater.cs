@@ -180,45 +180,45 @@ namespace OurUmbraco.Documentation
                             return 5;
 
                         //Reference
-                        case "reference/config":
+                        case "reference/configuration":
                             return 0;
-                        case "reference/templating":
+                        case "reference/configuration-for-umbraco-7-and-8":
                             return 1;
-                        case "reference/querying":
+                        case "reference/templating":
                             return 2;
-                        case "reference/routing":
+                        case "reference/querying":
                             return 3;
-                        case "reference/searching":
+                        case "reference/routing":
                             return 4;
-                        case "reference/events":
+                        case "reference/searching":
                             return 5;
-                        case "reference/management":
+                        case "reference/events":
                             return 6;
-                        case "reference/plugins":
+                        case "reference/management":
                             return 7;
-                        case "reference/cache":
+                        case "reference/plugins":
                             return 8;
-                        case "reference/security":
+                        case "reference/cache":
                             return 9;
-                        case "reference/common-pitfalls":
+                        case "reference/security":
                             return 10;
-                        case "reference/angular":
+                        case "reference/common-pitfalls":
                             return 11;
-                        case "reference/api-documentation":
+                        case "reference/angular":
                             return 12;
-                        case "reference/debugging":
+                        case "reference/api-documentation":
                             return 13;
-                        case "reference/language-variation":
+                        case "reference/debugging":
                             return 14;
-                        case "reference/mapping":
+                        case "reference/language-variation":
                             return 15;
-                        case "reference/notifications":
+                        case "reference/mapping":
                             return 16;
-                        case "reference/scheduling":
+                        case "reference/notifications":
                             return 17;
-                        case "reference/using-ioc":
+                        case "reference/scheduling":
                             return 18;
-                        case "reference/v9-config":
+                        case "reference/using-ioc":
                             return 19;
                         
                         //Tutorials
@@ -330,34 +330,34 @@ namespace OurUmbraco.Documentation
                         case "default-routing/execute-request":
                             return 2;
 
-                        //Reference - Config
-                        case "config/404handlers":
+                        //Reference - Configuration for umbraco 7 and 8
+                        case "configuration-for-umbraco-7-and-8/404handlers":
                             return 0;
-                        case "config/applications":
+                        case "configuration-for-umbraco-7-and-8/applications":
                             return 1;
-                        case "config/baserestextensions":
+                        case "configuration-for-umbraco-7-and-8/baserestextensions":
                             return 2;
-                        case "config/dashboard":
+                        case "configuration-for-umbraco-7-and-8/dashboard":
                             return 3;
-                        case "config/embeddedmedia":
+                        case "configuration-for-umbraco-7-and-8/embeddedmedia":
                             return 4;
-                        case "config/examineindex":
+                        case "configuration-for-umbraco-7-and-8/examineindex":
                             return 5;
-                        case "config/examinesettings":
+                        case "configuration-for-umbraco-7-and-8/examinesettings":
                             return 6;
-                        case "config/filesystemproviders":
+                        case "configuration-for-umbraco-7-and-8/filesystemproviders":
                             return 7;
-                        case "config/healthchecks":
+                        case "configuration-for-umbraco-7-and-8/healthchecks":
                             return 8;
-                        case "config/serilog":
+                        case "configuration-for-umbraco-7-and-8/serilog":
                             return 9;
-                        case "config/tinymceconfig":
+                        case "configuration-for-umbraco-7-and-8/tinymceconfig":
                             return 10;
-                        case "config/trees":
+                        case "configuration-for-umbraco-7-and-8/trees":
                             return 11;
-                        case "config/umbracosettings":
+                        case "configuration-for-umbraco-7-and-8/umbracosettings":
                             return 12;
-                        case "config/webconfig":
+                        case "configuration-for-umbraco-7-and-8/webconfig":
                             return 13;
 
                         //Reference - Templating
