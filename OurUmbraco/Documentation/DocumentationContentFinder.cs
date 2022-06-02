@@ -7,6 +7,7 @@ using Umbraco.Core;
 using Umbraco.Web.Routing;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace OurUmbraco.Documentation
 {
@@ -90,40 +91,146 @@ namespace OurUmbraco.Documentation
             // the whole redirecting thing is moot because Umbraco normalizes urls
             // so even if redirecting to /foo/ it will end up as /foo... getting rid
             // of it
-
+            
             if (url.EndsWith("/"))
             {
-                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
+                const string defaultFileName = "index.md";
+                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\", defaultFileName); // Example: D:\Dev\OurUmbracov7\OurUmbraco.Site\documentation\extending\backoffice-search\index.md
                 if (File.Exists(fpath))
+                {
                     return fpath; // ok!
+                }
+                else
+                {
+                    // is it a special sort order?
+                    var findMarkdownFile = GetFilePathForFile(fpath);
+                    if (findMarkdownFile != null) 
+                        return findMarkdownFile;
+                }
+                    
                 // else it could be a normal file?
-                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath.Substring(0, relpath.Length - 1), ".md");
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath.Substring(0, relpath.Length - 1), ".md"); // Example: D:\Dev\OurUmbracov7\OurUmbraco.Site\documentation\extending\backoffice-search.md
                 if (File.Exists(fpath))
+                {
                     return fpath;
-                //{
-                //    // does not work for a directory but would work for a file
-                //    redirUrl = "/" + url.Substring(0, url.Length - 1);
-                //    return null;
-                //}
+                }
+                else
+                { 
+                    // is it a special sort order?
+                    var findMarkdownFile = GetFilePathForFile(fpath);
+                    if (findMarkdownFile != null) 
+                        return findMarkdownFile;
+                }
             }
             else
             {
-                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, ".md");
+                var fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, ".md"); // Example: D:\Dev\OurUmbracov7\OurUmbraco.Site\documentation\extending\backoffice-search.md
                 if (File.Exists(fpath))
+                {
                     return fpath; // ok!
-                // else it could be a directory?
-                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md");
-                if (File.Exists(fpath))
-                    return fpath;
+                }
+                else
+                {
+                    // is it a special sort order?
+                    var findMarkdownFile = GetFilePathForFile(fpath);
+                    if (findMarkdownFile != null) 
+                        return findMarkdownFile;
+                }
 
-                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\readme.md");
+                // else it could be a directory?
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\index.md"); // Example: D:\Dev\OurUmbracov7\OurUmbraco.Site\documentation\extending\backoffice-search\index.md
                 if (File.Exists(fpath))
+                {
                     return fpath;
-                //{
-                //    // does not match a file but would work for a directory, redirect
-                //    redirUrl = "/" + url + "/";
-                //    return null;
-                //}
+                }
+                else
+                {
+                    // is it a special sort order?
+                    var findMarkdownFile = GetFilePathForFile(fpath);
+                    if (findMarkdownFile != null) 
+                        return findMarkdownFile;
+                }
+
+
+                fpath = string.Concat(HttpRuntime.AppDomainAppPath, relpath, "\\readme.md"); // Example: D:\Dev\OurUmbracov7\OurUmbraco.Site\documentation\extending\backoffice-search\readme.md
+                if (File.Exists(fpath))
+                {
+                    return fpath;
+                }
+                else
+                {
+                    var findMarkdownFile = GetFilePathForFile(fpath);
+                    if (findMarkdownFile != null) 
+                        return findMarkdownFile;
+                }
+            }
+
+            return null;
+        }
+
+        private static string GetFilePathForFile(string path)
+        {
+            const string regexPattern = @"(\d*sort-)";
+            var regex = new Regex(regexPattern);
+
+            var directory = path.Substring(0, path.LastIndexOf("\\", StringComparison.Ordinal));
+            var fileName = path.Substring(path.LastIndexOf("\\", StringComparison.Ordinal) + 1);
+            
+            // Build a valid file path if possible
+            if (Directory.Exists(directory) == false)
+            {
+                var segments = directory
+                    .Replace(HttpRuntime.AppDomainAppPath, "")
+                    .Split('\\');
+
+                directory = $"{HttpRuntime.AppDomainAppPath}\\{segments[0]}"; // will be "documentation"
+                foreach (var segment in segments.Skip(1))
+                {
+                    var parentDirectory = directory;
+                    directory = $"{directory}\\{segment}";
+                    
+                    var directories = Directory
+                        .GetDirectories(parentDirectory)
+                        .Where(x => regex.IsMatch(x.Split('\\').Last()));
+                
+                    var lastSegment = directory.Split('\\').Last();
+                    foreach (var dir in directories)
+                    {
+                        var foundLastSegment = dir.Split('\\').Last();
+                        foundLastSegment = Regex.Replace(foundLastSegment, regexPattern, "");
+                        if (lastSegment.InvariantEquals(foundLastSegment) == false) 
+                            continue;
+                        
+                        directory = dir;
+                    }
+                }
+            }
+
+            // Directory might have been updated, if it still doesn't exist - cancel the search
+            if (Directory.Exists(directory) == false)
+            {
+                return null;
+            }
+            
+            var filePath = $"{directory}\\{fileName}";
+            if (File.Exists(filePath))
+            {
+                return filePath;
+            }
+            
+            var files = Directory.GetFiles(directory, "*.md")
+                .Where(p => regex.IsMatch(p))
+                .ToList();
+
+            foreach (var file in files)
+            {
+                var lastSegment = file.Split('\\').LastOrDefault();
+                if (lastSegment == null)
+                    continue;
+
+                lastSegment = Regex.Replace(lastSegment, regexPattern, "");
+                if (lastSegment.InvariantEquals(fileName))
+                    return file;
             }
 
             return null;

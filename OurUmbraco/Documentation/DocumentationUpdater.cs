@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Web.Hosting;
 using Examine;
 using LibGit2Sharp;
@@ -76,10 +77,13 @@ namespace OurUmbraco.Documentation
         {
             var list = new List<SiteMapItem>();
 
+            const string regexPattern = @"(\d*sort-)";
+            var regex = new Regex(regexPattern);
+            
             var siteMapItem = new SiteMapItem
             {
-                Name = dir.Name.Replace("-", " "),
-                Path = dir.FullName.Substring(rootPath.Length).Replace('\\', '/'),
+                Name = Regex.Replace(dir.Name, regexPattern, "").Replace("-", " "),
+                Path = Regex.Replace(dir.FullName, regexPattern, "").Substring(rootPath.Length).Replace('\\', '/'),
                 Level = level,
                 Sort = GetSort(dir.Parent.Name + "/" + dir.Name, level) ?? 100,
                 Directories = list,
