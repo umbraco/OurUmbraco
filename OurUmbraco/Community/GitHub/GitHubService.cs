@@ -1314,40 +1314,6 @@ namespace OurUmbraco.Community.GitHub
                 Directory.CreateDirectory(pullsDirectory);
         }
 
-        public void AddCommentToUpForGrabsIssues(PerformContext context)
-        {
-            var repositoryService = new RepositoryManagementService();
-            var issues = repositoryService.GetAllOpenIssues(false);
-            var upForGrabsIssues = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.UpForGrabs);
-
-            var removeIssues = new List<int>();
-            
-            var usersService = new UsersService();
-            var hqMembers = usersService.GetIgnoredGitHubUsers().Result.ToArray();
-
-            foreach (var issue in upForGrabsIssues.Issues)
-            {
-                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
-                if (hqComments.Any() == false)
-                    continue;
-
-                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("Up for grabs".ToLowerInvariant()));
-                if (alreadyMentioned)
-                    removeIssues.Add(issue.Number);
-            }
-
-            var notifyIssues = upForGrabsIssues.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
-            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
-            {
-                SortOrder = upForGrabsIssues.SortOrder,
-                CategoryKey = upForGrabsIssues.CategoryKey,
-                CategoryDescription = upForGrabsIssues.CategoryDescription,
-                Issues = notifyIssues
-            };
-
-            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.UpForGrabs);
-        }
-
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
         {
             var repositoryService = new RepositoryManagementService();

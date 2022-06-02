@@ -19,8 +19,6 @@
         /// </summary>
         ContributorsBadgeMemberNotFound = 3,
 
-        UpForGrabs = 4,
-
         AwaitingFeedback = 5,
 
         /// <summary>

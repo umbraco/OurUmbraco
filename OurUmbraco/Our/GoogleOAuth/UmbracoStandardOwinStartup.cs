@@ -68,7 +68,6 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateAllIssues(null);
             scheduler.GetAllGitHubLabels(null);
             scheduler.AddCommentToAwaitingFeedbackIssues(null);
-            scheduler.AddCommentToUpForGrabsIssues(null);
             scheduler.NotifyUnmergeablePullRequests(null);
             scheduler.AddCommentToStateHQDiscussionIssues(null);
 

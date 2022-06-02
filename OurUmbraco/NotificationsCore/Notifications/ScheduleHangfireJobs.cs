@@ -144,12 +144,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
         }
 
-        public void AddCommentToUpForGrabsIssues(PerformContext context)
-        {
-            var gitHubService = new GitHubService();
-            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToUpForGrabsIssues(context), Cron.MinuteInterval(10));
-        }
-
         public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
