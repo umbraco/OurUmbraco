@@ -6,10 +6,23 @@
     const string root = "/documentation";
 }
 
-@functions{
+@functions
+{
     public static string IsActive(string path, string classname = "active")
     {
-        return HttpContext.Current.Request.Url.PathAndQuery.ToLower().StartsWith(path.ToLower()) ? classname : string.Empty;
+        var requestSegments = HttpContext.Current.Request.Url.Segments.Skip(1);
+        var itemSegments = path.Split(new[] {"/"}, StringSplitOptions.RemoveEmptyEntries);
+        var counter = 0;
+        foreach (var requestSegment in requestSegments.Take(itemSegments.Length))
+        {
+            var itemSegment = itemSegments[counter];
+            if (requestSegment.TrimEnd("/").InvariantEquals(itemSegment))
+            {
+                counter += 1;
+            }
+        }
+
+        return counter == itemSegments.Length ? classname : string.Empty;
     }
 }
 
