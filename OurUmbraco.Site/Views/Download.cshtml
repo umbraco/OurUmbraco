@@ -28,7 +28,7 @@
                 </div>
 
                 <p>
-                    Powered by Microsoft Azure. No credit card needed. Free 14 day trial and pricing starts at just 30 EUR including hosting.
+                    Powered by Microsoft Azure. No credit card needed. Free 14 day trial.
                 </p>
 
                 <p>
@@ -57,11 +57,8 @@
                 <p class="large-margin-bottom">
                     <span class="dotnet-nuget pre">
                         dotnet add package Umbraco.Cms --version @(latestRelease.FullVersion)
-                    </span>    <br />                
-        
-                    @* Current Version: *@
-                    @* <a id="downloadButton" class="download-link" href="@Url.GetReleaseUrl(latestRelease, true)" onclick="_gaq.push(['_trackEvent', 'Release', 'Download', 'UmbracoCms.@(latestRelease.FullVersion).zip']);">Download @(latestRelease.FullVersion)</a> *@
-                    <br />See all <a class="download-link" href="/contribute/releases/">previous releases</a>.
+                    </span>    <br />
+                    <br />See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
 					<br />We recommend <a class="download-link" href="/documentation/Fundamentals/Setup/Install/install-umbraco-with-templates">using the .NET CLI to start running Umbraco locally</a>.
                 </p>
 
@@ -75,7 +72,7 @@
                     <ul>
                         <li>IIS 8 and higher</li>
                         <li>SQL Server 2012 and higher</li>
-                        <li>.NET 5.0</li>
+                        <li>.NET 6.0.2</li>
                         <li>Ability to set file permissions to include create/read/write (or better) for the user that "owns" the Application Pool for your site (NETWORK SERVICE, typically)</li>
                     </ul>
                 </div>
