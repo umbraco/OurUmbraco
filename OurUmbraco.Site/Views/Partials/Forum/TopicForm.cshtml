@@ -41,12 +41,11 @@
                 <select name="topic-version" id="topic-version" class="markdown-control" style="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) || CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoUnoName) ? "display: none;": null)">
                     <option value="Choose a version" selected="" disabled="">Choose Umbraco version</option>
                     <optgroup label="">
-                        <option value="8">Umbraco v8</option>
-                        <option value="9">Umbraco v9 (.NET 5 / netcore / unicore)</option>
+                        <option value="9">Umbraco dotnet core (v9 and above)</option>
                         <option value="@(OurUmbraco.Constants.Forum.HeartcoreVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoHeadlessName) ? "selected": null)">@OurUmbraco.Constants.Forum.UmbracoHeadlessName</option>
-                        <option value="@(OurUmbraco.Constants.Forum.UnoVersionNumber)" selected="@(CurrentPage.Name.Contains(OurUmbraco.Constants.Forum.UmbracoUnoName) ? "selected": null)">@OurUmbraco.Constants.Forum.UmbracoUnoName</option>
                     </optgroup>
                     <optgroup label="">
+                        <option value="8">Umbraco v8</option>
                         <option value="7">Umbraco v7</option>
                         <option value="6">Umbraco v6</option>
                         <option value="4">Umbraco v4</option>

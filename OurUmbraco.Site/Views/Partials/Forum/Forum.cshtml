@@ -95,7 +95,7 @@
                 {
                     if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
                     {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
+                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name.Replace(" And Getting Started", "")</option>
                     }
                 }
             }
