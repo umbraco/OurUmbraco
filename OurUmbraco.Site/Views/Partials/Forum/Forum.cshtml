@@ -51,6 +51,20 @@
     var pages = (totalTopics / pageSize) + 1;
 
     var categories = Model.Content.AncestorOrSelf(2);
+    var ignoreCategories = new List<string>
+    {
+        "Umbraco Courier",
+        "Templates, (partial) views and macros",
+        "Extending Umbraco and using the API",
+        "Developing Packages",
+        "Umbraco 8",
+        "Umbraco 9",
+        "Contributing to Umbraco CMS", 
+        "Umbraco Uno"
+    };
+    var filteredCategories = categories.Children()
+        .Where(x => ignoreCategories.InvariantContains(x.Name) == false);
+    
 }
 @if (Model.Content.NewTopicsAllowed() == false || Model.Content.AncestorOrSelfIsArchived())
 {
@@ -91,7 +105,7 @@
             {
                 <option class="all" value="@categories.Id">All categories</option>
                 @* Category sorting is done from the backoffice, the current order is based on what we expect to be most used *@
-                foreach (var tag in categories.Children)
+                foreach (var tag in filteredCategories)
                 {
                     if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
                     {
