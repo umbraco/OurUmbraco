@@ -372,6 +372,23 @@
                                     </div>
                                 </div>
                             }
+                            
+                            <div class="get-release row">
+                                <div class="release package-detail-sidebar">
+                                    @if (release.FullVersion >= new Version(9, 0, 0) && Model.Content.GetPropertyValue<bool>("hasNuGet"))
+                                    {
+                                        <h3>Recommended install from the command line:</h3>
+                                        <pre style="background-color: #0d0d0d; padding: 10px; border-radius: 4px; color: white; margin-bottom: 10px;">
+dotnet new -i Umbraco.Templates::@Model.Content.Name
+dotnet new umbraco -n "MyProject"
+dotnet run --project "MyProject"</pre>
+                                        
+                                        <span>
+                                            Or use <a href="/documentation/Fundamentals/Setup/Install/">any of the alternative ways to install Umbraco</a>.
+                                        </span>
+                                    }
+                                </div>
+                            </div>
                         }
                         <div class="row markdown-syntax">
 
