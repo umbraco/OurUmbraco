@@ -16,9 +16,11 @@ using OurUmbraco.Our.Models;
 using OurUmbraco.Our.Models.GitHub;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
+using Umbraco.Core.Models;
 using Umbraco.Web;
 using Umbraco.Web.Routing;
 using Umbraco.Web.Security;
+using File = System.IO.File;
 
 namespace OurUmbraco.Our.Services
 {
@@ -95,6 +97,7 @@ namespace OurUmbraco.Our.Services
             context.WriteLine($"Found {releaseNodes.Length} releases");
 
             var releases = new List<Release>();
+            var recommendedReleases = new List<Release>();
             foreach (var node in releaseNodes)
             {
                 if (System.Version.TryParse(node.Name, out var version) == false)
@@ -110,7 +113,6 @@ namespace OurUmbraco.Our.Services
                     Version = version.ToString(),
                     IsPatch = version.Minor != 0,
                     ReleaseDescription = releaseDescription,
-                    CurrentRelease = recommendedRelease,
                     ReleaseStatus = status,
                     InProgressRelease = status != "Released",
                     PlannedRelease = status != "Released",
@@ -119,11 +121,22 @@ namespace OurUmbraco.Our.Services
                     PercentComplete = manualProgressPercent
                 };
                 releases.Add(release);
+                if (recommendedRelease)
+                {
+                    recommendedReleases.Add(release);
+                }
             }
 
             var latestRelease = releases.OrderBy(x => x.Version).Last(x => x.CurrentRelease && x.Released);
             latestRelease.LatestRelease = true;
             context.WriteLine($"Newest downloadable release is {latestRelease.Version}");
+
+            var latestRecommendedRelease = recommendedReleases.OrderBy(x => x.Version).LastOrDefault();
+            if (latestRecommendedRelease != null)
+            {
+                // set the newest recommended release as the current release
+                latestRecommendedRelease.CurrentRelease = true;
+            }
 
             PopulateGitHubIssues(context, releases);
             PopulateYouTrackIssues(context, releases);
