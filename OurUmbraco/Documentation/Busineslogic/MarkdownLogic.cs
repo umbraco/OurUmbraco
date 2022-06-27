@@ -63,6 +63,7 @@ namespace OurUmbraco.Documentation.Busineslogic
                     .UseTaskLists()
                     .UseDiagrams()
                     .UseAutoLinks()
+                    .UseNoFollowLinks() // needs to be replaced with .UseReferralLinks("nofollow") in a newer version of MarkDig
                     .UseSyntaxHighlighter(out SyntaxHighlighterOptions highligther)
                     .Build();
 
