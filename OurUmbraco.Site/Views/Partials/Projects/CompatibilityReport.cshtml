@@ -59,9 +59,24 @@
 
 <div class="package-compatibility">
     <h3>Package Compatibility</h3>
-
     <small>This package is compatible with the following versions as reported by community members who have downloaded this package:</small>
 
+    
+    @if (Model.CurrentMemberIsLoggedIn)
+    {        
+        <div id="reportingTools">
+            <a href="#" id="reportCompatibility">Report compatibility</a>
+            <div style="display: none;" id="reportCompatibilityPanel">
+                <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
+            </div>
+            <br />
+        </div>
+     }
+     else
+     {
+        <p><small>You must login before you can report on package compatibility.</small></p>
+     }
+    
     <div class="package-compatibility-versions">
         <div class="versions">
             @if (Model.WorksOnUaaS)
@@ -95,20 +110,5 @@
             }
         </div>
     </div>
-
-    @if (Model.CurrentMemberIsLoggedIn)
-    {        
-        <div id="reportingTools">
-            <a href="#" id="reportCompatibility">Report compatibility</a>
-            <div style="display: none;" id="reportCompatibilityPanel">
-                <a href="#" id="cancelCompatibility">Cancel</a> or <button>Submit report</button>
-            </div>
-            <br />
-        </div>
-     }
-    else
-    {
-        <p><small>You must login before you can report on package compatibility.</small></p>
-    }
 
 </div>
