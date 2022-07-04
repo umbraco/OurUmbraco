@@ -33,10 +33,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             foreach (var v in wikiFileVersions)
             {
-                if (umbracoVersions.ContainsKey(v.Key) == false)
-                {
-                    umbracoVersions.Add(v.Key, new UmbracoVersion(v.Key, v.Name, v.Description));
-                }
+                umbracoVersions.Add(v.Key, new UmbracoVersion(v.Key, v.Name, v.Description));
             }
             //Versions.Add("v5", new UmbracoVersion("v5", "Version 5.0.x", "Compatible with version 5.0.x"));
             //Versions.Add("v491", new UmbracoVersion("v491", "Version 4.9.1", "Compatible with version 4.9.1"));
