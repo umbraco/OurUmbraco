@@ -25,7 +25,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
         public static Dictionary<string, UmbracoVersion> AvailableVersions()
         {
-            Dictionary<string, UmbracoVersion> Versions = new Dictionary<string, UmbracoVersion>();
+            Dictionary<string, UmbracoVersion> umbracoVersions = new Dictionary<string, UmbracoVersion>();
             
             //load the wikiFileVersions from the wikiFileVersions.config file
             var versions = new UWikiFileVersion();
@@ -33,7 +33,10 @@ namespace OurUmbraco.Wiki.BusinessLogic
 
             foreach (var v in wikiFileVersions)
             {
-                Versions.Add(v.Key, new UmbracoVersion(v.Key, v.Name, v.Description));
+                if (umbracoVersions.ContainsKey(v.Key) == false)
+                {
+                    umbracoVersions.Add(v.Key, new UmbracoVersion(v.Key, v.Name, v.Description));
+                }
             }
             //Versions.Add("v5", new UmbracoVersion("v5", "Version 5.0.x", "Compatible with version 5.0.x"));
             //Versions.Add("v491", new UmbracoVersion("v491", "Version 4.9.1", "Compatible with version 4.9.1"));
@@ -47,7 +50,7 @@ namespace OurUmbraco.Wiki.BusinessLogic
             //Versions.Add("v31", new UmbracoVersion("v31", "Version 3.x", "Only compatible with Umbraco version 3.x and incompatible with the version 4 API"));
             //Versions.Add("nan", new UmbracoVersion("nan", "Not version dependant", "Works with all versions of umbraco, as it does not contain any version dependencies"));
             
-            return Versions;
+            return umbracoVersions;
         }
     }
 }
