@@ -18,7 +18,7 @@ namespace OurUmbraco.Project.uVersion
             var releasesService = new ReleasesService();
             var releases = releasesService.GetReleasesCache()
                 .Where(x => x.FullVersion.Build == 0 && x.FullVersion.Major >= 9 
-                            || (x.FullVersion.Major == 8 && x.FullVersion.Minor >= 18))
+                            || (x.FullVersion.Major == 8 && x.FullVersion.Minor >= 10 && x.FullVersion.Build == 0))
                 .OrderByDescending(x => x.FullVersion).ToList();
             
             var versions = new List<UVersion>();
