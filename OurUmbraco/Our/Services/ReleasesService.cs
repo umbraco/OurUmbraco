@@ -133,9 +133,21 @@ namespace OurUmbraco.Our.Services
                 latestRecommendedRelease.CurrentRelease = true;
             }
 
-            var latestRelease = releases.OrderBy(x => x.Version).Last(x => x.CurrentRelease && x.Released);
-            latestRelease.LatestRelease = true;
-            context.WriteLine($"Newest downloadable release is {latestRelease.Version}");
+            var latestRelease = releases.OrderBy(x => x.Version).LastOrDefault(x => x.CurrentRelease && x.Released);
+            if (latestRelease != null)
+            {
+                latestRelease.LatestRelease = true;
+                context.WriteLine($"Newest downloadable release is {latestRelease.Version}");
+            }
+            else
+            {
+                var newestReleased = releases.OrderBy(x => x.Version).LastOrDefault(x => x.Released);
+                if (newestReleased != null)
+                {
+                    newestReleased.LatestRelease = true;
+                    context.WriteLine($"Latest downloadable release is {newestReleased.Version}");
+                }
+            }
 
             PopulateGitHubIssues(context, releases);
             PopulateYouTrackIssues(context, releases);
