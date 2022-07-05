@@ -12,8 +12,9 @@
 	}
 
 	li {
-		display: none;
-		
+		//display: none;
+		list-style-type: none; /* Remove bullets */
+
 		@media (min-width: $md) {
 			display: inline-block;
 		}
@@ -48,31 +49,32 @@
 			display: block;
 			opacity: .5;
 			font-style: italic;
+
 			a {
 				color: $color-text-hover;
 			}
-	
+
 			&:after {
 				display: none;
 			}
-			
+
 			@media (min-width: $md) {
 				display: inline-block;
 				opacity: 1;
 			}
 		}
-		
+
 		span {
 			&:last-child {
 				color: darken(#b7b7b7, 50%);
-	
+
 				&:after {
 					display: none;
 				}
 			}
-	
+
 			&:after {
-				content:"";
+				content: "";
 				display: inline-block;
 				margin: 0 5px;
 				background: url('/assets/images/breadcrumb.png');
