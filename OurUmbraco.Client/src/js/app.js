@@ -29,6 +29,26 @@ jQuery(document).ready(function () {
         $("body").toggleClass("navopen");
     });
 
+    // Secondary navigation
+
+    if ($(window).width() <= 992) {
+        $(".secondary_nav").removeAttr("open");
+    } else {
+        $(".secondary_nav").attr("open");
+    }
+
+    $(window).resize(function () {
+        if ($(window).width() <= 992) {
+            $(".secondary_nav").removeAttr("open");
+        } else if ($(window).width() >= 992) {
+            $(".secondary_nav").attr("open");
+        }
+    });
+
+
+
+
+
     $('.pm-nuget').on('click', '.nuget', function () {
         $(this).focus();
         $(this).select();
