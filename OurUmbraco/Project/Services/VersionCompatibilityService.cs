@@ -78,13 +78,11 @@ namespace OurUmbraco.Project.Services
                         smiley = "superUnhappy";
                     }
 
-
-
-                    compatList.Add(new VersionCompatibility() { Percentage = perc, Smiley = smiley, Version = ver.Name });
+                    compatList.Add(new VersionCompatibility { Percentage = perc, Smiley = smiley, Version = ver.Name, FullVersion = ver.FullVersion });
                 }
                 else
                 {
-                    compatList.Add(new VersionCompatibility() { Percentage = 0, Smiley = "untested", Version = ver.Name });
+                    compatList.Add(new VersionCompatibility() { Percentage = 0, Smiley = "untested", Version = ver.Name, FullVersion = ver.FullVersion });
                 }
 
             }

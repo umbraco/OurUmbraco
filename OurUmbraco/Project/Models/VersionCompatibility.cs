@@ -11,5 +11,6 @@ namespace OurUmbraco.Project.Models
         public string Smiley { get; set; }
         [DataMember(Name = "version")]
         public string Version { get; set; }
+        public System.Version FullVersion { get; set; }
     }
 }
