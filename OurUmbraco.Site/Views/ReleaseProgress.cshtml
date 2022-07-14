@@ -35,7 +35,7 @@
                                     {
                                         <li>
                                             <a href="@Url.GetReleaseUrl(release)">
-                                                <h4>v@(release.Version)</h4>
+                                                <h4>v@(release.Version)@(release.ReleaseStatus.ToString() == "RC" ? " RC" : null )</h4>
                                             </a>
                                         </li>
                                     }
@@ -87,7 +87,7 @@
                                 <div class="col-xs-9">
                                     <div class="row explain">
                                         <div class="col-xs-12">
-                                            <h4 class="text-right"><a href="@Url.GetReleaseUrl(release)">v@(release.Version)</a></h4>
+                                            <h4 class="text-right"><a href="@Url.GetReleaseUrl(release)">v@(release.Version)@(release.ReleaseStatus.ToString() == "RC" ? " RC" : null )</a></h4>
                                         </div>
                                         <div class="col-xs-6">
                                             <div class="changes">

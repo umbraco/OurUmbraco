@@ -297,7 +297,7 @@
                             }
                         
                         <div class="col-sm-10">
-                            <h2>v@(Model.Content.Name)</h2>
+                            <h2>v@(Model.Content.Name)@(release.ReleaseStatus.ToString() == "RC" ? " RC" : null )</h2>
                             @if (release != null)
                             {
                                 <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
@@ -377,9 +377,9 @@
                                 <div class="release package-detail-sidebar">
                                     @if (release.FullVersion >= new Version(9, 0, 0) && Model.Content.GetPropertyValue<bool>("hasNuGet"))
                                     {
-                                        <h3>Recommended install from the command line:</h3>
+                                        <h3>Recommended install from the command line: @release.ReleaseStatus.ToString() </h3>
                                         <pre style="background-color: #0d0d0d; padding: 10px; border-radius: 4px; color: white; margin-bottom: 10px;">
-dotnet new -i Umbraco.Templates::@Model.Content.Name
+dotnet new -i Umbraco.Templates::@Model.Content.Name@(release.ReleaseStatus.ToString() == "RC" ? "-rc" : null )
 dotnet new umbraco -n "MyProject"
 dotnet run --project "MyProject"</pre>
                                         
