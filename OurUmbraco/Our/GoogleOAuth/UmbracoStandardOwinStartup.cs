@@ -67,11 +67,11 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateGitHubIssues(null);
             scheduler.UpdateAllIssues(null);
             scheduler.GetAllGitHubLabels(null);
-            scheduler.AddCommentToAwaitingFeedbackIssues(null);
-            scheduler.NotifyUnmergeablePullRequests(null);
-            scheduler.AddCommentToStateHQDiscussionIssues(null);
-
-            scheduler.CheckContributorBadge(null);
+            // scheduler.AddCommentToAwaitingFeedbackIssues(null);
+            // scheduler.NotifyUnmergeablePullRequests(null);
+            // scheduler.AddCommentToStateHQDiscussionIssues(null);
+            //
+            // scheduler.CheckContributorBadge(null);
             scheduler.GetNugetDownloads(null);
             scheduler.FetchStaticApiDocumentation(null);
         }

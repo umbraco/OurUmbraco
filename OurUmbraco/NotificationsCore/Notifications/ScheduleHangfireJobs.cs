@@ -144,29 +144,29 @@ namespace OurUmbraco.NotificationsCore.Notifications
             RecurringJob.AddOrUpdate(() => gitHubService.DownloadAllLabels(context), Cron.MonthInterval(12));
         }
 
-        // public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
-        // {
-        //     var gitHubService = new GitHubService();
-        //     RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MinuteInterval(10));
-        // }
+        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToAwaitingFeedbackIssues(context), Cron.MinuteInterval(10));
+        }
 
-        // public void AddCommentToStateHQDiscussionIssues(PerformContext context)
-        // {
-        //     var gitHubService = new GitHubService();
-        //     RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MinuteInterval(10));
-        // }
+        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.AddCommentToStateHQDiscussionIssues(context), Cron.MinuteInterval(10));
+        }
 
-        // public void NotifyUnmergeablePullRequests(PerformContext context)
-        // {
-        //     var gitHubService = new GitHubService();
-        //     RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
-        // }
+        public void NotifyUnmergeablePullRequests(PerformContext context)
+        {
+            var gitHubService = new GitHubService();
+            RecurringJob.AddOrUpdate(() => gitHubService.NotifyUnmergeablePullRequests(context), Cron.MonthInterval(12));
+        }
 
-        // public void CheckContributorBadge(PerformContext context)
-        // {
-        //     var contributors = new ContributorBadgeService();
-        //     RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
-        // }
+        public void CheckContributorBadge(PerformContext context)
+        {
+            var contributors = new ContributorBadgeService();
+            RecurringJob.AddOrUpdate(() => contributors.CheckContributorBadges(context), Cron.MinuteInterval(5));
+        }
 
         public void GetNugetDownloads(PerformContext context)
         {
