@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Web.Hosting;
@@ -23,6 +24,7 @@ namespace OurUmbraco.Our
             AddNewPackageFormatToggleToPackages();
             AddBannerPurposeToggleToPackages();
             AddIsPromotedToggleToPackages();
+            AddReleaseCandidatePostfixToRelease();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -141,6 +143,43 @@ namespace OurUmbraco.Our
                         Description = "The package is selected for promotion (HQ, technical partner or selected community package)."
                     };
                     projectContentType.AddPropertyType(checkboxPropertyType, "Project");
+                    contentTypeService.Save(projectContentType);
+                }
+
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddReleaseCandidatePostfixToRelease()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                const string contentTypeAlias = "Release";
+                const string propertyTypeAlias = "ReleaseCandidatePostfix";
+                
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var projectContentType = contentTypeService.GetContentType(contentTypeAlias);
+
+                if (projectContentType != null && projectContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var textBox = new DataTypeDefinition("Umbraco.Textbox");
+                    var textBoxPropertyType = new PropertyType(textBox, propertyTypeAlias)
+                    {
+                        Name = "Release Candidate Postfix",
+                        Description = "If this is an RC2, enter 2 in this field, if it's RC003 then enter 003"
+                    };
+                    projectContentType.AddPropertyType(textBoxPropertyType, propertyGroupName: "Release");
                     contentTypeService.Save(projectContentType);
                 }
 
