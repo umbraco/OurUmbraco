@@ -3,7 +3,7 @@
     vm.docsLoading = false;
 
     $scope.getPullRequestStatisticsCms = function () {
-        var prDataUrlCms = "backoffice/API/PullRequestStatistics/GetGroupedPullRequestData/?fromDate=2010-01-01&toDate=2030-01-01";
+        var prDataUrlCms = "backoffice/API/PullRequestStatistics/GetGroupedPullRequestData/?fromDate=2020-01-01&toDate=2030-01-01";
 
         vm.prStatsCms = [];
 
@@ -20,7 +20,7 @@
     };
 
     $scope.getPullRequestStatisticsDocs = function () {
-        var prDataUrlDocs = "backoffice/API/PullRequestStatistics/GetGroupedPullRequestData/?fromDate=2010-01-01&toDate=2030-01-01&repository=UmbracoDocs";
+        var prDataUrlDocs = "backoffice/API/PullRequestStatistics/GetGroupedPullRequestData/?fromDate=2020-01-01&toDate=2030-01-01&repository=UmbracoDocs";
 
         vm.prStatsDocs = [];
 
