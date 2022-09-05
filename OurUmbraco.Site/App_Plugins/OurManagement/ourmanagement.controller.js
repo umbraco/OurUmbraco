@@ -93,7 +93,7 @@
                     notificationsService.error("❌ No members found that match the search term(s).");
                 }
                 if (data.length === 1) {
-                    $scope.selectMember(data[0].Key, data[0].Name, data[0].Id);
+                    $scope.selectMember(data[0].Key, data[0].Name, data[0].Id, data[0].Email);
                 } else {
                     vm.memberSearchResults = data;
                 }
@@ -104,11 +104,12 @@
             });
     };
 
-    $scope.selectMember = function (memberKey, memberName, memberId) {
+    $scope.selectMember = function (memberKey, memberName, memberId, memberEmail) {
         vm.memberSearchResults = undefined;
         vm.memberId = memberId;
         vm.memberBackofficeUrl = "/umbraco/#/member/member/edit/" + memberKey;
         vm.memberName = memberName;
+        vm.memberEmail = memberEmail;
     };
     
     $scope.addContribBadgeToMember = function (memberId) {

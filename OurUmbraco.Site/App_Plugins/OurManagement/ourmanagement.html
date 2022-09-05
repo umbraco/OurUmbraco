@@ -25,13 +25,14 @@
     <p ng-if="vm.memberSearchResults">
         Choose a member from the search results:
         <ul>
-            <li ng-click="selectMember(member.Key, member.Name, member.Id)" ng-repeat="member in vm.memberSearchResults">Select {{member.Name}} ({{member.Id}})</li>
+            <li ng-click="selectMember(member.Key, member.Name, member.Id, member.Email)" ng-repeat="member in vm.memberSearchResults">Select {{member.Name}} ({{member.Id}})</li>
         </ul>
     </p>
 
     <p ng-if="vm.memberBackofficeUrl">
         <a href="{{vm.memberBackofficeUrl}}" target="_blank">Go to member {{vm.memberName}} in the backoffice (opens in new tab)</a><br />
-        <a href="/member/{{vm.memberId}}" target="_blank">Go to the public profile of member {{vm.memberName}}  (opens in new tab)</a>
+        <a href="/member/{{vm.memberId}}" target="_blank">Go to the public profile of member {{vm.memberName}} (opens in new tab)</a><br />
+        <a href="https://www.stopforumspam.com/search?q={{vm.memberEmail}}" target="_blank">Check if member {{vm.memberName}} is known to stopforumspam.com (opens in new tab)</a>
         <br />
         <button type="button" ng-click="addContribBadgeToMember(vm.memberId)">
             Add contrib badge to {{vm.memberName}}
