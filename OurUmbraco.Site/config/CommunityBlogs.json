@@ -350,6 +350,15 @@
       "rss": "https://dev.to/feed/nikcio",
       "logo": "https://github.com/nikcio.png",
       "memberId": 284921
+    },  
+    {
+      "id": "6671815b-18c5-4255-a1c8-92f7add6049a",
+      "checkTitles": false,
+      "title": "Cultiv Blog",
+      "url": "https://dev.to/cultiv",
+      "rss": "https://dev.to/feed/cultiv",
+      "logo": "https://github.com/nul800sebastiaan.png",
+      "memberId": 4576
     }
   ]
 }
