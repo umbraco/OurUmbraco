@@ -27,6 +27,18 @@ namespace OurUmbraco.Documentation
             {
                 using (var repo = new LibGit2Sharp.Repository(_rootFolderPath))
                 {
+                    const string branchName = "legacy-docs";
+                    var remoteBranch = repo.Branches[$"origin/{branchName}"];
+                    if (remoteBranch == null)
+                    {
+                        var localBranch = repo.CreateBranch($"{branchName}", remoteBranch.Tip);
+                        repo.Branches.Update(localBranch ,
+                            b => b.TrackedBranch = remoteBranch.CanonicalName);
+                    }
+
+                    var trackingBranch = repo.Branches[branchName];
+                    Commands.Checkout(repo, trackingBranch);
+
                     var options = new PullOptions { FetchOptions = new FetchOptions() };
                     var signature = new Signature("Our Umbraco", "our@umbraco.org", new DateTimeOffset(DateTime.Now));
                     Commands.Pull(repo, signature, options);
