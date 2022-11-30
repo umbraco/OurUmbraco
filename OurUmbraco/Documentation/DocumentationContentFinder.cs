@@ -250,7 +250,7 @@ namespace OurUmbraco.Documentation
     {
         public static string MarkdownFileEditLink()
         {
-            string branchName = "main";
+            string branchName = "legacy-docs";
             string baseUrl = "https://github.com/umbraco/UmbracoDocs/edit/" + branchName;
 
             var docUrl = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
