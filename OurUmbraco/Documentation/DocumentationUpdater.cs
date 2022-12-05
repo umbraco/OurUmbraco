@@ -196,46 +196,44 @@ namespace OurUmbraco.Documentation
                             return 5;
 
                         //Reference
-                        case "reference/configuration":
-                            return 0;
                         case "reference/configuration-for-umbraco-7-and-8":
-                            return 1;
+                            return 0;
                         case "reference/templating":
-                            return 2;
+                            return 1;
                         case "reference/querying":
-                            return 3;
+                            return 2;
                         case "reference/routing":
-                            return 4;
+                            return 3;
                         case "reference/searching":
-                            return 5;
+                            return 4;
                         case "reference/events":
-                            return 6;
+                            return 5;
                         case "reference/management":
-                            return 7;
+                            return 6;
                         case "reference/plugins":
-                            return 8;
+                            return 7;
                         case "reference/cache":
-                            return 9;
+                            return 8;
                         case "reference/security":
-                            return 10;
+                            return 9;
                         case "reference/common-pitfalls":
-                            return 11;
+                            return 10;
                         case "reference/angular":
-                            return 12;
+                            return 11;
                         case "reference/api-documentation":
-                            return 13;
+                            return 12;
                         case "reference/debugging":
-                            return 14;
+                            return 13;
                         case "reference/language-variation":
-                            return 15;
+                            return 14;
                         case "reference/mapping":
-                            return 16;
+                            return 15;
                         case "reference/notifications":
-                            return 17;
+                            return 16;
                         case "reference/scheduling":
-                            return 18;
+                            return 17;
                         case "reference/using-ioc":
-                            return 19;
+                            return 18;
                         
                         //Tutorials
                         case "tutorials/creating-basic-site":
@@ -346,7 +344,7 @@ namespace OurUmbraco.Documentation
                         case "default-routing/execute-request":
                             return 2;
 
-                        //Reference - Configuration for umbraco 7 and 8
+                        //Reference - Configuration
                         case "configuration-for-umbraco-7-and-8/404handlers":
                             return 0;
                         case "configuration-for-umbraco-7-and-8/applications":
