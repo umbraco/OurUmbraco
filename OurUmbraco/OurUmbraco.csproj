@@ -15,7 +15,7 @@
     <TargetFrameworkProfile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -637,6 +637,7 @@
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
+    <Compile Include="Forum\AntiSpam\StopForumSpamService.cs" />
     <Compile Include="Forum\Slack.cs" />
     <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />

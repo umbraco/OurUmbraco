@@ -6,35 +6,36 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Umbraco.Core;
 
-namespace OurUmbraco.Community.GitHub;
-
-public class UsersService
+namespace OurUmbraco.Community.GitHub
 {
-    public Task<HashSet<string>> GetIgnoredGitHubUsers()
+    public class UsersService
     {
-        return (Task<HashSet<string>>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
-            "IgnoredGitHubUsers", GetCacheItem, TimeSpan.FromHours(1));
-    }
-
-    private async Task<HashSet<string>> GetCacheItem()
-    {
-        var bearerToken = ConfigurationManager.AppSettings["CollabBearerToken"];
-        const string url = "https://collaboratorsv2.euwest01.umbraco.io/umbraco/api/users/GetIgnoredUsers";
-
-        using (var httpClient = new HttpClient())
+        public Task<HashSet<string>> GetIgnoredGitHubUsers()
         {
-            httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
-            var httpContent = new StringContent("[]", System.Text.Encoding.UTF8, "application/json");
+            return (Task<HashSet<string>>)ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+                "IgnoredGitHubUsers", GetCacheItem, TimeSpan.FromHours(1));
+        }
 
-            var response = await httpClient.PostAsync(url, httpContent);
-            if (response.IsSuccessStatusCode == false)
+        private async Task<HashSet<string>> GetCacheItem()
+        {
+            var bearerToken = ConfigurationManager.AppSettings["CollabBearerToken"];
+            const string url = "https://collaboratorsv2.euwest01.umbraco.io/umbraco/api/users/GetIgnoredUsers";
+
+            using (var httpClient = new HttpClient())
             {
-                return new HashSet<string>();
-            }
+                httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
+                var httpContent = new StringContent("[]", System.Text.Encoding.UTF8, "application/json");
 
-            var result = response.Content.ReadAsStringAsync().Result;
-            var users = JsonConvert.DeserializeObject<HashSet<string>>(result);
-            return users;
+                var response = await httpClient.PostAsync(url, httpContent);
+                if (response.IsSuccessStatusCode == false)
+                {
+                    return new HashSet<string>();
+                }
+
+                var result = response.Content.ReadAsStringAsync().Result;
+                var users = JsonConvert.DeserializeObject<HashSet<string>>(result);
+                return users;
+            }
         }
     }
 }

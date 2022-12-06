@@ -177,26 +177,31 @@ namespace OurUmbraco.Community.BlogPosts
 
         private static async Task<string> GetRawRssFeedResponse(PerformContext context, string rssUrl)
         {
-            using var client = new HttpClient(IgnoreTlsErrorsHandler());
-            
-            // Pretend to be the Edge browser, v99 because otherwise some RSS feed providers block you as a bot 
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36 Edg/99.0.1150.36");
-            
-            using var result = await client.GetAsync(rssUrl);
-            if (result.IsSuccessStatusCode == false)
-            {
-                context.SetTextColor(ConsoleTextColor.Red);
-                context.WriteLine($"Getting {rssUrl} not successful, status: {result.StatusCode}, reason: {result.ReasonPhrase}");
-                context.ResetTextColor();
-                return string.Empty;
+            using (var client = new HttpClient(IgnoreTlsErrorsHandler())){
+
+                // Pretend to be the Edge browser, v99 because otherwise some RSS feed providers block you as a bot 
+                client.DefaultRequestHeaders.UserAgent.ParseAdd(
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.82 Safari/537.36 Edg/99.0.1150.36");
+
+                using (var result = await client.GetAsync(rssUrl))
+                {
+                    if (result.IsSuccessStatusCode == false)
+                    {
+                        context.SetTextColor(ConsoleTextColor.Red);
+                        context.WriteLine(
+                            $"Getting {rssUrl} not successful, status: {result.StatusCode}, reason: {result.ReasonPhrase}");
+                        context.ResetTextColor();
+                        return string.Empty;
+                    }
+
+                    // Force read with UTF-8 encoding
+                    var buffer = await result.Content.ReadAsByteArrayAsync();
+                    var byteArray = buffer.ToArray();
+                    var raw = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
+                    raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
+                    return raw;
+                }
             }
-            
-            // Force read with UTF-8 encoding
-            var buffer = await result.Content.ReadAsByteArrayAsync();
-            var byteArray = buffer.ToArray();
-            var raw = Encoding.UTF8.GetString(byteArray, 0, byteArray.Length);
-            raw = RemoveLeadingCharacters(raw).Replace("a10:updated", "pubDate");
-            return raw;
         }
 
         private static async Task<string> GetBlogLogo(PerformContext context, BlogInfo blog)
@@ -210,11 +215,15 @@ namespace OurUmbraco.Community.BlogPosts
 
             try
             {
-                using var downloader = new HttpClient(IgnoreTlsErrorsHandler());
-                var result = await downloader.GetStreamAsync(blog.LogoUrl);
-            
-                using var fs = new FileStream(logoPath, FileMode.Create, FileAccess.Write, FileShare.None);
-                await result.CopyToAsync(fs);
+                using (var downloader = new HttpClient(IgnoreTlsErrorsHandler()))
+                {
+                    var result = await downloader.GetStreamAsync(blog.LogoUrl);
+
+                    using (var fs = new FileStream(logoPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        await result.CopyToAsync(fs);
+                    }
+                }
             }
             catch (Exception ex)
             {
