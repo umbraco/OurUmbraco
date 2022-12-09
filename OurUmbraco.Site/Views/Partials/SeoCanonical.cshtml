@@ -1,0 +1,61 @@
+﻿@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+
+@using System.Text.RegularExpressions;
+
+@{
+    var canonicalDocumentationPageTemplates = new[] { "DocumentationMainpage", "DocumentationSubpage" };
+    if (!canonicalDocumentationPageTemplates.Contains(Model.Content.GetTemplateAlias()))
+    {
+        // If it's not a documentation page then return
+        return;
+    }
+
+    var requestUrl = Request.Url.ToString();
+    var formsPattern = new Regex(@"\/documentation\/Add-ons\/UmbracoForms\/(.*)");
+    var deployPattern = new Regex(@"\/documentation\/Add-ons\/Umbraco-Deploy\/(.*)");
+    var cloudPattern = new Regex(@"\/documentation\/Umbraco-Cloud\/(.*)");
+    var heartcorePattern = new Regex(@"\/documentation\/Umbraco-Heartcore\/(.*)");
+    var tutorialsPattern = new Regex(@"\/documentation\/Tutorials\/(.*)");
+    var contributePattern = new Regex(@"\/documentation\/Contribute\/(.*)");
+
+    if (formsPattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(formsPattern, "/umbraco-forms/", requestUrl)
+    }
+    else if (deployPattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(deployPattern, "/umbraco-deploy/", requestUrl)
+    }
+    else if (cloudPattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(cloudPattern, "/umbraco-cloud/", requestUrl)
+    }
+    else if (heartcorePattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(heartcorePattern, "/umbraco-heartcore/", requestUrl)
+    }
+    else if (tutorialsPattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(tutorialsPattern, "/umbraco-cms/tutorials/", requestUrl)
+    }
+    else if (contributePattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(contributePattern, "/contribute/", requestUrl)
+    }
+    else if (requestUrl.EndsWith("/documentation/"))
+    {
+        @Html.Raw("<link rel=\"canonical\" href=\"http://docs.umbraco.com/umbraco-cms/\" />");
+    }
+    else
+    {
+        @Html.Raw("<link rel=\"canonical\" href=\"http://docs.umbraco.com/\" />");
+    }
+}
+
+@helper RenderCanonicalLink(Regex pattern, string urlPrefix, string requestUrl)
+{
+    var match = pattern.Match(requestUrl);
+    var domain = "https://docs.umbraco.com";
+    var path = match.Groups[1].ToString().ToLowerInvariant();
+    @Html.Raw($"<link rel=\"canonical\" href=\"{domain}{urlPrefix}{path}\" />");
+}
