@@ -13,6 +13,7 @@
     const string newDocsBaseUrl = "https://docs.umbraco.com";
 
     var requestUrl = Request.Url.ToString();
+
     var formsPattern = new Regex(@"\/documentation\/Add-ons\/UmbracoForms\/(.*)", RegexOptions.IgnoreCase);
     var deployPattern = new Regex(@"\/documentation\/Add-ons\/Umbraco-Deploy\/(.*)", RegexOptions.IgnoreCase);
     var cloudPattern = new Regex(@"\/documentation\/Umbraco-Cloud\/(.*)", RegexOptions.IgnoreCase);
@@ -63,14 +64,7 @@
         return;
     }
 
-    var firstMatchGroup = match.Groups[1]?.ToString();
-
-    if (string.IsNullOrEmpty(firstMatchGroup))
-    {
-        return;
-    }
-
-    var path = firstMatchGroup.ToLowerInvariant();
+    var path = match.Groups[1]?.ToString()?.ToLowerInvariant();
 
     @Html.Raw($"<link rel=\"canonical\" href=\"{newDocsBaseUrl}{urlPrefix}{path}\" />");
 }
