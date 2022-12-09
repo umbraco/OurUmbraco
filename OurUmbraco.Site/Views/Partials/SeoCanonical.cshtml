@@ -20,6 +20,8 @@
     var heartcorePattern = new Regex(@"\/documentation\/Umbraco-Heartcore\/(.*)", RegexOptions.IgnoreCase);
     var tutorialsPattern = new Regex(@"\/documentation\/Tutorials\/(.*)", RegexOptions.IgnoreCase);
     var contributePattern = new Regex(@"\/documentation\/Contribute\/(.*)", RegexOptions.IgnoreCase);
+    var gettingStartedPattern = new Regex(@"\/documentation\/Getting-Started\/(.*)", RegexOptions.IgnoreCase);
+    var generalDocPattern = new Regex(@"\/documentation\/(.*)", RegexOptions.IgnoreCase);
 
     if (formsPattern.IsMatch(requestUrl))
     {
@@ -45,9 +47,13 @@
     {
         @RenderCanonicalLink(contributePattern, "/contribute/", requestUrl, newDocsBaseUrl)
     }
-    else if (requestUrl.EndsWith("/documentation/"))
+    else if (gettingStartedPattern.IsMatch(requestUrl))
     {
-        @Html.Raw($"<link rel=\"canonical\" href=\"{newDocsBaseUrl}/umbraco-cms/\" />");
+        @RenderCanonicalLink(gettingStartedPattern, "/getting-started/", requestUrl, newDocsBaseUrl)
+    }
+    else if (generalDocPattern.IsMatch(requestUrl))
+    {
+        @RenderCanonicalLink(generalDocPattern, "/umbraco-cms/", requestUrl, newDocsBaseUrl)
     }
     else
     {
