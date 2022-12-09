@@ -54,8 +54,22 @@
 
 @helper RenderCanonicalLink(Regex pattern, string urlPrefix, string requestUrl)
 {
-    var match = pattern.Match(requestUrl);
     var domain = "https://docs.umbraco.com";
-    var path = match.Groups[1].ToString().ToLowerInvariant();
+    var match = pattern.Match(requestUrl);
+
+    if (match == null || match.Groups == null || match.Groups.Count < 2)
+    {
+        return;
+    }
+
+    var firstMatchGroup = match.Groups[1]?.ToString();
+
+    if (string.IsNullOrEmpty(firstMatchGroup))
+    {
+        return;
+    }
+
+    var path = firstMatchGroup.ToLowerInvariant();
+
     @Html.Raw($"<link rel=\"canonical\" href=\"{domain}{urlPrefix}{path}\" />");
 }
