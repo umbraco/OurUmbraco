@@ -1,0 +1,48 @@
+﻿{
+  "propertyEditors": [
+    {
+      "alias": "Skybrud.Umbraco.Redirects",
+      "name": "Skybrud Redirects - Inbound redirects",
+      "group": "Skybrud.dk Redirects",
+      "editor": {
+        "view": "~/App_Plugins/Skybrud.Umbraco.Redirects/Views/Editors/Inbound.html?v=0.3.1",
+        "hideLabel": true
+      },
+      "prevalues": {
+        "fields": [
+          {
+            "label": "Hide site option",
+            "description": "Specify the option to select a site should be hidden when creating or editing a redirect from the property editor.",
+            "key": "hideRootNodeOption",
+            "view": "boolean"
+          },
+          {
+            "label": "Hide title",
+            "description": "Specify whether the list title should be hidden.",
+            "key": "hideTitle",
+            "view": "boolean"
+          }
+        ]
+      }
+    },
+    {
+      "alias": "Skybrud.Umbraco.Redirects.OutboundRedirect",
+      "name": "Skybrud Redirects - Outbound redirect",
+      "group": "Skybrud.dk Redirects",
+      "editor": {
+        "view": "~/App_Plugins/Skybrud.Umbraco.Redirects/Views/Editors/Outbound.html?v=0.3.1"
+      }
+    }
+  ],
+  "javascript": [
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Services/RedirectsService.js",
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Controllers/Dashboards/Default.js",
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Controllers/Dialogs/AddRedirectDialog.js",
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Controllers/Dialogs/EditRedirectDialog.js",
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Controllers/Editors/Inbound.js",
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Scripts/Controllers/Editors/Outbound.js"
+  ],
+  "css": [
+    "/App_Plugins/Skybrud.Umbraco.Redirects/Styles/Styles.css"
+  ]
+}

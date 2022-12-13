@@ -1,0 +1,227 @@
+﻿.SkybrudUmbracoRedirects {
+
+    @green: #46a546;
+
+    .input {
+        display: flex;
+    }
+
+    .input > .hest {
+        margin-bottom: 10px;
+        display: block;
+        width: 200px;
+    }
+
+    .input > .hest small {
+        display: block;
+    }
+
+    pre {
+        margin-top: 10px;
+        font-size: 10px;
+        line-height: 12px;
+    }
+
+    .umb-editor-sub-header {
+        margin-bottom: 0;
+    }
+
+    .umb-table-cell {
+        cursor: default;
+        margin: auto 7px;
+    }
+
+    .umb-table-cell.col-id {
+        max-width: 50px;
+        padding: 6px 2px;
+    }
+
+    .umb-table-cell.col-arrow {
+        max-width: 25px;
+    }
+
+    .umb-table-cell.col-date {
+        max-width: 115px;
+        min-width: 115px;
+    }
+
+    .umb-table-cell.col-destination {
+        flex-grow: 4;
+    }
+
+    .umb-table-cell.col-actions {
+        a {
+            padding: 0 10px;
+            font-size: 12px;
+        }
+    }
+
+    .umb-table-row {
+        cursor: default;
+    }
+
+    .umb-era-button {
+        &.-green {
+            background: #53a93f;
+            color: white;
+
+            &:hover {
+                background-color: darken(@green, 5%);
+            }
+        }
+
+        & + .umb-era-button {
+            margin-left: 10px;
+        }
+    }
+
+    .umb-era-button-group {
+        display: flex;
+    }
+
+    .umb-load-indicator {
+        z-index: 9001;
+        display: none;
+    }
+
+    .loading {
+        position: relative;
+
+        & > .umb-load-indicator {
+            display: block;
+        }
+
+        .umb-table {
+            opacity: 0.75;
+        }
+    }
+
+    .list {
+        min-height: 120px;
+        position: relative;
+    }
+
+    .btn-loader {
+        position: relative;
+
+        &.loading {
+            padding-right: 35px;
+
+            .umb-button__progress {
+                display: initial;
+                right: 10px;
+                left: initial;
+            }
+        }
+
+        .umb-button__progress {
+            display: none;
+        }
+    }
+
+    @import '_table';
+    @import '_pagination';
+}
+
+@import '_dialogs';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+    New styling lives here while still "work in progress"
+*/
+.SkybrudUmbracoRedirects {
+
+    .umb-overlay-container {
+        position: relative;
+        height: auto;
+        overflow-x: hidden;
+        overflow-y: auto;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -ms-flex-negative: 1;
+        flex-shrink: 1;
+        -ms-flex-preferred-size: auto;
+        flex-basis: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .sky-button-group {
+        display: flex;
+    }
+
+    .sky-button-group label {
+        display: flex;
+        margin: 0;
+    }
+
+    .sky-button-group label + label {
+        margin-left: 20px;
+    }
+
+    .sky-button-group input {
+        margin-right: 7px;
+    }
+
+    .sky-option + .sky-option {
+        margin-top: 25px;
+    }
+
+    .redirects-basic-options {
+        height: auto;
+        -ms-flex-positive: 1;
+        flex-grow: 1;
+        -ms-flex-negative: 1;
+        flex-shrink: 1;
+        -ms-flex-preferred-size: auto;
+        flex-basis: auto;
+    }
+
+    .redirects-advanced-options {
+        margin-top: 50px;
+        h4 {
+            margin: 10px 0 15px 0;
+            border-bottom: 1px solid #e9e9eb;
+            padding-bottom: 10px;
+            font-weight: bold;
+        }
+    }
+}
+
+
+
+
+.gte-umb77 {
+
+    @danger: #F02E28;
+
+    .alert.alert-danger {
+        padding: 5px 8px;
+        font-size: 12px;
+        margin-bottom: 10px;
+        cursor: default;
+        code {
+            padding: 1px 4px;
+            color: #fff;
+            border-color: darken(@danger, 15%);
+            background-color: darken(@danger, 10%);
+        }
+    }
+
+}

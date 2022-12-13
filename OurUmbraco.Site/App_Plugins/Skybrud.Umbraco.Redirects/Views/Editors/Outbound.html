@@ -1,0 +1,16 @@
+﻿<div ng-controller="SkybrudUmbracoRedirects.OutboundRedirectEditor.Controller">
+    <div class="SkybrudPropertyEditors LinkPicker SingleLinkPicker">
+        <div>
+            <label style="margin: 0; padding: 0;">
+                <input type="radio" name="radio_{{model.id}}" ng-model="mode" value="permanent" ng-change="changed()" />
+                <localize key="redirects_labelPermanentRedirect">Permanent redirect</localize> (301)
+            </label>
+            <label style="margin: 0 0 0 10px; padding: 0;">
+                <input type="radio" name="radio_{{model.id}}" ng-model="mode" value="temporary" ng-change="changed()" />
+                <localize key="redirects_labelTemporaryRedirect">Temporary redirect</localize> (307)
+            </label>
+        </div>
+        <hr style="margin: 10px 0;" />
+        <skybrud-linkpicker value="linkpicker" config="config"></skybrud-linkpicker>
+    </div>
+</div>
