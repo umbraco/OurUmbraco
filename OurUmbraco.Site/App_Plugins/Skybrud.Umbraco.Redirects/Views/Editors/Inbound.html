@@ -1,0 +1,84 @@
+﻿<div class="SkybrudUmbracoRedirects" ng-controller="SkybrudUmbracoRedirects.PropertyEditor.Controller">
+
+    <div ng-if="mode == 'create'" class="alert alert-info">
+        Din side er endnu ikke oprettet. Du skal gemme eller publicere siden for, at kunne tilføje redirects.
+    </div>
+
+    <div ng-if="mode == 'list'">
+        <div class="umb-editor-sub-header" umb-sticky-bar="">
+            <h3 ng-if="showTitle">{{model.label}}</h3>
+            <div class="umb-editor-sub-header__content-right">
+                <div class="umb-editor-sub-header__section">
+                    <a href="#" prevent-default ng-click="addRedirect()" class="umb-era-button umb-button--s">
+                        <localize key="redirects_addNewRedirect">Add new redirect</localize>
+                    </a>
+                    <a href="#" prevent-default ng-click="updateList()" class="umb-era-button umb-button--s">
+                        <localize key="redirects_reload">Reload</localize>
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="list" ng-class="{loading: loading}">
+            <umb-load-indicator />
+            <div class="umb-table">
+                <div class="umb-table-head">
+                    <div class="umb-table-row">
+                        <div class="umb-table-cell col-id"><localize key="redirects_id">ID</localize></div>
+                        <div class="umb-table-cell"><localize key="redirects_originalUrl">Original URL</localize></div>
+                        <div class="umb-table-cell col-arrow"></div>
+                        <div class="umb-table-cell col-destination"><localize key="redirectUrls_redirectedTo">Redirected to</localize></div>
+                        <div class="umb-table-cell col-date"><localize key="redirects_created">Created</localize></div>
+                        <div class="umb-table-cell col-date"><localize key="redirects_updated">Updated</localize></div>
+                        <div class="umb-table-cell col-actions"></div>
+                    </div>
+                </div>
+                <div class="umb-table-body">
+                    <div class="umb-table-row -no-hover" ng-show="redirects.length == 0">
+                        <div class="umb-table-cell" style="flex-grow: 1; margin: 0; padding: 25px; color: #000;">
+                            <span ng-if="type == 'content'">
+                                <localize key="redirects_labelNoContentRedirects">There has not yet been added any redirects to this page.</localize>
+                            </span>
+                            <span ng-if="type == 'media'">
+                                <localize key="redirects_labelNoMediaRedirects">There has not yet been added any redirects to this media.</localize>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="umb-table-row" ng-repeat="redirect in redirects">
+                        <div class="umb-table-cell col-id">{{redirect.id}}</div>
+                        <div class="umb-table-cell">
+                            <a href="{{redirect.urls[0]}}" rel="noopener noreferrer" target="_blank" title="{{redirect.url}}{{redirect.queryString ? '?' + redirect.queryString : ''}}">{{redirect.url}}{{redirect.queryString ? '?' + redirect.queryString : ''}}</a>
+                            <small ng-if="redirect.regex">&nbsp;(.*)</small>
+                        </div>
+                        <div class="umb-table-cell col-arrow">
+                            <i class="umb-table-body__icon umb-table-body__fileicon icon-arrow-right" style="font-size: 12px; line-height: 1;"></i>
+                        </div>
+                        <div class="umb-table-cell col-destination">
+                            <span ng-if="redirect.link.mode == 'content'">
+                                <localize key="redirects_content">Content</localize>:
+                                <a href="{{redirect.link.url}}" rel="noopener noreferrer" target="_blank" title="{{redirect.link.name ? redirect.link.name : redirect.link.url}}">{{redirect.link.name ? redirect.link.name : redirect.link.url}}</a>
+                            </span>
+                            <span ng-if="redirect.link.mode == 'media'">
+                                <localize key="redirects_media">Media</localize>:
+                                <a href="{{redirect.link.url}}" rel="noopener noreferrer" target="_blank" title="{{redirect.link.name ? redirect.link.name : redirect.link.url}}">{{redirect.link.name ? redirect.link.name : redirect.link.url}}</a>
+                            </span>
+                            <span ng-if="redirect.link.mode == 'url'">
+                                <localize key="redirects_url">URL</localize>:
+                                <a href="{{redirect.link.url}}" rel="noopener noreferrer" target="_blank" title="{{redirect.link.url}}">{{redirect.link.url}}</a>
+                            </span>
+                            <small ng-if="redirect.forward">
+                                &nbsp;?&amp;
+                            </small>
+                        </div>
+                        <div class="umb-table-cell col-date">{{redirect.created * 1000 | date: 'yyyy-MM-dd HH:mm'}}</div>
+                        <div class="umb-table-cell col-date">{{redirect.updated * 1000 | date: 'yyyy-MM-dd HH:mm'}}</div>
+                        <div class="umb-table-cell justify-end col-actions">
+                            <a href="#" prevent-default="" ng-click="editRedirect(redirect)" class="umb-era-button umb-button--s"><localize key="redirects_edit">Edit</localize></a>
+                            <a href="#" prevent-default="" ng-click="deleteRedirect(redirect)" class="umb-era-button umb-button--s -red"><localize key="redirects_delete">Delete</localize></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>

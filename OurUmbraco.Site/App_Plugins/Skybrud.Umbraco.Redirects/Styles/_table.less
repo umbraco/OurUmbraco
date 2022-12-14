@@ -1,0 +1,29 @@
+﻿.umb-table {
+    background: #fff;
+}
+
+.umb-table-body .umb-table-row.-no-hover:hover {
+    background-color: #fff;
+}
+
+.umb-table-foot {
+    
+    font-size: 11px;
+    background-color: #f8f8f8;
+
+    .umb-table-row {
+        border-top: 1px solid #d9d9d9;
+    }
+
+    // Umbraco will automatically force the first cell/column to be very narrow
+    // (for displaying an icon). Since we don't really need that, we make sure
+    // to clear that here
+    .umb-table-cell:first-of-type {
+        padding: initial;
+        -ms-flex: initial;
+        -webkit-flex: initial;
+        flex: initial;
+        flex-grow: 1;
+    }
+
+}

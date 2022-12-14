@@ -1,0 +1,109 @@
+﻿.EditRedirectDialog, .AddRedirectDialog {
+    
+    position: static;
+    display: flex;
+    -ms-flex-direction: column;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    flex-grow: 1;
+
+
+    
+    @danger: #9D261D;
+
+    .alert.alert-danger {
+        padding: 5px 8px;
+        font-size: 12px;
+        margin-bottom: 10px;
+        cursor: default;
+        code {
+            padding: 1px 4px;
+            color: #fff;
+            border-color: darken(@danger, 10%);
+            background-color: darken(@danger, 5%);
+        }
+    }
+
+
+    .umb-overlay-container {
+        padding: 20px;
+        flex-grow: 1;
+    }
+
+    .umb-overlay-drawer {
+        /*padding: 10px 20px;
+        margin: 0;
+        background: #f8f8f8;
+        border-top: 1px solid #d9d9d9;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        -ms-flex-preferred-size: 31px;
+        flex-basis: 31px;*/
+        text-align: right;
+    }
+
+    h3 {
+        margin-top: 0;
+        font-size: 20px;
+        line-height: 22px;
+    }
+
+    small {
+        display: block;
+        margin-bottom: 5px;
+        line-height: 1.5em;
+    }
+
+    /*.umb-overlay-header {
+        margin-top: 0;
+        background: #f8f8f8;
+        border-bottom: 1px solid #d9d9d9;
+        -ms-flex-positive: 0;
+        flex-grow: 0;
+        -ms-flex-negative: 0;
+        flex-shrink: 0;
+        padding: 20px;
+        box-sizing: border-box;
+        -ms-flex-preferred-size: 100px;
+        flex-basis: 100px;
+    }*/
+
+    .umb-overlay__title {
+        margin: 7px 0;
+        font-size: 17.5px;
+        font-weight: bold;
+        color: #000;
+    }
+
+    .umb-overlay__subtitle {
+        margin: 0;
+        font-size: 12px;
+    }
+
+    label {
+        display: block;
+        margin: 0;
+    }
+
+    label + label {
+        margin-top: 25px;
+    }
+
+    select {
+        display: block;
+        width: 100%;
+    }
+
+    input[type="text"] {
+        display: block;
+        -moz-box-sizing: border-box;
+        -webkit-box-sizing: border-box;
+        box-sizing: border-box;
+        height: 30px;
+        line-height: 30px;
+        max-width: initial;
+        width: 100%;
+    }
+}

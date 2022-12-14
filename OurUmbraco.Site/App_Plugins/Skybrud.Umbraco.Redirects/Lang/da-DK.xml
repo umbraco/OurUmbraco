@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+
+<language alias="da" intName="Danish" localName="dansk" lcid="6" culture="da-DK">
+  <area alias="redirects">
+    <key alias="redirects">Redirects</key>
+    <key alias="addNewRedirect">Tilføj nyt redirect</key>
+    <key alias="addRedirect">Tilføj redirect</key>
+    <key alias="editRedirect">Rediger redirect</key>
+    <key alias="saveRedirect">Gem redirect</key>
+    <key alias="cancel">Annuller</key>
+    <key alias="reload">Genindlæs</key>
+    <key alias="edit">Rediger</key>
+    <key alias="delete">Slet</key>
+    <key alias="content">Indhold</key>
+    <key alias="media">Medie</key>
+    <key alias="url">URL</key>
+    <key alias="site">Site</key>
+    <key alias="siteDescription">Vælg det site (eller rodnode) som redirectet skal gælde for. Vælges der ikke noget site, vil redirectet virke for alle domæner/sites i Umbraco-løsningen.</key>
+    <key alias="allSites">Alle sites</key>
+    <key alias="originalUrl">Oprindelig URL</key>
+    <key alias="isRegex">Brug regular expressions</key>
+    <key alias="isRegexDestinationDescription">Du kan bruge capture group referencer, når du bruger regular expressions (f.eks. $1, $2 osv.)</key>
+    <key alias="destination">Destination</key>
+    <key alias="redirectedTo">Viderestillet til</key>
+    <key alias="selectDestination">Vælg destination</key>
+    <key alias="created">Oprettet</key>
+    <key alias="updated">Opdateret</key>
+    <key alias="id">ID</key>
+    <key alias="forwardQueryString">Videresend query string</key>
+    <key alias="forwardQueryStringDescription">Når slået til, tilføjes en evt. query string fra det oprindelige request til redirect destinationen.</key>
+    <key alias="labelUrlDescription">Angiv den oprindelige URL, der skal sende brugeren videre til den valgte destination.</key>
+    <key alias="labelDestinationDescription">Vælg den side eller URL, som brugeren skal sendes videre til.</key>
+    <key alias="labelNoRedirects">Der er endnu ikke blevet tilføjet nogle redirects.</key>
+    <key alias="labelNoContentRedirects">Der er endnu ikke blevet tilføjet nogle redirects, der henviser til denne side.</key>
+    <key alias="labelNoMediaRedirects">Der er endnu ikke blevet tilføjet nogle redirects, der henviser til dette medie.</key>
+    <key alias="labelNoSearchRedirects">Din søgning matchede ingen redirects.</key>
+    <key alias="pagination">Viser %0%-%1% af %2% – Side %3% af %4%</key>
+    <key alias="urlNotValid"><![CDATA[Den angivne URL er ikke gyldig. En gyldig URL bør f.eks. se ud som <code>/side</code> eller <code>/underside</code>.]]></key>
+    <key alias="addNewRedirectSubTitle">Udfyld nedenstående felter for at tilføje et nyt redirect.</key>
+    <key alias="media_all">Alle typer</key>
+    <key alias="media_content">Indhold</key>
+    <key alias="media_media">Medier</key>
+    <key alias="media_url">URLs</key>
+
+    <key alias="labelPermanent">Permanent</key>
+    <key alias="labelTemporary">Midlertidig</key>
+    <key alias="labelPermanentRedirect">Permanent redirect</key>
+    <key alias="labelTemporaryRedirect">Midlertidig redirect</key>
+    
+    <key alias="labelEnabled">Aktiveret</key>
+    <key alias="labelDisabled">Deaktiveret</key>
+    <key alias="labelAdvancedOptions">Avancerede indstillinger</key>
+
+    <key alias="labelDeleteRedirectConfirm">Er du sikker på at du vil slette det valgte redirect på %0% ?</key>
+
+    <key alias="propertyRedirectTypeName">Type</key>
+    <key alias="propertyRedirectTypeDescription">Vælg typen for dit redirect. Bemærk at browsere vil huske et permanent redirect.</key>
+
+    <key alias="addSuccessfulTitle">Redirect oprettet</key>
+    <key alias="addSuccessfulMessage">Dit redirect er nu blevet oprettet.</key>
+
+    <key alias="saveSuccessfulTitle">Redirect gemt</key>
+    <key alias="saveSuccessfulMessage">Dit redirect er nu blevet gemt.</key>
+
+    <key alias="errorNoUrlTitle">Ingen URL</key>
+    <key alias="errorNoUrlMessage">Du skal angive den oprindelige URL.</key>
+
+    <key alias="errorInvalidUrlTitle">Ugyldig værdi</key>
+    <key alias="errorInvalidUrlMessage">Den angivne URL er ikke gyldig.</key>
+
+    <key alias="errorNoLinkTitle">Intet link</key>
+    <key alias="errorNoLinkMessage">Du skal angive en destinationsside eller -link.</key>
+
+    <key alias="errorAddFailedTitle">Oprettelse fejlede</key>
+    <key alias="errorAddFailedMessage">Grundet en fejl på serveren kunne dit redirect ikke oprettes.</key>
+
+    <key alias="errorEditFailedTitle">Redigering fejlede</key>
+    <key alias="errorEditFailedMessage">Grundet en fejl på serveren kunne dit redirect ikke gemmes.</key>
+
+    <key alias="errorContentNoRedirects">En side med det angivne ID blev ikke fundet.</key>
+    <key alias="errorMediaNoRedirects">Et medie med det angivne ID blev ikke fundet.</key>
+    <key alias="errorNoUrl">Du skal angive en URL for dit redirect.</key>
+    <key alias="errorNoDestination">Du skal angive en destination for dit redirect.</key>
+    <key alias="errorUnknownLinkMode">Den angivne linktype er ikke gyldig.</key>
+    
+  </area>
+</language>
