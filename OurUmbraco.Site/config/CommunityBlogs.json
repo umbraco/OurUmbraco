@@ -359,6 +359,15 @@
       "rss": "https://dev.to/feed/cultiv",
       "logo": "https://github.com/nul800sebastiaan.png",
       "memberId": 4576
-    }
+    },
+    {
+      "id": "2c812506-4068-40f4-891d-a0a22864b076",
+      "checkTitles": false,
+      "title": "MediaWizards Blog",
+      "url": "https://umbraco.themediawizards.co.uk/the-grimoire/",
+      "rss": "https://umbraco.themediawizards.co.uk/blog/feed.rss",
+      "logo": "https://umbraco.themediawizards.co.uk/wizard.png",
+      "memberId": 283076
+    }	  
   ]
 }
