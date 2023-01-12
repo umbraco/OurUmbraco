@@ -166,7 +166,7 @@ namespace OurUmbraco.Our.Controllers
                 mailMessage.Body = mail;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.To.Add(new MailAddress(m.Email));
-                mailMessage.From = new MailAddress("robot@umbraco.org");
+                mailMessage.From = new MailAddress("robot@umbraco.com");
 
                 using (var smtpClient = new SmtpClient())
                     smtpClient.Send(mailMessage);
