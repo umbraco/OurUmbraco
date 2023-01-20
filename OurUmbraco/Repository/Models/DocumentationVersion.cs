@@ -15,5 +15,6 @@ namespace OurUmbraco.Repository.Models
         public string MetaTitle { get; set; }
         public string MetaDescription { get; set; }
         public string NeedsV8Update { get; set; }
+        public string RedirectLink { get; set; }
     }
 }

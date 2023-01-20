@@ -11,6 +11,8 @@ using System.Text;
 using YamlDotNet.Serialization;
 using OurUmbraco.Documentation.Busineslogic;
 using System.Configuration;
+using OurUmbraco.Our.Extensions;
+using OurUmbraco.Our.Models;
 using YamlDotNet.Core;
 
 namespace OurUmbraco.Our.Examine
@@ -104,57 +106,12 @@ namespace OurUmbraco.Our.Examine
         /// <param name="simpleDataSet"></param>
         /// <param name="lines"></param>
         /// <returns>The linenumber of the second YAML marker</returns>
-        private static int AddYamlFields(SimpleDataSet simpleDataSet, List<string> lines)
+        private static int AddYamlFields(SimpleDataSet simpleDataSet, IReadOnlyCollection<string> lines)
         {
-            // Check if the first line is a YAML marker
-            // YAML is only accepted if it's on the top of the document
-            // because empty lines are already removed, the index needs to be 0
-            bool hasYaml = lines.ElementAt(0).TrimEnd() == "---";
-            int secondYamlMarker = 0;
-
-            if (hasYaml)
+            var yamlMetaData = lines.GetYamlMetaData(out var secondYamlMarker);
+            
+            if (yamlMetaData != null)
             {
-                // Find the "next" triple dash starting from the second line
-                // But first trim all trailing spaces as this only creates issues which are hard to debug
-                // and unclear for users. Make sure you have a ToList because IEnumerable has no IndexOf()
-                secondYamlMarker = lines
-                    .Select(l => l.TrimEnd())
-                    .ToList()
-                    .IndexOf("---", 1);
-
-                // add all yaml together and parse YAML meta data
-                YamlMetaData yamlMetaData = new YamlMetaData();
-                if (secondYamlMarker > 0)
-                {
-                    // we found a second marker, so we have YAML data available
-                    var yamlInput = new StringBuilder();
-                    for (int i = 1; i < secondYamlMarker; i++)
-                    {
-                        // the line must contain some valid yaml, key-value pairs are
-                        // separated by a ":" so only add lines that have that
-                        var line = lines.ElementAt(i);
-                        if (line.InvariantContains(":"))
-                        {
-                            yamlInput.AppendLine(line);
-                        }
-                    };
-
-                    // Try to convert the YAML text to a strongly typed model using YamlDotNet
-                    var deserializer = new DeserializerBuilder()
-                        .WithNamingConvention(new YamlDotNet.Serialization.NamingConventions.CamelCaseNamingConvention())
-                        .IgnoreUnmatchedProperties()
-                        .Build();
-                    try
-                    {
-                        yamlMetaData = deserializer.Deserialize<YamlMetaData>(yamlInput.ToString());
-                    }
-                    catch (SemanticErrorException ex)
-                    {
-                        LogHelper.Error(typeof(ExamineHelper), "Could not parse the YAML meta data {0}" + yamlInput, ex);
-                        yamlMetaData.Tags = "yamlissue";
-                    }
-                }
-
                 // Add Yaml stuff to the LUCENE index
                 simpleDataSet.RowData.Add("tags", yamlMetaData.Tags);
                 simpleDataSet.RowData.Add("keywords", yamlMetaData.Keywords);
@@ -167,6 +124,7 @@ namespace OurUmbraco.Our.Examine
                 simpleDataSet.RowData.Add("complexity", yamlMetaData.Complexity);
                 simpleDataSet.RowData.Add("meta.Title", yamlMetaData.MetaTitle);
                 simpleDataSet.RowData.Add("meta.Description", yamlMetaData.MetaDescription);
+                simpleDataSet.RowData.Add("meta.RedirectLink", yamlMetaData.RedirectLink);
                 simpleDataSet.RowData.Add("versionRemoved", yamlMetaData.VersionRemoved);
                 simpleDataSet.RowData.Add("needsV8Update", yamlMetaData.NeedsV8Update);
 
@@ -178,6 +136,7 @@ namespace OurUmbraco.Our.Examine
                 // no YAML information, add the current version as majorVersion
                 simpleDataSet.RowData.Add("majorVersion", GetCurrentDocVersion().ToString());
             }
+            
             return secondYamlMarker;
         }
 

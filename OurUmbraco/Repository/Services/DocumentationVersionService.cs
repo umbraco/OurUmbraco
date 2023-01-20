@@ -103,6 +103,7 @@ namespace OurUmbraco.Repository.Services
                     version.MetaDescription = result["meta.Description"];
                     version.MetaTitle = result["meta.Title"];
                     version.NeedsV8Update = result["needsV8Update"];
+                    version.RedirectLink = result["meta.RedirectLink"];
                     
                     return version;
                 })
