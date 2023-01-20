@@ -122,11 +122,14 @@
                                 @if (documentedRedirectLink != null) {
                                     <span>Go to <a href="@documentedRedirectLink">@documentedRedirectLink.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
                                 }
-                                else
+                                else if(redirectLink != null)
                                 {
                                     <span>An automated guess is that <a href="@redirectLink">@redirectLink.Replace("https://", "")</a> could be the link to the new documentation for Umbraco 9 and newer versions.</span>
                                 }
-                                                
+                                else
+                                {
+                                    <span>Go to <a href="@newDocsBaseUrl">@newDocsBaseUrl.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
+                                }
                             </p>
                         </div>                               
                         <div class="search-big">
