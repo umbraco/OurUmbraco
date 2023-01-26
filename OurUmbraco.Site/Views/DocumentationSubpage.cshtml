@@ -6,6 +6,7 @@
     
     const string newDocsBaseUrl = "https://docs.umbraco.com";
     var redirectLink = GetSuggestedRedirectLink(Request.Url.ToString());
+    var isv7 = IsVersionSevenLink(Request.Url.ToString());
     
     var docVersionService = new DocumentationVersionService();
     var currentVersion = docVersionService.GetCurrentMajorVersion();
@@ -116,22 +117,27 @@
                         <div>
                             @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                         </div>
-                        <div style="width: 100%;" class="alertbar__red">
-                                
-                            <h1 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h1><p style="font-size:20px; text-align: center; line-height: 50px;">You are currently looking at documentation for Umbraco 8 and older versions. <br>
-                                @if (documentedRedirectLink != null) {
-                                    <span>Go to <a href="@documentedRedirectLink">@documentedRedirectLink.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
-                                }
-                                else if(redirectLink != null)
-                                {
-                                    <span>An automated guess is that <a href="@redirectLink">@redirectLink.Replace("https://", "")</a> could be the link to the new documentation for Umbraco 9 and newer versions.</span>
-                                }
-                                else
-                                {
-                                    <span>Go to <a href="@newDocsBaseUrl">@newDocsBaseUrl.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
-                                }
-                            </p>
-                        </div>                               
+                        @if (isv7 == false)
+                        {
+                            <div style="width: 100%;" class="alertbar__red">
+
+                                <h1 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h1>
+                                <p style="font-size:20px; text-align: center; line-height: 50px;">You are currently looking at documentation for Umbraco 8 and older versions. <br>
+                                    @if (documentedRedirectLink != null)
+                                    {
+                                        <span>Go to <a href="@documentedRedirectLink">@documentedRedirectLink.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
+                                    }
+                                    else if (redirectLink != null)
+                                    {
+                                        <span>An automated guess is that <a href="@redirectLink">@redirectLink.Replace("https://", "")</a> could be the link to the new documentation for Umbraco 9 and newer versions.</span>
+                                    }
+                                    else
+                                    {
+                                        <span>Go to <a href="@newDocsBaseUrl">@newDocsBaseUrl.Replace("https://", "")</a> for documentation for Umbraco 9 and newer versions.</span>
+                                    }
+                                </p>
+                            </div>
+                        }
                         <div class="search-big">
                             <div class="textSearch">
                                 <input type="search" class="docs-search-input" required placeholder="Search for documentation">
@@ -225,6 +231,8 @@
     
     public string GetRedirectLink(Regex pattern, string urlPrefix, string requestUrl)
     {
+        if (IsVersionSevenLink(requestUrl)) return null;
+
         var match = pattern.Match(requestUrl);
 
         if (match.Groups.Count < 2)
@@ -235,5 +243,18 @@
         var path = match.Groups[1].ToString().ToLowerInvariant();
 
         return urlPrefix + path;
+    }
+
+    public static bool IsVersionSevenLink(string requestUrl)
+    {
+        // Don't add redirects for v7 docs
+        var uri = new Uri(requestUrl);
+        var uriPath = uri.GetAbsolutePathDecoded();
+        if (uriPath.EndsWith("-v7") || uriPath.EndsWith("-v7/"))
+        {
+            return true;
+        }
+
+        return false;
     }
 }
