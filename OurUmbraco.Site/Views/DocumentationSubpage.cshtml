@@ -13,6 +13,12 @@
     var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).ToList();
 
     var currentDocVersion = altVersions.FirstOrDefault(x => x.IsCurrentPage);
+    
+    var dontRedirect = currentDocVersion?.VersionRemoved != null && currentDocVersion.VersionRemoved.StartsWith("8");
+    if (currentDocVersion?.NeedsV8Update != null && currentDocVersion.NeedsV8Update == "true")
+    {
+        dontRedirect = true;
+    }
 
     string documentedRedirectLink = null;
     if (currentDocVersion != null && !string.IsNullOrWhiteSpace(currentDocVersion.RedirectLink))
@@ -117,7 +123,7 @@
                         <div>
                             @Html.Partial("~/Views/Partials/Documentation/Breadcrumb.cshtml")
                         </div>
-                        @if (isv7 == false)
+                        @if (isv7 == false && dontRedirect == false)
                         {
                             <div style="width: 100%;" class="alertbar__red">
 
@@ -247,7 +253,7 @@
 
     public static bool IsVersionSevenLink(string requestUrl)
     {
-        // Don't add redirects for v7 docs
+    // Don't add redirects for v7 docs
         var uri = new Uri(requestUrl);
         var uriPath = uri.GetAbsolutePathDecoded();
         if (uriPath.EndsWith("-v7") || uriPath.EndsWith("-v7/"))
