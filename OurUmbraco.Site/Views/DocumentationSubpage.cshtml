@@ -14,7 +14,7 @@
 
     var currentDocVersion = altVersions.FirstOrDefault(x => x.IsCurrentPage);
     
-    var dontRedirect = currentDocVersion?.VersionRemoved != null && currentDocVersion.VersionRemoved.StartsWith("8");
+    var dontRedirect = currentDocVersion?.VersionRemoved != null;
     if (currentDocVersion?.NeedsV8Update != null && currentDocVersion.NeedsV8Update == "true")
     {
         dontRedirect = true;
