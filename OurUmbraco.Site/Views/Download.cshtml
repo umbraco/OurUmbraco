@@ -53,25 +53,21 @@
                     a place to host yourself and handling deployments and upgrades is all down to you.
                 </p>
                 <p>
-
+					We recommend <a class="download-link" href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install/install-umbraco-with-templates">using the .NET CLI to start running Umbraco locally</a>.<br />
+					If you have the latest dotnet SDK and runtime installed you should be able to get started with Umbraco like this:
                     <p class="large-margin-bottom">
-                        <span class="dotnet-nuget pre">
-                            dotnet add package Umbraco.Cms --version @(latestRelease.FullVersion)
-                        </span> <br/>
-                        <br/>See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
-                        <br /><br/>We recommend <a class="download-link" href="/documentation/Fundamentals/Setup/Install/install-umbraco-with-templates">using the .NET CLI to start running Umbraco locally</a>.
-                        <br /><br />Or check out <a href="/documentation/Fundamentals/Setup/Install/">all other options for setting up Umbraco</a> locally.
+                        <span class="dotnet-nuget pre" style="font-size: 1rem; overflow: hidden; padding: 45px 35px;">
+                            dotnet new install Umbraco.Templates<br/>
+							dotnet new umbraco -n MyProject<br />
+							dotnet run --project MyProject
+                        </span>
+                        <br /><br />Or check out <a href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install">all other options for setting up Umbraco</a> locally.
                     </p>
-
-                    <div class="requirements large-margin-bottom">
-                        <strong>Windows server requirements:</strong>
-                        <ul>
-                            <li>IIS 8 and higher</li>
-                            <li>SQL Server 2012 and higher</li>
-                            <li>Latest version of <a href="https://dotnet.microsoft.com/en-us/download/dotnet/6.0" target="_blank" rel="noopener noreferrer">.NET 6 SDK + Core runtime</a></li>
-                            <li>Ability to set file permissions to include create/read/write (or better) for the user that "owns" the Application Pool for your site (NETWORK SERVICE, typically)</li>
-                        </ul>
-                    </div>
+					
+					<h2>Releases</h2>
+					<p class="download-teaser">
+						See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
+					</p>
                 </p>
             </div>
         </div>
