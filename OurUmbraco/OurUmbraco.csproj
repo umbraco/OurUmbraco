@@ -1082,7 +1082,8 @@
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Venues\MeetupVenue.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
-    <Compile Include="Version\uWikiFileVerison.cs" />
+    <Compile Include="Version\uWikiFileVersion.cs" />
+    
     <Compile Include="Videos\VideosCategory.cs" />
     <Compile Include="Videos\VideosService.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
