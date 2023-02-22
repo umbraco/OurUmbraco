@@ -16,11 +16,13 @@ namespace OurUmbraco.Project.uVersion
         public IEnumerable<UVersion> GetAllVersions()
         {
             var releasesService = new ReleasesService();
+
             var releases = releasesService.GetReleasesCache()
-                .Where(x => x.FullVersion.Major > 6 && x.FullVersion.Build == 0)
+                .Where(x => x.FullVersion.Major > 6 && x.FullVersion.Major < 9 && x.FullVersion.Build == 0)
                 .OrderByDescending(x => x.FullVersion).ToList();
             
             var versions = new List<UVersion>();
+
             foreach (var release in releases)
             {
                 versions.Add(new UVersion
