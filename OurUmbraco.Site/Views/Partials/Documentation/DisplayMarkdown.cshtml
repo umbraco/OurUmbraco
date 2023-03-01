@@ -54,7 +54,6 @@
 </script>
 
 @{
-    // var test = Model.Content.Url();
     var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
     var ml = new MarkdownLogic(path) { PrefixLinks = false };
     if (path.ToLowerInvariant().EndsWith("index.md".ToLowerInvariant()) || path.ToLowerInvariant().EndsWith("readme.md".ToLowerInvariant()))
@@ -196,17 +195,6 @@
         </p>
     </div>
 }
-
-<div class="note">
-    <h1 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h1><p style="font-size:20px; text-align: center; line-height: 50px;">
-        You are currently looking at documentation for Umbraco 8 and older versions. <br>
-        Go to <a href="https://docs.umbraco.com">docs.umbraco.com</a> for documentation for Umbraco 9 and newer versions. And @markdown.
-
-
-    </p>
-</div>
-
-
 
 @Html.Raw(markdown)
 
