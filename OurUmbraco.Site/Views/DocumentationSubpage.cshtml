@@ -8,6 +8,8 @@
     var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).ToList();
 
     var currentDocVersion = altVersions.FirstOrDefault(x => x.IsCurrentPage);
+
+    var test = Model.Content.Url();
 }
 @section SeoMetaData {
     @if (currentDocVersion != null)
@@ -92,7 +94,7 @@
                             <div style="width: 100%;" class="alertbar__red">
                                 
                                 <h1 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h1><p style="font-size:20px; text-align: center; line-height: 50px;">You are currently looking at documentation for Umbraco 8 and older versions. <br>
-                            Go to <a href="https://docs.umbraco.com">docs.umbraco.com</a> for documentation for Umbraco 9 and newer versions.
+                            Go to <a href="https://docs.umbraco.com">docs.umbraco.com</a> for documentation for Umbraco 9 and newer versions. And @test.
                                         
                                                 
                                 </p>

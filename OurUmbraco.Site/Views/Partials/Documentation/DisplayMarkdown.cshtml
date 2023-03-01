@@ -54,6 +54,7 @@
 </script>
 
 @{
+    // var test = Model.Content.Url();
     var path = HttpContext.Current.Items[MarkdownLogic.MarkdownPathKey].ToString();
     var ml = new MarkdownLogic(path) { PrefixLinks = false };
     if (path.ToLowerInvariant().EndsWith("index.md".ToLowerInvariant()) || path.ToLowerInvariant().EndsWith("readme.md".ToLowerInvariant()))
@@ -84,14 +85,14 @@
     var markdown = ml.DoTransformation();
     // method to determine if alternate versions exist for these docs
     var docVersionService = new DocumentationVersionService();
-    
+
     //var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url).ToList();// method to determine which alternate versions exist of this page
     var altVersions = ViewData.ContainsKey("AltVersions") ? ViewData["AltVersions"] as List<DocumentationVersion> : new List<DocumentationVersion>();
     if (altVersions == null)
     {
         altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).ToList();
     }
-    
+
     var hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
     var currentVersion = altVersions.SingleOrDefault(x => x.IsCurrentPage);
     var currentVersionIsRemovedForv8 = currentVersion != null && currentVersion.VersionRemoved != null && currentVersion.VersionRemoved.StartsWith("8");
@@ -101,7 +102,7 @@
 <aside>
     <div class="info-box docs-version-panel">
         <dl>
-           <dt>Versions</dt>
+            <dt>Versions</dt>
             @if (hasAltVersions)
             {
                 foreach (var version in altVersions)
@@ -164,10 +165,10 @@
     </table>
 }
 
-@if (currentUmbracoVersion != null 
+@if (currentUmbracoVersion != null
      && currentUmbracoVersion == 8
      && currentVersionIsRemovedForv8 != null
-     && currentVersionIsRemovedForv8 == false 
+     && currentVersionIsRemovedForv8 == false
      && currentVersion != null
      && currentVersion.NeedsV8Update == "true")
 {
@@ -181,8 +182,8 @@
     </div>
 }
 
-@if (currentUmbracoVersion != null 
-     && currentUmbracoVersion == 8 
+@if (currentUmbracoVersion != null
+     && currentUmbracoVersion == 8
      && currentVersion != null
      && currentVersion.Url.EndsWith("-v7") == false
      && currentVersionIsRemovedForv8)
@@ -195,6 +196,17 @@
         </p>
     </div>
 }
+
+<div class="note">
+    <h1 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h1><p style="font-size:20px; text-align: center; line-height: 50px;">
+        You are currently looking at documentation for Umbraco 8 and older versions. <br>
+        Go to <a href="https://docs.umbraco.com">docs.umbraco.com</a> for documentation for Umbraco 9 and newer versions. And @markdown.
+
+
+    </p>
+</div>
+
+
 
 @Html.Raw(markdown)
 
