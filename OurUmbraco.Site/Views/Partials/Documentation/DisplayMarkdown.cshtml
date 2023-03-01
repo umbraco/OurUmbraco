@@ -84,14 +84,14 @@
     var markdown = ml.DoTransformation();
     // method to determine if alternate versions exist for these docs
     var docVersionService = new DocumentationVersionService();
-
+    
     //var altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url).ToList();// method to determine which alternate versions exist of this page
     var altVersions = ViewData.ContainsKey("AltVersions") ? ViewData["AltVersions"] as List<DocumentationVersion> : new List<DocumentationVersion>();
     if (altVersions == null)
     {
         altVersions = docVersionService.GetAlternateDocumentationVersions(Request.Url, true).ToList();
     }
-
+    
     var hasAltVersions = altVersions.Any();  // do we want to indicate future versions in a different colour, or am I making this toooo complicated
     var currentVersion = altVersions.SingleOrDefault(x => x.IsCurrentPage);
     var currentVersionIsRemovedForv8 = currentVersion != null && currentVersion.VersionRemoved != null && currentVersion.VersionRemoved.StartsWith("8");
@@ -101,7 +101,7 @@
 <aside>
     <div class="info-box docs-version-panel">
         <dl>
-            <dt>Versions</dt>
+           <dt>Versions</dt>
             @if (hasAltVersions)
             {
                 foreach (var version in altVersions)
@@ -164,10 +164,10 @@
     </table>
 }
 
-@if (currentUmbracoVersion != null
+@if (currentUmbracoVersion != null 
      && currentUmbracoVersion == 8
      && currentVersionIsRemovedForv8 != null
-     && currentVersionIsRemovedForv8 == false
+     && currentVersionIsRemovedForv8 == false 
      && currentVersion != null
      && currentVersion.NeedsV8Update == "true")
 {
@@ -181,8 +181,8 @@
     </div>
 }
 
-@if (currentUmbracoVersion != null
-     && currentUmbracoVersion == 8
+@if (currentUmbracoVersion != null 
+     && currentUmbracoVersion == 8 
      && currentVersion != null
      && currentVersion.Url.EndsWith("-v7") == false
      && currentVersionIsRemovedForv8)
