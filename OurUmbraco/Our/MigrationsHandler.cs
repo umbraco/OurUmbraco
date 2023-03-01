@@ -3,6 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Web;
 using System.Web.Hosting;
 using Newtonsoft.Json;
 using Umbraco.Core;
@@ -25,6 +26,7 @@ namespace OurUmbraco.Our
             AddBannerPurposeToggleToPackages();
             AddIsPromotedToggleToPackages();
             AddReleaseCandidatePostfixToRelease();
+            AddCommunityBlogsRssTemplate();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -183,6 +185,38 @@ namespace OurUmbraco.Our
                     contentTypeService.Save(projectContentType);
                 }
 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+        private void AddCommunityBlogsRssTemplate()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                const string templateAlias = "CommunityBlogsRss";
+                
+                var fileService = ApplicationContext.Current.Services.FileService;
+                var template = fileService.GetTemplate(templateAlias);
+                if (template == null)
+                {
+                    template = new Template(templateAlias, templateAlias);
+                }
+
+                var file = HostingEnvironment.MapPath("~/config/blogrsstemplate.txt");
+                var content = File.ReadAllText(file);
+                template.Content = content;
+                fileService.SaveTemplate(template);
+                
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
 

@@ -645,7 +645,9 @@
     <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />
+    <Compile Include="Our\Extensions\ReadOnlyCollectionExtenstions.cs" />
     <Compile Include="Our\Models\SearchResultBreadcrumbModel.cs" />
+    <Compile Include="Our\Models\YamlMetaData.cs" />
     <Compile Include="Project\Api\ProjectApiKeyController.cs" />
     <Compile Include="Project\Api\UmbracoMemberAuthApiController.cs" />
     <Compile Include="Auth\UmbracoMemberAuthTokenAttribute.cs" />
@@ -1080,7 +1082,8 @@
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Venues\MeetupVenue.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
-    <Compile Include="Version\uWikiFileVerison.cs" />
+    <Compile Include="Version\uWikiFileVersion.cs" />
+    
     <Compile Include="Videos\VideosCategory.cs" />
     <Compile Include="Videos\VideosService.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
@@ -1107,7 +1110,6 @@
   <ItemGroup>
     <None Include="Forum\setuptables.sql" />
     <None Include="app.config" />
-    <Compile Include="Our\Examine\ExamineHelper.YamlMetaData.cs" />
     <Content Include="Our\usercontrols\ProjectCollabRequest.ascx" />
     <Content Include="Our\usercontrols\ProjectContributors.ascx">
       <SubType>ASPXCodeBehind</SubType>

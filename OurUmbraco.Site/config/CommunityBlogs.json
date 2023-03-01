@@ -46,15 +46,6 @@
       "memberId": 126488
     },
     {
-      "id": "1D769116-B595-475E-B1C9-8B2B33A1548C",
-      "checkTitles": false,
-      "title": "24 Days In Umbraco",
-      "url": "https://24days.in/umbraco-cms",
-      "rss": "https://24days.in/umbraco-cms/rss/",
-      "logo": "https://pbs.twimg.com/profile_images/803704047769419776/wIJwpK82_400x400.jpg",
-      "memberId": null
-    },
-    {
       "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
       "checkTitles": false,
       "title": "Jamie's Blog",
@@ -91,15 +82,6 @@
       "memberId": 1868
     },
     {
-      "id": "6F278E68-C435-4DFF-A4EA-DB08835AB0F9",
-      "checkTitles": false,
-      "title": "Umbraco HQ",
-      "url": "https://umbraco.com/blog",
-      "rss": "https://umbraco.com/blog/rss-feed/",
-      "logo": "https://our.umbraco.com/media/7514503/umbraco_logo_turquoise_transparent.png",
-      "memberId": null
-    },
-    {
       "id": "C50E6041-BC06-4D2E-9A08-E21E6A8CF23C",
       "checkTitles": false,
       "title": "Creative Web Specialist",
@@ -125,15 +107,6 @@
       "rss": "https://leekelleher.com/tag/umbraco/feed/",
       "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png",
       "memberId": 3042
-    },
-    {
-      "id": "B8AAE362-4344-47C5-8C91-C6960ABFC3DF",
-      "checkTitles": true,
-      "title": "John D Jones",
-      "url": "http://jondjones.com/",
-      "rss": "http://jondjones.com/rss/",
-      "logo": "http://www.jondjones.com/images/logo.png",
-      "memberId": 153060
     },
     {
       "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
@@ -205,24 +178,6 @@
       "url": "https://www.proworks.com/blog",
       "rss": "https://www.proworks.com/blog/rss",
       "logo": "https://www.proworks.com/images/PWlogo.png",
-      "memberId": null
-    },
-    {
-      "id": "AADCF9A6-886A-4BD4-B184-ED1CF4D45974",
-      "checkTitles": false,
-      "title": "DotSee Blog",
-      "url": "https://www.dot-see.com",
-      "rss": "https://www.dot-see.com/en/blog/rss",
-      "logo": "https://www.dot-see.com/media/24590/dotsee_logo_01.png",
-      "memberId": 3185
-    },
-    {
-      "id": "393514BF-F415-485A-A43E-7021B92FC78F",
-      "checkTitles": false,
-      "title": "Perplex",
-      "url": "https://www.perplex.nl/en/blog/umbraco",
-      "rss": "https://www.perplex.nl/rss/en/blog/umbraco",
-      "logo": "https://www.perplex.nl/media/gfx/logoperplex.png",
       "memberId": null
     },
     {
@@ -359,6 +314,24 @@
       "rss": "https://dev.to/feed/cultiv",
       "logo": "https://github.com/nul800sebastiaan.png",
       "memberId": 4576
-    }
+    },
+    {
+      "id": "2c812506-4068-40f4-891d-a0a22864b076",
+      "checkTitles": false,
+      "title": "MediaWizards Blog",
+      "url": "https://umbraco.themediawizards.co.uk/the-grimoire/",
+      "rss": "https://umbraco.themediawizards.co.uk/blog/feed.rss",
+      "logo": "https://umbraco.themediawizards.co.uk/wizard.png",
+      "memberId": 283076
+    },
+    {
+      "id": "3bc08e13-c0b9-405e-a37e-131216fdfefa",
+      "checkTitles": false,
+      "title": "24 Days in Umbraco CMS",
+      "url": "https://24days.in/umbraco-cms/",
+      "rss": "https://24days.in/umbraco-cms/feed/",
+      "logo": "https://24days.in/media/or0ki5ok/24days2022.png?width=100&rnd=133143344855170000",
+      "memberId": null
+    }	  
   ]
 }
