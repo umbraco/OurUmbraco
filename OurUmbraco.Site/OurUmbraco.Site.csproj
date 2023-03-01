@@ -1875,7 +1875,6 @@
     <Content Include="xslt\rss-help.xslt" />
     <Content Include="xslt\TestXsltExtension.xslt" />
     <Content Include="xslt\_PaginationHelper.xslt" />
-    <None Include="web.vsts.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="config\splashes\noNodes.aspx" />
