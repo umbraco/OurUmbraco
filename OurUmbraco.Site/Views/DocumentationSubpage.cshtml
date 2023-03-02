@@ -27,6 +27,7 @@
     }
 }
 @section SeoMetaData {
+	<meta name="robots" content="noindex">
     @if (currentDocVersion != null)
     {
         if (currentDocVersion.MetaTitle != null)
@@ -88,7 +89,6 @@
             @Model.Content.Name - our.umbraco.com
         </title>
         <meta name="description" content="">
-        <meta name="robots" content="noindex">
     }
     
     @if (documentedRedirectLink != null)
