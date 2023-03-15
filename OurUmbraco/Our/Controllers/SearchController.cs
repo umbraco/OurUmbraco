@@ -18,25 +18,30 @@ namespace OurUmbraco.Our.Controllers
             if (string.IsNullOrEmpty(q))
                 q = string.Empty;
 
-            // If first 10 characters contain Chinese, drop the query
-            // This in response to a new attack that brings down the server
-            var numberOfCharacters = 10;
-            if(q.Length < 10) 
-            {
-                numberOfCharacters = q.Length;
-            }
-            var firstCharacters = q.Substring(0, numberOfCharacters);
-            if (firstCharacters.Any(character => character.IsChinese()))
-                q = string.Empty;
-
             if (q.StartsWith("duplicate content") && q.Contains("SELECT"))
+            {
                 q = string.Empty;
-            
+            } 
             // A particular SQL injection attack uses this query which takes very long to process, turning it into and easy DOS attack
-            // /search?q=999999.9' /**/uNiOn/**/aLl /**/sElEcT 0x393133353134353632312e39,0x393133353134353632322e39,0x393133353134353632332e39,0x393133353134353632342e39,0x393133353134353632352e39,0x393133353134353632362e39,0x393133353134353632372e39,0x393133353134353632382e39,0x393133353134353632392e39,0x39313335313435363231302e39,0x39313335313435363231312e39,0x39313335313435363231322e39,0x39313335313435363231332e39,0x39313335313435363231342e39,0x39313335313435363231352e39 and '0'='0-- 
-            if (q.Contains("999999.9'") || q.Contains("0x393133353134353632392e39"))
+            // /search?q=999999.9' /**/uNiOn/**/aLl /**/sElEcT 0x393133353134353632312e39,0x393133353134353632322e39,0x393133353134353632332e39,0x393133353134353632342e39,0x393133353134353632352e39,0x393133353134353632362e39,0x393133353134353632372e39,0x393133353134353632382e39,0x393133353134353632392e39,0x39313335313435363231302e39,0x39313335313435363231312e39,0x39313335313435363231322e39,0x39313335313435363231332e39,0x39313335313435363231342e39,0x39313335313435363231352e39 and '0'='0--
+            else if (q.Contains("999999.9'") || q.Contains("0x393133353134353632392e39"))
+            {
                 q = string.Empty;
-
+            } 
+            else 
+            {
+                // If first 10 characters contain Chinese, drop the query
+                // This in response to a new attack that brings down the server
+                var numberOfCharacters = 10;
+                if(q.Length < 10) 
+                {
+                    numberOfCharacters = q.Length;
+                }
+                var firstCharacters = q.Substring(0, numberOfCharacters);
+                if (firstCharacters.Any(character => character.IsChinese()))
+                    q = string.Empty;
+            }
+            
             var umbracoPage = this.CurrentPage;
 
             var nodeTypeAlias = cat;
