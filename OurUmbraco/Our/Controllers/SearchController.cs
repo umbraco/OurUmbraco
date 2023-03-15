@@ -18,7 +18,11 @@ namespace OurUmbraco.Our.Controllers
             if (string.IsNullOrEmpty(q))
                 q = string.Empty;
 
-            if (q.StartsWith("duplicate content") && q.Contains("SELECT"))
+            if (q.Length > 500)
+            {
+                q = q.Substring(0, 500);
+            }
+            else if (q.StartsWith("duplicate content") && q.Contains("SELECT"))
             {
                 q = string.Empty;
             } 
