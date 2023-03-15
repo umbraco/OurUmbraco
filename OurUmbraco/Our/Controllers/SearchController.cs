@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using Examine.SearchCriteria;
 using OurUmbraco.Our.Examine;
+using OurUmbraco.Our.Extensions;
 using OurUmbraco.Our.Models;
-using Umbraco.Web;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Our.Controllers
@@ -15,6 +16,17 @@ namespace OurUmbraco.Our.Controllers
         {
             // If no search string specified, use a blank one to prevent null exceptions.
             if (string.IsNullOrEmpty(q))
+                q = string.Empty;
+
+            // If first 10 characters contain Chinese, drop the query
+            // This in response to a new attack that brings down the server
+            var numberOfCharacters = 10;
+            if(q.Length < 10) 
+            {
+                numberOfCharacters = q.Length;
+            }
+            var firstCharacters = q.Substring(0, numberOfCharacters);
+            if (firstCharacters.Any(character => character.IsChinese()))
                 q = string.Empty;
 
             if (q.StartsWith("duplicate content") && q.Contains("SELECT"))

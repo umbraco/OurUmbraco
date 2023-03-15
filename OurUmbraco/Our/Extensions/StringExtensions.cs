@@ -134,6 +134,13 @@ namespace OurUmbraco.Our.Extensions
             var firstPrDate = new DateTime(firstPrYear, firstPrMonth, 01);
             return firstPrDate;
         }
+        
+        
+        private static readonly Regex ChineseCharRegex = new Regex(@"\p{IsCJKUnifiedIdeographs}");
+        public static bool IsChinese(this char c)
+        {
+            return ChineseCharRegex.IsMatch(c.ToString());
+        }
     }
 
     public class Badge
