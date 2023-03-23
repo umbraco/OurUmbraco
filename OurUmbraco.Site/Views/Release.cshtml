@@ -45,7 +45,12 @@
             release.ReleaseDate = overrideReleaseDate;
         }
     }
-    var releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
+	
+	if(release.ReleaseStatus != null) 
+	{
+		var releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
+	}
+	
     var rcPostfix = releaseContent.GetPropertyValue<string>("ReleaseCandidatePostfix");
     if (releaseCandidateText != null && string.IsNullOrWhiteSpace(rcPostfix) == false)
     {

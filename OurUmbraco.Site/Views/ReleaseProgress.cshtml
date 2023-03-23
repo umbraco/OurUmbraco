@@ -88,7 +88,7 @@
                                     <div class="row explain">
                                         <div class="col-xs-12">
                                             <h4 class="text-right"><a href="@Url.GetReleaseUrl(release)">v@(release.Version)</a></h4>
-                                            @if (release.ReleaseStatus.ToString() == "RC")
+                                            @if (release.ReleaseStatus != null && release.ReleaseStatus.ToString() == "RC")
                                             {
                                                 <small><em>Release candidate available</em></small>
                                             }
