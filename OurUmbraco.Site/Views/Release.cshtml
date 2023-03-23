@@ -46,9 +46,10 @@
         }
     }
 	
+	var releaseCandidateText = string.Empty;
 	if(release.ReleaseStatus != null) 
 	{
-		var releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
+		releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
 	}
 	
     var rcPostfix = releaseContent.GetPropertyValue<string>("ReleaseCandidatePostfix");
