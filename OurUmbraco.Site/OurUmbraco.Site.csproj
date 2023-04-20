@@ -4462,7 +4462,6 @@
     <Content Include="Views\Partials\Home\Documentation.cshtml" />
     <Content Include="Views\Partials\Members\Login.cshtml" />
     <Content Include="Views\Partials\Members\ForgotPassword.cshtml" />
-    <Content Include="Views\Partials\Home\TwitterSearchUmbraco.cshtml" />
     <Content Include="Views\Projects.cshtml" />
     <Content Include="Views\Project.cshtml" />
     <Content Include="Views\DocumentationMainpage.cshtml" />
@@ -4515,7 +4514,6 @@
     <Content Include="Views\CommunityKarma.cshtml" />
     <Content Include="Views\CommunityTweets.cshtml" />
     <Content Include="Views\CommunityMeetups.cshtml" />
-    <Content Include="Views\Partials\Community\Twitter.cshtml" />
     <Content Include="Views\CommunityMvps.cshtml" />
     <Content Include="Views\Partials\Community\MVPs.cshtml" />
     <Content Include="Views\Videos.cshtml" />

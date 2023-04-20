@@ -60,7 +60,6 @@
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
-    @TwitterSearch()
     @Html.Partial("home/documentation")
 }
 else
@@ -69,7 +68,6 @@ else
     @ForumActivity()
     @Meetups()
     @GitHubContributors()
-    @TwitterSearch()
 }
 
 @helper ForumActivity()
@@ -99,40 +97,6 @@ else
 
                     <div class="col-md-12 goto-forum">
                         <a class="button green" href="/forum">Go to Forum &rarr;</a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-}
-
-@helper TwitterSearch()
-    {
-        <section class="forum">
-            <div class="container">
-                <div class="row">
-
-                    <div class="col-md-12">
-                        <h1 class="text-center">Twitter Activity</h1>
-                        <p>
-                            Recent activity on twitter, where people are talking about Umbraco.
-                        </p>
-                    </div>
-                    <div class="col-md-12">
-                        <small>Recent tweets</small>
-                    </div>
-
-                    <div class="col-md-12 flex" id="twitter-search">
-                        <h2>Loading twitter search results...</h2>
-                        <ul class="umb-load-indicator animated -half-second">
-                            <li class="umb-load-indicator__bubble"></li>
-                            <li class="umb-load-indicator__bubble"></li>
-                            <li class="umb-load-indicator__bubble"></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-12 goto-forum">
-                        <a class="button green" href="https://twitter.com/search?f=tweets&vertical=default&q=umbraco&src=typd" target="_blank" rel="noreferrer noopener">Join the conversation on Twitter &rarr;</a>
                     </div>
 
                 </div>

@@ -5,58 +5,5 @@
 @using umbraco.MacroEngines
 @inherits DynamicNodeContext
 @{
-    var configProperty = Model.AncestorOrSelf(1).uTwit;
-    if (configProperty.GetType() != typeof(DynamicNull))
-    {
-        var config = uTwit.DeserializeValue(configProperty);
-        var tweets = uTwit.SearchTweets(config, "umbraco", 30);
-        
-        var filterWords = "umbraco.vogue.it,umbraco.vanityfair.it".Split(',');
-        var filterAccounts = "VanityFairIt".Split(',');
-
-        var tweetsList = new List<Status>();
-        foreach (Status status in tweets)
-        {
-            tweetsList.Add(status);
-        }
-            
-        foreach (Status tweet in tweets)
-        {
-            var status = tweet;
-            
-            foreach (var filterWord in filterWords.Where(filterWord => status.LinkifiedText.ToString().Contains(filterWord)))
-            {
-                tweetsList.Remove(tweet);
-            }
-
-            foreach (var filterAccount in filterAccounts.Where(filterAccount => status.User.ScreenName == filterAccount))
-            {
-                tweetsList.Remove(tweet);
-            }
-        }
-
-        foreach (Status tweet in tweetsList.OrderByDescending(x => x.CreatedAt).Take(5))
-        {
-            <ul class="twitter summary">
-                <li>
-                    <small>@tweet.LinkifiedText</small><br />
-                    <a href="@tweet.PermalinkUrl" style="display: inline">@@@tweet.User.ScreenName</a> <small>(@ProperCase(tweet.User.Name), @uTwit.FormatDate(tweet.CreatedAt) ago)</small>
-                </li>
-            </ul>
-        }
-    }
-}
-    
-@helper ProperCase(string stringToFormat)
-{
-    // Check if we have a string to format
-    if (string.IsNullOrEmpty(stringToFormat))
-    {
-        return;
-    }
-    
-    // Format the string to Proper Case
-    var cultureInfo = Thread.CurrentThread.CurrentCulture;
-    var textInfo = cultureInfo.TextInfo;
-    @textInfo.ToTitleCase(stringToFormat.ToLower())
+    return null;
 }   

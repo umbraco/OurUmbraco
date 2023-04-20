@@ -13,13 +13,7 @@
         } catch (banners) {
             console.log("Couldn't load banners ", banners.message);
         }
-
-        try {
-            $("#twitter-search").load("@Url.Action("TwitterSearchResult", "TwitterSearch", new {numberOfResults = 6})");
-        } catch (errTwitter) {
-            console.log("Couldn't load Twitter feed", errTwitter.message);
-        }
-
+        
         try {
             $("#meetups").load("@Url.Action("GetEvents", "Meetups")");
         }
