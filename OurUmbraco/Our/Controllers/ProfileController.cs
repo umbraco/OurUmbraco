@@ -386,6 +386,7 @@ namespace OurUmbraco.Our.Controllers
             mem.Name = model.Name ;
             mem.Email = model.Email;
             mem.Username = model.Email;
+            mem.SetValue("twitter", model.TwitterAlias);
             mem.SetValue("profileText",model.Bio);
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
