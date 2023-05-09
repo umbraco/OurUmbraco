@@ -391,9 +391,8 @@ namespace OurUmbraco.Our.Controllers
              * and don't save the handle with a preceding @
              */
             if (!string.IsNullOrWhiteSpace(twitterAlias))
-			{
+	    {
                 twitterAlias = ExtractTwitterHandle(twitterAlias);
-
             }
             
             mem.Name = model.Name ;
