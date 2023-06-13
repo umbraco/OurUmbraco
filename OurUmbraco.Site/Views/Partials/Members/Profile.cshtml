@@ -134,6 +134,11 @@
                 @Html.TextBoxFor(m => m.Email)
             </div>
 
+            <div class="profile-input" id="twitter">
+                @Html.LabelFor(m => m.TwitterAlias)
+                @Html.TextBoxFor(m => m.TwitterAlias)
+            </div>
+
             <div class="profile-input" id="password">
                 @Html.LabelFor(m => m.Password)
                 @Html.PasswordFor(m => m.Password, new { @class = "password-input" })

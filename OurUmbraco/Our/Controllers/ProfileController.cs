@@ -382,10 +382,23 @@ namespace OurUmbraco.Our.Controllers
                 ModelState.AddModelError("RepeatPassword", "Passwords need to match");
                 return CurrentUmbracoPage();
             }
+
+            var twitterAlias = model.TwitterAlias;
+
+            /*
+             * ensure we save just the user's Twitter handle
+             * and don't save any Twitter URLs
+             * and don't save the handle with a preceding @
+             */
+            if (!string.IsNullOrWhiteSpace(twitterAlias))
+	    {
+                twitterAlias = ExtractTwitterHandle(twitterAlias);
+            }
             
             mem.Name = model.Name ;
             mem.Email = model.Email;
             mem.Username = model.Email;
+            mem.SetValue("twitter", twitterAlias);
             mem.SetValue("profileText",model.Bio);
             mem.SetValue("location",model.Location);
             mem.SetValue("company",model.Company);
@@ -431,6 +444,17 @@ namespace OurUmbraco.Our.Controllers
             result.Content = sb.ToString();
             return result;
 
+        }
+
+        private static string ExtractTwitterHandle(string handle)
+        {
+            // Remove the "https://twitter.com/" prefix from the URL, if present.
+            handle = handle.TrimStart("https://twitter.com/");
+
+            // Remove the "@" symbol from the beginning of the handle, if present.
+            handle = handle.TrimStart('@');
+
+            return handle;
         }
 
     }
