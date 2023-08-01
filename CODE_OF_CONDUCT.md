@@ -55,7 +55,7 @@ Instances of abusive, harassing, or otherwise unacceptable behavior, may be repo
 Or alternatively, you can reach out directly to any of the team members behind the address above:  
 
 * Sebastiaan Janssen (He, Him - Languages spoken: English, Dutch, Danish(Read)) [sebastiaan@umbraco.com](mailto:sebastiaan@umbraco.com)
-* Steffie Limère Fugl (She, Her - Languages spoken: English, Danish, Flemish) [slf@umbraco.com](mailto:slf@umbraco.com )
+* Steffie Lim&egrave;re Fugl (She, Her - Languages spoken: English, Danish, Flemish) [slf@umbraco.com](mailto:slf@umbraco.com )
 * Emma Burstow (She, Her - Languages spoken: English) [ema@umbraco.com](mailto:ema@umbraco.com)
 
 The review process is done with full respect for the privacy and security of the reporter of any incident.  
