@@ -1,9 +1,9 @@
-﻿@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
+@inherits Umbraco.Web.Mvc.UmbracoTemplatePage
 @using Umbraco.Core.Cache
 @{
     Layout = "Master.cshtml";
 
-    const string url = "https://raw.githubusercontent.com/umbraco/.github/main/.github/CODE_OF_CONDUCT.md";
+    const string url = "https://raw.githubusercontent.com/umbraco/OurUmbraco/main/CODE_OF_CONDUCT.md";
     var html = GetGitHubCodeOfConduct(url);
 }
 
@@ -28,14 +28,16 @@
     {
         try
         {
-            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<string>("GitHubCodeOfConduct", () =>
+            return ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem<string>("CodeOfConductGitHub", () =>
             {
                 string markdownContent;
                 using (var client = new WebClient())
                 {
                     markdownContent = client.DownloadString(url);
                 }
-                return Markdig.Markdown.ToHtml(markdownContent);
+                var html = Markdig.Markdown.ToHtml(markdownContent);
+                html = html.Replace("Ã¨", "&egrave;");
+                return html;
             }, TimeSpan.FromHours(1));
         }
         catch (Exception e)
