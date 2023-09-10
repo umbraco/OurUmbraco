@@ -332,6 +332,15 @@
       "rss": "https://24days.in/umbraco-cms/feed/",
       "logo": "https://24days.in/media/or0ki5ok/24days2022.png?width=100&rnd=133143344855170000",
       "memberId": null
-    }	  
+    },
+    {
+      "id": "d114dc9870c7465faa08ac8e76fafcd6",
+      "checkTitles": false,
+      "title": "Joe Glombek",
+      "url": "https://joe.gl/ombek/blog",
+      "rss": "https://joe.gl/ombek/blog/rss",
+      "logo": "https://2.gravatar.com/avatar/6e03aef14c3e69d4e14b111b10d480a70ecc5a60a7dd5975472a68c06f5b48e8?size=256",
+      "memberId": 154765
+    }
   ]
 }
