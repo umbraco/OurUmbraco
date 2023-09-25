@@ -350,6 +350,15 @@
       "rss": "https://joe.gl/ombek/blog/rss",
       "logo": "https://2.gravatar.com/avatar/6e03aef14c3e69d4e14b111b10d480a70ecc5a60a7dd5975472a68c06f5b48e8?size=256",
       "memberId": 154765
-    }
+    },
+    {
+      "id": "efae9ea4-0feb-471c-8d58-3bb977e632ab",
+      "checkTitles": true,
+      "title": "Andy Butland",
+      "url": "https://www.andybutland.dev/",
+      "rss": "https://www.andybutland.dev/feeds/posts/default?alt=rss",
+      "logo": "https://avatars.githubusercontent.com/u/1993459",
+      "memberId": 6683
+    }	  
   ]
 }
