@@ -309,12 +309,21 @@
     {
       "id": "6671815b-18c5-4255-a1c8-92f7add6049a",
       "checkTitles": false,
-      "title": "Cultiv Blog",
+      "title": "Cultiv Blog (dev.to)",
       "url": "https://dev.to/cultiv",
       "rss": "https://dev.to/feed/cultiv",
       "logo": "https://github.com/nul800sebastiaan.png",
       "memberId": 4576
     },
+    {
+      "id": "1a8dcb24-d6ca-4c4b-a55e-9ccac372b62b",
+      "checkTitles": false,
+      "title": "Cultiv Blog",
+      "url": "https://cultiv.nl",
+      "rss": "https://cultiv.nl/?altTemplate=blogRss",
+      "logo": "https://github.com/nul800sebastiaan.png",
+      "memberId": 4576
+    },	  
     {
       "id": "2c812506-4068-40f4-891d-a0a22864b076",
       "checkTitles": false,
