@@ -359,6 +359,15 @@
       "rss": "https://www.andybutland.dev/feeds/posts/default?alt=rss",
       "logo": "https://avatars.githubusercontent.com/u/1993459",
       "memberId": 6683
-    }	  
+    },
+    {
+      "id": "fc7ded60-4494-441f-8916-3185d0571157",
+      "checkTitles": false,
+      "title": "MCB Blog",
+      "url": "https://blog.mcb.dk/tag/umbraco",
+      "rss": "https://blog.mcb.dk/en/tag/umbraco/rss.xml",
+      "logo": "https://avatars.githubusercontent.com/u/7870099?s=2568",
+      "memberId": null
+    }
   ]
 }
