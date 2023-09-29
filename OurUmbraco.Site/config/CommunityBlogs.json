@@ -368,6 +368,15 @@
       "rss": "https://blog.mcb.dk/en/tag/umbraco/rss.xml",
       "logo": "https://avatars.githubusercontent.com/u/7870099?s=256",
       "memberId": null
-    }
+    },
+    {
+      "id": "56f32f38-f457-42b6-a660-5755773e68ac",
+      "checkTitles": true,
+      "title": "Thomas Morris",
+      "url": "https://mozzy.dev/",
+      "rss": "https://mozzy.dev/feed.xml",
+      "logo": "https://avatars.githubusercontent.com/u/2123628",
+      "memberId": 67962
+    },
   ]
 }
