@@ -12,16 +12,18 @@ namespace OurUmbraco.Community.Mastodon
     {
         public List<MastodonStatus> GetStatuses(int limit, string maxId = null)
         {
+            var cacheKey = "MastodonPosts" + limit;
+            
             return (List<MastodonStatus>)Umbraco.Core.ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
-                "MastodonPosts",
+                cacheKey,
                 () =>
                 {
-                    var mastodon = MastodonHttpService.CreateFromDomain("umbracocommunity.social");
+                    var mastodon = MastodonHttpService.CreateFromDomain("mastodon.social");
                     var options = new MastodonGetHashtagTimelineOptions
                     {
                         Hashtag = "umbraco",
                         Limit = limit,
-                        Local = true
+                        Local = false
                     };
 
                     try

@@ -184,8 +184,8 @@ else
 
 @helper MastodonSearch() 
 {
-    var twitterService = new MastodonService();
-    var result = twitterService.GetStatuses(20);
+    var mastodonService = new MastodonService();
+    var result = mastodonService.GetStatuses(20);
 
     if (result != null && result.Any())
     {
