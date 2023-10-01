@@ -1,6 +1,8 @@
 ﻿@using System.Configuration
+@using OurUmbraco.Community.Mastodon
 @using OurUmbraco.Our
 @using OurUmbraco.Our.Models
+@using Skybrud.Social.Mastodon.Models.Statuses
 @inherits OurUmbracoTemplatePage
 @{
     var globalNotificationText = Model.Content.GetPropertyValue<string>("mainNotification");
@@ -58,6 +60,7 @@
 @if (Members.IsLoggedIn())
 {
     @ForumActivity()
+    @MastodonSearch()
     @Meetups()
     @GitHubContributors()
     @Html.Partial("home/documentation")
@@ -66,6 +69,7 @@ else
 {
     @Html.Partial("home/documentation")
     @ForumActivity()
+    @MastodonSearch()
     @Meetups()
     @GitHubContributors()
 }
@@ -176,4 +180,55 @@ else
                 </div>
             </div>
         </section>
+}
+
+@helper MastodonSearch() 
+{
+    var twitterService = new MastodonService();
+    var result = twitterService.GetStatuses(20);
+
+    if (result != null && result.Any())
+    {
+        <section class="forum">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-md-12">
+                        <h1 class="text-center">Mastodon Activity</h1>
+                        <p>
+                            Recent activity on Mastodon, where people are talking about Umbraco.
+                        </p>
+                    </div>
+                    <div class="col-md-12">
+                        <small>Recent posts</small>
+                    </div>
+
+                    <div class="col-md-12 flex" id="twitter-search">
+                       @foreach(var status in result.Take(10))
+                       {
+                          <a href="@status.Url" class="forum-thread" target="_blank" rel="noreferrer noopener">
+                   
+                               <div class="avatar">
+                                   <img src="@status.Account.Avatar">
+                               </div>
+                   
+                               <div class="meta">
+                                   <div class="forum-thread-text">
+                                       <h3>@Umbraco.Truncate(Umbraco.StripHtml(status.Content), length: 200, addElipsis: true)</h3>
+                                       <p>by @@@status.Account.DisplayName at @status.CreatedAt.ToString("ddd, dd MMM yyy HH:mm ")</p>
+                                   </div>
+                               </div>
+                           </a>
+                       }
+                       
+                    </div>
+
+                    <div class="col-md-12 goto-forum">
+                        <a class="button green" href="https://umbracocommunity.social/tags/umbraco" target="_blank" rel="noreferrer noopener">Join the conversation on Mastodon &rarr;</a>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    }
 }

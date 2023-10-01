@@ -64,15 +64,6 @@
       "memberId": 30373
     },
     {
-      "id": "F0E727E8-4745-47EA-B75A-BE86661F9349",
-      "checkTitles": false,
-      "title": "Paul Aikman",
-      "url": "https://www.paulaikman.co.uk/",
-      "rss": "https://www.paulaikman.co.uk/rss/",
-      "logo": "https://www.paulaikman.co.uk/content/images/2017/12/logo.jpg",
-      "memberId": 49943
-    },
-    {
       "id": "E325DF68-908E-41A9-AB29-16C66A2D32E7",
       "checkTitles": false,
       "title": "Vizioz",
@@ -84,9 +75,9 @@
     {
       "id": "C50E6041-BC06-4D2E-9A08-E21E6A8CF23C",
       "checkTitles": false,
-      "title": "Creative Web Specialist",
-      "url": "https://creativewebspecialist.co.uk",
-      "rss": "https://creativewebspecialist.co.uk/feed/",
+      "title": "Hack Make Do - Warren Buckley",
+      "url": "https://blog.hackmakedo.co",
+      "rss": "https://blog.hackmakedo.com/tag/umbraco/feed/",
       "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g",
       "memberId": 1175
     },
@@ -285,7 +276,7 @@
       "title": "Michaels uGarage",
       "url": "https://michaels-ugarage.cyber-solutions.at",
       "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
-      "logo": "https://michaels-ugarage.cyber-solutions.at/img/logos/logo.png",
+      "logo": "https://michaels-ugarage.cyber-solutions.at/media/v4lbwrd2/logo.png",
       "memberId": 286196
     },
     {
@@ -377,6 +368,14 @@
       "rss": "https://www.rachelbreeze.dev/blogs/rss.xml",
       "logo": "https://www.rachelbreeze.dev/media/pvhhgpma/rpb5tz78_400x400-1.jpg",
       "memberId": 273751
+    },
+      "id": "56f32f38-f457-42b6-a660-5755773e68ac",
+      "checkTitles": true,
+      "title": "Thomas Morris",
+      "url": "https://mozzy.dev/",
+      "rss": "https://mozzy.dev/feed.xml",
+      "logo": "https://avatars.githubusercontent.com/u/2123628",
+      "memberId": 67962
     }
   ]
 }
