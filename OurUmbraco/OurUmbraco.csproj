@@ -278,11 +278,11 @@
     <Reference Include="Semver, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\semver.1.1.2\lib\net451\Semver.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Essentials, Version=1.1.37.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Essentials.1.1.37\lib\net48\Skybrud.Essentials.dll</HintPath>
+    <Reference Include="Skybrud.Essentials, Version=1.1.47.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Essentials.1.1.47\lib\net48\Skybrud.Essentials.dll</HintPath>
     </Reference>
-    <Reference Include="Skybrud.Essentials.Http, Version=1.0.16.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\Skybrud.Essentials.Http.1.0.16\lib\net47\Skybrud.Essentials.Http.dll</HintPath>
+    <Reference Include="Skybrud.Essentials.Http, Version=1.1.4.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Essentials.Http.1.1.4\lib\net47\Skybrud.Essentials.Http.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Core, Version=1.0.11.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Skybrud.Social.Core.1.0.11\lib\net47\Skybrud.Social.Core.dll</HintPath>
@@ -293,6 +293,9 @@
     </Reference>
     <Reference Include="Skybrud.Social.Google, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Skybrud.Social.Google.1.0.0-beta004\lib\net46\Skybrud.Social.Google.dll</HintPath>
+    </Reference>
+    <Reference Include="Skybrud.Social.Mastodon, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Skybrud.Social.Mastodon.1.0.0-alpha002\lib\netstandard2.0\Skybrud.Social.Mastodon.dll</HintPath>
     </Reference>
     <Reference Include="Skybrud.Social.Meetup, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Skybrud.Social.Meetup.1.0.0-beta005\lib\net47\Skybrud.Social.Meetup.dll</HintPath>
@@ -629,6 +632,7 @@
     <Compile Include="Community\Controllers\Http\MeetupController.cs" />
     <Compile Include="Community\GitHub\UsersService.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
+    <Compile Include="Community\Mastodon\MastodonService.cs" />
     <Compile Include="Community\Meetup\CosmosService.cs" />
     <Compile Include="Community\Meetup\Models\OurMeetupGroup.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />

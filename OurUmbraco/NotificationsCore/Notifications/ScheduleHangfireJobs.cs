@@ -4,6 +4,7 @@ using Hangfire.Server;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Karma;
+using OurUmbraco.Community.Mastodon;
 using OurUmbraco.Community.Meetup;
 using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.Videos;
@@ -179,6 +180,11 @@ namespace OurUmbraco.NotificationsCore.Notifications
         {
             var staticApiDocumentationService = new StaticApiDocumentationService();
             RecurringJob.AddOrUpdate(() => staticApiDocumentationService.FetchNewApiDocs(context), Cron.MinuteInterval(5));
+        }
+        public void FetchMastodonPosts(PerformContext context)
+        {
+            var mastodonService = new MastodonService();
+            RecurringJob.AddOrUpdate(() => mastodonService.GetStatuses(20, null), Cron.MinuteInterval(2));
         }
     }
 }
