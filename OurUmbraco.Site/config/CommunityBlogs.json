@@ -368,6 +368,15 @@
       "rss": "https://blog.mcb.dk/en/tag/umbraco/rss.xml",
       "logo": "https://avatars.githubusercontent.com/u/7870099?s=256",
       "memberId": null
+    },
+    {
+      "id": "2f772162-582b-481b-b18e-e4ae78e084f9",
+      "checkTitles": false,
+      "title": "Rachel Breeze",
+      "url": "https://www.rachelbreeze.dev/",
+      "rss": "https://www.rachelbreeze.dev/blogs/rss.xml",
+      "logo": "https://www.rachelbreeze.dev/media/pvhhgpma/rpb5tz78_400x400-1.jpg",
+      "memberId": 273751
     }
   ]
 }
