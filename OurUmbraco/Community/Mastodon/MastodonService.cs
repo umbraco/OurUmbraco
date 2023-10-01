@@ -18,7 +18,7 @@ namespace OurUmbraco.Community.Mastodon
                 cacheKey,
                 () =>
                 {
-                    var mastodon = MastodonHttpService.CreateFromDomain("mastodon.social");
+                    var mastodon = MastodonHttpService.CreateFromDomain("umbracocommunity.social");
                     var options = new MastodonGetHashtagTimelineOptions
                     {
                         Hashtag = "umbraco",
