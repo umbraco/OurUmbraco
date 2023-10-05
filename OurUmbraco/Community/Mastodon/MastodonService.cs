@@ -10,7 +10,7 @@ namespace OurUmbraco.Community.Mastodon
 {
     public class MastodonService
     {
-        public List<MastodonStatus> GetStatuses(int limit, string maxId = null)
+        public List<MastodonStatus> GetStatuses(int limit)
         {
             var cacheKey = "MastodonPosts" + limit;
             

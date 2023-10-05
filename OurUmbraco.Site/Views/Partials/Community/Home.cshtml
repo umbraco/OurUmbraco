@@ -185,7 +185,7 @@ else
 @helper MastodonSearch() 
 {
     var mastodonService = new MastodonService();
-    var result = mastodonService.GetStatuses(20);
+    var result = mastodonService.GetStatuses(10);
 
     if (result != null && result.Any())
     {

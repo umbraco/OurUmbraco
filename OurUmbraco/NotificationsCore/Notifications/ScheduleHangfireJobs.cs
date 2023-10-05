@@ -184,7 +184,7 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void FetchMastodonPosts(PerformContext context)
         {
             var mastodonService = new MastodonService();
-            RecurringJob.AddOrUpdate(() => mastodonService.GetStatuses(20, null), Cron.MinuteInterval(2));
+            RecurringJob.AddOrUpdate(() => mastodonService.GetStatuses(10), Cron.MinuteInterval(2));
         }
     }
 }
