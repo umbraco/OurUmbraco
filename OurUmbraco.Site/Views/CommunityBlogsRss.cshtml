@@ -21,7 +21,7 @@
          <atom:link href="@selfUrl" rel="self" type="application/rss+xml" />
          <title>Community Blog Posts</title>
          @Html.Raw(string.Format("<link>{0}</link>", @baseUrl))
-         <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss zzz}", DateTime.Now)</pubDate>
+         <pubDate>@DateTime.Now.ToString("r")</pubDate>
          <generator>umbraco</generator>
          <description>Latest blog posts from the Umbraco commmunity</description>
          <language>en</language>
@@ -40,7 +40,7 @@
                  <description><![CDATA[@blogPost.Item.Description]]></description>
                 <content:encoded><![CDATA[@blogPost.Item.Description]]></content:encoded>
                  <dc:creator>@memberName</dc:creator>
-                 <pubDate>@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss}", blogPost.Item.PublishedDate)</pubDate>
+                 <pubDate>@blogPost.Item.PublishedDate.ToString("r")</pubDate>
              </item>
          }
      </channel>
