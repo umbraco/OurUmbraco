@@ -361,6 +361,14 @@
       "memberId": null
     },
     {
+      "id": "2f772162-582b-481b-b18e-e4ae78e084f9",
+      "checkTitles": false,
+      "title": "Rachel Breeze",
+      "url": "https://www.rachelbreeze.dev/",
+      "rss": "https://www.rachelbreeze.dev/blogs/rss.xml",
+      "logo": "https://www.rachelbreeze.dev/media/pvhhgpma/rpb5tz78_400x400-1.jpg",
+      "memberId": 273751
+    },
       "id": "56f32f38-f457-42b6-a660-5755773e68ac",
       "checkTitles": true,
       "title": "Thomas Morris",
@@ -368,6 +376,6 @@
       "rss": "https://mozzy.dev/feed.xml",
       "logo": "https://avatars.githubusercontent.com/u/2123628",
       "memberId": 67962
-    },
+    }
   ]
 }
