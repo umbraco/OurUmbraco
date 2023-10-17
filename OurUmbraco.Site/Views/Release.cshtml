@@ -430,7 +430,7 @@ dotnet run --project "MyProject"</pre>
                                         @if (release != null && release.FullVersion >= new Version(8, 7, 0) && release.CategorizedIssues != null)
                                         {
                                             foreach (var category in release.CategorizedIssues
-                                                .Where(x => x.Issues.Count != 0)
+                                                .Where(x => x.Issues.Count != 0  && x.Name != "Bellissima")
                                                 .OrderBy(x => x.Priority).ThenBy(x => x.Name)
                                                 .ToList())
                                             {
