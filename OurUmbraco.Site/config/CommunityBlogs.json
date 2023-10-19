@@ -377,6 +377,15 @@
       "rss": "https://mozzy.dev/feed.xml",
       "logo": "https://avatars.githubusercontent.com/u/2123628",
       "memberId": 67962
+    },
+    {
+      "id": "b48ff45f-9fef-4a78-9a8d-517f18ab1237",
+      "checkTitles": true,
+      "title": "Dennis",
+      "url": "https://dev.to/d_inventor",
+      "rss": "https://dev.to/feed/d_inventor",
+      "logo": "hthttps://avatars.githubusercontent.com/u/25585418",
+      "memberId": null
     }
   ]
 }
