@@ -386,6 +386,15 @@
       "rss": "https://dev.to/feed/d_inventor",
       "logo": "hthttps://avatars.githubusercontent.com/u/25585418",
       "memberId": null
+    },
+    {
+      "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
+      "checkTitles": true,
+      "title": "Corné Hoskam",
+      "url": "https://cornehoskam.com/",
+      "rss": "https://cornehoskam.com/rss?tag=umbraco",
+      "logo": "https://avatars.githubusercontent.com/u/6321978",
+      "memberId": 281913
     }
   ]
 }
