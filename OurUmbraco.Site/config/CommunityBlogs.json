@@ -395,6 +395,15 @@
       "rss": "https://codebuntes.entrah-net.co.uk/tag/umbraco/feed/",
       "logo": "https://codebuntes.entrah-net.co.uk/codebuntes_icon.jpg",
       "memberId": 339200
-    }	
+    },
+    {
+      "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
+      "checkTitles": true,
+      "title": "Corné Hoskam",
+      "url": "https://cornehoskam.com/",
+      "rss": "https://cornehoskam.com/rss?tag=umbraco",
+      "logo": "https://avatars.githubusercontent.com/u/6321978",
+      "memberId": 281913
+    }
   ]
 }
