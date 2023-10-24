@@ -185,8 +185,8 @@
       "checkTitles": false,
       "title": "Owain Codes",
       "url": "https://owain.codes/",
-      "rss": "https://owain.codes/rss",
-      "logo": "https://owain.codes/media/8d8b61b2c635655/owaincodeslogo_sml.png",
+      "rss": "https://owain.codes/rss?category=umbraco",
+      "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
       "memberId": 144571
     },	
     {
@@ -384,8 +384,17 @@
       "title": "Dennis",
       "url": "https://dev.to/d_inventor",
       "rss": "https://dev.to/feed/d_inventor",
-      "logo": "hthttps://avatars.githubusercontent.com/u/25585418",
+      "logo": "https://avatars.githubusercontent.com/u/25585418",
       "memberId": null
+    },
+    {
+      "id": "9c2b7e6a-c70b-48fe-9055-ff1cb1dcafee",
+      "checkTitles": false,
+      "title": "CodeBunTes Blog",
+      "url": "https://codebuntes.entrah-net.co.uk",
+      "rss": "https://codebuntes.entrah-net.co.uk/tag/umbraco/feed/",
+      "logo": "https://codebuntes.entrah-net.co.uk/codebuntes_icon.jpg",
+      "memberId": 339200
     },
     {
       "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
