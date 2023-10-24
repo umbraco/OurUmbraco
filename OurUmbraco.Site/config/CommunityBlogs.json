@@ -1,4 +1,4 @@
-﻿{
+{
   "blogs": [
     {
       "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
@@ -185,8 +185,8 @@
       "checkTitles": false,
       "title": "Owain Codes",
       "url": "https://owain.codes/",
-      "rss": "https://owain.codes/rss",
-      "logo": "https://owain.codes/media/8d8b61b2c635655/owaincodeslogo_sml.png",
+      "rss": "https://owain.codes/rss?category=umbraco",
+      "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
       "memberId": 144571
     },	
     {
@@ -386,6 +386,33 @@
       "rss": "https://umbhost.net/blog/feed.rss?category=umbraco",
       "logo": "https://pbs.twimg.com/profile_images/1610269225276391425/1rtXbJ5B_400x400.png",
       "memberId": 279599
+    },
+    {
+      "id": "b48ff45f-9fef-4a78-9a8d-517f18ab1237",
+      "checkTitles": true,
+      "title": "Dennis",
+      "url": "https://dev.to/d_inventor",
+      "rss": "https://dev.to/feed/d_inventor",
+      "logo": "https://avatars.githubusercontent.com/u/25585418",
+      "memberId": null
+    },
+    {
+      "id": "9c2b7e6a-c70b-48fe-9055-ff1cb1dcafee",
+      "checkTitles": false,
+      "title": "CodeBunTes Blog",
+      "url": "https://codebuntes.entrah-net.co.uk",
+      "rss": "https://codebuntes.entrah-net.co.uk/tag/umbraco/feed/",
+      "logo": "https://codebuntes.entrah-net.co.uk/codebuntes_icon.jpg",
+      "memberId": 339200
+    },
+    {
+      "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
+      "checkTitles": true,
+      "title": "Corné Hoskam",
+      "url": "https://cornehoskam.com/",
+      "rss": "https://cornehoskam.com/rss?tag=umbraco",
+      "logo": "https://avatars.githubusercontent.com/u/6321978",
+      "memberId": 281913
     }
   ]
 }
