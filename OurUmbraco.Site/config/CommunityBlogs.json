@@ -185,8 +185,8 @@
       "checkTitles": false,
       "title": "Owain Codes",
       "url": "https://owain.codes/",
-      "rss": "https://owain.codes/rss",
-      "logo": "https://owain.codes/media/8d8b61b2c635655/owaincodeslogo_sml.png",
+      "rss": "https://owain.codes/rss?category=umbraco",
+      "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
       "memberId": 144571
     },	
     {
