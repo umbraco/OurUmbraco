@@ -57,9 +57,9 @@ namespace OurUmbraco.Community.Meetup
                         Title = edgeNode.Title,
                         Description = edgeNode.Description,
                         Url = edgeNode.EventUrl,
-                        Latitude = edgeNode.Venue.Latitude,
-                        Longitude = edgeNode.Venue.Longitude,
-                        VenueName = edgeNode.Venue.Name,
+                        Latitude = edgeNode.Venue?.Latitude ?? default,
+                        Longitude = edgeNode.Venue?.Longitude ?? default,
+                        VenueName = edgeNode.Venue?.Name,
                         DateTime = edgeNode.DateTime
                     });
                 }
