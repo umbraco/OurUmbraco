@@ -1,4 +1,4 @@
-﻿{
+{
   "blogs": [
     {
       "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
@@ -377,6 +377,15 @@
       "rss": "https://mozzy.dev/feed.xml",
       "logo": "https://avatars.githubusercontent.com/u/2123628",
       "memberId": 67962
+    },
+    {
+      "id": "7a42e979-c9c1-410b-976d-d25cf3de3faf",
+      "checkTitles": false,
+      "title": "UmbHost",
+      "url": "https://umbhost.net/blog/umbraco",
+      "rss": "https://umbhost.net/blog/feed.rss?category=umbraco",
+      "logo": "https://pbs.twimg.com/profile_images/1610269225276391425/1rtXbJ5B_400x400.png",
+      "memberId": 279599
     },
     {
       "id": "b48ff45f-9fef-4a78-9a8d-517f18ab1237",
