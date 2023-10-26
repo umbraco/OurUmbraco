@@ -46,3 +46,10 @@ umbraco-ireland-meetup
 umbracymru
 wessex-umbraco
 umbraco-virtual
+east-midlands-umbraco-meetup
+umbraco-hq-hackathons-workshops-and-more
+umbraco-newcastle-meetup
+turkiye-umbraco-user-group-kullanicilari-grubu
+umbraco-hq-us-meetup-group
+kerala-umbraco-community
+milton-keynes-surrounding-areas-umbraco-community
