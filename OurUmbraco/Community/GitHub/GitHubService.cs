@@ -297,6 +297,7 @@ namespace OurUmbraco.Community.GitHub
                 "rfcs",	
                 "organizer-guide",
                 "The-Starter-Kit",
+                "Umbraco.CMS.Backoffice",
                 "Umbraco.UI"
             };
         }
