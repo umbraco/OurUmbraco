@@ -98,6 +98,13 @@
     "InDashboard": false
   },
   {
+    "Alias": "Umbraco.CMS.Backoffice",
+    "Owner": "umbraco",
+    "Slug": "Umbraco.CMS.Backoffice",
+    "Name": "Umbraco.CMS.Backoffice",
+    "InDashboard": false
+  },
+  {
     "Alias": "Umbraco.UI",
     "Owner": "umbraco",
     "Slug": "Umbraco.UI",
