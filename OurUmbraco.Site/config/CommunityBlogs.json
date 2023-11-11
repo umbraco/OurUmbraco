@@ -413,6 +413,15 @@
       "rss": "https://cornehoskam.com/rss?tag=umbraco",
       "logo": "https://avatars.githubusercontent.com/u/6321978",
       "memberId": 281913
+    },
+    {
+      "id": "07db7839-b2fd-442e-9269-11e232626f40",
+      "checkTitles": false,
+      "title": "Owain Jones",
+      "url": "https://owainjones.dev/blog/",
+      "rss": "https://owainjones.dev/rss",
+      "logo": "https://avatars.githubusercontent.com/u/17008780",
+      "memberId": 280406
     }
   ]
 }
