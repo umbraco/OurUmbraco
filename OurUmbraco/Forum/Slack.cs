@@ -18,7 +18,8 @@ namespace OurUmbraco.Forum
 
                 try
                 {
-                    //Change SSL checks so that all checks pass
+                    ServicePointManager.Expect100Continue = true;                
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
                     
                     var webhookUrl = $"https://hooks.slack.com/services/{ConfigurationManager.AppSettings["SlackWebhookSecret"]}";
