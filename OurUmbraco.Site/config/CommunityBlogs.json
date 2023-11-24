@@ -413,6 +413,15 @@
       "rss": "https://owainjones.dev/rss",
       "logo": "https://avatars.githubusercontent.com/u/17008780",
       "memberId": 280406
+    },
+    {
+      "id": "084cfd95-bdb3-4f91-9e80-43fee9c8da01",
+      "checkTitles": false,
+      "title": "RichardSoeteman.NET",
+      "url": "https://richardsoeteman.net/",
+      "rss": "https://richardsoeteman.net/rss",
+      "logo": "https://avatars.githubusercontent.com/u/1543953",
+      "memberId": 2798
     }
   ]
 }
