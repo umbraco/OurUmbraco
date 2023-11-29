@@ -422,6 +422,15 @@
       "rss": "https://richardsoeteman.net/rss",
       "logo": "https://avatars.githubusercontent.com/u/1543953",
       "memberId": 2798
+    },
+    {
+      "id": "da76ff45-91fa-4f08-ac37-6524ea9f0c4c",
+      "checkTitles": false,
+      "title": "Johan Reitsma",
+      "url": "https://www.johanreitsma.com/",
+      "rss": "https://www.johanreitsma.com/rss",
+      "logo": "https://avatars.githubusercontent.com/u/107849834",
+      "memberId": 108757
     }
   ]
 }
