@@ -10,15 +10,6 @@
       "memberId": 2535
     },
     {
-      "id": "9e3bc5a8-06fe-4e56-b3b6-1be88a49a101",
-      "checkTitles": false,
-      "title": "Adolfi.dev Blog",
-      "url": "https://adolfi.dev",
-      "rss": "https://adolfi.dev/tags/umbraco/rss",
-      "logo": "https://adolfi.dev/media/8d8b63bb8e7c0aa/image-from-ios-5.jpg",
-      "memberId": 124117
-    },
-    {
       "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
       "checkTitles": false,
       "title": "Jacker.io Umbraco Articles",
