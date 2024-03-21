@@ -431,6 +431,15 @@
       "rss": "https://dev.to/feed/busrasengul/",
       "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png",
       "memberId": 276177
+    },
+    {
+      "id": "a5f40364-88c8-4bf5-a5a0-bf4648e12db2",
+      "checkTitles": false,
+      "title": "Lotte Pitcher",
+      "url": "https://dev.to/lottepitcher",
+      "rss": "https://dev.to/feed/lottepitcher",
+      "logo": "https://avatars.githubusercontent.com/u/4716542",
+      "memberId": 55687
     }
   ]
 }
