@@ -440,6 +440,15 @@
       "rss": "https://dev.to/feed/lottepitcher",
       "logo": "https://avatars.githubusercontent.com/u/4716542",
       "memberId": 55687
+    },
+    {
+      "id": "f8040db2-bcc2-4340-abb0-45c8c6c45099",
+      "checkTitles": false,
+      "title": "kjac",
+      "url": "https://kjac.dev/",
+      "rss": "https://kjac.dev/rss.xml",
+      "logo": "https://github.com/kjac.png",
+      "memberId": 25389
     }
   ]
 }
