@@ -449,6 +449,15 @@
       "rss": "https://kjac.dev/rss.xml",
       "logo": "https://github.com/kjac.png",
       "memberId": 25389
+    },
+    {
+      "id": "5f92f371-5bb5-4519-98b7-7b90a7cbd151",
+      "checkTitles": false,
+      "title": "Harry Gordon",
+      "url": "https://harrygordon.co.uk/",
+      "rss": "https://harrygordon.co.uk/rss.xml",
+      "logo": "https://harrygordon.co.uk/media/ud1pkpyc/me.png",
+      "memberId": 74802
     }
   ]
 }
