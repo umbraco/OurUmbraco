@@ -10,15 +10,6 @@
       "memberId": 2535
     },
     {
-      "id": "9e3bc5a8-06fe-4e56-b3b6-1be88a49a101",
-      "checkTitles": false,
-      "title": "Adolfi.dev Blog",
-      "url": "https://adolfi.dev",
-      "rss": "https://adolfi.dev/tags/umbraco/rss",
-      "logo": "https://adolfi.dev/media/8d8b63bb8e7c0aa/image-from-ios-5.jpg",
-      "memberId": 124117
-    },
-    {
       "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
       "checkTitles": false,
       "title": "Jacker.io Umbraco Articles",
@@ -413,6 +404,60 @@
       "rss": "https://owainjones.dev/rss",
       "logo": "https://avatars.githubusercontent.com/u/17008780",
       "memberId": 280406
+    },
+    {
+      "id": "084cfd95-bdb3-4f91-9e80-43fee9c8da01",
+      "checkTitles": false,
+      "title": "RichardSoeteman.NET",
+      "url": "https://richardsoeteman.net/",
+      "rss": "https://richardsoeteman.net/rss",
+      "logo": "https://avatars.githubusercontent.com/u/1543953",
+      "memberId": 2798
+    },
+    {
+      "id": "da76ff45-91fa-4f08-ac37-6524ea9f0c4c",
+      "checkTitles": false,
+      "title": "Johan Reitsma",
+      "url": "https://www.johanreitsma.com/",
+      "rss": "https://www.johanreitsma.com/rss",
+      "logo": "https://avatars.githubusercontent.com/u/107849834",
+      "memberId": 108757
+    },
+    {
+      "id": "d43914e4-a4a7-4d9f-a92a-50163e98e00c",
+      "checkTitles": false,
+      "title": "Busra Sengul",
+      "url": "https://dev.to/busrasengul",
+      "rss": "https://dev.to/feed/busrasengul/",
+      "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png",
+      "memberId": 276177
+    },
+    {
+      "id": "a5f40364-88c8-4bf5-a5a0-bf4648e12db2",
+      "checkTitles": false,
+      "title": "Lotte Pitcher",
+      "url": "https://dev.to/lottepitcher",
+      "rss": "https://dev.to/feed/lottepitcher",
+      "logo": "https://avatars.githubusercontent.com/u/4716542",
+      "memberId": 55687
+    },
+    {
+      "id": "f8040db2-bcc2-4340-abb0-45c8c6c45099",
+      "checkTitles": false,
+      "title": "kjac",
+      "url": "https://kjac.dev/",
+      "rss": "https://kjac.dev/rss.xml",
+      "logo": "https://github.com/kjac.png",
+      "memberId": 25389
+    },
+    {
+      "id": "5f92f371-5bb5-4519-98b7-7b90a7cbd151",
+      "checkTitles": false,
+      "title": "Harry Gordon",
+      "url": "https://harrygordon.co.uk/",
+      "rss": "https://harrygordon.co.uk/rss.xml",
+      "logo": "https://harrygordon.co.uk/media/ud1pkpyc/me.png",
+      "memberId": 74802
     }
   ]
 }

@@ -1,32 +1,43 @@
-﻿using System;
-using System.Configuration;
+﻿using System.Configuration;
 using System.Net;
-using Newtonsoft.Json;
-using umbraco.BusinessLogic;
+using System.Net.Http;
+using Umbraco.Core.Logging;
 
 namespace OurUmbraco.Forum
 {
     public class Slack
     {
-        internal void PostSlackMessage(string message)
+        public void PostSlackMessage(string message)
         {
-            var payload = JsonConvert.SerializeObject(new { text = message });
-            
-            using (var client = new WebClient())
-            {
-                client.Headers.Add(HttpRequestHeader.ContentType, "application/json");
+            var bearerToken = ConfigurationManager.AppSettings["CollabBearerToken"];
+            var url = ConfigurationManager.AppSettings["SlackRelayUrl"];
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            ServicePointManager.ServerCertificateValidationCallback = delegate { return true; };
 
-                try
+            try
+            {
+                using (var httpClient = new HttpClient())
                 {
-                    var webhookUrl = $"https://hooks.slack.com/services/{ConfigurationManager.AppSettings["SlackWebhookSecret"]}";
-                    client.UploadString(new Uri(webhookUrl), "POST", payload);
-                }
-                catch (WebException ex)
-                {
-                    var errorMessage = $"Posting update to Slack failed {ex.Message} {ex.StackTrace}";
-                    Log.Add(LogTypes.Error, new User(0), -1, errorMessage);
+                    httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {bearerToken}");
+
+                    var msg = new SlackPost { Message = message };
+                    var json = Newtonsoft.Json.JsonConvert.SerializeObject(msg);
+                    var httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+                    var response = httpClient.PostAsync(url, httpContent).Result;
+                    var responseMessage = response.Content.ReadAsStringAsync().Result;
+                    LogHelper.Debug<Slack>("Post to Slack resulted in: " + responseMessage);
                 }
             }
+            catch (WebException ex)
+            {
+                LogHelper.Error<Slack>("Posting update to Slack failed", ex);
+            }
+        }
+
+        private class SlackPost
+        {
+            public string Message { get; set; }
         }
     }
 }

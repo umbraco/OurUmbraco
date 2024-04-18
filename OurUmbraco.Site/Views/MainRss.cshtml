@@ -1,0 +1,5 @@
+﻿@inherits UmbracoTemplatePage
+@{
+    Response.Clear();
+    Response.ContentType = "application/rss+xml";
+}@Umbraco.RenderMacro(Model.Content.GetPropertyValue<string>("macro"))

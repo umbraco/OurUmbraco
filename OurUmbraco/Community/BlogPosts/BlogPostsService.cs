@@ -88,8 +88,8 @@ namespace OurUmbraco.Community.BlogPosts
                     {
                         var title = item.GetElementValue("title");
                         var link = (string.IsNullOrEmpty(item.GetElementValue("link"))
-                            ? item.GetElementValue("guid")
-                            : item.GetElementValue("link"))
+                            ? item.GetElementValue("guid").Split('?')[0]
+                            : item.GetElementValue("link").Split('?')[0])
                                 .Trim();
 
                         var pubDate = GetPublishDate(item);
