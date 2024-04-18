@@ -2,8 +2,6 @@
 @using OurUmbraco.Forum.Services
 @inherits Umbraco.Web.Macros.PartialViewMacroPage
 @{
-    Response.Clear();
-    Response.ContentType = "application/rss+xml";
     var baseUrl = string.Format("{0}://{1}", Request.Url.Scheme, Request.Url.Host);
     var selfUrl = string.Format("{0}://{1}{2}", Request.Url.Scheme, Request.Url.Host, Request.Url.PathAndQuery);
     int forumId;
