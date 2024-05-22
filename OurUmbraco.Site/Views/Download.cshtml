@@ -16,59 +16,113 @@
     <div class="container">
         <div class="row dl-content" style="margin-top: 60px;">
             <div class="col-md-6 col-padding">
-                <h2>Looking to try Umbraco?</h2>
-                <p class="download-teaser large-margin-bottom">
-                    Umbraco Cloud is the easiest and fastest way to use Umbraco yet with full support for all your custom .NET code
-                    and integrations. You're up and running in less than a minute and your life will be made easier with automated upgrades
-                    and a built-in deployment engine.
-                </p>
-
-                <div class="large-margin-bottom">
-                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/">Sign up on umbraco.com</a>
-                </div>
+                <h2>Looking to install Umbraco manually?</h2>
 
                 <p>
-                    Powered by Microsoft Azure. No credit card needed. Free 14 day trial.
+                    <a href="https://umbraco.com/products/knowledge-center/long-term-support-and-end-of-life/">Read more about Umbraco CMS and its LTS (long-time support) and end-of-life.</a>
                 </p>
 
-                <p>
-                    When you want to integrate custom .NET code, you can clone it to your local machine as it's all powered by Git and even
-                    comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
-                    of a button. See how it works:
-                </p>
+                <span style="text-transform: uppercase; font-weight: bold; padding: 6px 12px; border-radius: 6px; background-color: #f79c37; margin: 0 auto; display: table;">Recommended for most users</span>
+                <div style="border-radius: 10px; color: #1b264f; border: 2px solid; padding-top: 30px; padding-bottom: 20px; margin-bottom: 30px;">
+                    <span style="font-size: 2em; font-weight: bold; margin: 0 auto; display: table;">Umbraco 13 <span style="font-size: 0.5em; font-weight: bold; margin-left: 5px; padding-bottom: -10px; background-color: #f6f8fc; padding: 20px; border-radius: 10px; display: table; padding-top: 5px; padding-bottom: 30px; float: right; margin-top: -10px; padding-left: 15px; padding-right: 15px; "><abbr title="Long-term support">LTS</abbr></span></span>
+                    <span style="font-size: 1.3em; font-weight: bold; margin: 0 auto; display: table; padding: 20px 0;">.NET 8</span>
 
-                <div class="video video-element large-margin-bottom">
-                    <a href="/documentation/Umbraco-Cloud/Deployment/">
-                        <img src="https://our.umbraco.com/Assets/images/deploy-in-portal.gif" alt="See how Umbraco Cloud works"/>
-                    </a>
-                </div>
+                    <div class="large-margin-bottom">
+                        <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/" style="margin-left: auto; margin-right: auto; width: 50%; display: block; border-radius: 10px; background-color: #1b264f;">Show install guidance</a>
+                    </div>
+
+                    <span style="font-size: 1.2em; font-weight: normal; margin: 0 auto; display: table; padding: 5px 0; margin-top: -20px">Released: December 14, 2023</span>
+                </div>  
+                
+                <span style="text-transform: uppercase; font-weight: bold; padding: 6px 12px; border-radius: 6px; background-color: #f79c37; margin: 0 auto; display: table;">Latest features</span>
+                <div style="border-radius: 10px; color: #1b264f; border: 2px solid; padding-top: 30px; padding-bottom: 20px; margin-bottom: 30px;">
+                    <span style="font-size: 2em; font-weight: bold; margin: 0 auto; display: table;">Umbraco 14</span>
+                    <span style="font-size: 1.3em; font-weight: bold; margin: 0 auto; display: table; padding: 20px 0;">.NET 8</span>
+
+                    <div class="large-margin-bottom">
+                        <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/" style="margin-left: auto; margin-right: auto; width: 50%; display: block; border-radius: 10px; background-color: #1b264f;">Show install guidance</a>
+                    </div>
+
+                    <span style="font-size: 1.2em; font-weight: normal; margin: 0 auto; display: table; padding: 5px 0; margin-top: -20px">Released: May 30, 2024</span>
+                </div>  
+                <details style="cursor: pointer;">
+                    <summary style="margin-bottom: 20px;">Installing Umbraco 13, the <abbr title="Long-term support">LTS</abbr> version of Umbraco.</summary>
+                    <div style="margin-left: 18px;">
+                        <p>LTS stands for long-term support — which means three year of maintenance and security updates.</p>
+                        <p><em>Umbraco 13 will be receiving maintenance and security updates until <strong>December 14, 2026</strong>.</em></p>
+                        <p>
+                            We recommend <a class="download-link" href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install/install-umbraco-with-templates">using the .NET <abbr title="Command Line Interface">CLI</abbr> to start running Umbraco locally</a>.<br />
+                            If you have the latest dotnet SDK and runtime installed you should be able to get started with Umbraco like this:
+                        </p>
+                        <p class="large-margin-bottom">
+                            <span class="dotnet-nuget pre" style="font-size: 1rem; overflow: hidden; padding: 45px 35px;">
+                                dotnet new -i Umbraco.Templates::13.3.1<br />
+                                dotnet new umbraco -n "MyProject"<br />
+                                dotnet run --project "MyProject"<br />
+                            </span>
+                        </p>
+
+                        <p>Other options for installing Umbraco include:</p>
+                        <ul style="margin-left: 40px;">
+                            <li>Visual Studio</li>
+                            <li>Visual Studio Code</li>
+                            <li>Jetbrains Rider</li>
+                            <li>Linux/macOS</li>
+                        </ul>
+                        <br /><br />
+                        <p>Check out the documentation for <a href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install">other options for setting up Umbraco 13</a> locally.</p>
+                    </div>
+                </details>
+
+                <details style="cursor: pointer;">
+                    <summary>Installing the latest Umbraco, version 14, a <abbr title="Short-term support">STS</abbr> version of Umbraco.</summary>
+                    <div style="margin-left: 18px;">
+                        <p style="margin-top: 20px;">STS stands for short-term support — which means 1 year of maintenance and security updates.</p>
+                        <p><em>Umbraco 14 will be receiving maintenance and security updates until <strong>May 30, 2025</strong>.</em></p>
+                        <p>
+                            We recommend <a class="download-link" href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install/install-umbraco-with-templates">using the .NET <abbr title="Command Line Interface">CLI</abbr> to start running Umbraco locally</a>.<br />
+                            If you have the latest dotnet SDK and runtime installed you should be able to get started with Umbraco like this:
+                        </p>
+                        <p class="large-margin-bottom">
+                            <span class="dotnet-nuget pre" style="font-size: 1rem; overflow: hidden; padding: 45px 35px;">
+                                dotnet new -i Umbraco.Templates<br />
+                                dotnet new umbraco -n "MyProject"<br />
+                                dotnet run --project "MyProject"<br />
+                            </span>
+                        </p>
+
+                        <p>Other options for installing Umbraco include:</p>
+                        <ul style="margin-left: 40px;">
+                            <li>Visual Studio</li>
+                            <li>Visual Studio Code</li>
+                            <li>Jetbrains Rider</li>
+                            <li>Linux/macOS</li>
+                        </ul>
+                        <br /><br />
+                        <p>Check out the documentation for <a href="https://docs.umbraco.com/umbraco-cms/v/14.latest-lts/fundamentals/setup/install">other options for setting up Umbraco 14</a> locally.</p>
+                    </div>
+                </details>
+
+                <h3 style="font-size: 1.3em; font-weight: normal; margin-top: 80px; margin-bottom: 10px;">Other releases</h3>
+                <p class="download-teaser">
+                    See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
+                </p>
             </div>
 
             <!-- Download Umbraco Column -->
             <div class="col-md-6 col-padding">
-                <h2>Install Umbraco</h2>
+                <h2>Quick start on Umbraco Cloud</h2>
+
+                <p>Umbraco Cloud is the one-stop-shop for all your Umbraco needs - the fastest, easiest, and best way to work with the most advanced open-source .NET CMS.</p>
                 <p class="download-teaser large-margin-bottom">
-                    If you want to DIY you can install Umbraco via NuGet.
-                    It's the same version of Umbraco CMS that powers Umbraco cloud, but you'll need to find
-                    a place to host yourself and handling deployments and upgrades is all down to you.
+                    <img src="/images/umbraco-cloud-logo.png?height=250" alt="Illustration of a laptop with the Umbraco Cloud logo on the display" style="margin-left: auto; margin-right: auto; width: 50%; display: block;" />
                 </p>
-                <p>
-					We recommend <a class="download-link" href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install/install-umbraco-with-templates">using the .NET CLI to start running Umbraco locally</a>.<br />
-					If you have the latest dotnet SDK and runtime installed you should be able to get started with Umbraco like this:
-                    <p class="large-margin-bottom">
-                        <span class="dotnet-nuget pre" style="font-size: 1rem; overflow: hidden; padding: 45px 35px;">
-                            dotnet new install Umbraco.Templates<br/>
-							dotnet new umbraco -n MyProject<br />
-							dotnet run --project MyProject
-                        </span>
-                        <br /><br />Or check out <a href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install">all other options for setting up Umbraco</a> locally.
-                    </p>
-					
-					<h2>Releases</h2>
-					<p class="download-teaser">
-						See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
-					</p>
-                </p>
+                <p>Everything is installed, configured, and ready for development. Just click Create Project and in a few steps, Umbraco CMS is up and running.</p>
+                <div class="large-margin-bottom">
+                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/" style="margin-left: auto; margin-right: auto; width: 50%; display: block;" ">Sign up on umbraco.com</a>
+                </div>
+                <p>Powered by Microsoft Azure. <strong>No credit card needed.</strong> Free 14 day trial.</p>
+
             </div>
         </div>
     </div>
@@ -138,6 +192,23 @@
             });
 
         })();
+        // Fetch all the details element.
+        const details = document.querySelectorAll("details");
 
+        // Add the onclick listeners.
+        details.forEach((detail) => {
+            detail.addEventListener("toggle", () => {
+                if (detail.open) setTargetDetail(detail);
+            });
+        });
+
+        // Close all the details that are not targetDetail.
+        function setTargetDetail(targetDetail) {
+            details.forEach((detail) => {
+                if (detail !== targetDetail) {
+                    detail.open = false;
+                }
+            });
+        }
     </script>
 }
