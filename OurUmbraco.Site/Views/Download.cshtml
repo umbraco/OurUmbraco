@@ -12,34 +12,97 @@
     var latestRelease = releasesService.GetLatestRelease();
 }
 
+<style type="text/css">
+    .download-box {
+        border-radius: 10px;
+        color: #1b264f;
+        border: 2px solid;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    .download-box-badge {
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background-color: #f79c37;
+        margin: 0 auto;
+        margin-top: -12px;
+        display: table;
+    }
+    .cta-button {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 50% !important;
+        display: block !important;
+        border-radius: 10px !important;
+        border-color: #1b264f !important;
+        background-color: #1b264f !important;
+    }
+    .version-number {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 0 auto;
+        display: table;
+        margin-top: 30px;
+        margin-bottom: 25px;
+    }
+    .version-number-badge {
+        font-size: 0.5em;
+        font-weight: bold;
+        margin-left: 5px;
+        padding-bottom: -10px;
+        background-color: #f6f8fc;
+        padding: 20px;
+        border-radius: 10px;
+        display: table;
+        float: right;
+        margin-top: -10px;
+        padding: 5px 15px 25px 15px;
+    }
+    .dotnet-version {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin: 0 auto;
+        display: table;
+        padding: 20px 0;
+    }
+    .version-release-date {
+        font-size: 1.2em;
+        font-weight: normal;
+        margin: 0 auto;
+        display: table;
+        padding: 5px 0;
+        margin-top: -20px
+    }
+</style>
+
 <section id="download" class="download-umbraco">
     <div class="container">
         <div class="row dl-content" style="margin-top: 60px;">
             <div class="col-md-6 col-padding">
                 <h2>Looking to install Umbraco manually?</h2>
 
-                <div style="border-radius: 10px; color: #1b264f; border: 2px solid; padding-bottom: 20px; margin-bottom: 30px;">
-                    <span style="text-transform: uppercase; font-weight: bold; padding: 6px 12px; border-radius: 6px; background-color: #f79c37; margin: 0 auto; margin-top: -12px; display: table;">Recommended for most users</span>
-                    <span style="font-size: 2em; font-weight: bold; margin: 0 auto; display: table; margin-top: 30px;">Umbraco 13 <span style="font-size: 0.5em; font-weight: bold; margin-left: 5px; padding-bottom: -10px; background-color: #f6f8fc; padding: 20px; border-radius: 10px; display: table; padding-top: 5px; padding-bottom: 30px; float: right; margin-top: -10px; padding-left: 15px; padding-right: 15px; "><abbr title="Long-term support">LTS</abbr></span></span>
-                    <span style="font-size: 1.3em; font-weight: bold; margin: 0 auto; display: table; padding: 20px 0;">.NET 8</span>
+                <div class="download-box">
+                    <span class="download-box-badge">Recommended for most users</span>
+                    <span class="version-number">Umbraco 13 <span class="version-number-badge"><abbr title="Long-term support">LTS</abbr></span></span>
 
                     <div class="large-margin-bottom">
-                        <a class="button green" href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install" style="margin-left: auto; margin-right: auto; width: 50%; display: block; border-radius: 10px; border-color: #1b264f; background-color: #1b264f;">Show install guidance</a>
+                        <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install">Show install guidance</a>
                     </div>
 
-                    <span style="font-size: 1.2em; font-weight: normal; margin: 0 auto; display: table; padding: 5px 0; margin-top: -20px">Released: December 14, 2023</span>
+                    <span class="version-release-date">Released: December 14, 2023</span>
                 </div>
-
-                <div style="border-radius: 10px; color: #1b264f; border: 2px solid; padding-bottom: 20px; margin-bottom: 30px;">
-                    <span style="text-transform: uppercase; font-weight: bold; padding: 6px 12px; border-radius: 6px; background-color: #f79c37; margin: 0 auto; margin-top: -12px; display: table;">Latest features</span>
-                    <span style="font-size: 2em; font-weight: bold; margin: 0 auto; margin-top: 30px; display: table;">Umbraco 14</span>
-                    <span style="font-size: 1.3em; font-weight: bold; margin: 0 auto; display: table; padding: 20px 0;">.NET 8</span>
+                
+                <div class="download-box">
+                    <span class="download-box-badge">Latest features</span>
+                    <span class="version-number">Umbraco 14</span>
 
                     <div class="large-margin-bottom">
-                        <a class="button green" href="https://docs.umbraco.com/umbraco-cms/v/14.latest/fundamentals/setup/install" style="margin-left: auto; margin-right: auto; width: 50%; display: block; border-radius: 10px; border-color: #1b264f; background-color: #1b264f;">Show install guidance</a>
+                        <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install">Show install guidance</a>
                     </div>
 
-                    <span style="font-size: 1.2em; font-weight: normal; margin: 0 auto; display: table; padding: 5px 0; margin-top: -20px">Released: May 30, 2024</span>
+                    <span class="version-release-date">Released: May 30, 2024</span>
                 </div>
 
                 <p>
@@ -62,7 +125,7 @@
                 </p>
                 <p>Everything is installed, configured, and ready for development. Just click Create Project and in a few steps, Umbraco CMS is up and running.</p>
                 <div class="large-margin-bottom">
-                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/" style="margin-left: auto; margin-right: auto; width: 50%; display: block; border-radius: 10px; border-color: #1b264f; background-color: #1b264f">Sign up on umbraco.com</a>
+                    <a class="button green cta-button" href="https://umbraco.com/campaigns/try-umbraco-today/">Sign up on umbraco.com</a>
                 </div>
                 <p>Powered by Microsoft Azure. <strong>No credit card needed.</strong> Free 14 day trial.</p>
 
