@@ -461,7 +461,7 @@
     },
     {
       "id": "24C809B9-D7E7-48D7-B7F6-13596C12487F",
-      "checkTitles": false,
+      "checkTitles": true,
       "title": "UmbraCare Blog",
       "url": "https://umbracare.net/",
       "rss": "https://umbracare.net/tags/umbraco/rss/",
