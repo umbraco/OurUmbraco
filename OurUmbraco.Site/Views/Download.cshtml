@@ -9,7 +9,7 @@
     Html.RequiresJs("~/assets/js/lib/svg4everybody.min.js");
 
     var releasesService = new ReleasesService();
-    var latestRelease = releasesService.GetLatestRelease();
+    var downloadReleases = releasesService.GetDownloadReleases();
 }
 
 <style type="text/css">
@@ -83,31 +83,21 @@
             <div class="col-md-6 col-padding">
                 <h2>Looking to install Umbraco manually?</h2>
 
-                <div class="download-box">
-                    <span class="download-box-badge">Recommended for most users</span>
-                    <span class="version-number">Umbraco 13 <span class="version-number-badge"><abbr title="Long-term support">LTS</abbr></span></span>
+                @foreach (var release in downloadReleases.OrderByDescending(x => x.IsLts))
+                {
+                    <div class="download-box">
+                        @if(downloadReleases.Count > 1) {
+                            <span class="download-box-badge">@(release.IsLts ? "Recommended for most users" : "Latest features")</span>
+                        }
+                        <span class="version-number">Umbraco @release.FullVersion.Major @(release.IsLts ? Html.Raw("<span class=\"version-number-badge\"><abbr title=\"Long-term support - 3 years of maintenance and security updates\">LTS</abbr></span>") : null)</span>
 
-                    <div class="large-margin-bottom">
-                        <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install">Show install guidance</a>
+                        <div class="large-margin-bottom">
+                            <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/@(release.FullVersion.Major).latest@(release.IsLts? "-lts" : null)/fundamentals/setup/install">Show install guidance</a>
+                        </div>
+
+                        <span class="version-release-date">Released: @release.ReleaseDate.ToString("MMMM d, yyyy")</span>
                     </div>
-
-                    <span class="version-release-date">Released: December 14, 2023</span>
-                </div>
-                
-                <div class="download-box">
-                    <span class="download-box-badge">Latest features</span>
-                    <span class="version-number">Umbraco 14</span>
-
-                    <div class="large-margin-bottom">
-                        <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/13.latest-lts/fundamentals/setup/install">Show install guidance</a>
-                    </div>
-
-                    <span class="version-release-date">Released: May 30, 2024</span>
-                </div>
-
-                <p>
-                    <a href="https://umbraco.com/products/knowledge-center/long-term-support-and-end-of-life/">Read more about Umbraco CMS and its LTS (long-time support) and end-of-life.</a>
-                </p>
+                }
 
                 <h3 style="font-size: 1.3em; font-weight: normal; margin-top: 80px; margin-bottom: 10px;">Other releases</h3>
                 <p class="download-teaser">
