@@ -157,26 +157,26 @@ namespace OurUmbraco.Our.Services
                     recommendedReleases.Add(release);
                 }
             }
-            var latestRecommendedRelease = recommendedReleases.OrderBy(x => x.Version).LastOrDefault();
+            var latestRecommendedRelease = recommendedReleases.OrderBy(x => x.FullVersion).LastOrDefault();
             if (latestRecommendedRelease != null)
             {
                 // set the newest recommended release as the current release
                 latestRecommendedRelease.CurrentRelease = true;
             }
 
-            var latestRelease = releases.OrderBy(x => x.Version).LastOrDefault(x => x.CurrentRelease && x.Released);
+            var latestRelease = releases.OrderBy(x => x.FullVersion).LastOrDefault(x => x.CurrentRelease && x.Released);
             if (latestRelease != null)
             {
                 latestRelease.LatestRelease = true;
-                context.WriteLine($"Newest downloadable release is {latestRelease.Version}");
+                context.WriteLine($"Newest downloadable release is {latestRelease.FullVersion}");
             }
             else
             {
-                var newestReleased = releases.OrderBy(x => x.Version).LastOrDefault(x => x.Released);
+                var newestReleased = releases.OrderBy(x => x.FullVersion).LastOrDefault(x => x.Released);
                 if (newestReleased != null)
                 {
                     newestReleased.LatestRelease = true;
-                    context.WriteLine($"Latest downloadable release is {newestReleased.Version}");
+                    context.WriteLine($"Latest downloadable release is {newestReleased.FullVersion}");
                 }
             }
 
