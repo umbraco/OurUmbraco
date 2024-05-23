@@ -458,6 +458,15 @@
       "rss": "https://harrygordon.co.uk/rss.xml",
       "logo": "https://harrygordon.co.uk/media/ud1pkpyc/me.png",
       "memberId": 74802
+    },
+    {
+      "id": "24C809B9-D7E7-48D7-B7F6-13596C12487F",
+      "checkTitles": true,
+      "title": "UmbraCare Blog",
+      "url": "https://umbracare.net/",
+      "rss": "https://umbracare.net/tags/umbraco/rss/",
+      "logo": "https://umbracare.net/media/dqqli31k/logo_umbracare_square.png",
+      "memberId": 155740
     }
   ]
 }
