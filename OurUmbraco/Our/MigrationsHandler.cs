@@ -27,7 +27,7 @@ namespace OurUmbraco.Our
             AddIsPromotedToggleToPackages();
             AddReleaseCandidatePostfixToRelease();
             AddCommunityBlogsRssTemplate();
-            AddReleasMetaData();
+            AddReleaseMetaData();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -228,7 +228,7 @@ namespace OurUmbraco.Our
             }
         }
 
-        private void AddReleasMetaData()
+        private void AddReleaseMetaData()
         {
             var migrationName = MethodBase.GetCurrentMethod().Name;
 
@@ -249,7 +249,7 @@ namespace OurUmbraco.Our
                     var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias)
                     {
                         Name = "Is LTS",
-                        Description = "Indicates this is a long term supported version of Umbraco"
+                        Description = "<strong>You only need to set this for a MAJOR release.</strong> <br />Indicates this is a long term supported version of Umbraco"
                     };
                     
                     releasContentType.AddPropertyType(checkboxPropertyType, propertyGroupName: "Release");
@@ -262,7 +262,7 @@ namespace OurUmbraco.Our
                     var datePropertyType = new PropertyType(dateField, propertyTypeAlias) 
                     { 
                         Name = "EOL date",
-                        Description = "When is this release at end of life?"
+                        Description = "<strong>You only need to set this for a MAJOR release.</strong> <br />When is this release at end of life?"
                     };
 
                     releasContentType.AddPropertyType(datePropertyType, propertyGroupName: "Release");

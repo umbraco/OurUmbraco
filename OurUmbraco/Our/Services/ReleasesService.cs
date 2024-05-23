@@ -107,6 +107,11 @@ namespace OurUmbraco.Our.Services
                 var recommendedRelease = node.GetPropertyValue<bool>("recommendedRelease");
                 var releaseDescription = node.GetPropertyValue<string>("bodyText");
                 var manualProgressPercent = node.GetPropertyValue<int>("overrideYouTrackReleaseProgress");
+                var releaseDateString = node.GetPropertyValue<string>("overrideYouTrackReleaseDate");
+                DateTime.TryParse(releaseDateString, out var releaseDate);
+                var eolDateString = node.GetPropertyValue<string>("ReleaseEolDate");
+                DateTime.TryParse(releaseDateString, out var eolDate);
+                var isLts = node.GetPropertyValue<bool>("ReleaseSupportType");
 
                 var release = new Release
                 {
@@ -118,7 +123,10 @@ namespace OurUmbraco.Our.Services
                     PlannedRelease = status != "Released",
                     Released = status == "Released",
                     Issues = new List<Release.Issue>(),
-                    PercentComplete = manualProgressPercent
+                    PercentComplete = manualProgressPercent,
+                    ReleaseDate = releaseDate,
+                    IsLts = isLts,
+                    EolDate = eolDate
                 };
                 releases.Add(release);
                 if (recommendedRelease)
