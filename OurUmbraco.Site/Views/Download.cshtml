@@ -9,66 +9,116 @@
     Html.RequiresJs("~/assets/js/lib/svg4everybody.min.js");
 
     var releasesService = new ReleasesService();
-    var latestRelease = releasesService.GetLatestRelease();
+    var downloadReleases = releasesService.GetDownloadReleases();
 }
+
+<style type="text/css">
+    .download-box {
+        border-radius: 10px;
+        color: #1b264f;
+        border: 2px solid;
+        padding-bottom: 20px;
+        margin-bottom: 30px;
+    }
+    .download-box-badge {
+        text-transform: uppercase;
+        font-weight: bold;
+        padding: 6px 12px;
+        border-radius: 6px;
+        background-color: #f79c37;
+        margin: 0 auto;
+        margin-top: -12px;
+        display: table;
+    }
+    .cta-button {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        width: 50% !important;
+        display: block !important;
+        border-radius: 10px !important;
+        border-color: #1b264f !important;
+        background-color: #1b264f !important;
+    }
+    .version-number {
+        font-size: 2em;
+        font-weight: bold;
+        margin: 0 auto;
+        display: table;
+        margin-top: 30px;
+        margin-bottom: 25px;
+    }
+    .version-number-badge {
+        font-size: 0.5em;
+        font-weight: bold;
+        margin-left: 5px;
+        padding-bottom: -10px;
+        background-color: #f6f8fc;
+        padding: 20px;
+        border-radius: 10px;
+        display: table;
+        float: right;
+        margin-top: -10px;
+        padding: 5px 15px 25px 15px;
+    }
+    .dotnet-version {
+        font-size: 1.3em;
+        font-weight: bold;
+        margin: 0 auto;
+        display: table;
+        padding: 20px 0;
+    }
+    .version-release-date {
+        font-size: 1.2em;
+        font-weight: normal;
+        margin: 0 auto;
+        display: table;
+        padding: 5px 0;
+        margin-top: -20px
+    }
+</style>
 
 <section id="download" class="download-umbraco">
     <div class="container">
         <div class="row dl-content" style="margin-top: 60px;">
             <div class="col-md-6 col-padding">
-                <h2>Looking to try Umbraco?</h2>
-                <p class="download-teaser large-margin-bottom">
-                    Umbraco Cloud is the easiest and fastest way to use Umbraco yet with full support for all your custom .NET code
-                    and integrations. You're up and running in less than a minute and your life will be made easier with automated upgrades
-                    and a built-in deployment engine.
+                <h2>Looking to install Umbraco manually?</h2>
+
+                @foreach (var release in downloadReleases.OrderByDescending(x => x.IsLts))
+                {
+                    <div class="download-box">
+                        @if(downloadReleases.Count > 1) {
+                            <span class="download-box-badge">@(release.IsLts ? "Recommended for most users" : "Latest features")</span>
+                        }
+                        <span class="version-number">Umbraco @release.FullVersion.Major @(release.IsLts ? Html.Raw("<span class=\"version-number-badge\"><abbr title=\"Long-term support - 3 years of maintenance and security updates\">LTS</abbr></span>") : null)</span>
+
+                        <div class="large-margin-bottom">
+                            <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/@(release.FullVersion.Major).latest@(release.IsLts? "-lts" : null)/fundamentals/setup/install">Show install guidance</a>
+                        </div>
+
+                        <span class="version-release-date">Released: @release.ReleaseDate.ToString("MMMM d, yyyy")</span>
+                    </div>
+                }
+
+                <h3 style="font-size: 1.3em; font-weight: normal; margin-top: 80px; margin-bottom: 10px;">Other releases</h3>
+                <p class="download-teaser">
+                    See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
                 </p>
-
-                <div class="large-margin-bottom">
-                    <a class="button green" href="https://umbraco.com/campaigns/try-umbraco-today/">Sign up on umbraco.com</a>
-                </div>
-
-                <p>
-                    Powered by Microsoft Azure. No credit card needed. Free 14 day trial.
-                </p>
-
-                <p>
-                    When you want to integrate custom .NET code, you can clone it to your local machine as it's all powered by Git and even
-                    comes with a powerful deployment setup out of the box, that lets you deploy new iterations of your site with the click
-                    of a button. See how it works:
-                </p>
-
-                <div class="video video-element large-margin-bottom">
-                    <a href="/documentation/Umbraco-Cloud/Deployment/">
-                        <img src="https://our.umbraco.com/Assets/images/deploy-in-portal.gif" alt="See how Umbraco Cloud works"/>
-                    </a>
-                </div>
             </div>
 
             <!-- Download Umbraco Column -->
             <div class="col-md-6 col-padding">
-                <h2>Install Umbraco</h2>
+                <h2>Quick start on Umbraco Cloud</h2>
+
+                <p>Umbraco Cloud is the one-stop-shop for all your Umbraco needs - the fastest, easiest, and best way to work with the most advanced open-source .NET CMS.</p>
                 <p class="download-teaser large-margin-bottom">
-                    If you want to DIY you can install Umbraco via NuGet.
-                    It's the same version of Umbraco CMS that powers Umbraco cloud, but you'll need to find
-                    a place to host yourself and handling deployments and upgrades is all down to you.
+                    <img src="/images/umbraco-cloud-logo.png?height=250" alt="Illustration of a laptop with the Umbraco Cloud logo on the display" style="margin-left: auto; margin-right: auto; width: 50%; display: block;" />
                 </p>
-                <p>
-					We recommend <a class="download-link" href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install/install-umbraco-with-templates">using the .NET CLI to start running Umbraco locally</a>.<br />
-					If you have the latest dotnet SDK and runtime installed you should be able to get started with Umbraco like this:
-                    <p class="large-margin-bottom">
-                        <span class="dotnet-nuget pre" style="font-size: 1rem; overflow: hidden; padding: 45px 35px;">
-                            dotnet new install Umbraco.Templates<br/>
-							dotnet new umbraco -n MyProject<br />
-							dotnet run --project MyProject
-                        </span>
-                        <br /><br />Or check out <a href="https://docs.umbraco.com/umbraco-cms/fundamentals/setup/install">all other options for setting up Umbraco</a> locally.
-                    </p>
-					
-					<h2>Releases</h2>
-					<p class="download-teaser">
-						See all <a class="download-link" href="/download/releases/">previous</a> and <a class="download-link" href="/download/releases/progress">upcoming releases</a>.
-					</p>
-                </p>
+                <p>Everything is installed, configured, and ready for development. Just click Create Project and in a few steps, Umbraco CMS is up and running.</p>
+                <div class="large-margin-bottom">
+                    <a class="button green cta-button" href="https://umbraco.com/campaigns/try-umbraco-today/">Sign up on umbraco.com</a>
+                </div>
+                <p>Powered by Microsoft Azure. <strong>No credit card needed.</strong> Free 14 day trial.</p>
+
             </div>
         </div>
     </div>
@@ -138,6 +188,23 @@
             });
 
         })();
+        // Fetch all the details element.
+        const details = document.querySelectorAll("details");
 
+        // Add the onclick listeners.
+        details.forEach((detail) => {
+            detail.addEventListener("toggle", () => {
+                if (detail.open) setTargetDetail(detail);
+            });
+        });
+
+        // Close all the details that are not targetDetail.
+        function setTargetDetail(targetDetail) {
+            details.forEach((detail) => {
+                if (detail !== targetDetail) {
+                    detail.open = false;
+                }
+            });
+        }
     </script>
 }

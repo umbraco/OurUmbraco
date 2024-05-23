@@ -8,6 +8,7 @@ using System.Text;
 using System.Web;
 using System.Web.Helpers;
 using System.Web.Hosting;
+using GraphQL.Validation;
 using Hangfire.Console;
 using Hangfire.Server;
 using Newtonsoft.Json;
@@ -41,6 +42,28 @@ namespace OurUmbraco.Our.Services
         {
             var cache = GetReleasesCache();
             return cache.FirstOrDefault(x => x.LatestRelease);
+        }
+
+        public List<Release> GetDownloadReleases()
+        {
+            var cache = GetReleasesCache();
+            var allReleasedMajors = cache.Where(x => x.Released && x.FullVersion.Minor == 0 && x.FullVersion.Build == 0).OrderByDescending(x => x.FullVersion).ToList();
+            var latest = allReleasedMajors.FirstOrDefault();
+            var downloadReleases = new List<Release>();
+            if(latest != null)
+            {
+                downloadReleases.Add(latest);
+                if (latest.IsLts == false)
+                {
+                    var latestLts = allReleasedMajors.FirstOrDefault(x => x.IsLts);
+                    if(latestLts != null)
+                    {
+                        downloadReleases.Add(latestLts);
+                    }
+                }
+            }            
+            
+            return downloadReleases;
         }
         
         public Release GetLatestVersion8Release()
@@ -107,6 +130,11 @@ namespace OurUmbraco.Our.Services
                 var recommendedRelease = node.GetPropertyValue<bool>("recommendedRelease");
                 var releaseDescription = node.GetPropertyValue<string>("bodyText");
                 var manualProgressPercent = node.GetPropertyValue<int>("overrideYouTrackReleaseProgress");
+                var releaseDateString = node.GetPropertyValue<string>("overrideYouTrackReleaseDate");
+                DateTime.TryParse(releaseDateString, out var releaseDate);
+                var eolDateString = node.GetPropertyValue<string>("ReleaseEolDate");
+                DateTime.TryParse(releaseDateString, out var eolDate);
+                var isLts = node.GetPropertyValue<bool>("ReleaseSupportType");
 
                 var release = new Release
                 {
@@ -118,7 +146,10 @@ namespace OurUmbraco.Our.Services
                     PlannedRelease = status != "Released",
                     Released = status == "Released",
                     Issues = new List<Release.Issue>(),
-                    PercentComplete = manualProgressPercent
+                    PercentComplete = manualProgressPercent,
+                    ReleaseDate = releaseDate,
+                    IsLts = isLts,
+                    EolDate = eolDate
                 };
                 releases.Add(release);
                 if (recommendedRelease)

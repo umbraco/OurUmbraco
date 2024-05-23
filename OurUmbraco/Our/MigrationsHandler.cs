@@ -27,6 +27,7 @@ namespace OurUmbraco.Our
             AddIsPromotedToggleToPackages();
             AddReleaseCandidatePostfixToRelease();
             AddCommunityBlogsRssTemplate();
+            AddReleaseMetaData();
         }
 
         private void EnsureMigrationsMarkerPathExists()
@@ -217,6 +218,61 @@ namespace OurUmbraco.Our
                 template.Content = content;
                 fileService.SaveTemplate(template);
                 
+                string[] lines = { "" };
+                File.WriteAllLines(path, lines);
+
+            }
+            catch (Exception ex)
+            {
+                LogHelper.Error<MigrationsHandler>(string.Format("Migration: '{0}' failed", migrationName), ex);
+            }
+        }
+
+        private void AddReleaseMetaData()
+        {
+            var migrationName = MethodBase.GetCurrentMethod().Name;
+
+            try
+            {
+                var path = HostingEnvironment.MapPath(MigrationMarkersPath + migrationName + ".txt");
+                if (File.Exists(path)) return;
+
+                const string contentTypeAlias = "Release";
+                var propertyTypeAlias = "ReleaseSupportType";
+
+                var contentTypeService = ApplicationContext.Current.Services.ContentTypeService;
+                var releasContentType = contentTypeService.GetContentType(contentTypeAlias);
+
+                if (releasContentType != null && releasContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var checkbox = new DataTypeDefinition("Umbraco.TrueFalse");
+                    var checkboxPropertyType = new PropertyType(checkbox, propertyTypeAlias)
+                    {
+                        Name = "Is LTS",
+                        Description = "<strong>You only need to set this for a MAJOR release.</strong> <br />Indicates this is a long term supported version of Umbraco"
+                    };
+                    
+                    releasContentType.AddPropertyType(checkboxPropertyType, propertyGroupName: "Release");
+                }
+                
+                propertyTypeAlias = "ReleaseEolDate";
+                if (releasContentType != null && releasContentType.PropertyTypeExists(propertyTypeAlias) == false)
+                {
+                    var dateField = new DataTypeDefinition("Umbraco.Date");
+                    var datePropertyType = new PropertyType(dateField, propertyTypeAlias) 
+                    { 
+                        Name = "EOL date",
+                        Description = "<strong>You only need to set this for a MAJOR release.</strong> <br />When is this release at end of life?"
+                    };
+
+                    releasContentType.AddPropertyType(datePropertyType, propertyGroupName: "Release");
+                }
+
+                if(releasContentType != null)
+                {
+                    contentTypeService.Save(releasContentType);
+                }
+
                 string[] lines = { "" };
                 File.WriteAllLines(path, lines);
 
