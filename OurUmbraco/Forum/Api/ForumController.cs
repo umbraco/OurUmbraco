@@ -43,7 +43,9 @@ namespace OurUmbraco.Forum.Api
         {
             dynamic expandoObject = new ExpandoObject();
             var currentMember = Members.GetCurrentMember();
-
+            var memberIsBlocked = currentMember.GetPropertyValue<bool>("blocked");
+            var currentMemberPosts = currentMember.GetPropertyValue<int>("forumPosts");
+            
             var comment = new Comment
             {
                 Body = model.Body,
@@ -53,10 +55,26 @@ namespace OurUmbraco.Forum.Api
                 TopicId = model.Topic
             };
 
-            comment.IsSpam = currentMember.GetPropertyValue<bool>("blocked") || comment.DetectSpam();
-            CommentService.Save(comment);
-            if (comment.IsSpam)
-                SpamChecker.SendSlackSpamReport(comment.Body, comment.TopicId, "comment", comment.MemberId);
+            var commentIsSpam = comment.DetectSpam();
+            comment.IsSpam = memberIsBlocked || commentIsSpam;
+
+            if (memberIsBlocked == false && currentMemberPosts < 1)
+            {
+                // post only the first thing they try to post - this will trigger a slack
+                // notification on their first post so we can moderate properly
+                // prevents them from posting more than one and spamming the slack channel
+                // if the member is already blocked then stop posting any topics
+                CommentService.Save(comment);
+
+                if (commentIsSpam)
+                    SpamChecker.SendSlackSpamReport(comment.Body, comment.TopicId, "comment", comment.MemberId);
+            }
+            if(memberIsBlocked == false && commentIsSpam == false)
+            {
+                // member is not blocked and no spam has been detected (generally means
+                // karma level is over 50)
+                CommentService.Save(comment);
+            }
 
             expandoObject.id = comment.Id;
             expandoObject.body = comment.Body.Sanitize().ToString();
@@ -191,6 +209,9 @@ namespace OurUmbraco.Forum.Api
         public ExpandoObject Topic(TopicSaveModel model)
         {
             dynamic o = new ExpandoObject();
+            var currentMember = Members.GetCurrentMember();
+            var memberIsBlocked = currentMember.GetPropertyValue<bool>("blocked");
+            var currentMemberPosts = currentMember.GetPropertyValue<int>("forumPosts");
 
             var t = new Topic();
             t.Body = model.Body;
@@ -208,7 +229,9 @@ namespace OurUmbraco.Forum.Api
             t.Score = 0;
             t.Answer = 0;
             t.LatestComment = 0;
-            t.IsSpam = Members.GetCurrentMember().GetPropertyValue<bool>("blocked") || t.DetectSpam();
+            
+            var topicIsSpam = t.DetectSpam();
+            t.IsSpam = memberIsBlocked || topicIsSpam;
             
             // If the chosen version is Umbraco Heartcore, overrule other categories
             if (model.Version == Constants.Forum.HeartcoreVersionNumber)
@@ -223,11 +246,24 @@ namespace OurUmbraco.Forum.Api
                 var heartCodeForumId = GetForumIdFromName(Constants.Forum.UmbracoUnoName);
                 t.ParentId = heartCodeForumId;
             }
-            
-            TopicService.Save(t);
 
-            if (t.IsSpam)
-                SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+           if (memberIsBlocked == false && currentMemberPosts < 1)
+            {
+                // post only the first thing they try to post - this will trigger a slack
+                // notification on their first post so we can moderate properly
+                // prevents them from posting more than one and spamming the slack channel
+                // if the member is already blocked then stop posting any topics
+                TopicService.Save(t);
+
+                if (topicIsSpam)
+                    SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+            }
+            if (memberIsBlocked == false && topicIsSpam == false)
+            {
+                // member is not blocked and no spam has been detected (generally means
+                // karma level is over 50)
+                TopicService.Save(t);
+            }
 
             o.url = string.Format("{0}/{1}-{2}", library.NiceUrl(t.ParentId), t.Id, t.UrlName);
 
