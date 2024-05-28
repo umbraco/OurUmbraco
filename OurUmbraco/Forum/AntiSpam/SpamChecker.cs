@@ -7,12 +7,15 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Web.Security;
 using HtmlAgilityPack;
+using log4net.Repository.Hierarchy;
+using Microsoft.Owin.Security.Notifications;
 using Newtonsoft.Json;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Models;
 using OurUmbraco.Forum.Services;
 using umbraco.BusinessLogic;
 using Umbraco.Core;
+using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 
 namespace OurUmbraco.Forum.AntiSpam
@@ -45,20 +48,39 @@ namespace OurUmbraco.Forum.AntiSpam
             return isSpam;
         }
 
-        public static void SendSlackSpamReport(string postBody, int topicId, string commentType, int memberId)
+        public static void SendSlackSpamReport(string title, string postBody, string bodyAddition, int? topicId, string commentType, int memberId)
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
-            
-            var topic = ts.GetById(topicId);
-            var post = string.Format("Topic title: *{0}*\n\n Link to topic: https://our.umbraco.com{1}\n\n", topic.Title, topic.GetUrl());
-            post = post + string.Format("{0} text: {1}\n\n", commentType, postBody);
-            post = post + string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
+            string post = string.Empty;
 
-            var body = string.Format("The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}", post);
+            if(title != null)
+                post += $"Topic title: *{title}*\n\n";
+
+            if (title == null && topicId != null)
+            {
+                post += $"Topic title: *{title}*\n\n";
+                ts.GetById(topicId.Value);
+                post += "Link to topic: https://our.umbraco.com{topic.GetUrl()}\n\n";
+            }
+
+            post += string.Format("{0} text: {1}\n\n", commentType, postBody);
+            post += string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
+
+            if (bodyAddition == null)
+                bodyAddition = "The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}";
+            var body = string.Format(bodyAddition, post);
+
             body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
-            var slack = new Slack();
-            slack.PostSlackMessage(body);
+            try
+            {
+                var slack = new Slack();
+                slack.PostSlackMessage(body);
+            } 
+            catch (Exception ex)
+            {
+                LogHelper.Error<SpamChecker>("Unable to post to Slack", ex);
+            }
         }
 
         // Remember this one only kicks in if a user has < 50 karma

@@ -45,7 +45,7 @@ namespace OurUmbraco.Forum.Api
             var currentMember = Members.GetCurrentMember();
             var memberIsBlocked = currentMember.GetPropertyValue<bool>("blocked");
             var currentMemberPosts = currentMember.GetPropertyValue<int>("forumPosts");
-            
+
             var comment = new Comment
             {
                 Body = model.Body,
@@ -58,18 +58,25 @@ namespace OurUmbraco.Forum.Api
             var commentIsSpam = comment.DetectSpam();
             comment.IsSpam = memberIsBlocked || commentIsSpam;
 
-            if (memberIsBlocked == false && currentMemberPosts < 1)
+            if (commentIsSpam)
             {
-                // post only the first thing they try to post - this will trigger a slack
-                // notification on their first post so we can moderate properly
-                // prevents them from posting more than one and spamming the slack channel
-                // if the member is already blocked then stop posting any topics
-                CommentService.Save(comment);
-
-                if (commentIsSpam)
-                    SpamChecker.SendSlackSpamReport(comment.Body, comment.TopicId, "comment", comment.MemberId);
+                if (memberIsBlocked == false && currentMemberPosts < 1)
+                {
+                    // post only the first thing they try to post - this will trigger a slack
+                    // notification on their first post so we can moderate properly
+                    // prevents them from posting more than one and spamming the slack channel
+                    // if the member is already blocked then stop posting any topics
+                    CommentService.Save(comment);
+                    SpamChecker.SendSlackSpamReport(title: null, postBody: comment.Body, bodyAddition: null, topicId: comment.TopicId, commentType: "comment", memberId: comment.MemberId);
+                }
+                if (memberIsBlocked || currentMemberPosts >= 1)
+                {
+                    var karma = currentMember.GetPropertyValue<int>("reputationTotal");
+                    var bodyAddition = $"TEMP (updated spam system) - new comment was attempted, memberIsBlocked: {memberIsBlocked}, currentMemberPosts: {currentMemberPosts}, karma: {karma}\n\n";
+                    SpamChecker.SendSlackSpamReport(title: null, postBody: $"```{comment.Body}```", bodyAddition: bodyAddition, topicId: comment.TopicId, commentType: "comment", memberId: comment.MemberId);
+                }
             }
-            if(memberIsBlocked == false && commentIsSpam == false)
+            else
             {
                 // member is not blocked and no spam has been detected (generally means
                 // karma level is over 50)
@@ -247,18 +254,25 @@ namespace OurUmbraco.Forum.Api
                 t.ParentId = heartCodeForumId;
             }
 
-           if (memberIsBlocked == false && currentMemberPosts < 1)
+            if (topicIsSpam)
             {
-                // post only the first thing they try to post - this will trigger a slack
-                // notification on their first post so we can moderate properly
-                // prevents them from posting more than one and spamming the slack channel
-                // if the member is already blocked then stop posting any topics
-                TopicService.Save(t);
-
-                if (topicIsSpam)
-                    SpamChecker.SendSlackSpamReport(t.Body, t.Id, "topic", t.MemberId);
+                if (memberIsBlocked == false && currentMemberPosts < 1)
+                {
+                    // post only the first thing they try to post - this will trigger a slack
+                    // notification on their first post so we can moderate properly
+                    // prevents them from posting more than one and spamming the slack channel
+                    // if the member is already blocked then stop posting any topics
+                    TopicService.Save(t);
+                    SpamChecker.SendSlackSpamReport(title: t.Title, postBody: t.Body, bodyAddition: null, topicId: t.Id,  commentType: "topic", memberId: t.MemberId);
+                }
+                if (memberIsBlocked || currentMemberPosts >= 1)
+                {
+                    var karma = currentMember.GetPropertyValue<int>("reputationTotal");
+                    var bodyAddition = $"TEMP (updated spam system) - new topic was attempted, memberIsBlocked: {memberIsBlocked}, currentMemberPosts: {currentMemberPosts}, karma: {karma}\n\n";
+                    SpamChecker.SendSlackSpamReport(title: t.Title, postBody: $"```{t.Body}```", bodyAddition: bodyAddition, topicId: t.Id, commentType: "topic", memberId: t.MemberId);
+                }
             }
-            if (memberIsBlocked == false && topicIsSpam == false)
+            else
             {
                 // member is not blocked and no spam has been detected (generally means
                 // karma level is over 50)
