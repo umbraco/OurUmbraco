@@ -48,7 +48,7 @@ namespace OurUmbraco.Forum.AntiSpam
             return isSpam;
         }
 
-        public static void SendSlackSpamReport(string title, string postBody, string bodyAddition, int? topicId, string commentType, int memberId)
+        public static void SendSlackSpamReport(string title, string postBody, string bodyPrefix, int? topicId, string commentType, int memberId)
         {
             var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             string post = string.Empty;
@@ -66,9 +66,10 @@ namespace OurUmbraco.Forum.AntiSpam
             post += string.Format("{0} text: {1}\n\n", commentType, postBody);
             post += string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
 
-            if (bodyAddition == null)
-                bodyAddition = "The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}";
-            var body = string.Format(bodyAddition, post);
+            if (bodyPrefix == null)
+                bodyPrefix = "The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}";
+
+            var body = $"{bodyPrefix} {post}";
 
             body = body.Replace("&", "&amp;").Replace("<", "&lt;").Replace(">", "&gt;");
 
