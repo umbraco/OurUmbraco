@@ -50,7 +50,6 @@ namespace OurUmbraco.Forum.AntiSpam
 
         public static void SendSlackSpamReport(string title, string postBody, string bodyPrefix, int? topicId, string commentType, int memberId)
         {
-            var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
             string post = string.Empty;
 
             if(title != null)
@@ -58,16 +57,17 @@ namespace OurUmbraco.Forum.AntiSpam
 
             if (title == null && topicId != null)
             {
-                post += $"Topic title: *{title}*\n\n";
-                ts.GetById(topicId.Value);
-                post += "Link to topic: https://our.umbraco.com{topic.GetUrl()}\n\n";
+                var ts = new TopicService(ApplicationContext.Current.DatabaseContext);
+                var topic = ts.GetById(topicId.Value);
+                post += $"Topic title: *{topic.Title}*\n\n";
+                post += $"Link to topic: https://our.umbraco.com{topic.GetUrl()}\n\n";
             }
 
-            post += string.Format("{0} text: {1}\n\n", commentType, postBody);
-            post += string.Format("Go to member https://our.umbraco.com/member/{0}\n\n", memberId);
+            post += $"{commentType} text: {postBody}\n\n";
+            post += $"Go to member https://our.umbraco.com/member/{memberId}\n\n";
 
             if (bodyPrefix == null)
-                bodyPrefix = "The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n{0}";
+                bodyPrefix = "The following forum post was marked as spam by the spam system, if this is incorrect make sure to mark it as ham.\n\n";
 
             var body = $"{bodyPrefix} {post}";
 
