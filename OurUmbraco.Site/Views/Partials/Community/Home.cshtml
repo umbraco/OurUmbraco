@@ -44,6 +44,18 @@
     .bannertext p {
         line-height: 1.4rem;
     }
+    .discord {
+        background: #3544b1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .div-center {
+        width: 50%; /* or any width */
+        color: white;
+        text-align: center;
+        padding-bottom: 30px;
+    }
 </style>
 
 @if (showGlobalNotification)
@@ -55,6 +67,12 @@
 
 <div id="banners-wrapper">
 
+</div>
+
+<div class="discord">
+    <div class="div-center">
+        <a href="https://discord.umbraco.com"><img src="/Assets/images/ourdiscord.png?width=900" alt="Banner that promotes the Umbraco Discord server" /></a>
+    </div>
 </div>
 
 @if (Members.IsLoggedIn())

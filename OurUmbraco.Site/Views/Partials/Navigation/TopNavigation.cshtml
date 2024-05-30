@@ -11,6 +11,10 @@
             {
                 <a href="https://community.umbraco.com/">Community</a>
             }
+            else if (page.Name.ToLowerInvariant() == "discord")
+            {
+                <a href="https://discord.umbraco.com/">Discord</a>
+            }
             else
             {
                 <a href="@page.Url">@page.Name</a>
