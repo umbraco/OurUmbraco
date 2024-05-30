@@ -569,7 +569,7 @@
     <Content Include="Assets\images\karma.svg" />
     <Content Include="Assets\images\logo_email.png" />
     <Content Include="Assets\images\osx.png" />
-    <Content Include="Assets\images\ourdiscordbanner.png" />
+    <Content Include="Assets\images\ourdiscord.png" />
     <Content Include="Assets\images\package2.png" />
     <Content Include="Assets\images\reply.svg" />
     <Content Include="Assets\images\selectdown.svg" />
