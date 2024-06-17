@@ -467,6 +467,15 @@
       "rss": "https://umbracare.net/tags/umbraco/rss/",
       "logo": "https://umbracare.net/media/dqqli31k/logo_umbracare_square.png",
       "memberId": 155740
+    },
+    {
+      "id": "",
+      "checkTitles": true,
+      "title": "Andrew McKaskill",
+      "url": "https://mckaskill.com/",
+      "rss": "https://www.mckaskill.com/feed.xml",
+      "logo": "https://www.mckaskill.com/static/images/avatar.png",
+      "memberId": 296222
     }
   ]
 }
