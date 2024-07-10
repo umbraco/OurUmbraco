@@ -69,12 +69,6 @@ namespace OurUmbraco.Forum.Api
                     CommentService.Save(comment);
                     SpamChecker.SendSlackSpamReport(title: null, postBody: comment.Body, bodyPrefix: null, topicId: comment.TopicId, commentType: "comment", memberId: comment.MemberId);
                 }
-                if (memberIsBlocked || currentMemberPosts >= 1)
-                {
-                    var karma = currentMember.GetPropertyValue<int>("reputationTotal");
-                    var prefixText = $"TEMP (updated spam system) - new comment was attempted, memberIsBlocked: {memberIsBlocked}, memberId: {currentMember.Id}, currentMemberPosts: {currentMemberPosts}, karma: {karma}\n\n";
-                    SpamChecker.SendSlackSpamReport(title: null, postBody: comment.Body, bodyPrefix: prefixText, topicId: comment.TopicId, commentType: "comment", memberId: comment.MemberId);
-                }
             }
             else
             {
@@ -264,12 +258,6 @@ namespace OurUmbraco.Forum.Api
                     // if the member is already blocked then stop posting any topics
                     TopicService.Save(t);
                     SpamChecker.SendSlackSpamReport(title: t.Title, postBody: t.Body, bodyPrefix: null, topicId: t.Id,  commentType: "topic", memberId: t.MemberId);
-                }
-                if (memberIsBlocked || currentMemberPosts >= 1)
-                {
-                    var karma = currentMember.GetPropertyValue<int>("reputationTotal");
-                    var prefixText = $"TEMP (updated spam system) - new topic was attempted, memberIsBlocked: {memberIsBlocked}, memberId: {currentMember.Id}, currentMemberPosts: {currentMemberPosts}, karma: {karma}\n\n";
-                    SpamChecker.SendSlackSpamReport(title: t.Title, postBody: t.Body, bodyPrefix: prefixText, topicId: t.Id, commentType: "topic", memberId: t.MemberId);
                 }
             }
             else

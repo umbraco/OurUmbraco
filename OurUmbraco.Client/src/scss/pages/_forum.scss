@@ -25,10 +25,6 @@
 
 			.search-big {
 				flex: 0 0 100%;
-
-				@media (min-width: $md) {
-					flex: 0 0 70%;
-				}
 			}
 
 			.or {
@@ -192,7 +188,7 @@
 			margin: 10px 0;
 
 			@media (min-width: $md) {
-				flex: 0 0 50%;
+				flex: 0 0 80%;
 				margin: 0 10% 0 0;
 				order: 1;
 			}

@@ -90,32 +90,6 @@
         <label for="search">Search for threads</label>
     </div>
 
-    <div class="or">or</div>
-    <div class="sorting">
-        <select id="selectCategory" data-placeholder="Choose&hellip;">
-            <option class="category" selected disabled>Filter by category</option>
-            @if (categories.ContentType.Alias == "Projects")
-            {
-                foreach (var tag in CurrentPage.Parent.Children)
-                {
-                    <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name</option>
-                }
-            }
-            else
-            {
-                <option class="all" value="@categories.Id">All categories</option>
-                @* Category sorting is done from the backoffice, the current order is based on what we expect to be most used *@
-                foreach (var tag in filteredCategories)
-                {
-                    if (tag.ContentType.Alias == "Forum" && tag.IsArchived() == false)
-                    {
-                        <option class="@tag.Name.ToLower().Replace(" ", "")" value="@tag.Id" @(CurrentPage.Id == tag.Id ? "selected" : null)>@tag.Name.Replace(" And Getting Started", "")</option>
-                    }
-                }
-            }
-        </select>
-    </div>
-
     <div id="search-options" class="search-options">
         <label>Filter by</label>
         <div class="options">
@@ -144,9 +118,7 @@
 <section class="forum">
     <!-- FORUM LIST HEADER START -->
     <div class="forum-head">
-
         <div class="topic">Topic</div>
-        <div class="category">Category</div>
         <div class="posts">Replies</div>
 
     </div>
@@ -174,9 +146,6 @@
                                 <span title="@string.Format("{0:ddd, dd MMM yyyy} {0:HH:mm:ss} UTC+{1}", topic.Updated, TimeZone.CurrentTimeZone.GetUtcOffset(DateTime.Now))">topic created by <strong>@topic.AuthorName</strong> @topic.Updated.ConvertToRelativeTime()</span>
                             }
                         </a>
-                    </div>
-                    <div class="category frontend">
-                        <a href="@forum.Url">@(Utils.GetForumName(forum))</a>
                     </div>
                     <div class="posts"><small>@topic.Replies</small> <span>replies</span></div>
                 </div>

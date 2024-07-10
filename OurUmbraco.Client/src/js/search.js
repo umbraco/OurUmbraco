@@ -35,7 +35,7 @@ function redirectToSearch(ev) {
         if (filters.category === "docs") {
             newUri = updateQueryString("cat", "documentation", newUri);
         }
-        newUri = updateQueryString("fid", filters.forumId, newUri);
+        newUri = updateQueryString("fid", "", newUri);
         newUri = updateQueryString("order", filters.order, newUri);
         newUri = updateQueryString("noreplies", filters.noreplies, newUri);
         newUri = updateQueryString("replies", filters.replies, newUri);
@@ -65,12 +65,7 @@ function GetSearchFilters(cssClass) {
         filters.category = category;
     }
 
-    var forumId = $('#selectCategory').val();
-    if (forumId) {
-        forumId = forumId.replace(/([A-Za-z])\w+/g, "");
-    }
-
-    filters.forumId = forumId;
+    filters.forumId = "";
     filters.order = getParameterByName('order');
     filters.solved = getParameterByName('solved');
     filters.unsolved = getParameterByName('unsolved');
@@ -231,7 +226,7 @@ var forumSearch = _.debounce(function (ev) {
             url: url,
             data: {
                 term: term,
-                forum: filters.forumId
+                forum: ""
             },
             success: function (response) {
 

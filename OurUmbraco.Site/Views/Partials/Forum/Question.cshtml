@@ -108,21 +108,6 @@
                     <div class="topic">
                         <h2>@Model.Title</h2>
                     </div>
-                    <div class="categories">
-                        <div class="category core">
-                            <a href="@Model.ForumUrl">@Model.ForumName</a>
-                        </div>
-
-                        @if (Model.Version > 0 && Model.Version != OurUmbraco.Constants.Forum.HeartcoreVersionNumber)
-                        {
-                            // Don't show the version when Umbraco Heartcore version has been selected
-                            // The category is already called "Umbraco Heartcore" then
-                            
-                            <div class="version">
-                                <a href="#">Umbraco @Model.Version</a>
-                            </div>
-                        }
-                    </div>
                 </div>
 
                 <div class="body markdown-syntax">
