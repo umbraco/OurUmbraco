@@ -5,7 +5,7 @@ namespace OurUmbraco.Our.Models.GitHub
 {
     public class Review
     {
-        public int id { get; set; }
+        public ulong id { get; set; }
         public string node_id { get; set; }
 
         [JsonProperty("user")]

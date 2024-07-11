@@ -6,7 +6,7 @@ namespace OurUmbraco.Our.Models.GitHub
     public class Issue
     {
         [JsonProperty("id")]
-        public long Id { get; set; }
+        public ulong Id { get; set; }
 
         [JsonProperty("url")]
         public string Url { get; set; }

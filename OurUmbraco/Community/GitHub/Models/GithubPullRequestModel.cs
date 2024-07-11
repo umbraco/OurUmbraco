@@ -5,7 +5,7 @@ namespace OurUmbraco.Community.GitHub.Models
 {
     public class GithubPullRequestModel
     {
-        public long Id { get; set; }
+        public ulong Id { get; set; }
         public string Repository { get; set; }
         public string State { get; set; }
         public string Title { get; set; }
