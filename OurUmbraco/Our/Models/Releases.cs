@@ -103,6 +103,12 @@ namespace OurUmbraco.Our.Models
             
             [JsonProperty("version")]
             public string Version { get; set; }
+            
+            [JsonProperty("repositoryOwner")]
+            public string RepositoryOwner { get; set; }
+            
+            [JsonProperty("repositoryName")]
+            public string RepositoryName { get; set; }
         }
         
         public class Category

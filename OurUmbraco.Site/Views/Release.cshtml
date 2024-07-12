@@ -456,7 +456,7 @@ dotnet run --project "MyProject"</pre>
                                                                 @{
                                                                     var url = issue.Source == ReleaseSource.YouTrack
                                                                         ? $"https://issues.umbraco.org/issue/{issue.Id}"
-                                                                        : $"https://github.com/umbraco/Umbraco-CMS/issues/{issue.Id}";
+                                                                        : $"https://github.com/{issue.RepositoryOwner}/{issue.RepositoryName}/issues/{issue.Id}";
                                                                 }
                                                                 <a href="@url" target="_blank" title="@(issue.CommunityContribution ? "A community contribution helped close this issue #h5yr!" : null)" rel="noreferrer noopener">@issue.Title</a>
                                                             </li>

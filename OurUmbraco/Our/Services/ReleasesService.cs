@@ -208,18 +208,23 @@ namespace OurUmbraco.Our.Services
 
         private static void PopulateGitHubIssues(PerformContext context, List<Release> releases)
         {
-            var repository = new OurUmbraco.Community.Models.Repository("umbraco-cms", "umbraco", "Umbraco-CMS", "Umbraco CMS");
-            var issuesDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/");
-            var pullsDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/");
-            AddItemsToReleases(context, releases, issuesDirectory, "issue");
-            AddItemsToReleases(context, releases, pullsDirectory, "pull");
+            var repositories = new[] { "Umbraco.CMS.Backoffice", "Umbraco-CMS" };
+            foreach (var repositoryName in repositories)
+            {
+                var repository = new OurUmbraco.Community.Models.Repository(repositoryName.ToLowerInvariant(), "umbraco", repositoryName, repositoryName.Replace("-", " ").Replace(".", " "));
+
+                var issuesDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/");
+                var pullsDirectory = HostingEnvironment.MapPath($"{repository.IssuesStorageDirectory()}/pulls/");
+                AddItemsToReleases(context, releases, issuesDirectory, "issue", repositoryName);
+                AddItemsToReleases(context, releases, pullsDirectory, "pull", repositoryName);
+            }            
         }
         
-        private static void AddItemsToReleases(PerformContext context, List<Release> releases, string directory, string fileTypeName) 
+        private static void AddItemsToReleases(PerformContext context, List<Release> releases, string directory, string fileTypeName, string repositoryName) 
         {
             context.WriteLine($"Processing {fileTypeName}s");
             var files = Directory.EnumerateFiles(directory, $"*.{fileTypeName}.combined.json").ToArray();
-            context.WriteLine($"Found {files.Length} items");
+            context.WriteLine($"Found {files.Length} items for repo {repositoryName}");
             
             foreach (var file in files)
             {
@@ -240,7 +245,7 @@ namespace OurUmbraco.Our.Services
                     if (release == null)
                     {
                         context.WriteLine(
-                            $"Item {item.Number} is tagged with release version {version} but this release has no corresponding node in Our");
+                            $"Item {repositoryName}/{item.Number} is tagged with release version {version} but this release has no corresponding node in Our");
                         continue;
                     }
 
@@ -282,7 +287,9 @@ namespace OurUmbraco.Our.Services
                         Type = type,
                         Source = ReleaseSource.GitHub,
                         CommunityContribution = communityContrib,
-                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : ""
+                        ContributorAvatar = item.IsPr ? item.User.AvatarUrl : "",
+                        RepositoryName = item.RepoSlug,
+                        RepositoryOwner = item.RepoOwner
                     };
 
                     if (release.FullVersion >= new System.Version(8, 7, 0))
