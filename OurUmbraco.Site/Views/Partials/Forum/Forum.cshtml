@@ -12,6 +12,10 @@
     foreach (var parameter in queryString)
     {
         var key = (string)parameter;
+        if(key == null)
+        {
+            key = "invalid";
+        }
         var value = queryString.Get(key);
         paramsList.Add(key, value);
     }
