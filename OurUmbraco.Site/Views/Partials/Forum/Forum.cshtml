@@ -7,6 +7,23 @@
 @{
     // Save query string for use in pagination links
     var queryString = HttpUtility.ParseQueryString(Request.QueryString.ToString());
+    var paramsList = new Dictionary<string, string>();
+
+    foreach (var parameter in queryString)
+    {
+        var key = (string)parameter;
+        var value = queryString.Get(key);
+        paramsList.Add(key, value);
+    }
+    var knownKeys = new List<string> { "page", "unsolved", "noreplies" };
+    foreach (var key in paramsList)
+    {
+        if (knownKeys.Any(x => x.ToLowerInvariant() == key.Key.ToLowerInvariant()) == false)
+        {
+            // this is not a known parameter, reject the request
+            return;
+        }
+    }
 
     const int pagesToShowLeft = 4;
     int page;
@@ -52,19 +69,19 @@
 
     var categories = Model.Content.AncestorOrSelf(2);
     var ignoreCategories = new List<string>
-    {
+{
         "Umbraco Courier",
         "Templates, (partial) views and macros",
         "Extending Umbraco and using the API",
         "Developing Packages",
         "Umbraco 8",
         "Umbraco 9",
-        "Contributing to Umbraco CMS", 
+        "Contributing to Umbraco CMS",
         "Umbraco Uno"
     };
     var filteredCategories = categories.Children()
         .Where(x => ignoreCategories.InvariantContains(x.Name) == false);
-    
+
 }
 @if (Model.Content.NewTopicsAllowed() == false || Model.Content.AncestorOrSelfIsArchived())
 {
