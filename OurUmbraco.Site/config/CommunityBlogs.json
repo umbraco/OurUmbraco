@@ -476,6 +476,15 @@
       "rss": "https://www.mckaskill.com/feed.xml",
       "logo": "https://www.mckaskill.com/static/images/avatar.png",
       "memberId": 296222
+    },
+    {
+      "id": "b1aa5486-ac1b-4cdd-9b28-f9df73fd6598",
+      "checkTitles": true,
+      "title": "Nurhak Kaya",
+      "url": "https://www.nurhakkaya.com/",
+      "rss": "https://www.nurhakkaya.com/feeds/posts/default",
+      "logo": "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgHXBRjwJSdNW9mG-LcRr25xfyaqNuUGI7VW6IfPvdA8KM6yBvO0tCEKGKGdVXdRX7y-A1gXCFBIMGK1jFPrS5KIvn5Fcg6XULxzxAF8sy09jI0Or-OYoMXwa8Z0Oblvxo/s113/nurhakSocial.jpg",
+      "memberId": 155475
     }
   ]
 }
