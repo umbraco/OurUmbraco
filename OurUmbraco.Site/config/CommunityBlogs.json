@@ -476,6 +476,15 @@
       "rss": "https://www.mckaskill.com/feed.xml",
       "logo": "https://www.mckaskill.com/static/images/avatar.png",
       "memberId": 296222
+    },
+    {
+      "id": "39281ea7-cff8-43d3-8099-1932f95a0436",
+      "checkTitles": false,
+      "title": "Debasish Gracias Blog",
+      "url": "https://www.debasish.tech/blogs",
+      "rss": "https://www.debasish.tech/rss.xml",
+      "logo": "https://www.debasish.tech/LogoHead.svg",
+      "memberId": 278734
     }
   ]
 }
