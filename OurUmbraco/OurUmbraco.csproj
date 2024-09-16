@@ -640,6 +640,7 @@
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Forum\AntiSpam\StopForumSpamService.cs" />
     <Compile Include="Forum\Slack.cs" />
+    <Compile Include="OurImageService.cs" />
     <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />
@@ -1037,6 +1038,7 @@
     <Compile Include="Project\uVersion\uVersion.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Project\Api\ProjectUploadController.cs" />
+    <Compile Include="RemoteFile.cs" />
     <Compile Include="Repository\Controllers\PackageRepositoryController.cs" />
     <Compile Include="Repository\Controllers\PackageSortOrder.cs" />
     <Compile Include="Repository\Models\Category.cs" />
