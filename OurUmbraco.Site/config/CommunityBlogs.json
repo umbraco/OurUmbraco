@@ -476,6 +476,15 @@
       "rss": "https://www.mckaskill.com/feed.xml",
       "logo": "https://www.mckaskill.com/static/images/avatar.png",
       "memberId": 296222
+    },
+    {
+      "id": "dd55db03-35f5-4785-bf44-aa7189068674",
+      "checkTitles": true,
+      "title": "mattbrailsford.dev",
+      "url": "https://mattbrailsford.dev",
+      "rss": "https://mattbrailsford.dev/rss",
+      "logo": "https://mattbrailsford.dev/favicon-128.png",
+      "memberId": 5518
     }
   ]
 }
