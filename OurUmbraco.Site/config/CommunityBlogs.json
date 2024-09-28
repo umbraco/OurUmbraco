@@ -482,7 +482,7 @@
       "checkTitles": true,
       "title": "mattbrailsford.dev",
       "url": "https://mattbrailsford.dev",
-      "rss": "https://mattbrailsford.dev/rss",
+      "rss": "https://mattbrailsford.dev/rss.xml",
       "logo": "https://mattbrailsford.dev/logo-256.png",
       "memberId": 5518
     }
