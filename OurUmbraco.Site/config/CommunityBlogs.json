@@ -1,490 +1,499 @@
 {
-  "blogs": [
-    {
-      "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
-      "checkTitles": false,
-      "title": "Enkel Media Blog",
-      "url": "https://www.enkelmedia.se/blogg/",
-      "rss": "https://www.enkelmedia.se/blogg/rss/",
-      "logo": "https://www.enkelmedia.se/img/enkel-media-logotype-180x74.png",
-      "memberId": 2535
-    },
-    {
-      "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
-      "checkTitles": false,
-      "title": "Jacker.io Umbraco Articles",
-      "url": "https://jacker.io/tutorials-articles/",
-      "rss": "https://jacker.io/rss",
-      "logo": "https://jacker.io/jacker-io-umbraco-logo.png",
-      "memberId": 23434
-    },
-    {
-      "id": "ad10ed4d-d22e-405f-8588-ba8a3d1592cf",
-      "checkTitles": false,
-      "title": "Rasolo's blog",
-      "url": "http://rasolo.azurewebsites.net/blogs/umbraco/",
-      "rss": "http://rasolo.azurewebsites.net/blogs/umbraco/feed",
-      "logo": "http://rasolo.azurewebsites.net/media/5a1pqhxs/rasolo.png",
-      "memberId": "278134"
-    },
-    {
-      "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
-      "checkTitles": false,
-      "title": "codeshare.co.uk Blog",
-      "url": "https://codeshare.co.uk/",
-      "rss": "https://codeshare.co.uk/feed/?category=umbraco",
-      "logo": "https://codeshare.co.uk/media/1371/logo.png",
-      "memberId": 126488
-    },
-    {
-      "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
-      "checkTitles": false,
-      "title": "Jamie's Blog",
-      "url": "https://jamiepollock.net/blog/",
-      "rss": "https://jamiepollock.net/blog/atom.xml",
-      "logo": "https://jamiepollock.net/images/favicon-64x64.png",
-      "memberId": 3305
-    },
-    {
-      "id": "D946B0EC-2208-455E-8BD5-C8A3E739215E",
-      "checkTitles": false,
-      "title": "Lars-Erik's blog",
-      "url": "http://blog.aabech.no/",
-      "rss": "http://blog.aabech.no/rss",
-      "logo": "https://pbs.twimg.com/profile_images/490060327241797632/MvB5bnIm_400x400.jpeg",
-      "memberId": 30373
-    },
-    {
-      "id": "E325DF68-908E-41A9-AB29-16C66A2D32E7",
-      "checkTitles": false,
-      "title": "Vizioz",
-      "url": "https://www.vizioz.com/blog/",
-      "rss": "https://www.vizioz.com/blog/rss",
-      "logo": "https://www.vizioz.com/images/vizioz_logo3.png",
-      "memberId": 1868
-    },
-    {
-      "id": "C50E6041-BC06-4D2E-9A08-E21E6A8CF23C",
-      "checkTitles": false,
-      "title": "Hack Make Do - Warren Buckley",
-      "url": "https://blog.hackmakedo.co",
-      "rss": "https://blog.hackmakedo.com/tag/umbraco/feed/",
-      "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g",
-      "memberId": 1175
-    },
-    {
-      "id": "FEEF823F-84E7-4FBA-AF14-A70D1F6B2DFC",
-      "checkTitles": false,
-      "title": "Shazwazza",
-      "url": "https://shazwazza.com/",
-      "rss": "https://feeds.feedburner.com/Shazwazza",
-      "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg",
-      "memberId": 1767
-    },
-    {
-      "id": "76E06586-1220-44B2-A475-BFFC2C03499D",
-      "checkTitles": false,
-      "title": "Lee Kelleher",
-      "url": "https://leekelleher.com/",
-      "rss": "https://leekelleher.com/umbraco/feed/",
-      "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png",
-      "memberId": 3042
-    },
-    {
-      "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
-      "checkTitles": false,
-      "title": "Ismail’s umbraco adventures",
-      "url": "https://ismailmayat.wordpress.com/",
-      "rss": "https://ismailmayat.wordpress.com/tag/umbraco/feed/",
-      "logo": "https://0.gravatar.com/avatar/6495743815f2137983c9d19ad4746edb?s=96&d=&r=G",
-      "memberId": 1203
-    },
-    {
-      "id": "35E96E73-29A9-4DE0-BDA4-159CE4D23BB4",
-      "checkTitles": false,
-      "title": "ZpqrtBnk - Software Ektropist",
-      "url": "https://www.zpqrtbnk.net/",
-      "rss": "https://www.zpqrtbnk.net/rss/umbraco",
-      "logo": "https://www.zpqrtbnk.net/img/zpqrtbnk/entropy2.png",
-      "memberId": 6724
-    },
-    {
-      "id": "27A50A0B-376B-451E-B203-8366DA22F511",
-      "checkTitles": false,
-      "title": "Dave on Umbraco",
-      "url": "http://dawoe.blogspot.dk/",
-      "rss": "http://dawoe.blogspot.com/feeds/posts/default?alt=rss",
-      "logo": "https://pbs.twimg.com/profile_images/542408550601859072/r4YfpaR7_400x400.jpeg",
-      "memberId": 2054
-    },
-    {
-      "id": "E3BA4BBE-2C08-4741-80BC-19FB536D7591",
-      "checkTitles": false,
-      "title": "Code 101",
-      "url": "https://code101.net/",
-      "rss": "https://code101.net/code-101?format=rss",
-      "logo": "https://images.squarespace-cdn.com/content/5c1fc525365f024b42163a20/1545678725906-MAU2ZNX57KZ79OQJ6X33/code101-logo.png",
-      "memberId": 8882
-    },
-    {
-      "id": "55591488-7406-4287-AF72-CCF9F8AE7378",
-      "checkTitles": false,
-      "title": "Morten Bock",
-      "url": "https://blog.mortenbock.dk/",
-      "rss": "https://blog.mortenbock.dk/tag/umbraco/feed/",
-      "logo": "https://pbs.twimg.com/profile_images/606096665087344640/9aO-6dV4_400x400.jpg",
-      "memberId": 1201
-    },
-    {
-      "id": "12F4440A-C87B-4450-964A-D4EA50FAE18C",
-      "checkTitles": false,
-      "title": "Anders Bjerner",
-      "url": "http://www.bjerner.dk/blog/",
-      "rss": "http://www.bjerner.dk/blog/tags/umbraco/rss",
-      "logo": "http://www.gravatar.com/avatar/e3ad43cc015da910c21237961fa6d74d.jpg?s=256&d=mm",
-      "memberId": 66039
-    },
-    {
-      "id": "B916F613-DBC2-41A4-9499-2FA756A31630",
-      "checkTitles": false,
-      "title": "Attackmonkey",
-      "url": "http://www.attackmonkey.co.uk/blog",
-      "rss": "http://www.attackmonkey.co.uk/blog/rss?filterBy=umbraco",
-      "logo": "http://www.attackmonkey.co.uk/images/header-logo.png",
-      "memberId": 6280
-    },
-    {
-      "id": "7DF2AE1C-26C6-4BCB-A688-2346CBFAA042",
-      "checkTitles": false,
-      "title": "ProWorks",
-      "url": "https://www.proworks.com/blog",
-      "rss": "https://www.proworks.com/blog/rss",
-      "logo": "https://www.proworks.com/images/PWlogo.png",
-      "memberId": null
-    },
-    {
-      "id": "345597EE-CA65-4588-A6CC-8EA3012A25BB",
-      "checkTitles": false,
-      "title": "Aaron Powell - LINQ to fail",
-      "url": "https://www.aaron-powell.com/#blog",
-      "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
-      "logo": "https://www.aaron-powell.com/images/logo.png",
-      "memberId": 3497
-    },
-    {
-      "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
-      "checkTitles": false,
-      "title": "Owain Codes",
-      "url": "https://owain.codes/",
-      "rss": "https://owain.codes/rss?category=umbraco",
-      "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
-      "memberId": 144571
-    },	
-    {
-      "id": "d4c4eaf6-203a-4968-8b99-e7191f9b4943",
-      "checkTitles": false,
-      "title": "Moriyama",
-      "url": "https://www.moriyama.co.uk/",
-      "rss": "https://www.moriyama.co.uk/rss",
-      "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
-      "memberId": 1199
-    },
-	    {
-      "id": "40b25a24-8a8f-40f7-8271-5e855b76909a",
-      "checkTitles": false,
-      "title": "My Umbraco Adventures",
-      "url": "https://jvantroyen.blogspot.com/",
-      "rss": "https://feeds.feedburner.com/MyUmbracoAdventures",
-      "logo": "https://our.umbraco.com/media/upload/0e40926e-0884-42e4-abc4-ed72ab2f2c31/Jeroen%20Vantroyen.png?width=500&height=500&mode=crop&upscale=true",
-      "memberId": 274827
-    },
-    {
-      "id": "530f8b32-8445-4dd4-8c61-df1007f70e7a",
-      "checkTitles": false,
-      "title": "Dave Woestenborghs blog",
-      "url": "https://dev.to/dawoe",
-      "rss": "https://dev.to/feed/dawoe",
-      "logo": "https://our.umbraco.com/media/upload/e325fd8a-d558-4c67-a1a1-e8d29a10b548/dave-woestenborghs.jpg?width=400&height=400&mode=crop&upscale=true",
-      "memberId": 2054
-    },
-    {
-      "id": "d85c84b3-be47-4c54-aa29-cd53ca422611",
-      "checkTitles": false,
-      "title": "too orangey for crows",
-      "url": "http://tooorangey.co.uk/",
-      "rss": "http://tooorangey.co.uk/rssfeed",
-      "logo": "https://our.umbraco.com/media/upload/db50a722-9866-4efb-8fb3-b68dae6d2d77/marcemarc.jpg?width=400&height=400&mode=crop&upscale=true",
-      "memberId": 33401
-    },
-    {
-      "id": "963192c7-ee15-4058-bb60-fefe2e4362bb",
-      "checkTitles": false,
-      "title": "AaronSadlerUK blog",
-      "url": "https://aaronsadler.dev",
-      "rss": "https://aaronsadler.dev/rss/?label=umbraco",
-      "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
-      "memberId": 279599
-    },
-    {
-      "id": "2dbd524e-3474-47f0-9b1c-4d8933db6c99",
-      "checkTitles": true,
-      "title": "Rick Butterfield",
-      "url": "https://rickbutterfield.dev",
-      "rss": "https://rickbutterfield.dev/feed.xml",
-      "logo": "https://our.umbraco.com/media/upload/3da3028d-2cb2-45fc-a759-f66338643d93/DSC04052.jpg?width=400&height=400&mode=crop&upscale=true",
-      "memberId": 282597
-    },
-    {
-      "id": "5ce41c5d-2386-4516-8db3-4a14f38a19c8",
-      "checkTitles": false,
-      "title": "Søren Kottal",
-      "url": "https://dev.to/skttl",
-      "rss": "https://dev.to/feed/skttl",
-      "logo": "https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png",
-      "memberId": 109985
-    },
-    {
-      "id": "6c1dbd96-c0e8-432d-a75a-e91571dd3288",
-      "checkTitles": false,
-      "title": "Jesper Mayntzhusen",
-      "url": "https://dev.to/jemayn",
-      "rss": "https://dev.to/feed/jemayn",
-      "logo": "https://our.umbraco.com/media/upload/29c5acd3-bf71-49df-a012-9eeeb2ad5ad9/IMG_3884%20(2).jpg",
-      "memberId": 274921
-    },
-    {
-      "id": "574d8335-d429-4ff7-8877-dcd863206eae",
-      "checkTitles": false,
-      "title": "Michaels uGarage",
-      "url": "https://michaels-ugarage.cyber-solutions.at",
-      "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
-      "logo": "https://michaels-ugarage.cyber-solutions.at/media/v4lbwrd2/logo.png",
-      "memberId": 286196
-    },
-    {
-      "id": "836bd4cf-4dd7-455b-98f2-3e2217b6e27c",
-      "checkTitles": false,
-      "title": "Patrick de Mooij",
-      "url": "https://patrickdemooij.hashnode.dev/",
-      "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
-      "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
-      "memberId": 271921
-    },  
-    {
-      "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
-      "checkTitles": true,
-      "title": "Nikolaj Brask-Nielsen",
-      "url": "https://dev.to/nikcio",
-      "rss": "https://dev.to/feed/nikcio",
-      "logo": "https://github.com/nikcio.png",
-      "memberId": 284921
-    },  
-    {
-      "id": "6671815b-18c5-4255-a1c8-92f7add6049a",
-      "checkTitles": false,
-      "title": "Cultiv Blog (dev.to)",
-      "url": "https://dev.to/cultiv",
-      "rss": "https://dev.to/feed/cultiv",
-      "logo": "https://github.com/nul800sebastiaan.png",
-      "memberId": 4576
-    },
-    {
-      "id": "1a8dcb24-d6ca-4c4b-a55e-9ccac372b62b",
-      "checkTitles": false,
-      "title": "Cultiv Blog",
-      "url": "https://cultiv.nl",
-      "rss": "https://cultiv.nl/?altTemplate=blogRss",
-      "logo": "https://github.com/nul800sebastiaan.png",
-      "memberId": 4576
-    },	  
-    {
-      "id": "2c812506-4068-40f4-891d-a0a22864b076",
-      "checkTitles": false,
-      "title": "MediaWizards Blog",
-      "url": "https://umbraco.themediawizards.co.uk/the-grimoire/",
-      "rss": "https://umbraco.themediawizards.co.uk/blog/feed.rss",
-      "logo": "https://umbraco.themediawizards.co.uk/wizard.png",
-      "memberId": 283076
-    },
-    {
-      "id": "3bc08e13-c0b9-405e-a37e-131216fdfefa",
-      "checkTitles": false,
-      "title": "24 Days in Umbraco CMS",
-      "url": "https://24days.in/umbraco-cms/",
-      "rss": "https://24days.in/umbraco-cms/feed/",
-      "logo": "https://24days.in/media/or0ki5ok/24days2022.png?width=100&rnd=133143344855170000",
-      "memberId": null
-    },
-    {
-      "id": "d114dc9870c7465faa08ac8e76fafcd6",
-      "checkTitles": false,
-      "title": "Joe Glombek",
-      "url": "https://joe.gl/ombek/blog",
-      "rss": "https://joe.gl/ombek/blog/rss",
-      "logo": "https://2.gravatar.com/avatar/6e03aef14c3e69d4e14b111b10d480a70ecc5a60a7dd5975472a68c06f5b48e8?size=256",
-      "memberId": 154765
-    },
-    {
-      "id": "efae9ea4-0feb-471c-8d58-3bb977e632ab",
-      "checkTitles": true,
-      "title": "Andy Butland",
-      "url": "https://www.andybutland.dev/",
-      "rss": "https://www.andybutland.dev/feeds/posts/default?alt=rss",
-      "logo": "https://avatars.githubusercontent.com/u/1993459",
-      "memberId": 6683
-    },
-    {
-      "id": "fc7ded60-4494-441f-8916-3185d0571157",
-      "checkTitles": false,
-      "title": "MCB Blog",
-      "url": "https://blog.mcb.dk/en/tag/umbraco",
-      "rss": "https://blog.mcb.dk/en/tag/umbraco/rss.xml",
-      "logo": "https://avatars.githubusercontent.com/u/7870099?s=256",
-      "memberId": null
-    },
-    {
-      "id": "2f772162-582b-481b-b18e-e4ae78e084f9",
-      "checkTitles": false,
-      "title": "Rachel Breeze",
-      "url": "https://www.rachelbreeze.dev/",
-      "rss": "https://www.rachelbreeze.dev/blogs/rss.xml",
-      "logo": "https://www.rachelbreeze.dev/media/pvhhgpma/rpb5tz78_400x400-1.jpg",
-      "memberId": 273751
-    },
-    {
-      "id": "56f32f38-f457-42b6-a660-5755773e68ac",
-      "checkTitles": true,
-      "title": "Thomas Morris",
-      "url": "https://mozzy.dev/",
-      "rss": "https://mozzy.dev/feed.xml",
-      "logo": "https://avatars.githubusercontent.com/u/2123628",
-      "memberId": 67962
-    },
-    {
-      "id": "7a42e979-c9c1-410b-976d-d25cf3de3faf",
-      "checkTitles": false,
-      "title": "UmbHost",
-      "url": "https://umbhost.net/blog/umbraco",
-      "rss": "https://umbhost.net/blog/feed.rss?category=umbraco",
-      "logo": "https://pbs.twimg.com/profile_images/1610269225276391425/1rtXbJ5B_400x400.png",
-      "memberId": 279599
-    },
-    {
-      "id": "b48ff45f-9fef-4a78-9a8d-517f18ab1237",
-      "checkTitles": true,
-      "title": "Dennis",
-      "url": "https://dev.to/d_inventor",
-      "rss": "https://dev.to/feed/d_inventor",
-      "logo": "https://avatars.githubusercontent.com/u/25585418",
-      "memberId": null
-    },
-    {
-      "id": "9c2b7e6a-c70b-48fe-9055-ff1cb1dcafee",
-      "checkTitles": false,
-      "title": "CodeBunTes Blog",
-      "url": "https://codebuntes.entrah-net.co.uk",
-      "rss": "https://codebuntes.entrah-net.co.uk/tag/umbraco/feed/",
-      "logo": "https://codebuntes.entrah-net.co.uk/codebuntes_icon.jpg",
-      "memberId": 339200
-    },
-    {
-      "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
-      "checkTitles": true,
-      "title": "Corné Hoskam",
-      "url": "https://cornehoskam.com/",
-      "rss": "https://cornehoskam.com/rss?tag=umbraco",
-      "logo": "https://avatars.githubusercontent.com/u/6321978",
-      "memberId": 281913
-    },
-    {
-      "id": "07db7839-b2fd-442e-9269-11e232626f40",
-      "checkTitles": false,
-      "title": "Owain Jones",
-      "url": "https://owainjones.dev/blog/",
-      "rss": "https://owainjones.dev/rss",
-      "logo": "https://avatars.githubusercontent.com/u/17008780",
-      "memberId": 280406
-    },
-    {
-      "id": "084cfd95-bdb3-4f91-9e80-43fee9c8da01",
-      "checkTitles": false,
-      "title": "RichardSoeteman.NET",
-      "url": "https://richardsoeteman.net/",
-      "rss": "https://richardsoeteman.net/rss",
-      "logo": "https://avatars.githubusercontent.com/u/1543953",
-      "memberId": 2798
-    },
-    {
-      "id": "da76ff45-91fa-4f08-ac37-6524ea9f0c4c",
-      "checkTitles": false,
-      "title": "Johan Reitsma",
-      "url": "https://www.johanreitsma.com/",
-      "rss": "https://www.johanreitsma.com/rss",
-      "logo": "https://avatars.githubusercontent.com/u/107849834",
-      "memberId": 108757
-    },
-    {
-      "id": "d43914e4-a4a7-4d9f-a92a-50163e98e00c",
-      "checkTitles": false,
-      "title": "Busra Sengul",
-      "url": "https://dev.to/busrasengul",
-      "rss": "https://dev.to/feed/busrasengul/",
-      "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png",
-      "memberId": 276177
-    },
-    {
-      "id": "a5f40364-88c8-4bf5-a5a0-bf4648e12db2",
-      "checkTitles": false,
-      "title": "Lotte Pitcher",
-      "url": "https://dev.to/lottepitcher",
-      "rss": "https://dev.to/feed/lottepitcher",
-      "logo": "https://avatars.githubusercontent.com/u/4716542",
-      "memberId": 55687
-    },
-    {
-      "id": "f8040db2-bcc2-4340-abb0-45c8c6c45099",
-      "checkTitles": false,
-      "title": "kjac",
-      "url": "https://kjac.dev/",
-      "rss": "https://kjac.dev/rss.xml",
-      "logo": "https://github.com/kjac.png",
-      "memberId": 25389
-    },
-    {
-      "id": "5f92f371-5bb5-4519-98b7-7b90a7cbd151",
-      "checkTitles": false,
-      "title": "Harry Gordon",
-      "url": "https://harrygordon.co.uk/",
-      "rss": "https://harrygordon.co.uk/rss.xml",
-      "logo": "https://harrygordon.co.uk/media/ud1pkpyc/me.png",
-      "memberId": 74802
-    },
-    {
-      "id": "24C809B9-D7E7-48D7-B7F6-13596C12487F",
-      "checkTitles": true,
-      "title": "UmbraCare Blog",
-      "url": "https://umbracare.net/",
-      "rss": "https://umbracare.net/tags/umbraco/rss/",
-      "logo": "https://umbracare.net/media/dqqli31k/logo_umbracare_square.png",
-      "memberId": 155740
-    },
-    {
-      "id": "",
-      "checkTitles": true,
-      "title": "Andrew McKaskill",
-      "url": "https://mckaskill.com/",
-      "rss": "https://www.mckaskill.com/feed.xml",
-      "logo": "https://www.mckaskill.com/static/images/avatar.png",
-      "memberId": 296222
-    },
-    {
-      "id": "dd55db03-35f5-4785-bf44-aa7189068674",
-      "checkTitles": true,
-      "title": "mattbrailsford.dev",
-      "url": "https://mattbrailsford.dev",
-      "rss": "https://mattbrailsford.dev/rss",
-      "logo": "https://mattbrailsford.dev/logo-256.png",
-      "memberId": 5518
-    }
-  ]
+    "blogs": [
+        {
+            "id": "c70026ea-ad8c-47cd-90eb-486c153eb44c",
+            "checkTitles": false,
+            "title": "Enkel Media Blog",
+            "url": "https://www.enkelmedia.se/blogg/",
+            "rss": "https://www.enkelmedia.se/blogg/rss/",
+            "logo": "https://www.enkelmedia.se/img/enkel-media-logotype-180x74.png",
+            "memberId": 2535
+        },
+        {
+            "id": "91660aac-e27d-445b-b3a8-d54876b2df04",
+            "checkTitles": false,
+            "title": "Jacker.io Umbraco Articles",
+            "url": "https://jacker.io/tutorials-articles/",
+            "rss": "https://jacker.io/rss",
+            "logo": "https://jacker.io/jacker-io-umbraco-logo.png",
+            "memberId": 23434
+        },
+        {
+            "id": "ad10ed4d-d22e-405f-8588-ba8a3d1592cf",
+            "checkTitles": false,
+            "title": "Rasolo's blog",
+            "url": "http://rasolo.azurewebsites.net/blogs/umbraco/",
+            "rss": "http://rasolo.azurewebsites.net/blogs/umbraco/feed",
+            "logo": "http://rasolo.azurewebsites.net/media/5a1pqhxs/rasolo.png",
+            "memberId": "278134"
+        },
+        {
+            "id": "33D9FA36-7469-46D4-AACD-D1A9BED0A807",
+            "checkTitles": false,
+            "title": "codeshare.co.uk Blog",
+            "url": "https://codeshare.co.uk/",
+            "rss": "https://codeshare.co.uk/feed/?category=umbraco",
+            "logo": "https://codeshare.co.uk/media/1371/logo.png",
+            "memberId": 126488
+        },
+        {
+            "id": "1D1984FF-85CC-4610-94F2-E0E163ACD646",
+            "checkTitles": false,
+            "title": "Jamie's Blog",
+            "url": "https://jamiepollock.net/blog/",
+            "rss": "https://jamiepollock.net/blog/atom.xml",
+            "logo": "https://jamiepollock.net/images/favicon-64x64.png",
+            "memberId": 3305
+        },
+        {
+            "id": "D946B0EC-2208-455E-8BD5-C8A3E739215E",
+            "checkTitles": false,
+            "title": "Lars-Erik's blog",
+            "url": "http://blog.aabech.no/",
+            "rss": "http://blog.aabech.no/rss",
+            "logo": "https://pbs.twimg.com/profile_images/490060327241797632/MvB5bnIm_400x400.jpeg",
+            "memberId": 30373
+        },
+        {
+            "id": "E325DF68-908E-41A9-AB29-16C66A2D32E7",
+            "checkTitles": false,
+            "title": "Vizioz",
+            "url": "https://www.vizioz.com/blog/",
+            "rss": "https://www.vizioz.com/blog/rss",
+            "logo": "https://www.vizioz.com/images/vizioz_logo3.png",
+            "memberId": 1868
+        },
+        {
+            "id": "C50E6041-BC06-4D2E-9A08-E21E6A8CF23C",
+            "checkTitles": false,
+            "title": "Hack Make Do - Warren Buckley",
+            "url": "https://blog.hackmakedo.co",
+            "rss": "https://blog.hackmakedo.com/tag/umbraco/feed/",
+            "logo": "https://secure.gravatar.com/avatar/3267045325f9985f527fd8b7e61d5d05?s=100&d=identicon&r=g",
+            "memberId": 1175
+        },
+        {
+            "id": "FEEF823F-84E7-4FBA-AF14-A70D1F6B2DFC",
+            "checkTitles": false,
+            "title": "Shazwazza",
+            "url": "https://shazwazza.com/",
+            "rss": "https://feeds.feedburner.com/Shazwazza",
+            "logo": "https://pbs.twimg.com/profile_images/702409323100696576/K2OWhn3d_400x400.jpg",
+            "memberId": 1767
+        },
+        {
+            "id": "76E06586-1220-44B2-A475-BFFC2C03499D",
+            "checkTitles": false,
+            "title": "Lee Kelleher",
+            "url": "https://leekelleher.com/",
+            "rss": "https://leekelleher.com/umbraco/feed/",
+            "logo": "https://leekelleher.com/assets/img/nxnw_80x80.png",
+            "memberId": 3042
+        },
+        {
+            "id": "4E879F65-E8DA-4391-95B6-9C5344ECF824",
+            "checkTitles": false,
+            "title": "Ismail’s umbraco adventures",
+            "url": "https://ismailmayat.wordpress.com/",
+            "rss": "https://ismailmayat.wordpress.com/tag/umbraco/feed/",
+            "logo": "https://0.gravatar.com/avatar/6495743815f2137983c9d19ad4746edb?s=96&d=&r=G",
+            "memberId": 1203
+        },
+        {
+            "id": "35E96E73-29A9-4DE0-BDA4-159CE4D23BB4",
+            "checkTitles": false,
+            "title": "ZpqrtBnk - Software Ektropist",
+            "url": "https://www.zpqrtbnk.net/",
+            "rss": "https://www.zpqrtbnk.net/rss/umbraco",
+            "logo": "https://www.zpqrtbnk.net/img/zpqrtbnk/entropy2.png",
+            "memberId": 6724
+        },
+        {
+            "id": "27A50A0B-376B-451E-B203-8366DA22F511",
+            "checkTitles": false,
+            "title": "Dave on Umbraco",
+            "url": "http://dawoe.blogspot.dk/",
+            "rss": "http://dawoe.blogspot.com/feeds/posts/default?alt=rss",
+            "logo": "https://pbs.twimg.com/profile_images/542408550601859072/r4YfpaR7_400x400.jpeg",
+            "memberId": 2054
+        },
+        {
+            "id": "E3BA4BBE-2C08-4741-80BC-19FB536D7591",
+            "checkTitles": false,
+            "title": "Code 101",
+            "url": "https://code101.net/",
+            "rss": "https://code101.net/code-101?format=rss",
+            "logo": "https://images.squarespace-cdn.com/content/5c1fc525365f024b42163a20/1545678725906-MAU2ZNX57KZ79OQJ6X33/code101-logo.png",
+            "memberId": 8882
+        },
+        {
+            "id": "55591488-7406-4287-AF72-CCF9F8AE7378",
+            "checkTitles": false,
+            "title": "Morten Bock",
+            "url": "https://blog.mortenbock.dk/",
+            "rss": "https://blog.mortenbock.dk/tag/umbraco/feed/",
+            "logo": "https://pbs.twimg.com/profile_images/606096665087344640/9aO-6dV4_400x400.jpg",
+            "memberId": 1201
+        },
+        {
+            "id": "12F4440A-C87B-4450-964A-D4EA50FAE18C",
+            "checkTitles": false,
+            "title": "Anders Bjerner",
+            "url": "http://www.bjerner.dk/blog/",
+            "rss": "http://www.bjerner.dk/blog/tags/umbraco/rss",
+            "logo": "http://www.gravatar.com/avatar/e3ad43cc015da910c21237961fa6d74d.jpg?s=256&d=mm",
+            "memberId": 66039
+        },
+        {
+            "id": "B916F613-DBC2-41A4-9499-2FA756A31630",
+            "checkTitles": false,
+            "title": "Attackmonkey",
+            "url": "http://www.attackmonkey.co.uk/blog",
+            "rss": "http://www.attackmonkey.co.uk/blog/rss?filterBy=umbraco",
+            "logo": "http://www.attackmonkey.co.uk/images/header-logo.png",
+            "memberId": 6280
+        },
+        {
+            "id": "7DF2AE1C-26C6-4BCB-A688-2346CBFAA042",
+            "checkTitles": false,
+            "title": "ProWorks",
+            "url": "https://www.proworks.com/blog",
+            "rss": "https://www.proworks.com/blog/rss",
+            "logo": "https://www.proworks.com/images/PWlogo.png",
+            "memberId": null
+        },
+        {
+            "id": "345597EE-CA65-4588-A6CC-8EA3012A25BB",
+            "checkTitles": false,
+            "title": "Aaron Powell - LINQ to fail",
+            "url": "https://www.aaron-powell.com/#blog",
+            "rss": "https://www.aaron-powell.com/tags/umbraco/index.xml",
+            "logo": "https://www.aaron-powell.com/images/logo.png",
+            "memberId": 3497
+        },
+        {
+            "id": "97488df9-0f87-4748-b8cc-b68ca48b2030",
+            "checkTitles": false,
+            "title": "Owain Codes",
+            "url": "https://owain.codes/",
+            "rss": "https://owain.codes/rss?category=umbraco",
+            "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
+            "memberId": 144571
+        },
+        {
+            "id": "d4c4eaf6-203a-4968-8b99-e7191f9b4943",
+            "checkTitles": false,
+            "title": "Moriyama",
+            "url": "https://www.moriyama.co.uk/",
+            "rss": "https://www.moriyama.co.uk/rss",
+            "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
+            "memberId": 1199
+        },
+        {
+            "id": "40b25a24-8a8f-40f7-8271-5e855b76909a",
+            "checkTitles": false,
+            "title": "My Umbraco Adventures",
+            "url": "https://jvantroyen.blogspot.com/",
+            "rss": "https://feeds.feedburner.com/MyUmbracoAdventures",
+            "logo": "https://our.umbraco.com/media/upload/0e40926e-0884-42e4-abc4-ed72ab2f2c31/Jeroen%20Vantroyen.png?width=500&height=500&mode=crop&upscale=true",
+            "memberId": 274827
+        },
+        {
+            "id": "530f8b32-8445-4dd4-8c61-df1007f70e7a",
+            "checkTitles": false,
+            "title": "Dave Woestenborghs blog",
+            "url": "https://dev.to/dawoe",
+            "rss": "https://dev.to/feed/dawoe",
+            "logo": "https://our.umbraco.com/media/upload/e325fd8a-d558-4c67-a1a1-e8d29a10b548/dave-woestenborghs.jpg?width=400&height=400&mode=crop&upscale=true",
+            "memberId": 2054
+        },
+        {
+            "id": "d85c84b3-be47-4c54-aa29-cd53ca422611",
+            "checkTitles": false,
+            "title": "too orangey for crows",
+            "url": "http://tooorangey.co.uk/",
+            "rss": "http://tooorangey.co.uk/rssfeed",
+            "logo": "https://our.umbraco.com/media/upload/db50a722-9866-4efb-8fb3-b68dae6d2d77/marcemarc.jpg?width=400&height=400&mode=crop&upscale=true",
+            "memberId": 33401
+        },
+        {
+            "id": "963192c7-ee15-4058-bb60-fefe2e4362bb",
+            "checkTitles": false,
+            "title": "AaronSadlerUK blog",
+            "url": "https://aaronsadler.dev",
+            "rss": "https://aaronsadler.dev/rss/?label=umbraco",
+            "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
+            "memberId": 279599
+        },
+        {
+            "id": "2dbd524e-3474-47f0-9b1c-4d8933db6c99",
+            "checkTitles": true,
+            "title": "Rick Butterfield",
+            "url": "https://rickbutterfield.dev",
+            "rss": "https://rickbutterfield.dev/feed.xml",
+            "logo": "https://our.umbraco.com/media/upload/3da3028d-2cb2-45fc-a759-f66338643d93/DSC04052.jpg?width=400&height=400&mode=crop&upscale=true",
+            "memberId": 282597
+        },
+        {
+            "id": "5ce41c5d-2386-4516-8db3-4a14f38a19c8",
+            "checkTitles": false,
+            "title": "Søren Kottal",
+            "url": "https://dev.to/skttl",
+            "rss": "https://dev.to/feed/skttl",
+            "logo": "https://our.umbraco.com/media/upload/65cfa307-6f67-47de-a489-fc1bef5d48ad/img_3335.png",
+            "memberId": 109985
+        },
+        {
+            "id": "6c1dbd96-c0e8-432d-a75a-e91571dd3288",
+            "checkTitles": false,
+            "title": "Jesper Mayntzhusen",
+            "url": "https://dev.to/jemayn",
+            "rss": "https://dev.to/feed/jemayn",
+            "logo": "https://our.umbraco.com/media/upload/29c5acd3-bf71-49df-a012-9eeeb2ad5ad9/IMG_3884%20(2).jpg",
+            "memberId": 274921
+        },
+        {
+            "id": "574d8335-d429-4ff7-8877-dcd863206eae",
+            "checkTitles": false,
+            "title": "Michaels uGarage",
+            "url": "https://michaels-ugarage.cyber-solutions.at",
+            "rss": "https://michaels-ugarage.cyber-solutions.at/rss",
+            "logo": "https://michaels-ugarage.cyber-solutions.at/media/v4lbwrd2/logo.png",
+            "memberId": 286196
+        },
+        {
+            "id": "836bd4cf-4dd7-455b-98f2-3e2217b6e27c",
+            "checkTitles": false,
+            "title": "Patrick de Mooij",
+            "url": "https://patrickdemooij.hashnode.dev/",
+            "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
+            "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
+            "memberId": 271921
+        },
+        {
+            "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
+            "checkTitles": true,
+            "title": "Nikolaj Brask-Nielsen",
+            "url": "https://dev.to/nikcio",
+            "rss": "https://dev.to/feed/nikcio",
+            "logo": "https://github.com/nikcio.png",
+            "memberId": 284921
+        },
+        {
+            "id": "6671815b-18c5-4255-a1c8-92f7add6049a",
+            "checkTitles": false,
+            "title": "Cultiv Blog (dev.to)",
+            "url": "https://dev.to/cultiv",
+            "rss": "https://dev.to/feed/cultiv",
+            "logo": "https://github.com/nul800sebastiaan.png",
+            "memberId": 4576
+        },
+        {
+            "id": "1a8dcb24-d6ca-4c4b-a55e-9ccac372b62b",
+            "checkTitles": false,
+            "title": "Cultiv Blog",
+            "url": "https://cultiv.nl",
+            "rss": "https://cultiv.nl/?altTemplate=blogRss",
+            "logo": "https://github.com/nul800sebastiaan.png",
+            "memberId": 4576
+        },
+        {
+            "id": "2c812506-4068-40f4-891d-a0a22864b076",
+            "checkTitles": false,
+            "title": "MediaWizards Blog",
+            "url": "https://umbraco.themediawizards.co.uk/the-grimoire/",
+            "rss": "https://umbraco.themediawizards.co.uk/blog/feed.rss",
+            "logo": "https://umbraco.themediawizards.co.uk/wizard.png",
+            "memberId": 283076
+        },
+        {
+            "id": "3bc08e13-c0b9-405e-a37e-131216fdfefa",
+            "checkTitles": false,
+            "title": "24 Days in Umbraco CMS",
+            "url": "https://24days.in/umbraco-cms/",
+            "rss": "https://24days.in/umbraco-cms/feed/",
+            "logo": "https://24days.in/media/or0ki5ok/24days2022.png?width=100&rnd=133143344855170000",
+            "memberId": null
+        },
+        {
+            "id": "d114dc9870c7465faa08ac8e76fafcd6",
+            "checkTitles": false,
+            "title": "Joe Glombek",
+            "url": "https://joe.gl/ombek/blog",
+            "rss": "https://joe.gl/ombek/blog/rss",
+            "logo": "https://2.gravatar.com/avatar/6e03aef14c3e69d4e14b111b10d480a70ecc5a60a7dd5975472a68c06f5b48e8?size=256",
+            "memberId": 154765
+        },
+        {
+            "id": "efae9ea4-0feb-471c-8d58-3bb977e632ab",
+            "checkTitles": true,
+            "title": "Andy Butland",
+            "url": "https://www.andybutland.dev/",
+            "rss": "https://www.andybutland.dev/feeds/posts/default?alt=rss",
+            "logo": "https://avatars.githubusercontent.com/u/1993459",
+            "memberId": 6683
+        },
+        {
+            "id": "fc7ded60-4494-441f-8916-3185d0571157",
+            "checkTitles": false,
+            "title": "MCB Blog",
+            "url": "https://blog.mcb.dk/en/tag/umbraco",
+            "rss": "https://blog.mcb.dk/en/tag/umbraco/rss.xml",
+            "logo": "https://avatars.githubusercontent.com/u/7870099?s=256",
+            "memberId": null
+        },
+        {
+            "id": "2f772162-582b-481b-b18e-e4ae78e084f9",
+            "checkTitles": false,
+            "title": "Rachel Breeze",
+            "url": "https://www.rachelbreeze.dev/",
+            "rss": "https://www.rachelbreeze.dev/blogs/rss.xml",
+            "logo": "https://www.rachelbreeze.dev/media/pvhhgpma/rpb5tz78_400x400-1.jpg",
+            "memberId": 273751
+        },
+        {
+            "id": "56f32f38-f457-42b6-a660-5755773e68ac",
+            "checkTitles": true,
+            "title": "Thomas Morris",
+            "url": "https://mozzy.dev/",
+            "rss": "https://mozzy.dev/feed.xml",
+            "logo": "https://avatars.githubusercontent.com/u/2123628",
+            "memberId": 67962
+        },
+        {
+            "id": "7a42e979-c9c1-410b-976d-d25cf3de3faf",
+            "checkTitles": false,
+            "title": "UmbHost",
+            "url": "https://umbhost.net/blog/umbraco",
+            "rss": "https://umbhost.net/blog/feed.rss?category=umbraco",
+            "logo": "https://pbs.twimg.com/profile_images/1610269225276391425/1rtXbJ5B_400x400.png",
+            "memberId": 279599
+        },
+        {
+            "id": "b48ff45f-9fef-4a78-9a8d-517f18ab1237",
+            "checkTitles": true,
+            "title": "Dennis",
+            "url": "https://dev.to/d_inventor",
+            "rss": "https://dev.to/feed/d_inventor",
+            "logo": "https://avatars.githubusercontent.com/u/25585418",
+            "memberId": null
+        },
+        {
+            "id": "9c2b7e6a-c70b-48fe-9055-ff1cb1dcafee",
+            "checkTitles": false,
+            "title": "CodeBunTes Blog",
+            "url": "https://codebuntes.entrah-net.co.uk",
+            "rss": "https://codebuntes.entrah-net.co.uk/tag/umbraco/feed/",
+            "logo": "https://codebuntes.entrah-net.co.uk/codebuntes_icon.jpg",
+            "memberId": 339200
+        },
+        {
+            "id": "ecc5fe1a-c3e1-4ea4-a2c4-a24c4dadf172",
+            "checkTitles": true,
+            "title": "Corné Hoskam",
+            "url": "https://cornehoskam.com/",
+            "rss": "https://cornehoskam.com/rss?tag=umbraco",
+            "logo": "https://avatars.githubusercontent.com/u/6321978",
+            "memberId": 281913
+        },
+        {
+            "id": "07db7839-b2fd-442e-9269-11e232626f40",
+            "checkTitles": false,
+            "title": "Owain Jones",
+            "url": "https://owainjones.dev/blog/",
+            "rss": "https://owainjones.dev/rss",
+            "logo": "https://avatars.githubusercontent.com/u/17008780",
+            "memberId": 280406
+        },
+        {
+            "id": "084cfd95-bdb3-4f91-9e80-43fee9c8da01",
+            "checkTitles": false,
+            "title": "RichardSoeteman.NET",
+            "url": "https://richardsoeteman.net/",
+            "rss": "https://richardsoeteman.net/rss",
+            "logo": "https://avatars.githubusercontent.com/u/1543953",
+            "memberId": 2798
+        },
+        {
+            "id": "da76ff45-91fa-4f08-ac37-6524ea9f0c4c",
+            "checkTitles": false,
+            "title": "Johan Reitsma",
+            "url": "https://www.johanreitsma.com/",
+            "rss": "https://www.johanreitsma.com/rss",
+            "logo": "https://avatars.githubusercontent.com/u/107849834",
+            "memberId": 108757
+        },
+        {
+            "id": "d43914e4-a4a7-4d9f-a92a-50163e98e00c",
+            "checkTitles": false,
+            "title": "Busra Sengul",
+            "url": "https://dev.to/busrasengul",
+            "rss": "https://dev.to/feed/busrasengul/",
+            "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/logos/resized_logo_UQww2soKuUsjaOGNB38o.png",
+            "memberId": 276177
+        },
+        {
+            "id": "a5f40364-88c8-4bf5-a5a0-bf4648e12db2",
+            "checkTitles": false,
+            "title": "Lotte Pitcher",
+            "url": "https://dev.to/lottepitcher",
+            "rss": "https://dev.to/feed/lottepitcher",
+            "logo": "https://avatars.githubusercontent.com/u/4716542",
+            "memberId": 55687
+        },
+        {
+            "id": "f8040db2-bcc2-4340-abb0-45c8c6c45099",
+            "checkTitles": false,
+            "title": "kjac",
+            "url": "https://kjac.dev/",
+            "rss": "https://kjac.dev/rss.xml",
+            "logo": "https://github.com/kjac.png",
+            "memberId": 25389
+        },
+        {
+            "id": "5f92f371-5bb5-4519-98b7-7b90a7cbd151",
+            "checkTitles": false,
+            "title": "Harry Gordon",
+            "url": "https://harrygordon.co.uk/",
+            "rss": "https://harrygordon.co.uk/rss.xml",
+            "logo": "https://harrygordon.co.uk/media/ud1pkpyc/me.png",
+            "memberId": 74802
+        },
+        {
+            "id": "24C809B9-D7E7-48D7-B7F6-13596C12487F",
+            "checkTitles": true,
+            "title": "UmbraCare Blog",
+            "url": "https://umbracare.net/",
+            "rss": "https://umbracare.net/tags/umbraco/rss/",
+            "logo": "https://umbracare.net/media/dqqli31k/logo_umbracare_square.png",
+            "memberId": 155740
+        },
+        {
+            "id": "",
+            "checkTitles": true,
+            "title": "Andrew McKaskill",
+            "url": "https://mckaskill.com/",
+            "rss": "https://www.mckaskill.com/feed.xml",
+            "logo": "https://www.mckaskill.com/static/images/avatar.png",
+            "memberId": 296222
+        },
+        {
+            "id": "dd55db03-35f5-4785-bf44-aa7189068674",
+            "checkTitles": true,
+            "title": "mattbrailsford.dev",
+            "url": "https://mattbrailsford.dev",
+            "rss": "https://mattbrailsford.dev/rss",
+            "logo": "https://mattbrailsford.dev/logo-256.png",
+            "memberId": 5518
+        },
+        {
+            "id": "c922a2ce-4dd8-4e26-a5f3-d17e1ca6b5d3",
+            "checkTitles": false,
+            "title": "Sam Forrest",
+            "url": "https://samforrest.dev",
+            "rss": "https://samforrest.dev/rss-feed/?category=umbfyi",
+            "logo": "https://avatars.githubusercontent.com/u/25460460?v=4",
+            "memberId": 343371
+        }
+    ]
 }
