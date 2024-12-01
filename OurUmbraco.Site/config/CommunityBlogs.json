@@ -478,22 +478,22 @@
       "memberId": 296222
     },
     {
-        "id": "dd55db03-35f5-4785-bf44-aa7189068674",
-        "checkTitles": true,
-        "title": "mattbrailsford.dev",
-        "url": "https://mattbrailsford.dev",
-        "rss": "https://mattbrailsford.dev/rss",
-        "logo": "https://mattbrailsford.dev/logo-256.png",
-        "memberId": 5518
+      "id": "dd55db03-35f5-4785-bf44-aa7189068674",
+      "checkTitles": true,
+      "title": "mattbrailsford.dev",
+      "url": "https://mattbrailsford.dev",
+      "rss": "https://mattbrailsford.dev/rss",
+      "logo": "https://mattbrailsford.dev/logo-256.png",
+      "memberId": 5518
     },
     {
-        "id": "c922a2ce-4dd8-4e26-a5f3-d17e1ca6b5d3",
-        "checkTitles": false,
-        "title": "Sam Forrest",
-        "url": "https://samforrest.dev",
-        "rss": "https://samforrest.dev/rss-feed/?category=umbfyi",
-        "logo": "https://avatars.githubusercontent.com/u/25460460?v=4",
-        "memberId": 343371
+      "id": "c922a2ce-4dd8-4e26-a5f3-d17e1ca6b5d3",
+      "checkTitles": false,
+      "title": "samforrest.dev",
+      "url": "https://samforrest.dev",
+      "rss": "https://samforrest.dev/rss-feed",
+      "logo": "https://avatars.githubusercontent.com/u/25460460?v=4",
+      "memberId": 343371
     }
   ]
 }
