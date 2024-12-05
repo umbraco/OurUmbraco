@@ -479,7 +479,7 @@
     },
     {
       "id": "dd55db03-35f5-4785-bf44-aa7189068674",
-      "checkTitles": true,
+      "checkTitles": false,
       "title": "mattbrailsford.dev",
       "url": "https://mattbrailsford.dev",
       "rss": "https://mattbrailsford.dev/tag/umbraco/feed",
