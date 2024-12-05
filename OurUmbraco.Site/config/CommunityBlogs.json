@@ -485,6 +485,15 @@
       "rss": "https://mattbrailsford.dev/tag/umbraco/feed",
       "logo": "https://mattbrailsford.dev/logo-256.png",
       "memberId": 5518
+    },
+    {
+      "id": "c922a2ce-4dd8-4e26-a5f3-d17e1ca6b5d3",
+      "checkTitles": false,
+      "title": "samforrest.dev",
+      "url": "https://samforrest.dev",
+      "rss": "https://samforrest.dev/rss-feed/?category=umbraco",
+      "logo": "https://avatars.githubusercontent.com/u/25460460?v=4",
+      "memberId": 343371
     }
   ]
 }
