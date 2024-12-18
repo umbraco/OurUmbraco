@@ -485,6 +485,15 @@
       "rss": "https://mattbrailsford.dev/tag/umbraco/feed",
       "logo": "https://mattbrailsford.dev/logo-256.png",
       "memberId": 5518
+    },
+    {
+      "id": "e14da49f-8d99-460a-9ede-280d827e8580",
+      "checkTitles": true,
+      "title": "Jacob Overgaard",
+      "url": "https://dev.to/iovergaard",
+      "rss": "https://dev.to/feed/iovergaard",
+      "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/666979/cccf02be-57af-4fe3-b436-f9151974b928.jpg",
+      "memberId": 277819
     }
   ]
 }
