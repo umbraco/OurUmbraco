@@ -66,7 +66,7 @@ namespace OurUmbraco.Our.Api
             if (version.Major == 7 || version.Major == 8 || version.Major > 8)
             {
                 if (version < latestVersion)
-                    return Json(new UpgradeResult(UpgradeType.Minor, $"{latestVersion} is released. Upgrade today - it's free!", $"http://our.umbraco.org/contribute/releases/{latestVersion.Major}{latestVersion.Minor}{latestVersion.Build}"));
+                    return Json(new UpgradeResult(UpgradeType.Minor, $"{latestVersion.ToString(3)} is released. Upgrade today - it's free!", $"http://our.umbraco.org/contribute/releases/{latestVersion.Major}{latestVersion.Minor}{latestVersion.Build}"));
             }
 
             // If nothing matches then it's probably a nightly or a very old version, no need to send upgrade message
