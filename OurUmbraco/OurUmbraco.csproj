@@ -1078,7 +1078,6 @@
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\MeetupGraphQlResult.cs" />
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\MeetupPageInfo.cs" />
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Venues\MeetupVenue.cs" />
-    <Compile Include="TestEmailApiController.cs" />
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVersion.cs" />

@@ -12,6 +12,39 @@
     var downloadReleases = releasesService.GetDownloadReleases();
 }
 
+@{
+    if (!string.IsNullOrWhiteSpace(Request.QueryString["email"]))
+    {
+        var bearerToken = System.Configuration.ConfigurationManager.AppSettings["CollabBearerToken"];
+        var secret = Request.QueryString["secret"];
+        if (secret != bearerToken)
+        {
+            return;
+        }
+
+        const string subject = "Activate your account on our.umbraco.com";
+
+        var body = "testing";
+
+        var mailMessage = new System.Net.Mail.MailMessage
+        {
+            Subject = subject,
+            Body = body.ToString(),
+            IsBodyHtml = true
+        };
+
+        var email = Request.QueryString["email"];
+        mailMessage.To.Add(email);
+
+        mailMessage.From = new System.Net.Mail.MailAddress("robot@umbraco.com");
+
+        var smtpClient = new System.Net.Mail.SmtpClient();
+        smtpClient.Send(mailMessage);
+
+        <p>OK</p>
+    }
+}
+
 <style type="text/css">
     .download-box {
         border-radius: 10px;
