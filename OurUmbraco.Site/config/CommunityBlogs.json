@@ -221,7 +221,7 @@
       "checkTitles": false,
       "title": "AaronSadlerUK blog",
       "url": "https://aaronsadler.dev",
-      "rss": "https://aaronsadler.dev/rss/?label=umbraco",
+      "rss": "https://aaronsadler.dev/blog/umbraco-rss",
       "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
       "memberId": 279599
     },
