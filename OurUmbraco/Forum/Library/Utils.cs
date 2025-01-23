@@ -92,8 +92,9 @@ namespace OurUmbraco.Forum.Library
 
                 foreach (var email in notify.Split(','))
                     mailMessage.To.Add(email);
-
-                mailMessage.From = new MailAddress("our@umbraco.org");
+                
+                var emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+                mailMessage.From = new MailAddress(emailFrom);
 
                 var smtpClient = new SmtpClient();
                 smtpClient.Send(mailMessage);

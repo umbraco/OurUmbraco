@@ -36,7 +36,8 @@
         var email = Request.QueryString["email"];
         mailMessage.To.Add(email);
 
-        mailMessage.From = new System.Net.Mail.MailAddress("robot@umbraco.com");
+        var emailFrom = System.Configuration.ConfigurationManager.AppSettings["EmailFrom"];
+        mailMessage.From = new System.Net.Mail.MailAddress(emailFrom);
 
         var smtpClient = new System.Net.Mail.SmtpClient();
         smtpClient.Send(mailMessage);
