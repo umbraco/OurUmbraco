@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -40,7 +41,8 @@ namespace OurUmbraco.Documentation
                     Commands.Checkout(repo, trackingBranch);
 
                     var options = new PullOptions { FetchOptions = new FetchOptions() };
-                    var signature = new Signature("Our Umbraco", "our@umbraco.org", new DateTimeOffset(DateTime.Now));
+                    var emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+                    var signature = new Signature("Our Umbraco", emailFrom, new DateTimeOffset(DateTime.Now));
                     Commands.Pull(repo, signature, options);
                 }
             }

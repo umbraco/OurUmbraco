@@ -36,7 +36,8 @@ namespace OurUmbraco.Our.Services
 
                 mailMessage.To.Add(member.Email);
 
-                mailMessage.From = new MailAddress("robot@umbraco.com");
+                var emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+                mailMessage.From = new MailAddress(emailFrom);
 
                 var smtpClient = new SmtpClient();
                 smtpClient.Send(mailMessage);

@@ -221,7 +221,7 @@
       "checkTitles": false,
       "title": "AaronSadlerUK blog",
       "url": "https://aaronsadler.dev",
-      "rss": "https://aaronsadler.dev/rss/?label=umbraco",
+      "rss": "https://aaronsadler.dev/blog/umbraco-rss",
       "logo": "https://our.umbraco.com/media/upload/c5eaa591-ae04-44fe-ac44-6a1fc058b4f6/72134521_10157929038118083_4879514299195719680_n.jpg",
       "memberId": 279599
     },
@@ -485,6 +485,24 @@
       "rss": "https://jcdc.dev/blog/rss",
       "logo": "https://avatars.githubusercontent.com/u/23620443",
       "memberId": 283180
+    },
+    {
+      "id": "dd55db03-35f5-4785-bf44-aa7189068674",
+      "checkTitles": false,
+      "title": "mattbrailsford.dev",
+      "url": "https://mattbrailsford.dev",
+      "rss": "https://mattbrailsford.dev/tag/umbraco/feed",
+      "logo": "https://mattbrailsford.dev/logo-256.png",
+      "memberId": 5518
+    },
+    {
+      "id": "e14da49f-8d99-460a-9ede-280d827e8580",
+      "checkTitles": true,
+      "title": "Jacob Overgaard",
+      "url": "https://dev.to/iovergaard",
+      "rss": "https://dev.to/feed/iovergaard",
+      "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/666979/cccf02be-57af-4fe3-b436-f9151974b928.jpg",
+      "memberId": 277819
     }
   ]
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Globalization;
 using System.Linq;
 using System.Net.Mail;
@@ -166,7 +167,8 @@ namespace OurUmbraco.Our.Controllers
                 mailMessage.Body = mail;
                 mailMessage.IsBodyHtml = true;
                 mailMessage.To.Add(new MailAddress(m.Email));
-                mailMessage.From = new MailAddress("robot@umbraco.com");
+                var emailFrom = ConfigurationManager.AppSettings["EmailFrom"];
+                mailMessage.From = new MailAddress(emailFrom);
 
                 using (var smtpClient = new SmtpClient())
                     smtpClient.Send(mailMessage);
