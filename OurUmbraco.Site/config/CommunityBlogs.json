@@ -179,7 +179,7 @@
       "rss": "https://owain.codes/rss?category=umbraco",
       "logo": "https://owain.codes/media/mkjnvu2o/oclogo.png",
       "memberId": 144571
-    },	
+    },
     {
       "id": "d4c4eaf6-203a-4968-8b99-e7191f9b4943",
       "checkTitles": false,
@@ -189,7 +189,7 @@
       "logo": "https://pbs.twimg.com/profile_images/1102892976446099456/ZZtbF02F_400x400.png",
       "memberId": 1199
     },
-	    {
+    {
       "id": "40b25a24-8a8f-40f7-8271-5e855b76909a",
       "checkTitles": false,
       "title": "My Umbraco Adventures",
@@ -269,7 +269,7 @@
       "rss": "https://patrickdemooij.hashnode.dev/rss.xml",
       "logo": "https://budgetboardgaming.com/media/m0jfbddc/photo5890993550424913618-1.jpg",
       "memberId": 271921
-    },  
+    },
     {
       "id": "3adee4d0-5bbe-4ff3-99f8-5b35151c5ec7",
       "checkTitles": true,
@@ -278,7 +278,7 @@
       "rss": "https://dev.to/feed/nikcio",
       "logo": "https://github.com/nikcio.png",
       "memberId": 284921
-    },  
+    },
     {
       "id": "6671815b-18c5-4255-a1c8-92f7add6049a",
       "checkTitles": false,
@@ -296,7 +296,7 @@
       "rss": "https://cultiv.nl/?altTemplate=blogRss",
       "logo": "https://github.com/nul800sebastiaan.png",
       "memberId": 4576
-    },	  
+    },
     {
       "id": "2c812506-4068-40f4-891d-a0a22864b076",
       "checkTitles": false,
@@ -476,6 +476,15 @@
       "rss": "https://www.mckaskill.com/feed.xml",
       "logo": "https://www.mckaskill.com/static/images/avatar.png",
       "memberId": 296222
+    },
+    {
+      "id": "caf90ba7-02a4-4a81-a107-0fb1211ff420",
+      "checkTitles": false,
+      "title": "James Carter",
+      "url": "https://jcdc.dev",
+      "rss": "https://jcdc.dev/blog/rss",
+      "logo": "https://avatars.githubusercontent.com/u/23620443",
+      "memberId": 283180
     },
     {
       "id": "dd55db03-35f5-4785-bf44-aa7189068674",
