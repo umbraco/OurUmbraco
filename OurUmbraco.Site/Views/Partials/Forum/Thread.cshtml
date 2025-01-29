@@ -112,18 +112,35 @@
             </div>
         </div>
     </li>
+
+    <li class="comment" data-parent="0" id="comment-352636">
+        <div class="comment-inner">
+            <div class="body">
+                <div style="font-size: 1.2em; font-weight: bold;">This forum is in read-only mode [LINK TO EXPLANATION]. <br />You can continue this topic on the <a href="https://forum.umbracoc.com/">new forum</a> by tapping the "Continue discussion" button below.</div>
+                @*<div id='discourse-comments'>
+                    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                    <script type="text/javascript">
+                        DiscourseEmbed = {
+                            discourseUrl: 'https://forum.westeurope.cloudapp.azure.com/',
+                            discourseEmbedUrl: '@Request.Url.AbsoluteUri',
+                        };
+
+                        (function () {
+                            var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+                            d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+                        })();
+                    </script>
+                </div>*@
+            </div>
+        </div>
+    </li>
 </ul>
 
 @if (Model.MemberData != null)
 {
     if (Model.ForumNewTopicsAllowed)
     {
-        <div class="replybutton">
-            <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment">
-                <i class="icon-Reply-arrow"></i>&nbsp;Reply to question
-            </a>
-        </div>
-
         <div class="utilities">
             <div class="utility-actions thread-bottom">
                 @if (Model.MemberData.IsAdmin)
@@ -132,10 +149,6 @@
                         <i class="icon-Delete-key"></i><span>Delete thread</span>
                     </a>
                 }
-
-                <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
-                    <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
-                </a>
 
                 @if (Model.Answer > 0)
                 {

@@ -15,10 +15,6 @@
             @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
             <!-- FORUM BREADCRUMB END -->
             <!-- THREAD ACTIONS START -->
-            @if (topic != null)
-            {
-                Html.RenderPartial("~/Views/Partials/Forum/TopicActions.cshtml", topic);
-            }
             <!-- THREAD ACTIONS END -->
             <div class="clear"></div>
         </div>
@@ -32,9 +28,10 @@
             <p>This topic no longer exists.</p>
         }
     </div>
+
 </section>
 
-@Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")
+
 
 @section HeadCssScripts {
     <link rel="stylesheet" type="text/css" href="/css/tooltipster.css" />
