@@ -294,19 +294,7 @@
                     </style>
 
                         <div class="row explain">
-                            @if (release != null)
-                            {
-                                
-                                <div class="col-sm-2">
-                                    <spa class="dot big progress">
-
-                                        <div class="chart" data-percent="@release.PercentComplete">
-                                            <p>@(release.PercentComplete)%</p>
-                                        </div>
-                                    
-                                    </spa>
-                                </div>
-                            }
+                           
                         
                         <div class="col-sm-10">
                             <h2>v@(Model.Content.Name)@(releaseCandidateText)</h2>
@@ -315,10 +303,10 @@
                                 <small>Status: <span>@(release.Released ? "Released" : "In Progress")</span></small>
                                 if (release.Released == false)
                                 {
-                                    <h3>
+                                    @*<h3>
                                         <span>@(release.PercentComplete)% complete</span>
                                         <span>@(100 - release.PercentComplete)% in progress</span>
-                                    </h3>
+                                    </h3>*@
 
                                     <h3>Target release date: <span style="color:#5B5B5B">@release.ReleaseDate.AsDisplayedReleaseDate()</span></h3>
                                 }
