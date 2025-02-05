@@ -502,6 +502,12 @@ WHERE forumTopics.id=@id
                 comment.ForumNewTopicsAllowed = forumContent.NewTopicsAllowed();
             }
 
+
+            // Check if related topic exists on new forum
+            var discourseService = new DiscourseService();
+            var discourseTopic = discourseService.GetTopicByOldIdAsync(topic.Id);
+            topic.DiscourseTopic = discourseTopic;
+            
             return topic;
         }
 

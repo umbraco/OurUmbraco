@@ -22,5 +22,8 @@ namespace OurUmbraco.Forum.Models
 
         [ResultColumn("CategoryName")]
         public string CategoryName { get; set; }
+
+        [ResultColumn("DiscourseTopic")]
+        public DiscourseTopic DiscourseTopic { get; set; }
     }
 }
