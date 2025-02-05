@@ -639,6 +639,8 @@
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Forum\AntiSpam\StopForumSpamService.cs" />
+    <Compile Include="Forum\Controllers\DiscourseController.cs" />
+    <Compile Include="Forum\Models\DiscourseCreateTopic.cs" />
     <Compile Include="Forum\Models\DiscourseTopic.cs" />
     <Compile Include="Forum\Services\DiscourseService.cs" />
     <Compile Include="Forum\Slack.cs" />
