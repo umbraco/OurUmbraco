@@ -15,6 +15,10 @@
             @Html.Action("Render", "Breadcrumb", new { linkToCurrent = true })
             <!-- FORUM BREADCRUMB END -->
             <!-- THREAD ACTIONS START -->
+            @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false" && topic != null)
+            {
+                Html.RenderPartial("~/Views/Partials/Forum/TopicActions.cshtml", topic);
+            }
             <!-- THREAD ACTIONS END -->
             <div class="clear"></div>
         </div>
@@ -31,6 +35,9 @@
 
 </section>
 
+@if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false") { 
+    @Html.Partial("~/Views/Partials/Forum/TopicForm.cshtml")
+}
 
 
 @section HeadCssScripts {

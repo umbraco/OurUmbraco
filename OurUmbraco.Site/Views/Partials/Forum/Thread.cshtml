@@ -113,51 +113,79 @@
         </div>
     </li>
 
-    <li class="comment" data-parent="0" id="comment-352636">
-        <div class="comment-inner">
-            <div class="body">
-                <div style="font-size: 1.2em; font-weight: bold;">This forum is in read-only mode [LINK TO EXPLANATION]. <br />You can continue this topic on the <a href="https://forum.umbraco.com/">new forum</a> by tapping the "Continue discussion" button below.</div>
-                <div id='discourse-comments'>
-                    <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-                    <script type="text/javascript">
-                        DiscourseEmbed = {
-                            discourseUrl: 'https://forum.westeurope.cloudapp.azure.com/',
-                            discourseEmbedUrl: '@Request.Url.AbsoluteUri',
-                        };
+    @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "true")
+    {
+        <li class="comment" data-parent="0">
+            <div class="comment-inner">
+                <div class="body">
+                    <div>
+                        <p style="font-size: 1.2em; font-weight: bold;">This forum is in read-only mode [LINK TO EXPLANATION].</p>
+                    </div>
+                    @if (Model.DiscourseTopic != null && Model.DiscourseTopic.Visible && Model.DiscourseTopic.ReplyCount > 0)
+                    {
+                        <p style="font-size: 1.2em; font-weight: bold;">You can <a href="@Model.DiscourseTopic.RedirectUrl">continue this topic on the new forum</a> by tapping the "Continue discussion" button below.</p>
+                        <div id='discourse-comments'>
+                            <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                            <script type="text/javascript">
+                                DiscourseEmbed = {
+                                    discourseUrl: '@(System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"])',
+                                    discourseEmbedUrl: '@Request.Url.AbsoluteUri',
+                                };
 
-                        (function () {
-                            var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
-                            d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
-                            (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
-                        })();
-                    </script>
+                                (function () {
+                                    var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+                                    d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+                                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+                                })();
+                            </script>
+                        </div>
+                    }
+                    else
+                    {
+                        <p style="font-size: 1.2em; font-weight: bold;">You can continue this topic on the <a href="https://forum.umbraco.com">new forum</a> by tapping the "Continue discussion" link below.</p>
+                        <p>
+                            <a href="#" class="create-topic">Continue Discussion</a>
+                        </p>
+                    }
                 </div>
             </div>
-        </div>
-    </li>
+        </li>
+    }
 </ul>
 
 @if (Model.MemberData != null)
 {
     if (Model.ForumNewTopicsAllowed)
     {
-        <div class="utilities">
-            <div class="utility-actions thread-bottom">
-                @if (Model.MemberData.IsAdmin)
-                {
-                    <a href="#" class="delete-thread button" data-id="@Model.Id">
-                        <i class="icon-Delete-key"></i><span>Delete thread</span>
-                    </a>
-                }
-
-                @if (Model.Answer > 0)
-                {
-                    <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
-                        <i class="icon-Check"></i><span>Go to solution</span>
-                    </a>
-                }
+        if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false") 
+        {
+            <div class="replybutton">
+                <a href="#" class="button green large reply forum-reply" data-author="@Model.AuthorName" data-topic="@Model.Id" data-controller="comment">
+                    <i class="icon-Reply-arrow"></i>&nbsp;Reply to question
+                </a>
             </div>
-        </div>
+            <div class="utilities">
+                <div class="utility-actions thread-bottom">
+                    @if (Model.MemberData.IsAdmin)
+                    {
+                        <a href="#" class="delete-thread button" data-id="@Model.Id">
+                            <i class="icon-Delete-key"></i><span>Delete thread</span>
+                        </a>
+                    }
+
+                    <a href="#" class="follow button @(Model.Subscribed ? "following" : "transparent")" data-id="@Model.Id" data-controller="topic">
+                        <i class="icon-Bookmark"></i><span>@(Model.Subscribed ? "Following" : "Follow")</span>
+                    </a>
+
+                    @if (Model.Answer > 0)
+                    {
+                        <a href="#comment-@Model.Answer.ToString()" class="go-to-solution button transparent">
+                            <i class="icon-Check"></i><span>Go to solution</span>
+                        </a>
+                    }
+                </div>
+            </div>
+        }
     }
     else
     {
