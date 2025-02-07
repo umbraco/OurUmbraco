@@ -121,7 +121,7 @@
                     <div>
                         <p style="font-size: 1.2em; font-weight: bold;">This forum is in read-only mode [LINK TO EXPLANATION].</p>
                     </div>
-                    @if (Model.DiscourseTopic != null && Model.DiscourseTopic.Visible && Model.DiscourseTopic.ReplyCount > 0)
+                    @if (Model.DiscourseTopic != null)
                     {
                         <p style="font-size: 1.2em; font-weight: bold;">You can <a href="@Model.DiscourseTopic.RedirectUrl">continue this topic on the new forum</a> by tapping the "Continue discussion" button below.</p>
                         <div id='discourse-comments'>
@@ -129,7 +129,7 @@
                             <script type="text/javascript">
                                 DiscourseEmbed = {
                                     discourseUrl: '@(System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"])',
-                                    discourseEmbedUrl: '@Request.Url.AbsoluteUri',
+                                    topicId: @Model.DiscourseTopic.Id,
                                 };
 
                                 (function () {
@@ -144,8 +144,44 @@
                     {
                         <p style="font-size: 1.2em; font-weight: bold;">You can continue this topic on the <a href="https://forum.umbraco.com">new forum</a> by tapping the "Continue discussion" link below.</p>
                         <p>
-                            <a href="#" class="create-topic">Continue Discussion</a>
+                            <a href="#" id="create-topic">Continue Discussion</a>
                         </p>
+
+                        <style type="text/css">
+                            .ready {
+                                background-color: #4CAF50;
+                                color: white;
+                                padding: 10px 24px;
+                                text-align: center;
+                                text-decoration: none;
+                                display: inline-block;
+                                font-size: 16px;
+                                margin: 4px 2px;
+                                cursor: pointer;
+                                border-radius: 8px;
+                            }
+                        </style>
+                        <script type="text/javascript">
+                            $('#create-topic').click(function() {
+                                (async () => {
+                                    const rawResponse = await fetch('/umbraco/api/Discourse/Post', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Accept': 'application/json',
+                                            'Content-Type': 'application/json'
+                                        },
+                                        body: JSON.stringify({ "TopicId": @Model.Id })
+                                    });
+                                    const content = await rawResponse.json();
+                                    const linkElement = $('#create-topic');
+                                    linkElement.attr('href', content);
+                                    linkElement.attr('id', '');
+                                    linkElement.html('Continue to the new topic');
+                                    linkElement.addClass('ready')
+                                    linkElement.unbind('click');
+                                })();
+                            });                            
+                        </script>
                     }
                 </div>
             </div>
