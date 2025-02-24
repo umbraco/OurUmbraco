@@ -4,6 +4,17 @@
 }
 
 <!-- FORUM OVERVIEW START -->
+@if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "true")
+{
+    <div style="width: 100%;" class="alertbar__red">
+        <h2 style="color: black; font-size: 50px; text-align: center; line-height: 50px; text-decoration: underline;">We have moved!</h2>
+        <p style="font-size:20px; text-align: center; line-height: 50px; color: black; margin: 0 auto;max-width: 1000px;">
+            The forum has a new home. Go to <a href="https://forum.umbraco.com">forum.umbraco.com</a> for the new forum.<br />
+            You can continue any existing topic by scrolling to the last reply and tapping the "Continue discussion button.
+        </p>
+    </div>
+}
+
 <section class="forum-overview">
     <div class="forum-archive">
         @Html.Partial("~/Views/Partials/Forum/Forum.cshtml")

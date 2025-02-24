@@ -8,6 +8,7 @@ using Umbraco.Core;
 using Umbraco.Web.WebApi;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 
 namespace OurUmbraco.Forum.Controllers
 {
@@ -34,6 +35,26 @@ namespace OurUmbraco.Forum.Controllers
             };
             var redirectUrl = CreateTopicOnDiscourse(discourseCreateTopic);
             return Ok(redirectUrl);
+        }
+
+        [HttpPost]
+        public IHttpActionResult TopicCreated(DiscourseTopicModel topicModel)
+        {
+            var secret = HttpContext.Current.Request.QueryString["secret"];
+            if (secret == System.Configuration.ConfigurationManager.AppSettings["DiscourseWebhookSecret"])
+            {
+                // this is called as a webhook from Discourse to Our - it contains any newly created topic.
+                // If it has an external id that matches a forum post on Our, we notify the people involved in the thread.
+                var newUrl = "https://forum.umbraco.com/t/" + topicModel.Topic.Slug + "/" + topicModel.Topic.Id;
+
+                if (int.TryParse(topicModel.Topic.ExternalId, out int externalId))
+                {
+                    var newForumCommentNotification = new NotificationsCore.Notifications.NewForumComment();
+                    newForumCommentNotification.SendNewForumTopicCreatedNotification(externalId, newUrl);
+                }
+            }
+
+            return Ok();
         }
 
         private string CreateTopicOnDiscourse(DiscourseCreateTopic createTopic)
@@ -132,5 +153,28 @@ namespace OurUmbraco.Forum.Controllers
             [JsonProperty("post_url")]
             public string PostUrl { get; set; }
         }
+
+        // the model that the webhook sends us
+        public class DiscourseTopicModel
+        {
+            [JsonProperty("topic")]
+            public Topic Topic { get; set; }
+        }
+
+        public class Topic
+        {
+            [JsonProperty("id")]
+            public int Id { get; set; }
+
+            [JsonProperty("title")]
+            public string Title { get; set; }
+
+            [JsonProperty("slug")]
+            public string Slug { get; set; }
+
+            [JsonProperty("external_id")]
+            public string ExternalId { get; set; }
+        }
+
     }
 }

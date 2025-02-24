@@ -115,11 +115,13 @@
 
     @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "true")
     {
+        var discourseBlogPostUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseBlogPostUrl"];
+
         <li class="comment" data-parent="0">
             <div class="comment-inner">
                 <div class="body">
                     <div>
-                        <p style="font-size: 1.2em; font-weight: bold;">This forum is in read-only mode [LINK TO EXPLANATION].</p>
+                        <p style="font-size: 1.2em; font-weight: bold;"><a href="@discourseBlogPostUrl" target="_blank">This forum is in read-only mode</a> while we transition to the new forum.</p>
                     </div>
                     @if (Model.DiscourseTopic != null)
                     {
@@ -144,11 +146,11 @@
                     {
                         <p style="font-size: 1.2em; font-weight: bold;">You can continue this topic on the <a href="https://forum.umbraco.com">new forum</a> by tapping the "Continue discussion" link below.</p>
                         <p>
-                            <a href="#" id="create-topic">Continue Discussion</a>
+                            <a href="#" id="create-topic" class="continue">Continue discussion</a>
                         </p>
 
                         <style type="text/css">
-                            .ready {
+                            .ready, .continue {
                                 background-color: #4CAF50;
                                 color: white;
                                 padding: 10px 24px;
@@ -159,6 +161,9 @@
                                 margin: 4px 2px;
                                 cursor: pointer;
                                 border-radius: 8px;
+                            }
+                            .continue {
+                                background-color: #3544b1;
                             }
                         </style>
                         <script type="text/javascript">
@@ -173,12 +178,18 @@
                                         body: JSON.stringify({ "TopicId": @Model.Id })
                                     });
                                     const content = await rawResponse.json();
-                                    const linkElement = $('#create-topic');
-                                    linkElement.attr('href', content);
-                                    linkElement.attr('id', '');
-                                    linkElement.html('Continue to the new topic');
-                                    linkElement.addClass('ready')
-                                    linkElement.unbind('click');
+                                    if (content == null) {
+                                        alert('An error occurred while creating the topic. Please try again later.');
+                                        return;
+                                    } else {
+                                        const linkElement = $('#create-topic');
+                                        linkElement.attr('href', content);
+                                        linkElement.attr('id', '');
+                                        linkElement.html('Continue to the new topic');
+                                        linkElement.addClass('ready')
+                                        linkElement.removeClass('continue')
+                                        linkElement.unbind('click');
+                                    }
                                 })();
                             });                            
                         </script>

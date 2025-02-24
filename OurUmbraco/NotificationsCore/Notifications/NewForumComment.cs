@@ -92,5 +92,76 @@ namespace OurUmbraco.NotificationsCore.Notifications
                 }
             }
         }
+        
+        public void SendNewForumTopicCreatedNotification(int topicId, string newUrl)
+        {
+            var topicService = new TopicService(ApplicationContext.Current.DatabaseContext);
+            var topic = topicService.GetById(topicId);
+
+            var db = ApplicationContext.Current.DatabaseContext.Database;
+            var sql = new Sql().Select("memberId")
+                .From("forumTopicSubscribers")
+                .Where("topicId = @topicId", new { topicId = topic.Id });
+
+            var results = db.Query<int>(sql).ToList();
+
+            using (ContextHelper.EnsureHttpContext())
+            {
+                var memberShipHelper = new MembershipHelper(UmbracoContext.Current);
+
+                foreach (var memberId in results)
+                {
+                    try
+                    {
+                        var member = memberShipHelper.GetById(memberId);
+                        if (member.GetPropertyValue<bool>("bugMeNot"))
+                            continue;
+
+                        var from = new MailAddress(_details.SelectSingleNode("//from/email").InnerText,
+                            _details.SelectSingleNode("//from/name").InnerText);
+
+                        //var subject = string.Format(_details.SelectSingleNode("//subject").InnerText, topic.Title);
+                        var subject = $"The forum topic '{topic.Title}' is continued on the new forum";
+
+                        var domain = _details.SelectSingleNode("//domain").InnerText;
+                        var discourseBlogPostUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseBlogPostUrl"];
+                        var body = $@"Someone is continuing a topic you were involved in.
+
+--------------------------------------------------
+
+The topic with title '{topic.Title}' has been moved from it's old URL (https://{domain}{topic.GetUrl()}) to the new forum.
+
+You can view the new topic here: 
+{newUrl}
+      
+The forum is moving to a new platform, and we invite you to join us there. You can read all about the new forum in the following blog post: {discourseBlogPostUrl}
+
+Thank You from the Umbraco Community!
+--------------------------------------------------
+You get this notification because you are subscribed to the topic's forum notifications. 
+You can unsubscribe from your profile on our.umbraco.com";
+
+                        var mailMessage = new MailMessage
+                        {
+                            Subject = subject,
+                            Body = body
+                        };
+
+                        mailMessage.To.Add(member.GetPropertyValue<string>("Email"));
+                        mailMessage.From = @from;
+
+                        using (var smtpClient = new SmtpClient())
+                        {
+                            smtpClient.Send(mailMessage);
+                        }
+                    }
+                    catch (Exception exception)
+                    {
+                        LogHelper.Error<NewForumComment>(
+                            string.Format("Error sending mail to member id {0}", memberId), exception);
+                    }
+                }
+            }
+        }
     }
 }

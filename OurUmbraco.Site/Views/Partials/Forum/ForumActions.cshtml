@@ -3,7 +3,7 @@
 @inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
 
 <div class="utility-actions">
-    @if (MemberData != null)
+    @if (MemberData != null && System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false")
     {
         if (Model.Content.AncestorOrSelfIsArchived() == false && Model.Content.NewTopicsAllowed())
         {
@@ -28,9 +28,12 @@
     }
     else
     {
-        <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
-            <i class="icon-Add"></i><span>Sign in to ask a question</span>
-        </a>
+        if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false")
+        {
+            <a href="/member/login?redirectUrl=@(Server.UrlEncode(Request.Url.AbsoluteUri))" class="button login">
+                <i class="icon-Add"></i><span>Sign in to ask a question</span>
+            </a>
+        }
     }
 
 </div>
