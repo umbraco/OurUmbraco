@@ -117,6 +117,25 @@
     {
         var discourseBlogPostUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseBlogPostUrl"];
 
+        <style type="text/css">
+            .ready, .continue {
+                background-color: #4CAF50;
+                color: white;
+                padding: 10px 24px;
+                text-align: center;
+                text-decoration: none;
+                display: inline-block;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                border-radius: 8px;
+            }
+
+            .continue {
+                background-color: #3544b1;
+            }
+        </style>
+
         <li class="comment" data-parent="0">
             <div class="comment-inner">
                 <div class="body">
@@ -126,21 +145,30 @@
                     @if (Model.DiscourseTopic != null)
                     {
                         <p style="font-size: 1.2em; font-weight: bold;">You can <a href="@Model.DiscourseTopic.RedirectUrl">continue this topic on the new forum</a> by tapping the "Continue discussion" button below.</p>
-                        <div id='discourse-comments'>
-                            <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-                            <script type="text/javascript">
-                                DiscourseEmbed = {
-                                    discourseUrl: '@(System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"])',
-                                    topicId: @Model.DiscourseTopic.Id,
-                                };
+                        if (Model.DiscourseTopic.ReplyCount != 0)
+                        {
+                            <div id='discourse-comments'>
+                                <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+                                <script type="text/javascript">
+                                    DiscourseEmbed = {
+                                        discourseUrl: '@(System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"])',
+                                        topicId: @Model.DiscourseTopic.Id,
+                                    };
 
-                                (function () {
-                                    var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
-                                    d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
-                                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
-                                })();
-                            </script>
-                        </div>
+                                    (function () {
+                                        var d = document.createElement('script'); d.type = 'text/javascript'; d.async = true;
+                                        d.src = DiscourseEmbed.discourseUrl + 'javascripts/embed.js';
+                                        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(d);
+                                    })();
+                                </script>
+                            </div>
+                        }
+                        else
+                        {
+                            <p>
+                                <a href="@Model.DiscourseTopic.RedirectUrl" id="continue-topic" class="ready">Continue discussion</a>
+                            </p>
+                        }
                     }
                     else
                     {
@@ -149,23 +177,6 @@
                             <a href="#" id="create-topic" class="continue">Continue discussion</a>
                         </p>
 
-                        <style type="text/css">
-                            .ready, .continue {
-                                background-color: #4CAF50;
-                                color: white;
-                                padding: 10px 24px;
-                                text-align: center;
-                                text-decoration: none;
-                                display: inline-block;
-                                font-size: 16px;
-                                margin: 4px 2px;
-                                cursor: pointer;
-                                border-radius: 8px;
-                            }
-                            .continue {
-                                background-color: #3544b1;
-                            }
-                        </style>
                         <script type="text/javascript">
                             $('#create-topic').click(function() {
                                 (async () => {
@@ -191,7 +202,7 @@
                                         linkElement.unbind('click');
                                     }
                                 })();
-                            });                            
+                            });
                         </script>
                     }
                 </div>

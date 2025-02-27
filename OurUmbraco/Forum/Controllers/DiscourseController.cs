@@ -34,6 +34,7 @@ namespace OurUmbraco.Forum.Controllers
                 ExternalId = topic.Id
             };
             var redirectUrl = CreateTopicOnDiscourse(discourseCreateTopic);
+
             return Ok(redirectUrl);
         }
 
@@ -59,34 +60,49 @@ namespace OurUmbraco.Forum.Controllers
 
         private string CreateTopicOnDiscourse(DiscourseCreateTopic createTopic)
         {
-            var forumBaseUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"];
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = new Uri(forumBaseUrl);
-                client.DefaultRequestHeaders.Add("Api-Key", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiKey"]}");
-                client.DefaultRequestHeaders.Add("Api-Username", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiUsername"]}");
+                var forumBaseUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"];
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = new Uri(forumBaseUrl);
+                    client.DefaultRequestHeaders.Add("Api-Key", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiKey"]}");
+                    client.DefaultRequestHeaders.Add("Api-Username", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiUsername"]}");
 
-                var result = client.PostAsJsonAsync("posts.json", createTopic).Result;
-                if (result.IsSuccessStatusCode == false)
-                {
-                    var resultContent = result.Content.ReadAsStringAsync().Result;
-                    var errorModel = JsonConvert.DeserializeObject<ErrorModel>(resultContent);
-                    var firstError = errorModel.Errors.FirstOrDefault();
-                    if (firstError != null && firstError == "External has already been taken")
+                    var result = client.PostAsJsonAsync("posts.json", createTopic).Result;
+                    if (result.IsSuccessStatusCode == false)
                     {
-                        // the topic exists, see if we can find the URL for it
-                        var topicUrl = GetTopicByExternalId(createTopic.ExternalId);
-                        return topicUrl;
+                        var resultContent = result.Content.ReadAsStringAsync().Result;
+                        var errorModel = JsonConvert.DeserializeObject<ErrorModel>(resultContent);
+                        var firstError = errorModel.Errors.FirstOrDefault();
+                        if (firstError != null && firstError == "External has already been taken")
+                        {
+                            // the topic exists, see if we can find the URL for it
+                            var topicUrl = GetTopicByExternalId(createTopic.ExternalId);
+                            return topicUrl;
+                        }                        
+                        else
+                        {
+                            string errors = string.Join(", ", errorModel.Errors);
+                            Logger.Debug(typeof(DiscourseController), $"Creating a topic from Our id {createTopic.ExternalId} on the new forum didn't succeed {errors}");
+                        }
+                        return null;
                     }
-                    return null;
-                }
-                else
-                {
-                    var resultContent = result.Content.ReadAsStringAsync().Result;
-                    var discourseTopic = JsonConvert.DeserializeObject<DiscourseTopic>(resultContent);
-                    return forumBaseUrl + discourseTopic.PostUrl;
+                    else
+                    {
+                        var resultContent = result.Content.ReadAsStringAsync().Result;
+                        var discourseTopic = JsonConvert.DeserializeObject<DiscourseTopic>(resultContent);
+                        return forumBaseUrl + discourseTopic.PostUrl;
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+
+                Logger.Error(typeof(DiscourseController), "Creating a topic on the new forum didn't succeed" + ex.Message, ex);
+                Logger.Error(typeof(DiscourseController), "InnerException" + ex.InnerException.Message, ex.InnerException);                
+            }
+            return null;
         }
 
         private string GetTopicByExternalId(int id)
@@ -108,7 +124,7 @@ namespace OurUmbraco.Forum.Controllers
                     var resultContent = result.Content.ReadAsStringAsync().Result;
                     var discourseTopic = JsonConvert.DeserializeObject<DiscoursePostStream>(resultContent);
                     var firstPost = discourseTopic.PostStream.Posts.FirstOrDefault();
-                    if(firstPost == null)
+                    if (firstPost == null)
                     {
                         return null;
                     }
