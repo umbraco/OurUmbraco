@@ -118,9 +118,8 @@
         var discourseBlogPostUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseBlogPostUrl"];
 
         <style type="text/css">
-            .ready, .continue {
-                background-color: #4CAF50;
-                color: white;
+            .continue-button {
+                color: white !important;
                 padding: 10px 24px;
                 text-align: center;
                 text-decoration: none;
@@ -129,6 +128,9 @@
                 margin: 4px 2px;
                 cursor: pointer;
                 border-radius: 8px;
+            }
+            .ready {
+                background-color: #4CAF50;
             }
 
             .continue {
@@ -166,7 +168,7 @@
                         else
                         {
                             <p>
-                                <a href="@Model.DiscourseTopic.RedirectUrl" id="continue-topic" class="ready">Continue discussion</a>
+                                <a href="@Model.DiscourseTopic.RedirectUrl" id="continue-topic" class="continue-button ready">Continue discussion</a>
                             </p>
                         }
                     }
@@ -174,7 +176,7 @@
                     {
                         <p style="font-size: 1.2em; font-weight: bold;">You can continue this topic on the <a href="https://forum.umbraco.com">new forum</a> by tapping the "Continue discussion" link below.</p>
                         <p>
-                            <a href="#" id="create-topic" class="continue">Continue discussion</a>
+                            <button type="button" id="create-topic" class="continue-button continue">Continue discussion</button>
                         </p>
 
                         <script type="text/javascript">
@@ -194,12 +196,7 @@
                                         return;
                                     } else {
                                         const linkElement = $('#create-topic');
-                                        linkElement.attr('href', content);
-                                        linkElement.attr('id', '');
-                                        linkElement.html('Continue to the new topic');
-                                        linkElement.addClass('ready')
-                                        linkElement.removeClass('continue')
-                                        linkElement.unbind('click');
+                                        linkElement.replaceWith('<a href="' + content + '" id="continue-topic" class="continue-button ready">Continue to the new topic</a>');
                                     }
                                 })();
                             });
