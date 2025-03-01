@@ -22,7 +22,7 @@ namespace OurUmbraco.Forum.Controllers
             var forumUrl = System.Configuration.ConfigurationManager.AppSettings["OurUmbracoUrl"];
 
             var body = topic.Body.Replace("/media/upload/", $"{forumUrl}/media/upload/");
-            var topicUrl = $"{forumUrl}/forum/{topic.Id}-{topic.Title.ToUrlSegment()}";
+            var topicUrl = $"{forumUrl}forum/{topic.Id}-{topic.Title.ToUrlSegment()}";
             body = body + $"\n<hr>\n<small>This is a companion discussion topic for the original entry at <a href=\"{topicUrl}\">{topicUrl}</a></small>";
             var discourseCreateTopic = new DiscourseCreateTopic
             {
