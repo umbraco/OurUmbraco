@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using OurUmbraco.Forum.Models;
 using System;
+using System.Net.Http;
 
 namespace OurUmbraco.Forum.Services
 {
@@ -8,7 +9,16 @@ namespace OurUmbraco.Forum.Services
     {
         internal DiscourseTopic GetTopicByOldIdAsync(int id)
         {
-            using (var client = new System.Net.Http.HttpClient())
+            var handler = new HttpClientHandler
+            {
+                ClientCertificateOptions = ClientCertificateOption.Manual,
+                ServerCertificateCustomValidationCallback =
+                (httpRequestMessage, cert, cetChain, policyErrors) =>
+                {
+                    return true;
+                }
+            };
+            using (var client = new HttpClient(handler))
             {
                 client.BaseAddress = new Uri(System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"]);
                 client.DefaultRequestHeaders.Add("Api-Key", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiKey"]}");
