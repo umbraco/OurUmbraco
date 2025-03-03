@@ -88,7 +88,7 @@ namespace OurUmbraco.Forum.Services
                                 topic.ForumCategory = "Umbraco questions";
                             }
 
-                            return lastestTopics.TopicList.Topics;
+                            return lastestTopics.TopicList.Topics.OrderByDescending(x => x.LastPostedAt).ToList();
                         }
                     }
                 }, TimeSpan.FromMinutes(1));
