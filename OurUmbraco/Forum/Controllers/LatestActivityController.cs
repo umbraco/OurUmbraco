@@ -8,26 +8,12 @@ namespace OurUmbraco.Forum.Controllers
 {
     public class LatestActivityController : SurfaceController
     {
-        public ActionResult LatestActivity(int numberOfTopics = 6)
+        public ActionResult LatestActivity(int numberOfTopics = 10)
         {
-            if (numberOfTopics > 30)
-                numberOfTopics = 6;
+            var discourseService = new DiscourseService();
+            var discourseTopics = discourseService.GetLatestTopics("questions", 5).Take(numberOfTopics).ToList();
 
-            var ts = new TopicService(ApplicationContext.DatabaseContext);
-            var topics = ts.GetLatestTopics(numberOfTopics).ToArray();
-            foreach (var topic in topics)
-            {
-                var category = Umbraco.TypedContent(topic.ParentId);
-                if(category != null)
-                    topic.CategoryName = category.Name;
-
-                var avatarService = new AvatarService();
-                var member = Members.GetById(topic.LatestReplyAuthor) ?? Members.GetById(topic.MemberId);
-                if (member != null)
-                    topic.LastReplyAuthorAvatar = avatarService.GetMemberAvatar(member);
-            }
-
-            return PartialView("~/Views/Partials/Home/LatestForumActivity.cshtml", topics);
+            return PartialView("~/Views/Partials/Home/LatestForumActivity.cshtml", discourseTopics);
         }
     }
 }

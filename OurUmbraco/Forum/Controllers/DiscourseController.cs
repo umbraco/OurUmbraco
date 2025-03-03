@@ -9,10 +9,11 @@ using Umbraco.Web.WebApi;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using OurUmbraco.Forum.Extensions;
 
 namespace OurUmbraco.Forum.Controllers
 {
-    public class DiscourseController : UmbracoApiController
+    public partial class DiscourseController : UmbracoApiController
     {
         [HttpPost]
         public IHttpActionResult Post(TopicModel topicModel)
@@ -42,11 +43,12 @@ namespace OurUmbraco.Forum.Controllers
         public IHttpActionResult TopicCreated(DiscourseTopicModel topicModel)
         {
             var secret = HttpContext.Current.Request.QueryString["secret"];
+            var forumBaseUrl = System.Configuration.ConfigurationManager.AppSettings["OurUmbracoUrl"];
             if (secret == System.Configuration.ConfigurationManager.AppSettings["DiscourseWebhookSecret"])
             {
                 // this is called as a webhook from Discourse to Our - it contains any newly created topic.
                 // If it has an external id that matches a forum post on Our, we notify the people involved in the thread.
-                var newUrl = "https://forum.umbraco.com/t/" + topicModel.Topic.Slug + "/" + topicModel.Topic.Id;
+                var newUrl = $"{forumBaseUrl}t/" + topicModel.Topic.Slug + "/" + topicModel.Topic.Id;
 
                 if (int.TryParse(topicModel.Topic.ExternalId, out int externalId))
                 {
@@ -131,26 +133,6 @@ namespace OurUmbraco.Forum.Controllers
                     return forumBaseUrl + firstPost.PostUrl;
                 }
             }
-        }
-
-        public class TopicModel
-        {
-            public int TopicId { get; set; }
-        }
-
-        internal class DiscourseTopic
-        {
-            [JsonProperty("post_url")]
-            public string PostUrl { get; set; }
-        }
-
-        internal class ErrorModel
-        {
-            [JsonProperty("action")]
-            public string Action { get; set; }
-
-            [JsonProperty("errors")]
-            public List<string> Errors { get; set; }
         }
 
         internal class DiscoursePostStream

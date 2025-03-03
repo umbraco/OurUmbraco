@@ -1,38 +1,28 @@
 ﻿@using OurUmbraco.Community.People
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Models
-@model ReadOnlyTopic[]
+@model List<DiscourseTopic>
 
 @foreach (var topic in Model)
 {
-    var avatarService = new AvatarService();
-    var img = avatarService.GetImgWithSrcSet(topic.LastReplyAuthorAvatar, topic.LastReplyAuthorName, 100, "test");
-
-    <a href="@topic.GetUrl()" class="forum-thread @(topic.Answer > 0 ? "solved": null)">
+    <a href="@topic.RedirectUrl" class="forum-thread">
 
         <div class="avatar">
-            @Html.Raw(img)
+            <img src="@topic.AuthorAvatar" />
         </div>
 
         <div class="meta">
             <div class="forum-thread-text">
                 <h3>@topic.Title</h3>
                 <p>
-                    @if (topic.Replies != 0 && !string.IsNullOrEmpty(topic.LastReplyAuthorName))
-                    {
-                        <text>last updated by @topic.LastReplyAuthorName</text>
-                    }
-                    else
-                    {
-                        <text>created by @topic.AuthorName</text>
-                    }
-
-                    @topic.Updated.ConvertToRelativeTime()
+                    <text>last updated by @topic.AuthorName</text>
+                    
+                    @topic.LastUpdatedFriendly
                 </p>
             </div>
 
             <div class="category">
-                <span class="cat">@topic.CategoryName</span>
+                <span class="cat">@topic.ForumCategory</span>
             </div>
         </div>
     </a>

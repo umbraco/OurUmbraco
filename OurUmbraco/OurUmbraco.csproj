@@ -640,6 +640,11 @@
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
     <Compile Include="Forum\AntiSpam\StopForumSpamService.cs" />
     <Compile Include="Forum\Controllers\DiscourseController.cs" />
+    <Compile Include="Forum\Models\DiscourseTopicList.cs" />
+    <Compile Include="Forum\Models\TopicListModel.cs" />
+    <Compile Include="Forum\Models\TopicModel.cs" />
+    <Compile Include="Forum\Models\DiscourseUser.cs" />
+    <Compile Include="Forum\Models\ErrorModel.cs" />
     <Compile Include="Forum\Models\DiscourseCreateTopic.cs" />
     <Compile Include="Forum\Models\DiscourseTopic.cs" />
     <Compile Include="Forum\Services\DiscourseService.cs" />

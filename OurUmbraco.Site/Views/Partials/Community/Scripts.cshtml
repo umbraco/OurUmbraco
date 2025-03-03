@@ -22,7 +22,7 @@
         }
 
         try {
-            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new {numberOfTopics = 6})");
+            $("#forum-activity").load("@Url.Action("LatestActivity", "LatestActivity", new {numberOfTopics = 10})");
         } catch (errForum) {
             console.log("Couldn't load latest forum activity", errForum.message);
         }

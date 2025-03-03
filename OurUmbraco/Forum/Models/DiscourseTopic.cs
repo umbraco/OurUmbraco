@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace OurUmbraco.Forum.Models
 {
@@ -25,6 +26,23 @@ namespace OurUmbraco.Forum.Models
         [JsonProperty("category_id")]
         public int CategoryId { get; set; }
 
+        [JsonProperty("post_url")]
+        public string PostUrl { get; set; }
+
+        [JsonProperty("title")]
+        public string Title { get; set; }
+
+        [JsonProperty("last_poster_username")]
+        public string LastPosterUsername { get; set; }
+
+        [JsonProperty("last_posted_at")]
+        public DateTime LastPostedAt { get; set; }
+
+        public string AuthorAvatar { get; set; }
+        public string LastUpdatedFriendly { get; set; }
+        public string ForumCategory { get; set; }
+        
+        public string AuthorName;
         public string RedirectUrl => System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"] + $"t/{Slug}/{Id}";
     }
 }
