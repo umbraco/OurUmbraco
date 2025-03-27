@@ -35,6 +35,8 @@ jobs:
         run: npm install
       - name: Install gulp prerequisites
         run: npm install --save-dev jshint gulp-jshint
+      - name: Install gulp
+        run: npm install gulp
       - name: Rebuild node-sass
         run: npm rebuild node-sass
       - name: Build project
