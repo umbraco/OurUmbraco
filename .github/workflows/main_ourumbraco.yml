@@ -30,7 +30,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 10
+          node-version: 22
       - name: Install npm dependencies
         working-directory: ./OurUmbraco.Client
         run: npm install
