@@ -35,11 +35,11 @@ jobs:
         run: npm install
       - name: Install gulp prerequisites
         run: npm install --save-dev jshint gulp-jshint
-      - name: Install gulp globally
-        run: npm install -g install gulp -g
       - name: Rebuild node-sass
         run: npm rebuild node-sass
-        
+      - name: Build project
+        run: gulp build
+
       - name: Publish to folder
         run: msbuild OurUmbraco.Site\OurUmbraco.Site.csproj /nologo /verbosity:m /t:Build /t:pipelinePreDeployCopyAllFilesToOneFolder /p:_PackageTempDir="\published\"
 
