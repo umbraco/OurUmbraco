@@ -32,14 +32,19 @@ jobs:
         with:
           node-version: 10
       - name: Install npm dependencies
+        working-directory: ./OurUmbraco.Client
         run: npm install
       - name: Install gulp prerequisites
+        working-directory: ./OurUmbraco.Client
         run: npm install --save-dev jshint gulp-jshint
       - name: Install gulp
+        working-directory: ./OurUmbraco.Client      
         run: npm install gulp
       - name: Rebuild node-sass
+        working-directory: ./OurUmbraco.Client      
         run: npm rebuild node-sass
       - name: Build project
+        working-directory: ./OurUmbraco.Client      
         run: gulp build
 
       - name: Publish to folder
