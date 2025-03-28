@@ -30,10 +30,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 22
+          node-version: 17
       - name: Set npm Python version to 3
         working-directory: ./OurUmbraco.Client
-        run: npm config set python python3          
+        run: npm config set python python3
       - name: Install npm prerequisites
         working-directory: ./OurUmbraco.Client      
         run: npm install gulp jshint gulp-jshint
