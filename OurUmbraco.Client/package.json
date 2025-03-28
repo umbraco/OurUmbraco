@@ -1,32 +1,17 @@
 {
-  "name": "gulp-workflow",
-  "version": "1.1.0",
-  "description": "Umbraco Our gulpjs config",
-  "main": "gulpfile.js",
-  "private": true,
-  "dependencies": {},
-  "devDependencies": {
-    "gulp-clean-css": "4.0.0",
-    "gulp": "4.0.0",
-    "gulp-autoprefixer": "6.0.0",
-    "gulp-concat": "2.6.1",
-    "gulp-imagemin": "5.0.3",
-    "gulp-jshint": "^2.1.0",
-    "gulp-rename": "1.4.0",
-    "gulp-sass": "4.0.2",
-    "gulp-svgmin": "2.1.0",
-    "gulp-uglify": "3.0.1",
-    "gulp-util": "3.0.8",
-    "gulp-watch": "5.0.1",
-    "jshint": "^2.9.7",
-    "jshint-stylish": "2.2.1",
-    "node-sass": "7.0.0"
-  },
+  "name": "ourumbraco.client",
+  "version": "1.0.0",
+  "description": "New design for the Our project.",
+  "main": "index.js",
   "scripts": {
-    "test": "echo Use npm run build instead",
-    "start": "gulp",
-    "build": "gulp build"
+    "build:scss": "sass src/scss:../OurUmbraco.Site/Assets/css --no-source-map --style=compressed",
+    "build": "npm run build:scss"
   },
-  "author": "umbraco",
-  "license": "MIT"
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.25.1",
+    "sass": "^1.86.0"
+  }
 }
