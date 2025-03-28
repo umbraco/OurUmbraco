@@ -31,15 +31,15 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
-      - name: Install npm dependencies
-        working-directory: ./OurUmbraco.Client
-        run: npm install
-      - name: Install gulp prerequisites
-        working-directory: ./OurUmbraco.Client
-        run: npm install --save-dev jshint gulp-jshint
       - name: Install gulp
         working-directory: ./OurUmbraco.Client      
-        run: npm install gulp
+        run: npm install gulp        
+      - name: Install helpers
+        working-directory: ./OurUmbraco.Client
+        run: npm install --save-dev jshint gulp-jshint
+      - name: npm install
+        working-directory: ./OurUmbraco.Client
+        run: npm install
       - name: Rebuild node-sass
         working-directory: ./OurUmbraco.Client      
         run: npm rebuild node-sass
