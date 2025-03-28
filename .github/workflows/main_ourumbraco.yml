@@ -31,15 +31,12 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 22
-      - name: Install npm 8 instead of 10 so we can set the Python version
-        working-directory: ./OurUmbraco.Client
-        run: npm install npm@^8
       - name: Set npm Python version to 3
         working-directory: ./OurUmbraco.Client
-        run: npm config set python python3
-      - name: Install npm prerequisites node-gyp
+        run: npm config set python python3          
+      - name: Install npm prerequisites
         working-directory: ./OurUmbraco.Client      
-        run: npm install node-gyp gulp jshint gulp-jshint
+        run: npm install gulp jshint gulp-jshint
       - name: npm install
         working-directory: ./OurUmbraco.Client
         run: npm install
