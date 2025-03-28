@@ -524,7 +524,7 @@
     <Content Include="App_Plugins\Skybrud.Umbraco.Redirects\Views\Editors\Inbound.html" />
     <Content Include="App_Plugins\Skybrud.Umbraco.Redirects\Views\Editors\Outbound.html" />
     <Content Include="Assets\css\fonts\icomoon\icomoon.svg" />
-    <Content Include="Assets\css\style.min.css" />
+    <Content Include="Assets\css\style.css" />
     <Content Include="Assets\images\app-icons\acme-tile-large.png" />
     <Content Include="Assets\images\app-icons\acme-tile-medium.png" />
     <Content Include="Assets\images\app-icons\acme-tile-small.png" />
@@ -579,7 +579,7 @@
     <Content Include="Assets\images\sign-in-with-google.png" />
     <Content Include="Assets\images\solved.gif" />
     <Content Include="Assets\images\tools.png" />
-    <Content Include="Assets\js\app.min.js" />
+    <Content Include="Assets\js\app.js" />
     <Content Include="Assets\js\community.js" />
     <Content Include="Assets\js\components\overlay.js" />
     <Content Include="Assets\js\editor.min.js" />
@@ -595,6 +595,7 @@
     <Content Include="Assets\js\map\m4.png" />
     <Content Include="Assets\js\map\m5.png" />
     <Content Include="Assets\js\map\profile.map.js" />
+    <Content Include="Assets\js\search.js" />
     <Content Include="Assets\swipebox\css\swipebox.css" />
     <Content Include="Assets\swipebox\css\swipebox.min.css" />
     <Content Include="Assets\swipebox\img\icons.png" />
