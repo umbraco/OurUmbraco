@@ -40,8 +40,8 @@ jobs:
 
       - name: Replace secrets in web.vsts.config
         run: |
-          (Get-Content web.vsts.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content web.vsts.config
-          (Get-Content web.vsts.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content OurUmbraco.Site/web.vsts.config
 
 
       - name: Publish to folder
