@@ -40,8 +40,8 @@ jobs:
 
       - name: Replace secrets in web.config (Windows)
         run: |
-          (Get-Content web.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content web.config
-          (Get-Content web.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content web.config
+          (Get-Content web.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content web.vsts.config
+          (Get-Content web.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content web.vsts.config
 
 
       - name: Publish to folder
