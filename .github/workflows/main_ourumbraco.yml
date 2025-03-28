@@ -10,7 +10,6 @@ on:
   workflow_dispatch:
 
 env:
-  CLIENT_DIRECTORY: ./OurUmbraco.Client
   CONFIG_FILE_NAME: web.vsts.config
   
 jobs:
@@ -36,10 +35,10 @@ jobs:
         with:
           node-version: 22
       - name: npm install
-        working-directory: $CLIENT_DIRECTORY
+        working-directory: ./OurUmbraco.Client
         run: npm install
       - name: npm build
-        working-directory: $CLIENT_DIRECTORY
+        working-directory: ./OurUmbraco.Client
         run: npm run build
 
       - name: Replace secrets in web.vsts.config
