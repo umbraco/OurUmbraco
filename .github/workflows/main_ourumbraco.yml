@@ -9,6 +9,10 @@ on:
       - main
   workflow_dispatch:
 
+env:
+  CLIENT_DIRECTORY: ./OurUmbraco.Client
+  CONFIG_FILE_NAME: web.vsts.config
+  
 jobs:
   build:
     runs-on: windows-latest
@@ -32,16 +36,16 @@ jobs:
         with:
           node-version: 22
       - name: npm install
-        working-directory: ./OurUmbraco.Client
+        working-directory: $CLIENT_DIRECTORY
         run: npm install
       - name: npm build
-        working-directory: ./OurUmbraco.Client      
+        working-directory: $CLIENT_DIRECTORY
         run: npm run build
 
-      - name: Replace secrets in web.config (Windows)
+      - name: Replace secrets in web.vsts.config
         run: |
-          (Get-Content web.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content web.vsts.config
-          (Get-Content web.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content web.vsts.config
+          (Get-Content $CONFIG_FILE_NAME) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content $CONFIG_FILE_NAME
+          (Get-Content $CONFIG_FILE_NAME) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content $CONFIG_FILE_NAME
 
 
       - name: Publish to folder
