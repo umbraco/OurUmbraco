@@ -42,6 +42,34 @@ jobs:
         run: |
           (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{connectionString}#', '${{ secrets.CONNECTION_STRING }}' | Set-Content OurUmbraco.Site/web.vsts.config
           (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{connectionString2}#', '${{ secrets.CONNECTION_STRING2 }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{PackageAuthToken}#', '${{ secrets.PACKAGE_AUTH_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{uReleasePassword}#', '${{ secrets.URELEASE_PASSWORD }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{SlackWebhookSecret}#', '${{ secrets.SLACK_WEBHOOK_SECRET }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{AppVeyorWebHookAuthKey}#', '${{ secrets.APPVEYOR_WEBHOOK_AUTH_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GoogleOAuthClientID}#', '${{ secrets.GOOGLE_OAUTH_CLIENT_ID }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GoogleOAuthSecret}#', '${{ secrets.GOOGLE_OAUTH_SECRET }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GoogleServerKey}#', '${{ secrets.GOOGLE_SERVER_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{reCaptchaPublicKey}#', '${{ secrets.RECAPTCHA_PUBLIC_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{reCaptchaPrivateKey}#', '${{ secrets.RECAPTCHA_PRIVATE_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{twitterConsumerKey}#', '${{ secrets.TWITTER_CONSUMER_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{twitterConsumerSecret}#', '${{ secrets.TWITTER_CONSUMER_SECRET }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{twitterUserAccessToken}#', '${{ secrets.TWITTER_USER_ACCESS_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{twitterUserAccessSecret}#', '${{ secrets.TWITTER_USER_ACCESS_SECRET }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{VimeoAccessToken}#', '${{ secrets.VIMEO_ACCESS_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitterApiToken}#', '${{ secrets.GITTER_API_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubUsername}#', '${{ secrets.GH_USERNAME }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubPassword}#', '${{ secrets.GH_PASSWORD }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubAccessToken}#', '${{ secrets.GH_ACCESS_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubUmbraBotAccessToken}#', '${{ secrets.GH_UMBRABOT_ACCESS_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{IpStackAccessKey}#', '${{ secrets.IP_STACK_ACCESS_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubClientId}#', '${{ secrets.GH_CLIENT_ID }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{GitHubClientSecret}#', '${{ secrets.GH_CLIENT_SECRET }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{IncomingWebHookAuthKey}#', '${{ secrets.INCOMING_WEBHOOK_AUTH_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{CosmosAuthKey}#', '${{ secrets.COSMOS_AUTH_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{CollabBearerToken}#', '${{ secrets.COLLAB_BEARER_TOKEN }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{DiscourseApiKey}#', '${{ secrets.DISCOURSE_API_KEY }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{smtpUsername}#', '${{ secrets.SMTP_USERNAME }}' | Set-Content OurUmbraco.Site/web.vsts.config
+          (Get-Content OurUmbraco.Site/web.vsts.config) -replace '#{smtpPassword}#', '${{ secrets.SMTP_PASSWORD }}' | Set-Content OurUmbraco.Site/web.vsts.config
 
 
       - name: Publish to folder
