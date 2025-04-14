@@ -638,7 +638,6 @@
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
     <Compile Include="Documentation\Models\AzureDevopsPayload.cs" />
-    <Compile Include="Forum\AntiSpam\StopForumSpamService.cs" />
     <Compile Include="Forum\Controllers\DiscourseController.cs" />
     <Compile Include="Forum\Models\DiscourseTopicList.cs" />
     <Compile Include="Forum\Models\TopicListModel.cs" />
@@ -692,8 +691,6 @@
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
     <Compile Include="Our\Api\IssuesStatisticsController.cs" />
-    <Compile Include="Our\Api\TeamUmbracoStatisticsController.cs" />
-    <Compile Include="Our\Api\PullRequestStatisticsController.cs" />
     <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
@@ -733,7 +730,6 @@
     <Compile Include="Documentation\Controllers\IncomingWebHookAuthorizeFilterAttribute.cs" />
     <Compile Include="Documentation\Controllers\LessonsController.cs" />
     <Compile Include="Documentation\DocumentationContentFinder.cs" />
-    <Compile Include="Our\Api\GitHubController.cs" />
     <Compile Include="Our\Api\UpgradeCheckController.cs" />
     <Compile Include="Our\EventHandlers\ReleaseEventHandler.cs" />
     <Compile Include="Our\Extensions\DateTimeExtension.cs" />
@@ -743,13 +739,10 @@
     <Compile Include="Our\Extensions\VersionExtensions.cs" />
     <Compile Include="Our\Models\FirstPullRequest.cs" />
     <Compile Include="Our\Models\GitHub\AddComment.cs" />
-    <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReply.cs" />
     <Compile Include="Our\Models\GitHub\Event.cs" />
     <Compile Include="Our\Models\GitHub\Comment.cs" />
-    <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyPoco.cs" />
     <Compile Include="Our\Models\GitHub\Issue.cs" />
     <Compile Include="Our\Models\GitHub\Label.cs" />
-    <Compile Include="Our\Models\GitHub\AutoReplies\GitHubAutoReplyType.cs" />
     <Compile Include="Our\Models\GitHub\Review.cs" />
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\InstallationModel.cs" />
@@ -760,7 +753,6 @@
     <Compile Include="Community\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Models\UpgradeModel.cs" />
     <Compile Include="Our\Models\UpgradeResult.cs" />
-    <Compile Include="Our\Services\ContributorBadgeService.cs" />
     <Compile Include="Our\Services\EmailService.cs" />
     <Compile Include="Our\Models\ActivationEmailModel.cs" />
     <Compile Include="Events\Api\EventsController.cs" />
@@ -772,7 +764,6 @@
     <Compile Include="Events\Models\Event.cs" />
     <Compile Include="Events\Relations\Event.cs" />
     <Compile Include="Events\Relations\EventRelation.cs" />
-    <Compile Include="Forum\AntiSpam\SpamChecker.cs" />
     <Compile Include="Forum\Api\ForumController.cs" />
     <Compile Include="Forum\Api\ForumControllerBase.cs" />
     <Compile Include="Forum\Api\PublicForumController.cs" />

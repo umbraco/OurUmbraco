@@ -6,46 +6,31 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
-using System.Web;
 using System.Web.Configuration;
 using System.Web.Hosting;
 using Examine;
 using Examine.LuceneEngine.SearchCriteria;
-using GraphQL.Client;
-using GraphQL.Client.Http;
-using GraphQL.Client.Serializer.Newtonsoft;
-using GraphQL.Common.Request;
 using Hangfire.Console;
 using Hangfire.Server;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using OurUmbraco.Community.GitHub.Models;
 using OurUmbraco.Community.GitHub.Models.Cached;
-using OurUmbraco.Community.GitHub.Models.Comments;
 using OurUmbraco.Community.Models;
 using OurUmbraco.Our.Models.GitHub;
-using OurUmbraco.Our.Models.GitHub.AutoReplies;
-using OurUmbraco.Our.Services;
 using RestSharp;
-using RestSharp.Authenticators;
 using Skybrud.Essentials.Json;
-using Skybrud.Essentials.Json.Extensions;
 using Skybrud.Essentials.Time;
 using Skybrud.Social.GitHub.Exceptions;
 using Skybrud.Social.GitHub.Options;
 using Skybrud.Social.GitHub.Options.Issues;
 using Skybrud.Social.GitHub.Responses.Issues;
 using Umbraco.Core;
-using Umbraco.Core.Configuration;
 using Umbraco.Core.Logging;
-using Umbraco.Core.Models;
 using Umbraco.Core.Persistence;
 using Umbraco.Web;
-using Umbraco.Web.Routing;
-using Umbraco.Web.Security;
 using File = System.IO.File;
 using GitHubIssueState = Skybrud.Social.GitHub.Options.Issues.GitHubIssueState;
-using Task = System.Threading.Tasks.Task;
 
 namespace OurUmbraco.Community.GitHub
 {
@@ -393,126 +378,6 @@ namespace OurUmbraco.Community.GitHub
             return pulls;
         }
 
-        private List<GithubPullRequestModel> GetPulls(string repository, int page, List<GithubPullRequestModel> pulls, out bool stopImport)
-        {
-            // Initialize the request
-            var username = ConfigurationManager.AppSettings["GitHubUsername"];
-            var password = ConfigurationManager.AppSettings["GitHubPassword"];
-            var client = new RestClient(GitHubApiClient) { Authenticator = new HttpBasicAuthenticator(username, password) };
-
-            var resource = $"/repos/{RepositoryOwner}/{repository}/pulls?state=all&page={page}&sort=updated&direction=desc";
-            LogHelper.Info<GitHubService>($"Getting PR data from {resource}");
-
-            var request = new RestRequest(resource, Method.GET);
-            client.UserAgent = UserAgent;
-
-            // Make the request to the GitHub API
-            var result = client.Execute<List<GithubPullRequestModel>>(request);
-
-            stopImport = false;
-
-            if (result.Data.Count == 0)
-            {
-                LogHelper.Info<GitHubService>("No records returned from the API, setting stopImport to true");
-                stopImport = true;
-                return pulls;
-            }
-
-            foreach (var pull in result.Data)
-            {
-                var existing = pulls.FirstOrDefault(x => x.Id == pull.Id);
-
-                var isFound = existing != null;
-                var isUpdated = isFound && existing.UpdatedAt != pull.UpdatedAt;
-
-                if (isFound)
-                {
-                    if (isUpdated)
-                    {
-                        // It's been updated, remove it, so we can replace with the latest version
-                        pulls.Remove(existing);
-                    }
-                    else
-                    {
-                        // We've already imported this one, stop going down the list
-                        LogHelper.Info<GitHubService>("We've already imported this PR, so we'll stop importing here");
-                        stopImport = true;
-                        break;
-                    }
-                }
-
-                pull.Repository = repository;
-                pulls.Add(pull);
-            }
-
-            return pulls;
-        }
-
-        public List<PullRequestMember> MatchPullsToMembers()
-        {
-            var searcher = ExamineManager.Instance.SearchProviderCollection["PullRequestSearcher"];
-            var criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
-
-            criteria = (LuceneSearchCriteria)criteria.RawQuery("*:*");
-            var searchResults = searcher.Search(criteria);
-            var contributors = searchResults
-                .Where(x => x.Fields["memberId"] != null && string.IsNullOrWhiteSpace(x.Fields["memberId"]) == false).ToList();
-
-            var members = new List<int>();
-            foreach (var match in contributors)
-            {
-                int.TryParse(match.Fields["memberId"], out var memberId);
-                if (members.Contains(memberId) == false)
-                    members.Add(memberId);
-            }
-
-            var pullRequestMembers = new List<PullRequestMember>();
-
-            foreach (var memberId in members)
-            {
-                var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
-                var member = umbracoHelper.TypedMember(memberId);
-
-                var pullRequestMember = new PullRequestMember
-                {
-                    MemberId = member.Id,
-                    Name = member.Name,
-                    GitHubUsername = member.GetPropertyValue<string>("github"),
-                    Repositories = new List<string>()
-                };
-
-                criteria = (LuceneSearchCriteria)searcher.CreateSearchCriteria();
-                criteria = (LuceneSearchCriteria)criteria.RawQuery($"memberId:{memberId}");
-                searchResults = searcher.Search(criteria);
-
-                if (searchResults.Any())
-                {
-                    var totalPulls = searchResults.Count();
-                    var openPulls = searchResults.Count(x => x.Fields["state"] != null && x.Fields["state"] == "open");
-                    var acceptedPulls = searchResults.Count(x => x.Fields["mergedAt"] != null && string.IsNullOrWhiteSpace(x.Fields["mergedAt"]) == false);
-                    var closedPulls = totalPulls - openPulls - acceptedPulls;
-
-                    var repositories = new List<string>();
-                    foreach (var searchResult in searchResults)
-                    {
-                        var repository = searchResult.Fields["repository"];
-                        if (repositories.Contains(repository) == false)
-                            repositories.Add(repository);
-                    }
-
-                    pullRequestMember.TotalPulls = totalPulls;
-                    pullRequestMember.OpenPulls = openPulls;
-                    pullRequestMember.AcceptedPulls = acceptedPulls;
-                    pullRequestMember.ClosedPulls = closedPulls;
-                    pullRequestMember.Repositories = repositories;
-                }
-
-                pullRequestMembers.Add(pullRequestMember);
-            }
-
-            return pullRequestMembers;
-        }
-
         /// <summary>
         /// Gets a list of contributors (<see cref="GitHubContributorModel"/>) for a single GitHub repository.
         /// </summary>
@@ -548,13 +413,6 @@ namespace OurUmbraco.Community.GitHub
 
             var labels = JsonConvert.DeserializeObject<List<Label>>(labelsResponse.Body);
             return labels;
-        }
-
-        public List<LabelReport> GetLabelReport()
-        {
-            var fileContents = File.ReadAllText($"{LabelsJsonPath}AllLabels.json");
-            var allLabels = JsonConvert.DeserializeObject<List<LabelReport>>(fileContents);
-            return allLabels;
         }
 
         public void DownloadAllLabels(PerformContext context)
@@ -715,91 +573,6 @@ namespace OurUmbraco.Community.GitHub
 
             var allLabelsJson = JsonConvert.SerializeObject(allLabels);
             File.WriteAllText($"{LabelsJsonPath}AllLabels.json", allLabelsJson, Encoding.UTF8);
-        }
-
-        public async Task NotifyUnmergeablePullRequests(PerformContext context)
-        {
-            var queryFileLocation = "~/Config/Queries/GetUnmergeablePullRequests.json";
-            var query = GetQueryFromFile(queryFileLocation);
-            if (query == null)
-                context.WriteLine($"Query file not found {queryFileLocation}");
-
-            var cursor = string.Empty;
-
-            var repoManagementService = new RepositoryManagementService();
-            var repositories = repoManagementService.GetAllPublicRepositories();
-
-            foreach (var repo in repositories)
-            {
-                var repositoryName = repo.Alias;
-
-                while (true)
-                {
-                    var graphClient = GetGraphQlClient();
-                    var request = string.IsNullOrEmpty(cursor)
-                        ? new GraphQL.GraphQLRequest { Query = query, Variables = $"{{ \"repository\": \"{repositoryName}\" }}" }
-                        : new GraphQL.GraphQLRequest { Query = query, Variables = $"{{ \"cursor\": \"{cursor}\", \"repository\": \"{repositoryName}\" }}" };
-
-                    try
-                    {
-                        var response = await graphClient.SendQueryAsync<GraphQLModel.Repository>(request).ConfigureAwait(false);
-
-                        if (response.Errors != null)
-                            foreach (var error in response.Errors)
-                            {
-                                context.SetTextColor(ConsoleTextColor.Red);
-                                context.WriteLine($"Error executing GraphQL query: {error.Message}");
-                                context.ResetTextColor();
-                            }
-
-                        var repository = response.Data;
-                        if (repository.PullRequests.Edges.Any() == false)
-                            break;
-
-                        var unmergeable = repository.PullRequests.Edges.Where(x => x.Node.Mergeable == "CONFLICTING").ToList();
-
-                        cursor = repository.PullRequests.PageInfo.EndCursor;
-
-                        foreach (var pr in unmergeable)
-                            context.WriteLine($"Pull number {pr.Node.Number} for repository {repo.Alias} is not mergeable due to a conflict");
-                    }
-                    catch (Exception ex)
-                    {
-                        context.WriteLine($"Ran into a bit of trouble - {ex.Message}");
-                    }
-                }
-            }
-        }
-
-        private static string GetQueryFromFile(string queryFileLocation)
-        {
-            var queryFile = HostingEnvironment.MapPath(queryFileLocation);
-            var query = File.ReadAllText(queryFile);
-            return query;
-        }
-
-        private static GraphQLHttpClient GetGraphQlClient()
-        {
-            var gitHubAccessToken = ConfigurationManager.AppSettings["GitHubAccessToken"];
-            var graphClient = new GraphQLHttpClient("https://api.github.com/graphql",  new NewtonsoftJsonSerializer());
-            graphClient.HttpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {gitHubAccessToken}");
-            graphClient.HttpClient.DefaultRequestHeaders.Add("User-Agent", "OurUmbraco");
-            return graphClient;
-        }
-
-
-        /// <summary>
-        /// Get all contributors from GitHub Umbraco repositories
-        /// </summary>
-        /// <param name="repo"></param>
-        /// <returns></returns>
-        public IRestResponse<List<GitHubContributorModel>> GetAllRepoContributors(string repo)
-        {
-            var client = new RestClient(GitHubApiClient);
-            var request = new RestRequest($"/repos/{RepositoryOwner}/{repo}/stats/contributors", Method.GET);
-            client.UserAgent = UserAgent;
-            var response = client.Execute<List<GitHubContributorModel>>(request);
-            return response;
         }
 
         public GitHubContributorsResult GetOverallContributors(int maxAttempts = 3)
@@ -1123,188 +896,6 @@ namespace OurUmbraco.Community.GitHub
             }
         }
 
-
-        public void UpdateReviews(PerformContext context, Community.Models.Repository repository)
-        {
-            // Accept newer versions of the TLS protocol
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var page = 0;
-            var pageTrackerFile = HostingEnvironment.MapPath($"~/App_Data/TEMP/GitHub/PageTracker-{repository.Alias}.txt");
-
-            if (File.Exists(pageTrackerFile) == false)
-            {
-                File.WriteAllText(pageTrackerFile, page.ToString(), Encoding.Default);
-            }
-            else
-            {
-                var line = File.ReadLines(pageTrackerFile).First();
-                int.TryParse(line, out page);
-            }
-
-            try
-            {
-                EnsureCacheDirectories(repository);
-
-                var options = new GitHubGetRepositoryIssuesOptions
-                {
-                    Owner = repository.Owner,
-                    Repository = repository.Alias,
-                    Sort = GitHubIssueSortField.Updated,
-                    Direction = GitHubSortDirection.Descending,
-                    State = GitHubIssueState.All,
-                    PerPage = 100,
-                    Page = page
-                };
-
-                while (true)
-                {
-                    var currentPage = options.Page;
-                    var localCount = 0;
-
-                    // Make the initial request to the API
-                    context.WriteLine($"Fetching issues for repo {repository.Alias} (page {options.Page})");
-
-                    GitHubGetIssuesResponse issuesResponse;
-                    try
-                    {
-                        issuesResponse = GitHubApi.Issues.GetIssues(options);
-                        context.WriteLine($"Number of pages returned {issuesResponse.TotalPages}");
-                        context.WriteLine($"GitHub says: {issuesResponse.RateLimiting.Remaining} requests remaining - will reset at {issuesResponse.RateLimiting.Reset.ToString("yyyy-MM-dd HH:mm")} UTC");
-
-                        if (issuesResponse.RateLimiting.Remaining <= 1000)
-                        {
-                            context.WriteLine($"Not enough remaining requests available {issuesResponse.RateLimiting.Remaining} - stopping now.");
-                            break;
-                        }
-
-                        // Break the loop if there's no more pages left
-                        if (currentPage > issuesResponse.TotalPages)
-                        {
-                            context.WriteLine($"Page {currentPage} is higher than the number of available pages ({issuesResponse.TotalPages}) - stopping now.");
-                            break;
-                        }
-                    }
-                    catch (GitHubHttpException ex)
-                    {
-                        throw new Exception(
-                            $"Failed fetching page {options.Page}\r\n\r\n{ex.Response.ResponseUri}", ex);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new Exception($"Failed fetching page {options.Page}", ex);
-                    }
-
-
-                    foreach (var response in issuesResponse.Body)
-                    {
-                        // Local flag used later to determine whether new data was fetched for this issue
-                        var updated = false;
-
-                        var gitHubResponse = JsonConvert.DeserializeObject<GitHubResponse>(response.JObject.ToString());
-                        var responseIsIssue = gitHubResponse.pull_request == null;
-
-                        var directory = responseIsIssue ? repository.IssuesStorageDirectory() : repository.PullsStorageDirectory();
-                        var issueTypename = responseIsIssue ? "issue" : "pull";
-                        var filePrefix = $"{directory}\\{response.Number}.{issueTypename}";
-
-                        var issuesFile = HostingEnvironment.MapPath($"{filePrefix}.json");
-                        var issuesCommentFile = HostingEnvironment.MapPath($"{filePrefix}.comments.json");
-                        var issuesEventsFile = HostingEnvironment.MapPath($"{filePrefix}.events.json");
-                        var issuesReviewsFile = HostingEnvironment.MapPath($"{filePrefix}.reviews.json");
-                        var issuesCombinedFile = HostingEnvironment.MapPath($"{filePrefix}.combined.json");
-
-                        JsonUtils.SaveJsonObject(issuesFile, response);
-
-                        // Fetch comments and events if the local JSON file is older than the last update time of the issue
-                        JArray comments;
-                        JArray events;
-                        JArray reviews = null;
-
-                        if (File.Exists(issuesCommentFile) && File.GetLastWriteTimeUtc(issuesCommentFile) > response.UpdatedAt.ToUniversalTime())
-                        {
-                            comments = JsonUtils.LoadJsonArray(issuesCommentFile);
-                        }
-                        else
-                        {
-                            context.WriteLine($"Fetching comments for issue {response.Number} {response.Title}");
-                            var issueCommentsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/comments");
-                            if (issueCommentsResponse.StatusCode != HttpStatusCode.OK)
-                                context.WriteLine($"Failed fetching comments for issue #{response.Number} ({issueCommentsResponse.StatusCode}), continuing");
-
-                            comments = JsonUtils.ParseJsonArray(issueCommentsResponse.Body);
-                            JsonUtils.SaveJsonArray(issuesCommentFile, comments);
-
-                            updated = true;
-                        }
-
-                        if (File.Exists(issuesEventsFile) && File.GetLastWriteTimeUtc(issuesEventsFile) > response.UpdatedAt.ToUniversalTime())
-                        {
-                            events = JsonUtils.LoadJsonArray(issuesEventsFile);
-                        }
-                        else
-                        {
-                            context.WriteLine($"Fetching events for issue {response.Number} {response.Title}");
-                            var issueEventsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/issues/{response.Number}/events");
-                            if (issueEventsResponse.StatusCode != HttpStatusCode.OK)
-                                context.WriteLine($"Failed fetching events for issue #{response.Number} ({issueEventsResponse.StatusCode}), continuing");
-
-                            events = JsonUtils.ParseJsonArray(issueEventsResponse.Body);
-                            JsonUtils.SaveJsonArray(issuesEventsFile, events);
-                        }
-
-                        // Only PRs have reviews, no need to check for them on issues
-                        if (responseIsIssue == false)
-                        {
-                            if (File.Exists(issuesReviewsFile) && File.GetLastWriteTimeUtc(issuesReviewsFile) > response.UpdatedAt.ToUniversalTime())
-                            {
-                                reviews = JsonUtils.LoadJsonArray(issuesReviewsFile);
-                            }
-                            else
-                            {
-                                context.WriteLine($"Fetching reviews for PR {response.Number} {response.Title}");
-                                var issueReviewsResponse = GitHubApi.Client.DoHttpGetRequest($"/repos/{repository.Owner}/{repository.Alias}/pulls/{response.Number}/reviews");
-                                if (issueReviewsResponse.StatusCode == HttpStatusCode.NotFound)
-                                {
-                                    // make sure to save an empty array for all of them so we don't keep revisiting this unless there's been a PR update
-                                    reviews = JsonUtils.ParseJsonArray("[]");
-                                    JsonUtils.SaveJsonArray(issuesReviewsFile, reviews);
-                                    continue;
-                                }
-
-                                if (issueReviewsResponse.StatusCode != HttpStatusCode.OK)
-                                    context.WriteLine($"Failed fetching reviews for PR #{response.Number} ({issueReviewsResponse.StatusCode}), continuing");
-
-                                reviews = JsonUtils.ParseJsonArray(issueReviewsResponse.Body);
-                                JsonUtils.SaveJsonArray(issuesReviewsFile, reviews);
-                            }
-                        }
-
-                        // Save a JSON file with all the combined data we have for the issue / PR
-                        response.JObject.Add("_comments", comments);
-                        response.JObject.Add("events", events);
-                        response.JObject.Add("reviews", reviews);
-                        JsonUtils.SaveJsonObject(issuesCombinedFile, response);
-
-                        if (updated) localCount++;
-                    }
-
-                    context.WriteLine($"Updated {localCount} issues on page {options.Page}");
-
-                    // Increment the page count
-                    options.Page++;
-                    currentPage = options.Page;
-
-                    File.WriteAllText(pageTrackerFile, currentPage.ToString(), Encoding.Default);
-                }
-            }
-            catch (Exception ex)
-            {
-                LogHelper.Error<GitHubService>("Error while fetching issues", ex);
-                context.WriteLine("Error:" + ex.Message + " - Stack trace: " + ex.StackTrace);
-            }
-        }
-
         private static void EnsureCacheDirectories(Community.Models.Repository repository)
         {
             var issuesDirectory = HostingEnvironment.MapPath(repository.IssuesStorageDirectory());
@@ -1313,181 +904,6 @@ namespace OurUmbraco.Community.GitHub
             var pullsDirectory = HostingEnvironment.MapPath(repository.PullsStorageDirectory());
             if (Directory.Exists(pullsDirectory) == false)
                 Directory.CreateDirectory(pullsDirectory);
-        }
-
-        public void AddCommentToAwaitingFeedbackIssues(PerformContext context)
-        {
-            var repositoryService = new RepositoryManagementService();
-            var issues = repositoryService.GetAllOpenIssues(false);
-            var awaitingFeedback = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.AwaitingFeedback);
-            AddGitHubComment(context, awaitingFeedback, GitHubAutoReplyType.AwaitingFeedback);
-        }
-
-        public void AddCommentToStateHQDiscussionIssues(PerformContext context)
-        {
-            var repositoryService = new RepositoryManagementService();
-            var issues = repositoryService.GetAllOpenIssues(false);
-            var stateHQDiscussion = issues.Find(i => i.CategoryKey == RepositoryManagementService.CategoryKey.HqDiscussion);
-
-            var removeIssues = new List<int>();
-            
-            var usersService = new UsersService();
-            var hqMembers = usersService.GetIgnoredGitHubUsers().Result.ToArray();
-            
-            foreach (var issue in stateHQDiscussion.Issues)
-            {
-                var hqComments = issue.Comments.Where(x => hqMembers.Contains(x.User.Login)).ToList();
-                if (hqComments.Any() == false)
-                    continue;
-
-                var alreadyMentioned = hqComments.Any(x => x.Body.ToLowerInvariant().Contains("at HQ".ToLowerInvariant()) ||
-                                                           x.Body.ToLowerInvariant().Contains("discuss".ToLowerInvariant()));
-                if (alreadyMentioned)
-                    removeIssues.Add(issue.Number);
-            }
-
-            var notifyIssues = stateHQDiscussion.Issues.Where(x => removeIssues.Contains(x.Number) == false).ToList();
-            var cleanedIssues = new RepositoryManagementService.GitHubCategorizedIssues
-            {
-                SortOrder = stateHQDiscussion.SortOrder,
-                CategoryKey = stateHQDiscussion.CategoryKey,
-                CategoryDescription = stateHQDiscussion.CategoryDescription,
-                Issues = notifyIssues
-            };
-
-            AddGitHubComment(context, cleanedIssues, GitHubAutoReplyType.HqDiscussion);
-        }
-
-        private void AddGitHubComment(PerformContext context, RepositoryManagementService.GitHubCategorizedIssues categorizedIssues, GitHubAutoReplyType gitHubAutoReplyType)
-        {
-            var taskAlias = gitHubAutoReplyType.ToString().ToLowerInvariant();
-            if (categorizedIssues == null || categorizedIssues.Issues.Any() == false)
-            {
-                context.WriteLine($"No issues to process for task alias {taskAlias}");
-                return;
-            }
-
-            var umbracoHelper = new UmbracoHelper(EnsureUmbracoContext());
-
-            var actionNode = umbracoHelper
-                .TypedContentSingleAtXPath("//gitHubLabelCommentRepository")
-                .Children(c => c.GetPropertyValue<string>("taskAlias").ToLowerInvariant() == taskAlias)
-                .FirstOrDefault();
-
-            if (actionNode == null)
-            {
-                context.SetTextColor(ConsoleTextColor.Yellow);
-                context.WriteLine($"Could not find content for the alias {taskAlias} - no notifications will be sent.");
-                context.ResetTextColor();
-                return;
-            }
-
-            context.WriteLine($"Found node to get the comment template from (node Id {actionNode.Id} - node name {actionNode.Name})");
-
-            var friendlyComments = actionNode.GetPropertyValue<IEnumerable<IPublishedContent>>("gitHubLabelComments").ToList();
-
-            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
-            if (enableGitHubCommenting == false)
-            {
-                context.SetTextColor(ConsoleTextColor.Yellow);
-                context.WriteLine($"NOTE: `enableGitHubCommenting` is disabled, nothing will actually be posted.");
-                context.ResetTextColor();
-            }
-
-            // Only do this for newly created issues since this feature was introduced so as not to spam all the older issues.
-            var issues = categorizedIssues.Issues.Where(x => x.CreateDateTime >= new DateTime(2019, 5, 24));
-            foreach (var issue in issues)
-            {
-                // If we've already sent this reply, don't add it again
-                if (GitHubAutoReply.HasReply(issue, gitHubAutoReplyType))
-                    continue;
-
-                // Get a random reply from the available replies for this reply type
-                var randomCommentIndex = StaticRandom.Instance.Next(0, friendlyComments.Count - 1);
-                var selectedComment = friendlyComments[randomCommentIndex];
-                if (selectedComment == null)
-                    return;
-
-                var comment = selectedComment.GetProperty("comment").DataValue.ToString();
-                comment = comment.Replace("{{issueowner}}", "@" + issue.User.Login);
-
-                context.WriteLine($"Trying to post comment to the issue [{issue.RepositoryName}/{issue.Number}] (template index {randomCommentIndex}`).");
-
-                var result = AddCommentToIssue(issue, gitHubAutoReplyType, comment);
-                if (result == null)
-                    continue;
-
-                if (result.Success)
-                {
-                    context.WriteLine($"Comment posted successfully");
-                }
-                else
-                {
-                    context.SetTextColor(ConsoleTextColor.Red);
-                    context.WriteLine($"Comment post failed: {result.Response.Body}");
-                    context.ResetTextColor();
-                }
-            }
-        }
-
-        private UmbracoContext EnsureUmbracoContext()
-        {
-            if (UmbracoContext.Current != null) return UmbracoContext.Current;
-            var dummyContext = new HttpContextWrapper(new HttpContext(new SimpleWorkerRequest("/", string.Empty, new StringWriter())));
-            return UmbracoContext.EnsureContext(dummyContext, ApplicationContext.Current,
-                new WebSecurity(dummyContext,
-                    ApplicationContext.Current),
-                    UmbracoConfig.For.UmbracoSettings(),
-                    UrlProviderResolver.Current.Providers,
-                    false);
-        }
-
-        /// <summary>
-        /// Attempts to add a new comment to <see cref="issue"/> (which may either be an issue or a PR).
-        /// </summary>
-        /// <param name="issue">The issue to which the comment will be added.</param>
-        /// <param name="type">The type of the message. This ensures that we later can check whether this type of message already been sent.</param>
-        /// <param name="message"></param>
-        /// <returns>An instance of <see cref="AddCommentResult"/>.</returns>
-        public AddCommentResult AddCommentToIssue(Issue issue, GitHubAutoReplyType type, string message)
-        {
-            if (issue == null) throw new ArgumentNullException(nameof(type));
-
-            // Special case, might be a Github thing?
-            // The fancy quote/double quote that GDocs/Word uses is
-            // not recognized by GitHub so we need to replace it.
-            message = message.Replace("‘", "'");
-            message = message.Replace("’", "'");
-            message = message.Replace("“", "\"");
-            message = message.Replace("”", "\"");
-
-            var body = new JObject { { "body", message } };
-
-            bool.TryParse(ConfigurationManager.AppSettings["EnableGitHubCommenting"], out var enableGitHubCommenting);
-            if (enableGitHubCommenting == false)
-                return null;
-
-            // Use Skybrud.Social to make the request to the GitHub API (it will handle the authentication)
-            var response = GitHubBotApi.Client.DoHttpPostRequest(issue.CommentsUrl, body);
-
-            // Success? Success!!!
-            if (response.StatusCode == HttpStatusCode.Created)
-            {
-                // Parse the response body into a JObject
-                var responseBody = JObject.Parse(response.Body);
-
-                // Get the ID if the comment
-                var commentId = responseBody.GetInt64("id");
-
-                // Add an entry to the database so we know that we've sent the comment
-                GitHubAutoReply.AddReply(issue.RepoSlug, issue.Number, type, commentId);
-
-                return new AddCommentResult(response);
-            }
-
-            LogHelper.Info<RepositoryManagementService>($"Failed adding comment to issue {issue.Number} ({(int)response.StatusCode} received from GitHub API)");
-
-            return new AddCommentResult(response);
         }
 
         private int GetGitHubIdPropertyTypeId()
@@ -1518,46 +934,7 @@ namespace OurUmbraco.Community.GitHub
             return _gitHubUserIdPropertyTypeId;
 
         }
-
-        /// <summary>
-        /// Gets the first member matching the specified <paramref name="githubId"/>.
-        /// </summary>
-        /// <param name="githubId">The ID of the GitHub user.</param>
-        /// <returns>The <see cref="IMember"/> instance representing the member, or <c>null</c> if not found.</returns>
-        public IMember GetMemberByGitHubUserId(int githubId)
-        {
-
-            var db = ApplicationContext.Current.DatabaseContext.Database;
-
-            // Declare another nice and raw SQL query
-            Sql sql = new Sql(
-                "SELECT [contentNodeId] FROM [dbo].[cmsPropertyData] WHERE [propertytypeid] = @0 AND [dataNvarchar] = @1",
-                GetGitHubIdPropertyTypeId(), githubId
-            );
-
-            // Get the ID of the first member matching matching "githubId"
-            int memberId = db.FirstOrDefault<int>(sql);
-
-            // Look up the member via the member service if we found a match
-            return memberId > 0 ? ApplicationContext.Current.Services.MemberService.GetById(memberId) : null;
-
-        }
-
     }
-
-
-    public class PullRequestMember
-    {
-        public int MemberId { get; set; }
-        public string Name { get; set; }
-        public string GitHubUsername { get; set; }
-        public int TotalPulls { get; set; }
-        public int OpenPulls { get; set; }
-        public int AcceptedPulls { get; set; }
-        public int ClosedPulls { get; set; }
-        public List<string> Repositories { get; set; }
-    }
-
 
     public class GitHubResponse
     {
@@ -1567,14 +944,6 @@ namespace OurUmbraco.Community.GitHub
     public class Pull_Request
     {
         public string url { get; set; }
-    }
-
-    public class RepositoryLabels
-    {
-        public string Repository { get; set; }
-        public List<Label> Labels { get; set; }
-        public bool HasRequiredLabels { get; set; }
-        public List<NonCompliantLabel> NonCompliantLabels { get; set; }
     }
 
     public class NonCompliantLabel

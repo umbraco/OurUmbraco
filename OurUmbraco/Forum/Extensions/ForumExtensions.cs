@@ -7,7 +7,6 @@ using System.Web;
 using Ganss.XSS;
 using HtmlAgilityPack;
 using MarkdownSharp;
-using OurUmbraco.Forum.AntiSpam;
 using OurUmbraco.Forum.Models;
 using Umbraco.Core;
 using Umbraco.Core.Models;
@@ -104,7 +103,7 @@ namespace OurUmbraco.Forum.Extensions
                 {
                     foreach (var link in links)
                     {
-                        if (link.Attributes["href"] != null && (SpamChecker.CountValidLinks(link.Attributes["href"].Value, 0) == 0))
+                        if (link.Attributes["href"] != null)
                         {
                             if (link.Attributes["rel"] != null)
                             {
@@ -158,14 +157,12 @@ namespace OurUmbraco.Forum.Extensions
         public static bool DetectSpam(this Comment comment)
         {
             var member = ApplicationContext.Current.Services.MemberService.GetById(comment.MemberId);
-            comment.IsSpam = SpamChecker.IsSpam(member, comment.Body);
             return comment.IsSpam;
         }
 
         public static bool DetectSpam(this Topic topic)
         {
             var member = ApplicationContext.Current.Services.MemberService.GetById(topic.MemberId);
-            topic.IsSpam = SpamChecker.IsSpam(member, string.Format("{0} {1}", topic.Title, topic.Body));
             return topic.IsSpam;
         }
 

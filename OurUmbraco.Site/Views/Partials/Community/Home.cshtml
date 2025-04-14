@@ -80,7 +80,6 @@
     @ForumActivity()
     @MastodonSearch()
     @Meetups()
-    @GitHubContributors()
     @Html.Partial("home/documentation")
 }
 else
@@ -89,7 +88,6 @@ else
     @ForumActivity()
     @MastodonSearch()
     @Meetups()
-    @GitHubContributors()
 }
 
 @helper ForumActivity()
@@ -119,53 +117,6 @@ else
 
                     <div class="col-md-12 goto-forum">
                         <a class="button green" href="https://forum.umbraco.com/">Go to Forum &rarr;</a>
-                    </div>
-
-                </div>
-            </div>
-        </section>
-}
-
-@helper  GitHubContributors()
-    {
-        <section class="forum github-contributions">
-            <div class="container">
-                <div class="row">
-                    <div class="col-md-12">
-                        <h1 class="text-center">GitHub Contributions</h1>
-                        <p>
-                            <small class="github-repo-list">
-                                Contributions to default branches for
-                                <a href="https://github.com/umbraco/Umbraco-CMS" target="_blank" rel="noreferrer noopener" title="Umbraco-CMS">Umbraco-CMS</a>,
-                                <a href="https://github.com/umbraco/UmbracoDocs" target="_blank" rel="noreferrer noopener" title="UmbracoDocs">UmbracoDocs</a>,
-                                <a href="https://github.com/umbraco/OurUmbraco" target="_blank" rel="noreferrer noopener" title="OurUmbraco">OurUmbraco</a>,
-                                <a href="https://github.com/umbraco/Umbraco.Deploy.Contrib" target="_blank"`rel="noreferrer noopener" title="Umbraco.Deploy.Contrib">Umbraco.Deploy.Contrib</a>,
-                                <a href="https://github.com/umbraco/Umbraco.Courier.Contrib" target="_blank" rel="noreferrer noopener" title="Umbraco.Courier.Contrib">Umbraco.Courier.Contrib</a>,
-                                <a href="https://github.com/umbraco/Umbraco.Deploy.ValueConnectors" target="_blank" rel="noreferrer noopener" title="Umbraco.Deploy.ValueConnectors">Umbraco.Deploy.ValueConnectors</a>,
-                                <a href="https://github.com/umbraco/UmbPack" target="_blank" rel="noreferrer noopener" title="UmbPack">UmbPack</a>,
-                                <a href="https://github.com/umbraco/Package.Templates" target="_blank" rel="noreferrer noopener" title="Package.Templates">Package.Templates</a>,
-                                <a href="https://github.com/umbraco/rfcs" target="_blank" rel="noreferrer noopener" title="RFCs">RFCs</a>,
-                                <a href="https://github.com/umbraco/The-Starter-Kit" target="_blank" rel="noreferrer noopener" title="The-Starter-Kit">The-Starter-Kit</a>,
-                                <a href="https://github.com/umbraco/organizer-guide" target="_blank" rel="noreferrer noopener" title="organizer-guide">organizer-guide</a> and
-                                <a href="https://github.com/umbraco/Umbraco.UI" target="_blank" rel="noreferrer noopener" title="Umbraco.UI">Umbraco.UI</a> repos
-                            </small>
-                        </p>
-                    </div>
-                    <div class="col-md-12">
-                        <small>Contributions the last 12 months (number indicating accepted commits)</small>
-                    </div>
-
-                    <div class="col-md-12 flex" id="github-contributors">
-                        <h2>Loading GitHub contributors...</h2>
-                        <ul class="umb-load-indicator animated -half-second">
-                            <li class="umb-load-indicator__bubble"></li>
-                            <li class="umb-load-indicator__bubble"></li>
-                            <li class="umb-load-indicator__bubble"></li>
-                        </ul>
-                    </div>
-
-                    <div class="col-md-12 goto-forum">
-                        <a class="button green" target="_blank" rel="noopener noreferrer" href="https://github.com/umbraco/Umbraco-CMS/blob/v8/dev/.github/CONTRIBUTING.md">Contribute to Umbraco &rarr;</a>
                     </div>
 
                 </div>
