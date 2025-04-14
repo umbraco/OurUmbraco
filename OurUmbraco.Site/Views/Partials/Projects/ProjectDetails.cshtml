@@ -20,7 +20,7 @@
     var searchResult = searcher.Search(query).FirstOrDefault();
 
     var supportedUmbracoVersions = "  versions below 9";
-    
+
     if (searchResult != null)
     {
         var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
@@ -29,7 +29,7 @@
         if (resultVersions != "n/a")
         {
             supportedUmbracoVersions = resultVersions.Replace(" - ", "-");
-            var versionRange = supportedUmbracoVersions.Split(new []{ '-' });
+            var versionRange = supportedUmbracoVersions.Split(new[] { '-' });
             var upperVersion = versionRange.LastOrDefault();
             if (upperVersion != null)
             {
@@ -39,7 +39,7 @@
                     var releasesService = new ReleasesService();
                     var latestRelease = releasesService.GetLatestVersion8Release();
                     Version latestReleaseVersion;
-                    
+
                     if (Version.TryParse(latestRelease.Version, out latestReleaseVersion))
                     {
                         // show up until latest released Umbraco version
@@ -60,7 +60,7 @@
             }
         }
     }
-    
+
     var owner = Members.GetById(Model.Content.GetPropertyValue<int>("owner"));
 
     var files = WikiFile.CurrentFiles(project.Id);
@@ -119,7 +119,7 @@
     {
         img = avatarService.GetImgWithSrcSet(owner, owner.Name, 100);
     }
-    
+
     var badges = owner.GetRoles().GetBadges();
 }
 
@@ -132,13 +132,21 @@
                     <div class="package-detail-content">
                         <div class="vote">
                             <i class="icon-Hearts @(hasMemberVoted ? "liked" : null)"></i>
-                            @if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
+                            @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "true")
                             {
                                 <span>@pluralize(totalVotes, "vote", "votes")</span>
                             }
                             else
                             {
-                                <a href="#" id="projectVote" data-id="@project.Id">@pluralize(totalVotes, "vote", "votes")</a>
+                                if (Members.IsLoggedIn() == false || currentMember.Id == owner.Id || hasMemberVoted)
+                                {
+                                    <span>@pluralize(totalVotes, "vote", "votes")</span>
+                                }
+                                else
+                                {
+                                    <a href="#" id="projectVote" data-id="@project.Id">@pluralize(totalVotes, "vote", "votes")</a>
+                                }
+
                             }
                         </div>
 
@@ -187,9 +195,9 @@
                             </div>
                         }
 
-                    @if(packages.Any() || source.Any() || docs.Any(x => !x.Archived)) 
-                    {
-                        <div class="package-misc">
+                        @if (packages.Any() || source.Any() || docs.Any(x => !x.Archived))
+                        {
+                            <div class="package-misc">
                                 <ul class="tabs">
                                     <li class="tab-link current" data-tab="tab-package">Package Files</li>
                                     <li class="tab-link" data-tab="tab-docs">Documentation</li>
@@ -319,7 +327,7 @@
                                 </div>
                             </div>
                         }
-                    
+
                         <div class="package-forum-activity">
                             @{
                                 var forums = CurrentPage.Children.Where("Visible");
@@ -356,19 +364,19 @@
                     <div class="package-detail-sidebar">
 
                         <div class="package-download">
-							@{
-							    var hasCurrentRelease = currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package";
-								var hasNuGetRelease = string.IsNullOrEmpty(nugetPackageId) == false;
-							    var isNuGetFormat = project.GetPropertyValue<bool>("isNuGetFormat");
-							    var installCopy = "Install-Package";
-							}
-                            
+                            @{
+                                var hasCurrentRelease = currentRelease != null && currentRelease.Archived == false && currentRelease.FileType == "package";
+                                var hasNuGetRelease = string.IsNullOrEmpty(nugetPackageId) == false;
+                                var isNuGetFormat = project.GetPropertyValue<bool>("isNuGetFormat");
+                                var installCopy = "Install-Package";
+                            }
+
                             @if (hasCurrentRelease)
                             {
-                                <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br/><small>version @project.GetPropertyValue("version")</small></a>
+                                <a href="/FileDownload?id=@currentRelease.Id" class="button green" onclick="ga('PackageMaker.send', 'pageview', window.location.pathname + '/virtual/download/package-files/@(currentRelease.Name.Replace("'", ""))')"><i class="icon-Download-alt"></i>&nbsp;Download package<br /><small>version @project.GetPropertyValue("version")</small></a>
                             }
-                            
-							@if(hasCurrentRelease == false && hasNuGetRelease == false)
+
+                            @if (hasCurrentRelease == false && hasNuGetRelease == false)
                             {
                                 <div class="button green">No current release</div>
                             }
@@ -380,7 +388,7 @@
                                     Install-Package <span class="package-name">@nugetPackageId</span>
                                 </span>
                             }
-                            
+
                             @if (hasNuGetRelease && isNuGetFormat)
                             {
                                 <p class="small"><a href="@nuGetPackageUrl">NuGet</a> install instructions for Umbraco 9+</p>
@@ -388,7 +396,7 @@
                                     dotnet add package <span class="package-name">@nugetPackageId</span>
                                 </span>
                             }
-                            
+
                         </div>
 
                         <div class="package-creator">
@@ -411,8 +419,8 @@
 
                                                 @if (currentMember != null && (currentMember.IsHq() || currentMember.Id == owner.Id || contributors.Any(c => c.MemberId == currentMember.Id)))
                                                 {
-                                                    <br/>
-                                                    <br/>
+                                                    <br />
+                                                    <br />
                                                     <a href="/member/profile/projects/details?projectId=@project.Id">Edit package</a>
                                                 }
                                             </div>
@@ -500,7 +508,7 @@
                                 </li>
 
                                 <li title="@ourDownloads on our.umbraco.com">
-                                    <span>Downloads on Our:</span> @FormatDownloadNumber(ourDownloads) 
+                                    <span>Downloads on Our:</span> @FormatDownloadNumber(ourDownloads)
                                 </li>
 
                                 @if (nugetDownloads > 0)

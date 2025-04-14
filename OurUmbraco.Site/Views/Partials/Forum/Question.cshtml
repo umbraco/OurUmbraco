@@ -92,13 +92,16 @@
                         <div class="highfive-count votes-tooltip" title="@(Model.Votes.Any() ? html : null)">
                             @Model.Score
                         </div>
-                        @if (currentMember != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
+                        @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false")
                         {
-                            if (currentMember.Id != Model.MemberId)
+                            if (currentMember != null && !Utils.HasVoted(currentMember.Id, Model.Id, "powersTopic"))
                             {
-                                <a href="#" data-id="@Model.Id">
-                                    <img src="/assets/images/highfive.svg" alt="high five"/>High Five
-                                </a>
+                                if (currentMember.Id != Model.MemberId)
+                                {
+                                    <a href="#" data-id="@Model.Id">
+                                        <img src="/assets/images/highfive.svg" alt="high five" />High Five
+                                    </a>
+                                }
                             }
                         }
                     </div>
@@ -116,11 +119,11 @@
                         <div class="alert">
                             @if (memberIsAdmin)
                             {
-                                <span>You can see this topic because you're a moderator of the forum.</span><br/><br/>
+                                <span>You can see this topic because you're a moderator of the forum.</span><br /><br />
                             }
-                            Sorry if we're causing you any inconvenience but this post has been automatically marked for manual approval. A moderator has been notified and will evaluate to make sure you're not trying to post spam. <br/>
-                            Only moderators and the post author can see this post. When this post has been approved this post will be shown as normal. After that, your future posts will not need manual approval.<br/><br/>
-                            <strong>Note:</strong> We will send you an email when your account has been approved.<br/><br/>
+                            Sorry if we're causing you any inconvenience but this post has been automatically marked for manual approval. A moderator has been notified and will evaluate to make sure you're not trying to post spam. <br />
+                            Only moderators and the post author can see this post. When this post has been approved this post will be shown as normal. After that, your future posts will not need manual approval.<br /><br />
+                            <strong>Note:</strong> We will send you an email when your account has been approved.<br /><br />
                             <strong>Why are we doing this?</strong> We're dealing with a spam problem that cannot be fought with automated systems. Therefore, we approve each account that has a low number of posts manually. Again, sorry for the inconvenience, we much appreciate your contribution and your patience while we approve your account.
                         </div>
                     }
@@ -130,7 +133,7 @@
             </div>
 
             <div class="actions">
-                @if (currentMember != null)
+                @if (System.Configuration.ConfigurationManager.AppSettings["DiscourseEnabled"] == "false" && currentMember != null)
                 {
                     <a href="#" class="flag-thread" data-id="@Model.Id" data-member="@currentMember.Id">
                         <i class="icon-Flag"></i><span>Flag as spam</span>
