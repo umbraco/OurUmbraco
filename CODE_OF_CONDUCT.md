@@ -1,4 +1,4 @@
-# Umbraco Code of Conduct
+# Umbraco community code of conduct
 
 ## Preamble
 
