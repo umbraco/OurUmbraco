@@ -10,8 +10,6 @@ using OurUmbraco.Our.Examine;
 using OurUmbraco.Our.Models;
 using OurUmbraco.Project;
 using Umbraco.Web.WebApi;
-using Umbraco.Core;
-
 namespace OurUmbraco.Our.Api
 {
     [EnableCors(origins: "*", headers: "*", methods: "*")]
@@ -19,10 +17,6 @@ namespace OurUmbraco.Our.Api
     {
         public SearchResultModel GetGlobalSearchResults(string term)
         {
-            // track search
-            var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
-            ga.SendSearchQuery(term, "global");
-
             var searcher = new OurSearcher(term, maxResults: 5);
             var searchResult = searcher.Search();
             return searchResult;
@@ -49,10 +43,6 @@ namespace OurUmbraco.Our.Api
                 }
             }
 
-            // track search
-            var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
-            ga.SendSearchQuery(term, "projects");
-
             var searcher = new OurSearcher(term, nodeTypeAlias:"project", filters: filters);
             var searchResult = searcher.Search("projectSearcher");
             return searchResult;
@@ -60,10 +50,6 @@ namespace OurUmbraco.Our.Api
 
         public SearchResultModel GetDocsSearchResults(string term, int version)
         {
-            // track search
-            var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
-            ga.SendSearchQuery(term, "docs");
-            
             var searcher = new OurSearcher(term, nodeTypeAlias: "documentation", majorDocsVersion: version);
             var searchResult = searcher.Search("documentationSearcher");
             return searchResult;
@@ -79,11 +65,6 @@ namespace OurUmbraco.Our.Api
                 searchFilters.Filters.Add(new SearchFilter("parentId", forumId.ToString()));
                 filters.Add(searchFilters);
             }
-
-            // track search
-            var ga = new GoogleAnalytics(Request.Headers.GetCookies("_ga"));
-            ga.SendSearchQuery(term, "forum");
-
 
             var searcher = new OurSearcher(term, nodeTypeAlias: "forum", filters: filters);
             var searchResult = searcher.Search("ForumSearcher");

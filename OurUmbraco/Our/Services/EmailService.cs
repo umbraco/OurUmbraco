@@ -45,7 +45,6 @@ namespace OurUmbraco.Our.Services
             catch (Exception ex)
             {
                 var error =$"*ERROR* sending activation mail for member {member.Email} - {ex.Message} {ex.StackTrace} {ex.InnerException}";
-                SendSlackNotification(error);
                 LogHelper.Error<Forum.Library.Utils>(error, ex);
             }
         }
@@ -84,12 +83,6 @@ namespace OurUmbraco.Our.Services
             }
 
             return new HtmlString(sb.ToString());
-        }
-
-        private void SendSlackNotification(string body)
-        {
-            var slack = new Slack();
-            slack.PostSlackMessage(body);
         }
     }
 }

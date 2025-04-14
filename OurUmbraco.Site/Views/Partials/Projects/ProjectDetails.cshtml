@@ -4,15 +4,12 @@
 @using OurUmbraco.Project
 @using OurUmbraco.Project.Services
 @using OurUmbraco.Wiki.BusinessLogic
-@using OurUmbraco.Community.Nuget
 @using OurUmbraco.Community.People
 @using OurUmbraco.Our.Extensions
 @using OurUmbraco.Our.Services
 @using OurUmbraco.Repository.Services
 
 @{
-    var nugetService = new NugetPackageDownloadService();
-
     var project = Model.Content;
 
     var searcher = ExamineManager.Instance.SearchProviderCollection["projectSearcher"];
@@ -87,19 +84,9 @@
     var currentMember = Members.GetCurrentMember();
     var hasMemberVoted = Members.IsLoggedIn() ? Utils.GetProjectMemberVotes(project.Id, currentMember.Id) > 0 : false;
 
-    var nugetPackageId = nugetService.GetNuGetPackageId(project);
+    var nugetPackageId = project.GetProperty("nuGetPackageUrl").DataValue.ToString();
 
     var ourDownloads = Utils.GetProjectTotalDownloadCount(project.Id);
-    var nugetDownloads = 0;
-
-    var nugetPackageDownloads = nugetService.GetNugetPackageDownloads();
-
-    var nugetPackageInfo = nugetPackageDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
-
-    if (nugetPackageInfo != null)
-    {
-        nugetDownloads = nugetPackageInfo.TotalDownLoads;
-    }
 
     var cs = new ContributionService(ApplicationContext.Current.DatabaseContext);
     var contributors = cs.GetContributors(project.Id).ToList();
@@ -510,16 +497,6 @@
                                 <li title="@ourDownloads on our.umbraco.com">
                                     <span>Downloads on Our:</span> @FormatDownloadNumber(ourDownloads)
                                 </li>
-
-                                @if (nugetDownloads > 0)
-                                {
-                                    <li title="@nugetDownloads downloads on nuget">
-                                        <span>Downloads on NuGet:</span> @FormatDownloadNumber(nugetDownloads)
-                                    </li>
-                                    <li title="@(nugetDownloads + ourDownloads) total downloads">
-                                        <span>Total downloads : </span> @FormatDownloadNumber(nugetDownloads + ourDownloads)
-                                    </li>
-                                }
                             </ul>
                         </div>
 

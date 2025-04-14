@@ -7,7 +7,6 @@ using Examine.LuceneEngine.Providers;
 using OurUmbraco.Our.Examine;
 using OurUmbraco.Wiki.BusinessLogic;
 using Umbraco.Core;
-using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Core.Models.EntityBase;
 using Umbraco.Core.Services;
@@ -71,24 +70,7 @@ namespace OurUmbraco.Our.CustomHandlers
                 content.Id,
                 DateTime.Now.Subtract(TimeSpan.FromDays(365)));
 
-            var nugetService = new OurUmbraco.Community.Nuget.NugetPackageDownloadService();
-            var nugetPackageId = nugetService.GetNuGetPackageId(content);
             int? dailyNugetDownLoads = null;
-
-
-            if (!nugetPackageId.IsNullOrWhiteSpace())
-            {
-                var nugetDownloads = nugetService.GetNugetPackageDownloads();
-
-                var packageInfo = nugetDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
-
-                if (packageInfo != null)
-                {
-                    downloads += packageInfo.TotalDownLoads;
-                    dailyNugetDownLoads = packageInfo.AverageDownloadPerDay;
-                }
-            }
-
 
             var simpleDataIndexer = (SimpleDataIndexer)ExamineManager.Instance.IndexProviderCollection["projectIndexer"];
             simpleDataSet = ((ProjectNodeIndexDataService)simpleDataIndexer.DataService)

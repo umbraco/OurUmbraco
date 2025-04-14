@@ -4,8 +4,6 @@ using System.Configuration;
 using System.Linq;
 using Examine;
 using Examine.SearchCriteria;
-using GraphQL;
-using OurUmbraco.Community.Nuget;
 using OurUmbraco.Community.People;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Our;
@@ -231,8 +229,7 @@ namespace OurUmbraco.Repository.Services
             var score = result != null ? GetScore(result.Fields) : 0;
             var version = result != null ? ParseVersion(result) : "";
             var downloads = result != null ? GetCombinedDownloads(result.Fields, Utils.GetProjectTotalDownloadCount(content.Id)) : Utils.GetProjectTotalDownloadCount(content.Id);
-            var nugetService = new NugetPackageDownloadService();
-            var nuGetPackageId = nugetService.GetNuGetPackageId(content);
+            var nuGetPackageId = content.GetProperty("nuGetPackageUrl").DataValue.ToString();
             
             return new Models.Package
             {
@@ -368,8 +365,7 @@ namespace OurUmbraco.Repository.Services
             var strictPackageFileVersions = GetAllStrictSupportedPackageVersions(allPackageFiles).ToArray();
             //these are ordered by package version desc
             var nonStrictPackageFiles = GetNonStrictSupportedPackageVersions(allPackageFiles).ToArray();
-            var nugetService = new NugetPackageDownloadService();
-            var nuGetPackageId = nugetService.GetNuGetPackageId(content);
+            var nuGetPackageId = content.GetProperty("nuGetPackageUrl").DataValue.ToString();
             
             var packageDetails = new PackageDetails(package)
             {

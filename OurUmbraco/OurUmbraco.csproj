@@ -632,8 +632,6 @@
     <Compile Include="Community\Meetup\CosmosService.cs" />
     <Compile Include="Community\Meetup\Models\OurMeetupGroup.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
-    <Compile Include="Community\Videos\Controllers\Http\VideoController.cs" />
-    <Compile Include="Community\Videos\Models\YouTubeVideoDto.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
@@ -647,9 +645,7 @@
     <Compile Include="Forum\Models\DiscourseCreateTopic.cs" />
     <Compile Include="Forum\Models\DiscourseTopic.cs" />
     <Compile Include="Forum\Services\DiscourseService.cs" />
-    <Compile Include="Forum\Slack.cs" />
     <Compile Include="OurImageService.cs" />
-    <Compile Include="Our\Api\OurCommunityStatisticsController.cs" />
     <Compile Include="Our\Api\OurStatisticsController.cs" />
     <Compile Include="Our\Controllers\ReleasesController.cs" />
     <Compile Include="Our\Extensions\ReadOnlyCollectionExtenstions.cs" />
@@ -681,17 +677,12 @@
     <Compile Include="Community\GitHub\Models\Comments\AddCommentResult.cs" />
     <Compile Include="Community\Models\Repository.cs" />
     <Compile Include="Community\Models\ViewModels\CommunityBlogPostViewModel.cs" />
-    <Compile Include="Community\Nuget\NugetPackageDownloadService.cs" />
-    <Compile Include="Community\Nuget\NugetPackageInfo.cs" />
     <Compile Include="Location\LocationService.cs" />
     <Compile Include="Location\Models\Location.cs" />
-    <Compile Include="Our\Api\DashboardStatisticsController.cs" />
     <Compile Include="Our\Api\DocsController.cs" />
     <Compile Include="Our\Api\InstallationController.cs" />
     <Compile Include="Our\Api\MembersController.cs" />
     <Compile Include="Our\Api\OurMemberStatisticsController.cs" />
-    <Compile Include="Our\Api\IssuesStatisticsController.cs" />
-    <Compile Include="Community\GitHub\Controllers\GitHubContributorController.cs" />
     <Compile Include="Community\Controllers\MeetupsController.cs" />
     <Compile Include="Community\GitHub\Models\Cached\GitHubCachedGlobalContributorModel.cs" />
     <Compile Include="Community\GitHub\Models\GitHubGlobalContributorModel.cs" />
@@ -716,9 +707,6 @@
     <Compile Include="Community\People\Models\MvpsPerYear.cs" />
     <Compile Include="Community\People\Models\PeopleKarmaResult.cs" />
     <Compile Include="Community\People\PeopleService.cs" />
-    <Compile Include="Community\Videos\CommunityVideosConstants.cs" />
-    <Compile Include="Community\Videos\CommunityVideosService.cs" />
-    <Compile Include="Community\Videos\YouTubePlayList.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="CustomDateTimeConvertor.cs" />
     <Compile Include="Documentation\Busineslogic\ConventionExtensions.cs" />
@@ -836,9 +824,7 @@
     <Compile Include="NotificationsCore\Notifications\AccountApproved.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\Notifications\NewForumComment.cs" />
-    <Compile Include="NotificationsCore\Notifications\NotificationMail.cs" />
     <Compile Include="NotificationsCore\Notifications\ScheduleHangfireJobs.cs" />
-    <Compile Include="NotificationsCore\Notifications\MarkAsSolutionReminder.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopic.cs" />
     <Compile Include="NotificationsCore\NotificationTypes\NewForumTopicComment.cs" />
     <Compile Include="NotificationsCore\SheduledNotification.cs" />
@@ -854,7 +840,6 @@
     <Compile Include="Community\GitHub\GitHubService.cs" />
     <Compile Include="Our\Api\SearchController.cs" />
     <Compile Include="Our\Api\StatisticsController.cs" />
-    <Compile Include="Our\Businesslogic\GoogleAnalytics.cs" />
     <Compile Include="Our\Businesslogic\ProjectContributor.cs" />
     <Compile Include="Our\Controllers\AvatarController.cs" />
     <Compile Include="Our\Controllers\BreadcrumbController.cs" />
@@ -1081,8 +1066,6 @@
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVersion.cs" />
-    <Compile Include="Videos\VideosCategory.cs" />
-    <Compile Include="Videos\VideosService.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
     <Compile Include="Wiki\BusinessLogic\Data.cs" />
     <Compile Include="Wiki\BusinessLogic\Events.cs" />
@@ -1148,6 +1131,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Community\GitHub\Controllers\" />
     <Folder Include="Repository\Api\" />
     <Folder Include="Repository\webservices\App_Data\" />
     <Folder Include="Wiki\usercontrols\scripts\" />

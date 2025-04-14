@@ -12,10 +12,8 @@ using OurUmbraco.Project;
 using OurUmbraco.Repository.Services;
 using OurUmbraco.Wiki.BusinessLogic;
 using OurUmbraco.Wiki.Models;
-using umbraco;
 using Umbraco.Core;
 using Umbraco.Core.Configuration;
-using Umbraco.Core.Configuration.UmbracoSettings;
 using Umbraco.Core.Logging;
 using Umbraco.Core.Models;
 using Umbraco.Web;
@@ -24,8 +22,6 @@ using Umbraco.Web.Security;
 
 namespace OurUmbraco.Our.Examine
 {
-    using OurUmbraco.Community.Nuget;
-
     /// <summary>
     /// Data service used for projects
     /// </summary>
@@ -133,10 +129,6 @@ namespace OurUmbraco.Our.Examine
 
             var projects = umbContxt.ContentCache.GetByXPath("//Community/Projects//Project [projectLive='1']").ToArray();
 
-            var nugetService = new NugetPackageDownloadService();
-
-            var nugetDownloads = nugetService.GetNugetPackageDownloads();
-
             var allProjectIds = projects.Select(x => x.Id).ToArray();
             var allProjectKarma = Utils.GetProjectTotalVotes();
             var allProjectWikiFiles = WikiFile.CurrentFiles(allProjectIds);
@@ -160,25 +152,10 @@ namespace OurUmbraco.Our.Examine
                 var projectFiles = allProjectWikiFiles.ContainsKey(project.Id) ? allProjectWikiFiles[project.Id].ToArray() : new WikiFile[] { };
                 var projectVersions = allCompatVersions.ContainsKey(project.Id) ? allCompatVersions[project.Id] : Enumerable.Empty<string>();
 
-                var nugetPackageId = nugetService.GetNuGetPackageId(project);
-
-                int? dailyNugetDownLoads = null;
-
-                if (!string.IsNullOrWhiteSpace(nugetPackageId))
-                {
-                    var packageInfo = nugetDownloads.FirstOrDefault(x => x.PackageId == nugetPackageId);
-
-                    if (packageInfo != null)
-                    {
-                        projectDownloads +=  packageInfo.TotalDownLoads;
-                        dailyNugetDownLoads = packageInfo.AverageDownloadPerDay;
-                    }
-                }
-
                 yield return MapProjectToSimpleDataIndexItem(
                     downloadStats,
                     mostRecentDownloadDate,                    
-                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions, dailyNugetDownLoads);
+                    project, simpleDataSet, indexType, projectKarma, projectFiles, projectDownloads, projectVersions, null);
             }
         }
 

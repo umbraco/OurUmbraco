@@ -351,14 +351,6 @@ namespace OurUmbraco.Our.Services
             return myIssues;
         }
 
-        public List<OurUmbraco.Community.Models.Repository> GetAllPublicRepositories()
-        {
-            var configFile = HostingEnvironment.MapPath("~/Config/GitHubPublicRepositories.json");
-            var fileContent = File.ReadAllText(configFile);
-            var repositories = JsonConvert.DeserializeObject<List<OurUmbraco.Community.Models.Repository>>(fileContent);
-            return repositories;
-        }
-
         private static void AddCategoryCreatedDate(Issue item, Models.GitHub.Label label, string[] labelNames)
         {
             if (item.Events != null)
