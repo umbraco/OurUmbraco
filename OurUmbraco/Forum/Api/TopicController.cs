@@ -4,8 +4,6 @@ using Umbraco.Web.WebApi;
 
 namespace OurUmbraco.Forum.Api
 {
-    using OurUmbraco.SignalRHubs;
-
     [MemberAuthorize(AllowType = "member")]
     public class TopicController : ForumControllerBase
     {

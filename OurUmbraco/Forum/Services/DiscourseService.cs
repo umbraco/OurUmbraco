@@ -91,7 +91,7 @@ namespace OurUmbraco.Forum.Services
                             return lastestTopics.TopicList.Topics.OrderByDescending(x => x.LastPostedAt).ToList();
                         }
                     }
-                }, TimeSpan.FromMinutes(1));
+                }, TimeSpan.FromMinutes(5));
         }
     }
 }

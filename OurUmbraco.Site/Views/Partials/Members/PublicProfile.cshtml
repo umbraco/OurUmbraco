@@ -4,7 +4,6 @@
 @using Examine.Providers
 @using Examine.SearchCriteria
 @using OurUmbraco.Community.People
-@using OurUmbraco.Forum.AntiSpam
 @using OurUmbraco.Forum.Extensions
 @using OurUmbraco.Forum.Services
 @using OurUmbraco.MarketPlace.NodeListing
@@ -321,12 +320,6 @@
         var allTopics = ts.GetLatestTopicsForMember(member.Id, false, 1000);
 
         var email = member.GetProperty("email").Value.ToString();
-        StopForumSpamResult stopSpamResult = null;
-        if (!string.IsNullOrWhiteSpace(email))
-        {
-            var spamService = new StopForumSpamService();
-            stopSpamResult = spamService.CheckEmail(email);
-        }
         
         <div style="border: 1px solid orange; padding: 4px;">
             <p>Moderator Tools (also known as "with great power comes great responsibility"):</p><br />
@@ -345,18 +338,7 @@
                 <a href="#" class="approve-member" style="color: green" rel="@member.Id">Approve member (careful now! if you approve this member, EVERYTHING that they posted and is marked as spam will be marked as ham.. )</a><br />
             }
             <br /><br />
-            
-            @if (stopSpamResult != null)
-            {
-                <p style="@(stopSpamResult.Appears == "yes" ? "color:red;font-size:150%" : null)"><strong>StopForumSpam results</strong></p>
-                <ul style="margin-left: 30px;">
-                    <li>Appears: @stopSpamResult.Appears</li>
-                    <li>Frequency: @stopSpamResult.Frequency</li>
-                    <li>Last seen: @stopSpamResult.LastSeen</li>
-                </ul>
-                <br/><br/>
-            }
-            
+                        
             <p><strong>All threads this member was involved in (created or commented)</strong></p>
             <ul style="margin-left: 20px;">
                 @foreach (var topic in allTopics)
