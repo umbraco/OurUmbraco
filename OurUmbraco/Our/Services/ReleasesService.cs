@@ -112,9 +112,10 @@ namespace OurUmbraco.Our.Services
 
         public void GenerateReleasesCache(PerformContext context)
         {
-            var releasesPageNodeId = int.Parse(ConfigurationManager.AppSettings["uReleaseParentNodeId"]);
             var umbracoHelper = new UmbracoHelper(GetUmbracoContext());
-            var releasesNode = umbracoHelper.TypedContent(releasesPageNodeId);
+            var rootNode = umbracoHelper.TypedContentAtRoot().First();
+            var downloadNode = rootNode.Children().First(x => x.DocumentTypeAlias == "DownloadLanding");
+            var releasesNode = downloadNode.Children().First(x => x.DocumentTypeAlias == "ReleaseLanding");
 
             var releaseNodes = releasesNode.Children.ToArray();
             context.WriteLine($"Found {releaseNodes.Length} releases");
