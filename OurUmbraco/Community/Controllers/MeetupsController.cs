@@ -1,13 +1,10 @@
-﻿using OurUmbraco.Forum.Controllers;
+﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Web.Mvc;
 using Umbraco.Core.Cache;
 using Umbraco.Web;
-using Umbraco.Web.Models.ContentEditing;
 using Umbraco.Web.Mvc;
 
 namespace OurUmbraco.Community.Controllers
@@ -23,54 +20,55 @@ namespace OurUmbraco.Community.Controllers
 
         public List<EventFeedModel> GetMeetups()
         {
-            return UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<EventFeedModel>>("EventFeed",
+            try
+            {
+                return UmbracoContext.Current.Application.ApplicationCache.RuntimeCache.GetCacheItem<List<EventFeedModel>>("EventFeed",
                 () =>
                 {
                     var eventFeed = new List<EventFeedModel>();
-                    try
+
+                    using (var client = new HttpClient())
                     {
-                        using (var client = new HttpClient())
+                        var feedUrl = "https://umbracalendar.com/api/EventFeed/";
+                        using (var result = client.GetAsync(feedUrl).Result)
                         {
-                            var feedUrl = "https://umbracalendar.com/api/EventFeed/";
-                            using (var result = client.GetAsync(feedUrl).Result)
+                            if (result.IsSuccessStatusCode == false)
                             {
-                                if (result.IsSuccessStatusCode == false)
-                                {
-                                    Logger.Warn(typeof(MeetupsController), $"Failed to get {feedUrl}, result: {result.StatusCode} || {result.ReasonPhrase} ");
-
-                                }
-
-                                var json = result.Content.ReadAsStringAsync().Result;
-                                eventFeed = JsonSerializer.Deserialize<List<EventFeedModel>>(json);
+                                Logger.Warn(typeof(MeetupsController), $"Failed to get {feedUrl}, result: {result.StatusCode} || {result.ReasonPhrase} ");
                             }
+
+                            var json = result.Content.ReadAsStringAsync().Result;
+                            eventFeed = JsonConvert.DeserializeObject<List<EventFeedModel>>(json);
                         }
-                    }
-                    catch (Exception ex)
-                    {
-                        Logger.Error(typeof(MeetupsController), "Fetching event feed not successful" + ex.Message, ex);
-                        Logger.Error(typeof(MeetupsController), "InnerException" + ex.InnerException.Message, ex.InnerException);
                     }
 
                     return eventFeed;
                 }, TimeSpan.FromHours(1));
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(typeof(MeetupsController), "Fetching event feed not successful" + ex.Message, ex);
+                Logger.Error(typeof(MeetupsController), "InnerException" + ex.InnerException.Message, ex.InnerException);
+                return new List<EventFeedModel>();
+            } 
         }
     }
 
     public class EventFeedModel
     {
-        [JsonPropertyName("name")]
+        [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonPropertyName("organizer")]
+        [JsonProperty("organizer")]
         public string Organizer { get; set; }
 
-        [JsonPropertyName("link")]
+        [JsonProperty("link")]
         public string Link { get; set; }
 
-        [JsonPropertyName("date")]
+        [JsonProperty("date")]
         public DateTime Date { get; set; }
 
-        [JsonPropertyName("imageUrl")]
+        [JsonProperty("imageUrl")]
         public string ImageUrl { get; set; }
     }
 }
