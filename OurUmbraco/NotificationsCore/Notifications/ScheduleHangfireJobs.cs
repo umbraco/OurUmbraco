@@ -3,7 +3,6 @@ using Hangfire.Server;
 using OurUmbraco.Community.GitHub;
 using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Mastodon;
-using OurUmbraco.Community.Meetup;
 using OurUmbraco.Documentation;
 using OurUmbraco.Our.Services;
 
@@ -11,12 +10,6 @@ namespace OurUmbraco.NotificationsCore.Notifications
 {
     public class ScheduleHangfireJobs
     {
-        public void CacheUpcomingMeetups(PerformContext context)
-        {
-            var meetupService = new MeetupService();
-            RecurringJob.AddOrUpdate(() => meetupService.CacheUpcomingMeetups(), Cron.MinuteInterval(30));
-        }
-
         public void UpdateCommunityBlogPosts(PerformContext context)
         {
             var service = new BlogPostsService();

@@ -625,12 +625,9 @@
     <Compile Include="Auth\HMACAuthentication.cs" />
     <Compile Include="Community\Badges\Controllers\Http\BadgeController.cs" />
     <Compile Include="Community\BlogPosts\Controllers\Http\BlogController.cs" />
-    <Compile Include="Community\Controllers\Http\MeetupController.cs" />
     <Compile Include="Community\GitHub\UsersService.cs" />
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\Mastodon\MastodonService.cs" />
-    <Compile Include="Community\Meetup\CosmosService.cs" />
-    <Compile Include="Community\Meetup\Models\OurMeetupGroup.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
@@ -668,7 +665,6 @@
     <Compile Include="Community\Calendar\CommunityCalendarItem.cs" />
     <Compile Include="Community\Calendar\CommunityCalendarItemType.cs" />
     <Compile Include="Community\Calendar\CommunityCalendarRenderModel.cs" />
-    <Compile Include="Community\Calendar\CommunityCalendarService.cs" />
     <Compile Include="Community\Calendar\FestivalCalendarItem.cs" />
     <Compile Include="Community\Calendar\ContentCalendarItem.cs" />
     <Compile Include="Community\Calendar\MeetupCalendarItem.cs" />
@@ -694,7 +690,6 @@
     <Compile Include="Community\Map\MapApiController.cs" />
     <Compile Include="Community\Map\MapEventHandler.cs" />
     <Compile Include="Community\Map\MemberLocation.cs" />
-    <Compile Include="Community\Meetup\MeetupService.cs" />
     <Compile Include="Community\Models\MeetupEventsModel.cs" />
     <Compile Include="Community\Models\MeetupItem.cs" />
     <Compile Include="Community\GitHub\Models\GitHubContributorsModel.cs" />
@@ -725,7 +720,6 @@
     <Compile Include="Our\Extensions\ListExtensions.cs" />
     <Compile Include="Our\Extensions\UriExtensions.cs" />
     <Compile Include="Our\Extensions\VersionExtensions.cs" />
-    <Compile Include="Our\Models\FirstPullRequest.cs" />
     <Compile Include="Our\Models\GitHub\AddComment.cs" />
     <Compile Include="Our\Models\GitHub\Event.cs" />
     <Compile Include="Our\Models\GitHub\Comment.cs" />
@@ -735,8 +729,6 @@
     <Compile Include="Our\Models\GitHub\User.cs" />
     <Compile Include="Our\Models\InstallationModel.cs" />
     <Compile Include="Our\Models\PullRequestContributor.cs" />
-    <Compile Include="Our\Models\IssuesInPeriod.cs" />
-    <Compile Include="Our\Models\PullRequestsInPeriod.cs" />
     <Compile Include="Our\Models\Releases.cs" />
     <Compile Include="Community\Models\TeamUmbraco.cs" />
     <Compile Include="Our\Models\UpgradeModel.cs" />
@@ -910,11 +902,8 @@
     <Compile Include="Our\Rest.cs" />
     <Compile Include="Our\SearchResultExtensions.cs" />
     <Compile Include="Our\SecureHasher.cs" />
-    <Compile Include="Our\Services\PullRequestService.cs" />
     <Compile Include="Our\Services\ReleasesService.cs" />
     <Compile Include="Our\Services\PackagesService.cs" />
-    <Compile Include="Our\Services\RepositoryManagementService.cs" />
-    <Compile Include="Our\UpcomingFeaturesService.cs" />
     <Compile Include="Our\usercontrols\ProjectCollabRequest.ascx.cs">
       <DependentUpon>ProjectCollabRequest.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -1048,7 +1037,6 @@
       <DependentUpon>repository.asmx</DependentUpon>
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="SignalRHubs\ForumPostHub.cs" />
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Events\MeetupEvent.cs" />
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Events\MeetupEventImage.cs" />
     <Compile Include="Skybrud.Social.Meetup.Models.GraphQl\Events\MeetupEventStatus.cs" />
@@ -1126,15 +1114,10 @@
       <SubType>ASPXCodeBehind</SubType>
     </Content>
     <Content Include="Repository\webservices\repository.asmx" />
-    <Content Include="Wiki\usercontrols\FileUpload.ascx">
-      <SubType>ASPXCodeBehind</SubType>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Community\GitHub\Controllers\" />
-    <Folder Include="Repository\Api\" />
     <Folder Include="Repository\webservices\App_Data\" />
-    <Folder Include="Wiki\usercontrols\scripts\" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{3259AA49-8AA1-44D3-9025-A0B520596A8C}" />

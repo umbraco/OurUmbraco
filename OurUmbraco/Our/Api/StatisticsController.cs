@@ -1,12 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Web;
 using Examine.SearchCriteria;
-using Newtonsoft.Json;
-using OurUmbraco.Community.Meetup.Models;
 using OurUmbraco.Community.People;
 using OurUmbraco.Community.People.Models;
 using OurUmbraco.Forum.Services;

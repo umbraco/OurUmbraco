@@ -4505,7 +4505,6 @@
     <Content Include="Views\Lesson.cshtml" />
     <Content Include="Views\Partials\Home\Meetups.cshtml" />
     <Content Include="Views\Partials\Community\ForumStatistics.cshtml" />
-    <Content Include="Views\CommunityHub.cshtml" />
     <Content Include="Views\Partials\Community\Hub.cshtml" />
     <Content Include="Views\Partials\Community\HubScripts.cshtml" />
     <Content Include="Views\Partials\Community\KarmaStatistics.cshtml" />
@@ -4535,8 +4534,6 @@
     <Content Include="Views\Partials\Emails\ActivationEmailTemplate.cshtml" />
     <Content Include="Views\Partials\Community\Map.cshtml" />
     <Content Include="Views\Partials\Community\Sidebar.cshtml" />
-    <Content Include="Views\CommunityCalendar.cshtml" />
-    <Content Include="Views\Partials\Community\Calendar.cshtml" />
     <Content Include="Views\Apps.cshtml" />
     <Content Include="Views\Partials\Home\Banners.cshtml" />
     <Content Include="Views\CommunityHubUProfileBlogPosts.cshtml" />

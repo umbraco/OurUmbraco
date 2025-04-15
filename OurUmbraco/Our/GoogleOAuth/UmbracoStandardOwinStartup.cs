@@ -6,7 +6,6 @@ using Hangfire.Console;
 using Hangfire.SqlServer;
 using Microsoft.Owin;
 using OurUmbraco.Auth;
-using OurUmbraco.Community.Map;
 using OurUmbraco.NotificationsCore.Notifications;
 using OurUmbraco.Our.GoogleOAuth;
 using Owin;
@@ -55,7 +54,6 @@ namespace OurUmbraco.Our.GoogleOAuth
             
             // Schedule jobs
             var scheduler = new ScheduleHangfireJobs();
-            scheduler.CacheUpcomingMeetups(null);
             scheduler.UpdateCommunityBlogPosts(null);
             scheduler.GetGitHubPullRequests();
             scheduler.GenerateReleasesCache(null);
