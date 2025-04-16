@@ -135,19 +135,7 @@ namespace OurUmbraco.Community.GitHub
         public string[] GetRepositories()
         {
             return new[] {
-                "Umbraco-CMS",
-                "UmbracoDocs",
-                "OurUmbraco",
-                "Umbraco.Courier.Contrib",
-                "Umbraco.Deploy.Contrib",
-                "Umbraco.Deploy.ValueConnectors",
-                "UmbPack",
-                "Package.Templates",
-                "rfcs",	
-                "organizer-guide",
-                "The-Starter-Kit",
-                "Umbraco.CMS.Backoffice",
-                "Umbraco.UI"
+                "Umbraco-CMS"
             };
         }
 
