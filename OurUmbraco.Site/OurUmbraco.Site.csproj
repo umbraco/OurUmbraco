@@ -661,6 +661,7 @@
     <Content Include="Config\EmbeddedMedia.config" />
     <Content Include="Config\BaseRestExtensions.config" />
     <Content Include="Config\BackOfficeTours\getting-started.json" />
+    <Content Include="config\YouTrackArchive.json" />
     <None Include="config\YouTubePlaylists.json" />
     <Content Include="css\forum\pagedown.css" />
     <Content Include="css\img\select2-spinner.gif" />
