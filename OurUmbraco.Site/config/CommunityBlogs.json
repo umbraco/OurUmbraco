@@ -503,6 +503,16 @@
       "rss": "https://dev.to/feed/iovergaard",
       "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/666979/cccf02be-57af-4fe3-b436-f9151974b928.jpg",
       "memberId": 277819
+    },
+    {
+
+      "id": "eebd1d97-718d-49d2-913b-238dc9fd6958",   
+      "checkTitles": true,   
+      "title": "AddXp",   
+      "url": "https://www.addxp.com/",   
+      "rss": "https://www.addxp.com/rss/umbraco",   
+      "logo": "https://dfr7gdtg8j0s1.cloudfront.net/src/images/addact-launches-addxp%E2%80%93a-digital-experience-company-1.webp",   
+      "memberId": null   
     }
   ]
 }
