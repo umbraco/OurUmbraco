@@ -13,12 +13,12 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void UpdateCommunityBlogPosts(PerformContext context)
         {
             var service = new BlogPostsService();
-            RecurringJob.AddOrUpdate(() => service.UpdateBlogPostsJsonFile(context), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate<BlogPostsService>("📝 Community blog posts", x => x.UpdateBlogPostsJsonFile(context), Cron.HourInterval(1));
         }
 
         public void GetGitHubPullRequests()
         {
-            RecurringJob.AddOrUpdate(() => UpdatePullRequests(), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate<ScheduleHangfireJobs>("🚀 Get Umbraco-CMS PRs", x => x.UpdatePullRequests(), Cron.HourInterval(1));
         }
 
         public void UpdatePullRequests()
@@ -30,25 +30,25 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void GenerateReleasesCache(PerformContext context)
         {
             var releasesService = new ReleasesService();
-            RecurringJob.AddOrUpdate(() => releasesService.GenerateReleasesCache(context), Cron.HourInterval(1));
+            RecurringJob.AddOrUpdate<ReleasesService>("💎 Release cache", x => x.GenerateReleasesCache(context), Cron.HourInterval(1));
         }
 
         public void UpdateGitHubIssues(PerformContext context)
         {
             var gitHubService = new GitHubService();
             var repository = new Community.Models.Repository("Umbraco-CMS", "umbraco", "Umbraco-CMS", "Umbraco-CMS");
-            RecurringJob.AddOrUpdate($"[IssueTracker] Update {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(15));
+            RecurringJob.AddOrUpdate($"📝 Update issues {repository.Name}", () => gitHubService.UpdateIssues(context, repository), Cron.MinuteInterval(15));
         }
         
         public void FetchStaticApiDocumentation(PerformContext context)
         {
             var staticApiDocumentationService = new StaticApiDocumentationService();
-            RecurringJob.AddOrUpdate(() => staticApiDocumentationService.FetchNewApiDocs(context), Cron.MinuteInterval(5));
+            RecurringJob.AddOrUpdate<StaticApiDocumentationService>("📝 Docs", x => x.FetchNewApiDocs(context), Cron.MinuteInterval(5));
         }
         public void FetchMastodonPosts(PerformContext context)
         {
             var mastodonService = new MastodonService();
-            RecurringJob.AddOrUpdate(() => mastodonService.GetStatuses(10), Cron.MinuteInterval(2));
+            RecurringJob.AddOrUpdate<MastodonService>("️💥 Get Masto posts", x => x.GetStatuses(10), Cron.MinuteInterval(2));
         }
     }
 }
