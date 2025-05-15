@@ -60,6 +60,8 @@ namespace OurUmbraco.Our.GoogleOAuth
             scheduler.UpdateGitHubIssues(null);
             scheduler.FetchStaticApiDocumentation(null);
             scheduler.FetchMastodonPosts(null);
+            scheduler.UpdateVimeoVideos();
+            scheduler.UpdateCommunityVideos();
         }
     }
 }

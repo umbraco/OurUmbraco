@@ -629,6 +629,11 @@
     <Compile Include="Community\Karma\Controllers\Http\KarmaController.cs" />
     <Compile Include="Community\Mastodon\MastodonService.cs" />
     <Compile Include="Community\People\Controllers\Http\MvpController.cs" />
+    <Compile Include="Community\Videos\CommunityVideosConstants.cs" />
+    <Compile Include="Community\Videos\CommunityVideosService.cs" />
+    <Compile Include="Community\Videos\Controllers\Http\VideoController.cs" />
+    <Compile Include="Community\Videos\Models\YouTubeVideoDto.cs" />
+    <Compile Include="Community\Videos\YouTubePlayList.cs" />
     <Compile Include="Documentation\Controllers\StaticSiteController.cs" />
     <Compile Include="Documentation\StaticApiDocumentationService.cs" />
     <Compile Include="Documentation\Models\AzureDevopsArtifacts.cs" />
@@ -1054,6 +1059,8 @@
     <Compile Include="UmbracoAuthorizationFilter.cs" />
     <Compile Include="Version\Config.cs" />
     <Compile Include="Version\uWikiFileVersion.cs" />
+    <Compile Include="Videos\VideosCategory.cs" />
+    <Compile Include="Videos\VideosService.cs" />
     <Compile Include="Wiki\Api\WikiController.cs" />
     <Compile Include="Wiki\BusinessLogic\Data.cs" />
     <Compile Include="Wiki\BusinessLogic\Events.cs" />

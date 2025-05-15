@@ -5,6 +5,8 @@ using OurUmbraco.Community.BlogPosts;
 using OurUmbraco.Community.Mastodon;
 using OurUmbraco.Documentation;
 using OurUmbraco.Our.Services;
+using OurUmbraco.Community.Videos;
+using OurUmbraco.Videos;
 
 namespace OurUmbraco.NotificationsCore.Notifications
 {
@@ -48,7 +50,17 @@ namespace OurUmbraco.NotificationsCore.Notifications
         public void FetchMastodonPosts(PerformContext context)
         {
             var mastodonService = new MastodonService();
-            RecurringJob.AddOrUpdate<MastodonService>("️💥 Get Masto posts", x => x.GetStatuses(10), Cron.MinuteInterval(2));
+            RecurringJob.AddOrUpdate<MastodonService>("️🐘 Get Masto posts", x => x.GetStatuses(10), Cron.MinuteInterval(2));
+        }
+
+        public void UpdateVimeoVideos()
+        {   
+            RecurringJob.AddOrUpdate<VideosService>("📽️ Update Vimeo videos", x => x.UpdateVimeoVideos("umbraco"), Cron.HourInterval(1));
+        }
+
+        public void UpdateCommunityVideos()
+        {
+            RecurringJob.AddOrUpdate<CommunityVideosService>("📽️ Update community videos", x => x.UpdateYouTubePlaylistVideos(), Cron.HourInterval(1));
         }
     }
 }
