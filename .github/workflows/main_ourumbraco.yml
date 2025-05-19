@@ -82,7 +82,7 @@ jobs:
           path: '/published/**'
 
   deploy:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     needs: build
     environment:
       name: 'Production'
