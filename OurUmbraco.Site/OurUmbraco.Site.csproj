@@ -605,6 +605,7 @@
     <Content Include="Assets\swipebox\js\jquery.swipebox.min.js" />
     <Content Include="config\404handlers.config" />
     <Content Include="config\applications.config" />
+    <Content Include="config\blogrsstemplate.txt" />
     <Content Include="config\ClientDependency.config" />
     <Content Include="config\Dashboard.config" />
     <Content Include="config\ExamineIndex.config">
