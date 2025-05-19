@@ -93,6 +93,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ASP-app
+
+      - name: Stop App Service
+        uses: azure/cli@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: az webapp stop --name OurUmbraco --resource-group ourumbracoappservice
       
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
@@ -103,3 +109,9 @@ jobs:
           package: .
           publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0FC17FE9A9734A9DA6B635D58450BF82 }}
           clean: false
+
+      - name: Start App Service
+        uses: azure/cli@v1
+        with:
+          azcliversion: 2.30.0
+          inlineScript: az webapp start --name OurUmbraco --resource-group ourumbracoappservice
