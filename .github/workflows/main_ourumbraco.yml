@@ -93,6 +93,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: ASP-app
+      
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Stop App Service
         uses: azure/cli@v1
