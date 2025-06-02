@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Web;
 using OurUmbraco.Forum.Extensions;
 using OurUmbraco.Forum.Models;
@@ -420,7 +419,7 @@ WHERE forumTopics.id=@id
         /// <remarks>
         /// So that we don't have to look this up multiple times in a single request, this will use the given ICacheProvider to cache it
         /// </remarks>
-        public async Task<ReadOnlyTopic> CurrentTopicAsync(HttpContextBase context, ICacheProvider cache, MemberData memberData, IPublishedContent content)
+        public ReadOnlyTopic CurrentTopic(HttpContextBase context, ICacheProvider cache, MemberData memberData, IPublishedContent content)
         {
             var topic = (ReadOnlyTopic)cache.GetCacheItem(typeof(TopicService) + "-CurrentTopic", () =>
             {
@@ -506,7 +505,7 @@ WHERE forumTopics.id=@id
 
             // Check if related topic exists on new forum
             var discourseService = new DiscourseService();
-            var discourseTopic = await discourseService.GetTopicByOldIdAsync(topic.Id);
+            var discourseTopic = discourseService.GetTopicByOldIdAsync(topic.Id);
             topic.DiscourseTopic = discourseTopic;
             
             return topic;
