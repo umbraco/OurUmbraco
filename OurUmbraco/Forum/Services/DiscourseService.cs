@@ -5,12 +5,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace OurUmbraco.Forum.Services
 {
     internal class DiscourseService
     {
-        internal DiscourseTopic GetTopicByOldIdAsync(int id)
+        internal async Task<DiscourseTopic> GetTopicByOldIdAsync(int id)
         {
             var handler = new HttpClientHandler
             {
@@ -27,7 +28,7 @@ namespace OurUmbraco.Forum.Services
                 client.DefaultRequestHeaders.Add("Api-Key", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiKey"]}");
                 client.DefaultRequestHeaders.Add("Api-Username", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiUsername"]}");
 
-                var result = client.GetAsync($"t/external_id/{id}.json").Result;
+                var result = await client.GetAsync($"t/external_id/{id}.json");
 
                 if (result.IsSuccessStatusCode == false)
                 {
@@ -35,21 +36,20 @@ namespace OurUmbraco.Forum.Services
                 }
                 else
                 {
-                    var resultContent = result.Content.ReadAsStringAsync().Result;
+                    var resultContent = await result.Content.ReadAsStringAsync();
                     var discourseTopic = JsonConvert.DeserializeObject<DiscourseTopic>(resultContent);
                     return discourseTopic;
                 }
             }
         }
 
-        internal List<DiscourseTopic> GetLatestTopics(string categorySlug, int categoryId)
+        internal async Task<List<DiscourseTopic>> GetLatestTopicsAsync(string categorySlug, int categoryId)
         {
-
             var cacheKey = "LatestDiscourseTopics" + categorySlug + categoryId;
 
-            return (List<DiscourseTopic>)Umbraco.Core.ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItem(
+            return await Umbraco.Core.ApplicationContext.Current.ApplicationCache.RuntimeCache.GetCacheItemAsync(
                 cacheKey,
-                () =>
+                async () =>
                 {
                     var forumBaseUrl = System.Configuration.ConfigurationManager.AppSettings["DiscourseApiBaseUrl"];
 
@@ -60,25 +60,25 @@ namespace OurUmbraco.Forum.Services
                         client.DefaultRequestHeaders.Add("Api-Username", $"{System.Configuration.ConfigurationManager.AppSettings["DiscourseApiUsername"]}");
 
                         var endPoint = $"c/{categorySlug}/{categoryId}.json?order=created";
-                        var result = client.GetAsync(endPoint).Result;
-                        if (result.IsSuccessStatusCode == false)
+                        var result = await client.GetAsync(endPoint);
+                        if (!result.IsSuccessStatusCode)
                         {
-                            var resultContent = result.Content.ReadAsStringAsync().Result;
+                            var resultContent = await result.Content.ReadAsStringAsync();
                             var errorModel = JsonConvert.DeserializeObject<ErrorModel>(resultContent);
                             string errors = string.Join(", ", errorModel.Errors);
 
-                            //Logger.Debug(typeof(DiscourseController), $"Listing lastest topic from {endPoint} didn't succeeed: {errors}");
+                            // Logger.Debug(typeof(DiscourseController), $"Listing latest topics from {endPoint} didn't succeed: {errors}");
 
                             return null;
                         }
                         else
                         {
-                            var resultContent = result.Content.ReadAsStringAsync().Result;
-                            var lastestTopics = JsonConvert.DeserializeObject<TopicListModel>(resultContent);
-                            foreach (var topic in lastestTopics.TopicList.Topics)
+                            var resultContent = await result.Content.ReadAsStringAsync();
+                            var latestTopics = JsonConvert.DeserializeObject<TopicListModel>(resultContent);
+                            foreach (var topic in latestTopics.TopicList.Topics)
                             {
                                 var latestPostUser = topic.LastPosterUsername;
-                                var user = lastestTopics.Users.FirstOrDefault(x => x.Username == latestPostUser);
+                                var user = latestTopics.Users.FirstOrDefault(x => x.Username == latestPostUser);
                                 if (user != null)
                                 {
                                     topic.AuthorName = user.Name;
@@ -88,7 +88,7 @@ namespace OurUmbraco.Forum.Services
                                 topic.ForumCategory = "Umbraco questions";
                             }
 
-                            return lastestTopics.TopicList.Topics.OrderByDescending(x => x.LastPostedAt).ToList();
+                            return latestTopics.TopicList.Topics.OrderByDescending(x => x.LastPostedAt).ToList();
                         }
                     }
                 }, TimeSpan.FromMinutes(5));
