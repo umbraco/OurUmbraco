@@ -98,7 +98,17 @@
                         <span class="version-number">Umbraco @release.FullVersion.Major @(release.IsLts ? Html.Raw("<span class=\"version-number-badge\"><abbr title=\"Long-term support - 3 years of maintenance and security updates\">LTS</abbr></span>") : null)</span>
 
                         <div class="large-margin-bottom">
-                            <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/v/@(release.FullVersion.Major).latest@(release.IsLts? "-lts" : null)/fundamentals/setup/install">Show install guidance</a>
+                            @{
+                                // if it's not the newest version then the links to the docs need a versio number to be added
+                                var addVersionToDocumentationLinks = release != downloadReleases.OrderBy(x => x.FullVersion).Last();
+                                var infix = "";
+                                if (addVersionToDocumentationLinks)
+                                {
+                                    infix = release.FullVersion.Major + ".latest/";
+                                }
+                            }
+
+                            <a class="button green cta-button" href="https://docs.umbraco.com/umbraco-cms/@(infix)fundamentals/setup/install">Show install guidance</a>
                         </div>
 
                         <span class="version-release-date">Released: @release.ReleaseDate.ToString("MMMM d, yyyy")</span>
