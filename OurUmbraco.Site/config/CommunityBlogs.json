@@ -503,6 +503,15 @@
       "rss": "https://dev.to/feed/iovergaard",
       "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/666979/cccf02be-57af-4fe3-b436-f9151974b928.jpg",
       "memberId": 277819
-    }
+    },
+    {
+      "id": "472d5f7d-6e69-4435-a38e-90215f298876",
+      "checkTitles": false,
+      "title": "Luuk Peters",
+      "url": "https://dev.to/luukpeters",
+      "rss": "https://dev.to/feed/luukpeters",
+      "logo": "https://avatars.githubusercontent.com/u/9865589",
+      "memberId": 22873
+    }    
   ]
 }
