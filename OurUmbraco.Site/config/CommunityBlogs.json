@@ -503,6 +503,15 @@
       "rss": "https://dev.to/feed/iovergaard",
       "logo": "https://dev-to-uploads.s3.amazonaws.com/uploads/user/profile_image/666979/cccf02be-57af-4fe3-b436-f9151974b928.jpg",
       "memberId": 277819
+    },
+    {
+      "id": "39281ea7-cff8-43d3-8099-1932f95a0436",
+      "checkTitles": true,
+      "title": "Debasish Gracias Blog",
+      "url": "https://www.debasish.tech/blogs",
+      "rss": "https://www.debasish.tech/rss.xml",
+      "logo": "https://www.debasish.tech/LogoHead.svg",
+      "memberId": 278734
     }
   ]
 }
