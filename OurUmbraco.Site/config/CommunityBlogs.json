@@ -505,6 +505,15 @@
       "memberId": 277819
     },
     {
+      "id": "39281ea7-cff8-43d3-8099-1932f95a0436",
+      "checkTitles": true,
+      "title": "Debasish Gracias Blog",
+      "url": "https://www.debasish.tech/blogs",
+      "rss": "https://www.debasish.tech/rss.xml",
+      "logo": "https://www.debasish.tech/LogoHead.svg",
+      "memberId": 278734
+    },
+    {
       "id": "472d5f7d-6e69-4435-a38e-90215f298876",
       "checkTitles": false,
       "title": "Luuk Peters",
@@ -512,6 +521,6 @@
       "rss": "https://dev.to/feed/luukpeters",
       "logo": "https://avatars.githubusercontent.com/u/9865589",
       "memberId": 22873
-    }    
+    }
   ]
 }
