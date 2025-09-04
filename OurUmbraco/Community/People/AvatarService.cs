@@ -107,7 +107,7 @@ namespace OurUmbraco.Community.People
         {
             try
             {
-                var hasAvatar = member.HasValue("avatar");
+                var hasAvatar = member != null && member.HasValue("avatar");
                 if (hasAvatar)
                 {
                     var avatarPath = member.GetPropertyValue("avatar").ToString();
