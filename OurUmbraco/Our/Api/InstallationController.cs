@@ -13,6 +13,9 @@ namespace OurUmbraco.Our.Api
         [HttpPost]
         public IHttpActionResult Install(InstallationModel model)
         {
+            // Database no longer exists, skip
+            return Ok();
+
             if (!ModelState.IsValid)
                 throw new HttpResponseException(Request.CreateValidationErrorResponse(ModelState));
 

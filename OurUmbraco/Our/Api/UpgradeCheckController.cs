@@ -31,9 +31,10 @@ namespace OurUmbraco.Our.Api
             var caller = HttpContext.Current.Request.UserHostName + "_" +
                          HttpContext.Current.Request.UserHostAddress;
             var callerHashed = FormsAuthentication.HashPasswordForStoringInConfigFile(caller, "sha1");
-            PersistUpdateCheck(callerHashed, model.VersionMajor, model.VersionMinor, model.VersionPatch,
-                model.VersionComment);
-            // End of persisting the update check for our statistics, don't remove!
+
+            // Don't try to persist check to obsolete database
+            //PersistUpdateCheck(callerHashed, model.VersionMajor, model.VersionMinor, model.VersionPatch,
+            //    model.VersionComment);
 
             // Special case for 4.0.4.2, apperently we never recommended them to upgrade
             if (version == new System.Version(4, 0, 4, 2) || version == latestVersion)
@@ -82,7 +83,7 @@ namespace OurUmbraco.Our.Api
 
             // CloudFlare identifies the country for us
             var country = HttpContext.Current.Request.Params["HTTP_CF_IPCOUNTRY"];
-            
+
             using (var umbracoUpdateDb = new Database("umbracoUpdate"))
             {
                 var insertCmd = @"EXEC [UpdatePing]
