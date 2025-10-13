@@ -6,6 +6,9 @@
 @{
     Layout = "~/Views/Master.cshtml";
 
+    var version1 = new Version(Model.Content.Name);
+    Response.Redirect($"https://releases.umbraco.com/?repo=Umbraco-CMS&release=release/{version1.ToString()}");
+
     var downloads = Model.Content.Children().Where(x => x.ContentType.Alias == "ReleaseDownload").ToArray();
     if (Request.Params["fromdownload"] != null)
     {
@@ -27,7 +30,6 @@
     var release = releases.FirstOrDefault(x => x.Version == currentPage.Name);
     var latestRelease = releasesService.GetLatestRelease();
 
-    var version1 = new Version(Model.Content.Name);
     var version2 = new Version(latestRelease.Version);
 
     var umbracoHelper = new UmbracoHelper(UmbracoContext.Current);
@@ -45,13 +47,13 @@
             release.ReleaseDate = overrideReleaseDate;
         }
     }
-	
-	var releaseCandidateText = string.Empty;
-	if(release.ReleaseStatus != null) 
-	{
-		releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
-	}
-	
+
+    var releaseCandidateText = string.Empty;
+    if(release.ReleaseStatus != null)
+    {
+        releaseCandidateText = release.ReleaseStatus.ToString() == "RC" ? " RC" : null;
+    }
+
     var rcPostfix = releaseContent.GetPropertyValue<string>("ReleaseCandidatePostfix");
     if (releaseCandidateText != null && string.IsNullOrWhiteSpace(rcPostfix) == false)
     {
