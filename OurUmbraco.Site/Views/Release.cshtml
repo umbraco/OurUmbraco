@@ -7,7 +7,7 @@
     Layout = "~/Views/Master.cshtml";
 
     var version1 = new Version(Model.Content.Name);
-    Response.Redirect($"https://releases.umbraco.com/?repo=Umbraco-CMS&release=release/{version1.ToString()}");
+    Response.Redirect($"https://releases.umbraco.com/release/umbraco/Umbraco-CMS/{version1.ToString()}");
 
     var downloads = Model.Content.Children().Where(x => x.ContentType.Alias == "ReleaseDownload").ToArray();
     if (Request.Params["fromdownload"] != null)
