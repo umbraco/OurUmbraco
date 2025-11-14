@@ -1,0 +1,110 @@
+name: Build and Upload SBOMs to Dependency-Track
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - '*'
+
+env:
+  FRONTEND_DIR: "./OurUmbraco.Client"
+  TRACKER_ENDPOINT: "https://ca-live-global-dtrack-api.purplemoss-6e7d841c.westeurope.azurecontainerapps.io/api/v1/bom"
+
+jobs:
+  backend-sbom:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # .NET SBOM
+      - name: Restore NuGet packages
+        run: nuget restore .\OurUmbraco.sln
+
+      - name: Install CycloneDX for .NET
+        run: dotnet tool install --global CycloneDX.NuGet
+
+      - name: Generate SBOM for .NET
+        run: |
+          mkdir -p ./sbom
+          SOLUTION_FILE=$(find . -name "*.sln" | head -n 1)
+          if [ -z "$SOLUTION_FILE" ]; then
+            PROJECT_FILE=$(find . -name "*.csproj" -o -name "*.fsproj" -o -name "*.vbproj" | head -n 1)
+            if [ -z "$PROJECT_FILE" ]; then
+              echo "No solution or project files found!"
+              exit 1
+            else
+              TARGET_FILE="$PROJECT_FILE"
+            fi
+          else
+            TARGET_FILE="$SOLUTION_FILE"
+          fi
+          cyclonedx-nuget --project-path "$TARGET_FILE" --out-file sbom/bom-dotnet.xml
+
+  frontend-sbom:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Node.js SBOM
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Install CycloneDX Node.js CLI in frontend
+        run: |
+          if [ -f "$FRONTEND_DIR/package.json" ]; then
+            cd "$FRONTEND_DIR"
+            npm install --save-dev @cyclonedx/cyclonedx-npm
+          else
+            echo "No package.json found in $FRONTEND_DIR, skipping CycloneDX install."
+          fi
+
+      - name: Generate SBOM for Node.js (frontend)
+        run: |
+          if [ -f "$FRONTEND_DIR/package-lock.json" ] || [ -f "$FRONTEND_DIR/yarn.lock" ]; then
+            cd "$FRONTEND_DIR"
+            npx @cyclonedx/cyclonedx-npm -o ../../sbom/bom-frontend.xml
+          else
+            echo "No package-lock.json or yarn.lock found in $FRONTEND_DIR, skipping frontend SBOM."
+          fi
+
+  upload:
+    needs:
+      - frontend-sbom
+      - backend-sbom
+    runs-on: ubuntu-latest
+    steps:          
+      # Upload .NET SBOM
+      - name: Upload .NET SBOM to Dependency-Track
+        env:
+          DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
+        run: |
+          curl --fail-with-body -v -i -w "\nHTTP Status: %{http_code}\n" \
+            -X POST "$TRACKER_ENDPOINT" \
+            -H "X-Api-Key: $DTRACK_API_KEY" \
+            -H "accept: application/json" \
+            -H "Content-Type: multipart/form-data" \
+            -F "autoCreate=true" \
+            -F "projectName=${{ github.event.repository.name }}-backend" \
+            -F "projectVersion=${{ github.ref_name }}" \
+            -F "bom=@./sbom/bom-dotnet.xml"
+
+      # Upload Node.js SBOM (if exists)
+      - name: Upload Node.js SBOM to Dependency-Track
+        env:
+          DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
+        run: |
+          if [ -f ./sbom/bom-frontend.xml ]; then
+            curl --fail-with-body -v -i -w "\nHTTP Status: %{http_code}\n" \
+              -X POST "$TRACKER_ENDPOINT" \
+              -H "X-Api-Key: $DTRACK_API_KEY" \
+              -H "accept: application/json" \
+              -H "Content-Type: multipart/form-data" \
+              -F "autoCreate=true" \
+              -F "projectName=${{ github.event.repository.name }}-frontend" \
+              -F "projectVersion=${{ github.ref_name }}" \
+              -F "bom=@./sbom/bom-frontend.xml"
+          else
+            echo "No frontend SBOM to upload."
+          fi
