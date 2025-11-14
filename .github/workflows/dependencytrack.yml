@@ -11,45 +11,59 @@ env:
   TRACKER_ENDPOINT: "https://ca-live-global-dtrack-api.purplemoss-6e7d841c.westeurope.azurecontainerapps.io/api/v1/bom"
 
 jobs:
+
+  # ==========================================
+  # BACKEND (.NET Framework) SBOM via Syft
+  # ==========================================
   backend-sbom:
     runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-  
-      - name: Install Syft
+
+      - name: Install Syft (Windows)
         shell: pwsh
         run: |
           $release = Invoke-RestMethod -Uri "https://api.github.com/repos/anchore/syft/releases/latest"
           $asset = $release.assets | Where-Object { $_.name -match "windows_amd64.zip$" }
-      
+
           if (-not $asset) {
             Write-Error "Could not find Syft Windows binary in latest release."
             exit 1
           }
-      
+
           $zipPath = "$env:TEMP\syft.zip"
           $dest = "$HOME\syft"
-      
+
           Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zipPath
           Expand-Archive -Path $zipPath -DestinationPath $dest -Force
-      
+
           echo "$dest" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
-  
-      - name: Generate SBOM for .NET (CycloneDX XML)
+
+      - name: Generate SBOM for .NET (CycloneDX JSON)
         shell: pwsh
         run: |
           New-Item -ItemType Directory -Force -Path "sbom" | Out-Null
-          syft dir:. -o cyclonedx-json > sbom/bom-dotnet.xml
+          $out = Join-Path $PWD "sbom/bom-dotnet.json"
+          syft dir:. -o cyclonedx-json > $out
+          Write-Host "SBOM created at $out"
 
+      - name: Upload .NET SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-dotnet
+          path: sbom/bom-dotnet.json
+
+
+  # ==========================================
+  # FRONTEND (Node) SBOM
+  # ==========================================
   frontend-sbom:
     runs-on: ubuntu-latest
-
     steps:
-      # Node.js SBOM
       - name: Checkout code
         uses: actions/checkout@v4
-        
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -61,37 +75,49 @@ jobs:
             cd "$FRONTEND_DIR"
             npm install --save-dev @cyclonedx/cyclonedx-npm
           else
-            echo "No package.json found in $FRONTEND_DIR, skipping CycloneDX install."
+            echo "No package.json found in $FRONTEND_DIR"
           fi
 
       - name: Generate SBOM for Node.js (frontend)
         run: |
+          mkdir -p sbom
           if [ -f "$FRONTEND_DIR/package-lock.json" ] || [ -f "$FRONTEND_DIR/yarn.lock" ]; then
             cd "$FRONTEND_DIR"
-            npx @cyclonedx/cyclonedx-npm -o ../../sbom/bom-frontend.xml
+            npx @cyclonedx/cyclonedx-npm -o ../sbom/bom-frontend.json
           else
-            echo "No package-lock.json or yarn.lock found in $FRONTEND_DIR, skipping frontend SBOM."
+            echo "No lockfile found — skipping frontend SBOM"
           fi
-          
+
+      - name: Upload frontend SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-frontend
+          path: sbom/bom-frontend.json
+
+
+  # ==========================================
+  # UPLOAD TO DEPENDENCY-TRACK
+  # ==========================================
   upload:
     needs:
       - frontend-sbom
       - backend-sbom
     runs-on: ubuntu-latest
-    steps:          
-      - name: Upload frontend SBOM artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: sbom-frontend
-          path: ./sbom/bom-frontend.xml    
+    steps:
 
-      - name: Upload .NET SBOM artifact
-        uses: actions/upload-artifact@v4
+      - name: Download .NET SBOM
+        uses: actions/download-artifact@v4
         with:
           name: sbom-dotnet
-          path: ./sbom/bom-dotnet.xml
-          
-      # Upload .NET SBOM
+          path: sboms/dotnet
+
+      - name: Download frontend SBOM
+        uses: actions/download-artifact@v4
+        with:
+          name: sbom-frontend
+          path: sboms/frontend
+
+
       - name: Upload .NET SBOM to Dependency-Track
         env:
           DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
@@ -104,14 +130,14 @@ jobs:
             -F "autoCreate=true" \
             -F "projectName=${{ github.event.repository.name }}-backend" \
             -F "projectVersion=${{ github.ref_name }}" \
-            -F "bom=@./sbom/bom-dotnet.xml"
+            -F "bom=@sboms/dotnet/bom-dotnet.json"
 
-      # Upload Node.js SBOM (if exists)
+
       - name: Upload Node.js SBOM to Dependency-Track
         env:
           DTRACK_API_KEY: ${{ secrets.DTRACK_API_KEY }}
         run: |
-          if [ -f ./sbom/bom-frontend.xml ]; then
+          if [ -f sboms/frontend/bom-frontend.json ]; then
             curl --fail-with-body -v -i -w "\nHTTP Status: %{http_code}\n" \
               -X POST "$TRACKER_ENDPOINT" \
               -H "X-Api-Key: $DTRACK_API_KEY" \
@@ -120,7 +146,7 @@ jobs:
               -F "autoCreate=true" \
               -F "projectName=${{ github.event.repository.name }}-frontend" \
               -F "projectVersion=${{ github.ref_name }}" \
-              -F "bom=@./sbom/bom-frontend.xml"
+              -F "bom=@sboms/frontend/bom-frontend.json"
           else
             echo "No frontend SBOM to upload."
           fi
