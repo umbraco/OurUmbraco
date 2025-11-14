@@ -16,36 +16,40 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      # .NET SBOM
-      - name: Restore NuGet packages
-        run: nuget restore .\OurUmbraco.sln
-
-      - name: Install CycloneDX for .NET
-        run: dotnet tool install --global CycloneDX.NuGet
-
-      - name: Generate SBOM for .NET
+  
+      - name: Install Syft
+        shell: pwsh
         run: |
-          mkdir -p ./sbom
-          SOLUTION_FILE=$(find . -name "*.sln" | head -n 1)
-          if [ -z "$SOLUTION_FILE" ]; then
-            PROJECT_FILE=$(find . -name "*.csproj" -o -name "*.fsproj" -o -name "*.vbproj" | head -n 1)
-            if [ -z "$PROJECT_FILE" ]; then
-              echo "No solution or project files found!"
-              exit 1
-            else
-              TARGET_FILE="$PROJECT_FILE"
-            fi
-          else
-            TARGET_FILE="$SOLUTION_FILE"
-          fi
-          cyclonedx-nuget --project-path "$TARGET_FILE" --out-file sbom/bom-dotnet.xml
+          $release = Invoke-RestMethod -Uri "https://api.github.com/repos/anchore/syft/releases/latest"
+          $asset = $release.assets | Where-Object { $_.name -match "windows_amd64.zip$" }
+      
+          if (-not $asset) {
+            Write-Error "Could not find Syft Windows binary in latest release."
+            exit 1
+          }
+      
+          $zipPath = "$env:TEMP\syft.zip"
+          $dest = "$HOME\syft"
+      
+          Invoke-WebRequest -Uri $asset.browser_download_url -OutFile $zipPath
+          Expand-Archive -Path $zipPath -DestinationPath $dest -Force
+      
+          echo "$dest" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+  
+      - name: Generate SBOM for .NET (CycloneDX XML)
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "sbom" | Out-Null
+          syft dir:. -o cyclonedx-json > sbom/bom-dotnet.xml
 
   frontend-sbom:
     runs-on: ubuntu-latest
 
     steps:
       # Node.js SBOM
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
@@ -68,13 +72,25 @@ jobs:
           else
             echo "No package-lock.json or yarn.lock found in $FRONTEND_DIR, skipping frontend SBOM."
           fi
-
+          
   upload:
     needs:
       - frontend-sbom
       - backend-sbom
     runs-on: ubuntu-latest
     steps:          
+      - name: Upload frontend SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-frontend
+          path: ./sbom/bom-frontend.xml    
+
+      - name: Upload .NET SBOM artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-dotnet
+          path: ./sbom/bom-dotnet.xml
+          
       # Upload .NET SBOM
       - name: Upload .NET SBOM to Dependency-Track
         env:
