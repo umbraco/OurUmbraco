@@ -107,6 +107,9 @@ namespace OurUmbraco.Documentation
             foreach (var child in dir.GetDirectories().Where(x => x.Name != "images" && x.Name != ".git" && x.Name != ".github" && x.Name != "Old-Courier-versions" && x.Name != "Umbraco-Uno" && x.Name != "UmbracoCourier"))
                 list.Add(GetFolderStructure(child, rootPath, level + 1));
 
+            // hide old getting started subpages
+            list = list.Where(i => (i.Path.StartsWith("/Getting-Started/") == true && i.Level == 2) == false).ToList();
+
             siteMapItem.Directories = list.OrderBy(x => x.Sort).ToList();
 
             return siteMapItem;
