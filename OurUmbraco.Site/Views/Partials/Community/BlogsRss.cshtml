@@ -1,0 +1,40 @@
+﻿@using OurUmbraco.Community.BlogPosts
+
+@inherits OurUmbraco.Our.Models.OurUmbracoTemplatePage
+@{
+    var service = new BlogPostsService();
+
+    var items = service.GetCachedBlogPosts(30, 4).ToArray();
+
+    if (items.Length == 0)
+    {
+        return;
+    }
+}<?xml version="1.0" encoding="UTF-8" ?>
+@{
+    umbraco.library.ChangeContentType("text/xml");
+    var siteURL = "http://" + Request.Url.Host;
+}
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+    <channel>
+        <atom:link href="@siteURL/rss" rel="self" type="application/rss+xml" />
+        <title></title>
+        @Html.Raw("<link>")@siteURL@Html.Raw("</link>")
+        <description></description>
+        <pubDate>@String.Format("{0:ddd, dd MMM yyyy HH:mm:ss} EST", Umbraco.AssignedContentItem.CreateDate)</pubDate>
+        <lastBuildDate>@String.Format("{0:ddd, dd MMM yyyy HH:mm:ss} EST", DateTime.Now)</lastBuildDate>
+        <language>en</language>
+        <generator>Umbraco</generator>
+
+        @foreach (var article in items)
+        {
+            <item>
+                <title>@article.Title</title>
+                @Html.Raw("<link>")@siteURL@article.Link@Html.Raw("</link>")
+                <description>@article.Blog.Title</description>
+                <pubDate>@String.Format("{0:ddd, dd MMM yyyy} {1:HH:mm:ss} EST", @article.PublishedDate, @article.PublishedDate)</pubDate>
+                <guid>@siteURL/@article.Link</guid>
+            </item>
+        }
+    </channel>
+</rss>
