@@ -521,6 +521,15 @@
       "rss": "https://dev.to/feed/luukpeters",
       "logo": "https://avatars.githubusercontent.com/u/9865589",
       "memberId": 22873
+    },
+    {
+      "id": "75ca56d5-4a61-4590-84fe-ff6aa0b2f11c",
+      "checkTitles": false,
+      "title": "Diagram Insights",
+      "url": "https://www.wearediagram.com",
+      "rss": "https://www.wearediagram.com/blog/tag/umbraco/rss.xml",
+      "logo": "https://www.wearediagram.com/hubfs/Diagram/logos/DIA_BadgeSEPTA-BLK-RGB.png",
+      "memberId": 363719
     }
   ]
 }
