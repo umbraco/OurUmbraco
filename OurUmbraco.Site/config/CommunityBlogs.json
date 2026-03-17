@@ -521,6 +521,15 @@
       "rss": "https://dev.to/feed/luukpeters",
       "logo": "https://avatars.githubusercontent.com/u/9865589",
       "memberId": 22873
+    },
+    {
+      "id": "96cd21e5-c7be-493e-864a-ae76ef509ac9",
+      "checkTitles": false,
+      "title": "Nevitech Blog",
+      "url": "https://www.nevitech.co.uk/blog/",
+      "rss": "https://www.nevitech.co.uk/blog.rss",
+      "logo": "https://www.nevitech.co.uk/images/logo.png",
+      "memberId": 273703
     }
   ]
 }
